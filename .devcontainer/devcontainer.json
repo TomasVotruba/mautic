@@ -1,9 +1,6 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/base:debian-12",
+    "image": "mcr.microsoft.com/devcontainers/universal:6",
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "latest"
-        },
         "ghcr.io/ddev/ddev/install-ddev:latest": {}
     },
     "portsAttributes": {
@@ -23,7 +20,6 @@
             "label": "Mautic (HTTPS)"
         }
     },
-    "postCreateCommand": "echo hello",
-    "postAttachCommand": "ddev start -y",
-    "updateContentCommand": "ddev start -y --skip-hooks"
+    "postCreateCommand": "chmod +x .devcontainer/setup-project.sh && .devcontainer/setup-project.sh",
+    "updateContentCommand": "ddev start -y"
 }
