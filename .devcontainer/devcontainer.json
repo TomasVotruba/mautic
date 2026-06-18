@@ -1,8 +1,8 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/universal:6",
+    "image": "mcr.microsoft.com/devcontainers/base:debian-12",
     "features": {
-        "ghcr.io/devcontainers/features/git-lfs:1": {
-            "autoPull": false
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
         },
         "ghcr.io/ddev/ddev/install-ddev:latest": {}
     },
