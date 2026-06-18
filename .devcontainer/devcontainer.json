@@ -23,6 +23,7 @@
             "label": "Mautic (HTTPS)"
         }
     },
-    "postCreateCommand": "chmod +x .devcontainer/setup-project.sh && .devcontainer/setup-project.sh",
+    "onCreateCommand": "bash .devcontainer/wait.sh",
+    "postCreateCommand": "bash .devcontainer/setup-project.sh",
     "updateContentCommand": "ddev start -y"
 }
