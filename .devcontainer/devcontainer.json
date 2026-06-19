@@ -22,6 +22,6 @@
             "label": "Mautic (HTTPS)"
         }
     },
-    "postCreateCommand": "bash .devcontainer/setup-project.sh",
-    "updateContentCommand": "curl -fsSL https://ddev.com/install.sh | bash && ddev debug download-images"
+    "postCreateCommand": ".devcontainer/setup-project.sh",
+    "updateContentCommand": ".devcontainer/prebuild-project.sh"
 }
