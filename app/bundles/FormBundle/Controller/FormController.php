@@ -715,8 +715,7 @@ class FormController extends CommonFormController
         // Get field and action settings
         $availableFields = $this->fieldHelper->getChoiceList($customComponents['fields']);
 
-        if ($cleanSlate) {
-            // clean slate
+        // clean slate
             $this->clearSessionComponents($request, $objectId);
             $this->alreadyMappedFieldCollector->removeAllForForm($objectId);
 
@@ -820,7 +819,6 @@ class FormController extends CommonFormController
 
             $session->set('mautic.form.'.$objectId.'.actions.modified', $modifiedActions);
             $deletedActions = [];
-        }
 
         return $this->delegateView(
             [

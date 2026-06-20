@@ -52,6 +52,7 @@ return RectorConfig::configure()
         ReturnTypeFromReturnDirectArrayRector::class,
         UnserializeToSerializerDecodeRector::class,
     ])
+    ->reportUnusedSkips()
     ->withSkip([
         '*/Test/*',
         '*/Tests/*',
@@ -74,56 +75,41 @@ return RectorConfig::configure()
 
         // Rector 2.4.5 false positive: setFromForSingleMessage() and setReplyToForSingleMessage()
         // are both called from send(), but dead code analysis incorrectly treats them as unused
-        RemoveUnusedPrivateMethodRector::class => [
-            __DIR__.'/app/bundles/EmailBundle/Helper/MailHelper.php',
-        ],
+//        RemoveUnusedPrivateMethodRector::class => [
+//            __DIR__.'/app/bundles/EmailBundle/Helper/MailHelper.php',
+//        ],
 
         RemoveUnusedPrivatePropertyRector::class => [
             // entities
             __DIR__.'/app/bundles/UserBundle/Entity',
-            // typo fallback
-            __DIR__.'/app/bundles/LeadBundle/Entity/LeadField.php',
-        ],
-
-        RemoveUnusedVariableAssignRector::class => [
-            // unset variable to clear garbage collector
-            __DIR__.'/app/bundles/LeadBundle/Model/ImportModel.php',
         ],
 
         TypedPropertyFromStrictConstructorRector::class => [
             // entities magic
             __DIR__.'/app/bundles/LeadBundle/Entity',
-
-            // fixed in rector dev-main
-            __DIR__.'/app/bundles/CoreBundle/DependencyInjection/Builder/BundleMetadata.php',
         ],
 
-        ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/app/bundles/CacheBundle/EventListener/CacheClearSubscriber.php',
-            __DIR__.'/app/bundles/ReportBundle/Event/ReportBuilderEvent.php',
-            // false positive
-            __DIR__.'/app/bundles/CoreBundle/DependencyInjection/Builder/BundleMetadata.php',
-        ],
+//        ClassPropertyAssignToConstructorPromotionRector::class => [
+//            __DIR__.'/app/bundles/CacheBundle/EventListener/CacheClearSubscriber.php',
+//            __DIR__.'/app/bundles/ReportBundle/Event/ReportBuilderEvent.php',
+//            // false positive
+//            __DIR__.'/app/bundles/CoreBundle/DependencyInjection/Builder/BundleMetadata.php',
+//        ],
 
         TypedPropertyFromAssignsRector::class => [
             '*/Entity/*',
         ],
 
-        // Skip the rule file itself
-        UnserializeToSerializerDecodeRector::class => [
-            __DIR__.'/rector',
-        ],
+       // // Skip the rule file itself
+//        UnserializeToSerializerDecodeRector::class => [
+//            __DIR__.'/rector',
+//        ],
 
         // handle later with full PHP 8.0 upgrade
         OptionalParametersAfterRequiredRector::class,
 
         // handle later, case by case as lot of chnaged code
-        RemoveAlwaysTrueIfConditionRector::class => [
-            __DIR__.'/app/bundles/PointBundle/Controller/TriggerController.php',
-            __DIR__.'/app/bundles/LeadBundle/Controller/ImportController.php',
-            __DIR__.'/app/bundles/FormBundle/Controller/FormController.php',
-            // watch out on this one - the variables are set magically via $$name
-            // @see app/bundles/FormBundle/Form/Type/FieldType.php:99
-            __DIR__.'/app/bundles/FormBundle/Form/Type/FieldType.php',
-        ],
+        //RemoveAlwaysTrueIfConditionRector::class => [
+        //    __DIR__.'/app/bundles/FormBundle/Controller/FormController.php',
+        // ],
     ]);
