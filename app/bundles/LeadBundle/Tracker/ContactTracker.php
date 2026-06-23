@@ -58,7 +58,7 @@ class ContactTracker
             return null;
         }
 
-        if (empty($this->trackedContact)) {
+        if (!$this->trackedContact instanceof Lead) {
             $this->trackedContact = $this->getCurrentContact();
             $this->generateTrackingCookies();
         }
