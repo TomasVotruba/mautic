@@ -40,17 +40,8 @@ return RectorConfig::configure()
         UnserializeToSerializerDecodeRector::class,
     ])
     ->reportUnusedSkips()
-<<<<<<< HEAD
-<<<<<<< HEAD
-    ->withTypeCoverageLevel(15)
-    ->withCodeQualityLevel(17)
-=======
-    ->withTypeCoverageLevel(22)
-=======
     ->withTypeCoverageLevel(23)
->>>>>>> f3f9c4d3ca (add return nullables)
     ->withCodeQualityLevel(2)
->>>>>>> 6d10c39051 ([rector] add rest of return types from strict proeprty)
     ->withSkip([
         Rector\Renaming\Rector\FuncCall\RenameFunctionRector::class,
         '*/Test/*',
@@ -80,6 +71,13 @@ return RectorConfig::configure()
         ],
         ReturnTypeFromStrictTypedPropertyRector::class => [
             __DIR__.'/app/bundles/CoreBundle/Controller/FormController.php',
+            // handle mocks later
+            __DIR__.'/app/bundles/IntegrationsBundle/Sync/DAO/DateRange.php',
+            __DIR__.'/app/bundles/CampaignBundle/Executioner/Scheduler/Mode/DAO/GroupExecutionDateDAO.php',
+            __DIR__.'/app/bundles/CampaignBundle/Executioner/EventExecutioner.php',
+        ],
+        Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector::class => [
+            __DIR__.'/app/bundles/IntegrationsBundle/Sync/DAO/DateRange.php',
         ],
 
         TypedPropertyFromAssignsRector::class => [
