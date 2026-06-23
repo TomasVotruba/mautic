@@ -41,10 +41,14 @@ return RectorConfig::configure()
     ])
     ->reportUnusedSkips()
 <<<<<<< HEAD
+<<<<<<< HEAD
     ->withTypeCoverageLevel(15)
     ->withCodeQualityLevel(17)
 =======
     ->withTypeCoverageLevel(22)
+=======
+    ->withTypeCoverageLevel(23)
+>>>>>>> f3f9c4d3ca (add return nullables)
     ->withCodeQualityLevel(2)
 >>>>>>> 6d10c39051 ([rector] add rest of return types from strict proeprty)
     ->withSkip([
