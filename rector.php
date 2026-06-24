@@ -12,7 +12,6 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\KnownMagicClassMethodTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector;
@@ -95,7 +94,6 @@ return RectorConfig::configure()
             __DIR__.'/app/bundles/CoreBundle/Controller/FormController.php',
             // handle mocks later
             __DIR__.'/app/bundles/IntegrationsBundle/Sync/DAO/DateRange.php',
-            __DIR__.'/app/bundles/CampaignBundle/Executioner/Scheduler/Mode/DAO/GroupExecutionDateDAO.php',
             __DIR__.'/app/bundles/CampaignBundle/Executioner/EventExecutioner.php',
         ],
         Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector::class => [
