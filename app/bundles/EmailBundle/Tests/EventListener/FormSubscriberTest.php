@@ -47,7 +47,13 @@ class FormSubscriberTest extends TestCase
     {
         $reflection = new \ReflectionMethod($this->formSubscriber, 'getCurrentLead');
 
-        $feedback    = ['lead.create' => ['lead' => ['email' => 'foobar']]];
+        $feedback    = [
+            'lead.create' => [
+                'lead' => [
+                    'email' => 'foobar',
+                ],
+            ],
+        ];
         $currentLead = $reflection->invoke($this->formSubscriber, $feedback);
 
         $this->assertSame($feedback['lead.create']['lead'], $currentLead);
@@ -106,7 +112,13 @@ class FormSubscriberTest extends TestCase
 
         $event->expects($this->once())
             ->method('getActionFeedback')
-            ->willReturn($feedback = ['lead.create' => ['lead' => ['email' => 'foobar']]]);
+            ->willReturn($feedback = [
+                'lead.create' => [
+                    'lead' => [
+                        'email' => 'foobar',
+                    ],
+                ],
+            ]);
 
         $event->expects($this->once())
             ->method('getAction')
@@ -114,7 +126,10 @@ class FormSubscriberTest extends TestCase
 
         $action->expects($this->once())
             ->method('getProperties')
-            ->willReturn(['user_id' => 1, 'email' => 1]);
+            ->willReturn([
+                'user_id' => 1,
+                'email' => 1,
+            ]);
 
         $this->emailModel->expects($this->once())
             ->method('getEntity')
@@ -149,7 +164,13 @@ class FormSubscriberTest extends TestCase
 
         $event->expects($this->once())
             ->method('getActionFeedback')
-            ->willReturn($feedback = ['lead.create' => ['lead' => ['email' => 'foobar']]]);
+            ->willReturn($feedback = [
+                'lead.create' => [
+                    'lead' => [
+                        'email' => 'foobar',
+                    ],
+                ],
+            ]);
 
         $event->expects($this->exactly(2))
             ->method('getAction')
@@ -157,7 +178,9 @@ class FormSubscriberTest extends TestCase
 
         $action->expects($this->once())
             ->method('getProperties')
-            ->willReturn(['email' => 1]);
+            ->willReturn([
+                'email' => 1,
+            ]);
 
         $action->expects($this->once())
             ->method('getForm')

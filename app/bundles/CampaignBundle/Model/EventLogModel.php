@@ -91,7 +91,10 @@ class EventLogModel extends AbstractCommonModel
         if (0 === count($membership)) {
             return $this->translator->trans(
                 'mautic.campaign.error.contact_not_in_campaign',
-                ['%campaign%' => $campaign->getId(), '%contact%' => $contact->getId()],
+                [
+                    '%campaign%' => $campaign->getId(),
+                    '%contact%' => $contact->getId(),
+                ],
                 'flashes'
             );
         }
@@ -101,7 +104,10 @@ class EventLogModel extends AbstractCommonModel
             if ($m->getManuallyRemoved()) {
                 return $this->translator->trans(
                     'mautic.campaign.error.contact_not_in_campaign',
-                    ['%campaign%' => $campaign->getId(), '%contact%' => $contact->getId()],
+                    [
+                        '%campaign%' => $campaign->getId(),
+                        '%contact%' => $contact->getId(),
+                    ],
                     'flashes'
                 );
             }

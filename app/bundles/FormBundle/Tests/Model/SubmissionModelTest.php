@@ -311,7 +311,11 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->fieldsWithUniqueIdentifier->expects($this->any())
             ->method('getFieldsWithUniqueIdentifier')
-            ->willReturn(['eyJpc1B1Ymxpc2hlZCI6dHJ1ZSwiaXNVbmlxdWVJZGVudGlmZXIiOnRydWUsIm9iamVjdCI6ImxlYWQifQ==' => ['email' => 'Email']]);
+            ->willReturn([
+                'eyJpc1B1Ymxpc2hlZCI6dHJ1ZSwiaXNVbmlxdWVJZGVudGlmZXIiOnRydWUsIm9iamVjdCI6ImxlYWQifQ==' => [
+                    'email' => 'Email',
+                ],
+            ]);
 
         $this->leadFieldModel->expects($this->any())
             ->method('getFieldListWithProperties')
@@ -382,7 +386,9 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $tokens = $submissionEvent->getTokens();
         $this->assertEquals($formData['email'], $tokens['{formfield=email}']);
         $this->assertEquals($formData['file'], $tokens['{formfield=file}']);
-        $this->assertSame(['email' => 'test@email.com'], $submissionEvent->getContactFieldMatches());
+        $this->assertSame([
+            'email' => 'test@email.com',
+        ], $submissionEvent->getContactFieldMatches());
     }
 
     public function testNormalizeValues(): void
@@ -467,7 +473,9 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->formModel->expects($this->any())
             ->method('getCustomComponents')
-            ->willReturn(['viewOnlyFields' => ['button', 'captcha', 'freetext']]);
+            ->willReturn([
+                'viewOnlyFields' => ['button', 'captcha', 'freetext'],
+            ]);
 
         $this->submissioRepository->expects($this->any())
             ->method('getEntities')

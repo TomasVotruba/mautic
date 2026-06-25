@@ -343,7 +343,9 @@ class WebhookModel extends FormModel
             if ($this->isSick($webhook)) {
                 if (!$this->disableAutoUnpublish && !$webhook->wasModifiedRecently()) {
                     $this->killWebhook($webhook);
-                    $message .= ' '.$this->translator->trans('mautic.webhook.killed', ['%limit%' => $this->disableLimit]);
+                    $message .= ' '.$this->translator->trans('mautic.webhook.killed', [
+                        '%limit%' => $this->disableLimit,
+                    ]);
                 }
                 $this->markWebhookUnHealthy($webhook, $e->getMessage());
             } else {

@@ -103,7 +103,12 @@ class LanguageHelperTest extends TestCase
             }
         });
 
-        $languages = ['languages' => [['name' => 'Spanish', 'locale' => 'es']]];
+        $languages = [
+            'languages' => [[
+                'name' => 'Spanish',
+                'locale' => 'es',
+            ]],
+        ];
         $response  = new Response(200, [], json_encode($languages));
 
         $this->client->expects($this->once())
@@ -125,7 +130,11 @@ class LanguageHelperTest extends TestCase
 
     public function testLanguageIsFetched(): void
     {
-        $languages = ['languages' => ['es' => []]];
+        $languages = [
+            'languages' => [
+                'es' => [],
+            ],
+        ];
         $langFile  = $this->tmpPath.'/../languageList.txt';
         file_put_contents($langFile, json_encode($languages));
 
@@ -151,7 +160,9 @@ class LanguageHelperTest extends TestCase
     public function testSupportedLanguagesAreReturned(): void
     {
         $helper = $this->getHelper();
-        $this->assertEquals(['en_US' => 'English - United States'], $helper->getSupportedLanguages());
+        $this->assertEquals([
+            'en_US' => 'English - United States',
+        ], $helper->getSupportedLanguages());
     }
 
     private function getHelper(): LanguageHelper

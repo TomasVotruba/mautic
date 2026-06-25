@@ -65,7 +65,9 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         $model = $this->getModel($requestStack, $emailModel, $entityManager);
 
         $email = new Email();
-        $email->setContent(['existing' => true]);
+        $email->setContent([
+            'existing' => true,
+        ]);
 
         $model->addOrEditEntity($email);
 
@@ -74,7 +76,11 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         Assert::assertIsArray($content);
         Assert::assertArrayHasKey('grapesjsbuilder', $content);
         Assert::assertIsArray($content['grapesjsbuilder']);
-        Assert::assertSame(['pages' => [['id' => 'main']]], $content['grapesjsbuilder']['editorState']);
+        Assert::assertSame([
+            'pages' => [[
+                'id' => 'main',
+            ]],
+        ], $content['grapesjsbuilder']['editorState']);
         Assert::assertArrayHasKey('updatedAt', $content['grapesjsbuilder']);
     }
 
@@ -111,7 +117,11 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         $requestStack = new RequestStack();
         $requestStack->push(new Request([], [
             'grapesjsbuilder' => [
-                'editorState' => ['pages' => [['id' => 'landing']]],
+                'editorState' => [
+                    'pages' => [[
+                        'id' => 'landing',
+                    ]],
+                ],
             ],
         ]));
 
@@ -126,7 +136,9 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         $model = $this->getModel($requestStack, $emailModel, $entityManager);
 
         $page = new Page();
-        $page->setContent(['existing' => 'value']);
+        $page->setContent([
+            'existing' => 'value',
+        ]);
 
         $model->addOrEditPageEntity($page);
 
@@ -134,7 +146,11 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         Assert::assertIsArray($content);
         Assert::assertArrayHasKey('grapesjsbuilder', $content);
         Assert::assertIsArray($content['grapesjsbuilder']);
-        Assert::assertSame(['pages' => [['id' => 'landing']]], $content['grapesjsbuilder']['editorState']);
+        Assert::assertSame([
+            'pages' => [[
+                'id' => 'landing',
+            ]],
+        ], $content['grapesjsbuilder']['editorState']);
 
         $requestStackNoEditor = new RequestStack();
         $requestStackNoEditor->push(new Request([], [

@@ -40,7 +40,9 @@ class NoteApiController extends CommonApiController
 
         // When a user passes in a note like "This is <strong>text</strong>", this will
         // keep the HTML that was passed in.
-        $this->dataInputMasks = ['text' => 'html'];
+        $this->dataInputMasks = [
+            'text' => 'html',
+        ];
 
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }

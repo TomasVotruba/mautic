@@ -34,13 +34,27 @@ final class ReportFilterDataTransformerTest extends TestCase
         date_default_timezone_set(self::LOCAL_TIMEZONE);
 
         $this->columns = [
-            'c.date_added'  => ['type' => 'datetime'],
-            'c.test_time'   => ['type' => 'time'],
-            'c.publish_up'  => ['type' => DateTimeType::class],
-            'c.some_date'   => ['type' => DateType::class],
-            'c.some_time'   => ['type' => TimeType::class],
-            'c.email'       => ['type' => 'email'],
-            'c.name'        => ['type' => 'text'],
+            'c.date_added'  => [
+                'type' => 'datetime',
+            ],
+            'c.test_time'   => [
+                'type' => 'time',
+            ],
+            'c.publish_up'  => [
+                'type' => DateTimeType::class,
+            ],
+            'c.some_date'   => [
+                'type' => DateType::class,
+            ],
+            'c.some_time'   => [
+                'type' => TimeType::class,
+            ],
+            'c.email'       => [
+                'type' => 'email',
+            ],
+            'c.name'        => [
+                'type' => 'text',
+            ],
         ];
 
         parent::setUp();
@@ -63,7 +77,11 @@ final class ReportFilterDataTransformerTest extends TestCase
     {
         // Arrange
         $transformer = new ReportFilterDataTransformer($this->columns);
-        $filters     = [['column' => $column, 'condition' => 'eq', 'value' => $utcValue]];
+        $filters     = [[
+            'column' => $column,
+            'condition' => 'eq',
+            'value' => $utcValue,
+        ]];
 
         // Act
         $transformedFilters = $transformer->transform($filters);
@@ -88,7 +106,11 @@ final class ReportFilterDataTransformerTest extends TestCase
         $localDateTime       = '2025-08-18 14:00:00'; // In Europe/Paris (CEST)
         $expectedUtcDateTime = '2025-08-18 12:00:00';
 
-        $filters = [['column' => 'c.date_added', 'condition' => 'eq', 'value' => $localDateTime]];
+        $filters = [[
+            'column' => 'c.date_added',
+            'condition' => 'eq',
+            'value' => $localDateTime,
+        ]];
 
         // Act
         $reverseTransformedFilters = $transformer->reverseTransform($filters);
@@ -102,7 +124,11 @@ final class ReportFilterDataTransformerTest extends TestCase
     {
         $transformer   = new ReportFilterDataTransformer($this->columns);
         $originalValue = '2025-08-18';
-        $filters       = [['column' => 'c.date_added', 'condition' => $condition, 'value' => $originalValue]];
+        $filters       = [[
+            'column' => 'c.date_added',
+            'condition' => $condition,
+            'value' => $originalValue,
+        ]];
 
         $this->assertSame($originalValue, $transformer->transform($filters)[0]['value']);
         $this->assertSame($originalValue, $transformer->reverseTransform($filters)[0]['value']);
@@ -121,7 +147,11 @@ final class ReportFilterDataTransformerTest extends TestCase
     {
         $transformer = new ReportFilterDataTransformer($this->columns);
         $filters     = [
-            ['column' => 'non.existent.column', 'condition' => 'eq', 'value' => 'some-value'],
+            [
+                'column' => 'non.existent.column',
+                'condition' => 'eq',
+                'value' => 'some-value',
+            ],
         ];
 
         $this->assertSame($filters, $transformer->transform($filters));

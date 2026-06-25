@@ -60,7 +60,9 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data']);
+            ->willReturn([
+                'other' => 'data',
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -80,7 +82,10 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data', HubspotIntegration::ACCESS_KEY => $token]);
+            ->willReturn([
+                'other' => 'data',
+                HubspotIntegration::ACCESS_KEY => $token,
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -109,7 +114,9 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data']);
+            ->willReturn([
+                'other' => 'data',
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -127,7 +134,10 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data', HubspotIntegration::ACCESS_KEY => 'token']);
+            ->willReturn([
+                'other' => 'data',
+                HubspotIntegration::ACCESS_KEY => 'token',
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -145,7 +155,9 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data']);
+            ->willReturn([
+                'other' => 'data',
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -163,7 +175,10 @@ class HubspotIntegrationTest extends AbstractIntegrationTestCase
         $event = $this->createMock(PluginIntegrationKeyEvent::class);
         $event->expects(self::once())
             ->method('getKeys')
-            ->willReturn(['other' => 'data', HubspotIntegration::ACCESS_KEY => 'token']);
+            ->willReturn([
+                'other' => 'data',
+                HubspotIntegration::ACCESS_KEY => 'token',
+            ]);
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with(

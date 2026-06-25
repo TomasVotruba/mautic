@@ -37,7 +37,9 @@ final class EmailVariantInCampaignFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         Assert::assertStringContainsString('2 total events(s) to be processed in batches', $commandResult->getDisplay());
 
         $variant = $email->getVariantChildren()->first();
@@ -70,7 +72,10 @@ final class EmailVariantInCampaignFunctionalTest extends MauticMysqlTestCase
         $variant->setEmailType('template');
         $variant->setIsPublished(true);
         $variant->setVariantParent($email);
-        $variant->setVariantSettings(['weight' => 100, 'winnerCriteria' => 'email.openrate']);
+        $variant->setVariantSettings([
+            'weight' => 100,
+            'winnerCriteria' => 'email.openrate',
+        ]);
         $email->addVariantChild($variant);
 
         $this->em->persist($email);

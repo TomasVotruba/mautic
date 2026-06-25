@@ -61,7 +61,11 @@ class TriggerEventModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'eq', 'value'=>'lead.changelists'],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'eq',
+                    'value'=>'lead.changelists',
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -89,7 +93,11 @@ class TriggerEventModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'in', 'value' => ['email.send', 'email.send_to_user']],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'in',
+                    'value' => ['email.send', 'email.send_to_user'],
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -118,7 +126,11 @@ class TriggerEventModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'eq', 'value' => 'lead.changetags'],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'eq',
+                    'value' => 'lead.changetags',
+                ],
             ],
         ];
         $entities = $this->getEntities(

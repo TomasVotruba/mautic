@@ -59,26 +59,38 @@ class EmailTypeTest extends MauticMysqlTestCase
         $this->addContactToDnc([$contactIds[2]]);
         $this->removeContactFromCategory((int) $contactIds[3], $category);
         $segment       = $this->createSegment();
-        $commandTester = $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segment->getId(),
+        ]);
         Assert::assertSame(Command::SUCCESS, $commandTester->getStatusCode());
         Assert::assertStringContainsString(($contactIdsCount = count($contactIds)).' total contact(s) to be added', $commandTester->getDisplay());
-        $segmentLeadCount = $this->em->getRepository(ListLead::class)->count(['list' => $segment]);
+        $segmentLeadCount = $this->em->getRepository(ListLead::class)->count([
+            'list' => $segment,
+        ]);
         Assert::assertSame($contactIdsCount, $segmentLeadCount);
 
         $campaign      = $this->createCampaign($segment, $emailId = (int) $email->getId());
-        $commandTester = $this->testSymfonyCommand('mautic:campaigns:update', ['-i' => ($campaignId = $campaign->getId())]);
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:update', [
+            '-i' => ($campaignId = $campaign->getId()),
+        ]);
         Assert::assertSame(Command::SUCCESS, $commandTester->getStatusCode());
         Assert::assertStringContainsString($contactIdsCount.' total contact(s) to be added', $commandTester->getDisplay());
-        $campaignLeadCount = $this->em->getRepository(CampaignLead::class)->count(['campaign' => $campaign]);
+        $campaignLeadCount = $this->em->getRepository(CampaignLead::class)->count([
+            'campaign' => $campaign,
+        ]);
         Assert::assertSame($contactIdsCount, $campaignLeadCount);
 
         $this->em->clear();
 
-        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', ['-i' => $campaignId]);
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '-i' => $campaignId,
+        ]);
         Assert::assertSame(Command::SUCCESS, $commandTester->getStatusCode());
         Assert::assertStringContainsString($contactIdsCount.' total events(s) to be processed', $commandTester->getDisplay());
 
-        $stats = $this->em->getRepository(Stat::class)->count(['email' => $emailId]);
+        $stats = $this->em->getRepository(Stat::class)->count([
+            'email' => $emailId,
+        ]);
         Assert::assertSame($expectedEmailCopiesCount, $stats);
     }
 

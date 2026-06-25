@@ -50,7 +50,9 @@ class TweetControllerTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
 
-        $this->assertSame(1, $this->tweetsRepo->count(['name' => $name]));
+        $this->assertSame(1, $this->tweetsRepo->count([
+            'name' => $name,
+        ]));
     }
 
     public function testEditAction(): void
@@ -67,6 +69,8 @@ class TweetControllerTest extends MauticMysqlTestCase
         $form['twitter_tweet[name]']->setValue('Updated tweet name');
         $this->client->submit($form);
 
-        $this->assertSame(1, $this->tweetsRepo->count(['name' => 'Updated tweet name']));
+        $this->assertSame(1, $this->tweetsRepo->count([
+            'name' => 'Updated tweet name',
+        ]));
     }
 }

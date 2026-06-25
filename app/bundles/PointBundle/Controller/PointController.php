@@ -38,7 +38,10 @@ class PointController extends AbstractFormController
         $limit      = $pageHelper->getLimit();
         $start      = $pageHelper->getStart();
         $search     = $request->get('search', $request->getSession()->get('mautic.point.filter', ''));
-        $filter     = ['string' => $search, 'force' => []];
+        $filter     = [
+            'string' => $search,
+            'force' => [],
+        ];
         $orderBy    = $request->getSession()->get('mautic.point.orderby', 'p.name');
         $orderByDir = $request->getSession()->get('mautic.point.orderbydir', 'ASC');
         $pointModel = $this->getModel('point');
@@ -56,12 +59,16 @@ class PointController extends AbstractFormController
         $count = count($points);
         if ($count && $count < ($start + 1)) {
             $lastPage  = $pageHelper->countPage($count);
-            $returnUrl = $this->generateUrl('mautic_point_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_point_index', [
+                'page' => $lastPage,
+            ]);
             $pageHelper->rememberPage($lastPage);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $lastPage],
+                'viewParameters'  => [
+                    'page' => $lastPage,
+                ],
                 'contentTemplate' => 'Mautic\PointBundle\Controller\PointController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_point_index',
@@ -89,7 +96,9 @@ class PointController extends AbstractFormController
             'passthroughVars' => [
                 'activeLink'    => '#mautic_point_index',
                 'mauticContent' => 'point',
-                'route'         => $this->generateUrl('mautic_point_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_point_index', [
+                    'page' => $page,
+                ]),
             ],
         ]);
     }
@@ -120,13 +129,17 @@ class PointController extends AbstractFormController
         $method     = $request->getMethod();
         $point      = $request->request->all()['point'] ?? [];
         $actionType = 'POST' === $method ? ($point['type'] ?? '') : '';
-        $action     = $this->generateUrl('mautic_point_action', ['objectAction' => 'new']);
+        $action     = $this->generateUrl('mautic_point_action', [
+            'objectAction' => 'new',
+        ]);
         $actions    = $model->getPointActions();
         $form       = $model->createForm($entity, $formFactory, $action, [
             'pointActions' => $actions,
             'actionType'   => $actionType,
         ]);
-        $viewParameters = ['page' => $page];
+        $viewParameters = [
+            'page' => $page,
+        ];
 
         // /Check for a submitted form and process it
         if (Request::METHOD_POST === $method) {
@@ -215,10 +228,14 @@ class PointController extends AbstractFormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.point.page', 1);
 
-        $viewParameters = ['page' => $page];
+        $viewParameters = [
+            'page' => $page,
+        ];
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_point_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_point_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
@@ -238,7 +255,9 @@ class PointController extends AbstractFormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.point.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -254,7 +273,10 @@ class PointController extends AbstractFormController
         $point      = $request->request->all()['point'] ?? [];
         $actionType = 'POST' === $method ? ($point['type'] ?? '') : $entity->getType();
 
-        $action  = $this->generateUrl('mautic_point_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action  = $this->generateUrl('mautic_point_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $actions = $model->getPointActions();
         $form    = $model->createForm($entity, $formFactory, $action, [
             'pointActions' => $actions,
@@ -366,12 +388,16 @@ class PointController extends AbstractFormController
     public function deleteAction(Request $request, $objectId)
     {
         $page      = $request->getSession()->get('mautic.point.page', 1);
-        $returnUrl = $this->generateUrl('mautic_point_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_point_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PointBundle\Controller\PointController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_point_index',
@@ -388,7 +414,9 @@ class PointController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.point.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->isGranted('point:points:delete')) {
                 $this->throwAccessDenied();
@@ -422,12 +450,16 @@ class PointController extends AbstractFormController
     public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.point.page', 1);
-        $returnUrl = $this->generateUrl('mautic_point_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_point_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PointBundle\Controller\PointController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_point_index',
@@ -449,7 +481,9 @@ class PointController extends AbstractFormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.point.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->isGranted('point:points:delete')) {
                     $flashes[] = $this->getAccessDeniedFlash();

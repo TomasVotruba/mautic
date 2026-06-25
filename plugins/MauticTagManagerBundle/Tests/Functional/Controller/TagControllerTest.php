@@ -79,12 +79,16 @@ class TagControllerTest extends MauticMysqlTestCase
 
     public function testIndexActionWhenFilteredByDescription(): void
     {
-        $matchingTag = $this->tagRepository->findOneBy(['tag' => 'tag1']);
+        $matchingTag = $this->tagRepository->findOneBy([
+            'tag' => 'tag1',
+        ]);
         \assert($matchingTag instanceof Tag);
         $matchingTag->setDescription('Contains the test keyword.');
         $this->tagRepository->saveEntity($matchingTag, false);
 
-        $otherTag = $this->tagRepository->findOneBy(['tag' => 'tag2']);
+        $otherTag = $this->tagRepository->findOneBy([
+            'tag' => 'tag2',
+        ]);
         \assert($otherTag instanceof Tag);
         $otherTag->setDescription('No related content.');
         $this->tagRepository->saveEntity($otherTag);
@@ -178,7 +182,9 @@ class TagControllerTest extends MauticMysqlTestCase
         $form['tag_entity[tag]']->setValue($TagName);
         $this->client->submit($form);
 
-        $this->assertSame(1, $this->tagRepository->count(['tag' => $TagName]));
+        $this->assertSame(1, $this->tagRepository->count([
+            'tag' => $TagName,
+        ]));
     }
 
     public function testEditActionNotFound(): void
@@ -202,7 +208,9 @@ class TagControllerTest extends MauticMysqlTestCase
         $form['tag_entity[tag]']->setValue($TagName);
         $this->client->submit($form);
 
-        $this->assertSame(1, $this->tagRepository->count(['tag' => $TagName]));
+        $this->assertSame(1, $this->tagRepository->count([
+            'tag' => $TagName,
+        ]));
     }
 
     public function testNewActionValidation(): void
@@ -212,7 +220,9 @@ class TagControllerTest extends MauticMysqlTestCase
 
         $buttonCrawler  = $crawler->selectButton('Save');
         $form           = $buttonCrawler->form();
-        $form->setValues(['tag_entity[tag]' => '']);
+        $form->setValues([
+            'tag_entity[tag]' => '',
+        ]);
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
         Assert::assertStringContainsString('A value is required.', $this->client->getResponse()->getContent());
@@ -247,7 +257,9 @@ class TagControllerTest extends MauticMysqlTestCase
 
         $buttonCrawler  = $crawler->selectButton('Save & Close');
         $form           = $buttonCrawler->form();
-        $form->setValues(['tag_entity[tag]' => '']);
+        $form->setValues([
+            'tag_entity[tag]' => '',
+        ]);
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
         Assert::assertStringContainsString('A value is required.', $this->client->getResponse()->getContent());
@@ -370,8 +382,12 @@ class TagControllerTest extends MauticMysqlTestCase
 
     public function testMergeActionUpdatesStoredTagDependencies(): void
     {
-        $primaryTag   = $this->tagRepository->findOneBy(['tag' => 'tag1']);
-        $secondaryTag = $this->tagRepository->findOneBy(['tag' => 'tag2']);
+        $primaryTag   = $this->tagRepository->findOneBy([
+            'tag' => 'tag1',
+        ]);
+        $secondaryTag = $this->tagRepository->findOneBy([
+            'tag' => 'tag2',
+        ]);
         \assert($primaryTag instanceof Tag);
         \assert($secondaryTag instanceof Tag);
 

@@ -305,7 +305,9 @@ class ReportSubscriber implements EventSubscriberInterface
             if (!in_array($field->getType(), $viewOnlyFields)) {
                 $index                      = $prefix.$field->getAlias();
                 $formResultsColumns[$index] = [
-                    'label' => $this->translator->trans('mautic.form.report.form_results.label', ['%field%' => $field->getLabel()]),
+                    'label' => $this->translator->trans('mautic.form.report.form_results.label', [
+                        '%field%' => $field->getLabel(),
+                    ]),
                     'type'  => 'number' === $field->getType() ? 'int' : 'string',
                     'alias' => $field->getAlias(),
                 ];
@@ -321,12 +323,16 @@ class ReportSubscriber implements EventSubscriberInterface
         }
 
         $formResultsColumns[$prefix.'submission_id'] = [
-            'label' => $this->translator->trans('mautic.form.report.form_results.label', ['%field%' => $this->translator->trans('mautic.form.report.submission.id')]),
+            'label' => $this->translator->trans('mautic.form.report.form_results.label', [
+                '%field%' => $this->translator->trans('mautic.form.report.submission.id'),
+            ]),
             'type'  => 'int',
             'alias' => 'submissionId',
         ];
         $formResultsColumns[$prefix.'form_id']       = [
-            'label' => $this->translator->trans('mautic.form.report.form_results.label', ['%field%' => $this->translator->trans('mautic.form.report.form_id')]),
+            'label' => $this->translator->trans('mautic.form.report.form_results.label', [
+                '%field%' => $this->translator->trans('mautic.form.report.form_id'),
+            ]),
             'type'  => 'int',
             'link'  => 'mautic_form_action',
             'alias' => 'formResultId',

@@ -75,7 +75,11 @@ class NotificationController extends AbstractFormController
 
         if (!$permissions['notification:notifications:viewother']) {
             $filter['force'][] =
-                ['column' => 'e.createdBy', 'expr' => 'eq', 'value' => $this->user->getId()];
+                [
+                    'column' => 'e.createdBy',
+                    'expr' => 'eq',
+                    'value' => $this->user->getId(),
+                ];
         }
 
         $orderBy    = $session->get('mautic.notification.orderby', 'e.name');
@@ -101,12 +105,16 @@ class NotificationController extends AbstractFormController
             }
 
             $session->set('mautic.notification.page', $lastPage);
-            $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_notification_index', [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\NotificationBundle\Controller\NotificationController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_notification_index',
@@ -134,7 +142,9 @@ class NotificationController extends AbstractFormController
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_notification_index',
                     'mauticContent' => 'notification',
-                    'route'         => $this->generateUrl('mautic_notification_index', ['page' => $page]),
+                    'route'         => $this->generateUrl('mautic_notification_index', [
+                        'page' => $page,
+                    ]),
                 ],
             ]
         );
@@ -156,12 +166,16 @@ class NotificationController extends AbstractFormController
 
         if (null === $notification) {
             // set the return URL
-            $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
+            $returnUrl = $this->generateUrl('mautic_notification_index', [
+                'page' => $page,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => [
+                        'page' => $page,
+                    ],
                     'contentTemplate' => 'Mautic\NotificationBundle\Controller\NotificationController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_notification_index',
@@ -171,7 +185,9 @@ class NotificationController extends AbstractFormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.notification.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -192,21 +208,31 @@ class NotificationController extends AbstractFormController
 
         // Init the date range filter form
         $dateRangeValues = $request->query->all()['daterange'] ?? $request->request->all()['daterange'] ?? [];
-        $action          = $this->generateUrl('mautic_notification_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-        $dateRangeForm   = $formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+        $action          = $this->generateUrl('mautic_notification_action', [
+            'objectAction' => 'view',
+            'objectId' => $objectId,
+        ]);
+        $dateRangeForm   = $formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $action,
+        ]);
         $entityViews     = $model->getHitsLineChartData(
             null,
             new \DateTime($dateRangeForm->get('date_from')->getData()),
             new \DateTime($dateRangeForm->get('date_to')->getData()),
             null,
-            ['notification_id' => $notification->getId()]
+            [
+                'notification_id' => $notification->getId(),
+            ]
         );
 
         // Get click through stats
         $trackableLinks = $model->getNotificationClickStats($notification->getId());
 
         return $this->delegateView([
-            'returnUrl'      => $this->generateUrl('mautic_notification_action', ['objectAction' => 'view', 'objectId' => $notification->getId()]),
+            'returnUrl'      => $this->generateUrl('mautic_notification_action', [
+                'objectAction' => 'view',
+                'objectId' => $notification->getId(),
+            ]),
             'viewParameters' => [
                 'notification' => $notification,
                 'trackables'   => $trackableLinks,
@@ -268,7 +294,9 @@ class NotificationController extends AbstractFormController
 
         // set the page we came from
         $page         = $session->get('mautic.notification.page', 1);
-        $action       = $this->generateUrl('mautic_notification_action', ['objectAction' => 'new']);
+        $action       = $this->generateUrl('mautic_notification_action', [
+            'objectAction' => 'new',
+        ]);
         $notification = $request->request->all()['notification'] ?? [];
         $updateSelect = ('POST' == $method)
             ? ($notification['updateSelect'] ?? false)
@@ -279,7 +307,9 @@ class NotificationController extends AbstractFormController
         }
 
         // create the form
-        $form = $model->createForm($entity, $formFactory, $action, ['update_select' => $updateSelect]);
+        $form = $model->createForm($entity, $formFactory, $action, [
+            'update_select' => $updateSelect,
+        ]);
 
         // /Check for a submitted form and process it
         if ('POST' === $method) {
@@ -317,7 +347,9 @@ class NotificationController extends AbstractFormController
                     }
                 }
             } else {
-                $viewParameters = ['page' => $page];
+                $viewParameters = [
+                    'page' => $page,
+                ];
                 $returnUrl      = $this->generateUrl('mautic_notification_index', $viewParameters);
                 $template       = 'Mautic\NotificationBundle\Controller\NotificationController::indexAction';
                 // clear any modified content
@@ -393,11 +425,15 @@ class NotificationController extends AbstractFormController
         $page    = $session->get('mautic.notification.page', 1);
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_notification_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\NotificationBundle\Controller\NotificationController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_notification_index',
@@ -415,7 +451,9 @@ class NotificationController extends AbstractFormController
                             [
                                 'type'    => 'error',
                                 'msg'     => 'mautic.notification.error.notfound',
-                                'msgVars' => ['%id%' => $objectId],
+                                'msgVars' => [
+                                    '%id%' => $objectId,
+                                ],
                             ],
                         ],
                     ]
@@ -434,13 +472,18 @@ class NotificationController extends AbstractFormController
         }
 
         // Create the form
-        $action       = $this->generateUrl('mautic_notification_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action       = $this->generateUrl('mautic_notification_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $notification = $request->request->all()['notification'] ?? [];
         $updateSelect = 'POST' === $method
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
-        $form = $model->createForm($entity, $formFactory, $action, ['update_select' => $updateSelect]);
+        $form = $model->createForm($entity, $formFactory, $action, [
+            'update_select' => $updateSelect,
+        ]);
 
         // /Check for a submitted form and process it
         if (!$ignorePost && 'POST' === $method) {
@@ -580,12 +623,16 @@ class NotificationController extends AbstractFormController
     public function deleteAction(Request $request, $objectId)
     {
         $page      = $request->getSession()->get('mautic.notification.page', 1);
-        $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_notification_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\NotificationBundle\Controller\NotificationController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_notification_index',
@@ -602,7 +649,9 @@ class NotificationController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.notification.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->hasEntityAccess(
                 'notification:notifications:deleteown',
@@ -643,12 +692,16 @@ class NotificationController extends AbstractFormController
     public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.notification.page', 1);
-        $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_notification_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\NotificationBundle\Controller\NotificationController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_notification_index',
@@ -671,7 +724,9 @@ class NotificationController extends AbstractFormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.notification.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->hasEntityAccess(
                     'notification:notifications:viewown',

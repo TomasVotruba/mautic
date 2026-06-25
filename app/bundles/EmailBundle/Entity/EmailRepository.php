@@ -104,7 +104,9 @@ class EmailRepository extends CommonRepository
      */
     public function deleteDoNotEmailEntry($id): void
     {
-        $this->getEntityManager()->getConnection()->delete(MAUTIC_TABLE_PREFIX.'lead_donotcontact', ['id' => (int) $id]);
+        $this->getEntityManager()->getConnection()->delete(MAUTIC_TABLE_PREFIX.'lead_donotcontact', [
+            'id' => (int) $id,
+        ]);
     }
 
     /**
@@ -604,7 +606,9 @@ class EmailRepository extends CommonRepository
                     "(e.isPublished = :%1\$s AND e.publishDown IS NOT NULL AND e.publishDown <> '' AND e.publishDown < CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
             case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
@@ -612,7 +616,9 @@ class EmailRepository extends CommonRepository
                     "(e.isPublished = :%1\$s AND e.publishUp IS NOT NULL AND e.publishUp <> '' AND e.publishUp > CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
                 $langUnique      = $this->generateRandomParameterName();
@@ -644,7 +650,9 @@ class EmailRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

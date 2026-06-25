@@ -18,7 +18,9 @@ trait CampaignAuditLogTrait
      */
     private function saveAuditLogs(EntityManagerInterface $em, array $auditLogs, Campaign $campaign): void
     {
-        $user = $em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         foreach ($auditLogs as $auditLog) {
             $log = new AuditLog();
             $log->setDateAdded(new \DateTime($auditLog['dateAdded']));

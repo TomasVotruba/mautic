@@ -168,7 +168,9 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
         $builder->addIdColumns();
 
-        $builder->addField('system', Types::BOOLEAN, ['columnName'=>'`system`']);
+        $builder->addField('system', Types::BOOLEAN, [
+            'columnName'=>'`system`',
+        ]);
 
         $builder->addField('source', Types::STRING);
 

@@ -26,7 +26,9 @@ class WebhookType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'strict_html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'strict_html',
+        ]));
 
         /** @var Webhook $webhook */
         $webhook = $builder->getData();
@@ -36,8 +38,12 @@ class WebhookType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => true,
             ]
         );
@@ -59,8 +65,12 @@ class WebhookType extends AbstractType
             UrlType::class,
             [
                 'label'      => 'mautic.webhook.form.webhook_url',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => true,
             ]
         );
@@ -70,7 +80,9 @@ class WebhookType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.webhook.form.secret',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.webhook.secret.tooltip',
@@ -95,8 +107,12 @@ class WebhookType extends AbstractType
                 'multiple'   => true,
                 'expanded'   => true,
                 'label'      => 'mautic.webhook.form.webhook.events',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => ''],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => '',
+                ],
             ]
         );
 
@@ -108,7 +124,10 @@ class WebhookType extends AbstractType
             'sendTest',
             ButtonType::class,
             [
-                'attr'  => ['class' => 'btn btn-tertiary', 'onclick' => 'Mautic.sendHookTest(this)'],
+                'attr'  => [
+                    'class' => 'btn btn-tertiary',
+                    'onclick' => 'Mautic.sendHookTest(this)',
+                ],
                 'label' => 'mautic.webhook.send.test.payload',
             ]
         );

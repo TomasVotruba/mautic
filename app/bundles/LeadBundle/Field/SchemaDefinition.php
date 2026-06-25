@@ -21,7 +21,9 @@ class SchemaDefinition
      */
     public static function getSchemaDefinition(string $alias, string $type, bool $isUnique = false, ?int $length = null): array
     {
-        $options = ['notnull' => false];
+        $options = [
+            'notnull' => false,
+        ];
 
         // Unique is always a string in order to control index length
         if ($isUnique) {

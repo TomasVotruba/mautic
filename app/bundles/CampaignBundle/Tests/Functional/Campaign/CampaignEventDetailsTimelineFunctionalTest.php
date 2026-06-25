@@ -31,11 +31,26 @@ final class CampaignEventDetailsTimelineFunctionalTest extends MauticMysqlTestCa
             'object'     => $object,
             'properties' => [
                 'list' => [
-                    ['label' => 'l1', 'value' => 'v1'],
-                    ['label' => 'l2', 'value' => 'v2'],
-                    ['label' => 'l3', 'value' => 'v3'],
-                    ['label' => 'l4', 'value' => 'v4'],
-                    ['label' => 'l5', 'value' => 'v5'],
+                    [
+                        'label' => 'l1',
+                        'value' => 'v1',
+                    ],
+                    [
+                        'label' => 'l2',
+                        'value' => 'v2',
+                    ],
+                    [
+                        'label' => 'l3',
+                        'value' => 'v3',
+                    ],
+                    [
+                        'label' => 'l4',
+                        'value' => 'v4',
+                    ],
+                    [
+                        'label' => 'l5',
+                        'value' => 'v5',
+                    ],
                 ],
             ],
         ];
@@ -61,7 +76,9 @@ final class CampaignEventDetailsTimelineFunctionalTest extends MauticMysqlTestCa
         $this->createEvent('Add 10 points', $campaign,
             'lead.changepoints',
             'action',
-            ['points' => 10],
+            [
+                'points' => 10,
+            ],
             'yes',
             $parentEvent
         );
@@ -69,7 +86,9 @@ final class CampaignEventDetailsTimelineFunctionalTest extends MauticMysqlTestCa
         $this->createEvent('Add 5 points', $campaign,
             'lead.changepoints',
             'action',
-            ['points' => 5],
+            [
+                'points' => 5,
+            ],
             'no',
             $parentEvent
         );
@@ -77,21 +96,33 @@ final class CampaignEventDetailsTimelineFunctionalTest extends MauticMysqlTestCa
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $campaign->getId()]);
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:update', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         $translator = static::getContainer()->get('translator');
         \assert($translator instanceof TranslatorInterface);
 
         $this->client->request('GET', sprintf('/s/contacts/view/%s', $lead1->getId()));
         $this->assertStringContainsString(
-            $translator->trans('mautic.campaign.parent.details', ['%path%' => 'yes', '%type%' => 'condition', '%name%' => 'Field Value Condition']),
+            $translator->trans('mautic.campaign.parent.details', [
+                '%path%' => 'yes',
+                '%type%' => 'condition',
+                '%name%' => 'Field Value Condition',
+            ]),
             $this->client->getResponse()->getContent()
         );
 
         $this->client->request('GET', sprintf('/s/contacts/view/%s', $lead2->getId()));
         $this->assertStringContainsString(
-            $translator->trans('mautic.campaign.parent.details', ['%path%' => 'no', '%type%' => 'condition', '%name%' => 'Field Value Condition']),
+            $translator->trans('mautic.campaign.parent.details', [
+                '%path%' => 'no',
+                '%type%' => 'condition',
+                '%name%' => 'Field Value Condition',
+            ]),
             $this->client->getResponse()->getContent()
         );
     }

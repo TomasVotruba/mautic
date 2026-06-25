@@ -124,7 +124,10 @@ class ScheduledExecutionerTest extends TestCase
         $log2->method('getRotation')
             ->willReturn(10);
 
-        $logs = new ArrayCollection([1 => $log1, 2 => $log2]);
+        $logs = new ArrayCollection([
+            1 => $log1,
+            2 => $log2,
+        ]);
 
         $this->repository->expects($this->once())
             ->method('getScheduledByIds')
@@ -199,7 +202,10 @@ class ScheduledExecutionerTest extends TestCase
         $log2->method('getRotation')
             ->willReturn(16);
 
-        $logs = new ArrayCollection([1 => $log1, 2 => $log2]);
+        $logs = new ArrayCollection([
+            1 => $log1,
+            2 => $log2,
+        ]);
 
         $this->repository->expects($this->once())
             ->method('getScheduledByIds')

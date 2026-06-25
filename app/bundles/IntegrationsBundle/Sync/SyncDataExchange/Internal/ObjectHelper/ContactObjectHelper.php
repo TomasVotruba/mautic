@@ -116,7 +116,9 @@ class ContactObjectHelper implements ObjectHelperInterface
     public function update(array $ids, array $objects): array
     {
         /** @var Lead[] $contacts */
-        $contacts = $this->model->getEntities(['ids' => $ids]);
+        $contacts = $this->model->getEntities([
+            'ids' => $ids,
+        ]);
         DebugLogger::log(
             MauticSyncDataExchange::NAME,
             sprintf(
@@ -314,7 +316,9 @@ class ContactObjectHelper implements ObjectHelperInterface
     private function getUniqueIdentifierFields(): array
     {
         if (null === $this->uniqueIdentifierFields) {
-            $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => MauticSyncDataExchange::OBJECT_CONTACT]);
+            $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier([
+                'object' => MauticSyncDataExchange::OBJECT_CONTACT,
+            ]);
             $this->uniqueIdentifierFields = array_keys($uniqueIdentifierFields);
         }
 

@@ -101,7 +101,9 @@ class InstallWorkflowTest extends MauticMysqlTestCase
         // Assert that the fixtures were loaded
         $fieldRepository = $this->em->getRepository(LeadField::class);
 
-        $emailField = $fieldRepository->findOneBy(['alias' => 'email']);
+        $emailField = $fieldRepository->findOneBy([
+            'alias' => 'email',
+        ]);
         \assert($emailField instanceof LeadField);
         Assert::assertSame('Email', $emailField->getLabel());
     }
@@ -109,7 +111,9 @@ class InstallWorkflowTest extends MauticMysqlTestCase
     public function testInstallRequirementsAndRecommendations(): void
     {
         $limit                 = FileHelper::convertPHPSizeToBytes(CheckStep::RECOMMENDED_MEMORY_LIMIT);
-        $expectedMemoryMessage = static::getContainer()->get('translator')->trans('mautic.install.memory.limit', ['%min_memory_limit%' => CheckStep::RECOMMENDED_MEMORY_LIMIT]);
+        $expectedMemoryMessage = static::getContainer()->get('translator')->trans('mautic.install.memory.limit', [
+            '%min_memory_limit%' => CheckStep::RECOMMENDED_MEMORY_LIMIT,
+        ]);
 
         // set the memory limit lower than the recommended value.
         ini_set('memory_limit', (string) ($limit - 1));

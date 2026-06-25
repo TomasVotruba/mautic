@@ -60,7 +60,9 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertResponseIsSuccessful();
         Assert::assertCount(0, $crawlerAfterSubmit->filter('div.has-error'), 'Expected no validation errors for valid remote image URL with query string');
 
-        $asset = $this->em->getRepository(Asset::class)->findOneBy(['title' => $title]);
+        $asset = $this->em->getRepository(Asset::class)->findOneBy([
+            'title' => $title,
+        ]);
         Assert::assertInstanceOf(Asset::class, $asset, 'Asset should be created successfully');
 
         $crawlerEdit = $this->client->request('GET', '/s/assets/edit/'.$asset->getId());
@@ -99,8 +101,12 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         $this->client->request(
             Request::METHOD_POST,
             '/s/_uploader/asset/upload',
-            ['tempId' => $tmpId],
-            ['file'   => $uploadedFile]
+            [
+                'tempId' => $tmpId,
+            ],
+            [
+                'file'   => $uploadedFile,
+            ]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -129,7 +135,9 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
             (string) $this->client->getResponse()->getContent()
         );
 
-        $asset = $this->em->getRepository(Asset::class)->findOneBy(['title' => $assetTitle]);
+        $asset = $this->em->getRepository(Asset::class)->findOneBy([
+            'title' => $assetTitle,
+        ]);
         Assert::assertInstanceOf(Asset::class, $asset);
         Assert::assertSame('zip', strtolower((string) $asset->getExtension()));
 
@@ -236,7 +244,9 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
     {
         $userCreator = $this->getUser($userCreatorUN);
         $userEditor  = $this->getUser(self::SALES_USER);
-        $this->setPermission($userEditor, ['asset:assets' => $permission]);
+        $this->setPermission($userEditor, [
+            'asset:assets' => $permission,
+        ]);
 
         $asset = new Asset();
         $asset->setTitle('Asset A');
@@ -346,8 +356,12 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         $client->request(
             'POST',
             '/s/_uploader/asset/upload',
-            ['tempId' => '../../'.$tmpDir],
-            ['file'   => $uploadedFile],
+            [
+                'tempId' => '../../'.$tmpDir,
+            ],
+            [
+                'file'   => $uploadedFile,
+            ],
             [
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
                 'HTTP_X-CSRF-Token'     => $csrfToken,
@@ -386,7 +400,9 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
     {
         $repository = $this->em->getRepository(User::class);
 
-        return $repository->findOneBy(['username' => $username]);
+        return $repository->findOneBy([
+            'username' => $username,
+        ]);
     }
 
     /**
@@ -401,7 +417,10 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
             ->delete(Permission::class, 'p')
             ->where('p.bundle = :bundle')
             ->andWhere('p.role = :role_id')
-            ->setParameters(['bundle' => 'asset', 'role_id' => $role->getId()])
+            ->setParameters([
+                'bundle' => 'asset',
+                'role_id' => $role->getId(),
+            ])
             ->getQuery()
             ->execute();
 

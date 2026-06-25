@@ -76,11 +76,15 @@ class FieldController extends FormController
                 $lastPage = (ceil($count / $limit)) ?: 1;
             }
             $session->set('mautic.leadfield.page', $lastPage);
-            $returnUrl = $this->generateUrl('mautic_contactfield_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_contactfield_index', [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $lastPage],
+                'viewParameters'  => [
+                    'page' => $lastPage,
+                ],
                 'contentTemplate' => 'Mautic\LeadBundle\Controller\FieldController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_contactfield_index',
@@ -107,7 +111,9 @@ class FieldController extends FormController
             'contentTemplate' => '@MauticLead/Field/list.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_contactfield_index',
-                'route'         => $this->generateUrl('mautic_contactfield_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_contactfield_index', [
+                    'page' => $page,
+                ]),
                 'mauticContent' => 'leadfield',
             ],
         ]);
@@ -131,7 +137,9 @@ class FieldController extends FormController
         $model = $this->getModel('lead.field');
         // set the return URL for post actions
         $returnUrl = $this->generateUrl('mautic_contactfield_index');
-        $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
+        $action    = $this->generateUrl('mautic_contactfield_action', [
+            'objectAction' => 'new',
+        ]);
         // get the user form factory
         $form = $model->createForm($field, $this->formFactory, $action);
 
@@ -170,7 +178,9 @@ class FieldController extends FormController
                         } catch (\Exception $e) {
                             $form['alias']->addError(
                                 new FormError(
-                                    $this->translator->trans('mautic.lead.field.failed', ['%error%' => $e->getMessage()], 'validators')
+                                    $this->translator->trans('mautic.lead.field.failed', [
+                                        '%error%' => $e->getMessage(),
+                                    ], 'validators')
                                 )
                             );
                             $valid = false;
@@ -224,7 +234,9 @@ class FieldController extends FormController
                 'contentTemplate' => '@MauticLead/Field/form.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_contactfield_index',
-                    'route'         => $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']),
+                    'route'         => $this->generateUrl('mautic_contactfield_action', [
+                        'objectAction' => 'new',
+                    ]),
                     'mauticContent' => 'leadfield',
                 ],
             ]
@@ -267,7 +279,9 @@ class FieldController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.lead.field.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -277,7 +291,10 @@ class FieldController extends FormController
             return $this->isLocked($postActionVars, $field, 'lead.field');
         }
 
-        $action = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_contactfield_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $form   = $model->createForm($field, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
@@ -329,14 +346,19 @@ class FieldController extends FormController
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect(
                     array_merge($postActionVars, [
-                        'viewParameters'  => ['objectId' => $field->getId()],
+                        'viewParameters'  => [
+                            'objectId' => $field->getId(),
+                        ],
                         'contentTemplate' => 'Mautic\LeadBundle\Controller\FieldController::indexAction',
                     ]
                     )
                 );
             } elseif ($valid) {
                 // Rebuild the form with new action so that apply doesn't keep creating a clone
-                $action = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'edit', 'objectId' => $field->getId()]);
+                $action = $this->generateUrl('mautic_contactfield_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $field->getId(),
+                ]);
                 $form   = $model->createForm($field, $this->formFactory, $action);
             } else {
                 // some bug in Symfony prevents repopulating list options on errors
@@ -378,7 +400,9 @@ class FieldController extends FormController
 
         $fieldAliasHelper->makeAliasUnique($clone);
 
-        $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
+        $action    = $this->generateUrl('mautic_contactfield_action', [
+            'objectAction' => 'new',
+        ]);
         $form      = $fieldModel->createForm($clone, $this->formFactory, $action);
 
         return $this->delegateView([
@@ -389,7 +413,10 @@ class FieldController extends FormController
             'contentTemplate' => '@MauticLead/Field/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_contactfield_index',
-                'route'         => $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'clone', 'objectId' => $objectId]),
+                'route'         => $this->generateUrl('mautic_contactfield_action', [
+                    'objectAction' => 'clone',
+                    'objectId' => $objectId,
+                ]),
                 'mauticContent' => 'leadfield',
             ],
         ]);
@@ -427,7 +454,9 @@ class FieldController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.lead.field.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif ($model->isLocked($field)) {
                 return $this->isLocked($postActionVars, $field, 'lead.field');
@@ -541,7 +570,9 @@ class FieldController extends FormController
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.lead.field.error.notfound',
-                'msgVars' => ['%id%' => $objectId],
+                'msgVars' => [
+                    '%id%' => $objectId,
+                ],
             ];
         } elseif ($entity->isFixed()) {
             $flashes[] = $this->getAccessDeniedFlash();
@@ -571,7 +602,9 @@ class FieldController extends FormController
             $flashes[] = [
                 'type'    => 'notice',
                 'msg'     => 'mautic.lead.field.notice.batch_deleted',
-                'msgVars' => ['%count%' => count($deletedEntities)],
+                'msgVars' => [
+                    '%count%' => count($deletedEntities),
+                ],
             ];
         }
 

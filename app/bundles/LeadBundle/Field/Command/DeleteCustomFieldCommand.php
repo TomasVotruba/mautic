@@ -52,12 +52,17 @@ EOT
         // Field ID wasn't provided. Try to find a field that is marked for deletion.
         if (!$leadFieldId) {
             /** @var ?LeadField $field */
-            $field = $this->leadFieldRepository->findOneBy(['columnIsNotRemoved' => true]);
+            $field = $this->leadFieldRepository->findOneBy([
+                'columnIsNotRemoved' => true,
+            ]);
 
             if ($field) {
                 $output->writeln('<info>'.$this->translator->trans(
                     'mautic.lead.field.column_was_found_for_deletion',
-                    ['%fieldName%' => $field->getName(), '%fieldId%' => $field->getId()]
+                    [
+                        '%fieldName%' => $field->getName(),
+                        '%fieldId%' => $field->getId(),
+                    ]
                 ).'</info>');
 
                 $leadFieldId = $field->getId();

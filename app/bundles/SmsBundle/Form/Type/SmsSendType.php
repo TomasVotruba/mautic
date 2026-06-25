@@ -30,7 +30,9 @@ class SmsSendType extends AbstractType
             SmsListType::class,
             [
                 'label'      => 'mautic.sms.send.selectsmss',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.sms.choose.smss',
@@ -40,7 +42,9 @@ class SmsSendType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.sms.choosesms.notblank']
+                        [
+                            'message' => 'mautic.sms.choosesms.notblank',
+                        ]
                     ),
                 ],
             ]

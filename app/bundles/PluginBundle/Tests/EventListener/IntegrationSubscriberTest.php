@@ -18,8 +18,12 @@ final class IntegrationSubscriberTest extends TestCase
         $event->method('getHeaders')->willReturn(['Authorization: Bearer some_token']);
         $event->method('getMethod')->willReturn('POST');
         $event->method('getUrl')->willReturn('https://mautic.org');
-        $event->method('getParameters')->willReturn(['key' => 'value']);
-        $event->method('getSettings')->willReturn(['setting' => 'value']);
+        $event->method('getParameters')->willReturn([
+            'key' => 'value',
+        ]);
+        $event->method('getSettings')->willReturn([
+            'setting' => 'value',
+        ]);
 
         $authorization = ['Authorization: Bearer [REDACTED]'];
         $authorization = var_export($authorization, true);

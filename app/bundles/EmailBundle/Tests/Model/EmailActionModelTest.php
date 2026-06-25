@@ -119,7 +119,9 @@ class EmailActionModelTest extends TestCase
         $this->emailRepositoryMock
             ->method('findBy')
             ->with(
-                ['id' => array_map(fn (Email $email) => $email->getId(), $emails)]
+                [
+                    'id' => array_map(fn (Email $email) => $email->getId(), $emails),
+                ]
             )
             ->willReturn($emails);
     }

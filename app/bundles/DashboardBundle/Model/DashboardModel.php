@@ -247,7 +247,11 @@ class DashboardModel extends FormModel
         } catch (\Throwable $e) {
             $this->logger->error(
                 'Dashboard widget "{type}" failed to load: {message}',
-                ['type' => $widget->getType(), 'message' => $e->getMessage(), 'exception' => $e]
+                [
+                    'type' => $widget->getType(),
+                    'message' => $e->getMessage(),
+                    'exception' => $e,
+                ]
             );
             $widget->setErrorMessage('mautic.dashboard.widget.load.failed');
         }

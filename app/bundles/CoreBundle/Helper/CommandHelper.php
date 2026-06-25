@@ -21,7 +21,9 @@ class CommandHelper
      */
     public function runCommand(string $name, array $params = []): CommandResponse
     {
-        $params      = array_merge(['command' => $name], $params);
+        $params      = array_merge([
+            'command' => $name,
+        ], $params);
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
 

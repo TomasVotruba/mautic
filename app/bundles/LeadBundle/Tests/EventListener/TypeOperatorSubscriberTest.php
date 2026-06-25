@@ -139,34 +139,58 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->campaignModel->expects($this->once())
             ->method('getPublishedCampaigns')
             ->with(true)
-            ->willReturn([['name' => 'Campaign A', 'id' => 22]]);
+            ->willReturn([[
+                'name' => 'Campaign A',
+                'id' => 22,
+            ]]);
 
         $this->listModel->expects($this->once())
             ->method('getUserLists')
-            ->willReturn([['name' => 'Segment B', 'id' => 33]]);
+            ->willReturn([[
+                'name' => 'Segment B',
+                'id' => 33,
+            ]]);
 
         $this->leadModel->expects($this->once())
             ->method('getTagList')
-            ->willReturn([['label' => 'Tag C', 'value' => 44]]);
+            ->willReturn([[
+                'label' => 'Tag C',
+                'value' => 44,
+            ]]);
 
         $this->stageRepository->expects($this->once())
             ->method('getSimpleList')
-            ->willReturn([['label' => 'Stage D', 'value' => 55]]);
+            ->willReturn([[
+                'label' => 'Stage D',
+                'value' => 55,
+            ]]);
 
         $this->categoryModel->expects($this->once())
             ->method('getLookupResults')
             ->with('global', '', 300)
-            ->willReturn([['title' => 'Category E', 'id' => 66]]);
+            ->willReturn([[
+                'title' => 'Category E',
+                'id' => 66,
+            ]]);
 
         $this->emailModel->expects($this->once())
             ->method('getLookupResults')
-            ->with('email', '', 0, 0, ['name_is_key' => true])
-            ->willReturn(['En' => ['Email F' => 77]]);
+            ->with('email', '', 0, 0, [
+                'name_is_key' => true,
+            ])
+            ->willReturn([
+                'En' => [
+                    'Email F' => 77,
+                ],
+            ]);
 
         $this->assetModel->expects($this->once())
             ->method('getLookupResults')
             ->with('asset')
-            ->willReturn([['title' => 'Asset G', 'id' => 88]]);
+            ->willReturn([[
+                'title' => 'Asset G',
+                'id' => 88,
+            ]]);
 
         $this->subscriber->onTypeListCollect($event);
 
@@ -174,15 +198,35 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $choicesForTypes   = $event->getChoicesForAllListFieldTypes();
 
         // Test for random choices:
-        $this->assertSame(['Campaign A' => 22], $choicesForAliases['campaign']);
-        $this->assertSame(['Segment B' => 33], $choicesForAliases['leadlist']);
-        $this->assertSame(['Tag C' => 44], $choicesForAliases['tags']);
-        $this->assertSame(['Stage D' => 55], $choicesForAliases['stage']);
-        $this->assertSame(['Category E' => 66], $choicesForAliases['globalcategory']);
-        $this->assertSame(['En' => ['Email F' => 77]], $choicesForAliases['lead_email_received']);
-        $this->assertSame(['En' => ['Email F' => 77]], $choicesForAliases['lead_email_sent']);
+        $this->assertSame([
+            'Campaign A' => 22,
+        ], $choicesForAliases['campaign']);
+        $this->assertSame([
+            'Segment B' => 33,
+        ], $choicesForAliases['leadlist']);
+        $this->assertSame([
+            'Tag C' => 44,
+        ], $choicesForAliases['tags']);
+        $this->assertSame([
+            'Stage D' => 55,
+        ], $choicesForAliases['stage']);
+        $this->assertSame([
+            'Category E' => 66,
+        ], $choicesForAliases['globalcategory']);
+        $this->assertSame([
+            'En' => [
+                'Email F' => 77,
+            ],
+        ], $choicesForAliases['lead_email_received']);
+        $this->assertSame([
+            'En' => [
+                'Email F' => 77,
+            ],
+        ], $choicesForAliases['lead_email_sent']);
         $this->assertSame('smartphone', $choicesForAliases['device_type']['smartphone']);
-        $this->assertSame(['Asset G' => 88], $choicesForAliases['lead_asset_download']);
+        $this->assertSame([
+            'Asset G' => 88,
+        ], $choicesForAliases['lead_asset_download']);
         $this->assertSame('SA', $choicesForAliases['device_brand']['Samsung']);
         $this->assertSame('Android', $choicesForAliases['device_os']['Android']);
         $this->assertArrayHasKey('Europe', $choicesForTypes['timezone']);
@@ -225,11 +269,16 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 [
                     'label'                     => false,
                     'data'                      => [],
-                    'choices'                   => ['Tag A' => 'Tag A'],
+                    'choices'                   => [
+                        'Tag A' => 'Tag A',
+                    ],
                     'multiple'                  => true,
                     'choice_translation_domain' => false,
                     'disabled'                  => false,
-                    'constraints'               => [new NotBlank(['message' => 'mautic.core.value.required'])],
+                    'constraints'               => [
+                        new NotBlank([
+                            'message' => 'mautic.core.value.required',
+                        ])],
                     'attr'                      => [
                         'class'                => 'form-control',
                         'data-placeholder'     => 'mautic.lead.tags.select_or_create',
@@ -248,7 +297,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'owner';
         $object   = 'lead';
         $operator = OperatorOptions::EQUAL_TO;
-        $details  = ['properties' => ['type' => 'unicorn']];
+        $details  = [
+            'properties' => [
+                'type' => 'unicorn',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
 
         $this->form->expects($this->never())
@@ -262,7 +315,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'owner';
         $object   = 'lead';
         $operator = OperatorOptions::EMPTY;
-        $details  = ['properties' => ['type' => 'lookup_id']];
+        $details  = [
+            'properties' => [
+                'type' => 'lookup_id',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
 
         $this->form->expects($this->never())
@@ -276,7 +333,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'owner';
         $object   = 'lead';
         $operator = OperatorOptions::EQUAL_TO;
-        $details  = ['properties' => ['type' => 'lookup_id']];
+        $details  = [
+            'properties' => [
+                'type' => 'lookup_id',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
         $matcher  = $this->exactly(2);
 
@@ -305,7 +366,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                     $this->assertSame(HiddenType::class, $parameters[1]);
                     $callback = function (array $options) {
                         $this->assertSame('', $options['data']);
-                        $this->assertSame(['class' => 'form-control'], $options['attr']);
+                        $this->assertSame([
+                            'class' => 'form-control',
+                        ], $options['attr']);
                     };
                     $callback($parameters[2]);
                 }
@@ -358,7 +421,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                     $this->assertSame(HiddenType::class, $parameters[1]);
                     $callback = function (array $options) {
                         $this->assertSame('', $options['data']);
-                        $this->assertSame(['class' => 'form-control'], $options['attr']);
+                        $this->assertSame([
+                            'class' => 'form-control',
+                        ], $options['attr']);
                     };
                     $callback($parameters[2]);
                 }
@@ -374,7 +439,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'lookup_a';
         $object   = 'lead';
         $operator = OperatorOptions::EQUAL_TO;
-        $details  = ['properties' => ['type' => 'unicorn']];
+        $details  = [
+            'properties' => [
+                'type' => 'unicorn',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
 
         $this->form->expects($this->never())
@@ -391,7 +460,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $details  = [
             'properties' => [
                 'type' => 'lookup',
-                'list' => ['Choice A' => 'choice_a'],
+                'list' => [
+                    'Choice A' => 'choice_a',
+                ],
             ],
         ];
         $event = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
@@ -408,7 +479,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                     'attr'     => [
                         'class'        => 'form-control',
                         'data-toggle'  => 'field-lookup',
-                        'data-options' => ['Choice A' => 'choice_a'],
+                        'data-options' => [
+                            'Choice A' => 'choice_a',
+                        ],
                         'data-target'  => 'lookup_a',
                         'data-action'  => 'lead:fieldList',
                         'placeholder'  => 'mautic.lead.list.form.filtervalue',
@@ -424,7 +497,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'select_a';
         $object   = 'lead';
         $operator = OperatorOptions::INCLUDING_ANY;
-        $details  = ['properties' => ['type' => 'unicorn']];
+        $details  = [
+            'properties' => [
+                'type' => 'unicorn',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
 
         $this->form->expects($this->never())
@@ -441,7 +518,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $details  = [
             'properties' => [
                 'type' => 'select',
-                'list' => ['Choice A' => 'choice_a'],
+                'list' => [
+                    'Choice A' => 'choice_a',
+                ],
             ],
         ];
         $event = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
@@ -474,13 +553,20 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 ChoiceType::class,
                 [
                     'label'                     => false,
-                    'attr'                      => ['class' => 'form-control'],
+                    'attr'                      => [
+                        'class' => 'form-control',
+                    ],
                     'data'                      => [],
-                    'choices'                   => ['Choice A' => 'choice_a'],
+                    'choices'                   => [
+                        'Choice A' => 'choice_a',
+                    ],
                     'multiple'                  => true,
                     'choice_translation_domain' => false,
                     'disabled'                  => false,
-                    'constraints'               => [new NotBlank(['message' => 'mautic.core.value.required'])],
+                    'constraints'               => [
+                        new NotBlank([
+                            'message' => 'mautic.core.value.required',
+                        ])],
                 ]
             );
 
@@ -492,7 +578,11 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $alias    = 'text_a';
         $object   = 'lead';
         $operator = OperatorOptions::EQUAL_TO;
-        $details  = ['properties' => ['type' => 'text']];
+        $details  = [
+            'properties' => [
+                'type' => 'text',
+            ],
+        ];
         $event    = new FormAdjustmentEvent($this->form, $alias, $object, $operator, $details);
 
         $this->form->expects($this->once())
@@ -502,7 +592,9 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 TextType::class,
                 [
                     'label'       => false,
-                    'attr'        => ['class' => 'form-control'],
+                    'attr'        => [
+                        'class' => 'form-control',
+                    ],
                     'disabled'    => false,
                     'data'        => '',
                     'constraints' => [],

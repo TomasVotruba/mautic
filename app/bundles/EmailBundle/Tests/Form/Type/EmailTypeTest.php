@@ -98,7 +98,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildForm(): void
     {
-        $options = ['data' => new Email()];
+        $options = [
+            'data' => new Email(),
+        ];
         $names   = [];
         $this->expectThemeHelper();
 

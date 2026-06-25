@@ -54,7 +54,9 @@ class ReportSubscriber implements EventSubscriberInterface
             'object'    => 'report',
             'objectId'  => $report->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $report->getName()],
+            'details'   => [
+                'name' => $report->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

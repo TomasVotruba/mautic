@@ -73,7 +73,11 @@ class Fetcher
 
                     $this->log[] = $this->translator->trans(
                         'mautic.email.fetch.processed',
-                        ['%count%' => $processed, '%imapPath%' => $path, '%criteria%' => $criteria]
+                        [
+                            '%count%' => $processed,
+                            '%imapPath%' => $path,
+                            '%criteria%' => $criteria,
+                        ]
                     );
 
                     if ($limit && $this->processedMessageCounter >= $limit) {

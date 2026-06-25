@@ -28,7 +28,9 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
 
     public function testFailWhenSegmentDoesNotExist(): void
     {
-        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, ['--list-id' => 999999]);
+        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, [
+            '--list-id' => 999999,
+        ]);
 
         Assert::assertSame(1, $output->getStatusCode());
         Assert::assertStringContainsString('Segment #999999 does not exist', $output->getDisplay());
@@ -104,7 +106,9 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
         // Test that it will work when we select a specific segment too.
         // Also testing the timing option = 0.
         yield [
-            fn (LeadList $segment): array => ['--list-id' => $segment->getId()],
+            fn (LeadList $segment): array => [
+                '--list-id' => $segment->getId(),
+            ],
             function (LeadList $segment, string $output): void {
                 Assert::assertGreaterThan(
                     new \DateTime('2000-01-01 00:00:00'),
@@ -118,7 +122,10 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
         // But the last built date will not update if we limit how many contacts to process.
         // Also testing the timing option = 1.
         yield [
-            fn (): array => ['--max-contacts' => 1, '--timing' => 1],
+            fn (): array => [
+                '--max-contacts' => 1,
+                '--timing' => 1,
+            ],
             function (LeadList $segment, string $output): void {
                 Assert::assertEquals(
                     new \DateTime('2000-01-01 00:00:00'),
@@ -483,9 +490,18 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
             ->setObject('company')
             ->setProperties([
                 'list' => [
-                    ['label' => 'Halusky', 'value' => 'halusky'],
-                    ['label' => 'Bramborak', 'value' => 'bramborak'],
-                    ['label' => 'Makovec', 'value' => 'makovec'],
+                    [
+                        'label' => 'Halusky',
+                        'value' => 'halusky',
+                    ],
+                    [
+                        'label' => 'Bramborak',
+                        'value' => 'bramborak',
+                    ],
+                    [
+                        'label' => 'Makovec',
+                        'value' => 'makovec',
+                    ],
                 ],
             ]);
         $fieldModel->saveEntity($leadField);
@@ -573,9 +589,18 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
             ->setObject('company')
             ->setProperties([
                 'list' => [
-                    ['label' => 'Halusky', 'value' => 'halusky'],
-                    ['label' => 'Bramborak', 'value' => 'bramborak'],
-                    ['label' => 'Makovec', 'value' => 'makovec'],
+                    [
+                        'label' => 'Halusky',
+                        'value' => 'halusky',
+                    ],
+                    [
+                        'label' => 'Bramborak',
+                        'value' => 'bramborak',
+                    ],
+                    [
+                        'label' => 'Makovec',
+                        'value' => 'makovec',
+                    ],
                 ],
             ]);
         $fieldModel->saveEntity($leadField);

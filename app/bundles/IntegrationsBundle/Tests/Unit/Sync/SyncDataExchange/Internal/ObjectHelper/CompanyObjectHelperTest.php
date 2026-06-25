@@ -49,7 +49,9 @@ class CompanyObjectHelperTest extends TestCase
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
 
         $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => CompanyObject::NAME])
+            ->with([
+                'object' => CompanyObject::NAME,
+            ])
             ->willReturn(
                 [
                     'companyemail' => [],
@@ -81,9 +83,15 @@ class CompanyObjectHelperTest extends TestCase
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
-        $object1 = $this->getObject(1, ['companyemail' => 'email1@email.com']);
-        $object2 = $this->getObject(2, ['companyemail' => 'email2@email.com']);
-        $object3 = $this->getObject(3, ['companyemail' => 'email1@email.com']);
+        $object1 = $this->getObject(1, [
+            'companyemail' => 'email1@email.com',
+        ]);
+        $object2 = $this->getObject(2, [
+            'companyemail' => 'email2@email.com',
+        ]);
+        $object3 = $this->getObject(3, [
+            'companyemail' => 'email1@email.com',
+        ]);
 
         $objects = [$object1, $object2, $object3];
 
@@ -133,10 +141,18 @@ class CompanyObjectHelperTest extends TestCase
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
-        $object1 = $this->getObject(1, ['companyemail' => 'email1@email.com']);
-        $object2 = $this->getObject(2, ['companyemail' => 'email2@email.com']);
-        $object3 = $this->getObject(3, ['companyemail' => 'email1@email.com']);
-        $object4 = $this->getObject(4, ['companyname' => 'Some Biz']);
+        $object1 = $this->getObject(1, [
+            'companyemail' => 'email1@email.com',
+        ]);
+        $object2 = $this->getObject(2, [
+            'companyemail' => 'email2@email.com',
+        ]);
+        $object3 = $this->getObject(3, [
+            'companyemail' => 'email1@email.com',
+        ]);
+        $object4 = $this->getObject(4, [
+            'companyname' => 'Some Biz',
+        ]);
 
         $objects = [$object1, $object2, $object3, $object4];
 

@@ -449,7 +449,9 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
     {
         if (!is_array($metadata)) {
             // Assumed output for timeline BC for <2.14
-            $metadata = ['timeline' => $metadata];
+            $metadata = [
+                'timeline' => $metadata,
+            ];
         }
 
         $this->metadata = array_merge($this->metadata, $metadata);
@@ -464,7 +466,9 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
     {
         if (!is_array($metadata)) {
             // Assumed output for timeline
-            $metadata = ['timeline' => $metadata];
+            $metadata = [
+                'timeline' => $metadata,
+            ];
         }
 
         $this->metadata = $metadata;

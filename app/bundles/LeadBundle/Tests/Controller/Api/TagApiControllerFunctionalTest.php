@@ -11,7 +11,9 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
 {
     public function testTagWorkflow(): void
     {
-        $tag1Payload = ['tag' => 'test_tag'];
+        $tag1Payload = [
+            'tag' => 'test_tag',
+        ];
 
         // Create new tag
         $this->client->request('POST', '/api/tags/new', $tag1Payload);
@@ -33,7 +35,9 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals($tag1Payload['tag'], $response['tag']['tag']);
 
         // Edit tag name
-        $tag1RenamePayload = ['tag' => 'tag_renamed'];
+        $tag1RenamePayload = [
+            'tag' => 'tag_renamed',
+        ];
         $this->client->request('PATCH', "/api/tags/{$tagId}/edit", $tag1RenamePayload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
@@ -72,7 +76,9 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
         $whitespaceTestPayload = ['test', 'test ', ' test', "test\t", "\ttest"];
         $tagId                 = null;
         foreach ($whitespaceTestPayload as $payload) {
-            $this->client->request('POST', '/api/tags/new', ['tag' => $payload]);
+            $this->client->request('POST', '/api/tags/new', [
+                'tag' => $payload,
+            ]);
             $clientResponse = $this->client->getResponse();
             $response       = json_decode($clientResponse->getContent(), true);
 
@@ -93,7 +99,9 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
     {
         $tagInputName    = 'hello" world';
 
-        $this->client->request('POST', '/api/tags/new', ['tag' => $tagInputName]);
+        $this->client->request('POST', '/api/tags/new', [
+            'tag' => $tagInputName,
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
         $tagId          = $response['tag']['id'];
@@ -101,7 +109,9 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals($tagInputName, $response['tag']['tag']);
 
         // Try to create duplicate
-        $this->client->request('POST', '/api/tags/new', ['tag' => $tagInputName]);
+        $this->client->request('POST', '/api/tags/new', [
+            'tag' => $tagInputName,
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
         $this->assertSame($tagId, $response['tag']['id'], 'ID of created tag does not match. Possible duplicates.');

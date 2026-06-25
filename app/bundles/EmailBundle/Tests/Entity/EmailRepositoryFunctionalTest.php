@@ -53,11 +53,15 @@ class EmailRepositoryFunctionalTest extends MauticMysqlTestCase
 
         // no $leadIds
         $result = $this->emailRepository->getDoNotEmailList();
-        Assert::assertSame([$lead->getId() => $lead->getEmail()], $result);
+        Assert::assertSame([
+            $lead->getId() => $lead->getEmail(),
+        ], $result);
 
         // matching $leadIds
         $result = $this->emailRepository->getDoNotEmailList([$lead->getId()]);
-        Assert::assertSame([$lead->getId() => $lead->getEmail()], $result);
+        Assert::assertSame([
+            $lead->getId() => $lead->getEmail(),
+        ], $result);
 
         // mismatching $leadIds
         $result = $this->emailRepository->getDoNotEmailList([-1]);

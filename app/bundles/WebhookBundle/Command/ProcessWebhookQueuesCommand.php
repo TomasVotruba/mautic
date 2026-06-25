@@ -74,7 +74,9 @@ class ProcessWebhookQueuesCommand extends Command
         if ($id) {
             $webhook        = $this->webhookModel->getEntity($id);
             $webhooks       = (null !== $webhook && $webhook->isPublished()
-                && $this->webhookService->isWebhookHealthy($webhook)) ? [$id => $webhook] : [];
+                && $this->webhookService->isWebhookHealthy($webhook)) ? [
+                    $id => $webhook,
+                ] : [];
             $queueRangeMode = $minId && $maxId;
         } else {
             // make sure we only get published / healthy webhook entities

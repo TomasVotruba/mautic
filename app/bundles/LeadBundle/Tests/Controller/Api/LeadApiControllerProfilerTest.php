@@ -21,7 +21,9 @@ final class LeadApiControllerProfilerTest extends MauticMysqlTestCase
     /**
      * @var array<string,mixed>
      */
-    protected array $clientOptions = ['debug' => true];
+    protected array $clientOptions = [
+        'debug' => true,
+    ];
 
     protected function setUp(): void
     {
@@ -56,8 +58,20 @@ final class LeadApiControllerProfilerTest extends MauticMysqlTestCase
         // Make 4 requests to see how many count queries we'll get.
         $this->getContacts(11);
         $this->getContacts(11);
-        $this->getContacts(5, ['where' => [['col' => 'l.points', 'expr' => 'lt', 'val' => 5]]]);
-        $this->getContacts(5, ['where' => [['col' => 'l.points', 'expr' => 'lt', 'val' => 5]]]);
+        $this->getContacts(5, [
+            'where' => [[
+                'col' => 'l.points',
+                'expr' => 'lt',
+                'val' => 5,
+            ]],
+        ]);
+        $this->getContacts(5, [
+            'where' => [[
+                'col' => 'l.points',
+                'expr' => 'lt',
+                'val' => 5,
+            ]],
+        ]);
 
         // Without the cache, there would be 4 COUNT queries. With the cache, there is just one.
         Assert::assertCount(2, $this->findCountQueries());

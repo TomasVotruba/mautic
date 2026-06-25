@@ -873,7 +873,9 @@ class MailHelper
         $name = $this->cleanName($name);
 
         if (!is_array($addresses)) {
-            $addresses = [$addresses => $name];
+            $addresses = [
+                $addresses => $name,
+            ];
         } elseif (0 === array_keys($addresses)[0]) {
             // We need an array of $email => $name pairs
             $addresses = array_reduce($addresses, function ($address, $item) use ($name) {
@@ -1370,12 +1372,18 @@ class MailHelper
             if ($toEmail) {
                 $unsubscribeHash = $this->mailHashHelper->getEmailHash($toEmail);
                 $url             = $this->router->generate('mautic_email_unsubscribe',
-                    ['idHash' => $this->idHash, 'urlEmail' => $toEmail, 'secretHash' => $unsubscribeHash],
+                    [
+                        'idHash' => $this->idHash,
+                        'urlEmail' => $toEmail,
+                        'secretHash' => $unsubscribeHash,
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } else {
                 $url             = $this->router->generate('mautic_email_unsubscribe',
-                    ['idHash' => $this->idHash],
+                    [
+                        'idHash' => $this->idHash,
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             }
@@ -1418,7 +1426,9 @@ class MailHelper
                     'idHash' => $this->idHash,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            ).'?ct='.ClickthroughHelper::encodeArrayForUrl(['sent_time' => time()]);
+            ).'?ct='.ClickthroughHelper::encodeArrayForUrl([
+                'sent_time' => time(),
+            ]);
         } else {
             $tokens['{tracking_pixel}'] = self::getBlankPixel();
         }
@@ -1449,7 +1459,9 @@ class MailHelper
 
         $request = $this->requestStack->getCurrentRequest();
         $baseUrl = $request ? $request->getSchemeAndHttpHost().$request->getBasePath() : $this->coreParametersHelper->get('site_url');
-        $parser  = new PlainTextHelper(['base_url' => $baseUrl]);
+        $parser  = new PlainTextHelper([
+            'base_url' => $baseUrl,
+        ]);
 
         $this->plainText = $parser->setHtml($content)->getText();
     }
@@ -1500,7 +1512,9 @@ class MailHelper
     protected function logError($error, $context = null)
     {
         if ($error instanceof \Exception) {
-            $exceptionContext = ['exception' => $error];
+            $exceptionContext = [
+                'exception' => $error,
+            ];
             $errorMessage     = $error->getMessage();
             $error            = ('dev' === MAUTIC_ENV) ? (string) $error : $errorMessage;
 
@@ -1948,9 +1962,13 @@ class MailHelper
         if (is_array($overrideFrom)) {
             $fromEmail    = key($overrideFrom);
             $fromName     = $this->cleanName($overrideFrom[$fromEmail]);
-            $overrideFrom = [$fromEmail => $fromName];
+            $overrideFrom = [
+                $fromEmail => $fromName,
+            ];
         } elseif (!empty($overrideFrom)) {
-            $overrideFrom = [$overrideFrom => null];
+            $overrideFrom = [
+                $overrideFrom => null,
+            ];
         }
 
         $this->systemFrom = $overrideFrom ?: $systemFrom;

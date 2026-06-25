@@ -57,12 +57,16 @@ JSON;
         $this->em->detach($channel);
         $this->em->detach($message);
 
-        $patchPayload = ['id' => $message->getId()] + $payload;
+        $patchPayload = [
+            'id' => $message->getId(),
+        ] + $payload;
         $this->client->request('PATCH', "/api/messages/{$message->getId()}/edit", $patchPayload);
         $responseJson = $this->client->getResponse()->getContent();
         self::assertResponseIsSuccessful($responseJson);
         $this->assertMessagePayload(
-            ['id' => $message->getId()] + $expectedResponsePayload,
+            [
+                'id' => $message->getId(),
+            ] + $expectedResponsePayload,
             json_decode($responseJson, true)['message'],
             $responseJson
         );
@@ -148,8 +152,19 @@ JSON;
         $this->em->detach($message2);
 
         $patchPayload = [
-            ['id' => $message1->getId(), 'name' => 'API message 1 (updated)'],
-            ['id' => $message2->getId(), 'channels' => ['email' => ['channelId' => 14, 'isEnabled' => false]]],
+            [
+                'id' => $message1->getId(),
+                'name' => 'API message 1 (updated)',
+            ],
+            [
+                'id' => $message2->getId(),
+                'channels' => [
+                    'email' => [
+                        'channelId' => 14,
+                        'isEnabled' => false,
+                    ],
+                ],
+            ],
         ];
         $this->client->request('PATCH', '/api/messages/batch/edit', $patchPayload);
         $responseJson = $this->client->getResponse()->getContent();

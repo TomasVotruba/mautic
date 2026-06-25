@@ -231,7 +231,9 @@ class InstallCommand extends Command
             default:
             case InstallService::CHECK_STEP:
                 $output->writeln($step.' - Checking installation requirements...');
-                $messages = $this->stepAction($this->installer, ['site_url' => $siteUrl], $step);
+                $messages = $this->stepAction($this->installer, [
+                    'site_url' => $siteUrl,
+                ], $step);
                 if (!empty($messages)) {
                     if (isset($messages['requirements']) && !empty($messages['requirements'])) {
                         // Stop install if requirements not met

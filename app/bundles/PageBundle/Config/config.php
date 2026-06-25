@@ -47,7 +47,9 @@ return [
             'mautic_page_preview' => [
                 'path'       => '/page/preview/{id}/{objectType}',
                 'controller' => 'Mautic\PageBundle\Controller\PublicController::previewAction',
-                'defaults'   => ['objectType' => null],
+                'defaults'   => [
+                    'objectType' => null,
+                ],
             ],
         ],
         'api' => [

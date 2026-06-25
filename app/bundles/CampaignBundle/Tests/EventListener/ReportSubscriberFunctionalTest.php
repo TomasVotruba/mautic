@@ -33,7 +33,9 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $fixtureHelper->addContactToCampaign($leads[2], $campaign);
         $fixtureHelper->createCampaignWithScheduledEvent($campaign);
         $this->em->flush();
-        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         Assert::assertStringContainsString('3 total events were scheduled', $commandResult->getDisplay());
 
         $report = $this->createReport(
@@ -51,7 +53,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     ],
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [

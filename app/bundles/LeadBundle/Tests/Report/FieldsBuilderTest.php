@@ -141,8 +141,16 @@ class FieldsBuilderTest extends \PHPUnit\Framework\TestCase
             ->willReturn($userSegments);
 
         $users = [
-            0 => ['id' => 1, 'firstName' => 'John', 'lastName' => 'Doe'],
-            1 => ['id' => 2, 'firstName' => 'Joe', 'lastName' => 'Smith'],
+            0 => [
+                'id' => 1,
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+            ],
+            1 => [
+                'id' => 2,
+                'firstName' => 'Joe',
+                'lastName' => 'Smith',
+            ],
         ];
 
         $userModel->expects($this->once())

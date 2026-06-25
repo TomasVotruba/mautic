@@ -52,7 +52,9 @@ class PageControllerSqlRollbackFunctionalTest extends MauticMysqlTestCase
             'email'   => $email->getId(),
             'stat'    => $statHash,
             'lead'    => '1',
-            'channel' => ['email' => $email->getId()],
+            'channel' => [
+                'email' => $email->getId(),
+            ],
         ];
         $encodedCt = base64_encode(serialize($ct));
 
@@ -69,7 +71,9 @@ class PageControllerSqlRollbackFunctionalTest extends MauticMysqlTestCase
 
         $hitRepository = $this->em->getRepository(Hit::class);
         /** @var Hit|null $hit */
-        $hit = $hitRepository->findOneBy(['lead' => $lead]);
+        $hit = $hitRepository->findOneBy([
+            'lead' => $lead,
+        ]);
 
         Assert::assertNotNull($hit, 'A Hit entity should have been created.');
         Assert::assertSame('email', $hit->getSource(), 'The hit source should be email.');

@@ -22,7 +22,9 @@ class Remover
         DateHelper $dateHelper,
     ) {
         $dateRemoved              = $dateHelper->toFull(new \DateTime());
-        $this->unscheduledMessage = $translator->trans('mautic.campaign.member.removed', ['%date%' => $dateRemoved]);
+        $this->unscheduledMessage = $translator->trans('mautic.campaign.member.removed', [
+            '%date%' => $dateRemoved,
+        ]);
     }
 
     /**

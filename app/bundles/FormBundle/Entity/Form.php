@@ -252,7 +252,10 @@ class Form extends FormEntity implements UuidInterface
 
         $builder->createOneToMany('fields', 'Field')
             ->setIndexBy('id')
-            ->setOrderBy(['order' => 'ASC', 'id' => 'ASC'])
+            ->setOrderBy([
+                'order' => 'ASC',
+                'id' => 'ASC',
+            ])
             ->mappedBy('form')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -260,7 +263,9 @@ class Form extends FormEntity implements UuidInterface
 
         $builder->createOneToMany('actions', 'Action')
             ->setIndexBy('id')
-            ->setOrderBy(['order' => 'ASC'])
+            ->setOrderBy([
+                'order' => 'ASC',
+            ])
             ->mappedBy('form')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -281,7 +286,9 @@ class Form extends FormEntity implements UuidInterface
             ->build();
 
         $builder->createOneToMany('submissions', 'Submission')
-            ->setOrderBy(['dateSubmitted' => 'DESC'])
+            ->setOrderBy([
+                'dateSubmitted' => 'DESC',
+            ])
             ->mappedBy('form')
             ->fetchExtraLazy()
             ->build();

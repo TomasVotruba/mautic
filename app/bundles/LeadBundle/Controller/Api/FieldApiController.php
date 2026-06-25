@@ -49,7 +49,9 @@ class FieldApiController extends CommonApiController
         $this->entityClass     = LeadField::class;
         $this->entityNameOne   = 'field';
         $this->entityNameMulti = 'fields';
-        $this->routeParams     = ['object' => $this->fieldObject];
+        $this->routeParams     = [
+            'object' => $this->fieldObject,
+        ];
 
         if ('contact' === $this->fieldObject) {
             $this->fieldObject = 'lead';

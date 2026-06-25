@@ -36,8 +36,14 @@ final class PendingEventTest extends \PHPUnit\Framework\TestCase
         Assert::AssertSame($logA, $failedLogs->current());
         Assert::AssertSame($logB, $successLogs->current());
         Assert::AssertSame($interval, $logA->getRescheduleInterval());
-        Assert::AssertSame(['failed' => 1, 'reason' => 'reason A'], $logA->getMetadata());
-        Assert::AssertSame(['failed' => 1, 'reason' => 'Error B'], $logB->getMetadata());
+        Assert::AssertSame([
+            'failed' => 1,
+            'reason' => 'reason A',
+        ], $logA->getMetadata());
+        Assert::AssertSame([
+            'failed' => 1,
+            'reason' => 'Error B',
+        ], $logB->getMetadata());
         Assert::AssertNull($logB->getRescheduleInterval());
     }
 }

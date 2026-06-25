@@ -33,16 +33,34 @@ class RemoveAnonymousContactsCommandFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        Assert::assertCount(1, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]));
-        Assert::assertCount(1, $this->em->getRepository(CampaignLead::class)->findBy(['campaign' => $campaign]));
-        Assert::assertCount(1, $this->em->getRepository(LeadEventLog::class)->findBy(['campaign' => $campaign, 'lead' => $lead], ['event' => 'ASC']));
+        Assert::assertCount(1, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment,
+        ]));
+        Assert::assertCount(1, $this->em->getRepository(CampaignLead::class)->findBy([
+            'campaign' => $campaign,
+        ]));
+        Assert::assertCount(1, $this->em->getRepository(LeadEventLog::class)->findBy([
+            'campaign' => $campaign,
+            'lead' => $lead,
+        ], [
+            'event' => 'ASC',
+        ]));
 
         $this->testSymfonyCommand(RemoveAnonymousContactsCommand::COMMAND_NAME);
 
         Assert::assertCount(1, $this->em->getRepository(Lead::class)->findAll());
-        Assert::assertCount(0, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]));
-        Assert::assertCount(0, $this->em->getRepository(CampaignLead::class)->findBy(['campaign' => $campaign]));
-        Assert::assertCount(0, $this->em->getRepository(LeadEventLog::class)->findBy(['campaign' => $campaign, 'lead' => $lead], ['event' => 'ASC']));
+        Assert::assertCount(0, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment,
+        ]));
+        Assert::assertCount(0, $this->em->getRepository(CampaignLead::class)->findBy([
+            'campaign' => $campaign,
+        ]));
+        Assert::assertCount(0, $this->em->getRepository(LeadEventLog::class)->findBy([
+            'campaign' => $campaign,
+            'lead' => $lead,
+        ], [
+            'event' => 'ASC',
+        ]));
     }
 
     private function createAnonymousLead(): Lead

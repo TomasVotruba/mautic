@@ -97,7 +97,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
     public function getAuthLoginUrl(): string
     {
-        return $this->router->generate('mautic_integration_auth_callback', ['integration' => $this->getName()]);
+        return $this->router->generate('mautic_integration_auth_callback', [
+            'integration' => $this->getName(),
+        ]);
     }
 
     /**
@@ -122,7 +124,10 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                 }
             }
             if (!$error) {
-                $data = ['username' => $this->keys['username'], 'password' => $this->keys['password']];
+                $data = [
+                    'username' => $this->keys['username'],
+                    'password' => $this->keys['password'],
+                ];
                 $this->extractAuthKeys($data, 'username');
             }
         } catch (\Exception $e) {
@@ -248,7 +253,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.integrations.form.blanks',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -264,7 +271,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.connectwise.form.objects_to_pull_from',
-                    'label_attr'        => ['class' => ''],
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -278,7 +287,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     YesNoButtonGroupType::class,
                     [
                         'label'      => 'mautic.plugin.config.push.activities',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class' => 'form-control',
                         ],
@@ -307,43 +318,154 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
     public function getCompanyFields(): array
     {
         return [
-            'identifier'            => ['type' => 'string', 'required' => true],
-            'name'                  => ['type' => 'string', 'required' => true],
-            'addressLine1'          => ['type' => 'string', 'required' => false],
-            'addressLine2'          => ['type' => 'string', 'required' => false],
-            'city'                  => ['type' => 'string', 'required' => false],
-            'state'                 => ['type' => 'string', 'required' => false],
-            'zip'                   => ['type' => 'string', 'required' => false],
-            'phoneNumber'           => ['type' => 'string', 'required' => false],
-            'faxNumber'             => ['type' => 'string', 'required' => false],
-            'website'               => ['type' => 'string', 'required' => false],
-            'territoryId'           => ['type' => 'string', 'required' => false],
-            'marketId'              => ['type' => 'string', 'required' => false],
-            'accountNumber'         => ['type' => 'string', 'required' => false],
-            'dateAcquired'          => ['type' => 'string', 'required' => false],
-            'annualRevenue'         => ['type' => 'string', 'required' => false],
-            'numberOfEmployees'     => ['type' => 'string', 'required' => false],
-            'leadSource'            => ['type' => 'string', 'required' => false],
-            'leadFlag'              => ['type' => 'boolean', 'required' => false],
-            'unsubscribeFlag'       => ['type' => 'boolean', 'required' => false],
-            'calendarId'            => ['type' => 'string', 'required' => false],
-            'userDefinedField1'     => ['type' => 'string', 'required' => false],
-            'userDefinedField2'     => ['type' => 'string', 'required' => false],
-            'userDefinedField3'     => ['type' => 'string', 'required' => false],
-            'userDefinedField4'     => ['type' => 'string', 'required' => false],
-            'userDefinedField5'     => ['type' => 'string', 'required' => false],
-            'userDefinedField6'     => ['type' => 'string', 'required' => false],
-            'userDefinedField7'     => ['type' => 'string', 'required' => false],
-            'userDefinedField8'     => ['type' => 'string', 'required' => false],
-            'userDefinedField9'     => ['type' => 'string', 'required' => false],
-            'userDefinedField10'    => ['type' => 'string', 'required' => false],
-            'vendorIdentifier'      => ['type' => 'string', 'required' => false],
-            'taxIdentifier'         => ['type' => 'string', 'required' => false],
-            'invoiceToEmailAddress' => ['type' => 'string', 'required' => false],
-            'invoiceCCEmailAddress' => ['type' => 'string', 'required' => false],
-            'deletedFlag'           => ['type' => 'boolean', 'required' => false],
-            'dateDeleted'           => ['type' => 'string', 'required' => false],
-            'deletedBy'             => ['type' => 'string', 'required' => false],
+            'identifier'            => [
+                'type' => 'string',
+                'required' => true,
+            ],
+            'name'                  => [
+                'type' => 'string',
+                'required' => true,
+            ],
+            'addressLine1'          => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'addressLine2'          => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'city'                  => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'state'                 => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'zip'                   => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'phoneNumber'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'faxNumber'             => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'website'               => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'territoryId'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'marketId'              => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'accountNumber'         => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'dateAcquired'          => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'annualRevenue'         => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'numberOfEmployees'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'leadSource'            => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'leadFlag'              => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'unsubscribeFlag'       => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'calendarId'            => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField1'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField2'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField3'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField4'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField5'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField6'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField7'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField8'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField9'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField10'    => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'vendorIdentifier'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'taxIdentifier'         => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'invoiceToEmailAddress' => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'invoiceCCEmailAddress' => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'deletedFlag'           => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'dateDeleted'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'deletedBy'             => [
+                'type' => 'string',
+                'required' => false,
+            ],
             // todo 'customFields' => 'array',
         ];
     }
@@ -354,62 +476,210 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
     public function getContactFields(): array
     {
         return [
-            'firstName'              => ['type' => 'string', 'required' => true],
-            'lastName'               => ['type' => 'string', 'required' => false],
-            'type'                   => ['type' => 'string', 'required' => false],
-            'company'                => ['type' => 'ref', 'required' => false, 'value' => 'name'],
-            'addressLine1'           => ['type' => 'string', 'required' => false],
-            'addressLine2'           => ['type' => 'string', 'required' => false],
-            'city'                   => ['type' => 'string', 'required' => false],
-            'state'                  => ['type' => 'string', 'required' => false],
-            'zip'                    => ['type' => 'string', 'required' => false],
-            'country'                => ['type' => 'string', 'required' => false],
-            'inactiveFlag'           => ['type' => 'string', 'required' => false],
-            'securityIdentifier'     => ['type' => 'string', 'required' => false],
-            'managerContactId'       => ['type' => 'string', 'required' => false],
-            'assistantContactId'     => ['type' => 'string', 'required' => false],
-            'title'                  => ['type' => 'string', 'required' => false],
-            'school'                 => ['type' => 'string', 'required' => false],
-            'nickName'               => ['type' => 'string', 'required' => false],
-            'marriedFlag'            => ['type' => 'boolean', 'required' => false],
-            'childrenFlag'           => ['type' => 'boolean', 'required' => false],
-            'significantOther'       => ['type' => 'string', 'required' => false],
-            'portalPassword'         => ['type' => 'string', 'required' => false],
-            'portalSecurityLevel'    => ['type' => 'string', 'required' => false],
-            'disablePortalLoginFlag' => ['type' => 'boolean', 'required' => false],
-            'unsubscribeFlag'        => ['type' => 'boolean', 'required' => false],
-            'userDefinedField1'      => ['type' => 'string', 'required' => false],
-            'userDefinedField2'      => ['type' => 'string', 'required' => false],
-            'userDefinedField3'      => ['type' => 'string', 'required' => false],
-            'userDefinedField4'      => ['type' => 'string', 'required' => false],
-            'userDefinedField5'      => ['type' => 'string', 'required' => false],
-            'userDefinedField6'      => ['type' => 'string', 'required' => false],
-            'userDefinedField7'      => ['type' => 'string', 'required' => false],
-            'userDefinedField8'      => ['type' => 'string', 'required' => false],
-            'userDefinedField9'      => ['type' => 'string', 'required' => false],
-            'userDefinedField10'     => ['type' => 'string', 'required' => false],
-            'gender'                 => ['type' => 'string', 'required' => false],
-            'birthDay'               => ['type' => 'string', 'required' => false],
-            'anniversary'            => ['type' => 'string', 'required' => false],
-            'presence'               => ['type' => 'string', 'required' => false],
-            'mobileGuid'             => ['type' => 'string', 'required' => false],
-            'facebookUrl'            => ['type' => 'string', 'required' => false],
-            'twitterUrl'             => ['type' => 'string', 'required' => false],
-            'linkedInUrl'            => ['type' => 'string', 'required' => false],
-            'defaultBillingFlag'     => ['type' => 'boolean', 'required' => false],
+            'firstName'              => [
+                'type' => 'string',
+                'required' => true,
+            ],
+            'lastName'               => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'type'                   => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'company'                => [
+                'type' => 'ref',
+                'required' => false,
+                'value' => 'name',
+            ],
+            'addressLine1'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'addressLine2'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'city'                   => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'state'                  => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'zip'                    => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'country'                => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'inactiveFlag'           => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'securityIdentifier'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'managerContactId'       => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'assistantContactId'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'title'                  => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'school'                 => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'nickName'               => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'marriedFlag'            => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'childrenFlag'           => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'significantOther'       => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'portalPassword'         => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'portalSecurityLevel'    => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'disablePortalLoginFlag' => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'unsubscribeFlag'        => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
+            'userDefinedField1'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField2'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField3'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField4'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField5'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField6'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField7'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField8'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField9'      => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'userDefinedField10'     => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'gender'                 => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'birthDay'               => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'anniversary'            => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'presence'               => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'mobileGuid'             => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'facebookUrl'            => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'twitterUrl'             => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'linkedInUrl'            => [
+                'type' => 'string',
+                'required' => false,
+            ],
+            'defaultBillingFlag'     => [
+                'type' => 'boolean',
+                'required' => false,
+            ],
             'communicationItems'     => [
                 'type'     => 'array',
                 'required' => false,
                 'items'    => [
-                    'name'  => ['type' => 'name'],
+                    'name'  => [
+                        'type' => 'name',
+                    ],
                     'value' => 'value',
                     'keys'  => ['Email', 'Direct', 'Fax', 'Cell'],
                 ],
             ],
-            'Direct'                 => ['type' => 'string', 'required' => false, 'configOnly' => true],
-            'Cell'                   => ['type' => 'string', 'required' => false, 'configOnly' => true],
-            'Email'                  => ['type' => 'string', 'required' => true, 'configOnly' => true],
-            'Fax'                    => ['type' => 'string', 'required' => false, 'configOnly' => true],
+            'Direct'                 => [
+                'type' => 'string',
+                'required' => false,
+                'configOnly' => true,
+            ],
+            'Cell'                   => [
+                'type' => 'string',
+                'required' => false,
+                'configOnly' => true,
+            ],
+            'Email'                  => [
+                'type' => 'string',
+                'required' => true,
+                'configOnly' => true,
+            ],
+            'Fax'                    => [
+                'type' => 'string',
+                'required' => false,
+                'configOnly' => true,
+            ],
         ];
     }
 
@@ -580,7 +850,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         }
 
         // findLead first
-        $cwContactExists = $this->getApiHelper()->getContacts(['Email' => $lead->getEmail()]);
+        $cwContactExists = $this->getApiHelper()->getContacts([
+            'Email' => $lead->getEmail(),
+        ]);
 
         if (!empty($cwContactExists)) {
             $personFound = true;
@@ -690,7 +962,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     $keyExists    = false;
                     if (isset($leadFields[$item])) {
                         if ('Email' == $item) {
-                            $defaultValue = ['defaultFlag' => true];
+                            $defaultValue = [
+                                'defaultFlag' => true,
+                            ];
                         }
                         $mauticKey = $leadFields[$item];
                         if (isset($fields[$mauticKey]) && !empty($fields[$mauticKey]['value'])) {
@@ -702,8 +976,14 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                             }
                             if (!$keyExists) {
                                 $type = [
-                                    'type' => ['id' => $keyItem + 1, 'name' => $item], ];
-                                $values = array_merge(['value' => $this->cleanPushData($fields[$mauticKey]['value'])], $defaultValue);
+                                    'type' => [
+                                        'id' => $keyItem + 1,
+                                        'name' => $item,
+                                    ],
+                                ];
+                                $values = array_merge([
+                                    'value' => $this->cleanPushData($fields[$mauticKey]['value']),
+                                ], $defaultValue);
 
                                 $communicationItems[] = array_merge($type, $values);
                             }
@@ -727,7 +1007,9 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                         ],
                     ]);
 
-                    $matched['company'] = ['identifier' => $foundCompanies[0]['identifier']];
+                    $matched['company'] = [
+                        'identifier' => $foundCompanies[0]['identifier'],
+                    ];
                 } catch (ApiErrorException) {
                     // No matching companies were found
                 }
@@ -975,9 +1257,15 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         if ($cwContactId and !empty($config['activity_name'])) {
             $activity = [
                 'name'     => $config['activity_name'],
-                'type'     => ['id' => $config['campaign_activity_type']],
-                'assignTo' => ['id' => $config['campaign_members']],
-                'contact'  => ['id' => $cwContactId],
+                'type'     => [
+                    'id' => $config['campaign_activity_type'],
+                ],
+                'assignTo' => [
+                    'id' => $config['campaign_members'],
+                ],
+                'contact'  => [
+                    'id' => $cwContactId,
+                ],
             ];
             $activities = $this->getApiHelper()->postActivity($activity);
 

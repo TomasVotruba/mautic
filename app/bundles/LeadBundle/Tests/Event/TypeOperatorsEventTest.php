@@ -14,12 +14,20 @@ final class TypeOperatorsEventTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame([], $event->getOperatorsForAllFieldTypes());
 
-        $event->setOperatorsForFieldType('email', ['include' => ['=', 'like']]);
-        $event->setOperatorsForFieldType('firsname', ['exclude' => ['!=', '!like']]);
+        $event->setOperatorsForFieldType('email', [
+            'include' => ['=', 'like'],
+        ]);
+        $event->setOperatorsForFieldType('firsname', [
+            'exclude' => ['!=', '!like'],
+        ]);
 
         $this->assertSame([
-            'email'    => ['include' => ['=', 'like']],
-            'firsname' => ['exclude' => ['!=', '!like']],
+            'email'    => [
+                'include' => ['=', 'like'],
+            ],
+            'firsname' => [
+                'exclude' => ['!=', '!like'],
+            ],
         ], $event->getOperatorsForAllFieldTypes());
     }
 }

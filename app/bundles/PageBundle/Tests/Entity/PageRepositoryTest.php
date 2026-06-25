@@ -36,14 +36,21 @@ class PageRepositoryTest extends TestCase
     {
         $repository = $this->getRepository();
         $qb         = $this->connection->createQueryBuilder();
-        $filter     = (object) ['command' => $command, 'string' => '', 'not' => false, 'strict' => false];
+        $filter     = (object) [
+            'command' => $command,
+            'string' => '',
+            'not' => false,
+            'strict' => false,
+        ];
 
         $method = new \ReflectionMethod(PageRepository::class, 'addSearchCommandWhereClause');
 
         [$expr, $params] = $method->invoke($repository, $qb, $filter);
 
         self::assertSame($expected, (string) $expr);
-        self::assertSame(['par1' => true], $params);
+        self::assertSame([
+            'par1' => true,
+        ], $params);
     }
 
     /**

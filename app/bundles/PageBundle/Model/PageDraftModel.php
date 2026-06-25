@@ -23,7 +23,9 @@ class PageDraftModel
      */
     public function createDraft(Page $page, string $html, string $template, bool $publicPreview = true): PageDraft
     {
-        $pageDraft = $this->pageDraftRepository->findOneBy(['page' => $page]);
+        $pageDraft = $this->pageDraftRepository->findOneBy([
+            'page' => $page,
+        ]);
         if (!is_null($pageDraft)) {
             throw new \Exception(sprintf('Draft already exists for page %d', $page->getId()));
         }

@@ -45,7 +45,9 @@ class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->statRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['trackingHash' => 'abc123'])
+            ->with([
+                'trackingHash' => 'abc123',
+            ])
             ->willReturn($stat);
 
         $event = new ContactIdentificationEvent($ct);
@@ -96,7 +98,9 @@ class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->statRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['trackingHash' => 'abc123'])
+            ->with([
+                'trackingHash' => 'abc123',
+            ])
             ->willReturn($stat);
 
         $event = new ContactIdentificationEvent($ct);
@@ -125,7 +129,9 @@ class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->statRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['trackingHash' => 'abc123'])
+            ->with([
+                'trackingHash' => 'abc123',
+            ])
             ->willReturn($stat);
 
         $event = new ContactIdentificationEvent($ct);

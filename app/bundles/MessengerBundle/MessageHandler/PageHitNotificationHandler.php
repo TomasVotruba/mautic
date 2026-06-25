@@ -57,7 +57,9 @@ class PageHitNotificationHandler
             } catch (\Exception $exception) {
                 $this->logger->error(
                     sprintf('Invalid page/redirect, exception. #%s', $message->getPageId()),
-                    ['message' => $message]
+                    [
+                        'message' => $message,
+                    ]
                 );
                 throw $exception;
             }
@@ -66,19 +68,25 @@ class PageHitNotificationHandler
                 $this->logger->error(
                     sprintf('Invalid page/redirect, id not found. #%s', $message->getPageId())
                 );
-                throw new InvalidPayloadException('Missing required information', ['message' => $message]);
+                throw new InvalidPayloadException('Missing required information', [
+                    'message' => $message,
+                ]);
             }
         }
 
         if (!$hit instanceof Hit && $message->getHitId() > 0) {
-            $this->logger->warning('Invalid hit id #'.$message->getHitId(), ['message' => $message]);
+            $this->logger->warning('Invalid hit id #'.$message->getHitId(), [
+                'message' => $message,
+            ]);
 
             throw new InvalidPayloadException('Invalid hit id #'.$message->getHitId(), (array) $message);
         }
 
         //  Lead IS mandatory field
         if (null === $lead = $this->leadRepository->find($message->getLeadId())) {
-            $this->logger->error('Invalid lead id #'.$message->getLeadId(), ['message' => $message]);
+            $this->logger->error('Invalid lead id #'.$message->getLeadId(), [
+                'message' => $message,
+            ]);
 
             throw new InvalidPayloadException('Invalid lead id', (array) $message);
         }

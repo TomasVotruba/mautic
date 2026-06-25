@@ -114,7 +114,9 @@ class ReleaseParserTest extends TestCase
             ]
         );
 
-        (new ReleaseParser($client))->getLatestSupportedRelease([['html_url' => 'foo://bar']], $mauticVersion, $stability);
+        (new ReleaseParser($client))->getLatestSupportedRelease([[
+            'html_url' => 'foo://bar',
+        ]], $mauticVersion, $stability);
     }
 
     public function testLatestVersionSupportedExceptionThrownIfMetadataNotFound(): void
@@ -128,13 +130,17 @@ class ReleaseParserTest extends TestCase
             [
                 'handler' => new MockHandler(
                     [
-                        fn (Request $request, array $options) => new Response(200, [], json_encode(['foo' => 'bar'])),
+                        fn (Request $request, array $options) => new Response(200, [], json_encode([
+                            'foo' => 'bar',
+                        ])),
                     ]
                 ),
             ]
         );
 
-        (new ReleaseParser($client))->getLatestSupportedRelease([['html_url' => 'foo://bar']], $mauticVersion, $stability);
+        (new ReleaseParser($client))->getLatestSupportedRelease([[
+            'html_url' => 'foo://bar',
+        ]], $mauticVersion, $stability);
     }
 
     /** @return array<int, array<string, mixed>> */

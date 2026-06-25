@@ -27,7 +27,9 @@ class IteratorExportDataModelTest extends \PHPUnit\Framework\TestCase
 
         $this->commonModel      = $this->createMock(AbstractCommonModel::class);
         $this->commonRepository = $this->createMock(CommonRepository::class);
-        $args                   = ['limit' => 1000];
+        $args                   = [
+            'limit' => 1000,
+        ];
         $callback               = fn ($var) => $var;
 
         $this->iteratorExportDataModel = new IteratorExportDataModel($this->commonModel, $args, $callback);
@@ -37,8 +39,14 @@ class IteratorExportDataModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->commonModel->expects($this->once())
             ->method('getEntities')
-            ->with(['limit' => 1000, 'start' => 0, 'skipOrdering' => false])
-            ->willReturn(['results' => [['a'], ['b']]]);
+            ->with([
+                'limit' => 1000,
+                'start' => 0,
+                'skipOrdering' => false,
+            ])
+            ->willReturn([
+                'results' => [['a'], ['b']],
+            ]);
 
         $this->commonModel->method('getRepository')->willReturn($this->commonRepository);
 
@@ -52,8 +60,14 @@ class IteratorExportDataModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->commonModel->expects($this->once())
             ->method('getEntities')
-            ->with(['limit' => 1000, 'start' => 0, 'skipOrdering' => false])
-            ->willReturn(['results' => []]);
+            ->with([
+                'limit' => 1000,
+                'start' => 0,
+                'skipOrdering' => false,
+            ])
+            ->willReturn([
+                'results' => [],
+            ]);
 
         $this->commonModel->method('getRepository')->willReturn($this->commonRepository);
 

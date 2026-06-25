@@ -20,13 +20,17 @@ class ChannelPreferencesTest extends \PHPUnit\Framework\TestCase
         $log1 = new LeadEventLog();
         $log1->setEvent($event);
         $log1->setCampaign($campaign);
-        $log1->setMetadata(['log' => 1]);
+        $log1->setMetadata([
+            'log' => 1,
+        ]);
         $channelPreferences->addLog($log1, 1);
 
         $log2 = new LeadEventLog();
         $log2->setEvent($event);
         $log2->setCampaign($campaign);
-        $log2->setMetadata(['log' => 2]);
+        $log2->setMetadata([
+            'log' => 2,
+        ]);
         $channelPreferences->addLog($log2, 2);
 
         $organized = $channelPreferences->getLogsByPriority(1);

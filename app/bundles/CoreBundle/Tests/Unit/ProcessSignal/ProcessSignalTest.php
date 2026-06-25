@@ -14,7 +14,9 @@ class ProcessSignalTest extends TestCase
 {
     public function testGetData(): void
     {
-        $data  = ['key' => 'value'];
+        $data  = [
+            'key' => 'value',
+        ];
         $state = new ProcessSignalState($data);
 
         Assert::assertSame($data, $state->getData());
@@ -22,7 +24,9 @@ class ProcessSignalTest extends TestCase
 
     public function testToString(): void
     {
-        $data  = ['key' => 'value'];
+        $data  = [
+            'key' => 'value',
+        ];
         $state = new ProcessSignalState($data);
 
         Assert::assertSame('<<<StartOfState>>>{"key":"value"}<<<EndOfState>>>', (string) $state);

@@ -174,7 +174,10 @@ class DynamicContentHelper
         }
         $stat = $this->dynamicContentModel->createStatEntry($dwc, $lead, $slot);
 
-        $tokenEvent = new TokenReplacementEvent($content, $lead, ['slot' => $slot, 'dynamic_content_id' => $dwc->getId()]);
+        $tokenEvent = new TokenReplacementEvent($content, $lead, [
+            'slot' => $slot,
+            'dynamic_content_id' => $dwc->getId(),
+        ]);
         $tokenEvent->setStat($stat);
         $this->dispatcher->dispatch($tokenEvent, DynamicContentEvents::TOKEN_REPLACEMENT);
 

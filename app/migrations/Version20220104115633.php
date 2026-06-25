@@ -21,6 +21,8 @@ final class Version20220104115633 extends PreUpAssertionMigration
     public function up(Schema $schema): void
     {
         $schema->getTable($this->getPrefixedTableName(LeadList::TABLE_NAME))
-            ->addColumn('deleted', Types::DATETIME_MUTABLE, ['notnull' => false]);
+            ->addColumn('deleted', Types::DATETIME_MUTABLE, [
+                'notnull' => false,
+            ]);
     }
 }

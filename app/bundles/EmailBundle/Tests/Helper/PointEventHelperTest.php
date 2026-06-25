@@ -50,7 +50,9 @@ class PointEventHelperTest extends \PHPUnit\Framework\TestCase
 
     private function getMockEmail(bool $published = true, bool $success = true): EmailModel&MockObject
     {
-        $sendEmail = $success ? true : ['error' => 1];
+        $sendEmail = $success ? true : [
+            'error' => 1,
+        ];
 
         $mock = $this->getMockBuilder(EmailModel::class)
             ->disableOriginalConstructor()

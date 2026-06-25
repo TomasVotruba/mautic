@@ -119,7 +119,9 @@ EOT
     private function purgeData(string $contactId, string $ip): void
     {
         /** @var Lead $lead */
-        $lead       = $this->leadRepository->findOneBy(['id' => $contactId]);
+        $lead       = $this->leadRepository->findOneBy([
+            'id' => $contactId,
+        ]);
         $matchedIps = array_filter($lead->getIpAddresses()->getValues(), fn ($item): bool => $item->getIpAddress() == $ip);
 
         if (!$matchedIps) {

@@ -36,9 +36,16 @@ final class DoNotContactRepositoryFunctionalTest extends MauticMysqlTestCase
         Assert::assertCount(0, $repository->getChannelList('sms', []), 'Get all records for sms channel where the user filtered for a contact that do not exist. It must return an empty array. Not all DNC records.');
         Assert::assertCount(1, $repository->getChannelList('sms', [$john->getId()]));
         Assert::assertCount(2, $repository->getChannelList('sms', [$john->getId(), $jane->getId(), $josh->getId()]));
-        Assert::assertSame(['email' => (string) DoNotContact::IS_CONTACTABLE], $allDncRecords[$josh->getId()]);
-        Assert::assertSame(['email' => (string) DoNotContact::UNSUBSCRIBED, 'sms' => (string) DoNotContact::BOUNCED], $allDncRecords[$john->getId()]);
-        Assert::assertSame(['sms' => (string) DoNotContact::MANUAL], $allDncRecords[$jane->getId()]);
+        Assert::assertSame([
+            'email' => (string) DoNotContact::IS_CONTACTABLE,
+        ], $allDncRecords[$josh->getId()]);
+        Assert::assertSame([
+            'email' => (string) DoNotContact::UNSUBSCRIBED,
+            'sms' => (string) DoNotContact::BOUNCED,
+        ], $allDncRecords[$john->getId()]);
+        Assert::assertSame([
+            'sms' => (string) DoNotContact::MANUAL,
+        ], $allDncRecords[$jane->getId()]);
         Assert::assertSame((string) DoNotContact::BOUNCED, $allSmsRecords[$john->getId()]);
         Assert::assertSame((string) DoNotContact::MANUAL, $allSmsRecords[$jane->getId()]);
     }

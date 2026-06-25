@@ -52,7 +52,9 @@ final class EmailClickTrackingTest extends MauticMysqlTestCase
         $pageHitRepository = $this->em->getRepository(Hit::class);
         \assert($pageHitRepository instanceof HitRepository);
 
-        $hit = $pageHitRepository->findOneBy(['page' => $page]);
+        $hit = $pageHitRepository->findOneBy([
+            'page' => $page,
+        ]);
         Assert::assertSame($contact->getId(), $hit->getLead()->getId());
     }
 }

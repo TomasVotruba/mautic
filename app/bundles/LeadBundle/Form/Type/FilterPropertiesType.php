@@ -18,6 +18,8 @@ class FilterPropertiesType extends AbstractType
     {
         // This form is loaded via AJAX as part of another form.
         // Disable CSRF protection to avoid validation errors with unexpected fileds.
-        $resolver->setDefaults(['csrf_protection' => false]);
+        $resolver->setDefaults([
+            'csrf_protection' => false,
+        ]);
     }
 }

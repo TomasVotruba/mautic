@@ -31,7 +31,9 @@ final class IntegrationSyncSettingsObjectFieldTypeTest extends \PHPUnit\Framewor
 
     public function testBuildFormForWrongField(): void
     {
-        $options = ['field' => 'unicorn'];
+        $options = [
+            'field' => 'unicorn',
+        ];
         $this->expectException(InvalidFormOptionException::class);
         $this->form->buildForm($this->formBuilder, $options);
     }

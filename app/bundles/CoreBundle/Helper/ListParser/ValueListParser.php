@@ -12,6 +12,8 @@ class ValueListParser implements ListParserInterface
             throw new FormatNotSupportedException();
         }
 
-        return [$list => $list];
+        return [
+            $list => $list,
+        ];
     }
 }

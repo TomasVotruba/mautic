@@ -344,7 +344,10 @@ class LeadRepository extends CommonRepository
 
         $contactRotations = [];
         foreach ($results as $result) {
-            $contactRotations[$result['lead_id']] = ['rotation' => $result['rotation'], 'manually_removed' => $result['manually_removed']];
+            $contactRotations[$result['lead_id']] = [
+                'rotation' => $result['rotation'],
+                'manually_removed' => $result['manually_removed'],
+            ];
         }
 
         return $contactRotations;

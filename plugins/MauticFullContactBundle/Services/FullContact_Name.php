@@ -30,7 +30,11 @@ class FullContact_Name extends FullContact_Base
     public function normalizer($name, $casing = 'titlecase')
     {
         $this->_resourceUri = '/name/normalizer.json';
-        $this->_execute(['q' => $name, 'method' => 'normalizer', 'casing' => $casing]);
+        $this->_execute([
+            'q' => $name,
+            'method' => 'normalizer',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }
@@ -47,7 +51,11 @@ class FullContact_Name extends FullContact_Base
     public function deducer($value, $type = 'email', $casing = 'titlecase')
     {
         $this->_resourceUri = '/name/deducer.json';
-        $this->_execute([$type => $value, 'method' => 'deducer', 'casing' => $casing]);
+        $this->_execute([
+            $type => $value,
+            'method' => 'deducer',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }
@@ -64,7 +72,12 @@ class FullContact_Name extends FullContact_Base
     public function similarity($name1, $name2, $casing = 'titlecase')
     {
         $this->_resourceUri = '/name/similarity.json';
-        $this->_execute(['q1' => $name1, 'q2' => $name2, 'method' => 'similarity', 'casing' => $casing]);
+        $this->_execute([
+            'q1' => $name1,
+            'q2' => $name2,
+            'method' => 'similarity',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }
@@ -72,7 +85,11 @@ class FullContact_Name extends FullContact_Base
     public function stats($value, $type = 'givenName', $casing = 'titlecase')
     {
         $this->_resourceUri = '/name/stats.json';
-        $this->_execute([$type => $value, 'method' => 'stats', 'casing' => $casing]);
+        $this->_execute([
+            $type => $value,
+            'method' => 'stats',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }
@@ -80,7 +97,11 @@ class FullContact_Name extends FullContact_Base
     public function parser($name, $casing = 'titlecase')
     {
         $this->_resourceUri = '/name/parser.json';
-        $this->_execute(['q' => $name, 'method' => 'parser', 'casing' => $casing]);
+        $this->_execute([
+            'q' => $name,
+            'method' => 'parser',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }

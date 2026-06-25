@@ -107,7 +107,9 @@ class PointEntityValidationTest extends MauticMysqlTestCase
         $response = $this->client->getResponse()->getContent();
         self::assertStringContainsString($errorMessage, (string) $response);
 
-        $pointDetail = $this->em->getRepository(Point::class)->findOneBy(['delta' => $delta]);
+        $pointDetail = $this->em->getRepository(Point::class)->findOneBy([
+            'delta' => $delta,
+        ]);
         '' == $errorMessage ? self::assertNotNull($pointDetail) : self::assertNull($pointDetail);
     }
 }

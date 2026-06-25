@@ -182,7 +182,9 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
             if (!empty($GLOBALS['MAUTIC_AJAX_DIRECT_RENDER'])) {
                 header('Content-Type: application/json');
-                $content = json_encode(['newContent' => $content]);
+                $content = json_encode([
+                    'newContent' => $content,
+                ]);
             }
 
             echo $content;
@@ -244,7 +246,10 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
             if (!$exception instanceof \Exception && !$exception instanceof FlattenException) {
                 if ($exception instanceof \Throwable) {
-                    $exception = new FatalError($exception->getMessage(), $exception->getCode(), ['file' => $exception->getFile(), 'line' => $exception->getLine()], 2, true);
+                    $exception = new FatalError($exception->getMessage(), $exception->getCode(), [
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                    ], 2, true);
                     $inline    = false;
                 } else {
                     return false;
@@ -520,9 +525,13 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 $twig->addFunction(new \Twig\TwigFunction('getRootPath', fn () => realpath(__DIR__.'/../../../../')));
 
                 if ($loader->exists('custom_offline.html.twig')) {
-                    $content = $twig->render('custom_offline.html.twig', ['error' => $error]);
+                    $content = $twig->render('custom_offline.html.twig', [
+                        'error' => $error,
+                    ]);
                 } else {
-                    $content = $twig->render('offline.html.twig', ['error' => $error]);
+                    $content = $twig->render('offline.html.twig', [
+                        'error' => $error,
+                    ]);
                 }
             } catch (\Exception $exception) {
                 return $exception->getMessage();

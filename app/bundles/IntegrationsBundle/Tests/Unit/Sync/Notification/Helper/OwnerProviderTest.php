@@ -71,13 +71,17 @@ class OwnerProviderTest extends TestCase
                     $this->assertSame([123], $event->getObjectIds());
 
                     // Simulate a subscriber. Format: [object_id => owner_id].
-                    $event->setOwners([$event->getObjectIds()[0] => 456]);
+                    $event->setOwners([
+                        $event->getObjectIds()[0] => 456,
+                    ]);
 
                     return true;
                 }),
                 IntegrationEvents::INTEGRATION_FIND_OWNER_IDS
             );
 
-        $this->assertSame([123 => 456], $this->ownerProvider->getOwnersForObjectIds(Contact::NAME, [123]));
+        $this->assertSame([
+            123 => 456,
+        ], $this->ownerProvider->getOwnersForObjectIds(Contact::NAME, [123]));
     }
 }

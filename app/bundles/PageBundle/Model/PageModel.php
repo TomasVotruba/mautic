@@ -330,7 +330,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
 
         $slug = $this->generateSlug($entity);
 
-        return $this->buildUrl('mautic_page_public', ['slug' => $slug], $absolute, $clickthrough);
+        return $this->buildUrl('mautic_page_public', [
+            'slug' => $slug,
+        ], $absolute, $clickthrough);
     }
 
     /**
@@ -417,7 +419,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $userAgent = $request->server->get('HTTP_USER_AGENT');
         if (array_key_exists('ct', $query) && is_array($query['ct']) && array_key_exists('email', $query['ct']) && array_key_exists('stat', $query['ct'])) {
             /** @var Stat $stat */
-            $stat = $this->statRepository->findOneBy(['trackingHash' => $query['ct']['stat']]);
+            $stat = $this->statRepository->findOneBy([
+                'trackingHash' => $query['ct']['stat'],
+            ]);
             if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
                 return false;
             }
@@ -621,7 +625,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 } catch (\Exception $exception) {
                     $this->logger->error(
                         $exception->getMessage(),
-                        ['exception' => $exception]
+                        [
+                            'exception' => $exception,
+                        ]
                     );
                 }
             } elseif ($page instanceof Redirect) {
@@ -644,7 +650,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
                     }
                     $this->logger->error(
                         $exception->getMessage(),
-                        ['exception' => $exception]
+                        [
+                            'exception' => $exception,
+                        ]
                     );
                 }
             }
@@ -692,7 +700,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
             }
             $this->logger->error(
                 $exception->getMessage(),
-                ['exception' => $exception]
+                [
+                    'exception' => $exception,
+                ]
             );
         }
 
@@ -717,7 +727,10 @@ class PageModel extends FormModel implements GlobalSearchInterface
 
                     $this->logger->error(
                         'Failed to update event time due to '.$e->getMessage(),
-                        ['context' => $data, 'exception' => (array) $e]
+                        [
+                            'context' => $data,
+                            'exception' => (array) $e,
+                        ]
                     );
                 }
             }

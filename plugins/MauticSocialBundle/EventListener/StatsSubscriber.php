@@ -18,6 +18,8 @@ class StatsSubscriber extends CommonStatsSubscriber
         $repo                      = $entityManager->getRepository(TweetStat::class);
         $table                     = $repo->getTableName();
         $this->repositories[]      = $repo;
-        $this->permissions[$table] = ['tweet' => 'mauticSocial:tweets'];
+        $this->permissions[$table] = [
+            'tweet' => 'mauticSocial:tweets',
+        ];
     }
 }

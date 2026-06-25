@@ -81,7 +81,9 @@ class Bounce implements ProcessorInterface
 
             if ($stat->getEmail() instanceof Email) {
                 // We know the email ID so set it to append to the the DNC record
-                $channel = ['email' => $stat->getEmail()->getId()];
+                $channel = [
+                    'email' => $stat->getEmail()->getId(),
+                ];
             }
         }
 

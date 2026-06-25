@@ -20,8 +20,12 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         $this->saveContacts();
         $segment = $this->saveSegment($hours);
 
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
-        self::assertCount($hours, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]));
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segment->getId(),
+        ]);
+        self::assertCount($hours, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment->getId(),
+        ]));
     }
 
     /**
@@ -60,7 +64,9 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
                 'field'      => 'last_active',
                 'type'       => 'datetime',
                 'operator'   => 'gte',
-                'properties' => ['filter' => sprintf('-%s hours', $hours)],
+                'properties' => [
+                    'filter' => sprintf('-%s hours', $hours),
+                ],
             ],
         ];
 
@@ -90,11 +96,15 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         $tzProperty->setValue(null, 'Europe/Prague');
 
         try {
-            $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
+            $this->testSymfonyCommand('mautic:segments:update', [
+                '-i' => $segment->getId(),
+            ]);
 
             self::assertCount(
                 1,
-                $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]),
+                $this->em->getRepository(ListLead::class)->findBy([
+                    'list' => $segment->getId(),
+                ]),
                 'Contact last active 30 min ago must be included in the "-1 hour" segment even when the system timezone is non-UTC.'
             );
         } finally {

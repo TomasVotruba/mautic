@@ -56,7 +56,9 @@ class MauticSyncProcessTest extends TestCase
         $this->syncDateHelper        = $this->createMock(SyncDateHelper::class);
         $this->objectChangeGenerator = $this->createMock(ObjectChangeGenerator::class);
         $this->syncDataExchange      = $this->createMock(MauticSyncDataExchange::class);
-        $this->inputOptionsDAO       = new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]);
+        $this->inputOptionsDAO       = new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]);
     }
 
     public function testThatMauticGetSyncReportIsCalledBasedOnRequest(): void
@@ -156,7 +158,11 @@ class MauticSyncProcessTest extends TestCase
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
 
         // The change should have been added to the order as an identified object
-        $this->assertEquals([Contact::NAME => [1 => $objectChangeDAO]], $syncOrder->getIdentifiedObjects());
+        $this->assertEquals([
+            Contact::NAME => [
+                1 => $objectChangeDAO,
+            ],
+        ], $syncOrder->getIdentifiedObjects());
     }
 
     public function testGetSyncOrderObjectDeleted(): void

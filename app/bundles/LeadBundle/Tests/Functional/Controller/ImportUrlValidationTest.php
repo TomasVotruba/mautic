@@ -56,9 +56,15 @@ final class ImportUrlValidationTest extends MauticMysqlTestCase
 
         $leadRepository = $this->em->getRepository(Lead::class);
 
-        Assert::assertNotNull($leadRepository->findOneBy(['email' => 'ok1@a.com']));
-        Assert::assertNotNull($leadRepository->findOneBy(['email' => 'ok2@a.com']));
-        Assert::assertNull($leadRepository->findOneBy(['email' => 'bad@a.com']));
+        Assert::assertNotNull($leadRepository->findOneBy([
+            'email' => 'ok1@a.com',
+        ]));
+        Assert::assertNotNull($leadRepository->findOneBy([
+            'email' => 'ok2@a.com',
+        ]));
+        Assert::assertNull($leadRepository->findOneBy([
+            'email' => 'bad@a.com',
+        ]));
 
         $this->em->refresh($import);
 

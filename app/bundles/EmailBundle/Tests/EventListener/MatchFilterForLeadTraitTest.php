@@ -527,7 +527,10 @@ class MatchFilterForLeadTraitTest extends TestCase
         $segmentRepository = $this->createMock(LeadListRepository::class);
         $segmentRepository->expects(self::once())
             ->method('isContactInSegments')
-            ->with($lead['id'], [0 => $segmentId, 1 => 2])
+            ->with($lead['id'], [
+                0 => $segmentId,
+                1 => 2,
+            ])
             ->willReturn(true);
 
         $filter = [
@@ -560,7 +563,10 @@ class MatchFilterForLeadTraitTest extends TestCase
         $segmentRepository = $this->createMock(LeadListRepository::class);
         $segmentRepository->expects(self::once())
             ->method('isNotContactInSegments')
-            ->with($lead['id'], [0 => $segmentId, 1 => 2])
+            ->with($lead['id'], [
+                0 => $segmentId,
+                1 => 2,
+            ])
             ->willReturn(true);
 
         $filter = [
@@ -593,7 +599,10 @@ class MatchFilterForLeadTraitTest extends TestCase
         $segmentRepository = $this->createMock(LeadListRepository::class);
         $segmentRepository->expects(self::once())
             ->method('isContactInAllSegments')
-            ->with($lead['id'], [0 => $segmentId, 1 => 2])
+            ->with($lead['id'], [
+                0 => $segmentId,
+                1 => 2,
+            ])
             ->willReturn(true);
 
         $filter = [
@@ -626,7 +635,10 @@ class MatchFilterForLeadTraitTest extends TestCase
         $segmentRepository = $this->createMock(LeadListRepository::class);
         $segmentRepository->expects(self::once())
             ->method('isNotContactInAllSegments')
-            ->with($lead['id'], [0 => $segmentId, 1 => 2])
+            ->with($lead['id'], [
+                0 => $segmentId,
+                1 => 2,
+            ])
             ->willReturn(true);
 
         $filter = [

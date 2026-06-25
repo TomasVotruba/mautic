@@ -209,7 +209,9 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->mockCompanyModel->expects($this->any())
             ->method('fetchCompanyFields')
-            ->willReturn([['alias' => 'companyname']]);
+            ->willReturn([[
+                'alias' => 'companyname',
+            ]]);
 
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $mockCoreParametersHelper->method('get')
@@ -304,7 +306,8 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-            ], ];
+            ],
+        ];
 
         $this->mockLeadModel->expects($this->once())->method('getEngagements')->willReturn($leadTimeline);
 
@@ -349,7 +352,8 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-            ], ];
+            ],
+        ];
 
         $this->mockLeadModel->expects($this->once())->method('getEngagements')->willReturn($leadTimeline);
 
@@ -394,7 +398,8 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-            ], ];
+            ],
+        ];
 
         $this->mockLeadModel->expects($this->once())->method('getEngagements')->willReturn($leadTimeline);
 

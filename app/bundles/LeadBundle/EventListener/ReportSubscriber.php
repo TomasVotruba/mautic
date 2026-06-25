@@ -413,7 +413,9 @@ class ReportSubscriber implements EventSubscriberInterface
                     $where = $queryBuilder->getQueryPart('where');
                     foreach ($join['l'] as $item) {
                         if (str_contains($where, $item['joinAlias'].'.leadlist_id')) {
-                            $queryBuilder->add('join', ['l' => $item], true);
+                            $queryBuilder->add('join', [
+                                'l' => $item,
+                            ], true);
                         }
                     }
                 }
@@ -669,7 +671,9 @@ class ReportSubscriber implements EventSubscriberInterface
         $leadFields = $this->fieldModel->getPublishedFieldArrays();
         foreach ($leadFields as $fieldArray) {
             $fields[$prefix.$fieldArray['alias']] = [
-                'label' => $this->translator->trans('mautic.lead.report.field.lead.label', ['%field%' => $fieldArray['label']]),
+                'label' => $this->translator->trans('mautic.lead.report.field.lead.label', [
+                    '%field%' => $fieldArray['label'],
+                ]),
                 'type'  => $fieldArray['type'],
                 'alias' => $fieldArray['alias'],
             ];

@@ -36,7 +36,9 @@ class CampaignSubscriber implements EventSubscriberInterface
             'eventName'              => FocusEvents::ON_CAMPAIGN_TRIGGER_ACTION,
             'formType'               => FocusShowType::class,
             'formTheme'              => '@MauticFocus/FormTheme/FocusShowList/focusshow_list_row.html.twig',
-            'formTypeOptions'        => ['update_select' => 'campaignevent_properties_focus'],
+            'formTypeOptions'        => [
+                'update_select' => 'campaignevent_properties_focus',
+            ],
             'connectionRestrictions' => [
                 'anchor' => [
                     'decision.inaction',
@@ -58,7 +60,12 @@ class CampaignSubscriber implements EventSubscriberInterface
             return $event->setResult(false);
         }
         $values                 = [];
-        $values['focus_item'][] = ['id' => $focusId, 'js' => $this->router->generate('mautic_focus_generate', ['id' => $focusId], UrlGeneratorInterface::ABSOLUTE_URL)];
+        $values['focus_item'][] = [
+            'id' => $focusId,
+            'js' => $this->router->generate('mautic_focus_generate', [
+                'id' => $focusId,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+        ];
         $this->trackingHelper->updateCacheItem($values);
 
         return $event->setResult(true);

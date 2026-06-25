@@ -67,7 +67,11 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnStatsFetchForRestrictedUsers(): void
     {
         $this->setProperty($this->subscirber, 'repositories', [$this->repository]);
-        $this->setProperty($this->subscirber, 'permissions', ['emails_stats' => ['lead' => 'lead:leads']]);
+        $this->setProperty($this->subscirber, 'permissions', [
+            'emails_stats' => [
+                'lead' => 'lead:leads',
+            ],
+        ]);
 
         $this->user->expects($this->once())
             ->method('getId')
@@ -136,7 +140,11 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnStatsFetchForViewAllUsers(): void
     {
         $this->setProperty($this->subscirber, 'repositories', [$this->repository]);
-        $this->setProperty($this->subscirber, 'permissions', ['emails_stats' => ['lead' => 'lead:leads']]);
+        $this->setProperty($this->subscirber, 'permissions', [
+            'emails_stats' => [
+                'lead' => 'lead:leads',
+            ],
+        ]);
 
         $this->security->expects($this->once())
             ->method('checkPermissionExists')
@@ -171,7 +179,11 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnStatsFetchForAdminUsers(): void
     {
         $this->setProperty($this->subscirber, 'repositories', [$this->repository]);
-        $this->setProperty($this->subscirber, 'permissions', ['emails_stats' => ['lead' => 'admin']]);
+        $this->setProperty($this->subscirber, 'permissions', [
+            'emails_stats' => [
+                'lead' => 'admin',
+            ],
+        ]);
 
         $this->security->expects($this->once())
             ->method('isAdmin')
@@ -196,7 +208,11 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnStatsFetchForNoPermissionUsers(): void
     {
         $this->setProperty($this->subscirber, 'repositories', [$this->repository]);
-        $this->setProperty($this->subscirber, 'permissions', ['emails_stats' => ['lead' => 'lead:leads']]);
+        $this->setProperty($this->subscirber, 'permissions', [
+            'emails_stats' => [
+                'lead' => 'lead:leads',
+            ],
+        ]);
 
         $this->repository->expects($this->once())
             ->method('getTableName')

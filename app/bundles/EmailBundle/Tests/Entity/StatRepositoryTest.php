@@ -32,8 +32,12 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('executeQuery')
             ->with(
                 $expectedQuery,
-                ['contacts' => [6, 8]],
-                ['contacts' => 101]
+                [
+                    'contacts' => [6, 8],
+                ],
+                [
+                    'contacts' => 101,
+                ]
             )
             ->willReturn($this->result);
 

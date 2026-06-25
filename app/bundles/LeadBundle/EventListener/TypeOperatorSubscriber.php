@@ -94,7 +94,9 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
             ]
         );
 
-        $emails = $this->emailModel->getLookupResults('email', '', 0, 0, ['name_is_key' => true]);
+        $emails = $this->emailModel->getLookupResults('email', '', 0, 0, [
+            'name_is_key' => true,
+        ]);
 
         $event->setChoicesForFieldAlias('lead_asset_download', $this->getAssetChoices($event->getSearchTerm()));
         $event->setChoicesForFieldAlias('campaign', $this->getCampaignChoices());
@@ -131,7 +133,10 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 'multiple'                  => true,
                 'choice_translation_domain' => false,
                 'disabled'                  => $event->filterShouldBeDisabled(),
-                'constraints'               => $event->filterShouldBeDisabled() ? [] : [new NotBlank(['message' => 'mautic.core.value.required'])],
+                'constraints'               => $event->filterShouldBeDisabled() ? [] : [
+                    new NotBlank([
+                        'message' => 'mautic.core.value.required',
+                    ])],
                 'attr'                      => [
                     'class'                => 'form-control',
                     'data-placeholder'     => $this->translator->trans('mautic.lead.tags.select_or_create'),
@@ -182,7 +187,9 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 'attr'        => $displayAttr,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
             ]
@@ -196,11 +203,15 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 'label'       => false,
                 'required'    => true,
                 'data'        => $form->getData()['filter'] ?? '',
-                'attr'        => ['class' => 'form-control'],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'disabled'    => $event->filterShouldBeDisabled(),
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
             ]
@@ -256,7 +267,9 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 'disabled'    => $event->filterShouldBeDisabled(),
                 'constraints' => $event->filterShouldBeRequired() ? [
                     new NotBlank(
-                        ['message' => $this->translator->trans('mautic.core.value.required')]
+                        [
+                            'message' => $this->translator->trans('mautic.core.value.required'),
+                        ]
                     ),
                 ] : [],
             ]
@@ -296,13 +309,18 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 ChoiceType::class,
                 [
                     'label'                     => false,
-                    'attr'                      => ['class' => 'form-control'],
+                    'attr'                      => [
+                        'class' => 'form-control',
+                    ],
                     'data'                      => $filter,
                     'choices'                   => $event->getFieldChoices(),
                     'multiple'                  => $multiple,
                     'choice_translation_domain' => false,
                     'disabled'                  => $event->filterShouldBeDisabled(),
-                    'constraints'               => $event->filterShouldBeDisabled() ? [] : [new NotBlank(['message' => 'mautic.core.value.required'])],
+                    'constraints'               => $event->filterShouldBeDisabled() ? [] : [
+                        new NotBlank([
+                            'message' => 'mautic.core.value.required',
+                        ])],
                 ]
             );
             $event->stopPropagation();
@@ -323,7 +341,9 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
             TextType::class,
             [
                 'label'       => false,
-                'attr'        => ['class' => 'form-control'],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'disabled'    => $event->filterShouldBeDisabled(),
                 'data'        => $form->getData()['filter'] ?? '',
                 'constraints' => $constraints,

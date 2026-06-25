@@ -12,7 +12,9 @@ class IntegrationTokenTest extends TestCase
     public function testGetters(): void
     {
         $expires   = time() + 100;
-        $extraData = ['foo' => 'bar'];
+        $extraData = [
+            'foo' => 'bar',
+        ];
         $token     = new IntegrationToken('accessToken', 'refreshToken', $expires, $extraData);
 
         $this->assertEquals('accessToken', $token->getAccessToken());

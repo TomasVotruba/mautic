@@ -232,7 +232,9 @@ class TriggerCampaignCommand extends ModeratedCommand
                 if ($campaign = $this->campaignRepository->getEntity($id)) {
                     $this->triggerCampaign($campaign);
                 } else {
-                    $output->writeln('<error>'.$this->translator->trans('mautic.campaign.rebuild.not_found', ['%id%' => $id]).'</error>');
+                    $output->writeln('<error>'.$this->translator->trans('mautic.campaign.rebuild.not_found', [
+                        '%id%' => $id,
+                    ]).'</error>');
                     $statusCode = ExitCode::FAILURE;
                 }
                 $this->completeRun();
@@ -313,7 +315,9 @@ class TriggerCampaignCommand extends ModeratedCommand
         $this->campaign = $campaign;
 
         try {
-            $this->output->writeln('<info>'.$this->translator->trans('mautic.campaign.trigger.triggering', ['%id%' => $campaign->getId()]).'</info>');
+            $this->output->writeln('<info>'.$this->translator->trans('mautic.campaign.trigger.triggering', [
+                '%id%' => $campaign->getId(),
+            ]).'</info>');
             // Reset batch limiter
             $this->limiter->resetBatchMinContactId();
 

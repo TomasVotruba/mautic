@@ -14,7 +14,9 @@ class AjaxController extends CommonAjaxController
 
     public function cancelQueuedMessageEventAction(Request $request): JsonResponse
     {
-        $dataArray      = ['success' => 0];
+        $dataArray      = [
+            'success' => 0,
+        ];
         $messageQueueId = (int) $request->request->get('channelId');
         $queueModel     = $this->getModel('channel.queue');
         \assert($queueModel instanceof MessageQueueModel);
@@ -22,7 +24,9 @@ class AjaxController extends CommonAjaxController
         if ($queuedMessage) {
             $queuedMessage->setStatus('cancelled');
             $queueModel->saveEntity($queuedMessage);
-            $dataArray = ['success' => 1];
+            $dataArray = [
+                'success' => 1,
+            ];
         }
 
         return $this->sendJsonResponse($dataArray);

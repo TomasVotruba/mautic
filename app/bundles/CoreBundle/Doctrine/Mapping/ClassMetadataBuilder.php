@@ -431,7 +431,9 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
             $cm->table['indexes'] = [];
         }
 
-        $definition = ['columns' => $columns];
+        $definition = [
+            'columns' => $columns,
+        ];
 
         if (null !== $flags) {
             $definition['flags'] = $flags;

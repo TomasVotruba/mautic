@@ -61,7 +61,9 @@ class FieldHelperTest extends TestCase
         $this->channelListHelper       = $this->createMock(ChannelListHelper::class);
         $this->objectProvider          = $this->createMock(ObjectProvider::class);
         $this->channelListHelper->method('getFeatureChannels')
-            ->willReturn(['Email' => 'email']);
+            ->willReturn([
+                'Email' => 'email',
+            ]);
 
         $this->mauticSyncFieldsLoadEvent = $this->createMock(MauticSyncFieldsLoadEvent::class);
         $this->eventDispatcher           = $this->createMock(EventDispatcherInterface::class);
@@ -84,7 +86,9 @@ class FieldHelperTest extends TestCase
     public function testContactSyncFieldsReturned(): void
     {
         $objectName = Contact::NAME;
-        $syncFields = ['email' => 'Email'];
+        $syncFields = [
+            'email' => 'Email',
+        ];
 
         $this->mauticSyncFieldsLoadEvent->method('getObjectName')
             ->willReturn($objectName);
@@ -110,7 +114,9 @@ class FieldHelperTest extends TestCase
     public function testCompanySyncFieldsReturned(): void
     {
         $objectName = Contact::NAME;
-        $syncFields = ['email' => 'Email'];
+        $syncFields = [
+            'email' => 'Email',
+        ];
 
         $this->mauticSyncFieldsLoadEvent->method('getObjectName')
             ->willReturn($objectName);

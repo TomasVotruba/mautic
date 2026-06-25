@@ -41,11 +41,26 @@ class CampaignDecisionTest extends MauticMysqlTestCase
             'object'              => $object,
             'properties'          => [
                 'list' => [
-                    ['label' => 'l1', 'value' => 'v1'],
-                    ['label' => 'l2', 'value' => 'v2'],
-                    ['label' => 'l3', 'value' => 'v3'],
-                    ['label' => 'l4', 'value' => 'v4'],
-                    ['label' => 'l5', 'value' => 'v5'],
+                    [
+                        'label' => 'l1',
+                        'value' => 'v1',
+                    ],
+                    [
+                        'label' => 'l2',
+                        'value' => 'v2',
+                    ],
+                    [
+                        'label' => 'l3',
+                        'value' => 'v3',
+                    ],
+                    [
+                        'label' => 'l4',
+                        'value' => 'v4',
+                    ],
+                    [
+                        'label' => 'l5',
+                        'value' => 'v5',
+                    ],
                 ],
             ],
         ];
@@ -74,7 +89,9 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         $yesEvent = $this->createEvent('Add 10 points', $campaign,
             'lead.changepoints',
             'action',
-            ['points' => 10],
+            [
+                'points' => 10,
+            ],
             'yes',
             $parentEvent
         );
@@ -82,7 +99,9 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         $noEvent = $this->createEvent('Add 5 points', $campaign,
             'lead.changepoints',
             'action',
-            ['points' => 5],
+            [
+                'points' => 5,
+            ],
             'no',
             $parentEvent
         );
@@ -90,8 +109,12 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $campaign->getId()]);
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:update', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         if ('in' === $operator) {
             $this->assertCampaignLeadEventLog(
@@ -124,7 +147,12 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         array $noEventLeads,
     ): void {
         $campaignEventLogs = $this->em->getRepository(LeadEventLog::class)
-            ->findBy(['campaign' => $campaign, 'event' => $yesEvent], ['event' => 'ASC']);
+            ->findBy([
+                'campaign' => $campaign,
+                'event' => $yesEvent,
+            ], [
+                'event' => 'ASC',
+            ]);
         Assert::assertCount(count($yesEventLeads), $campaignEventLogs);
         Assert::assertSame(
             $yesEventLeads,
@@ -132,7 +160,12 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         );
 
         $campaignEventLogs = $this->em->getRepository(LeadEventLog::class)
-            ->findBy(['campaign' => $campaign, 'event' => $noEvent], ['event' => 'ASC']);
+            ->findBy([
+                'campaign' => $campaign,
+                'event' => $noEvent,
+            ], [
+                'event' => 'ASC',
+            ]);
         Assert::assertCount(count($noEventLeads), $campaignEventLogs);
         Assert::assertSame(
             $noEventLeads,

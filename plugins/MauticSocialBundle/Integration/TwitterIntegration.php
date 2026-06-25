@@ -100,7 +100,9 @@ class TwitterIntegration extends SocialIntegration
                     'oauth_token'      => $accessToken['oauth_token'],
                 ],
                 'GET',
-                ['auth_type' => 'oauth1a']
+                [
+                    'auth_type' => 'oauth1a',
+                ]
             );
         }
 
@@ -213,14 +215,30 @@ class TwitterIntegration extends SocialIntegration
     public function getAvailableLeadFields($settings = []): array
     {
         return [
-            'profileHandle' => ['type' => 'string'],
-            'name'          => ['type' => 'string'],
-            'location'      => ['type' => 'string'],
-            'description'   => ['type' => 'string'],
-            'url'           => ['type' => 'string'],
-            'time_zone'     => ['type' => 'string'],
-            'lang'          => ['type' => 'string'],
-            'email'         => ['type' => 'string'],
+            'profileHandle' => [
+                'type' => 'string',
+            ],
+            'name'          => [
+                'type' => 'string',
+            ],
+            'location'      => [
+                'type' => 'string',
+            ],
+            'description'   => [
+                'type' => 'string',
+            ],
+            'url'           => [
+                'type' => 'string',
+            ],
+            'time_zone'     => [
+                'type' => 'string',
+            ],
+            'lang'          => [
+                'type' => 'string',
+            ],
+            'email'         => [
+                'type' => 'string',
+            ],
         ];
     }
 

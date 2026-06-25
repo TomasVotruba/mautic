@@ -23,7 +23,9 @@ final class ListLeadRepositoryTest extends MauticMysqlTestCase
 
     public function testGetContactsCountBySegment(): void
     {
-        $filters       = ['manually_removed' => 0];
+        $filters       = [
+            'manually_removed' => 0,
+        ];
         $contact       = new Lead();
         $segment       = new LeadList();
         $segmentMember = new ListLead();

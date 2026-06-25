@@ -29,7 +29,9 @@ class ContactDeduper
      */
     public function getUniqueFields(string $object): array
     {
-        return $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => $object]);
+        return $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier([
+            'object' => $object,
+        ]);
     }
 
     /**
@@ -57,7 +59,10 @@ class ContactDeduper
      */
     public function getContactsByIds(array $contactIds): array
     {
-        return $this->leadRepository->getEntities(['ids' => $contactIds, 'ignore_paginator' => false]);
+        return $this->leadRepository->getEntities([
+            'ids' => $contactIds,
+            'ignore_paginator' => false,
+        ]);
     }
 
     /**

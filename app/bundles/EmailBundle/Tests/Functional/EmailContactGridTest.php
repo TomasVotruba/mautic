@@ -139,7 +139,9 @@ class EmailContactGridTest extends MauticMysqlTestCase
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
-        $adminUser      = $userRepository->findOneBy(['username' => 'admin']);
+        $adminUser      = $userRepository->findOneBy([
+            'username' => 'admin',
+        ]);
 
         $segment = $this->createSegment('SegmentOne', []);
 

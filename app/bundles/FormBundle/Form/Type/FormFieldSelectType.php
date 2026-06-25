@@ -26,8 +26,12 @@ class FormFieldSelectType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.form.emptyvalue',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
             ]
         );

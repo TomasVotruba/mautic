@@ -72,7 +72,9 @@ EOT
 
         foreach ([
             'sass:build'        => [],
-            'importmap:install' => ['--no-interaction' => true],
+            'importmap:install' => [
+                '--no-interaction' => true,
+            ],
             'asset-map:compile' => [],
         ] as $commandName => $arguments) {
             if (Command::SUCCESS !== $this->runConsoleCommand($commandName, $arguments, $output)) {
@@ -138,7 +140,9 @@ EOT
     {
         $command = $this->getApplication()->find('elfinder:install');
 
-        $command->run(new ArrayInput(['--docroot' => $mediaDir]), new NullOutput());
+        $command->run(new ArrayInput([
+            '--docroot' => $mediaDir,
+        ]), new NullOutput());
     }
 
     /**
@@ -210,7 +214,10 @@ EOT
         }
 
         if ($this->filesystem->exists($pictogramsSourceDir)) {
-            $this->filesystem->mirror($pictogramsSourceDir, $coreBundleAssetsDir, null, ['override' => true, 'delete' => true]);
+            $this->filesystem->mirror($pictogramsSourceDir, $coreBundleAssetsDir, null, [
+                'override' => true,
+                'delete' => true,
+            ]);
         }
     }
 }

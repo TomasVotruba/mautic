@@ -14,21 +14,27 @@ trait WriteCountTrait
         $output->writeln(
             '<comment>'.$translator->trans(
                 'mautic.campaign.trigger.events_executed',
-                ['%count%' => $counter->getTotalExecuted()]
+                [
+                    '%count%' => $counter->getTotalExecuted(),
+                ]
             )
             .'</comment>'
         );
         $output->writeln(
             '<comment>'.$translator->trans(
                 'mautic.campaign.trigger.events_scheduled',
-                ['%count%' => $counter->getTotalScheduled()]
+                [
+                    '%count%' => $counter->getTotalScheduled(),
+                ]
             )
             .'</comment>'
         );
         $output->writeln(
             '<comment>'.$translator->trans(
                 'mautic.campaign.trigger.events_rescheduled',
-                ['%count%' => $counter->getRescheduled()]
+                [
+                    '%count%' => $counter->getRescheduled(),
+                ]
             )
             .'</comment>'
         );

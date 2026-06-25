@@ -256,7 +256,9 @@ class RealTimeExecutionerTest extends TestCase
             ->willReturn(10);
         $lead->expects($this->once())
             ->method('getChanges')
-            ->willReturn(['notempty' => true]);
+            ->willReturn([
+                'notempty' => true,
+            ]);
 
         $this->leadModel->expects($this->once())
             ->method('saveEntity');
@@ -313,7 +315,9 @@ class RealTimeExecutionerTest extends TestCase
             ->willReturn(10);
         $lead->expects($this->once())
             ->method('getChanges')
-            ->willReturn(['notempty' => true]);
+            ->willReturn([
+                'notempty' => true,
+            ]);
 
         $this->contactTracker->expects($this->once())
             ->method('getContact')

@@ -39,12 +39,16 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator
             ->method('trans')
-            ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
+            ->with('mautic.form.submission.checkboxgrp.minimum', [
+                '%min%' => 2,
+            ], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();
         $field->setType('checkboxgrp');
-        $field->setValidation(['minimum' => 2]);
+        $field->setValidation([
+            'minimum' => 2,
+        ]);
 
         $event = new ValidationEvent($field, ['a']);
         $this->subscriber->onFormValidate($event);
@@ -57,12 +61,16 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator
             ->method('trans')
-            ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
+            ->with('mautic.form.submission.checkboxgrp.minimum', [
+                '%min%' => 2,
+            ], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();
         $field->setType('checkboxgrp');
-        $field->setValidation(['minimum' => 2]);
+        $field->setValidation([
+            'minimum' => 2,
+        ]);
 
         $event = new ValidationEvent($field, []);
         $this->subscriber->onFormValidate($event);
@@ -75,12 +83,16 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator
             ->method('trans')
-            ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 1], 'validators')
+            ->with('mautic.form.submission.checkboxgrp.minimum', [
+                '%min%' => 1,
+            ], 'validators')
             ->willReturn('You must select at least 1 options.');
 
         $field = new Field();
         $field->setType('checkboxgrp');
-        $field->setValidation(['minimum' => 1]);
+        $field->setValidation([
+            'minimum' => 1,
+        ]);
 
         $event = new ValidationEvent($field, null);
         $this->subscriber->onFormValidate($event);
@@ -93,12 +105,16 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator
             ->method('trans')
-            ->with('mautic.form.submission.checkboxgrp.maximum', ['%max%' => 3], 'validators')
+            ->with('mautic.form.submission.checkboxgrp.maximum', [
+                '%max%' => 3,
+            ], 'validators')
             ->willReturn('You cannot select more than 3 options.');
 
         $field = new Field();
         $field->setType('checkboxgrp');
-        $field->setValidation(['maximum' => 3]);
+        $field->setValidation([
+            'maximum' => 3,
+        ]);
 
         $event = new ValidationEvent($field, ['a', 'b', 'c', 'd']);
         $this->subscriber->onFormValidate($event);
@@ -111,7 +127,10 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $field = new Field();
         $field->setType('checkboxgrp');
-        $field->setValidation(['minimum' => 1, 'maximum' => 3]);
+        $field->setValidation([
+            'minimum' => 1,
+            'maximum' => 3,
+        ]);
 
         $event = new ValidationEvent($field, ['a', 'b']);
         $this->subscriber->onFormValidate($event);
@@ -155,7 +174,9 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator
             ->method('trans')
-            ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
+            ->with('mautic.form.submission.checkboxgrp.minimum', [
+                '%min%' => 2,
+            ], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();

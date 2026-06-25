@@ -61,20 +61,34 @@ class PageController extends FormController
         $limit  = $pageHelper->getLimit();
         $start  = $pageHelper->getStart();
         $search = $request->get('search', $request->getSession()->get('mautic.page.filter', ''));
-        $filter = ['string' => $search, 'force' => []];
+        $filter = [
+            'string' => $search,
+            'force' => [],
+        ];
 
         $request->getSession()->set('mautic.page.filter', $search);
 
         if (!$permissions['page:pages:viewother']) {
-            $filter['force'][] = ['column' => 'p.createdBy', 'expr' => 'eq', 'value' => $this->user->getId()];
+            $filter['force'][] = [
+                'column' => 'p.createdBy',
+                'expr' => 'eq',
+                'value' => $this->user->getId(),
+            ];
         }
 
         if (!$permissions['page:preference_center:viewown'] && !$permissions['page:preference_center:viewother']) {
             $filter['where'][] = [
                 'expr' => 'orX',
                 'val'  => [
-                    ['column' => 'p.isPreferenceCenter', 'expr' => 'isNull'],
-                    ['column' => 'p.isPreferenceCenter', 'expr' => 'eq', 'value' => 0],
+                    [
+                        'column' => 'p.isPreferenceCenter',
+                        'expr' => 'isNull',
+                    ],
+                    [
+                        'column' => 'p.isPreferenceCenter',
+                        'expr' => 'eq',
+                        'value' => 0,
+                    ],
                 ],
             ];
         } elseif (!$permissions['page:preference_center:viewother']) {
@@ -84,15 +98,30 @@ class PageController extends FormController
                     [
                         'expr' => 'orX',
                         'val'  => [
-                            ['column' => 'p.isPreferenceCenter', 'expr' => 'isNull'],
-                            ['column' => 'p.isPreferenceCenter', 'expr' => 'eq', 'value' => 0],
+                            [
+                                'column' => 'p.isPreferenceCenter',
+                                'expr' => 'isNull',
+                            ],
+                            [
+                                'column' => 'p.isPreferenceCenter',
+                                'expr' => 'eq',
+                                'value' => 0,
+                            ],
                         ],
                     ],
                     [
                         'expr' => 'andX',
                         'val'  => [
-                            ['column' => 'p.isPreferenceCenter', 'expr' => 'eq', 'value' => 1],
-                            ['column' => 'p.createdBy', 'expr' => 'eq', 'value' => $this->user->getId()],
+                            [
+                                'column' => 'p.isPreferenceCenter',
+                                'expr' => 'eq',
+                                'value' => 1,
+                            ],
+                            [
+                                'column' => 'p.createdBy',
+                                'expr' => 'eq',
+                                'value' => $this->user->getId(),
+                            ],
                         ],
                     ],
                 ],
@@ -102,11 +131,17 @@ class PageController extends FormController
         $translator = $this->translator;
 
         // do not list variants in the main list
-        $filter['force'][] = ['column' => 'p.variantParent', 'expr' => 'isNull'];
+        $filter['force'][] = [
+            'column' => 'p.variantParent',
+            'expr' => 'isNull',
+        ];
 
         $langSearchCommand = $translator->trans('mautic.core.searchcommand.lang');
         if (!str_contains($search, "{$langSearchCommand}:")) {
-            $filter['force'][] = ['column' => 'p.translationParent', 'expr' => 'isNull'];
+            $filter['force'][] = [
+                'column' => 'p.translationParent',
+                'expr' => 'isNull',
+            ];
         }
 
         $orderBy    = $request->getSession()->get('mautic.page.orderby', 'p.dateModified');
@@ -125,12 +160,16 @@ class PageController extends FormController
         $count = count($pages);
         if ($count && $count < ($start + 1)) {
             $lastPage  = $pageHelper->countPage($count);
-            $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_page_index', [
+                'page' => $lastPage,
+            ]);
             $pageHelper->rememberPage($lastPage);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $lastPage],
+                'viewParameters'  => [
+                    'page' => $lastPage,
+                ],
                 'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_page_index',
@@ -158,7 +197,9 @@ class PageController extends FormController
             'passthroughVars' => [
                 'activeLink'    => '#mautic_page_index',
                 'mauticContent' => 'page',
-                'route'         => $this->generateUrl('mautic_page_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_page_index', [
+                    'page' => $page,
+                ]),
             ],
         ]);
     }
@@ -177,11 +218,15 @@ class PageController extends FormController
 
         if (null === $activePage) {
             // set the return URL
-            $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
+            $returnUrl = $this->generateUrl('mautic_page_index', [
+                'page' => $page,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $page],
+                'viewParameters'  => [
+                    'page' => $page,
+                ],
                 'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_page_index',
@@ -191,7 +236,9 @@ class PageController extends FormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.page.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
@@ -265,8 +312,13 @@ class PageController extends FormController
 
         // Init the date range filter form
         $dateRangeValues = $request->query->all()['daterange'] ?? $request->request->all()['daterange'] ?? [];
-        $action          = $this->generateUrl('mautic_page_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+        $action          = $this->generateUrl('mautic_page_action', [
+            'objectAction' => 'view',
+            'objectId' => $objectId,
+        ]);
+        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $action,
+        ]);
 
         $logs = $auditLogModel->getLogForObject('page', $activePage->getId(), $activePage->getDateAdded());
 
@@ -275,7 +327,10 @@ class PageController extends FormController
             new \DateTime($dateRangeForm->get('date_from')->getData()),
             new \DateTime($dateRangeForm->get('date_to')->getData()),
             null,
-            ['page_id' => $activePage->getId(), 'flag' => 'total_and_unique']
+            [
+                'page_id' => $activePage->getId(),
+                'flag' => 'total_and_unique',
+            ]
         );
 
         // get related translations
@@ -306,7 +361,8 @@ class PageController extends FormController
         return $this->delegateView([
             'returnUrl' => $this->generateUrl('mautic_page_action', [
                 'objectAction' => 'view',
-                'objectId'     => $activePage->getId(), ]
+                'objectId'     => $activePage->getId(),
+            ]
             ),
             'viewParameters' => [
                 'activePage'   => $activePage,
@@ -336,18 +392,21 @@ class PageController extends FormController
                 'security'        => $this->security,
                 'pageUrl'         => $model->generateUrl($activePage),
                 'draftPreviewUrl' => $draftPreviewUrl,
-                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', [
+                    'id' => $objectId,
+                ], UrlGeneratorInterface::ABSOLUTE_URL),
                 'logs'            => $logs,
-                'dateRangeForm'   => $dateRangeForm->createView(), 'previewSettingsForm' => $this->createForm(
-                    ContentPreviewSettingsType::class,
-                    null,
-                    [
-                        'type'         => ContentPreviewSettingsType::TYPE_PAGE,
-                        'objectId'     => $activePage->getId(),
-                        'variants'     => $variants,
-                        'translations' => $translations,
-                    ]
-                )->createView(),
+                'dateRangeForm'   => $dateRangeForm->createView(),
+                'previewSettingsForm' => $this->createForm(
+                                    ContentPreviewSettingsType::class,
+                                    null,
+                                    [
+                                        'type'         => ContentPreviewSettingsType::TYPE_PAGE,
+                                        'objectId'     => $activePage->getId(),
+                                        'variants'     => $variants,
+                                        'translations' => $translations,
+                                    ]
+                                )->createView(),
             ],
             'contentTemplate' => '@MauticPage/Page/details.html.twig',
             'passthroughVars' => [
@@ -378,7 +437,9 @@ class PageController extends FormController
 
         // set the page we came from
         $page   = $session->get('mautic.page.page', 1);
-        $action = $this->generateUrl('mautic_page_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_page_action', [
+            'objectAction' => 'new',
+        ]);
 
         // create the form
         $form = $model->createForm($entity, $this->formFactory, $action);
@@ -422,7 +483,9 @@ class PageController extends FormController
                     }
                 }
             } else {
-                $viewParameters = ['page' => $page];
+                $viewParameters = [
+                    'page' => $page,
+                ];
                 $returnUrl      = $this->generateUrl('mautic_page_index', $viewParameters);
                 $template       = 'Mautic\PageBundle\Controller\PageController::indexAction';
                 // clear any modified content
@@ -490,11 +553,15 @@ class PageController extends FormController
         $page       = $request->getSession()->get('mautic.page.page', 1);
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_page_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_page_index',
@@ -510,7 +577,9 @@ class PageController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.page.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -528,7 +597,10 @@ class PageController extends FormController
         }
 
         // Create the form
-        $action = $this->generateUrl('mautic_page_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_page_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $form   = $model->createForm($entity, $this->formFactory, $action);
         $this->setOptimisticLockVersion($entity, $form);
         $existingPage = clone $entity;
@@ -621,7 +693,8 @@ class PageController extends FormController
         if ($draftEnabled && $entity->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
                 'mautic_page_preview',
-                ['id'             => $entity->getId(),
+                [
+                    'id'             => $entity->getId(),
                     'objectType'  => 'draft',
                 ],
             );
@@ -632,7 +705,9 @@ class PageController extends FormController
             'objectId'     => $entity->getId(),
         ]);
         $error = $this->getFormErrorForBuilder($form);
-        $data  = ['version' => $error ? $form['version']->getData() : $entity->getVersion()];
+        $data  = [
+            'version' => $error ? $form['version']->getData() : $entity->getVersion(),
+        ];
 
         if ($optimizedResponse = $this->returnOptimizedResponse($request, $form, '#mautic_page_index', 'page', $route, $data)) {
             return $optimizedResponse;
@@ -645,7 +720,9 @@ class PageController extends FormController
                 'tokens'          => $model->getBuilderComponents($entity, 'tokens'),
                 'activePage'      => $entity,
                 'themes'          => $themeHelper->getInstalledThemes('page', true),
-                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId]),
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', [
+                    'id' => $objectId,
+                ]),
                 'draftPreviewUrl' => $draftPreviewUrl,
                 'permissions'     => $this->security->isGranted(
                     [
@@ -714,12 +791,16 @@ class PageController extends FormController
     public function deleteAction(Request $request, PageModel $model, $objectId)
     {
         $page      = $request->getSession()->get('mautic.page.page', 1);
-        $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_page_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_page_index',
@@ -734,7 +815,9 @@ class PageController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.page.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->hasEntityAccess(
                 'page:pages:deleteown',
@@ -771,12 +854,16 @@ class PageController extends FormController
     public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.page.page', 1);
-        $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_page_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_page_index',
@@ -798,7 +885,9 @@ class PageController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.page.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->hasEntityAccess(
                     'page:pages:deleteown', 'page:pages:deleteother', $entity->getCreatedBy()
@@ -925,12 +1014,16 @@ class PageController extends FormController
     {
         // todo - add confirmation to button click
         $page      = $request->getSession()->get('mautic.page.page', 1);
-        $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_page_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_page_index',
@@ -945,7 +1038,9 @@ class PageController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.page.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->hasEntityAccess(
                 'page:pages:editown',
@@ -994,14 +1089,18 @@ class PageController extends FormController
         $activePage   = $pageModel->getEntity($objectId);
         $session      = $request->getSession();
         $pageListPage = $session->get('mautic.page.page', 1);
-        $returnUrl    = $this->generateUrl('mautic_page_index', ['page' => $pageListPage]);
+        $returnUrl    = $this->generateUrl('mautic_page_index', [
+            'page' => $pageListPage,
+        ]);
 
         if (null === $activePage) {
             // redirect back to page list
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $pageListPage],
+                    'viewParameters'  => [
+                        'page' => $pageListPage,
+                    ],
                     'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_page_index',
@@ -1011,7 +1110,9 @@ class PageController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.page.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -1046,7 +1147,12 @@ class PageController extends FormController
 
         if ($request->query->has('result')) {
             // Force ID
-            $filters['s.id'] = ['column' => 's.id', 'expr' => 'like', 'value' => (int) $request->query->get('result'), 'strict' => false];
+            $filters['s.id'] = [
+                'column' => 's.id',
+                'expr' => 'like',
+                'value' => (int) $request->query->get('result'),
+                'strict' => false,
+            ];
             $session->set("mautic.pageresult.$objectId.filters", $filters);
         }
         // get the results
@@ -1054,7 +1160,9 @@ class PageController extends FormController
             [
                 'start'          => $start,
                 'limit'          => $limit,
-                'filter'         => ['force' => $filters],
+                'filter'         => [
+                    'force' => $filters,
+                ],
                 'orderBy'        => $orderBy,
                 'orderByDir'     => $orderByDir,
                 'withTotalCount' => true,
@@ -1071,12 +1179,17 @@ class PageController extends FormController
             // the number of entities are now less then the current page so redirect to the last page
             $lastPage = (1 === $count) ? 1 : (((ceil($count / $limit)) ?: 1) ?: 1);
             $session->set('mautic.pageresult.page', $lastPage);
-            $returnUrl = $this->generateUrl('mautic_page_results', ['objectId' => $objectId, 'page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_page_results', [
+                'objectId' => $objectId,
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::resultsAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_page_index',
@@ -1133,14 +1246,18 @@ class PageController extends FormController
         $activePage   = $pageModel->getEntity($objectId);
         $session      = $request->getSession();
         $pageListPage = $session->get('mautic.page.page', 1);
-        $returnUrl    = $this->generateUrl('mautic_page_index', ['page' => $pageListPage]);
+        $returnUrl    = $this->generateUrl('mautic_page_index', [
+            'page' => $pageListPage,
+        ]);
 
         if (null === $activePage) {
             // redirect back to page list
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $pageListPage],
+                    'viewParameters'  => [
+                        'page' => $pageListPage,
+                    ],
                     'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_page_index',
@@ -1150,7 +1267,9 @@ class PageController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.page.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -1170,7 +1289,9 @@ class PageController extends FormController
 
         $args = [
             'limit'      => false,
-            'filter'     => ['force' => $filters],
+            'filter'     => [
+                'force' => $filters,
+            ],
             'orderBy'    => $orderBy,
             'orderByDir' => $orderByDir,
             'activePage' => $activePage,

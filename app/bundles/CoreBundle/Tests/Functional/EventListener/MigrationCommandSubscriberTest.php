@@ -118,7 +118,10 @@ ADD INDEX `{$this->tablePrefix}generated_name_three`(generated_name_three)
     private function executeMigrationCommand(): string
     {
         // intentionally not using AbstractMauticTestCase::testSymfonyCommand() as it does not dispatch 'console.terminate' event
-        $params      = ['command' => 'doctrine:migration:migrate', '--no-interaction' => true];
+        $params      = [
+            'command' => 'doctrine:migration:migrate',
+            '--no-interaction' => true,
+        ];
         $application = new Application(static::getContainer()->get('kernel'));
         $application->setAutoExit(false);
         $application->setCatchExceptions(false);

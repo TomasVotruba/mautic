@@ -61,7 +61,9 @@ final class CampaignApiEventDeleteTest extends MauticMysqlTestCase
         $payload = [
             'name'   => $campaign->getName(),
             'events' => $events,
-            'lists'  => [['id' => $segment->getId()]],
+            'lists'  => [[
+                'id' => $segment->getId(),
+            ]],
         ];
 
         $this->client->request('PUT', "/api/campaigns/{$campaign->getId()}/edit", $payload);

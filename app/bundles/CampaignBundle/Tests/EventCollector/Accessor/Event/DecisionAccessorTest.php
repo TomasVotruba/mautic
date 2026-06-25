@@ -8,15 +8,22 @@ class DecisionAccessorTest extends \PHPUnit\Framework\TestCase
 {
     public function testEventNameIsReturned(): void
     {
-        $accessor = new DecisionAccessor(['eventName' => 'test']);
+        $accessor = new DecisionAccessor([
+            'eventName' => 'test',
+        ]);
 
         $this->assertEquals('test', $accessor->getEventName());
     }
 
     public function testExtraParamIsReturned(): void
     {
-        $accessor = new DecisionAccessor(['eventName' => 'test', 'foo' => 'bar']);
+        $accessor = new DecisionAccessor([
+            'eventName' => 'test',
+            'foo' => 'bar',
+        ]);
 
-        $this->assertEquals(['foo' => 'bar'], $accessor->getExtraProperties());
+        $this->assertEquals([
+            'foo' => 'bar',
+        ], $accessor->getExtraProperties());
     }
 }

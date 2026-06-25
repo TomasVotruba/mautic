@@ -20,7 +20,9 @@ final class EventTypeTest extends TestCase
         $method = new \ReflectionMethod(EventType::class, 'getTimeValue');
 
         /** @var \DateTime $parsed */
-        $parsed = $method->invoke($type, ['triggerHour' => $value], 'triggerHour');
+        $parsed = $method->invoke($type, [
+            'triggerHour' => $value,
+        ], 'triggerHour');
 
         $this->assertInstanceOf(\DateTime::class, $parsed);
         $this->assertSame($expected, $parsed->format('H:i'));
@@ -31,7 +33,9 @@ final class EventTypeTest extends TestCase
         $type   = new EventType();
         $method = new \ReflectionMethod(EventType::class, 'getTimeValue');
 
-        $parsed = $method->invoke($type, ['triggerHour' => 1], 'triggerHour');
+        $parsed = $method->invoke($type, [
+            'triggerHour' => 1,
+        ], 'triggerHour');
 
         $this->assertNull($parsed);
     }
@@ -46,6 +50,8 @@ final class EventTypeTest extends TestCase
         yield 'hour and minute string' => ['04:00', '04:00'];
         yield 'hour and minute string with whitespace' => [' 04:00 ', '04:00'];
         yield 'fallback datetime string with whitespace' => [' 2024-01-02 03:04:00 ', '03:04'];
-        yield 'array date value' => [['date' => '08:00'], '08:00'];
+        yield 'array date value' => [[
+            'date' => '08:00',
+        ], '08:00'];
     }
 }

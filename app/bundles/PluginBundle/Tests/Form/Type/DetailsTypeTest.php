@@ -20,16 +20,27 @@ class DetailsTypeTest extends TestCase
     {
         /** @var MockObject&FormBuilderInterface $builder */
         $builder = $this->createMock(FormBuilderInterface::class);
-        $options = ['integration' => 'integration', 'lead_fields' => 'lead_fields', 'company_fields' => 'company_fields'];
+        $options = [
+            'integration' => 'integration',
+            'lead_fields' => 'lead_fields',
+            'company_fields' => 'company_fields',
+        ];
 
         /** @phpstan-ignore classConstant.deprecatedClass */
         $integrationObject = $this->createMock(AbstractIntegration::class);
         $integrationObject->expects(self::once())
             ->method('getFormDisplaySettings')
-            ->willReturn(['hide_keys' => ['key1', 'key3']]);
+            ->willReturn([
+                'hide_keys' => ['key1', 'key3'],
+            ]);
         $integrationObject->expects(self::once())
             ->method('getRequiredKeyFields')
-            ->willReturn(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4']);
+            ->willReturn([
+                'key1' => 'value1',
+                'key2' => 'value2',
+                'key3' => 'value3',
+                'key4' => 'value4',
+            ]);
         $integrationObject->expects(self::once())
             ->method('decryptApiKeys')
             ->willReturn([]);
@@ -60,7 +71,10 @@ class DetailsTypeTest extends TestCase
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
-                    self::assertSame(['key2' => 'value2', 'key4' => 'value4'], $options['integration_keys']);
+                    self::assertSame([
+                        'key2' => 'value2',
+                        'key4' => 'value4',
+                    ], $options['integration_keys']);
                 }
 
                 if ('authButton' === $key) {
@@ -89,16 +103,28 @@ class DetailsTypeTest extends TestCase
     {
         /** @var MockObject&FormBuilderInterface $builder */
         $builder = $this->createMock(FormBuilderInterface::class);
-        $options = ['integration' => 'integration', 'lead_fields' => 'lead_fields', 'company_fields' => 'company_fields'];
+        $options = [
+            'integration' => 'integration',
+            'lead_fields' => 'lead_fields',
+            'company_fields' => 'company_fields',
+        ];
 
         /** @phpstan-ignore classConstant.deprecatedClass */
         $integrationObject = $this->createMock(AbstractIntegration::class);
         $integrationObject->expects(self::once())
             ->method('getFormDisplaySettings')
-            ->willReturn(['hide_keys' => ['key3'], 'requires_authorization' => true]);
+            ->willReturn([
+                'hide_keys' => ['key3'],
+                'requires_authorization' => true,
+            ]);
         $integrationObject->expects(self::once())
             ->method('getRequiredKeyFields')
-            ->willReturn(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4']);
+            ->willReturn([
+                'key1' => 'value1',
+                'key2' => 'value2',
+                'key3' => 'value3',
+                'key4' => 'value4',
+            ]);
         $integrationObject->expects(self::once())
             ->method('decryptApiKeys')
             ->willReturn(['decrypted']);
@@ -130,7 +156,11 @@ class DetailsTypeTest extends TestCase
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
-                    self::assertSame(['key1' => 'value1', 'key2' => 'value2', 'key4' => 'value4'], $options['integration_keys']);
+                    self::assertSame([
+                        'key1' => 'value1',
+                        'key2' => 'value2',
+                        'key4' => 'value4',
+                    ], $options['integration_keys']);
                 }
 
                 if ('authButton' === $key) {
@@ -171,16 +201,27 @@ class DetailsTypeTest extends TestCase
     {
         /** @var MockObject&FormBuilderInterface $builder */
         $builder = $this->createMock(FormBuilderInterface::class);
-        $options = ['integration' => 'integration', 'lead_fields' => 'lead_fields', 'company_fields' => 'company_fields'];
+        $options = [
+            'integration' => 'integration',
+            'lead_fields' => 'lead_fields',
+            'company_fields' => 'company_fields',
+        ];
 
         /** @phpstan-ignore classConstant.deprecatedClass */
         $integrationObject = $this->createMock(AbstractIntegration::class);
         $integrationObject->expects(self::once())
             ->method('getFormDisplaySettings')
-            ->willReturn(['hide_keys' => ['key1']]);
+            ->willReturn([
+                'hide_keys' => ['key1'],
+            ]);
         $integrationObject->expects(self::once())
             ->method('getRequiredKeyFields')
-            ->willReturn(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4']);
+            ->willReturn([
+                'key1' => 'value1',
+                'key2' => 'value2',
+                'key3' => 'value3',
+                'key4' => 'value4',
+            ]);
         $integrationObject->expects(self::once())
             ->method('decryptApiKeys')
             ->willReturn(['decrypted']);
@@ -213,14 +254,20 @@ class DetailsTypeTest extends TestCase
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
-                    self::assertSame(['key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4'], $options['integration_keys']);
+                    self::assertSame([
+                        'key2' => 'value2',
+                        'key3' => 'value3',
+                        'key4' => 'value4',
+                    ], $options['integration_keys']);
                 }
 
                 if ('supportedFeatures' === $key) {
                     ++$calls;
                     self::assertSame(ChoiceType::class, $fieldFQCN);
                     self::assertArrayHasKey('choices', $options);
-                    self::assertSame(['mautic.integration.form.feature.non-configured' => 'non-configured'], $options['choices']);
+                    self::assertSame([
+                        'mautic.integration.form.feature.non-configured' => 'non-configured',
+                    ], $options['choices']);
                     self::assertArrayHasKey('data', $options);
                     self::assertSame($expectedFeatures, $options['data']);
                 }
@@ -251,7 +298,12 @@ class DetailsTypeTest extends TestCase
     public function testBuildFormWithAction(): void
     {
         $action  = 'the_action';
-        $options = ['action' => $action, 'integration' => 'integration', 'lead_fields' => 'lead_fields', 'company_fields' => 'company_fields'];
+        $options = [
+            'action' => $action,
+            'integration' => 'integration',
+            'lead_fields' => 'lead_fields',
+            'company_fields' => 'company_fields',
+        ];
 
         /** @var MockObject&FormBuilderInterface $builder */
         $builder = $this->createMock(FormBuilderInterface::class);
@@ -263,7 +315,12 @@ class DetailsTypeTest extends TestCase
             ->willReturn([]);
         $integrationObject->expects(self::once())
             ->method('getRequiredKeyFields')
-            ->willReturn(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4']);
+            ->willReturn([
+                'key1' => 'value1',
+                'key2' => 'value2',
+                'key3' => 'value3',
+                'key4' => 'value4',
+            ]);
         $integrationObject->expects(self::once())
             ->method('decryptApiKeys')
             ->willReturn(['decrypted']);
@@ -294,7 +351,12 @@ class DetailsTypeTest extends TestCase
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
-                    self::assertSame(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4'], $options['integration_keys']);
+                    self::assertSame([
+                        'key1' => 'value1',
+                        'key2' => 'value2',
+                        'key3' => 'value3',
+                        'key4' => 'value4',
+                    ], $options['integration_keys']);
                 }
 
                 if ('supportedFeatures' === $key) {

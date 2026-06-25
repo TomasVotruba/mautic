@@ -18,15 +18,21 @@ class ActionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $masks = ['description' => 'html'];
+        $masks = [
+            'description' => 'html',
+        ];
 
         $builder->add(
             'name',
             TextType::class,
             [
                 'label'      => 'mautic.core.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
             ]
         );
@@ -36,8 +42,12 @@ class ActionType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.core.description',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control editor'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control editor',
+                ],
                 'required'   => false,
             ]
         );

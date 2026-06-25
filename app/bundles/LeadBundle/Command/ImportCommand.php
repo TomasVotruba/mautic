@@ -112,7 +112,9 @@ EOT
             $this->notify(
                 $import,
                 $start,
-                $this->translator->trans('mautic.lead.import.failed', ['%reason%' => $import->getStatusInfo()]),
+                $this->translator->trans('mautic.lead.import.failed', [
+                    '%reason%' => $import->getStatusInfo(),
+                ]),
                 'error'
             );
 
@@ -130,7 +132,9 @@ EOT
             $this->notify(
                 $import,
                 $start,
-                $this->translator->trans('mautic.lead.import.delayed', ['%reason%' => $import->getStatusInfo()]),
+                $this->translator->trans('mautic.lead.import.delayed', [
+                    '%reason%' => $import->getStatusInfo(),
+                ]),
                 'warning'
             );
 

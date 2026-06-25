@@ -113,25 +113,33 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
         $staticFields = [
             'date_added' => [
                 'label'      => $this->translator->trans('mautic.core.date.added'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'date_identified' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.date_identified'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'last_active' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.last_active'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'date_modified' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.date_modified'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
@@ -146,7 +154,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'points' => [
                 'label'      => $this->translator->trans('mautic.lead.lead.event.points'),
-                'properties' => ['type' => 'number'],
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
@@ -197,7 +207,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'device_model' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.device_model'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::LIKE,
@@ -283,31 +295,41 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'utm_campaign' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.utmcampaign'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'utm_content' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.utmcontent'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'utm_medium' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.utmmedium'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'utm_source' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.utmsource'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
             'utm_term' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.utmterm'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],
@@ -368,7 +390,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             'lead_email_sent_date' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.lead_email_sent_date'),
                 'object'     => 'lead',
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -380,7 +404,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'lead_email_read_date' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.lead_email_read_date'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -394,7 +420,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             'lead_email_read_count' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.lead_email_read_count'),
                 'object'     => 'lead',
-                'properties' => ['type' => 'number'],
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::GREATER_THAN,
@@ -405,7 +433,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'hit_url' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.visited_url'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -421,7 +451,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'hit_url_date' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.visited_url_date'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -434,7 +466,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'hit_url_count' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.visited_url_count'),
-                'properties' => ['type' => 'number'],
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::GREATER_THAN,
@@ -445,7 +479,8 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
                 'object' => 'lead',
             ],
             // Clicked any link from any email
-            'email_id' => [ // kept as email_id for BC
+            'email_id' => [
+                // kept as email_id for BC
                 'label'      => $this->translator->trans('mautic.lead.list.filter.email_id'),
                 'properties' => [
                     'type' => 'boolean',
@@ -457,7 +492,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             // Clicked any link from any email relative to time
             'email_clicked_link_date' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.email_clicked_link_date'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -481,7 +518,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             // Clicked any link from any sms relative to time
             'sms_clicked_link_date' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.sms_clicked_link_date'),
-                'properties' => ['type' => 'datetime'],
+                'properties' => [
+                    'type' => 'datetime',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -494,7 +533,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'sessions' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.session'),
-                'properties' => ['type' => 'number'],
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::GREATER_THAN,
@@ -506,7 +547,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'referer' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.referer'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -522,7 +565,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'url_title' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.url_title'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -538,7 +583,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'source' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.source'),
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsIncluding([
                     OperatorOptions::EQUAL_TO,
                     OperatorOptions::NOT_EQUAL_TO,
@@ -554,7 +601,9 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             ],
             'source_id' => [
                 'label'      => $this->translator->trans('mautic.lead.list.filter.source.id'),
-                'properties' => ['type' => 'number'],
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ],

@@ -111,7 +111,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
     public function testRatingFieldBuildsConfiguredStarList(): void
     {
         $field = self::getField('Rating', 'rating');
-        $field->setProperties(['star_count' => 6]);
+        $field->setProperties([
+            'star_count' => 6,
+        ]);
 
         $this->assertSame([
             1 => '★',
@@ -126,7 +128,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
     public function testRatingListIsParsedForTemplateChoices(): void
     {
         $field = self::getField('Rating', 'rating');
-        $field->setProperties(['star_count' => 6]);
+        $field->setProperties([
+            'star_count' => 6,
+        ]);
 
         $this->assertSame(self::getRatingList($field), \Mautic\CoreBundle\Helper\AbstractFormFieldHelper::parseList(self::getRatingList($field)));
     }
@@ -134,7 +138,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
     public function testRatingTemplateUsesDescendingRadioValues(): void
     {
         $field = self::getField('Rating', 'rating');
-        $field->setProperties(['star_count' => 6]);
+        $field->setProperties([
+            'star_count' => 6,
+        ]);
 
         $this->assertSame([6, 5, 4, 3, 2, 1], range($field->getProperties()['star_count'], 1, -1));
     }

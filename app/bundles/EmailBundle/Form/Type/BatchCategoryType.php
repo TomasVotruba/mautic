@@ -28,8 +28,12 @@ class BatchCategoryType extends AbstractType
                 'class'         => Category::class,
                 'choice_label'  => 'title',
                 'required'      => true,
-                'label_attr'    => ['class' => 'control-label'],
-                'attr'          => ['class' => 'form-control'],
+                'label_attr'    => [
+                    'class' => 'control-label',
+                ],
+                'attr'          => [
+                    'class' => 'form-control',
+                ],
                 'query_builder' => function (CategoryRepository $cr): QueryBuilder {
                     $qb =$cr->createQueryBuilder('c');
 

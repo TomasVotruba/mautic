@@ -38,7 +38,12 @@ class ListType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'html', 'name' => 'string', 'publicName' => 'string', 'filter' => 'raw']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'html',
+            'name' => 'string',
+            'publicName' => 'string',
+            'filter' => 'raw',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('lead.list', $options));
 
         $builder->add(
@@ -46,8 +51,12 @@ class ListType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -56,7 +65,9 @@ class ListType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.lead.list.form.publicname',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'tooltip'     => 'mautic.lead.list.form.publicname.tooltip',
@@ -71,7 +82,9 @@ class ListType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.alias',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'length'      => 25,
@@ -87,8 +100,12 @@ class ListType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.core.description',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control editor'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control editor',
+                ],
                 'required'   => false,
             ]
         );
@@ -127,7 +144,9 @@ class ListType extends AbstractType
         $builder->add('projects', ProjectType::class);
         $builder->add('isPublished', YesNoButtonGroupType::class);
 
-        $filterModalTransformer = new FieldFilterTransformer($this->translator, $this->relativeDate, ['object' => 'lead']);
+        $filterModalTransformer = new FieldFilterTransformer($this->translator, $this->relativeDate, [
+            'object' => 'lead',
+        ]);
         $builder->add(
             $builder->create(
                 'filters',

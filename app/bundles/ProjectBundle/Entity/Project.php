@@ -112,7 +112,9 @@ class Project extends FormEntity implements UuidInterface
     {
         $metadata->addPropertyConstraint(
             'name',
-            new NotBlank(['message' => 'mautic.core.name.required'])
+            new NotBlank([
+                'message' => 'mautic.core.name.required',
+            ])
         );
         $metadata->addConstraint(new UniqueName());
     }

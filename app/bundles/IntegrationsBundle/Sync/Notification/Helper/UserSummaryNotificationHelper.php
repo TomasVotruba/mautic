@@ -124,7 +124,9 @@ class UserSummaryNotificationHelper
                 ),
                 $this->translator->trans(
                     'mautic.integration.sync.user_notification.count_message',
-                    ['%count%' => $count]
+                    [
+                        '%count%' => $count,
+                    ]
                 ),
                 $userId
             );

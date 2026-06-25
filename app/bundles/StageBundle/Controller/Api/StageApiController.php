@@ -73,7 +73,9 @@ class StageApiController extends CommonApiController
         \assert($leadModel instanceof LeadModel);
         $leadModel->addToStages($contact, $stage)->saveEntity($contact);
 
-        return $this->handleView($this->view(['success' => 1], Response::HTTP_OK));
+        return $this->handleView($this->view([
+            'success' => 1,
+        ], Response::HTTP_OK));
     }
 
     /**
@@ -108,6 +110,8 @@ class StageApiController extends CommonApiController
         \assert($leadModel instanceof LeadModel);
         $leadModel->removeFromStages($contact, $stage)->saveEntity($contact);
 
-        return $this->handleView($this->view(['success' => 1], Response::HTTP_OK));
+        return $this->handleView($this->view([
+            'success' => 1,
+        ], Response::HTTP_OK));
     }
 }

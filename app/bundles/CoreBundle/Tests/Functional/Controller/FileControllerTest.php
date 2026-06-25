@@ -15,7 +15,9 @@ class FileControllerTest extends MauticMysqlTestCase
     public function testImageUploadSuccess(): void
     {
         $image = $this->createUploadFile('png-test.png', 'tmp-png-test.png');
-        $this->client->request('POST', 's/file/upload?editor=ckeditor', [], ['upload' => $image]);
+        $this->client->request('POST', 's/file/upload?editor=ckeditor', [], [
+            'upload' => $image,
+        ]);
         $response = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         $responseData = json_decode($response->getContent(), true);
@@ -31,7 +33,9 @@ class FileControllerTest extends MauticMysqlTestCase
     {
         $image = $this->createUploadFile('test.json', 'tmp-test.json');
 
-        $this->client->request('POST', 's/file/upload?editor=ckeditor', [], ['upload' => $image]);
+        $this->client->request('POST', 's/file/upload?editor=ckeditor', [], [
+            'upload' => $image,
+        ]);
         $response = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         $responseData = json_decode($response->getContent(), true);

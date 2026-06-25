@@ -34,7 +34,9 @@ class DeleteOrphanSubmissionRecordsFromResultsTableCommandTest extends MauticMys
         $submissionRepository = $this->em->getRepository(Submission::class);
 
         // Ensure the submission was created properly.
-        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $form['id'],
+        ]);
 
         Assert::assertCount($timesFormSubmitted, $submissions);
 
@@ -42,7 +44,9 @@ class DeleteOrphanSubmissionRecordsFromResultsTableCommandTest extends MauticMys
             $submissionRepository->deleteEntity($submission);
         }
 
-        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $form['id'],
+        ]);
 
         Assert::assertCount(0, $submissions);
 

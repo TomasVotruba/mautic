@@ -244,7 +244,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCountFromCache([$segmentId]);
 
-        self::assertSame([$segmentId => $leadCount], $leadCounts);
+        self::assertSame([
+            $segmentId => $leadCount,
+        ], $leadCounts);
     }
 
     public function testRemoveLeadWillDecrementCacheCounter(): void
@@ -264,7 +266,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCountFromCache([$segmentId]);
 
-        self::assertSame([$segmentId => $currentLeadCount - 1], $leadCounts);
+        self::assertSame([
+            $segmentId => $currentLeadCount - 1,
+        ], $leadCounts);
     }
 
     public function testGetSegmentContactCountFromCache(): void
@@ -281,7 +285,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCountFromCache([$segmentId]);
 
-        self::assertSame([$segmentId => $leadCount], $leadCounts);
+        self::assertSame([
+            $segmentId => $leadCount,
+        ], $leadCounts);
     }
 
     public function testAddLeadWillIncrementCacheCounter(): void
@@ -301,7 +307,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCountFromCache([$segmentId]);
 
-        self::assertSame([$segmentId => $currentLeadCount + 1], $leadCounts);
+        self::assertSame([
+            $segmentId => $currentLeadCount + 1,
+        ], $leadCounts);
     }
 
     public function testGetSegmentContactCountFromDatabaseHavingCache(): void
@@ -324,7 +332,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCount([$segmentId]);
 
-        self::assertSame([$segmentId => $leadCount], $leadCounts);
+        self::assertSame([
+            $segmentId => $leadCount,
+        ], $leadCounts);
     }
 
     public function testGetSegmentContactCountFromDatabase(): void
@@ -347,7 +357,9 @@ class ListModelTest extends TestCase
 
         $leadCounts = $this->model->getSegmentContactCount([$segmentId]);
 
-        self::assertSame([$segmentId => $leadCount], $leadCounts);
+        self::assertSame([
+            $segmentId => $leadCount,
+        ], $leadCounts);
     }
 
     public function testGetActiveSegmentContactCount(): void

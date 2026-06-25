@@ -73,7 +73,10 @@ final class CampaignHelperTest extends \PHPUnit\Framework\TestCase
 
         $this->contact->expects($this->once())
             ->method('getProfileFields')
-            ->willReturn(['email' => 'john@doe.email', 'company' => 'Mautic']);
+            ->willReturn([
+                'email' => 'john@doe.email',
+                'company' => 'Mautic',
+            ]);
 
         $this->contact->expects($this->once())
             ->method('getIpAddresses')
@@ -87,7 +90,10 @@ final class CampaignHelperTest extends \PHPUnit\Framework\TestCase
         $this->client->expects($this->once())
             ->method('get')
             ->with($expectedUrl, [
-                \GuzzleHttp\RequestOptions::HEADERS => ['test' => 'tee', 'company' => 'Mautic'],
+                \GuzzleHttp\RequestOptions::HEADERS => [
+                    'test' => 'tee',
+                    'company' => 'Mautic',
+                ],
                 \GuzzleHttp\RequestOptions::TIMEOUT => 10,
             ])
             ->willReturn(new Response(200));
@@ -102,8 +108,15 @@ final class CampaignHelperTest extends \PHPUnit\Framework\TestCase
         $this->client->expects($this->once())
             ->method('request')
             ->with('post', 'https://mautic.org', [
-                \GuzzleHttp\RequestOptions::FORM_PARAMS => ['test'  => 'tee', 'email' => 'john@doe.email', 'IP' => '127.0.0.1,127.0.0.2'],
-                \GuzzleHttp\RequestOptions::HEADERS     => ['test' => 'tee', 'company' => 'Mautic'],
+                \GuzzleHttp\RequestOptions::FORM_PARAMS => [
+                    'test'  => 'tee',
+                    'email' => 'john@doe.email',
+                    'IP' => '127.0.0.1,127.0.0.2',
+                ],
+                \GuzzleHttp\RequestOptions::HEADERS     => [
+                    'test' => 'tee',
+                    'company' => 'Mautic',
+                ],
                 \GuzzleHttp\RequestOptions::TIMEOUT     => 10,
             ])
             ->willReturn(new Response(200));
@@ -124,7 +137,11 @@ final class CampaignHelperTest extends \PHPUnit\Framework\TestCase
                 ],
                 \GuzzleHttp\RequestOptions::TIMEOUT => 10,
                 \GuzzleHttp\RequestOptions::BODY    => json_encode(
-                    ['test' => 'tee', 'email' => 'john@doe.email', 'IP' => '127.0.0.1,127.0.0.2']
+                    [
+                        'test' => 'tee',
+                        'email' => 'john@doe.email',
+                        'IP' => '127.0.0.1,127.0.0.2',
+                    ]
                 ),
             ])
             ->willReturn(new Response(200));

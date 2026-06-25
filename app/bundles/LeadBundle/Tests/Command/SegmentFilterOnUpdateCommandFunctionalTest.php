@@ -19,14 +19,22 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
         $segmentAId = $segmentA->getId();
 
         // Run segments update command.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentAId]);
-        self::assertCount(5, $this->em->getRepository(ListLead::class)->findBy(['list' => $segmentAId]));
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentAId,
+        ]);
+        self::assertCount(5, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segmentAId,
+        ]));
 
         $segmentB   = $this->saveSegmentB($segmentAId);
         $segmentBId = $segmentB->getId();
         // Run segments update command.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentBId]);
-        self::assertCount(3, $this->em->getRepository(ListLead::class)->findBy(['list' => $segmentBId]));
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentBId,
+        ]);
+        self::assertCount(3, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segmentBId,
+        ]));
     }
 
     /**
@@ -61,7 +69,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'address1',
                 'type'       => 'text',
                 'operator'   => '!empty',
-                'properties' => ['filter' => null],
+                'properties' => [
+                    'filter' => null,
+                ],
                 // The filter key is deprecated but sometimes it contains rubbish values including a string.
                 'filter'     => 'somestring',
             ],
@@ -71,7 +81,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'address1',
                 'type'       => 'text',
                 'operator'   => '!=',
-                'properties' => ['filter' => null],
+                'properties' => [
+                    'filter' => null,
+                ],
                 // The filter key is deprecated but sometimes it contains rubbish values including an array.
                 'filter'     => ['option A', 'option B'],
             ],
@@ -81,7 +93,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn1'],
+                'properties' => [
+                    'filter' => 'fn1',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -89,7 +103,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'lastname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'ln1'],
+                'properties' => [
+                    'filter' => 'ln1',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -97,7 +113,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn2'],
+                'properties' => [
+                    'filter' => 'fn2',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -105,7 +123,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn3'],
+                'properties' => [
+                    'filter' => 'fn3',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -113,7 +133,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'lastname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'ln3'],
+                'properties' => [
+                    'filter' => 'ln3',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -121,7 +143,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn4'],
+                'properties' => [
+                    'filter' => 'fn4',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -129,7 +153,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'lastname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'ln5'],
+                'properties' => [
+                    'filter' => 'ln5',
+                ],
             ],
         ];
 
@@ -153,7 +179,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn6'],
+                'properties' => [
+                    'filter' => 'fn6',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -161,7 +189,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn2'],
+                'properties' => [
+                    'filter' => 'fn2',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -169,7 +199,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'fn3'],
+                'properties' => [
+                    'filter' => 'fn3',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -177,7 +209,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'field'      => 'lastname',
                 'type'       => 'text',
                 'operator'   => '=',
-                'properties' => ['filter' => 'ln3'],
+                'properties' => [
+                    'filter' => 'ln3',
+                ],
             ],
             [
                 'glue'       => 'and',
@@ -185,7 +219,9 @@ final class SegmentFilterOnUpdateCommandFunctionalTest extends MauticMysqlTestCa
                 'object'     => 'lead',
                 'type'       => 'leadlist',
                 'operator'   => 'in',
-                'properties' => ['filter' => [$segmentAId]],
+                'properties' => [
+                    'filter' => [$segmentAId],
+                ],
             ],
         ];
 

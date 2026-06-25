@@ -41,11 +41,15 @@ class AjaxController extends CommonAjaxController
         $campaignId     = InputHelper::clean($request->query->get('campaignId'));
         $canvasSettings = $request->request->all()['canvasSettings'] ?? [];
         if (empty($campaignId)) {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         } else {
             $session->set('mautic.campaign.'.$campaignId.'.events.canvassettings', $canvasSettings);
 
-            $dataArray = ['success' => 1];
+            $dataArray = [
+                'success' => 1,
+            ];
         }
 
         return $this->sendJsonResponse($dataArray);
@@ -58,7 +62,10 @@ class AjaxController extends CommonAjaxController
         $newDate      = InputHelper::clean($request->request->get('date'));
         $originalDate = InputHelper::clean($request->request->get('originalDate'));
 
-        $dataArray = ['success' => 0, 'date' => $originalDate];
+        $dataArray = [
+            'success' => 0,
+            'date' => $originalDate,
+        ];
 
         if (!empty($eventId) && !empty($contactId) && !empty($newDate)) {
             if ($log = $this->getContactEventLog($eventId, $contactId)) {
@@ -87,7 +94,9 @@ class AjaxController extends CommonAjaxController
 
     public function cancelScheduledCampaignEventAction(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         $eventId   = (int) $request->request->get('eventId');
         $contactId = (int) $request->request->get('contactId');
@@ -100,12 +109,16 @@ class AjaxController extends CommonAjaxController
                 $metadata           = $log->getMetadata();
                 $metadata['errors'] = $this->translator->trans(
                     'mautic.campaign.event.cancelled.time',
-                    ['%date%' => $log->getTriggerDate()->format('Y-m-d H:i:s')]
+                    [
+                        '%date%' => $log->getTriggerDate()->format('Y-m-d H:i:s'),
+                    ]
                 );
                 $log->setMetadata($metadata);
                 $logModel->getRepository()->saveEntity($log);
 
-                $dataArray = ['success' => 1];
+                $dataArray = [
+                    'success' => 1,
+                ];
             }
         }
 
@@ -130,7 +143,9 @@ class AjaxController extends CommonAjaxController
                                         'lead'  => $contactId,
                                         'event' => $eventId,
                                     ],
-                                    ['dateTriggered' => 'desc']
+                                    [
+                                        'dateTriggered' => 'desc',
+                                    ]
                                 );
 
                 if ($log && ($log->getTriggerDate() > new \DateTime())) {

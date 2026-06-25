@@ -78,7 +78,10 @@ class MembershipBuilder
             $this->output->writeln(
                 $this->translator->trans(
                     'mautic.campaign.rebuild.to_be_added',
-                    ['%leads%' => $countResult->getCount(), '%batch%' => $this->contactLimiter->getBatchLimit()]
+                    [
+                        '%leads%' => $countResult->getCount(),
+                        '%batch%' => $this->contactLimiter->getBatchLimit(),
+                    ]
                 )
             );
 
@@ -145,7 +148,10 @@ class MembershipBuilder
             $this->output->writeln(
                 $this->translator->trans(
                     'mautic.lead.list.rebuild.to_be_removed',
-                    ['%leads%' => $countResult->getCount(), '%batch%' => $this->contactLimiter->getBatchLimit()]
+                    [
+                        '%leads%' => $countResult->getCount(),
+                        '%batch%' => $this->contactLimiter->getBatchLimit(),
+                    ]
                 )
             );
 

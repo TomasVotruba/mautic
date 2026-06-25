@@ -35,19 +35,29 @@ class CampaignType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'html',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('campaign', $options));
 
         $builder->add('name', TextType::class, [
             'label'      => 'mautic.core.name',
-            'label_attr' => ['class' => 'control-label'],
-            'attr'       => ['class' => 'form-control'],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
+            'attr'       => [
+                'class' => 'form-control',
+            ],
         ]);
 
         $builder->add('description', TextareaType::class, [
             'label'      => 'mautic.core.description',
-            'label_attr' => ['class' => 'control-label'],
-            'attr'       => ['class' => 'form-control editor'],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
+            'attr'       => [
+                'class' => 'form-control editor',
+            ],
             'required'   => false,
         ]);
 
@@ -77,7 +87,9 @@ class CampaignType extends AbstractType
             $attr              = [
                 'onchange'               => 'Mautic.showCampaignConfirmation(mQuery(this));',
                 'data-toggle'            => 'confirmation',
-                'data-message-publish'   => $this->translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+                'data-message-publish'   => $this->translator->trans('mautic.campaign.form.confirmation.message.publish', [
+                    '%republishBehavior%' => $republishBehavior,
+                ]),
                 'data-message-unpublish' => $this->translator->trans('mautic.campaign.form.confirmation.message'),
                 'data-confirm-text'      => $this->translator->trans('mautic.campaign.form.confirmation.confirm_text'),
                 'data-confirm-callback'  => 'dismissConfirmation',

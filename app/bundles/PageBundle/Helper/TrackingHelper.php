@@ -81,7 +81,9 @@ class TrackingHelper
         if (null !== $cacheKey) {
             $item = $this->cache->getItem($cacheKey);
             if ($item->isHit()) {
-                $cacheValue = Serializer::decode($item->get(), ['allowed_classes' => false]);
+                $cacheValue = Serializer::decode($item->get(), [
+                    'allowed_classes' => false,
+                ]);
                 if ($remove) {
                     $this->cache->deleteItem($cacheKey);
                 }

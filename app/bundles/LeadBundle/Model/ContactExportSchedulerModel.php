@@ -77,7 +77,10 @@ class ContactExportSchedulerModel extends AbstractCommonModel
         $ids      = $request->get('ids');
         $fileType = $request->get('filetype', 'csv');
 
-        $filter = ['string' => $search, 'force' => []];
+        $filter = [
+            'string' => $search,
+            'force' => [],
+        ];
 
         if (!empty($ids)) {
             $filter['force'] = [
@@ -159,13 +162,18 @@ class ContactExportSchedulerModel extends AbstractCommonModel
     {
         $link = $this->router->generate(
             'mautic_contact_export_download',
-            ['fileName' => basename($filePath)],
+            [
+                'fileName' => basename($filePath),
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
         return $this->translator->trans(
             'mautic.lead.export.email',
-            ['%link%' => $link, '%label%' => basename($filePath)]
+            [
+                '%link%' => $link,
+                '%label%' => basename($filePath),
+            ]
         );
     }
 
@@ -175,9 +183,13 @@ class ContactExportSchedulerModel extends AbstractCommonModel
         $user    = $contactExportScheduler->getUser();
         $message = $this->getEmailMessageWithLink($filePath);
 
-        $this->mailHelper->setTo([$user->getEmail() => $user->getName()]);
+        $this->mailHelper->setTo([
+            $user->getEmail() => $user->getName(),
+        ]);
         $this->mailHelper->setSubject(
-            $this->translator->trans('mautic.lead.export.email_subject', ['%file_name%' => basename($filePath)])
+            $this->translator->trans('mautic.lead.export.email_subject', [
+                '%file_name%' => basename($filePath),
+            ])
         );
         $this->mailHelper->setBody($message);
         $this->mailHelper->parsePlainText($message);
@@ -216,7 +228,9 @@ class ContactExportSchedulerModel extends AbstractCommonModel
     private function exportResultsAs(IteratorExportDataModel $iterator, string $fileType, string $fileName): string
     {
         if (!in_array($fileType, $this->exportHelper->getSupportedExportTypes(), true)) {
-            throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $fileType]));
+            throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', [
+                '%type%' => $fileType,
+            ]));
         }
 
         $csvFilePath = $this->exportHelper
@@ -233,6 +247,9 @@ class ContactExportSchedulerModel extends AbstractCommonModel
             return 'application/zip';
         }
 
-        throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.specific.export.type', ['%type%' => $ext, '%expected_type%' => 'zip']));
+        throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.specific.export.type', [
+            '%type%' => $ext,
+            '%expected_type%' => 'zip',
+        ]));
     }
 }

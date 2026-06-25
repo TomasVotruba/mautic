@@ -100,7 +100,9 @@ class EmailSubscriber implements EventSubscriberInterface
             'object'    => 'email',
             'objectId'  => $email->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $email->getName()],
+            'details'   => [
+                'name' => $email->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

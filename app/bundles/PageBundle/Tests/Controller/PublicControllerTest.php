@@ -145,7 +145,9 @@ class PublicControllerTest extends TestCase
         $pageEntityB->method('getCustomHtml')
             ->willReturn('pageB');
         $pageEntityB->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $pageEntityC = $this->createMock(Page::class);
         $pageEntityC->method('getId')
@@ -163,7 +165,9 @@ class PublicControllerTest extends TestCase
         $pageEntityC->method('getCustomHtml')
             ->willReturn('pageC');
         $pageEntityC->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $pageEntityA = $this->createMock(Page::class);
         $pageEntityA->method('getId')
@@ -171,7 +175,11 @@ class PublicControllerTest extends TestCase
         $pageEntityA->method('isPublished')
             ->willReturn(true);
         $pageEntityA->method('getVariants')
-            ->willReturn([$pageEntityA, [2 => $pageEntityB, 3 => $pageEntityC]]);
+            ->willReturn([
+                $pageEntityA, [
+                    2 => $pageEntityB,
+                    3 => $pageEntityC,
+                ]]);
         $pageEntityA->method('getVariantHits')
             ->willReturn($aCount);
         $pageEntityA->method('getTranslations')
@@ -183,7 +191,9 @@ class PublicControllerTest extends TestCase
         $pageEntityA->method('getCustomHtml')
             ->willReturn('pageA');
         $pageEntityA->method('getVariantSettings')
-            ->willReturn(['weight' => '50']);
+            ->willReturn([
+                'weight' => '50',
+            ]);
 
         $cookieHelper = $this->createMock(CookieHelper::class);
 
@@ -426,11 +436,15 @@ class PublicControllerTest extends TestCase
 
     public function testMtcTrackingEvent(): void
     {
-        $request = new Request(['foo' => 'bar']);
+        $request = new Request([
+            'foo' => 'bar',
+        ]);
         $contact = new Lead();
         $contact->setEmail('foo@bar.com');
 
-        $mtcSessionEventArray = ['mtc' => 'foobar'];
+        $mtcSessionEventArray = [
+            'mtc' => 'foobar',
+        ];
 
         $event           = new TrackingEvent($contact, $request, $mtcSessionEventArray);
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -531,7 +545,9 @@ class PublicControllerTest extends TestCase
             $this->pageModel
         );
         $this->assertEquals(
-            ['success' => 0],
+            [
+                'success' => 0,
+            ],
             json_decode($response->getContent(), true)
         );
     }

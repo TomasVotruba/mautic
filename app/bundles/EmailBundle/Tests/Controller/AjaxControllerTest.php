@@ -141,7 +141,11 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.email.send.stats', $parameters[0]);
 
-                    return ['sent' => 0, 'failed' => 0, 'failedRecipients' => []];
+                    return [
+                        'sent' => 0,
+                        'failed' => 0,
+                        'failedRecipients' => [],
+                    ];
                 }
                 if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.email.send.active', $parameters[0]);
@@ -154,7 +158,10 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isPublished')
             ->willReturn(false);
 
-        $request = new Request([], ['id' => 5, 'pending' => 100]);
+        $request = new Request([], [
+            'id' => 5,
+            'pending' => 100,
+        ]);
         $request->setSession($this->sessionMock);
         $response = $this->controller->sendBatchAction($request);
         $expected = '{"success":1,"percent":0,"progress":[0,100],"stats":{"sent":0,"failed":0,"failedRecipients":[]}}';
@@ -189,7 +196,11 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.email.send.stats', $parameters[0]);
 
-                    return ['sent' => 0, 'failed' => 0, 'failedRecipients' => []];
+                    return [
+                        'sent' => 0,
+                        'failed' => 0,
+                        'failedRecipients' => [],
+                    ];
                 }
                 if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.email.send.active', $parameters[0]);
@@ -202,7 +213,11 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isPublished')
             ->willReturn(true);
 
-        $request = new Request([], ['id' => 5, 'pending' => 100, 'batchlimit' => 50]);
+        $request = new Request([], [
+            'id' => 5,
+            'pending' => 100,
+            'batchlimit' => 50,
+        ]);
         $request->setSession($this->sessionMock);
         $response = $this->controller->sendBatchAction($request);
         $expected = '{"success":1,"percent":50,"progress":[50,100],"stats":{"sent":50,"failed":0,"failedRecipients":[]}}';

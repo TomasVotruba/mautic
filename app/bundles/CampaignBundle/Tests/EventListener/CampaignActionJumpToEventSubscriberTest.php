@@ -117,10 +117,14 @@ final class CampaignActionJumpToEventSubscriberTest extends TestCase
             $eventScheduler
         );
 
-        $event->setProperties(['jumpToEvent' => 123]);
+        $event->setProperties([
+            'jumpToEvent' => 123,
+        ]);
         $event->setCampaign($campaign);
 
-        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
+        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([
+            $leadLog->getId() => $leadLog,
+        ]));
 
         $subscriber->onJumpToEvent($pendingEvent);
 
@@ -258,10 +262,14 @@ final class CampaignActionJumpToEventSubscriberTest extends TestCase
             $eventScheduler
         );
 
-        $event->setProperties(['jumpToEvent' => 123]);
+        $event->setProperties([
+            'jumpToEvent' => 123,
+        ]);
         $event->setCampaign($campaign);
 
-        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
+        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([
+            $leadLog->getId() => $leadLog,
+        ]));
 
         $subscriber->onJumpToEvent($pendingEvent);
 

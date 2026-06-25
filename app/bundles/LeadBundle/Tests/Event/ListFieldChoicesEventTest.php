@@ -15,12 +15,28 @@ final class ListFieldChoicesEventTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([], $event->getChoicesForAllListFieldTypes());
         $this->assertSame([], $event->getChoicesForAllListFieldAliases());
 
-        $event->setChoicesForFieldType('boolean', ['No' => 0, 'Yes' => 1]);
-        $event->setChoicesForFieldAlias('campaign', ['Campaign A' => 1, 'Campaign B' => 2]);
+        $event->setChoicesForFieldType('boolean', [
+            'No' => 0,
+            'Yes' => 1,
+        ]);
+        $event->setChoicesForFieldAlias('campaign', [
+            'Campaign A' => 1,
+            'Campaign B' => 2,
+        ]);
         $event->setSearchTerm('Test search');
 
-        $this->assertSame(['boolean' => ['No' => 0, 'Yes' => 1]], $event->getChoicesForAllListFieldTypes());
-        $this->assertSame(['campaign' => ['Campaign A' => 1, 'Campaign B' => 2]], $event->getChoicesForAllListFieldAliases());
+        $this->assertSame([
+            'boolean' => [
+                'No' => 0,
+                'Yes' => 1,
+            ],
+        ], $event->getChoicesForAllListFieldTypes());
+        $this->assertSame([
+            'campaign' => [
+                'Campaign A' => 1,
+                'Campaign B' => 2,
+            ],
+        ], $event->getChoicesForAllListFieldAliases());
         $this->assertSame('Test search', $event->getSearchTerm());
     }
 }

@@ -92,7 +92,9 @@ class UniqueCustomFieldValidator extends ConstraintValidator
         if ('orWhere' === $leadRepository->getUniqueIdentifiersWherePart()) {
             $fieldsValidation = [];
             foreach ($fieldsData as $field => $data) {
-                $leads = $leadRepository->getLeadIdsByUniqueFields([$field => $data]);
+                $leads = $leadRepository->getLeadIdsByUniqueFields([
+                    $field => $data,
+                ]);
 
                 $fieldsValidation[] = $this->isValid($leads, [$field], (int) $lead->getId());
             }
@@ -117,7 +119,9 @@ class UniqueCustomFieldValidator extends ConstraintValidator
         if ('orWhere' === $companyRepository->getUniqueIdentifiersWherePart()) {
             $fieldsValidation = [];
             foreach ($fieldsData as $field => $data) {
-                $companies = $companyRepository->getCompanyIdsByUniqueFields([$field => $data]);
+                $companies = $companyRepository->getCompanyIdsByUniqueFields([
+                    $field => $data,
+                ]);
 
                 $fieldsValidation[] = $this->isValid($companies, [$field], (int) $company->getId());
             }

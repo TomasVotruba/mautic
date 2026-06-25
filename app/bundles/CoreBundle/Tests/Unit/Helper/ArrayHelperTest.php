@@ -9,7 +9,10 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetValue(): void
     {
-        $origin = ['one', 'two' => 'three'];
+        $origin = [
+            'one',
+            'two' => 'three',
+        ];
 
         $this->assertSame('one', ArrayHelper::getValue(0, $origin));
         $this->assertSame('three', ArrayHelper::getValue('two', $origin));
@@ -19,12 +22,21 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testPickValue(): void
     {
-        $origin = ['one', 'two' => 'three', 'four' => null];
+        $origin = [
+            'one',
+            'two' => 'three',
+            'four' => null,
+        ];
 
         $this->assertSame('one', ArrayHelper::pickValue(0, $origin));
-        $this->assertSame(['two' => 'three', 'four' => null], $origin);
+        $this->assertSame([
+            'two' => 'three',
+            'four' => null,
+        ], $origin);
         $this->assertSame('three', ArrayHelper::pickValue('two', $origin));
-        $this->assertSame(['four' => null], $origin);
+        $this->assertSame([
+            'four' => null,
+        ], $origin);
         $this->assertNull(ArrayHelper::pickValue('five', $origin));
         $this->assertSame('default', ArrayHelper::pickValue('five', $origin, 'default'));
         $this->assertNull(ArrayHelper::pickValue('four', $origin, 'default'));
@@ -33,11 +45,23 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testSelect(): void
     {
-        $origin = ['one', 'two' => 'three', 'four' => 'five'];
+        $origin = [
+            'one',
+            'two' => 'three',
+            'four' => 'five',
+        ];
 
-        $this->assertSame(['two' => 'three'], ArrayHelper::select(['two'], $origin));
-        $this->assertSame(['two' => 'three', 'four' => 'five'], ArrayHelper::select(['two', 'four'], $origin));
-        $this->assertSame(['one', 'two' => 'three'], ArrayHelper::select(['two', 0], $origin));
+        $this->assertSame([
+            'two' => 'three',
+        ], ArrayHelper::select(['two'], $origin));
+        $this->assertSame([
+            'two' => 'three',
+            'four' => 'five',
+        ], ArrayHelper::select(['two', 'four'], $origin));
+        $this->assertSame([
+            'one',
+            'two' => 'three',
+        ], ArrayHelper::select(['two', 0], $origin));
     }
 
     /**

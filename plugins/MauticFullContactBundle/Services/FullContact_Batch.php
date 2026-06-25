@@ -23,7 +23,9 @@ class FullContact_Batch extends FullContact_Base
      */
     public function sendRequests($requests)
     {
-        $this->_execute([], ['requests' => $requests]);
+        $this->_execute([], [
+            'requests' => $requests,
+        ]);
 
         return $this->response_obj;
     }

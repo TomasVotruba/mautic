@@ -25,8 +25,14 @@ class LeadModelSelectFieldTrimTest extends MauticMysqlTestCase
         $field->setType('select');
         $field->setProperties([
             'list' => [
-                ['label' => 'Automotive', 'value' => 'Automotive'],
-                ['label' => 'Technology', 'value' => 'Technology'],
+                [
+                    'label' => 'Automotive',
+                    'value' => 'Automotive',
+                ],
+                [
+                    'label' => 'Technology',
+                    'value' => 'Technology',
+                ],
             ],
         ]);
         $this->em->persist($field);
@@ -50,12 +56,20 @@ class LeadModelSelectFieldTrimTest extends MauticMysqlTestCase
 
         // Modify custom field (add trailing spaces)
         $updatedField = $this->em->getRepository(LeadField::class)
-          ->findOneBy(['alias' => 'industry_type']);
+          ->findOneBy([
+              'alias' => 'industry_type',
+          ]);
 
         $updatedField->setProperties([
             'list' => [
-                ['label' => 'Automotive ', 'value' => 'Automotive '],
-                ['label' => 'Technology ', 'value' => 'Technology '],
+                [
+                    'label' => 'Automotive ',
+                    'value' => 'Automotive ',
+                ],
+                [
+                    'label' => 'Technology ',
+                    'value' => 'Technology ',
+                ],
             ],
         ]);
 
@@ -68,7 +82,9 @@ class LeadModelSelectFieldTrimTest extends MauticMysqlTestCase
 
         // Reload event after custom field change
         $eventEntity = $this->em->getRepository(CampaignEvent::class)
-          ->findOneBy(['name' => 'Update Industry']);
+          ->findOneBy([
+              'name' => 'Update Industry',
+          ]);
 
         // Trigger normalization (your fix runs inside EventModel::saveEntity)
         $eventModel->saveEntity($eventEntity);
@@ -77,7 +93,9 @@ class LeadModelSelectFieldTrimTest extends MauticMysqlTestCase
 
         // Validate result
         $reloadedEvent = $this->em->getRepository(CampaignEvent::class)
-          ->findOneBy(['name' => 'Update Industry']);
+          ->findOneBy([
+              'name' => 'Update Industry',
+          ]);
 
         $props = $reloadedEvent->getProperties();
 

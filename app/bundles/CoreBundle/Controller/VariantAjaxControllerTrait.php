@@ -14,7 +14,10 @@ trait VariantAjaxControllerTrait
      */
     private function getAbTestForm(Request $request, EmailModel|PageModel $model, callable $buildForm, callable $renderView, string $abSettingsFormBlockPrefix, string $parentFormName): array
     {
-        $dataArray = ['success' => 0, 'html' => ''];
+        $dataArray = [
+            'success' => 0,
+            'html' => '',
+        ];
         $type      = InputHelper::clean($request->request->get('abKey'));
         $id        = (int) $request->request->get('id');
 

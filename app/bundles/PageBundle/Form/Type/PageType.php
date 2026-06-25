@@ -58,7 +58,13 @@ class PageType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['content' => 'html', 'customHtml' => 'html', 'redirectUrl' => 'url', 'headScript' => 'html', 'footerScript' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'content' => 'html',
+            'customHtml' => 'html',
+            'redirectUrl' => 'url',
+            'headScript' => 'html',
+            'footerScript' => 'html',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('page.page', $options));
 
         $builder->add(
@@ -66,8 +72,12 @@ class PageType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.title',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -164,7 +174,9 @@ class PageType extends AbstractType
                 PageListType::class,
                 [
                     'label'      => 'mautic.core.form.translation_parent',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.core.form.translation_parent.help',
@@ -220,8 +232,13 @@ class PageType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.page.form.metadescription',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control', 'maxlength' => 160],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                    'maxlength' => 160,
+                ],
                 'required'   => false,
             ]
         );
@@ -231,7 +248,9 @@ class PageType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.page.form.headscript',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'rows'    => '8',
@@ -246,7 +265,9 @@ class PageType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.page.form.footerscript',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'rows'    => '8',
@@ -297,7 +318,9 @@ class PageType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.alias',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.page.help.alias',
@@ -322,7 +345,9 @@ class PageType extends AbstractType
             LocaleType::class,
             [
                 'label'      => 'mautic.core.language',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.page.form.language.help',

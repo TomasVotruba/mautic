@@ -40,15 +40,32 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
     public function testUpdateCustomFields(): void
     {
         $csvRows = [
-            'field_text_one'    => ['label' => 'Test text one', 'alias' => 'field_text_one', 'len' => 191, 'newLen' => 100],
-            'field_text_two'    => ['label' => 'Test text two', 'alias' => 'field_text_two', 'len' => 100, 'newLen' => 100],
-            'field_text_three'  => ['label' => 'Test text three', 'alias' => 'field_text_three', 'len' => 100, 'newLen' => 1000],
+            'field_text_one'    => [
+                'label' => 'Test text one',
+                'alias' => 'field_text_one',
+                'len' => 191,
+                'newLen' => 100,
+            ],
+            'field_text_two'    => [
+                'label' => 'Test text two',
+                'alias' => 'field_text_two',
+                'len' => 100,
+                'newLen' => 100,
+            ],
+            'field_text_three'  => [
+                'label' => 'Test text three',
+                'alias' => 'field_text_three',
+                'len' => 100,
+                'newLen' => 1000,
+            ],
         ];
         $file = $this->generateSmallCSV($csvRows);
 
         $this->createCustomFields($csvRows);
 
-        $output = $this->testSymfonyCommand('mautic:fields:modify', ['csv-path' => $file])->getDisplay();
+        $output = $this->testSymfonyCommand('mautic:fields:modify', [
+            'csv-path' => $file,
+        ])->getDisplay();
 
         $this->assertStringContainsString('Skipping "Test text three", the suggested length must be between 1 and 191.', $output);
         $this->assertStringContainsString('1 Field(s) updated successfully.', $output);
@@ -62,13 +79,20 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
     public function testUpdateNoFieldAsItHasSameSizeAsSuggested(): void
     {
         $csvRows = [
-            ['label' => 'Test text four', 'alias' => 'field_text_four', 'len' => 100, 'newLen' => 100],
+            [
+                'label' => 'Test text four',
+                'alias' => 'field_text_four',
+                'len' => 100,
+                'newLen' => 100,
+            ],
         ];
         $file = $this->generateSmallCSV($csvRows);
 
         $this->createCustomFields($csvRows);
 
-        $output = $this->testSymfonyCommand('mautic:fields:modify', ['csv-path' => $file])->getDisplay();
+        $output = $this->testSymfonyCommand('mautic:fields:modify', [
+            'csv-path' => $file,
+        ])->getDisplay();
 
         $this->assertStringContainsString('No custom field(s) to update!!!', $output);
     }

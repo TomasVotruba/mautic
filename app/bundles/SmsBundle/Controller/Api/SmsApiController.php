@@ -60,7 +60,12 @@ class SmsApiController extends CommonApiController
     public function sendAction(TransportChain $transportChain, LoggerInterface $mauticLogger, $id, $contactId)
     {
         if (!$transportChain->getEnabledTransports()) {
-            return new JsonResponse(json_encode(['error' => ['message' => 'SMS transport is disabled.', 'code' => Response::HTTP_EXPECTATION_FAILED]]));
+            return new JsonResponse(json_encode([
+                'error' => [
+                    'message' => 'SMS transport is disabled.',
+                    'code' => Response::HTTP_EXPECTATION_FAILED,
+                ],
+            ]));
         }
 
         $message = $this->model->getEntity((int) $id);
@@ -75,12 +80,18 @@ class SmsApiController extends CommonApiController
             return $this->accessDenied();
         }
 
-        $mauticLogger->debug("Sending SMS #{$id} to contact #{$contactId}", ['originator' => 'api']);
+        $mauticLogger->debug("Sending SMS #{$id} to contact #{$contactId}", [
+            'originator' => 'api',
+        ]);
 
         try {
-            $response = $this->model->sendSms($message, $contact, ['channel' => 'api'])[$contact->getId()];
+            $response = $this->model->sendSms($message, $contact, [
+                'channel' => 'api',
+            ])[$contact->getId()];
         } catch (\Exception $e) {
-            $mauticLogger->error($e->getMessage(), ['error' => (array) $e]);
+            $mauticLogger->error($e->getMessage(), [
+                'error' => (array) $e,
+            ]);
 
             return new Response('Interval server error', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -88,7 +99,9 @@ class SmsApiController extends CommonApiController
         $success = !empty($response['sent']);
 
         if (!$success) {
-            $mauticLogger->error('Failed to send SMS.', ['error' => $response['status']]);
+            $mauticLogger->error('Failed to send SMS.', [
+                'error' => $response['status'],
+            ]);
         }
 
         $view = $this->view(
@@ -96,7 +109,9 @@ class SmsApiController extends CommonApiController
                 'success' => $success,
                 'status'  => $this->translator->trans($response['status']),
                 'result'  => $response,
-                'errors'  => $success ? [] : [['message' => $response['status']]],
+                'errors'  => $success ? [] : [[
+                    'message' => $response['status'],
+                ]],
             ],
             Response::HTTP_OK  //  200 - is legacy, we cannot change it yet
         );

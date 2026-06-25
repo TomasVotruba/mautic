@@ -74,7 +74,9 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
         $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
             ->method('getReference');
 
-        $tokens = ['{test}' => 'value'];
+        $tokens = [
+            '{test}' => 'value',
+        ];
 
         $mailHelper = new MailHelper(
             new Mailer(new SmtpTransport()),
@@ -156,7 +158,9 @@ CONTENT
         $dispatcher           = new EventDispatcher();
         $primaryCompanyHelper = $this->createMock(PrimaryCompanyHelper::class);
         $primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
-            ->willReturn(['email' => 'hello@someone.com']);
+            ->willReturn([
+                'email' => 'hello@someone.com',
+            ]);
         $segmentRepository    = $this->createMock(LeadListRepository::class);
 
         /** @var TokenSubscriber $subscriber */

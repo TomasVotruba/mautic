@@ -19,7 +19,9 @@ class ConfigEventTest extends \PHPUnit\Framework\TestCase
 
         // Config defined with setter
         $key    = 'defined';
-        $config = ['config' => []];
+        $config = [
+            'config' => [],
+        ];
         $event->setConfig($config, $key);
         $this->assertEquals($config, $event->getConfig($key));
 
@@ -28,7 +30,9 @@ class ConfigEventTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $event->getConfig($undefinedKey));
 
         // Get complete config
-        $config = [$key => $config];
+        $config = [
+            $key => $config,
+        ];
         $this->assertEquals($config, $event->getConfig());
     }
 
@@ -45,7 +49,9 @@ class ConfigEventTest extends \PHPUnit\Framework\TestCase
         $event->unsetIfEmpty($preserved);
         $this->assertEquals($result, $event->getPreservedFields());
 
-        $preserved = ['preserved' => 'value'];
+        $preserved = [
+            'preserved' => 'value',
+        ];
         $result    = array_merge($result, $preserved);
         $event->unsetIfEmpty($preserved);
         $this->assertEquals($result, $event->getPreservedFields());
@@ -60,18 +66,26 @@ class ConfigEventTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $event->getErrors());
 
         $message  = 'message';
-        $messages = [$message => []];
+        $messages = [
+            $message => [],
+        ];
         $this->assertEquals($event, $event->setError($message));
         $this->assertEquals($messages, $event->getErrors());
 
         $message     = 'message';
-        $messageVars = ['var' => 'value'];
-        $messages    = [$message => $messageVars];
+        $messageVars = [
+            'var' => 'value',
+        ];
+        $messages    = [
+            $message => $messageVars,
+        ];
         $this->assertEquals($event, $event->setError($message, $messageVars));
         $this->assertEquals($messages, $event->getErrors());
 
         $message                   = 'message';
-        $messageVars               = ['var' => 'value'];
+        $messageVars               = [
+            'var' => 'value',
+        ];
         $key                       = 'key';
         $field                     = 'field';
         $fieldErrors[$key][$field] = [

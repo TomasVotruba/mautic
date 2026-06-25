@@ -25,7 +25,9 @@ final class CompanyColumnsType extends AbstractType
             [
                 'choices'    => array_flip($this->columnsDictionary->getFields()),
                 'label'      => false,
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'required'   => false,
                 'multiple'   => true,
                 'expanded'   => false,

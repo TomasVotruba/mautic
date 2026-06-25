@@ -79,7 +79,9 @@ class AjaxController extends CommonAjaxController
         $field     = InputHelper::clean($request->query->get('field'));
         $value     = InputHelper::clean($request->query->all()['value'] ?? '');
         $ignore    = (int) $request->query->get('ignore');
-        $dataArray = ['items' => []];
+        $dataArray = [
+            'items' => [],
+        ];
 
         if ($field && $value) {
             $repo                       = $leadModel->getRepository();
@@ -99,7 +101,10 @@ class AjaxController extends CommonAjaxController
                     $name = $this->translator->trans('mautic.lead.lead.anonymous');
                 }
 
-                $leadLink = $this->generateUrl('mautic_contact_action', ['objectAction' => 'view', 'objectId' => $lead->getId()]);
+                $leadLink = $this->generateUrl('mautic_contact_action', [
+                    'objectAction' => 'view',
+                    'objectId' => $lead->getId(),
+                ]);
 
                 $dataArray['items'][] = [
                     'name' => $name,
@@ -171,7 +176,9 @@ class AjaxController extends CommonAjaxController
      */
     public function updateSocialProfileAction(Request $request, IntegrationHelper $integrationHelper): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $network   = InputHelper::clean($request->request->get('network'));
         $leadId    = InputHelper::clean($request->request->get('lead'));
 
@@ -227,7 +234,9 @@ class AjaxController extends CommonAjaxController
      */
     public function clearSocialProfileAction(Request $request, IntegrationHelper $helper): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $network   = InputHelper::clean($request->request->get('network'));
         $leadId    = InputHelper::clean($request->request->get('lead'));
 
@@ -261,7 +270,9 @@ class AjaxController extends CommonAjaxController
 
     public function toggleLeadListAction(Request $request, LeadModel $leadModel, ListModel $listModel): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $leadId    = (int) $request->request->get('leadId');
         $listId    = (int) $request->request->get('listId');
         $action    = InputHelper::clean($request->request->get('listAction'));
@@ -282,7 +293,9 @@ class AjaxController extends CommonAjaxController
 
     public function togglePreferredLeadChannelAction(Request $request, LeadModel $leadModel, DoNotContactModel $doNotContact): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $leadId    = (int) $request->request->get('leadId');
         $channel   = InputHelper::clean($request->request->get('channel'));
         $action    = InputHelper::clean($request->request->get('channelAction'));
@@ -295,7 +308,9 @@ class AjaxController extends CommonAjaxController
                     $doNotContact->addDncForContact($leadId, $channel, DoNotContact::MANUAL, 'user');
                 } elseif ('add' === $action) {
                     $doNotContact->removeDncForContact($leadId, $channel);
-                    $this->addFlashMessage('mautic.lead.event.donotcontact_channel_contactable', ['%channel%' => $channel], FlashBag::LEVEL_SUCCESS);
+                    $this->addFlashMessage('mautic.lead.event.donotcontact_channel_contactable', [
+                        '%channel%' => $channel,
+                    ], FlashBag::LEVEL_SUCCESS);
                     $dataArray['flashes'] = $this->getFlashContent();
                 }
                 $dataArray['success'] = 1;
@@ -312,7 +327,9 @@ class AjaxController extends CommonAjaxController
             $this->throwAccessDenied();
         }
 
-        $dataArray  = ['success' => 0];
+        $dataArray  = [
+            'success' => 0,
+        ];
         $leadId     = (int) $request->request->get('leadId');
         $campaignId = (int) $request->request->get('campaignId');
         $action     = InputHelper::clean($request->request->get('campaignAction'));
@@ -342,7 +359,9 @@ class AjaxController extends CommonAjaxController
 
     public function toggleCompanyLeadAction(Request $request, LeadModel $leadModel, CompanyModel $companyModel): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $leadId    = (int) $request->request->get('leadId');
         $companyId = (int) $request->request->get('companyId');
         $action    = InputHelper::clean($request->request->get('companyAction'));
@@ -363,7 +382,9 @@ class AjaxController extends CommonAjaxController
 
     public function getImportProgressAction(Request $request): JsonResponse
     {
-        $dataArray = ['success' => 1];
+        $dataArray = [
+            'success' => 1,
+        ];
 
         if ($this->security->isGranted('lead:leads:create')) {
             $session               = $request->getSession();
@@ -376,7 +397,9 @@ class AjaxController extends CommonAjaxController
 
     public function removeBounceStatusAction(Request $request, DoNotContactModel $doNotContact, EmailModel $emailModel): JsonResponse
     {
-        $dataArray   = ['success' => 0];
+        $dataArray   = [
+            'success' => 0,
+        ];
         $dncId       = $request->request->get('id');
         $channel     = $request->request->get('channel', 'email');
 
@@ -392,7 +415,9 @@ class AjaxController extends CommonAjaxController
             if ($lead) {
                 // Use lead model to trigger listeners
                 $doNotContact->removeDncForContact($lead->getId(), $channel);
-                $this->addFlashMessage('mautic.lead.event.donotcontact_channel_contactable', ['%channel%' => $channel], FlashBag::LEVEL_SUCCESS);
+                $this->addFlashMessage('mautic.lead.event.donotcontact_channel_contactable', [
+                    '%channel%' => $channel,
+                ], FlashBag::LEVEL_SUCCESS);
                 $dataArray['flashes'] = $this->getFlashContent();
             } else {
                 $emailModel->getRepository()->deleteDoNotEmailEntry($dncId);
@@ -409,7 +434,9 @@ class AjaxController extends CommonAjaxController
      */
     public function getNewLeadsAction(Request $request, ContactColumnsDictionary $contactColumnsDictionary, LeadModel $model): array|JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $maxId     = $request->get('maxId');
 
         if (!empty($maxId)) {
@@ -433,7 +460,10 @@ class AjaxController extends CommonAjaxController
 
             $session    = $request->getSession();
             $search     = $session->get('mautic.lead.filter', '');
-            $filter     = ['string' => $search, 'force' => []];
+            $filter     = [
+                'string' => $search,
+                'force' => [],
+            ];
             $translator = $this->translator;
             $anonymous  = $translator->trans('mautic.lead.lead.searchcommand.isanonymous');
             $mine       = $translator->trans('mautic.core.searchcommand.ismine');
@@ -497,7 +527,11 @@ class AjaxController extends CommonAjaxController
 
     public function getEmailTemplateAction(Request $request, EmailModel $model, MailHelper $mailHelper): JsonResponse
     {
-        $data    = ['success' => 1, 'body' => '', 'subject' => ''];
+        $data    = [
+            'success' => 1,
+            'body' => '',
+            'subject' => '',
+        ];
         $emailId = $request->query->get('template');
 
         /** @var \Mautic\EmailBundle\Entity\Email $email */
@@ -524,7 +558,9 @@ class AjaxController extends CommonAjaxController
         $post        = $request->request->all()['lead_tags'] ?? [];
         $lead        = $leadModel->getEntity((int) $post['id']);
         $updatedTags = (!empty($post['tags']) && is_array($post['tags'])) ? $post['tags'] : [];
-        $data        = ['success' => 0];
+        $data        = [
+            'success' => 0,
+        ];
 
         if (null !== $lead && $this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
             $leadModel->setTags($lead, $updatedTags, true);
@@ -581,7 +617,9 @@ class AjaxController extends CommonAjaxController
                 'tags'    => $tagOptions,
             ];
         } else {
-            $data = ['success' => 0];
+            $data = [
+                'success' => 0,
+            ];
         }
 
         return $this->sendJsonResponse($data);
@@ -621,7 +659,9 @@ class AjaxController extends CommonAjaxController
                 'tags'    => $utmTagOptions,
             ];
         } else {
-            $data = ['success' => 0];
+            $data = [
+                'success' => 0,
+            ];
         }
 
         return $this->sendJsonResponse($data);
@@ -629,7 +669,9 @@ class AjaxController extends CommonAjaxController
 
     public function reorderAction(Request $request, FieldModel $model): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
         $order     = InputHelper::clean($request->request->get('field'));
         $page      = (int) $request->get('page');
         $limit     = (int) $request->get('limit');
@@ -648,8 +690,16 @@ class AjaxController extends CommonAjaxController
         $alias     = InputHelper::clean($request->request->get('alias'));
         $operator  = InputHelper::clean($request->request->get('operator'));
         $changed   = InputHelper::clean($request->request->get('changed'));
-        $dataArray = ['success' => 0, 'options' => null, 'optionsAttr' => [], 'operators' => null, 'disabled' => false];
-        $leadField = $this->getModel('lead.field')->getRepository()->findOneBy(['alias' => $alias]);
+        $dataArray = [
+            'success' => 0,
+            'options' => null,
+            'optionsAttr' => [],
+            'operators' => null,
+            'disabled' => false,
+        ];
+        $leadField = $this->getModel('lead.field')->getRepository()->findOneBy([
+            'alias' => $alias,
+        ]);
 
         if ($leadField) {
             $options       = null;
@@ -790,7 +840,9 @@ class AjaxController extends CommonAjaxController
         $segment = $model->getEntity($id);
 
         if (!$segment) {
-            return new JsonResponse(['message' => "Segment {$id} could not be found."], Response::HTTP_NOT_FOUND);
+            return new JsonResponse([
+                'message' => "Segment {$id} could not be found.",
+            ], Response::HTTP_NOT_FOUND);
         }
 
         $parentNode = $segmentDependencyTreeFactory->buildTree($segment);
@@ -807,7 +859,9 @@ class AjaxController extends CommonAjaxController
         return [
             'html'      => $this->translator->trans(
                 $needsRebuild ? 'mautic.lead.list.building' : 'mautic.lead.list.viewleads_count',
-                ['%count%' => $leadCount]
+                [
+                    '%count%' => $leadCount,
+                ]
             ),
             'className' => sprintf('label %s col-count', $needsRebuild ? 'label-info' : 'label-gray'),
             'leadCount' => $leadCount,

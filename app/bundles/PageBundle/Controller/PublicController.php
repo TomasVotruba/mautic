@@ -470,7 +470,9 @@ class PublicController extends AbstractFormController
 
             $url = ($redirect) ? $redirect->getUrl() : 'n/a';
 
-            throw $this->createNotFoundException($this->translator->trans('mautic.core.url.error.404', ['%url%' => $url]));
+            throw $this->createNotFoundException($this->translator->trans('mautic.core.url.error.404', [
+                '%url%' => $url,
+            ]));
         }
 
         // Ensure the URL does not have encoded ampersands
@@ -500,13 +502,17 @@ class PublicController extends AbstractFormController
             if ($ipAddress->isTrackable()) {
                 // Search replace lead fields in the URL
                 try {
-                    $lead           = $contactRequestHelper->getContactFromQuery(['ct' => $ct]);
+                    $lead           = $contactRequestHelper->getContactFromQuery([
+                        'ct' => $ct,
+                    ]);
                     $isHitTrackable = $pageModel->hitPage($redirect, $request, 200, $lead);
                 } catch (InvalidDecodedStringException $e) {
                     // Invalid ct value so we must unset it
                     // and process the request without it
 
-                    $logger->error(sprintf('Invalid clickthrough value: %s', $ct), ['exception' => $e]);
+                    $logger->error(sprintf('Invalid clickthrough value: %s', $ct), [
+                        'exception' => $e,
+                    ]);
 
                     $request->request->remove('ct');
                     $request->query->remove('ct');
@@ -539,7 +545,9 @@ class PublicController extends AbstractFormController
         $url = UrlHelper::sanitizeAbsoluteUrl($url);
 
         if (!UrlHelper::isValidUrl($url)) {
-            throw $this->createNotFoundException($this->translator->trans('mautic.core.url.error.404', ['%url%' => $url]));
+            throw $this->createNotFoundException($this->translator->trans('mautic.core.url.error.404', [
+                '%url%' => $url,
+            ]));
         }
 
         $response =  $this->redirect($url);
@@ -558,10 +566,14 @@ class PublicController extends AbstractFormController
             try {
                 $model->hitVideo($request);
             } catch (\Exception) {
-                return new JsonResponse(['success' => false]);
+                return new JsonResponse([
+                    'success' => false,
+                ]);
             }
 
-            return new JsonResponse(['success' => true]);
+            return new JsonResponse([
+                'success' => true,
+            ]);
         }
 
         return new Response();

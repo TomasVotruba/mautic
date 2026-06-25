@@ -397,7 +397,10 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             // Use only prioirty fields if updating
             $fieldsToUpdateInMautic = $this->getPriorityFieldsForMautic($config, $object, 'mautic');
             if (empty($fieldsToUpdateInMautic)) {
-                $this->logger->debug('getMauticLead: No fields to update in Mautic', ['config' => $config, 'object' => $object]);
+                $this->logger->debug('getMauticLead: No fields to update in Mautic', [
+                    'config' => $config,
+                    'object' => $object,
+                ]);
 
                 return;
             }
@@ -437,7 +440,9 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
         if (isset($data['owner_email']) && isset($config['updateOwner']) && isset($config['updateOwner'][0])
             && 'updateOwner' == $config['updateOwner'][0]
         ) {
-            if ($mauticUser = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->findOneBy(['email' => $data['owner_email']])) {
+            if ($mauticUser = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->findOneBy([
+                'email' => $data['owner_email'],
+            ])) {
                 $lead->setOwner($mauticUser);
             }
         }
@@ -461,7 +466,9 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
      */
     protected function getFormFieldsByObject($object, $settings = [])
     {
-        $settings['feature_settings']['objects'] = [$object => $object];
+        $settings['feature_settings']['objects'] = [
+            $object => $object,
+        ];
 
         $fields = ($this->isAuthorized()) ? $this->getAvailableLeadFields($settings) : [];
 

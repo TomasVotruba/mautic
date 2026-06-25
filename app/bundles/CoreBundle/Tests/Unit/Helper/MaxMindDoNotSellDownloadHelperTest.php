@@ -75,7 +75,9 @@ final class MaxMindDoNotSellDownloadHelperTest extends \PHPUnit\Framework\TestCa
             ->with('Failed to fetch remote Do Not Sell data: transportException');
         $this->httpClientMock->expects($this->once())
             ->method('request')
-            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', ['auth_basic' => ['id', 'license']])
+            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', [
+                'auth_basic' => ['id', 'license'],
+            ])
             ->will($this->throwException(new TransportException('transportException')));
         $result = $maxMindDoNotSellDownloadHelper->downloadRemoteDataStore();
         $this->assertFalse($result);
@@ -93,7 +95,9 @@ final class MaxMindDoNotSellDownloadHelperTest extends \PHPUnit\Framework\TestCa
         $responseMock = $this->createMock(ResponseInterface::class);
         $this->httpClientMock->expects($this->once())
             ->method('request')
-            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', ['auth_basic' => ['id', 'license']])
+            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', [
+                'auth_basic' => ['id', 'license'],
+            ])
             ->willReturn($responseMock);
         $responseMock->expects($this->exactly(3))
             ->method('getStatusCode')
@@ -114,7 +118,9 @@ final class MaxMindDoNotSellDownloadHelperTest extends \PHPUnit\Framework\TestCa
         $responseMock = $this->createMock(ResponseInterface::class);
         $this->httpClientMock->expects($this->once())
             ->method('request')
-            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', ['auth_basic' => ['id', 'license']])
+            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', [
+                'auth_basic' => ['id', 'license'],
+            ])
             ->willReturn($responseMock);
         $responseMock->expects($this->exactly(2))
             ->method('getStatusCode')
@@ -135,7 +141,9 @@ final class MaxMindDoNotSellDownloadHelperTest extends \PHPUnit\Framework\TestCa
         $responseMock                   = $this->createMock(ResponseInterface::class);
         $this->httpClientMock->expects($this->once())
             ->method('request')
-            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', ['auth_basic' => ['id', 'license']])
+            ->with('GET', 'https://api.maxmind.com/privacy/exclusions', [
+                'auth_basic' => ['id', 'license'],
+            ])
             ->willReturn($responseMock);
         $responseMock->expects($this->exactly(2))
             ->method('getStatusCode')

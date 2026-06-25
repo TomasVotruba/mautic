@@ -33,7 +33,9 @@ class SecuritySubscriber implements EventSubscriberInterface
             'object'    => 'security',
             'objectId'  => $userId,
             'action'    => 'login',
-            'details'   => ['username' => $useName],
+            'details'   => [
+                'username' => $useName,
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
 

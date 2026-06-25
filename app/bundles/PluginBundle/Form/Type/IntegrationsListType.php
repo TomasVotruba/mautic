@@ -24,7 +24,9 @@ class IntegrationsListType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $integrationObjects = $this->integrationHelper->getIntegrationObjects(null, $options['supported_features'], true);
-        $integrations       = ['' => ''];
+        $integrations       = [
+            '' => '',
+        ];
 
         foreach ($integrationObjects as $object) {
             $settings = $object->getIntegrationSettings();
@@ -44,7 +46,9 @@ class IntegrationsListType extends AbstractType
             [
                 'choices'    => $integrations,
                 'expanded'   => false,
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'multiple'   => false,
                 'label'      => 'mautic.integration.integration',
                 'attr'       => [
@@ -55,7 +59,9 @@ class IntegrationsListType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
             ]

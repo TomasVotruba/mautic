@@ -26,7 +26,9 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testGetSubscribedEvents(): void
     {
         $this->assertEquals(
-            [CoreEvents::MAINTENANCE_CLEANUP_DATA => ['onDataCleanup', -50]],
+            [
+                CoreEvents::MAINTENANCE_CLEANUP_DATA => ['onDataCleanup', -50],
+            ],
             $this->subscriber->getSubscribedEvents()
         );
     }
@@ -98,8 +100,12 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
                 ++$callCount;
                 $result = $this->createMock(\Doctrine\DBAL\Result::class);
                 $result->method('fetchAllAssociative')->willReturn(match ($callCount) {
-                    1       => [['id' => 765]],
-                    3       => [['id' => 764]],
+                    1       => [[
+                        'id' => 765,
+                    ]],
+                    3       => [[
+                        'id' => 764,
+                    ]],
                     default => [],
                 });
 

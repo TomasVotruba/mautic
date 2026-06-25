@@ -64,7 +64,9 @@ class SalesforceApi extends CrmApi
 
         $settings   = $this->requestSettings;
         if ('PATCH' == $method) {
-            $settings['headers'] = ['Sforce-Auto-Assign' => 'FALSE'];
+            $settings['headers'] = [
+                'Sforce-Auto-Assign' => 'FALSE',
+            ];
         }
 
         // Query commands can have long wait time while SF builds response as the offset increases
@@ -116,7 +118,9 @@ class SalesforceApi extends CrmApi
             $fields[]    = 'Id';
             $fields      = implode(', ', array_unique($fields));
             $findContact = 'select '.$fields.' from Contact where email = \''.$this->escapeQueryValue($data['Contact']['Email']).'\'';
-            $response    = $this->request('query', ['q' => $findContact], 'GET', false, null, $queryUrl);
+            $response    = $this->request('query', [
+                'q' => $findContact,
+            ], 'GET', false, null, $queryUrl);
 
             if (!empty($response['records'])) {
                 $sfRecords['Contact'] = $response['records'];
@@ -129,7 +133,9 @@ class SalesforceApi extends CrmApi
             $fields[] = 'Id';
             $fields   = implode(', ', array_unique($fields));
             $findLead = 'select '.$fields.' from Lead where email = \''.$this->escapeQueryValue($data['Lead']['Email']).'\' and ConvertedContactId = NULL';
-            $response = $this->request('queryAll', ['q' => $findLead], 'GET', false, null, $queryUrl);
+            $response = $this->request('queryAll', [
+                'q' => $findLead,
+            ], 'GET', false, null, $queryUrl);
 
             if (!empty($response['records'])) {
                 $sfRecords['Lead'] = $response['records'];
@@ -169,7 +175,9 @@ class SalesforceApi extends CrmApi
             $fields[] = 'Id';
             $fields   = implode(', ', array_unique($fields));
             $query    = 'select '.$fields.' from Account where Name = \''.$this->escapeQueryValue($data['company']['Name']).'\''.$appendToQuery;
-            $response = $this->request('queryAll', ['q' => $query], 'GET', false, null, $queryUrl);
+            $response = $this->request('queryAll', [
+                'q' => $query,
+            ], 'GET', false, null, $queryUrl);
 
             if (!empty($response['records'])) {
                 $sfRecords['company'] = $response['records'];
@@ -321,7 +329,9 @@ class SalesforceApi extends CrmApi
         }
 
         if (!is_array($query)) {
-            return $this->request('queryAll', ['q' => $query], 'GET', false, null, $queryUrl);
+            return $this->request('queryAll', [
+                'q' => $query,
+            ], 'GET', false, null, $queryUrl);
         }
 
         if (!empty($query['nextUrl'])) {
@@ -387,7 +397,9 @@ class SalesforceApi extends CrmApi
 
         if (!$organizationCreatedDate = $cache->get('organization.created_date')) {
             $queryUrl                = $this->integration->getQueryUrl();
-            $organization            = $this->request('query', ['q' => 'SELECT CreatedDate from Organization'], 'GET', false, null, $queryUrl);
+            $organization            = $this->request('query', [
+                'q' => 'SELECT CreatedDate from Organization',
+            ], 'GET', false, null, $queryUrl);
             $organizationCreatedDate = $organization['records'][0]['CreatedDate'];
             $cache->set('organization.created_date', $organizationCreatedDate);
         }
@@ -405,7 +417,9 @@ class SalesforceApi extends CrmApi
         $campaignQuery = 'Select Id, Name from Campaign where isDeleted = false';
         $queryUrl      = $this->integration->getQueryUrl();
 
-        return $this->request('query', ['q' => $campaignQuery], 'GET', false, null, $queryUrl);
+        return $this->request('query', [
+            'q' => $campaignQuery,
+        ], 'GET', false, null, $queryUrl);
     }
 
     /**
@@ -432,7 +446,9 @@ class SalesforceApi extends CrmApi
             $query .= ' and SystemModStamp >= '.$modifiedSince;
         }
 
-        $results = $this->request(null, ['q' => $query], 'GET', false, null, $queryUrl);
+        $results = $this->request(null, [
+            'q' => $query,
+        ], 'GET', false, null, $queryUrl);
 
         $this->requestSettings = $defaultSettings;
 
@@ -450,7 +466,9 @@ class SalesforceApi extends CrmApi
             $query   = "Select Id, $idField from CampaignMember where CampaignId = '".$campaignId
                 ."' and $idField in ('".implode("','", $people)."')";
 
-            $foundCampaignMembers = $this->request('query', ['q' => $query], 'GET', false, null, $this->integration->getQueryUrl());
+            $foundCampaignMembers = $this->request('query', [
+                'q' => $query,
+            ], 'GET', false, null, $this->integration->getQueryUrl());
             if (!empty($foundCampaignMembers['records'])) {
                 foreach ($foundCampaignMembers['records'] as $member) {
                     $campaignMembers[$member[$idField]] = $member['Id'];
@@ -471,7 +489,9 @@ class SalesforceApi extends CrmApi
         $campaignQuery = "Select Id, Label from CampaignMemberStatus where isDeleted = false and CampaignId='".$campaignId."'";
         $queryUrl      = $this->integration->getQueryUrl();
 
-        return $this->request('query', ['q' => $campaignQuery], 'GET', false, null, $queryUrl);
+        return $this->request('query', [
+            'q' => $campaignQuery,
+        ], 'GET', false, null, $queryUrl);
     }
 
     /**
@@ -496,7 +516,9 @@ class SalesforceApi extends CrmApi
         $queryUrl  = $this->integration->getQueryUrl();
         $findQuery = 'select Id, '.$requiredFieldString.' from Account where isDeleted = false and Name in (\''.implode("','", $names).'\')';
 
-        return $this->request('query', ['q' => $findQuery], 'GET', false, null, $queryUrl);
+        return $this->request('query', [
+            'q' => $findQuery,
+        ], 'GET', false, null, $queryUrl);
     }
 
     /**
@@ -509,7 +531,9 @@ class SalesforceApi extends CrmApi
         $findQuery = 'select isDeleted, Id, '.$requiredFieldString.' from Account where  Id in (\''.implode("','", $ids).'\')';
         $queryUrl  = $this->integration->getQueryUrl();
 
-        return $this->request('queryAll', ['q' => $findQuery], 'GET', false, null, $queryUrl);
+        return $this->request('queryAll', [
+            'q' => $findQuery,
+        ], 'GET', false, null, $queryUrl);
     }
 
     /**
@@ -582,7 +606,9 @@ class SalesforceApi extends CrmApi
      */
     private function revalidateSession($isRetry): void
     {
-        if ($refreshError = $this->integration->authCallback(['use_refresh_token' => true])) {
+        if ($refreshError = $this->integration->authCallback([
+            'use_refresh_token' => true,
+        ])) {
             throw new ApiErrorException($refreshError);
         }
 
@@ -668,7 +694,9 @@ class SalesforceApi extends CrmApi
         }
         try {
             $leadsQuery = sprintf($baseQuery, join(', ', $fields));
-            $response   = $this->request('queryAll', ['q' => $leadsQuery], 'GET', $isRetry, null, $queryUrl);
+            $response   = $this->request('queryAll', [
+                'q' => $leadsQuery,
+            ], 'GET', $isRetry, null, $queryUrl);
         } catch (ApiErrorException $e) {
             [$missingField, $entityType] = $this->parseMissingField($e->getMessage());
             if (!$missingField) {

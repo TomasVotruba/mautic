@@ -65,7 +65,9 @@ class ContactRequestHelper
 
         if (isset($queryFields['ct']['stat'])) {
             /** @var Stat $stat */
-            $stat = $this->statRepository->findOneBy(['trackingHash' => $queryFields['ct']['stat']]);
+            $stat = $this->statRepository->findOneBy([
+                'trackingHash' => $queryFields['ct']['stat'],
+            ]);
             if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
                 return null;
             }

@@ -163,11 +163,12 @@ final class ReportSubscriber implements EventSubscriberInterface
             ],
         ];
 
-        $statsColumns = [self::PREFIX_TRACKABLES.'.unique_hits' => [
-            'label'   => 'mautic.report.focus.uniquehits',
-            'type'    => 'int',
-            'alias'   => 'unique_hit_count',
-            'formula' => 'CASE 
+        $statsColumns = [
+            self::PREFIX_TRACKABLES.'.unique_hits' => [
+                'label'   => 'mautic.report.focus.uniquehits',
+                'type'    => 'int',
+                'alias'   => 'unique_hit_count',
+                'formula' => 'CASE 
                     WHEN '.self::PREFIX_STATS.'.type = "view" THEN (
                         SELECT COUNT(DISTINCT fs2.lead_id) 
                         FROM '.MAUTIC_TABLE_PREFIX.'focus_stats fs2 
@@ -182,7 +183,8 @@ final class ReportSubscriber implements EventSubscriberInterface
                     )
                     ELSE MAX('.self::PREFIX_TRACKABLES.'.unique_hits)
                 END',
-        ]];
+            ],
+        ];
 
         $data = [
             'display_name' => 'mautic.focus.graph.stats',

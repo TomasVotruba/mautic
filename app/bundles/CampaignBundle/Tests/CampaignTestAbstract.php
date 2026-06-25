@@ -46,20 +46,31 @@ class CampaignTestAbstract extends TestCase
 
         $formRepository->expects($this->any())
             ->method('getFormList')
-            ->willReturn([['id' => self::$mockId, 'name' => self::$mockName]]);
+            ->willReturn([[
+                'id' => self::$mockId,
+                'name' => self::$mockName,
+            ]]);
 
         $leadListModel = $this->getMockBuilder(ListModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([6 => $entityManager])
+            ->setConstructorArgs([
+                6 => $entityManager,
+            ])
             ->getMock();
 
         $leadListModel->expects($this->any())
             ->method('getUserLists')
-            ->willReturn([['id' => self::$mockId, 'name' => self::$mockName, 'alias' => self::$mockAlias]]);
+            ->willReturn([[
+                'id' => self::$mockId,
+                'name' => self::$mockName,
+                'alias' => self::$mockAlias,
+            ]]);
 
         $formModel = $this->getMockBuilder(FormModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([12 => $entityManager])
+            ->setConstructorArgs([
+                12 => $entityManager,
+            ])
             ->getMock();
 
         $formModel->expects($this->any())

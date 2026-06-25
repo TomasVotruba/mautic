@@ -158,7 +158,9 @@ trait CustomFieldsApiControllerTrait
         );
         \assert($fields instanceof Paginator);
 
-        $this->fieldCache[$object] = ['fields' => $fields->getIterator()];
+        $this->fieldCache[$object] = [
+            'fields' => $fields->getIterator(),
+        ];
 
         return $this->fieldCache[$object];
     }

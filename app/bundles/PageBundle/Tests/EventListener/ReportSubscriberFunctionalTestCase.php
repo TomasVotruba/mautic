@@ -28,7 +28,10 @@ class ReportSubscriberFunctionalTestCase extends AbstractReportSubscriberTestCas
         $report = $this->createReport(
             source: 'page.hits',
             columns: ['l.id', 'ph.url', 'ph.time_spent'],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [

@@ -131,7 +131,9 @@ final class DashboardModelTest extends TestCase
         );
 
         // Pass timezone to skip userHelper->getUser()->getTimezone()
-        $model->populateWidgetContent($widget, ['timezone' => 'UTC']);
+        $model->populateWidgetContent($widget, [
+            'timezone' => 'UTC',
+        ]);
 
         Assert::assertSame('mautic.dashboard.widget.load.failed', $widget->getErrorMessage());
     }

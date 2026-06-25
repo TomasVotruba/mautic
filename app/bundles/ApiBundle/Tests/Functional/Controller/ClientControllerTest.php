@@ -67,13 +67,17 @@ class ClientControllerTest extends MauticMysqlTestCase
 
         // Check for total item count in pagination
         $this->assertStringContainsString(
-            $translator->trans('mautic.core.pagination.items', ['%count%' => self::TOTAL_COUNT]),
+            $translator->trans('mautic.core.pagination.items', [
+                '%count%' => self::TOTAL_COUNT,
+            ]),
             $content
         );
 
         // Check for total page count in pagination
         $this->assertStringContainsString(
-            $translator->trans('mautic.core.pagination.pages', ['%count%' => $pageCount]),
+            $translator->trans('mautic.core.pagination.pages', [
+                '%count%' => $pageCount,
+            ]),
             $content
         );
     }

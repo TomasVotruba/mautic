@@ -84,7 +84,9 @@ class FormSubscriber implements EventSubscriberInterface
             'object'    => 'form',
             'objectId'  => $form->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $form->getName()],
+            'details'   => [
+                'name' => $form->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);
@@ -175,7 +177,9 @@ class FormSubscriber implements EventSubscriberInterface
 
         if ($config['copy_lead'] && !empty($leadEmail)) {
             // Send copy to lead
-            $this->setMailer($config, $tokens, [$leadEmail => null], $lead, false);
+            $this->setMailer($config, $tokens, [
+                $leadEmail => null,
+            ], $lead, false);
 
             $this->mailer->send(true);
         }
@@ -183,7 +187,9 @@ class FormSubscriber implements EventSubscriberInterface
         $owner = null !== $lead ? $lead->getOwner() : null;
         if (!empty($config['email_to_owner']) && null !== $owner) {
             // Send copy to owner
-            $this->setMailer($config, $tokens, [$owner->getEmail() => null], $lead);
+            $this->setMailer($config, $tokens, [
+                $owner->getEmail() => null,
+            ], $lead);
 
             $this->mailer->send(true);
         }
@@ -243,7 +249,9 @@ class FormSubscriber implements EventSubscriberInterface
         }
 
         try {
-            $client   = new Client(['timeout' => 15]);
+            $client   = new Client([
+                'timeout' => 15,
+            ]);
             $response = $client->post(
                 $config['post_url'],
                 [
@@ -284,7 +292,9 @@ class FormSubscriber implements EventSubscriberInterface
                 $emails     = $emails     = $this->getEmailsFromString($email);
                 $this->mailer->setTo($emails);
                 $this->mailer->setSubject(
-                    $this->translator->trans('mautic.form.action.repost.failed_subject', ['%form%' => $submission->getForm()->getName()])
+                    $this->translator->trans('mautic.form.action.repost.failed_subject', [
+                        '%form%' => $submission->getForm()->getName(),
+                    ])
                 );
                 $this->mailer->setBody(
                     $this->translator->trans(
@@ -292,7 +302,10 @@ class FormSubscriber implements EventSubscriberInterface
                         [
                             '%link%' => $this->router->generate(
                                 'mautic_form_results',
-                                ['objectId' => $submission->getForm()->getId(), 'result' => $submission->getId()],
+                                [
+                                    'objectId' => $submission->getForm()->getId(),
+                                    'result' => $submission->getId(),
+                                ],
                                 UrlGeneratorInterface::ABSOLUTE_URL
                             ),
                             '%message%' => $exception->getMessage(),

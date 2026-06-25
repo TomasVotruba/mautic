@@ -68,7 +68,9 @@ class DashboardController extends AbstractFormController
         // Set the final date range to the form
         $dateRangeFilter['date_from'] = $filter['dateFrom']->format(WidgetService::FORMAT_HUMAN);
         $dateRangeFilter['date_to']   = $filter['dateTo']->format(WidgetService::FORMAT_HUMAN);
-        $dateRangeForm                = $formFactory->create(DateRangeType::class, $dateRangeFilter, ['action' => $action]);
+        $dateRangeForm                = $formFactory->create(DateRangeType::class, $dateRangeFilter, [
+            'action' => $action,
+        ]);
 
         $model->populateWidgetsContent($widgets, $filter);
         $releaseMetadata = ThisRelease::getMetadata();
@@ -109,7 +111,9 @@ class DashboardController extends AbstractFormController
 
         $content = $twig->render(
             '@MauticDashboard/Dashboard/widget.html.twig',
-            ['widget' => $widget]
+            [
+                'widget' => $widget,
+            ]
         );
 
         return new JsonResponse([
@@ -133,7 +137,9 @@ class DashboardController extends AbstractFormController
 
         $model  = $this->getModel('dashboard');
         \assert($model instanceof DashboardModel);
-        $action = $this->generateUrl('mautic_dashboard_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_dashboard_action', [
+            'objectAction' => 'new',
+        ]);
 
         // get the user form factory
         $form       = $model->createForm($widget, $formFactory, $action);
@@ -197,7 +203,10 @@ class DashboardController extends AbstractFormController
         $model  = $this->getModel('dashboard');
         \assert($model instanceof DashboardModel);
         $widget = $model->getEntity($objectId);
-        $action = $this->generateUrl('mautic_dashboard_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_dashboard_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
 
         // get the user form factory
         $form       = $model->createForm($widget, $formFactory, $action);
@@ -282,7 +291,9 @@ class DashboardController extends AbstractFormController
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.api.client.error.notfound',
-                'msgVars' => ['%id%' => $objectId],
+                'msgVars' => [
+                    '%id%' => $objectId,
+                ],
             ];
         }
 
@@ -377,7 +388,9 @@ class DashboardController extends AbstractFormController
             unlink($path);
         }
 
-        return $this->redirectToRoute('mautic_dashboard_action', ['objectAction' => 'import']);
+        return $this->redirectToRoute('mautic_dashboard_action', [
+            'objectAction' => 'import',
+        ]);
     }
 
     /**
@@ -401,7 +414,9 @@ class DashboardController extends AbstractFormController
         if (!file_exists($path) || !is_readable($path)) {
             $this->addFlashMessage('mautic.dashboard.upload.filenotfound', [], 'error', 'validators');
 
-            return $this->redirectToRoute('mautic_dashboard_action', ['objectAction' => 'import']);
+            return $this->redirectToRoute('mautic_dashboard_action', [
+                'objectAction' => 'import',
+            ]);
         }
 
         $widgets = json_decode(file_get_contents($path), true);
@@ -445,8 +460,12 @@ class DashboardController extends AbstractFormController
             'global' => $pathsHelper->getSystemPath('dashboard.global'),
         ];
 
-        $action = $this->generateUrl('mautic_dashboard_action', ['objectAction' => 'import']);
-        $form   = $formFactory->create(UploadType::class, [], ['action' => $action]);
+        $action = $this->generateUrl('mautic_dashboard_action', [
+            'objectAction' => 'import',
+        ]);
+        $form   = $formFactory->create(UploadType::class, [], [
+            'action' => $action,
+        ]);
 
         if ($request->isMethod(Request::METHOD_POST)) {
             if (!$this->isFormCancelled($form)) {
@@ -459,7 +478,9 @@ class DashboardController extends AbstractFormController
                         } else {
                             $form->addError(
                                 new FormError(
-                                    $this->translator->trans('mautic.core.not.allowed.file.extension', ['%extension%' => $extension], 'validators')
+                                    $this->translator->trans('mautic.core.not.allowed.file.extension', [
+                                        '%extension%' => $extension,
+                                    ], 'validators')
                                 )
                             );
                         }
@@ -474,7 +495,10 @@ class DashboardController extends AbstractFormController
             }
         }
 
-        $dashboardFiles = ['user' => [], 'gobal' => []];
+        $dashboardFiles = [
+            'user' => [],
+            'gobal' => [],
+        ];
         $dashboards     = [];
 
         if (is_readable($directories['user'])) {

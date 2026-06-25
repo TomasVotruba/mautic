@@ -47,7 +47,9 @@ class ContactFinder
         $this->logger->debug('MONITORED EMAIL: Searching for a contact by hash '.$hash);
 
         /** @var Stat $stat */
-        $stat = $this->statRepository->findOneBy(['trackingHash' => $hash]);
+        $stat = $this->statRepository->findOneBy([
+            'trackingHash' => $hash,
+        ]);
         $this->logger->debug("MONITORED EMAIL: HashId of $hash found in return path");
         if ($stat && $stat->getLead()) {
             $this->logger->debug("MONITORED EMAIL: Stat ID {$stat->getId()} found for hash $hash");

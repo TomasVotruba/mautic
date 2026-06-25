@@ -30,7 +30,10 @@ class ConnectwiseApiTest extends \PHPUnit\Framework\TestCase
                     ++$page;
 
                     // Page should be incremented 3 times by fetchAllRecords method
-                    $this->assertEquals(['page' => $page, 'pageSize' => ConnectwiseIntegration::PAGESIZE], $parameters);
+                    $this->assertEquals([
+                        'page' => $page,
+                        'pageSize' => ConnectwiseIntegration::PAGESIZE,
+                    ], $parameters);
 
                     return $this->generateData(3);
                 }

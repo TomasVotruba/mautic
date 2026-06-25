@@ -139,7 +139,10 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                                     'description'          => 'mautic.email.campaign.event.send_descr',
                                     'batchEventName'       => EmailEvents::ON_CAMPAIGN_BATCH_ACTION,
                                     'formType'             => EmailSendType::class,
-                                    'formTypeOptions'      => ['update_select' => 'campaignevent_properties_email', 'with_email_types' => true],
+                                    'formTypeOptions'      => [
+                                        'update_select' => 'campaignevent_properties_email',
+                                        'with_email_types' => true,
+                                    ],
                                     'formTheme'            => 'MauticEmailBundle:FormTheme\EmailSendList',
                                     'channel'              => 'email',
                                     'channelIdField'       => 'email',
@@ -153,7 +156,9 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                                     'description'      => 'mautic.campaign.sms.send_text_sms.tooltip',
                                     'eventName'        => SmsEvents::ON_CAMPAIGN_TRIGGER_ACTION,
                                     'formType'         => SmsSendType::class,
-                                    'formTypeOptions'  => ['update_select' => 'campaignevent_properties_sms'],
+                                    'formTypeOptions'  => [
+                                        'update_select' => 'campaignevent_properties_sms',
+                                    ],
                                     'formTheme'        => 'MauticSmsBundle:FormTheme\SmsSendList',
                                     'timelineTemplate' => '@MauticSms/SubscribedEvents/Timeline/index.html.twig',
                                     'channel'          => 'sms',
@@ -365,6 +370,9 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $log2->method('getId')
             ->willReturn(2);
 
-        return new ArrayCollection([1 => $log, 2 => $log2]);
+        return new ArrayCollection([
+            1 => $log,
+            2 => $log2,
+        ]);
     }
 }

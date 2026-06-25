@@ -53,7 +53,9 @@ class DeleteOrphanFormResultsTableCommand extends Command
                 return ExitCode::FAILURE;
             }
         }
-        $output->writeln($this->translator->trans('mautic.forms.command.dropped_tables_count', ['%table_count%' => count($orphanFormResultsTableNames)]));
+        $output->writeln($this->translator->trans('mautic.forms.command.dropped_tables_count', [
+            '%table_count%' => count($orphanFormResultsTableNames),
+        ]));
 
         return ExitCode::SUCCESS;
     }

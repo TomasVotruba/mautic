@@ -78,7 +78,10 @@ class CampaignSummarizationFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId(), '--kickoff-only' => true]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+            '--kickoff-only' => true,
+        ]);
     }
 
     private function createLead(): Lead

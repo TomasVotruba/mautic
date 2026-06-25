@@ -35,7 +35,10 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
 
         // Set company to trigger setPrimaryCompany()
         $lead = new Lead();
-        $data = ['email' => 'pointtest@test.com', 'company' => 'PointTest'];
+        $data = [
+            'email' => 'pointtest@test.com',
+            'company' => 'PointTest',
+        ];
         $model->setFieldValues($lead, $data, false, true, true);
 
         // Save to trigger points listener and setting primary company
@@ -75,7 +78,9 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
 
     public function testSignleAssignedCompany(): void
     {
-        $this->setUpSymfony(array_merge($this->configParams, ['contact_allow_multiple_companies' => 0]));
+        $this->setUpSymfony(array_merge($this->configParams, [
+            'contact_allow_multiple_companies' => 0,
+        ]));
 
         self::assertEquals(1, count($this->getContactWithAssignTwoCompanies()));
     }
@@ -188,11 +193,22 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
             ->setAlias('select_field')
             ->setType('select')
             ->setObject('lead')
-            ->setProperties(['list' => [
-                ['label' => 'Male', 'value' => 'male'],
-                ['label' => 'Female', 'value' => 'female'],
-                ['label' => 'Other\'s', 'value' => 'other\'s'],
-            ]]);
+            ->setProperties([
+                'list' => [
+                    [
+                        'label' => 'Male',
+                        'value' => 'male',
+                    ],
+                    [
+                        'label' => 'Female',
+                        'value' => 'female',
+                    ],
+                    [
+                        'label' => 'Other\'s',
+                        'value' => 'other\'s',
+                    ],
+                ],
+            ]);
         $fieldModel->saveEntity($selectField);
         $this->em->clear();
 
@@ -219,12 +235,23 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
                     'alias'      => $selectField->getAlias(),
                     'type'       => $selectField->getType(),
                     'value'      => $selectFieldValue,
-                    'properties' => ['list' => [
-                        ['label' => 'Male', 'value' => 'male'],
-                        ['label' => 'Female', 'value' => 'female'],
-                        // As it stores HTML encoded value.
-                        ['label' => 'Other&#39;s', 'value' => 'other&#39;s'],
-                    ]],
+                    'properties' => [
+                        'list' => [
+                            [
+                                'label' => 'Male',
+                                'value' => 'male',
+                            ],
+                            [
+                                'label' => 'Female',
+                                'value' => 'female',
+                            ],
+                            // As it stores HTML encoded value.
+                            [
+                                'label' => 'Other&#39;s',
+                                'value' => 'other&#39;s',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];

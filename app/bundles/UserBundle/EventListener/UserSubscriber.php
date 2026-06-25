@@ -57,7 +57,9 @@ class UserSubscriber implements EventSubscriberInterface
             'object'    => 'user',
             'objectId'  => $user->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $user->getName()],
+            'details'   => [
+                'name' => $user->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);
@@ -93,7 +95,9 @@ class UserSubscriber implements EventSubscriberInterface
             'object'    => 'role',
             'objectId'  => $role->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $role->getName()],
+            'details'   => [
+                'name' => $role->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

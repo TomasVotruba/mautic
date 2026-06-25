@@ -27,7 +27,9 @@ trait ProjectTrait
             ->setJoinTable($tableName)
             ->addInverseJoinColumn('project_id', 'id', false, false, 'CASCADE')
             ->addJoinColumn($columnName, 'id', false, false, 'CASCADE')
-            ->setOrderBy(['name' => 'ASC'])
+            ->setOrderBy([
+                'name' => 'ASC',
+            ])
             ->setIndexBy('name')
             ->fetchLazy()
             ->cascadeMerge()

@@ -12,7 +12,9 @@ class DsnTest extends TestCase
 {
     public function testGettersAndSetters(): void
     {
-        $dsn = new Dsn('scheme', 'localhost', 'user', 'password', 3300, 'path', ['ttl' => '200']);
+        $dsn = new Dsn('scheme', 'localhost', 'user', 'password', 3300, 'path', [
+            'ttl' => '200',
+        ]);
         Assert::assertSame('scheme://user:password@localhost:3300/path?ttl=200', (string) $dsn);
 
         $newDsn = $dsn->setScheme('mysql');
@@ -51,11 +53,17 @@ class DsnTest extends TestCase
         Assert::assertSame('scheme://user:password@localhost:3300/folder?ttl=200', (string) $newDsn);
         Assert::assertSame('folder', $newDsn->getPath());
 
-        $newDsn = $dsn->setOptions(['ttl' => '300', 'timeout' => '10']);
+        $newDsn = $dsn->setOptions([
+            'ttl' => '300',
+            'timeout' => '10',
+        ]);
         Assert::assertNotSame($newDsn, $dsn);
         Assert::assertSame('scheme://user:password@localhost:3300/path?ttl=200', (string) $dsn);
         Assert::assertSame('scheme://user:password@localhost:3300/path?ttl=300&timeout=10', (string) $newDsn);
-        Assert::assertSame(['ttl' => '300', 'timeout' => '10'], $newDsn->getOptions());
+        Assert::assertSame([
+            'ttl' => '300',
+            'timeout' => '10',
+        ], $newDsn->getOptions());
         Assert::assertSame('300', $newDsn->getOption('ttl'));
         Assert::assertSame('10', $newDsn->getOption('timeout'));
     }
@@ -124,13 +132,18 @@ class DsnTest extends TestCase
         ];
 
         yield 'With host, port, path and query.' => [
-            new Dsn('smtp', 'host', 'user', 'password', 25, 'test-path', ['encryption' => 'tls', 'auth_mode'=>'login']), 'smtp://user:password@host:25/test-path?encryption=tls&auth_mode=login',
+            new Dsn('smtp', 'host', 'user', 'password', 25, 'test-path', [
+                'encryption' => 'tls',
+                'auth_mode'=>'login',
+            ]), 'smtp://user:password@host:25/test-path?encryption=tls&auth_mode=login',
         ];
     }
 
     public function testToStringUrlEncodesProperly(): void
     {
-        $dsn = new Dsn('scheme', 'local+@$#/:*!host', 'us+@$#/:*!er', 'pass+@$#/:*!word', 3300, 'pa+@$#/:*!th', ['type' => 'ty+@$#/:*!pe']);
+        $dsn = new Dsn('scheme', 'local+@$#/:*!host', 'us+@$#/:*!er', 'pass+@$#/:*!word', 3300, 'pa+@$#/:*!th', [
+            'type' => 'ty+@$#/:*!pe',
+        ]);
         Assert::assertSame('scheme://'.urlencode('us+@$#/:*!er').':'.urlencode('pass+@$#/:*!word').'@'.urlencode('local+@$#/:*!host').':3300/'.urlencode('pa+@$#/:*!th').'?type='.urlencode('ty+@$#/:*!pe'), (string) $dsn);
 
         $dsnFromString = Dsn::fromString((string) $dsn);

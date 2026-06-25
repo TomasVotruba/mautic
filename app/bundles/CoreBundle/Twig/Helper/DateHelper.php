@@ -153,13 +153,17 @@ final class DateHelper
         $dt       = $this->helper->getLocalDateTime();
 
         if ($textDate) {
-            return $this->translator->trans('mautic.core.date.'.$textDate, ['%time%' => $dt->format($this->coreParametersHelper->get('date_format_timeonly'))]);
+            return $this->translator->trans('mautic.core.date.'.$textDate, [
+                '%time%' => $dt->format($this->coreParametersHelper->get('date_format_timeonly')),
+            ]);
         }
         $interval = $this->helper->getDiff('now', null, true);
 
         if ($interval->invert && !$forceDateForNonText) {
             // In the past
-            return $this->translator->trans('mautic.core.date.ago', ['%days%' => $interval->days]);
+            return $this->translator->trans('mautic.core.date.ago', [
+                '%days%' => $interval->days,
+            ]);
         }
 
         // In the future
@@ -174,13 +178,22 @@ final class DateHelper
     public function formatRange(\DateInterval $range): string
     {
         $formated  = [];
-        $timeUnits = ['y' => 'year', 'm' => 'month', 'd' => 'day', 'h' => 'hour', 'i' => 'minute', 's' => 'second'];
+        $timeUnits = [
+            'y' => 'year',
+            'm' => 'month',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        ];
 
         foreach ($timeUnits as $key => $unit) {
             if ($range->{$key}) {
                 $formated[] = $this->translator->trans(
                     'mautic.core.date.'.$unit,
-                    ['%count%' => $range->{$key}]
+                    [
+                        '%count%' => $range->{$key},
+                    ]
                 );
             }
         }
@@ -250,19 +263,29 @@ final class DateHelper
         $diff = $now->diff($date);
 
         if ($diff->y > 0) {
-            return $this->translator->trans('mautic.core.date.years.ago', ['%count%' => $diff->y]);
+            return $this->translator->trans('mautic.core.date.years.ago', [
+                '%count%' => $diff->y,
+            ]);
         }
         if ($diff->m > 0) {
-            return $this->translator->trans('mautic.core.date.months.ago', ['%count%' => $diff->m]);
+            return $this->translator->trans('mautic.core.date.months.ago', [
+                '%count%' => $diff->m,
+            ]);
         }
         if ($diff->d > 0) {
-            return $this->translator->trans('mautic.core.date.days.ago', ['%count%' => $diff->d]);
+            return $this->translator->trans('mautic.core.date.days.ago', [
+                '%count%' => $diff->d,
+            ]);
         }
         if ($diff->h > 0) {
-            return $this->translator->trans('mautic.core.date.hours.ago', ['%count%' => $diff->h]);
+            return $this->translator->trans('mautic.core.date.hours.ago', [
+                '%count%' => $diff->h,
+            ]);
         }
         if ($diff->i > 0) {
-            return $this->translator->trans('mautic.core.date.minutes.ago', ['%count%' => $diff->i]);
+            return $this->translator->trans('mautic.core.date.minutes.ago', [
+                '%count%' => $diff->i,
+            ]);
         }
 
         return $this->translator->trans('mautic.core.date.just.now');
@@ -283,7 +306,9 @@ final class DateHelper
         $textDate = $this->helper->getTextDate();
 
         if ($textDate) {
-            $translated = $this->translator->trans('mautic.core.date.'.$textDate, ['%time%' => '']);
+            $translated = $this->translator->trans('mautic.core.date.'.$textDate, [
+                '%time%' => '',
+            ]);
 
             return trim(str_replace(',', '', $translated));
         }

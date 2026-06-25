@@ -201,7 +201,9 @@ class GrapesJsController extends CommonController
         }
 
         if (str_contains($objectId, 'new')) {
-            return $this->json(['editorState' => null]);
+            return $this->json([
+                'editorState' => null,
+            ]);
         }
 
         $model      = $this->getModel($objectType);
@@ -223,7 +225,9 @@ class GrapesJsController extends CommonController
         $content     = $this->normalizeContentToArray($entity->getContent());
         $editorState = $this->extractEditorStateFromContent($content);
 
-        return $this->json(['editorState' => $editorState]);
+        return $this->json([
+            'editorState' => $editorState,
+        ]);
     }
 
     /**

@@ -74,12 +74,18 @@ return [
             'mautic_email_unsubscribe' => [
                 'path'       => '/email/unsubscribe/{idHash}/{urlEmail}/{secretHash}',
                 'controller' => 'Mautic\EmailBundle\Controller\PublicController::unsubscribeAction',
-                'defaults'   => ['urlEmail' => null, 'secretHash' => null],
+                'defaults'   => [
+                    'urlEmail' => null,
+                    'secretHash' => null,
+                ],
             ],
             'mautic_email_unsubscribe_all' => [
                 'path'       => '/email/dnc/{idHash}/{urlEmail}/{secretHash}',
                 'controller' => 'Mautic\EmailBundle\Controller\PublicController::unsubscribeAllAction',
-                'defaults'   => ['urlEmail' => null, 'secretHash' => null],
+                'defaults'   => [
+                    'urlEmail' => null,
+                    'secretHash' => null,
+                ],
             ],
             'mautic_email_resubscribe' => [
                 'path'       => '/email/resubscribe/{idHash}',

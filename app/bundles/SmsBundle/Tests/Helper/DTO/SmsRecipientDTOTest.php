@@ -38,7 +38,9 @@ class SmsRecipientDTOTest extends TestCase
             '{"lead":{"imported":false,"deletedId":null},"result":false,"substitution_data":{"key":"value"}}',
             json_encode($this->dto2)
         );
-        $this->assertSame(['key' => 'value'], $this->dto2->getSubstitutionData());
+        $this->assertSame([
+            'key' => 'value',
+        ], $this->dto2->getSubstitutionData());
 
         $choices = $this->collection->toChoices();
         $this->assertSame(1, array_keys($choices)[0]);
@@ -62,7 +64,9 @@ class SmsRecipientDTOTest extends TestCase
 
         $this->dto2 = new SmsRecipientDTO(
             $lead2,
-            ['key' => 'value'],
+            [
+                'key' => 'value',
+            ],
             'final message 2'
         );
 

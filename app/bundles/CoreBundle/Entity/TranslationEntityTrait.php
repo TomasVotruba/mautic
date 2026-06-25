@@ -43,7 +43,9 @@ trait TranslationEntityTrait
     {
         $builder->createOneToMany('translationChildren', $entityClass)
             ->setIndexBy('id')
-            ->setOrderBy(['isPublished' => 'DESC'])
+            ->setOrderBy([
+                'isPublished' => 'DESC',
+            ])
             ->mappedBy('translationParent')
             ->build();
 

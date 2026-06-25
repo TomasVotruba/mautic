@@ -798,7 +798,9 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                     );
                 $from = $q->getQueryPart('from')[0];
                 $q->resetQueryPart('from');
-                $q->add('from', ['hint' => 'USE INDEX FOR JOIN ('.MAUTIC_TABLE_PREFIX.'lead_date_added)'] + $from, true);
+                $q->add('from', [
+                    'hint' => 'USE INDEX FOR JOIN ('.MAUTIC_TABLE_PREFIX.'lead_date_added)',
+                ] + $from, true);
 
                 $filter->strict  = true;
                 $q->andWhere(($filter->not ? 'NOT EXISTS' : 'EXISTS').'('.$sq->getSQL().')');
@@ -1054,9 +1056,13 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
         }
 
         $dt     = new DateTimeHelper($lastActiveDate ?? '');
-        $fields = ['last_active' => $dt->toUtcString()];
+        $fields = [
+            'last_active' => $dt->toUtcString(),
+        ];
 
-        $this->getEntityManager()->getConnection()->update(MAUTIC_TABLE_PREFIX.'leads', $fields, ['id' => $leadId]);
+        $this->getEntityManager()->getConnection()->update(MAUTIC_TABLE_PREFIX.'leads', $fields, [
+            'id' => $leadId,
+        ]);
     }
 
     /**

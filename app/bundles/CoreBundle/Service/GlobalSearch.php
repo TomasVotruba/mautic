@@ -46,7 +46,9 @@ class GlobalSearch
         $count           = $entities->count();
         $renderedResults = [];
         foreach ($entities as $entity) {
-            $renderedResults[] = $this->twig->render($template, ['item' => $entity]);
+            $renderedResults[] = $this->twig->render($template, [
+                'item' => $entity,
+            ]);
         }
 
         if ($count > GlobalSearchEvent::RESULTS_LIMIT) {

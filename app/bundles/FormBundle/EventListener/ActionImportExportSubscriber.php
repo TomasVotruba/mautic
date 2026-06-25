@@ -89,7 +89,9 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
             ]);
         }
         foreach ($data as $entityName => $entities) {
-            $event->addEntities([$entityName => $entities]);
+            $event->addEntities([
+                $entityName => $entities,
+            ]);
         }
     }
 
@@ -100,12 +102,22 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $actionData) {
-            $action = $this->entityManager->getRepository(Action::class)->findOneBy(['uuid' => $actionData['uuid']]);
+            $action = $this->entityManager->getRepository(Action::class)->findOneBy([
+                'uuid' => $actionData['uuid'],
+            ]);
             $isNew  = !$action;
             $action ??= new Action();
 
@@ -126,7 +138,9 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
                 $actionData,
                 Action::class,
                 null,
-                ['object_to_populate' => $action]
+                [
+                    'object_to_populate' => $action,
+                ]
             );
 
             $this->actionModel->saveEntity($action);
@@ -142,7 +156,9 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Action::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Action::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -163,7 +179,9 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
             $action = $this->entityManager->getRepository(Action::class)->find($id);
             if ($action) {
                 $this->entityManager->remove($action);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Action::class], 'formAction');
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Action::class,
+                ], 'formAction');
             }
         }
 
@@ -177,8 +195,13 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         }
 
         $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'uuids' => [],
+            ],
             'errors'                  => [],
         ];
 
@@ -188,7 +211,9 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
                 break;
             }
 
-            $existing = $this->entityManager->getRepository(Action::class)->findOneBy(['uuid' => $item['uuid']]);
+            $existing = $this->entityManager->getRepository(Action::class)->findOneBy([
+                'uuid' => $item['uuid'],
+            ]);
             if ($existing) {
                 $summary[EntityImportEvent::UPDATE]['names'][] = $existing->getName();
                 $summary[EntityImportEvent::UPDATE]['uuids'][] = $existing->getUuid();
@@ -200,13 +225,17 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         foreach ($summary as $type => $data) {
             if ('errors' === $type) {
                 if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
+                    $event->setSummary('errors', [
+                        'messages' => $data,
+                    ]);
                 }
                 break;
             }
 
             if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Action::ENTITY_NAME => $data]);
+                $event->setSummary($type, [
+                    Action::ENTITY_NAME => $data,
+                ]);
             }
         }
     }

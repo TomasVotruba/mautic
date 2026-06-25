@@ -159,11 +159,17 @@ class CampaignController extends AbstractStandardFormController
     ): JsonResponse|BinaryFileResponse {
         $filePath = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
         if (!file_exists($filePath)) {
-            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
-            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
+            $this->logger->error('Export file could not be created', [
+                'filePath' => $filePath,
+            ]);
+            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', [
+                '%path%' => $filePath,
+            ], FlashBag::LEVEL_ERROR);
 
             return new JsonResponse([
-                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
+                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', [
+                    '%path%' => $filePath,
+                ], 'flashes'),
                 'flashes' => $this->getFlashContent(),
             ], 400);
         }
@@ -174,7 +180,9 @@ class CampaignController extends AbstractStandardFormController
     public function exportAction(ExportHelper $exportHelper, CampaignModel $campaignModel, int $objectId): JsonResponse|BinaryFileResponse|Response
     {
         if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
-            $this->logger->error('Access denied for campaign export', ['user' => $this->user->getId()]);
+            $this->logger->error('Access denied for campaign export', [
+                'user' => $this->user->getId(),
+            ]);
 
             $this->throwAccessDenied();
         }
@@ -182,13 +190,17 @@ class CampaignController extends AbstractStandardFormController
         $campaign = $campaignModel->getEntity($objectId);
 
         if (empty($campaign)) {
-            $this->logger->error('Campaign not found for export', ['objectId' => $objectId]);
+            $this->logger->error('Campaign not found for export', [
+                'objectId' => $objectId,
+            ]);
 
             return $this->notFound();
         }
 
         $date           = (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB);
-        $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', ['%date%' => $date]);
+        $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', [
+            '%date%' => $date,
+        ]);
 
         $event = new EntityExportEvent(Campaign::ENTITY_NAME, $objectId);
         $event = $this->dispatcher->dispatch($event);
@@ -231,7 +243,9 @@ class CampaignController extends AbstractStandardFormController
 
         $ids            = $request->get('ids');
         $date           = (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB);
-        $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', ['%date%' => $date]);
+        $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', [
+            '%date%' => $date,
+        ]);
         $objectIds      = json_decode($ids, true);
 
         if (empty($ids)) {
@@ -316,7 +330,9 @@ class CampaignController extends AbstractStandardFormController
             'campaign_leads',
             null,
             'campaign_id',
-            ['manually_removed' => 0],
+            [
+                'manually_removed' => 0,
+            ],
             null,
             null,
             [],
@@ -373,24 +389,40 @@ class CampaignController extends AbstractStandardFormController
                 ]
             )
         );
-        $response['decisions']  = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', ['events' => $sortedEvents['decision']]));
-        $response['actions']    = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', ['events' => $sortedEvents['action']]));
-        $response['conditions'] = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', ['events' => $sortedEvents['condition']]));
+        $response['decisions']  = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', [
+            'events' => $sortedEvents['decision'],
+        ]));
+        $response['actions']    = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', [
+            'events' => $sortedEvents['action'],
+        ]));
+        $response['conditions'] = trim($this->renderView('@MauticCampaign/Campaign/_events.html.twig', [
+            'events' => $sortedEvents['condition'],
+        ]));
 
         return new JsonResponse(array_filter($response));
     }
 
     public function GraphAction(Request $request, int $objectId, string $dateFrom, string $dateTo): Response
     {
-        $dateRangeValues = ['date_from' => $dateFrom, 'date_to' => $dateTo];
-        $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+        $dateRangeValues = [
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ];
+        $action          = $this->generateUrl('mautic_campaign_action', [
+            'objectAction' => 'view',
+            'objectId' => $objectId,
+        ]);
+        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $action,
+        ]);
         $stats           = $this->getCampaignModel()->getCampaignMetricsLineChartData(
             null,
             new \DateTime($dateRangeForm->get('date_from')->getData()),
             new \DateTime($dateRangeForm->get('date_to')->getData()),
             null,
-            ['campaign_id' => $objectId]
+            [
+                'campaign_id' => $objectId,
+            ]
         );
 
         return $this->ajaxAction(
@@ -454,7 +486,9 @@ class CampaignController extends AbstractStandardFormController
         $page = $request->getSession()->get('mautic.campaign.page', 1);
 
         $options = $this->getEntityFormOptions();
-        $action  = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'new']);
+        $action  = $this->generateUrl('mautic_campaign_action', [
+            'objectAction' => 'new',
+        ]);
         $form    = $model->createForm($campaign, $this->formFactory, $action, $options);
 
         // /Check for a submitted form and process it
@@ -471,11 +505,16 @@ class CampaignController extends AbstractStandardFormController
                         $this->afterEntitySave($campaign, $form, 'new', $valid);
 
                         if (method_exists($this, 'viewAction')) {
-                            $viewParameters = ['objectId' => $campaign->getId(), 'objectAction' => 'view'];
+                            $viewParameters = [
+                                'objectId' => $campaign->getId(),
+                                'objectAction' => 'view',
+                            ];
                             $returnUrl      = $this->generateUrl('mautic_campaign_action', $viewParameters);
                             $template       = 'Mautic\CampaignBundle\Controller\CampaignController::viewAction';
                         } else {
-                            $viewParameters = ['page' => $page];
+                            $viewParameters = [
+                                'page' => $page,
+                            ];
                             $returnUrl      = $this->generateUrl('mautic_campaign_index', $viewParameters);
                             $template       = 'Mautic\CampaignBundle\Controller\CampaignController::indexAction';
                         }
@@ -484,7 +523,9 @@ class CampaignController extends AbstractStandardFormController
 
                 $this->afterFormProcessed($valid, $campaign, $form, 'new');
             } else {
-                $viewParameters = ['page' => $page];
+                $viewParameters = [
+                    'page' => $page,
+                ];
                 $returnUrl      = $this->generateUrl($this->getIndexRoute(), $viewParameters);
                 $template       = 'Mautic\CampaignBundle\Controller\CampaignController::indexAction';
             }
@@ -908,12 +949,20 @@ class CampaignController extends AbstractStandardFormController
 
             if (!empty($listIds)) {
                 $joinLists         = true;
-                $filter['force'][] = ['column' => 'l.id', 'expr' => 'in', 'value' => $listIds];
+                $filter['force'][] = [
+                    'column' => 'l.id',
+                    'expr' => 'in',
+                    'value' => $listIds,
+                ];
             }
 
             if (!empty($formIds)) {
                 $joinForms         = true;
-                $filter['force'][] = ['column' => 'f.id', 'expr' => 'in', 'value' => $formIds];
+                $filter['force'][] = [
+                    'column' => 'f.id',
+                    'expr' => 'in',
+                    'value' => $formIds,
+                ];
             }
         }
 
@@ -1038,8 +1087,13 @@ class CampaignController extends AbstractStandardFormController
                 $objectId = $args['objectId'];
                 // Init the date range filter form
                 $dateRangeValues     = $this->requestStack->getCurrentRequest()->get('daterange', []);
-                $action              = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-                $dateRangeForm       = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+                $action              = $this->generateUrl('mautic_campaign_action', [
+                    'objectAction' => 'view',
+                    'objectId' => $objectId,
+                ]);
+                $dateRangeForm       = $this->formFactory->create(DateRangeType::class, $dateRangeValues, [
+                    'action' => $action,
+                ]);
                 $isEmailStatsEnabled = (bool) $this->coreParametersHelper->get('campaign_email_stats_enabled', true);
                 $showEmailStats      = $isEmailStatsEnabled && $entity->isEmailCampaign();
 
@@ -1268,7 +1322,9 @@ class CampaignController extends AbstractStandardFormController
                             '%number%' => $event['triggerInterval'],
                             '%unit%'   => $this->translator->trans(
                                 'mautic.campaign.event.intervalunit.'.$event['triggerIntervalUnit'],
-                                ['%count%' => $event['triggerInterval']]
+                                [
+                                    '%count%' => $event['triggerInterval'],
+                                ]
                             ),
                         ]
                     );

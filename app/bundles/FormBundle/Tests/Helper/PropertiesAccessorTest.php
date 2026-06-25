@@ -49,7 +49,9 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             'type'         => 'custom_select_a',
             'mappedField'  => 'contact_field_a',
             'mappedObject' => 'contact',
-            'properties'   => ['syncList' => true],
+            'properties'   => [
+                'syncList' => true,
+            ],
         ];
 
         $this->formModel->expects($this->once())
@@ -69,7 +71,9 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             'type'         => 'custom_text_a',
             'mappedField'  => 'contact_field_a',
             'mappedObject' => 'contact',
-            'properties'   => ['syncList' => false],
+            'properties'   => [
+                'syncList' => false,
+            ],
         ];
 
         $this->formModel->expects($this->never())
@@ -87,7 +91,11 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             'type'       => 'custom_select_a',
             'properties' => [
                 'syncList' => false,
-                'list'     => ['list' => ['option_a' => 'Option A']],
+                'list'     => [
+                    'list' => [
+                        'option_a' => 'Option A',
+                    ],
+                ],
             ],
         ];
 
@@ -95,7 +103,9 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             ->method('getContactFieldPropertiesList');
 
         $this->assertSame(
-            ['option_a' => 'Option A'],
+            [
+                'option_a' => 'Option A',
+            ],
             $this->propertiesAccessor->getProperties($field)
         );
     }
@@ -106,7 +116,11 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             'type'       => 'custom_select_a',
             'properties' => [
                 'syncList'   => false,
-                'optionlist' => ['list' => ['option_a' => 'Option A']],
+                'optionlist' => [
+                    'list' => [
+                        'option_a' => 'Option A',
+                    ],
+                ],
             ],
         ];
 
@@ -114,14 +128,18 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
             ->method('getContactFieldPropertiesList');
 
         $this->assertSame(
-            ['option_a' => 'Option A'],
+            [
+                'option_a' => 'Option A',
+            ],
             $this->propertiesAccessor->getProperties($field)
         );
     }
 
     public function testGetChoicesForWellFormattedChoices(): void
     {
-        $options = ['choice_a' => 'Choice A'];
+        $options = [
+            'choice_a' => 'Choice A',
+        ];
 
         $this->assertSame(
             array_flip($options),
@@ -134,7 +152,10 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
         $options = 'Choice A|Choice B';
 
         $this->assertSame(
-            ['Choice A' => 'Choice A', 'Choice B' => 'Choice B'],
+            [
+                'Choice A' => 'Choice A',
+                'Choice B' => 'Choice B',
+            ],
             $this->propertiesAccessor->getChoices($options)
         );
     }
@@ -149,7 +170,9 @@ final class PropertiesAccessorTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->assertSame(
-            ['Choice A' => 'Value A'],
+            [
+                'Choice A' => 'Value A',
+            ],
             $this->propertiesAccessor->getChoices($options)
         );
     }

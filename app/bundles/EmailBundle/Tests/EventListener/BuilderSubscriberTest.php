@@ -113,7 +113,9 @@ class BuilderSubscriberTest extends TestCase
         $email->setSubject('A unicorn spotted in Alaska');
         $email->setLanguage($emailLocale);
 
-        $emailSendEvent = new EmailSendEvent(null, ['email' => $email]);
+        $emailSendEvent = new EmailSendEvent(null, [
+            'email' => $email,
+        ]);
         $emailSendEvent->setContent($content);
         $this->builderSubscriber->fixEmailAccessibility($emailSendEvent);
         $this->builderSubscriber->onEmailGenerate($emailSendEvent);
@@ -187,7 +189,10 @@ class BuilderSubscriberTest extends TestCase
         $company->setName('ACME');
 
         $leadArray                = $lead->convertToArray();
-        $leadArray['companies'][] = ['companyname' => $company->getName(), 'is_primary' => true];
+        $leadArray['companies'][] = [
+            'companyname' => $company->getName(),
+            'is_primary' => true,
+        ];
         $email                    = new Email();
         $email->setSendToDnc(false);
         $args = [
@@ -248,7 +253,10 @@ class BuilderSubscriberTest extends TestCase
         $company->setName('Acquia');
 
         $leadArray                = $lead->convertToArray();
-        $leadArray['companies'][] = ['companyname' => $company->getName(), 'is_primary' => true];
+        $leadArray['companies'][] = [
+            'companyname' => $company->getName(),
+            'is_primary' => true,
+        ];
 
         $email = new Email();
         $email->setSendToDnc(true);

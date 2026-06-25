@@ -101,7 +101,9 @@ class PublicController extends CommonFormController
         try {
             $messageBus->dispatch(new EmailHitNotification($idHash, $request));
         } catch (\Exception $exception) {
-            $logger->error($exception->getMessage(), ['idHash' => $idHash]);
+            $logger->error($exception->getMessage(), [
+                'idHash' => $idHash,
+            ]);
             $emailModel = $this->getModel('email');
             assert($emailModel instanceof EmailModel);
 
@@ -195,7 +197,10 @@ class PublicController extends CommonFormController
                     $message = $this->getUnsubscribeMessageLead($idHash, $model, $lead, $this->translator, $urlEmail);
                 }
             } elseif ($lead) {
-                $params = ['idHash' => $idHash, 'urlEmail' => $urlEmail];
+                $params = [
+                    'idHash' => $idHash,
+                    'urlEmail' => $urlEmail,
+                ];
 
                 if ($urlEmail) {
                     $params['secretHash'] = $mailHash->getEmailHash($urlEmail);
@@ -243,7 +248,9 @@ class PublicController extends CommonFormController
                             $showParameters,
                             [
                                 'form'       => $formView,
-                                'startform'  => $this->renderView('@MauticCore/Default/form.html.twig', ['form' => $formView]),
+                                'startform'  => $this->renderView('@MauticCore/Default/form.html.twig', [
+                                    'form' => $formView,
+                                ]),
                                 'custom_tag' => '<a name="end-'.$formView->vars['id'].'"></a>',
                             ]
                         );
@@ -355,7 +362,11 @@ class PublicController extends CommonFormController
                     '|EMAIL|',
                 ],
                 [
-                    $this->generateUrl('mautic_email_unsubscribe', ['idHash' => $idHash, 'urlEmail' => $toEmail, 'secretHash' => $unsubscribeHash]),
+                    $this->generateUrl('mautic_email_unsubscribe', [
+                        'idHash' => $idHash,
+                        'urlEmail' => $toEmail,
+                        'secretHash' => $unsubscribeHash,
+                    ]),
                     $stat->getEmailAddress(),
                 ],
                 $message
@@ -492,7 +503,9 @@ class PublicController extends CommonFormController
         }
 
         // Override tracking_pixel
-        $tokens = ['{tracking_pixel}' => ''];
+        $tokens = [
+            '{tracking_pixel}' => '',
+        ];
 
         // Prepare contact
         if ($contactId) {
@@ -675,7 +688,9 @@ class PublicController extends CommonFormController
         \assert($model instanceof LeadModel);
         $lead  = $model->getEntity();
         // set custom field values
-        $data = ['email' => $email];
+        $data = [
+            'email' => $email,
+        ];
         $model->setFieldValues($lead, $data, true);
         // create lead
         $model->saveEntity($lead);
@@ -717,7 +732,9 @@ class PublicController extends CommonFormController
                 '|EMAIL|',
             ],
             [
-                $this->generateUrl('mautic_email_resubscribe', ['idHash' => $idHash]),
+                $this->generateUrl('mautic_email_resubscribe', [
+                    'idHash' => $idHash,
+                ]),
                 $email,
             ],
             $message

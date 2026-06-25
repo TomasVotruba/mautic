@@ -18,7 +18,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testRoleUpdateByApiGivesErrorResponseIfUserDoesNotExist(): void
     {
         // Assuming user with id 99999 does not exist
-        $this->client->request(Request::METHOD_PATCH, '/api/users/99999/edit', ['role' => 1]);
+        $this->client->request(Request::METHOD_PATCH, '/api/users/99999/edit', [
+            'role' => 1,
+        ]);
         $clientResponse = $this->client->getResponse();
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         Assert::assertStringContainsString('"message":"Item was not found."', $clientResponse->getContent());
@@ -27,7 +29,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testRoleUpdateByApiGivesErrorResponseIfRoleDoesNotExist(): void
     {
         // Assuming role with id 99999 does not exist
-        $this->client->request(Request::METHOD_PATCH, '/api/users/1/edit', ['role' => 99999]);
+        $this->client->request(Request::METHOD_PATCH, '/api/users/1/edit', [
+            'role' => 99999,
+        ]);
         $clientResponse = $this->client->getResponse();
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         Assert::assertStringContainsString('"message":"role: The selected choice is invalid."', $clientResponse->getContent());
@@ -36,7 +40,11 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testRoleUpdateByApiGivesErrorResponseWithInvalidRequestFormat(): void
     {
         // Correct request format is ['role' => 2]
-        $this->client->request(Request::METHOD_PATCH, '/api/users/1/edit', ['role' => ['id' => 2]]);
+        $this->client->request(Request::METHOD_PATCH, '/api/users/1/edit', [
+            'role' => [
+                'id' => 2,
+            ],
+        ]);
         $clientResponse = $this->client->getResponse();
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         Assert::assertStringContainsString('"message":"role: The selected choice is invalid."', $clientResponse->getContent());
@@ -58,7 +66,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
-        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", ['role' => $role->getId()]);
+        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", [
+            'role' => $role->getId(),
+        ]);
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         Assert::assertStringContainsString(
             '"message":"You do not have access to the requested area\/action."',
@@ -80,7 +90,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
-        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", ['role' => $role->getId()]);
+        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", [
+            'role' => $role->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         Assert::assertStringContainsString('"username":"'.$user->getUserIdentifier().'"', $clientResponse->getContent());
@@ -101,7 +113,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
-        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", ['role' => $role->getId()]);
+        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", [
+            'role' => $role->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         Assert::assertStringContainsString('"username":"'.$user->getUserIdentifier().'"', $clientResponse->getContent());
@@ -123,7 +137,9 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', $weakPassword);
 
-        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", ['role' => $role->getId()]);
+        $this->client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}/edit", [
+            'role' => $role->getId(),
+        ]);
         self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
@@ -135,7 +151,10 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
             'firstName'     => 'lorem',
             'lastName'      => 'ipsum',
             'email'         => 'loremipsum@example.com',
-            'plainPassword' => ['password' => $password, 'confirm' => $password],
+            'plainPassword' => [
+                'password' => $password,
+                'confirm' => $password,
+            ],
             'role'          => 1,
         ];
 

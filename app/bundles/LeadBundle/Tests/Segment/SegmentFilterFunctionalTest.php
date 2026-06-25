@@ -93,7 +93,9 @@ class SegmentFilterFunctionalTest extends MauticMysqlTestCase
                 'glue'       => $segmentFilter['glue'],
                 'field'      => $segmentFilter['field'],
                 'type'       => $segmentFilter['type'],
-                'properties' => ['filter' => $segmentFilter['value']],
+                'properties' => [
+                    'filter' => $segmentFilter['value'],
+                ],
                 'operator'   => $segmentFilter['operator'],
             ];
         }
@@ -159,31 +161,77 @@ class SegmentFilterFunctionalTest extends MauticMysqlTestCase
     {
         yield [
             'contacts' => [
-                ['email' => 'lukas@mautic.com', 'in_segment' => true, 'city' => 'Prague'],
-                ['email' => 'lukas2@mautic.com', 'in_segment' => true, 'city' => 'Prague 11'],
-                ['email' => 'lukas3@mautic.com', 'in_segment' => false, 'city' => 'Praha'],
+                [
+                    'email' => 'lukas@mautic.com',
+                    'in_segment' => true,
+                    'city' => 'Prague',
+                ],
+                [
+                    'email' => 'lukas2@mautic.com',
+                    'in_segment' => true,
+                    'city' => 'Prague 11',
+                ],
+                [
+                    'email' => 'lukas3@mautic.com',
+                    'in_segment' => false,
+                    'city' => 'Praha',
+                ],
             ],
             'segment' => [
-                ['field' => 'city', 'operator' => 'startsWith', 'value' => 'Prague', 'glue' => 'and', 'type' => 'text'],
+                [
+                    'field' => 'city',
+                    'operator' => 'startsWith',
+                    'value' => 'Prague',
+                    'glue' => 'and',
+                    'type' => 'text',
+                ],
             ],
         ];
         yield [
             'contacts' => [
-                ['email' => 'lukas@mautic.com', 'in_segment' => true, 'points' => 20],
-                ['email' => 'lukas2@mautic.com', 'in_segment' => false, 'points' => 10],
-                ['email' => 'lukas3@mautic.com', 'in_segment' => true, 'points' => 25],
+                [
+                    'email' => 'lukas@mautic.com',
+                    'in_segment' => true,
+                    'points' => 20,
+                ],
+                [
+                    'email' => 'lukas2@mautic.com',
+                    'in_segment' => false,
+                    'points' => 10,
+                ],
+                [
+                    'email' => 'lukas3@mautic.com',
+                    'in_segment' => true,
+                    'points' => 25,
+                ],
             ],
             'segment' => [
-                ['field' => 'points', 'operator' => 'gte', 'value' => 20, 'glue' => 'and', 'type' => 'text'],
+                [
+                    'field' => 'points',
+                    'operator' => 'gte',
+                    'value' => 20,
+                    'glue' => 'and',
+                    'type' => 'text',
+                ],
             ],
         ];
 
         yield [
             'contacts' => [
-                ['email' => 'lukas@mautic.com',  'in_segment' => true],
+                [
+                    'email' => 'lukas@mautic.com',
+                    'in_segment' => true,
+                ],
             ],
             'segment' => [
-                ['field' => 'multiselect', 'object' => 'lead',  'operator' => '!in', 'value' => ['s'], 'glue' => 'and', 'type' => 'multiselect'],
+                [
+                    'field' => 'multiselect',
+                    'object' => 'lead',
+                    'operator' => '!in',
+                    'value' => ['s'],
+                    'glue' => 'and',
+                    'type' => 'multiselect',
+                ],
             ],
         ];
     }

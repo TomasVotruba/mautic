@@ -112,7 +112,10 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
             $this->repoSetup = true;
             $repo->setDispatcher($this->dispatcher);
             // set the point trigger model in order to get the color code for the lead
-            $fields = $this->fieldList->getFieldList(true, true, ['isPublished' => true, 'object' => 'company']);
+            $fields = $this->fieldList->getFieldList(true, true, [
+                'isPublished' => true,
+                'object' => 'company',
+            ]);
 
             $searchFields = [];
             foreach ($fields as $groupFields) {
@@ -234,7 +237,9 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
             if (empty($this->fields)) {
                 $this->fields = $this->leadFieldModel->getEntities(
                     [
-                        'filter'         => ['object' => 'company'],
+                        'filter'         => [
+                            'object' => 'company',
+                        ],
                         'hydration_mode' => 'HYDRATE_ARRAY',
                         'result_cache'   => new ResultCacheOptions(LeadField::CACHE_NAMESPACE),
                     ]
@@ -557,7 +562,9 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
             );
         }
 
-        return $this->getRepository()->getAjaxSimpleList($composite, ['filterVar' => $filterVal.'%'], $column, $valueColumn);
+        return $this->getRepository()->getAjaxSimpleList($composite, [
+            'filterVar' => $filterVal.'%',
+        ], $column, $valueColumn);
     }
 
     /**
@@ -607,7 +614,9 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
 
                 $results = $this->getRepository()->getAjaxSimpleList(
                     $composite,
-                    ['filterVar' => $filterVal.'%'],
+                    [
+                        'filterVar' => $filterVal.'%',
+                    ],
                     $column,
                     'id',
                     $limit,
@@ -833,7 +842,9 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
         }
 
         if (!$granted) {
-            throw new \Exception($this->translator->trans('mautic.lead.import.error.unauthorized', ['%username%' => $this->userHelper->getUser()->getUsername()]));
+            throw new \Exception($this->translator->trans('mautic.lead.import.error.unauthorized', [
+                '%username%' => $this->userHelper->getUser()->getUsername(),
+            ]));
         }
 
         if (!empty($fields['dateAdded']) && !empty($data[$fields['dateAdded']])) {
@@ -1023,7 +1034,10 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
 
     public function changePrimaryCompanyToLatest(int $companyId): void
     {
-        while ($companyLeads = $this->getCompanyLeadRepository()->findBy(['company' => $companyId, 'primary' => 1], [], CompanyLeadRepository::BATCH_SIZE, 0)) {
+        while ($companyLeads = $this->getCompanyLeadRepository()->findBy([
+            'company' => $companyId,
+            'primary' => 1,
+        ], [], CompanyLeadRepository::BATCH_SIZE, 0)) {
             foreach ($companyLeads as $companyLead) {
                 $this->removeLeadFromCompany($companyLead->getCompany(), $companyLead->getlead());
             }

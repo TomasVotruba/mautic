@@ -421,7 +421,9 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 }
             );
 
-        $sf->pushLeadToCampaign($lead, 1, 'Active', ['Lead' => [1]]);
+        $sf->pushLeadToCampaign($lead, 1, 'Active', [
+            'Lead' => [1],
+        ]);
     }
 
     public function testPushCompany(): void
@@ -627,7 +629,9 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 ->willReturn(
                     $this->getSalesforceDNCHistory($object, 'SF')
                 );
-            $sf->pushLeadDoNotContactByDate('email', $mappedData, $object, ['start' => '2017-10-16 13:00:00.000000']);
+            $sf->pushLeadDoNotContactByDate('email', $mappedData, $object, [
+                'start' => '2017-10-16 13:00:00.000000',
+            ]);
 
             foreach ($mappedData as $assertion) {
                 $this->assertArrayHasKey('mauticContactIsContactableByEmail', $assertion);
@@ -660,7 +664,9 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             $sf->expects($this->any())->method('updateDncByDate')->willReturn(true);
             $sf->expects($this->any())->method('getDoNotContactHistory')->willReturn($this->getSalesforceDNCHistory($object, 'Mautic'));
 
-            $sf->pushLeadDoNotContactByDate('email', $mappedData, $object, ['start' => '2017-10-15T10:00:00.000000']);
+            $sf->pushLeadDoNotContactByDate('email', $mappedData, $object, [
+                'start' => '2017-10-15T10:00:00.000000',
+            ]);
             foreach ($mappedData as $assertion) {
                 $this->assertArrayNotHasKey('mauticContactIsContactableByEmail', $assertion);
             }
@@ -975,7 +981,9 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                             } elseif (isset($args[1]['q']) && 'SELECT CreatedDate from Organization' === $args[1]['q']) {
                                 return [
                                     'records' => [
-                                        ['CreatedDate' => '2012-10-30T17:56:50.000+0000'],
+                                        [
+                                            'CreatedDate' => '2012-10-30T17:56:50.000+0000',
+                                        ],
                                     ],
                                 ];
                             } elseif (isset($args[1]['q']) && str_contains($args[1]['q'], 'from '.$updateObject.'History')) {
@@ -1328,7 +1336,9 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             }
         }
 
-        return ['compositeResponse' => $response];
+        return [
+            'compositeResponse' => $response,
+        ];
     }
 
     /**

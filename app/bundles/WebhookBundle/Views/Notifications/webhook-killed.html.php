@@ -11,7 +11,10 @@
 <h2>Details of the Issue:</h2>
 <div class="content">
     <p><strong>Webhook Name/ID:</strong>
-        <a href="<?php echo $view['router']->url('mautic_webhook_action', ['objectAction' => 'view', 'objectId' => $webhook->getId()]); ?>">
+        <a href="<?php echo $view['router']->url('mautic_webhook_action', [
+    'objectAction' => 'view',
+            'objectId' => $webhook->getId(),
+]); ?>">
             <?php echo $webhook->getName(); ?>
         </a>
     </p>

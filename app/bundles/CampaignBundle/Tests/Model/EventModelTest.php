@@ -77,7 +77,10 @@ class EventModelTest extends TestCase
         ];
 
         $deletedEvents = [
-            ['id' => 'new1', 'redirectEvent' => null],
+            [
+                'id' => 'new1',
+                'redirectEvent' => null,
+            ],
         ];
 
         $this->eventModel->deleteEvents($currentEvents, $deletedEvents);
@@ -92,8 +95,14 @@ class EventModelTest extends TestCase
         ];
 
         $deletedEvents = [
-            ['id' => 'new1', 'redirectEvent' => null],
-            ['id' => $idToDelete, 'redirectEvent' => null],
+            [
+                'id' => 'new1',
+                'redirectEvent' => null,
+            ],
+            [
+                'id' => $idToDelete,
+                'redirectEvent' => null,
+            ],
         ];
 
         $this->eventRepositoryMock->expects($this->once())
@@ -127,7 +136,10 @@ class EventModelTest extends TestCase
         $redirectEvent->method('getId')->willReturn(123);
 
         $deletedEvents = [
-            ['id' => 'new1', 'redirectEvent' => null],
+            [
+                'id' => 'new1',
+                'redirectEvent' => null,
+            ],
             [
                 'id'                => 'old1',
                 'redirectEvent'     => $redirectEvent,

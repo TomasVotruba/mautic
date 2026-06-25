@@ -47,7 +47,9 @@ class FormFieldFileType extends AbstractType
                 TextareaType::class,
                 [
                     'label'      => 'mautic.form.field.file.allowed_extensions',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'required'   => false,
                     'attr'       => [
                         'class'   => 'form-control',
@@ -65,14 +67,21 @@ class FormFieldFileType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.file.allowed_size',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'required'   => false,
                 'attr'       => [
                     'class'   => 'form-control',
-                    'tooltip' => $this->translator->trans('mautic.form.field.file.tooltip.allowed_size', ['%uploadSize%' => $maxUploadSize]),
+                    'tooltip' => $this->translator->trans('mautic.form.field.file.tooltip.allowed_size', [
+                        '%uploadSize%' => $maxUploadSize,
+                    ]),
                 ],
                 'data'        => $options['data'][self::PROPERTY_ALLOWED_FILE_SIZE],
-                'constraints' => [new LessThanOrEqual(['value' => $maxUploadSize])],
+                'constraints' => [
+                    new LessThanOrEqual([
+                        'value' => $maxUploadSize,
+                    ])],
             ]
         );
 

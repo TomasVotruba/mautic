@@ -45,13 +45,17 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->client->request(
             Request::METHOD_POST,
             's/contacts/batchExport',
-            ['filetype' => 'csv']
+            [
+                'filetype' => 'csv',
+            ]
         );
         self::assertResponseIsSuccessful();
         $contactExportSchedulerRows = $this->checkContactExportScheduler(1);
         /** @var ContactExportScheduler $contactExportScheduler */
         $contactExportScheduler     = $contactExportSchedulerRows[0];
-        $this->testSymfonyCommand(ContactScheduledExportCommand::COMMAND_NAME, ['--ids' => $contactExportScheduler->getId()]);
+        $this->testSymfonyCommand(ContactScheduledExportCommand::COMMAND_NAME, [
+            '--ids' => $contactExportScheduler->getId(),
+        ]);
         $this->checkContactExportScheduler(0);
         /** @var CoreParametersHelper $coreParametersHelper */
         $coreParametersHelper    = static::getContainer()->get('mautic.helper.core_parameters');
@@ -62,7 +66,9 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $link = $this->router->generate(
             'mautic_contact_export_download',
-            ['fileName' => basename($filePath)],
+            [
+                'fileName' => basename($filePath),
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
         $this->client->request(Request::METHOD_GET, $link);
@@ -70,7 +76,9 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $notFoundLink = $this->router->generate(
             'mautic_contact_export_download',
-            ['fileName' => 'non_existing.zip'],
+            [
+                'fileName' => 'non_existing.zip',
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
         $this->client->request(Request::METHOD_GET, $notFoundLink);
@@ -115,7 +123,9 @@ class LeadControllerTest extends MauticMysqlTestCase
 
     private function setAdminUser(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'admin');
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');

@@ -16,7 +16,11 @@ class PieChart extends AbstractChart implements ChartInterface
      */
     public function render($withCounts = true): array
     {
-        $data = ['data' => [], 'backgroundColor' => [], 'hoverBackgroundColor' => []];
+        $data = [
+            'data' => [],
+            'backgroundColor' => [],
+            'hoverBackgroundColor' => [],
+        ];
 
         foreach ($this->datasets as $datasetId => $value) {
             $color                          = $this->configureColorHelper($datasetId);

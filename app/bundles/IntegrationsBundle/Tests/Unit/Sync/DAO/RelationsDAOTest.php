@@ -25,7 +25,9 @@ class RelationsDAOTest extends TestCase
             $integrationRelObjectId
         );
 
-        $relations = ['AccountId' => $relationObject];
+        $relations = [
+            'AccountId' => $relationObject,
+        ];
 
         $relationsDAO->addRelations($relations);
 

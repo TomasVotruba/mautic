@@ -56,7 +56,9 @@ final class InstallNewFilesStep implements StepInterface
         $progressBar->advance();
 
         if (!$zipper->extractTo($this->pathsHelper->getRootPath())) {
-            throw new UpdateFailedException($this->translator->trans('mautic.core.update.error', ['%error%' => $this->translator->trans('mautic.core.update.error_extracting_package')]));
+            throw new UpdateFailedException($this->translator->trans('mautic.core.update.error', [
+                '%error%' => $this->translator->trans('mautic.core.update.error_extracting_package'),
+            ]));
         }
 
         $zipper->close();
@@ -136,6 +138,8 @@ final class InstallNewFilesStep implements StepInterface
                 break;
         }
 
-        throw new UpdateFailedException($this->translator->trans('mautic.core.update.error', ['%error%' => $this->translator->trans($error)]));
+        throw new UpdateFailedException($this->translator->trans('mautic.core.update.error', [
+            '%error%' => $this->translator->trans($error),
+        ]));
     }
 }

@@ -36,7 +36,9 @@ class ConfigType extends AbstractType
 
         $builder->add('sms_transport', ChoiceType::class, [
             'label'      => 'mautic.sms.config.select_default_transport',
-            'label_attr' => ['class' => 'control-label'],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
             'attr'       => [
                 'class'   => 'form-control',
                 'tooltip' => 'mautic.sms.config.select_default_transport',

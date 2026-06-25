@@ -20,7 +20,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
     public function load(ObjectManager $manager): void
     {
         $segments = [
-            [ // ID 2
+            [
+                // ID 2
                 'name'     => 'Segment Test 1',
                 'alias'    => 'segment-test-1',
                 'public'   => true,
@@ -36,7 +37,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 3
+            [
+                // ID 3
                 'name'     => 'Segment Test 2',
                 'alias'    => 'segment-test-2',
                 'public'   => false,
@@ -60,7 +62,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 4
+            [
+                // ID 4
                 'name'     => 'Segment Test 3',
                 'alias'    => 'segment-test-3',
                 'public'   => true,
@@ -76,7 +79,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 5
+            [
+                // ID 5
                 'name'     => 'Segment Test 4',
                 'alias'    => 'segment-test-4',
                 'public'   => true,
@@ -92,7 +96,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 6
+            [
+                // ID 6
                 'name'     => 'Segment Test 5',
                 'alias'    => 'segment-test-5',
                 'public'   => true,
@@ -108,7 +113,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 7
+            [
+                // ID 7
                 'name'     => 'Like segment test with field percent sign at end',
                 'alias'    => 'like-percent-end',
                 'public'   => true,
@@ -124,14 +130,16 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 8
+            [
+                // ID 8
                 'name'     => 'Segment without filters',
                 'alias'    => 'segment-test-without-filters',
                 'public'   => true,
                 'filters'  => [],
                 'populate' => true,
             ],
-            [ // ID 9
+            [
+                // ID 9
                 'name'            => 'Segment with manual members added and removed',
                 'alias'           => 'segment-test-manual-membership',
                 'public'          => true,
@@ -149,7 +157,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 'manually_add'    => [$this->getReference('lead-1')->id, $this->getReference('lead-2')->id, $this->getReference('lead-3')->id],
                 'manually_remove' => [$this->getReference('lead-4')->id, $this->getReference('lead-5')->id],
             ],
-            [ // ID 10
+            [
+                // ID 10
                 'name'     => 'Include segment membership with filters',
                 'alias'    => 'segment-test-include-segment-with-filters',
                 'public'   => true,
@@ -165,7 +174,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 11
+            [
+                // ID 11
                 'name'     => 'Exclude segment membership with filters',
                 'alias'    => 'segment-test-exclude-segment-with-filters',
                 'public'   => true,
@@ -189,7 +199,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 12
+            [
+                // ID 12
                 'name'     => 'Include segment membership without filters',
                 'alias'    => 'segment-test-include-segment-without-filters',
                 'public'   => true,
@@ -213,7 +224,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 13
+            [
+                // ID 13
                 'name'     => 'Exclude segment membership without filters',
                 'alias'    => 'segment-test-exclude-segment-without-filters',
                 'public'   => true,
@@ -237,7 +249,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 14
+            [
+                // ID 14
                 'name'     => 'Include segment membership with mixed filters',
                 'alias'    => 'segment-test-include-segment-mixed-filters',
                 'public'   => true,
@@ -253,7 +266,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 15
+            [
+                // ID 15
                 'name'     => 'Exclude segment membership with mixed filters',
                 'alias'    => 'segment-test-exclude-segment-mixed-filters',
                 'public'   => true,
@@ -269,7 +283,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 16
+            [
+                // ID 16
                 'name'     => 'Segment membership with mixed include and exclude',
                 'alias'    => 'segment-test-mixed-include-exclude-filters',
                 'public'   => true,
@@ -293,7 +308,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 17
+            [
+                // ID 17
                 'name'     => 'Segment membership with including segment that has manual membership',
                 'alias'    => 'segment-test-include-segment-manual-members',
                 'public'   => true,
@@ -309,7 +325,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 18
+            [
+                // ID 18
                 'name'     => 'Segment membership with excluded segment that has manual membership',
                 'alias'    => 'segment-test-exclude-segment-manual-members',
                 'public'   => true,
@@ -333,7 +350,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 19
+            [
+                // ID 19
                 'name'     => 'Segment membership with excluded segment without other filters',
                 'alias'    => 'segment-test-exclude-segment-without-other-filters',
                 'public'   => true,
@@ -349,7 +367,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 20
+            [
+                // ID 20
                 'name'            => 'Segment with filters and only manually removed contacts',
                 'alias'           => 'segment-test-filters-and-removed',
                 'public'          => true,
@@ -366,7 +385,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 'populate'        => true,
                 'manually_remove' => [3, 4],
             ],
-            [ // ID 21
+            [
+                // ID 21
                 'name'     => 'Segment with same filters as another that has manually removed contacts',
                 'alias'    => 'segment-test-include-segment-with-segment-manual-removal-same-filters',
                 'public'   => true,
@@ -382,7 +402,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 22
+            [
+                // ID 22
                 'name'     => 'Segment membership with including segment that has a contact thats been removed from non-related segment',
                 'alias'    => 'segment-test-include-segment-with-unrelated-segment-manual-removal',
                 'public'   => true,
@@ -398,7 +419,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 23
+            [
+                // ID 23
                 'name'     => 'Segment membership based on regex with special characters',
                 'alias'    => 'segment-membership-regexp',
                 'public'   => true,
@@ -422,7 +444,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 24
+            [
+                // ID 24
                 'name'     => 'Segment membership based on only company fields',
                 'alias'    => 'segment-company-only-fields',
                 'public'   => true,
@@ -439,7 +462,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 25
+            [
+                // ID 25
                 'name'     => 'Segment membership with excluded segment without other filters',
                 'alias'    => 'segment-including-segment-with-company-only-fields',
                 'public'   => true,
@@ -464,7 +488,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => true,
             ],
-            [ // ID 26
+            [
+                // ID 26
                 'name'     => 'Segment with relative date - today',
                 'alias'    => 'segment-with-relative-date-today',
                 'public'   => true,
@@ -490,7 +515,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 27
+            [
+                // ID 27
                 'name'     => 'Segment with relative date - tomorrow',
                 'alias'    => 'segment-with-relative-date-tomorrow',
                 'public'   => true,
@@ -516,7 +542,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 28
+            [
+                // ID 28
                 'name'     => 'Segment with relative date - yesterday',
                 'alias'    => 'segment-with-relative-date-yesterday',
                 'public'   => true,
@@ -542,7 +569,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 29
+            [
+                // ID 29
                 'name'     => 'Segment with relative date - last week',
                 'alias'    => 'segment-with-relative-date-last-week',
                 'public'   => true,
@@ -568,7 +596,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 30
+            [
+                // ID 30
                 'name'     => 'Segment with relative date - next week',
                 'alias'    => 'segment-with-relative-date-next-week',
                 'public'   => true,
@@ -594,7 +623,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 31
+            [
+                // ID 31
                 'name'     => 'Segment with relative date - this week',
                 'alias'    => 'segment-with-relative-date-this-week',
                 'public'   => true,
@@ -620,7 +650,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 32
+            [
+                // ID 32
                 'name'     => 'Segment with relative date - last month',
                 'alias'    => 'segment-with-relative-date-last-month',
                 'public'   => true,
@@ -646,7 +677,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 33
+            [
+                // ID 33
                 'name'     => 'Segment with relative date - next month',
                 'alias'    => 'segment-with-relative-date-next-month',
                 'public'   => true,
@@ -672,7 +704,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 34
+            [
+                // ID 34
                 'name'     => 'Segment with relative date - this month',
                 'alias'    => 'segment-with-relative-date-this-month',
                 'public'   => true,
@@ -698,7 +731,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 35
+            [
+                // ID 35
                 'name'     => 'Segment with relative date - last year',
                 'alias'    => 'segment-with-relative-date-last-year',
                 'public'   => true,
@@ -724,7 +758,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 36
+            [
+                // ID 36
                 'name'     => 'Segment with relative date - next year',
                 'alias'    => 'segment-with-relative-date-next-year',
                 'public'   => true,
@@ -750,7 +785,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 37
+            [
+                // ID 37
                 'name'     => 'Segment with relative date - relative plus',
                 'alias'    => 'segment-with-relative-date-relative-plus',
                 'public'   => true,
@@ -776,7 +812,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 38
+            [
+                // ID 38
                 'name'     => 'Segment with relative date - relative minus',
                 'alias'    => 'segment-with-relative-date-relative-minus',
                 'public'   => true,
@@ -802,7 +839,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 39
+            [
+                // ID 39
                 'name'     => 'Name is not equal (not null test)',
                 'alias'    => 'name-is-not-equal-not-null-test',
                 'public'   => true,
@@ -819,7 +857,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 40
+            [
+                // ID 40
                 'name'    => 'Include segment membership with or',
                 'alias'   => 'segment-test-include-segment-with-or',
                 'public'  => true,
@@ -843,7 +882,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 41
+            [
+                // ID 41
                 'name'     => 'Manually unsubscribed SMS',
                 'alias'    => 'manually-unsubscribed-sms-test',
                 'public'   => true,
@@ -861,7 +901,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 42 email_id (bc for email_clicked_link
+            [
+                // ID 42 email_id (bc for email_clicked_link
                 'name'     => 'Clicked link in any email',
                 'alias'    => 'clicked-link-in-any-email',
                 'public'   => true,
@@ -898,7 +939,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 44 email_clicked_link_date
+            [
+                // ID 44 email_clicked_link_date
                 'name'     => 'Clicked link in any email on specific date',
                 'alias'    => 'clicked-link-in-any-email-on-specific-date',
                 'public'   => true,
@@ -916,7 +958,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 45 sms_clicked_link
+            [
+                // ID 45 sms_clicked_link
                 'name'     => 'Clicked link in any sms',
                 'alias'    => 'clicked-link-in-any-sms',
                 'public'   => true,
@@ -934,7 +977,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 46 sms_clicked_link_date
+            [
+                // ID 46 sms_clicked_link_date
                 'name'     => 'Clicked link in any sms on specific date',
                 'alias'    => 'clicked-link-in-any-sms-on-specific-date',
                 'public'   => true,
@@ -952,7 +996,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 47
+            [
+                // ID 47
                 'name'     => 'Tags empty',
                 'alias'    => 'tags-empty',
                 'public'   => true,
@@ -969,7 +1014,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 48
+            [
+                // ID 48
                 'name'     => 'Tags not empty',
                 'alias'    => 'tags-not-empty',
                 'public'   => true,
@@ -986,7 +1032,8 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 ],
                 'populate' => false,
             ],
-            [ // ID 49
+            [
+                // ID 49
                 'name'     => 'Has company',
                 'alias'    => 'segment-having-company',
                 'public'   => true,
@@ -997,12 +1044,15 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                         'object'     => 'lead',
                         'field'      => 'company',
                         'operator'   => '!empty',
-                        'properties' => ['filter' => null],
+                        'properties' => [
+                            'filter' => null,
+                        ],
                     ],
                 ],
                 'populate' => true,
             ],
-            [ // ID 50
+            [
+                // ID 50
                 'name'     => 'Has no company',
                 'alias'    => 'segment-not-having-company',
                 'public'   => true,
@@ -1013,12 +1063,15 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                         'object'     => 'lead',
                         'field'      => 'company',
                         'operator'   => 'empty',
-                        'properties' => ['filter' => null],
+                        'properties' => [
+                            'filter' => null,
+                        ],
                     ],
                 ],
                 'populate' => true,
             ],
-            [ // ID 51
+            [
+                // ID 51
                 'name'     => 'Has Email and visited URL',
                 'alias'    => 'has-email-and-visited-url',
                 'public'   => true,
@@ -1029,7 +1082,10 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                         'object'     => 'lead',
                         'field'      => 'email',
                         'operator'   => '!empty',
-                        'properties' => ['filter' => null, 'display' => null],
+                        'properties' => [
+                            'filter' => null,
+                            'display' => null,
+                        ],
                     ],
                     [
                         'glue'       => 'and',
@@ -1037,12 +1093,15 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                         'object'     => 'behaviors',
                         'field'      => 'hit_url',
                         'operator'   => 'regexp',
-                        'properties' => ['filter' => 'segment-[[:digit:]]+'],
+                        'properties' => [
+                            'filter' => 'segment-[[:digit:]]+',
+                        ],
                     ],
                 ],
                 'populate' => true,
             ],
-            [ // ID 52
+            [
+                // ID 52
                 'name'    => 'Missing table name',
                 'alias'   => 'table-name-missing-in-filter',
                 'public'  => true,

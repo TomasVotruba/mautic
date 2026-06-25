@@ -57,7 +57,9 @@ final class DownloadOwnershipApiV2AuthorizationRegressionTest extends OwnershipS
         $this->em->clear();
 
         // Authenticate as restricted user
-        $restrictedUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'restricted.user']);
+        $restrictedUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'restricted.user',
+        ]);
         \assert($restrictedUser instanceof User);
         $this->loginUser($restrictedUser);
         $this->client->setServerParameter('PHP_AUTH_USER', $restrictedUser->getUserIdentifier());
@@ -130,7 +132,9 @@ final class DownloadOwnershipApiV2AuthorizationRegressionTest extends OwnershipS
         $this->em->clear();
 
         // Authenticate as restricted user
-        $restrictedUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'restricted.collection.user']);
+        $restrictedUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'restricted.collection.user',
+        ]);
         \assert($restrictedUser instanceof User);
         $this->loginUser($restrictedUser);
         $this->client->setServerParameter('PHP_AUTH_USER', $restrictedUser->getUserIdentifier());
@@ -208,7 +212,9 @@ final class DownloadOwnershipApiV2AuthorizationRegressionTest extends OwnershipS
         $this->em->clear();
 
         // Authenticate as restricted user
-        $restrictedUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'restricted.pagination.user']);
+        $restrictedUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'restricted.pagination.user',
+        ]);
         \assert($restrictedUser instanceof User);
         $this->loginUser($restrictedUser);
         $this->client->setServerParameter('PHP_AUTH_USER', $restrictedUser->getUserIdentifier());

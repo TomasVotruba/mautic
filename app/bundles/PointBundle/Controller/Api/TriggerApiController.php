@@ -161,7 +161,9 @@ class TriggerApiController extends CommonApiController
             $eventTypes[$key] = $type['label'];
         }
 
-        $view = $this->view(['eventTypes' => $eventTypes]);
+        $view = $this->view([
+            'eventTypes' => $eventTypes,
+        ]);
 
         return $this->handleView($view);
     }
@@ -198,7 +200,9 @@ class TriggerApiController extends CommonApiController
             }
         }
 
-        $view = $this->view([$this->entityNameOne => $entity]);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ]);
 
         return $this->handleView($view);
     }

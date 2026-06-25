@@ -134,7 +134,9 @@ class FetchLeadsCommand extends Command
 
         if (isset($supportedFeatures) && in_array('get_leads', $supportedFeatures)) {
             if (null !== $integrationObject && method_exists($integrationObject, 'getLeads') && isset($config['objects'])) {
-                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.leads', ['%integration%' => $integration]).'</info>');
+                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.leads', [
+                    '%integration%' => $integration,
+                ]).'</info>');
                 $output->writeln('<comment>'.$this->translator->trans('mautic.plugin.command.fetch.leads.starting').'</comment>');
 
                 // Handle case when integration object are named "Contacts" and "Leads"
@@ -177,14 +179,19 @@ class FetchLeadsCommand extends Command
 
                 if ($processed) {
                     $output->writeln(
-                        '<comment>'.$this->translator->trans('mautic.plugin.command.fetch.leads.events_executed', ['%events%' => $processed])
+                        '<comment>'.$this->translator->trans('mautic.plugin.command.fetch.leads.events_executed', [
+                            '%events%' => $processed,
+                        ])
                         .'</comment>'."\n"
                     );
                 } else {
                     $output->writeln(
                         '<comment>'.$this->translator->trans(
                             'mautic.plugin.command.fetch.leads.events_executed_breakout',
-                            ['%updated%' => $updated, '%created%' => $created]
+                            [
+                                '%updated%' => $updated,
+                                '%created%' => $created,
+                            ]
                         )
                         .'</comment>'."\n"
                     );
@@ -198,7 +205,9 @@ class FetchLeadsCommand extends Command
                 )
             ) {
                 $updated = $created = $processed = 0;
-                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.companies', ['%integration%' => $integration]).'</info>');
+                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.companies', [
+                    '%integration%' => $integration,
+                ]).'</info>');
                 $output->writeln('<comment>'.$this->translator->trans('mautic.plugin.command.fetch.companies.starting').'</comment>');
 
                 $results = $integrationObject->getCompanies($params);
@@ -212,14 +221,19 @@ class FetchLeadsCommand extends Command
                 $output->writeln('');
                 if ($processed) {
                     $output->writeln(
-                        '<comment>'.$this->translator->trans('mautic.plugin.command.fetch.companies.events_executed', ['%events%' => $processed])
+                        '<comment>'.$this->translator->trans('mautic.plugin.command.fetch.companies.events_executed', [
+                            '%events%' => $processed,
+                        ])
                         .'</comment>'."\n"
                     );
                 } else {
                     $output->writeln(
                         '<comment>'.$this->translator->trans(
                             'mautic.plugin.command.fetch.companies.events_executed_breakout',
-                            ['%updated%' => $updated, '%created%' => $created]
+                            [
+                                '%updated%' => $updated,
+                                '%created%' => $created,
+                            ]
                         )
                         .'</comment>'."\n"
                     );
@@ -228,7 +242,9 @@ class FetchLeadsCommand extends Command
         }
 
         if (isset($supportedFeatures) && in_array('push_leads', $supportedFeatures) && method_exists($integrationObject, 'pushLeads')) {
-            $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.leads', ['%integration%' => $integration]).'</info>');
+            $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.leads', [
+                '%integration%' => $integration,
+            ]).'</info>');
             $result  = $integrationObject->pushLeads($params);
             $ignored = 0;
 
@@ -254,7 +270,9 @@ class FetchLeadsCommand extends Command
             );
 
             if (in_array('push_companies', $supportedFeatures) && method_exists($integrationObject, 'pushCompanies')) {
-                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.companies', ['%integration%' => $integration]).'</info>');
+                $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.companies', [
+                    '%integration%' => $integration,
+                ]).'</info>');
                 $result  = $integrationObject->pushCompanies($params);
                 $ignored = 0;
 

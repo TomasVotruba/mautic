@@ -35,7 +35,9 @@ class FromEmailHelperTest extends TestCase
             ->willReturn(true);
 
         $defaultFrom = new AddressDTO('someone@somewhere.com', 'Someone');
-        $contact     = ['owner_id' => 1];
+        $contact     = [
+            'owner_id' => 1,
+        ];
 
         $user = [
             'id'         => 1,
@@ -52,7 +54,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['user@somewhere.com' => 'First Last'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'user@somewhere.com' => 'First Last',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testOwnerIsReturnedWhenEmailEntityIsSet(): void
@@ -61,7 +65,9 @@ class FromEmailHelperTest extends TestCase
             ->method('get');
 
         $defaultFrom = new AddressDTO('someone@somewhere.com', 'Someone');
-        $contact     = ['owner_id' => 1];
+        $contact     = [
+            'owner_id' => 1,
+        ];
 
         $user = [
             'id'         => 1,
@@ -81,7 +87,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact, $email);
 
-        $this->assertEquals(['user@somewhere.com' => 'First Last'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'user@somewhere.com' => 'First Last',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedEmailIsGivenPreference(): void
@@ -93,11 +101,15 @@ class FromEmailHelperTest extends TestCase
             ->method('getLeadOwner');
 
         $defaultFrom = new AddressDTO('{contactfield=other_email}', null);
-        $contact     = ['other_email' => 'someone@somewhere.com'];
+        $contact     = [
+            'other_email' => 'someone@somewhere.com',
+        ];
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => null], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => null,
+        ], $fromEmail->getAddressArray());
     }
 
     public function testDefaultIsReturnedIfOwnerNotSet(): void
@@ -113,7 +125,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => null], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => null,
+        ], $fromEmail->getAddressArray());
     }
 
     public function testDefaultIsReturnedWhenOwnerNotFound(): void
@@ -128,7 +142,9 @@ class FromEmailHelperTest extends TestCase
             );
 
         $defaultFrom = new AddressDTO('someone@somewhere.com', 'Someone');
-        $contact     = ['owner_id' => 1];
+        $contact     = [
+            'owner_id' => 1,
+        ];
 
         $this->leadRepository->expects($this->once())
             ->method('getLeadOwner')
@@ -168,7 +184,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['user@somewhere.com' => 'First Last'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'user@somewhere.com' => 'First Last',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedEmailIsReplacedWithSystemDefaultWhenFieldEmptyAndDefaultNotOverriddenAndMailAsOwnerDisabled(): void
@@ -204,7 +222,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['default@somewhere.com' => 'Default'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'default@somewhere.com' => 'Default',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedEmailIsReplacedWithOverriddenDefaultWhenFieldEmptyAndMailAsOwnerDisabled(): void
@@ -227,7 +247,9 @@ class FromEmailHelperTest extends TestCase
         $helper->setDefaultFrom(new AddressDTO('overridden@somewhere.com', null));
         $fromEmail = $helper->getFromAddressConsideringOwner($defaultFrom, $contact);
 
-        $this->assertEquals(['overridden@somewhere.com' => null], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'overridden@somewhere.com' => null,
+        ], $fromEmail->getAddressArray());
     }
 
     public function testMultipleCallsReturnAppropriateEmail(): void
@@ -240,8 +262,12 @@ class FromEmailHelperTest extends TestCase
         $defaultFrom = new AddressDTO('someone@somewhere.com', 'Someone');
 
         $contacts = [
-            ['owner_id' => 1],
-            ['owner_id' => 2],
+            [
+                'owner_id' => 1,
+            ],
+            [
+                'owner_id' => 2,
+            ],
         ];
 
         $users = [
@@ -279,7 +305,9 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         foreach ($contacts as $key => $contact) {
             $fromEmail = $helper->getFromAddressConsideringOwner($defaultFrom, $contact);
-            $this->assertEquals([$users[$key]['email'] => 'First Last'], $fromEmail->getAddressArray());
+            $this->assertEquals([
+                $users[$key]['email'] => 'First Last',
+            ], $fromEmail->getAddressArray());
         }
     }
 
@@ -292,11 +320,15 @@ class FromEmailHelperTest extends TestCase
             ->method('getLeadOwner');
 
         $defaultFrom = new AddressDTO('{contactfield=other_email}');
-        $contact     = ['other_email' => 'someone@somewhere.com'];
+        $contact     = [
+            'other_email' => 'someone@somewhere.com',
+        ];
 
         $fromEmail = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => null], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => null,
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedNameIsReplacedWithContactField(): void
@@ -314,7 +346,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => 'Thing One'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => 'Thing One',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedFromIsReplacedWithContactField(): void
@@ -333,7 +367,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['thingone@somewhere.com' => 'Thing One'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'thingone@somewhere.com' => 'Thing One',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedEmailIsReplacedWithSystemDefaultWhenFieldEmptyAndDefaultNotOverridden(): void
@@ -364,7 +400,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['default@somewhere.com' => 'Default'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'default@somewhere.com' => 'Default',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedNameIsReplacedWithSystemDefaultWhenFieldEmptyAndDefaultNotOverridden(): void
@@ -396,7 +434,9 @@ class FromEmailHelperTest extends TestCase
 
         $fromEmail = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => 'Default'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => 'Default',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedEmailIsReplacedWithOverriddenDefaultWhenFieldEmpty(): void
@@ -417,7 +457,9 @@ class FromEmailHelperTest extends TestCase
         $helper->setDefaultFrom(new AddressDTO('overridden@somewhere.com', null));
         $fromEmail = $helper->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['overridden@somewhere.com' => null], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'overridden@somewhere.com' => null,
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedNameIsReplacedWithOverriddenDefaultWhenFieldEmpty(): void
@@ -438,7 +480,9 @@ class FromEmailHelperTest extends TestCase
         $helper->setDefaultFrom(new AddressDTO('overridden@somewhere.com', 'Thing Two'));
         $fromEmail = $helper->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => 'Thing Two'], $fromEmail->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => 'Thing Two',
+        ], $fromEmail->getAddressArray());
     }
 
     public function testTokenizedNameIsReplacedWithSystemDefaultWhenFieldEmptyWithoutDefaultBeingOverriden(): void
@@ -471,7 +515,9 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $from   = $helper->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['someone@somewhere.com' => 'Default Name'], $from->getAddressArray());
+        $this->assertEquals([
+            'someone@somewhere.com' => 'Default Name',
+        ], $from->getAddressArray());
     }
 
     public function testTokenizedEmailFallsBackToTokenizedSystemDefault(): void
@@ -497,7 +543,9 @@ class FromEmailHelperTest extends TestCase
 
         $from = $this->getHelper()->getFromAddressDto($defaultFrom, $contact);
 
-        $this->assertEquals(['default-token@somewhere.com' => 'Default Token Name'], $from->getAddressArray());
+        $this->assertEquals([
+            'default-token@somewhere.com' => 'Default Token Name',
+        ], $from->getAddressArray());
     }
 
     public function testNullContactReturnsDefaultAddress(): void
@@ -616,7 +664,9 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $this->assertEquals($user['signature'], $helper->getSignature());
@@ -645,7 +695,9 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $this->assertEquals('user@somewhere.com First there', $helper->getSignature());
@@ -674,12 +726,16 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $helper->getFromAddressDto(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $this->assertEquals('', $helper->getSignature());
@@ -704,7 +760,9 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $this->assertEquals('', $helper->getSignature());
@@ -751,12 +809,16 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
         $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 2]
+            [
+                'owner_id' => 2,
+            ]
         );
 
         $this->assertEquals('user 2', $helper->getSignature());
@@ -785,10 +847,14 @@ class FromEmailHelperTest extends TestCase
         $helper = $this->getHelper();
         $from   = $helper->getFromAddressConsideringOwner(
             new AddressDTO('someone@somewhere.com', null),
-            ['owner_id' => 1]
+            [
+                'owner_id' => 1,
+            ]
         );
 
-        $this->assertEquals(['user@somewhere.com' => "First No Body's Business"], $from->getAddressArray());
+        $this->assertEquals([
+            'user@somewhere.com' => "First No Body's Business",
+        ], $from->getAddressArray());
     }
 
     private function getHelper(): FromEmailHelper

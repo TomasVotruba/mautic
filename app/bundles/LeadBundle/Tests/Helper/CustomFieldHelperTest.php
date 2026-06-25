@@ -180,17 +180,23 @@ class CustomFieldHelperTest extends TestCase
         $mockDateTimeHelper->method('toUtcString')
             ->willReturn('2023-05-20 00:00:00');
 
-        $field  = ['type' => 'datetime'];
+        $field  = [
+            'type' => 'datetime',
+        ];
         $value  = 'now';
         $result = CustomFieldHelper::fieldValueTransfomer($field, $value, $mockDateTimeHelper);
         $this->assertEquals('2023-05-20 00:00:00', $result, 'FieldValueTransformer was not able to transform datetime field properly');
 
-        $field  = ['type' => 'date'];
+        $field  = [
+            'type' => 'date',
+        ];
         $value  = 'today';
         $result = CustomFieldHelper::fieldValueTransfomer($field, $value, $mockDateTimeHelper);
         $this->assertEquals('2023-05-20 00:00:00', $result, 'FieldValueTransformer was not able to transform date field properly');
 
-        $field  = ['type' => 'time'];
+        $field  = [
+            'type' => 'time',
+        ];
         $value  = 'now';
         $result = CustomFieldHelper::fieldValueTransfomer($field, $value, $mockDateTimeHelper);
         $this->assertEquals('2023-05-20 00:00:00', $result, 'FieldValueTransformer was not able to transform time field properly');
@@ -208,17 +214,23 @@ class CustomFieldHelperTest extends TestCase
         date_default_timezone_set('UTC');
 
         try {
-            $field  = ['type' => 'datetime'];
+            $field  = [
+                'type' => 'datetime',
+            ];
             $value  = '2025-01-24 00:30:00';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
             $this->assertEquals('2025-01-23 22:30:00', $result, 'Datetime was not converted from Etc/GMT-2 to UTC correctly');
 
-            $field  = ['type' => 'date'];
+            $field  = [
+                'type' => 'date',
+            ];
             $value  = '2025-01-24 00:30:00';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
             $this->assertEquals('2025-01-23', $result, 'Date was not converted from Etc/GMT-2 to UTC correctly');
 
-            $field  = ['type' => 'date'];
+            $field  = [
+                'type' => 'date',
+            ];
             $value  = '2025-01-24';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
             // Date strings without a time component are parsed using PHP's default timezone (UTC here),

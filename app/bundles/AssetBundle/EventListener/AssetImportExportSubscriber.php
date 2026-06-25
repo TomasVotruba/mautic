@@ -91,12 +91,22 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $object = $this->entityManager->getRepository(Asset::class)->findOneBy(['uuid' => $element['uuid']]);
+            $object = $this->entityManager->getRepository(Asset::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew  = !$object;
 
             $object ??= new Asset();
@@ -107,7 +117,9 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
                 $element,
                 Asset::class,
                 null,
-                ['object_to_populate' => $object]
+                [
+                    'object_to_populate' => $object,
+                ]
             );
             $this->assetModel->saveEntity($object);
 
@@ -122,7 +134,9 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
         }
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Asset::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Asset::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -143,7 +157,9 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Asset::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Asset::class,
+                ]);
             }
         }
 

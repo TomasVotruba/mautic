@@ -86,7 +86,9 @@ class PointModelTest extends TestCase
         $type            = 'url.hit';
         $pointId         = 98783;
         $pointName       = 'Point name';
-        $pointProperties = ['property' => 'value'];
+        $pointProperties = [
+            'property' => 'value',
+        ];
         $pointDelta      = 7;
         $pointGroup      = null;
         $ip              = $this->createMock(IpAddress::class);

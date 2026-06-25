@@ -88,12 +88,22 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $field = $this->entityManager->getRepository(LeadField::class)->findOneBy(['uuid' => $element['uuid']]);
+            $field = $this->entityManager->getRepository(LeadField::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew = !$field;
 
             $field ??= new LeadField();
@@ -104,7 +114,9 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
                 $elementForDenormalize,
                 LeadField::class,
                 null,
-                ['object_to_populate' => $field]
+                [
+                    'object_to_populate' => $field,
+                ]
             );
 
             if ($isNew) {
@@ -126,7 +138,9 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [LeadField::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    LeadField::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -147,7 +161,9 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => LeadField::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => LeadField::class,
+                ]);
             }
         }
 

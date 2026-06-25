@@ -165,7 +165,9 @@ class ReportSubscriber implements EventSubscriberInterface
             $event->addGraph($context, 'line', 'mautic.asset.graph.line.downloads');
             $event->addGraph($context, 'table', 'mautic.asset.table.most.downloaded');
             $event->addGraph($context, 'table', 'mautic.asset.table.top.referrers');
-            $event->addGraph($context, 'pie', 'mautic.asset.graph.pie.statuses', ['translate' => false]);
+            $event->addGraph($context, 'pie', 'mautic.asset.graph.pie.statuses', [
+                'translate' => false,
+            ]);
         }
     }
 

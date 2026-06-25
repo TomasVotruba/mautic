@@ -42,7 +42,9 @@ class IpLookupDownloadDataStoreButtonType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['ip_lookup_service' => null]);
+        $resolver->setDefaults([
+            'ip_lookup_service' => null,
+        ]);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -54,7 +56,9 @@ class IpLookupDownloadDataStoreButtonType extends AbstractType
                 $lastModified                            = $this->dateHelper->toText($lastModifiedTimestamp, 'UTC', 'U');
                 $view->vars['ipDataStoreLastDownloaded'] = $this->translator->trans(
                     'mautic.core.ip_lookup.last_updated',
-                    ['%date%' => $lastModified]
+                    [
+                        '%date%' => $lastModified,
+                    ]
                 );
             }
         }

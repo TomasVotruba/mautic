@@ -110,13 +110,21 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
     {
         $slotName = 'test';
         $contact  = new Lead();
-        $contact->setFields(['email' => 'ma@ka.t', 'id' => 123]);
+        $contact->setFields([
+            'email' => 'ma@ka.t',
+            'id' => 123,
+        ]);
 
         $slot = new DynamicContent();
         $slot->setName($slotName);
         $slot->setIsCampaignBased(false);
         // Setting filter that is not known to Mautic, but is for a plugin.
-        $slot->setFilters([['field' => 'unicorn', 'type' => 'text', 'operator' => '=', 'filter' => 'magic']]);
+        $slot->setFilters([[
+            'field' => 'unicorn',
+            'type' => 'text',
+            'operator' => '=',
+            'filter' => 'magic',
+        ]]);
         $slot->setContent('<p>test</p>');
 
         $this->mockModel->method('getEntities')
@@ -166,13 +174,21 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
     {
         $slotName = 'test';
         $contact  = new Lead();
-        $contact->setFields(['email' => 'ma@ka.t', 'id' => 123]);
+        $contact->setFields([
+            'email' => 'ma@ka.t',
+            'id' => 123,
+        ]);
 
         $slot = new DynamicContent();
         $slot->setName($slotName);
         $slot->setIsCampaignBased(false);
         // Setting filter that is not known to Mautic, nor any plugin.
-        $slot->setFilters([['field' => 'unicorn', 'type' => 'text', 'operator' => '=', 'filter' => 'magic']]);
+        $slot->setFilters([[
+            'field' => 'unicorn',
+            'type' => 'text',
+            'operator' => '=',
+            'filter' => 'magic',
+        ]]);
         $slot->setContent('<p>test</p>');
 
         $this->mockModel->method('getEntities')
@@ -216,12 +232,20 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
     {
         $slotName = 'test';
         $contact  = new Lead();
-        $contact->setFields(['email' => 'ma@ka.t', 'id' => 123]);
+        $contact->setFields([
+            'email' => 'ma@ka.t',
+            'id' => 123,
+        ]);
 
         $slot = new DynamicContent();
         $slot->setName($slotName);
         $slot->setIsCampaignBased(false);
-        $slot->setFilters([['field' => 'email', 'type' => 'email', 'operator' => '=', 'filter' => 'ma@ka.t']]);
+        $slot->setFilters([[
+            'field' => 'email',
+            'type' => 'email',
+            'operator' => '=',
+            'filter' => 'ma@ka.t',
+        ]]);
         $slot->setContent('<p>test</p>');
 
         $this->mockModel->method('getEntities')
@@ -263,12 +287,20 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
     {
         $slotName = 'test';
         $contact  = new Lead();
-        $contact->setFields(['email' => 'ma@ka.t', 'id' => 123]);
+        $contact->setFields([
+            'email' => 'ma@ka.t',
+            'id' => 123,
+        ]);
 
         $slot = new DynamicContent();
         $slot->setName($slotName);
         $slot->setIsCampaignBased(false);
-        $slot->setFilters([['field' => 'email', 'type' => 'email', 'operator' => '=', 'filter' => 'uni@co.rn']]);
+        $slot->setFilters([[
+            'field' => 'email',
+            'type' => 'email',
+            'operator' => '=',
+            'filter' => 'uni@co.rn',
+        ]]);
         $slot->setContent('<p>test</p>');
 
         $this->mockModel->method('getEntities')

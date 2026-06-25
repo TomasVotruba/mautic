@@ -65,8 +65,12 @@ final class ListControllerTest extends MauticMysqlTestCase
         $handlerStack = $this->getClientMockHandler();
         $handlerStack->append(
             new Response(SymfonyResponse::HTTP_OK, [], file_get_contents(__DIR__.'/../../ApiResponse/allowlist.json')), // Getting Allow list from Github API.
-            new Response(SymfonyResponse::HTTP_OK, [], json_encode(['results' => [$mockResults[1]]])), // mautic-recaptcha-bundle
-            new Response(SymfonyResponse::HTTP_OK, [], json_encode(['results' => [$mockResults[3]]])), // mautic-referrals-bundle
+            new Response(SymfonyResponse::HTTP_OK, [], json_encode([
+                'results' => [$mockResults[1]],
+            ])), // mautic-recaptcha-bundle
+            new Response(SymfonyResponse::HTTP_OK, [], json_encode([
+                'results' => [$mockResults[3]],
+            ])), // mautic-referrals-bundle
         );
 
         /** @var Allowlist $allowlist */

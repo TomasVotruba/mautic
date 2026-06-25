@@ -56,7 +56,10 @@ class LeadSubscriber implements EventSubscriberInterface
                     || ((Stat::TYPE_NOTIFICATION == $statsView['type']) && $eventViewApplicable)) {
                     $eventLabel = [
                         'label' => $statsView['focus_name'],
-                        'href'  => $this->router->generate('mautic_focus_action', ['objectAction' => 'view', 'objectId' => $statsView['focus_id']]),
+                        'href'  => $this->router->generate('mautic_focus_action', [
+                            'objectAction' => 'view',
+                            'objectId' => $statsView['focus_id'],
+                        ]),
                     ];
 
                     $eventType = (Stat::TYPE_NOTIFICATION == $statsView['type']) ? FocusEventTypes::FOCUS_ON_VIEW : FocusEventTypes::FOCUS_ON_CLICK;

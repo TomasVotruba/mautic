@@ -33,7 +33,9 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
                         </body></html>';
         $email = $this->createEmail(
             'test subject',
-            [$segment->getId() ?? '' => $segment],
+            [
+                $segment->getId() ?? '' => $segment,
+            ],
             $content
         );
         $this->em->flush();
@@ -43,7 +45,10 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => 2]
+            [
+                'id' => $email->getId(),
+                'pending' => 2,
+            ]
         );
 
         $response = $this->client->getResponse();
@@ -193,7 +198,9 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
                         </body></html>';
         $email = $this->createEmail(
             'test subject',
-            [$segment->getId() ?? '' => $segment],
+            [
+                $segment->getId() ?? '' => $segment,
+            ],
             $content
         );
         $this->em->flush();
@@ -203,7 +210,10 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => 1]
+            [
+                'id' => $email->getId(),
+                'pending' => 1,
+            ]
         );
 
         $response = $this->client->getResponse();

@@ -174,7 +174,9 @@ class ConfigController extends AbstractFormController
             $this->integrationObject->getConfigFormName() ?: IntegrationConfigType::class,
             $this->integrationConfiguration,
             [
-                'action'      => $this->generateUrl('mautic_integration_config', ['integration' => $this->integrationObject->getName()]),
+                'action'      => $this->generateUrl('mautic_integration_config', [
+                    'integration' => $this->integrationObject->getName(),
+                ]),
                 'integration' => $this->integrationObject->getName(),
             ]
         );

@@ -53,7 +53,9 @@ class SortableListTransformerTest extends TestCase
         $transformer = new SortableListTransformer();
         $result      = $transformer->transform(null);
 
-        $this->assertEquals(['list' => []], $result);
+        $this->assertEquals([
+            'list' => [],
+        ], $result);
     }
 
     public function testReverseTransformHandlesNullInput(): void
@@ -82,11 +84,18 @@ class SortableListTransformerTest extends TestCase
         $transformer = new SortableListTransformer(useKeyValuePairs: true);
         $input       = [
             'list' => [
-                ['value' => 'test1'], // missing label
-                ['label' => 'key2', 'value' => 'test2'],
+                [
+                    'value' => 'test1',
+                ], // missing label
+                [
+                    'label' => 'key2',
+                    'value' => 'test2',
+                ],
             ],
         ];
-        $expected = ['key2' => 'test2'];
+        $expected = [
+            'key2' => 'test2',
+        ];
 
         $result = $transformer->reverseTransform($input);
 
@@ -108,8 +117,14 @@ class SortableListTransformerTest extends TestCase
                 ],
                 'expected' => [
                     'list' => [
-                        ['label' => 'a@example.com', 'value' => 'a@example.com'],
-                        ['label' => 'b@example.com', 'value' => 'b@example.com'],
+                        [
+                            'label' => 'a@example.com',
+                            'value' => 'a@example.com',
+                        ],
+                        [
+                            'label' => 'b@example.com',
+                            'value' => 'b@example.com',
+                        ],
                     ],
                 ],
             ],
@@ -119,15 +134,28 @@ class SortableListTransformerTest extends TestCase
                 ],
                 'expected' => [
                     'list' => [
-                        ['label' => 'item1', 'value' => 'item1'],
-                        ['label' => 'item2', 'value' => 'item2'],
-                        ['label' => 'item3', 'value' => 'item3'],
+                        [
+                            'label' => 'item1',
+                            'value' => 'item1',
+                        ],
+                        [
+                            'label' => 'item2',
+                            'value' => 'item2',
+                        ],
+                        [
+                            'label' => 'item3',
+                            'value' => 'item3',
+                        ],
                     ],
                 ],
             ],
             'empty list' => [
-                'input'    => ['list' => []],
-                'expected' => ['list' => []],
+                'input'    => [
+                    'list' => [],
+                ],
+                'expected' => [
+                    'list' => [],
+                ],
             ],
         ];
     }
@@ -159,8 +187,12 @@ class SortableListTransformerTest extends TestCase
                 ],
             ],
             'empty list' => [
-                'input'    => ['list' => []],
-                'expected' => ['list' => []],
+                'input'    => [
+                    'list' => [],
+                ],
+                'expected' => [
+                    'list' => [],
+                ],
             ],
         ];
     }
@@ -178,14 +210,22 @@ class SortableListTransformerTest extends TestCase
                 ],
                 'expected' => [
                     'list' => [
-                        ['label' => 'key1', 'value' => 'value1'],
-                        ['label' => 'key2', 'value' => 'value2'],
+                        [
+                            'label' => 'key1',
+                            'value' => 'value1',
+                        ],
+                        [
+                            'label' => 'key2',
+                            'value' => 'value2',
+                        ],
                     ],
                 ],
             ],
             'empty array' => [
                 'input'    => [],
-                'expected' => ['list' => []],
+                'expected' => [
+                    'list' => [],
+                ],
             ],
         ];
     }
@@ -199,8 +239,14 @@ class SortableListTransformerTest extends TestCase
             'standard key-value pairs' => [
                 'input' => [
                     'list' => [
-                        ['label' => 'key1', 'value' => 'value1'],
-                        ['label' => 'key2', 'value' => 'value2'],
+                        [
+                            'label' => 'key1',
+                            'value' => 'value1',
+                        ],
+                        [
+                            'label' => 'key2',
+                            'value' => 'value2',
+                        ],
                     ],
                 ],
                 'expected' => [
@@ -209,7 +255,9 @@ class SortableListTransformerTest extends TestCase
                 ],
             ],
             'empty list' => [
-                'input'    => ['list' => []],
+                'input'    => [
+                    'list' => [],
+                ],
                 'expected' => [],
             ],
         ];

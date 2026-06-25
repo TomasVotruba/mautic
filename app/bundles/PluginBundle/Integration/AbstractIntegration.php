@@ -1002,7 +1002,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
         return $this->router->generate(
             'mautic_integration_auth_callback',
-            ['integration' => $this->getName()]
+            [
+                'integration' => $this->getName(),
+            ]
         );
     }
 
@@ -1035,7 +1037,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         $defaultUrl = $this->router->generate(
             'mautic_integration_auth_callback',
-            ['integration' => $this->getName()],
+            [
+                'integration' => $this->getName(),
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL // absolute
         );
 
@@ -1209,7 +1213,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                         && time() > $this->keys[$expiryKey]
                     ) {
                         // token has expired so try to refresh it
-                        $error = $this->authCallback(['refresh_token' => $refreshTokenKey]);
+                        $error = $this->authCallback([
+                            'refresh_token' => $refreshTokenKey,
+                        ]);
                         $valid = (empty($error));
                     } else {
                         // The refresh token doesn't have an expiry so the integration will have to check for expired sessions and request new token
@@ -1267,7 +1273,11 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         // Child classes can easily pass in custom settings this way
         $settings = array_merge(
-            ['authorize_session' => true, 'append_callback' => false, 'ssl_verifypeer' => true],
+            [
+                'authorize_session' => true,
+                'append_callback' => false,
+                'ssl_verifypeer' => true,
+            ],
             $settings
         );
 
@@ -1951,7 +1961,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 $contactId   = $contact->getId();
                 $contactName = $contact->getPrimaryIdentifier();
             } elseif ($contactId = $e->getContactId()) {
-                $contactName = $this->getTranslator()->trans('mautic.integration.error.generic_contact_name', ['%id%' => $contactId]);
+                $contactName = $this->getTranslator()->trans('mautic.integration.error.generic_contact_name', [
+                    '%id%' => $contactId,
+                ]);
             }
 
             $this->lastIntegrationError = $errorHeader.': '.$errorMessage;
@@ -2139,7 +2151,10 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         return $this->router->generate(
             'mautic_plugin_timeline_view',
-            ['integration' => $this->getName(), 'leadId' => $contactId],
+            [
+                'integration' => $this->getName(),
+                'leadId' => $contactId,
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
     }

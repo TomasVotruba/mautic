@@ -156,7 +156,9 @@ class FormValidationSubscriber implements EventSubscriberInterface
                 ? $validation['min_message']
                 : $this->translator->trans(
                     'mautic.form.submission.checkboxgrp.minimum',
-                    ['%min%' => (int) $validation['minimum']],
+                    [
+                        '%min%' => (int) $validation['minimum'],
+                    ],
                     'validators'
                 );
 
@@ -170,7 +172,9 @@ class FormValidationSubscriber implements EventSubscriberInterface
                 ? $validation['max_message']
                 : $this->translator->trans(
                     'mautic.form.submission.checkboxgrp.maximum',
-                    ['%max%' => (int) $validation['maximum']],
+                    [
+                        '%max%' => (int) $validation['maximum'],
+                    ],
                     'validators'
                 );
 

@@ -243,7 +243,9 @@ class FocusController extends AbstractStandardFormController
             : $this->getCurrentRequest()->get('updateSelect', false);
 
         if ($updateSelect) {
-            return ['update_select' => $updateSelect];
+            return [
+                'update_select' => $updateSelect,
+            ];
         }
     }
 

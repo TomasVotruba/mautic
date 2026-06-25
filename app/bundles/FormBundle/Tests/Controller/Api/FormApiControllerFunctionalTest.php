@@ -121,7 +121,9 @@ final class FormApiControllerFunctionalTest extends MauticMysqlTestCase
         }
 
         // Edit PATCH:
-        $this->client->request('PATCH', "/api/forms/{$formId}/edit", ['name' => $expectedResponse['newName']]);
+        $this->client->request('PATCH', "/api/forms/{$formId}/edit", [
+            'name' => $expectedResponse['newName'],
+        ]);
         $clientResponse = $this->client->getResponse();
         $responsePatch  = json_decode($clientResponse->getContent(), true);
         $this->assertResponseIsSuccessful();
@@ -436,7 +438,9 @@ final class FormApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('+420444555666', $company->getPhone());
 
         // The previous request changes user to anonymous.
-        $this->loginUser($this->em->getRepository(User::class)->findOneBy(['username' => 'admin']));
+        $this->loginUser($this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]));
 
         // Delete:
         $this->client->request(Request::METHOD_DELETE, "/api/forms/{$formId}/delete");
@@ -463,8 +467,12 @@ final class FormApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testFormWithChangeTagsAction(): void
     {
         // Create tag:
-        $tag1Payload = ['tag' => 'add this'];
-        $tag2Payload = ['tag' => 'remove this'];
+        $tag1Payload = [
+            'tag' => 'add this',
+        ];
+        $tag2Payload = [
+            'tag' => 'remove this',
+        ];
 
         $this->client->request('POST', '/api/tags/new', $tag1Payload);
         $clientResponse = $this->client->getResponse();

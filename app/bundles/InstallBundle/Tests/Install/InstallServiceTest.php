@@ -126,7 +126,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
         $this->configurator->expects($this->exactly(2))
             ->method('getParameters')
             ->willReturn(
-                ['db_driver' => 'test']
+                [
+                    'db_driver' => 'test',
+                ]
             );
 
         $index = 0;
@@ -143,7 +145,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
     public function testCheckRequirements(): void
     {
         $step     = $this->createMock(StepInterface::class);
-        $messages = ['dummy' => 'test'];
+        $messages = [
+            'dummy' => 'test',
+        ];
 
         $step->expects($this->once())
             ->method('checkRequirements')
@@ -160,7 +164,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
     public function testCheckOptionalSettings(): void
     {
         $step     = $this->createMock(StepInterface::class);
-        $messages = ['dummy' => 'test'];
+        $messages = [
+            'dummy' => 'test',
+        ];
 
         $step->expects($this->once())
             ->method('checkOptionalSettings')
@@ -295,7 +301,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
         ];
 
         $step = $this->createMock(StepInterface::class);
-        $this->assertEquals(['error' => null], $this->installer->createDatabaseStep($step, $dbParams));
+        $this->assertEquals([
+            'error' => null,
+        ], $this->installer->createDatabaseStep($step, $dbParams));
     }
 
     /**
@@ -312,7 +320,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
             'table_prefix' => 'mautic_',
         ];
 
-        $this->assertEquals(['error' => null], $this->installer->createSchemaStep($dbParams));
+        $this->assertEquals([
+            'error' => null,
+        ], $this->installer->createSchemaStep($dbParams));
     }
 
     public function testCreateAdminUserStepWhenPasswordIsMissing(): void
@@ -333,7 +343,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
             'email'     => 'demo@demo.com',
         ];
 
-        $this->assertEquals(['password' => null], $this->installer->createAdminUserStep($data));
+        $this->assertEquals([
+            'password' => null,
+        ], $this->installer->createAdminUserStep($data));
     }
 
     public function testCreateAdminUserStepWhenPasswordIsNotLongEnough(): void
@@ -374,6 +386,8 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
             }
         });
 
-        $this->assertEquals([0 => 'password'], $this->installer->createAdminUserStep($data));
+        $this->assertEquals([
+            0 => 'password',
+        ], $this->installer->createAdminUserStep($data));
     }
 }

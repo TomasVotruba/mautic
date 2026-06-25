@@ -201,7 +201,9 @@ class MessageQueueModel extends FormModel
                 throw new \InvalidArgumentException('$queue must be an instance of '.MessageQueue::class);
             }
 
-            $queue = [$queue->getId() => $queue];
+            $queue = [
+                $queue->getId() => $queue,
+            ];
         }
 
         $counter   = 0;

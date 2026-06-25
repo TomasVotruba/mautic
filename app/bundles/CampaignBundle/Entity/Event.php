@@ -360,7 +360,9 @@ class Event implements ChannelInterface, UuidInterface
 
         $builder->createOneToMany('children', 'Event')
             ->setIndexBy('id')
-            ->setOrderBy(['order' => 'ASC'])
+            ->setOrderBy([
+                'order' => 'ASC',
+            ])
             ->mappedBy('parent')
             ->build();
 

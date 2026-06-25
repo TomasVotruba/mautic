@@ -62,7 +62,10 @@ class LeadSubscriber implements EventSubscriberInterface
                         'eventId'    => $eventTypeKey.$download['download_id'],
                         'eventLabel' => [
                             'label' => $download['title'],
-                            'href'  => $this->router->generate('mautic_asset_action', ['objectAction' => 'view', 'objectId' => $download['asset_id']]),
+                            'href'  => $this->router->generate('mautic_asset_action', [
+                                'objectAction' => 'view',
+                                'objectId' => $download['asset_id'],
+                            ]),
                         ],
                         'extra' => [
                             'asset'            => $asset,

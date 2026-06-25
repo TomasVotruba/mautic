@@ -17,7 +17,9 @@ final class SendChannelBroadcastCommandTest extends MauticMysqlTestCase
 
     public function testBroadcastCommandWithLimit(): void
     {
-        $commandTester = $this->testSymfonyCommand('mautic:broadcasts:send', ['--limit' => 1]);
+        $commandTester = $this->testSymfonyCommand('mautic:broadcasts:send', [
+            '--limit' => 1,
+        ]);
         Assert::assertSame(0, $commandTester->getStatusCode());
     }
 }

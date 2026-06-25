@@ -71,14 +71,18 @@ class OneSignalApi extends AbstractNotificationApi
         $data['include_player_ids'] = $playerId;
 
         if (!is_array($message)) {
-            $message = ['en' => $message];
+            $message = [
+                'en' => $message,
+            ];
         }
 
         $data['contents'] = $message;
 
         if (!empty($title)) {
             if (!is_array($title)) {
-                $title = ['en' => $title];
+                $title = [
+                    'en' => $title,
+                ];
             }
         }
 
@@ -92,11 +96,18 @@ class OneSignalApi extends AbstractNotificationApi
             $this->addMobileData($data, $notification->getMobileSettings());
 
             if ($button) {
-                $data['buttons'][] = ['id' => $buttonId, 'text' => $button];
+                $data['buttons'][] = [
+                    'id' => $buttonId,
+                    'text' => $button,
+                ];
             }
         } else {
             if ($button && $url) {
-                $data['web_buttons'][] = ['id' => $buttonId, 'text' => $button, 'url' => $url];
+                $data['web_buttons'][] = [
+                    'id' => $buttonId,
+                    'text' => $button,
+                    'url' => $url,
+                ];
             }
         }
 
@@ -108,7 +119,9 @@ class OneSignalApi extends AbstractNotificationApi
         foreach ($mobileConfig as $key => $value) {
             switch ($key) {
                 case 'ios_subtitle':
-                    $data['subtitle'] = ['en' => $value];
+                    $data['subtitle'] = [
+                        'en' => $value,
+                    ];
                     break;
                 case 'ios_sound':
                     $data['ios_sound'] = $value ?: 'default';
@@ -123,7 +136,9 @@ class OneSignalApi extends AbstractNotificationApi
                     $data['content_available'] = (bool) $value;
                     break;
                 case 'ios_media':
-                    $data['ios_attachments'] = [uniqid('id_') => $value];
+                    $data['ios_attachments'] = [
+                        uniqid('id_') => $value,
+                    ];
                     break;
                 case 'ios_mutableContent':
                     $data['mutable_content'] = (bool) $value;

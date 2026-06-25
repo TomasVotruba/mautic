@@ -90,7 +90,9 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactModelMock->expects($this->once())
             ->method('getContactChannels')
             ->with($this->contactMock5)
-            ->willReturn(['sms' => 'sms']);
+            ->willReturn([
+                'sms' => 'sms',
+            ]);
 
         $this->doNotContactMock->expects($this->once())
             ->method('isContactable')
@@ -103,7 +105,10 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($this->once())
             ->method('getPreferenceChannels')
-            ->willReturn(['Email' => 'email', 'Text Message' => 'sms']);
+            ->willReturn([
+                'Email' => 'email',
+                'Text Message' => 'sms',
+            ]);
 
         $this->doNotContactMock->expects($this->never())
             ->method('addDncForContact');
@@ -130,7 +135,9 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactModelMock->expects($this->once())
             ->method('getContactChannels')
             ->with($this->contactMock5)
-            ->willReturn(['sms' => 'sms']);
+            ->willReturn([
+                'sms' => 'sms',
+            ]);
 
         $this->doNotContactMock->expects($this->once())
             ->method('isContactable')
@@ -142,7 +149,10 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($this->once())
             ->method('getPreferenceChannels')
-            ->willReturn(['Email' => 'email', 'Text Message' => 'sms']);
+            ->willReturn([
+                'Email' => 'email',
+                'Text Message' => 'sms',
+            ]);
 
         $this->doNotContactMock->expects($this->never())
             ->method('addDncForContact');
@@ -168,14 +178,19 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactModelMock->expects($this->once())
             ->method('getContactChannels')
             ->with($this->contactMock5)
-            ->willReturn(['sms' => 'sms']);
+            ->willReturn([
+                'sms' => 'sms',
+            ]);
 
         $this->doNotContactMock->expects($this->never())
             ->method('isContactable');
 
         $this->contactModelMock->expects($this->once())
             ->method('getPreferenceChannels')
-            ->willReturn(['Email' => 'email', 'Text Message' => 'sms']);
+            ->willReturn([
+                'Email' => 'email',
+                'Text Message' => 'sms',
+            ]);
         $matcher = $this->exactly(2);
 
         $this->doNotContactMock->expects($matcher)

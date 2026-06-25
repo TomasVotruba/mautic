@@ -25,7 +25,10 @@ final class CustomFieldFindReplace
     public function getFieldChoices(string $object): array
     {
         return ArrayHelper::flipArray(
-            $this->fieldList->getFieldList(true, true, ['isPublished' => true, 'object' => $object])
+            $this->fieldList->getFieldList(true, true, [
+                'isPublished' => true,
+                'object' => $object,
+            ])
         );
     }
 
@@ -77,7 +80,9 @@ final class CustomFieldFindReplace
                 continue;
             }
 
-            $setFieldValues($entity, [$alias => $replaceValue]);
+            $setFieldValues($entity, [
+                $alias => $replaceValue,
+            ]);
             $updated[] = $entity;
         }
 

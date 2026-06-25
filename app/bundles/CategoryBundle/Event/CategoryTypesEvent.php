@@ -24,7 +24,9 @@ class CategoryTypesEvent extends CommonEvent
             asort($this->types);
 
             $this->types = array_merge(
-                ['global' => 'mautic.category.global'],
+                [
+                    'global' => 'mautic.category.global',
+                ],
                 $this->types
             );
         }

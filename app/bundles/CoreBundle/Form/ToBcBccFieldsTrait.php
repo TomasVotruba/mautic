@@ -15,7 +15,9 @@ trait ToBcBccFieldsTrait
             TextType::class,
             [
                 'label'      => 'mautic.core.send.email.to',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.core.optional',
@@ -35,7 +37,9 @@ trait ToBcBccFieldsTrait
             TextType::class,
             [
                 'label'      => 'mautic.core.send.email.cc',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.core.optional',
@@ -55,7 +59,9 @@ trait ToBcBccFieldsTrait
             TextType::class,
             [
                 'label'      => 'mautic.core.send.email.bcc',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.core.optional',

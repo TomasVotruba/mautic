@@ -23,7 +23,9 @@ final class TwilioConfigurationFunctionalTest extends MauticMysqlTestCase
 
         $integrationRepository = $this->em->getRepository(Integration::class);
 
-        $integrationConfig = $integrationRepository->findOneBy(['name' => $integration->getName()]);
+        $integrationConfig = $integrationRepository->findOneBy([
+            'name' => $integration->getName(),
+        ]);
         \assert($integrationConfig instanceof Integration);
         Assert::assertSame('messaging_sid', $integrationConfig->getFeatureSettings()['messaging_service_sid']);
     }

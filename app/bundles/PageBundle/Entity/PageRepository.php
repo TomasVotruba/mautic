@@ -143,7 +143,9 @@ class PageRepository extends CommonRepository
                     "(p.isPublished = :%1\$s AND p.publishDown IS NOT NULL AND p.publishDown <> '' AND p.publishDown < CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.page.searchcommand.ispending'):
             case $this->translator->trans('mautic.page.searchcommand.ispending', [], null, 'en_US'):
@@ -151,7 +153,9 @@ class PageRepository extends CommonRepository
                     "(p.isPublished = :%1\$s AND p.publishUp IS NOT NULL AND p.publishUp <> '' AND p.publishUp > CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
             case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
@@ -167,7 +171,9 @@ class PageRepository extends CommonRepository
             case $this->translator->trans('mautic.page.searchcommand.isprefcenter'):
             case $this->translator->trans('mautic.page.searchcommand.isprefcenter', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('p.isPreferenceCenter', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
             case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
@@ -189,7 +195,9 @@ class PageRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

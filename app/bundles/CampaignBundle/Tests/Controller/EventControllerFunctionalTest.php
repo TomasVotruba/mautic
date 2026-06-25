@@ -135,7 +135,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
 
         // GET EDIT FORM
         $uri = "/s/campaigns/events/edit/{$eventId}?campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=no&anchorEventType=condition";
-        $this->client->xmlHttpRequest('GET', $uri, ['modifiedEvents' => json_encode($modifiedEvents)]);
+        $this->client->xmlHttpRequest('GET', $uri, [
+            'modifiedEvents' => json_encode($modifiedEvents),
+        ]);
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
 
@@ -372,7 +374,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             '/s/campaigns/events/delete/'.$event1->getId().'?redirectTo='.$redirectEventId,
             [
-                'modifiedEvents' => json_encode([$event1->getId() => $event1]),
+                'modifiedEvents' => json_encode([
+                    $event1->getId() => $event1,
+                ]),
             ],
             [],
             $this->createAjaxHeaders(),
@@ -410,7 +414,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             '/s/campaigns/events/delete/'.$event1->getId().'?redirectTo='.$redirectEventId,
             [
-                'modifiedEvents' => json_encode([$event1->getId() => $event1]),
+                'modifiedEvents' => json_encode([
+                    $event1->getId() => $event1,
+                ]),
             ],
             [],
             $this->createAjaxHeaders(),
@@ -427,7 +433,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             '/s/campaigns/events/undelete/'.$event1->getId().'?campaignId='.$campaign->getId(),
             [
-                'modifiedEvents' => json_encode([$event1->getId() => $event1]),
+                'modifiedEvents' => json_encode([
+                    $event1->getId() => $event1,
+                ]),
                 'deletedEvents'  => json_encode($deleteResponse['deletedEvents']),
             ],
             [],
@@ -464,7 +472,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             '/s/campaigns/events/delete/'.$event1->getId(),
             [
-                'modifiedEvents' => json_encode([$event1->getId() => $event1]),
+                'modifiedEvents' => json_encode([
+                    $event1->getId() => $event1,
+                ]),
                 'redirectTo'     => $redirectEventId,
             ],
             [],

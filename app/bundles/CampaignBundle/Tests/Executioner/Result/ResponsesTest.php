@@ -24,7 +24,9 @@ class ResponsesTest extends \PHPUnit\Framework\TestCase
         $actionLog->method('getEvent')
             ->willReturn($actionEvent);
         $actionLog->method('getMetadata')
-            ->willReturn(['timeline' => 'test']);
+            ->willReturn([
+                'timeline' => 'test',
+            ]);
 
         $action2Event = $this->createMock(Event::class);
         $action2Event->method('getEventType')
@@ -39,7 +41,10 @@ class ResponsesTest extends \PHPUnit\Framework\TestCase
         $action2Log->method('getEvent')
             ->willReturn($action2Event);
         $action2Log->method('getMetadata')
-            ->willReturn(['timeline' => 'test', 'something' => 'else']);
+            ->willReturn([
+                'timeline' => 'test',
+                'something' => 'else',
+            ]);
 
         // Response should be full array
         $conditionEvent = $this->createMock(Event::class);
@@ -54,7 +59,9 @@ class ResponsesTest extends \PHPUnit\Framework\TestCase
         $conditionLog->method('getEvent')
             ->willReturn($conditionEvent);
         $conditionLog->method('getMetadata')
-            ->willReturn(['something' => 'else']);
+            ->willReturn([
+                'something' => 'else',
+            ]);
 
         $logs = new ArrayCollection([$actionLog, $action2Log, $conditionLog]);
 

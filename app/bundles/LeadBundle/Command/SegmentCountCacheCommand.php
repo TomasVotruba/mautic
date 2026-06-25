@@ -41,7 +41,9 @@ class SegmentCountCacheCommand extends Command
         if (count($segmentsForRecount) > 0) {
             $totalLeadCount = $this->leadListRepository->getLeadCount($segmentsForRecount);
             if (!is_array($totalLeadCount)) {
-                $totalLeadCount = [$segmentsForRecount[0] => $totalLeadCount];
+                $totalLeadCount = [
+                    $segmentsForRecount[0] => $totalLeadCount,
+                ];
             }
             foreach ($totalLeadCount as $segmentId => $leadCount) {
                 $this->segmentCountCacheHelper->setSegmentContactCount((int) $segmentId, (int) $leadCount);

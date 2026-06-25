@@ -67,7 +67,10 @@ class IntegrationsListTypeTest extends TestCase
         $integrationHelper->expects(self::once())
             ->method('getIntegrationObjects')
             ->with(null, 'features', true)
-            ->willReturn(['integration1' => $integrationInstance1, 'integration2' => $integrationInstance2]);
+            ->willReturn([
+                'integration1' => $integrationInstance1,
+                'integration2' => $integrationInstance2,
+            ]);
         $integrationHelper->method('getIntegrationObject')
             ->willReturn(
                 /** @phpstan-ignore classConstant.deprecatedClass */
@@ -148,7 +151,9 @@ class IntegrationsListTypeTest extends TestCase
             });
 
         $integrationsListType = new IntegrationsListType($integrationHelper);
-        $integrationsListType->buildForm($builder, ['supported_features' => 'features']);
+        $integrationsListType->buildForm($builder, [
+            'supported_features' => 'features',
+        ]);
 
         self::assertSame(1, $callsBuilder);
         self::assertSame(2, $callsForm);
@@ -200,7 +205,10 @@ class IntegrationsListTypeTest extends TestCase
         $integrationHelper->expects(self::once())
             ->method('getIntegrationObjects')
             ->with(null, 'features', true)
-            ->willReturn(['integration1' => $integrationInstance1, 'integration2' => $integrationInstance2]);
+            ->willReturn([
+                'integration1' => $integrationInstance1,
+                'integration2' => $integrationInstance2,
+            ]);
         $integrationHelper->method('getIntegrationObject')
             ->willReturn(
                 /** @phpstan-ignore classConstant.deprecatedClass */
@@ -217,7 +225,9 @@ class IntegrationsListTypeTest extends TestCase
                     self::assertArrayHasKey('integration', $options);
                     self::assertSame($integrationInstance1, $options['integration']);
                     self::assertArrayHasKey('data', $options);
-                    self::assertSame(['config' => 'test'], $options['data']);
+                    self::assertSame([
+                        'config' => 'test',
+                    ], $options['data']);
                 }
 
                 if ('campaign_member_status' === $key) {
@@ -287,7 +297,9 @@ class IntegrationsListTypeTest extends TestCase
             });
 
         $integrationsListType = new IntegrationsListType($integrationHelper);
-        $integrationsListType->buildForm($builder, ['supported_features' => 'features']);
+        $integrationsListType->buildForm($builder, [
+            'supported_features' => 'features',
+        ]);
 
         self::assertSame(1, $callsBuilder);
         self::assertSame(4, $callsForm, 'Because callback is called twice due to coverage.');

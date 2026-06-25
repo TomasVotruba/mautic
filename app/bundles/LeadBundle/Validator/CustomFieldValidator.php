@@ -29,7 +29,11 @@ class CustomFieldValidator
         $field = $this->getPublishedFieldByAlias($alias);
 
         if ($field->getType() !== $fieldType) {
-            throw new InvalidValueException($this->translator->trans('mautic.lead.contact.wrong.field.type', ['%alias%' => $alias, '%fieldType%' => $field->getType(), '%expectedType%' => $fieldType], 'validators'));
+            throw new InvalidValueException($this->translator->trans('mautic.lead.contact.wrong.field.type', [
+                '%alias%' => $alias,
+                '%fieldType%' => $field->getType(),
+                '%expectedType%' => $fieldType,
+            ], 'validators'));
         }
     }
 
@@ -42,7 +46,9 @@ class CustomFieldValidator
         $field = $this->getFieldByAlias($alias);
 
         if (!$field->getIsPublished()) {
-            throw new RecordNotPublishedException($this->translator->trans('mautic.lead.contact.field.not.published', ['%alias%' => $alias], 'validators'));
+            throw new RecordNotPublishedException($this->translator->trans('mautic.lead.contact.field.not.published', [
+                '%alias%' => $alias,
+            ], 'validators'));
         }
 
         return $field;
@@ -56,7 +62,9 @@ class CustomFieldValidator
         $field = $this->fieldModel->getEntityByAlias($alias);
 
         if (!$field instanceof LeadField) {
-            throw new RecordNotFoundException($this->translator->trans('mautic.lead.contact.field.not.found', ['%alias%' => $alias], 'validators'));
+            throw new RecordNotFoundException($this->translator->trans('mautic.lead.contact.field.not.found', [
+                '%alias%' => $alias,
+            ], 'validators'));
         }
 
         return $field;

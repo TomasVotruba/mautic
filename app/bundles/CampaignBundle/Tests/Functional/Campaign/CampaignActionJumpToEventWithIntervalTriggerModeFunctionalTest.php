@@ -77,7 +77,9 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         $jumpToEvent->setType('campaign.jump_to_event');
         $jumpToEvent->setEventType(Event::TYPE_ACTION);
         $jumpToEvent->setTriggerMode(Event::TRIGGER_MODE_IMMEDIATE);
-        $jumpToEvent->setProperties(['jumpToEvent' => $adjustPointEvent->getId()]);
+        $jumpToEvent->setProperties([
+            'jumpToEvent' => $adjustPointEvent->getId(),
+        ]);
         $jumpToEvent->setParent($fieldValueEvent);
         $jumpToEvent->setDecisionPath('yes');
         $jumpToEvent->setOrder(3);
@@ -103,12 +105,16 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         // Execute Campaign
         $this->testSymfonyCommand(
             'mautic:campaigns:trigger',
-            ['--campaign-id' => $campaign->getId()]
+            [
+                '--campaign-id' => $campaign->getId(),
+            ]
         );
 
         // Search the logs
         $leadEventLogRepo = $this->em->getRepository(LeadEventLog::class);
-        $adjustEventLog   = $leadEventLogRepo->findOneBy(['event' => $adjustPointEvent->getId()]);
+        $adjustEventLog   = $leadEventLogRepo->findOneBy([
+            'event' => $adjustPointEvent->getId(),
+        ]);
 
         $assertEventLog($adjustEventLog);
     }
@@ -139,7 +145,9 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         $event->setEventType(Event::TYPE_ACTION);
         $event->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
         $event->setType('lead.changepoints');
-        $event->setProperties(['points' => 10]);
+        $event->setProperties([
+            'points' => 10,
+        ]);
         $event->setDecisionPath('no');
         $event->setTriggerInterval(0);
         $event->setTriggerIntervalUnit('i');

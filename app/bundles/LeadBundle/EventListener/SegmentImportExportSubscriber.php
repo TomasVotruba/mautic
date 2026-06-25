@@ -91,7 +91,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
             }
         }
         foreach ($data as $entityName => $entities) {
-            $event->addEntities([$entityName => $entities]);
+            $event->addEntities([
+                $entityName => $entities,
+            ]);
         }
         $event->addEntity(LeadList::ENTITY_NAME, $segmentData);
         $this->logAction('export', $leadListId, $segmentData);
@@ -104,12 +106,22 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $segment = $this->entityManager->getRepository(LeadList::class)->findOneBy(['uuid' => $element['uuid']]);
+            $segment = $this->entityManager->getRepository(LeadList::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew   = !$segment;
 
             $segment ??= new LeadList();
@@ -118,7 +130,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
                 $element,
                 LeadList::class,
                 null,
-                ['object_to_populate' => $segment]
+                [
+                    'object_to_populate' => $segment,
+                ]
             );
             $this->leadListModel->saveEntity($segment);
 
@@ -134,7 +148,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [LeadList::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    LeadList::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -155,7 +171,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => LeadList::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => LeadList::class,
+                ]);
             }
         }
 
@@ -175,7 +193,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
                     if (isset($filter['object']) && 'custom_object' === $filter['object']) {
                         $plugins = $this->pluginModel->getAllPluginsConfig();
                         if (!isset($plugins['CustomObjectsBundle'])) {
-                            $event->setSummary('errors', ['messages' => ['Segment filter uses Custom Objects but the plugin CustomObjectBundle is not installed.']]);
+                            $event->setSummary('errors', [
+                                'messages' => ['Segment filter uses Custom Objects but the plugin CustomObjectBundle is not installed.'],
+                            ]);
 
                             return;
                         }

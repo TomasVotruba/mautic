@@ -24,7 +24,10 @@ final class Version20250127092202 extends PreUpAssertionMigration
     public function up(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME));
-        $table->addColumn(self::COLUMN_NAME, Types::STRING, ['default' => 'html', 'length' => 10]);
+        $table->addColumn(self::COLUMN_NAME, Types::STRING, [
+            'default' => 'html',
+            'length' => 10,
+        ]);
     }
 
     public function down(Schema $schema): void

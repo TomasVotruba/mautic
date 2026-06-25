@@ -18,8 +18,12 @@ class ContentExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('customContent', [$this, 'getCustomContent'], ['is_safe' => ['all']]),
-            new TwigFunction('showScriptTags', [$this, 'showScriptTags'], ['is_safe' => ['all']]),
+            new TwigFunction('customContent', [$this, 'getCustomContent'], [
+                'is_safe' => ['all'],
+            ]),
+            new TwigFunction('showScriptTags', [$this, 'showScriptTags'], [
+                'is_safe' => ['all'],
+            ]),
             new TwigFunction('getSortedEditorFonts', [$this, 'sortEditorFonts']),
         ];
     }

@@ -28,7 +28,9 @@ class NoteType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['text' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'text' => 'html',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('lead.note', $options));
 
         $builder->add(
@@ -36,8 +38,14 @@ class NoteType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.lead.note.form.text',
-                'label_attr' => ['class' => 'control-label sr-only'],
-                'attr'       => ['class' => 'mousetrap form-control editor', 'rows' => 10, 'autofocus' => 'autofocus'],
+                'label_attr' => [
+                    'class' => 'control-label sr-only',
+                ],
+                'attr'       => [
+                    'class' => 'mousetrap form-control editor',
+                    'rows' => 10,
+                    'autofocus' => 'autofocus',
+                ],
             ]
         );
 
@@ -52,8 +60,12 @@ class NoteType extends AbstractType
                     'mautic.lead.note.type.call'    => 'call',
                     'mautic.lead.note.type.meeting' => 'meeting',
                 ],
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -65,7 +77,9 @@ class NoteType extends AbstractType
             DateTimeType::class,
             [
                 'label'      => 'mautic.core.date.added',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'widget'     => 'single_text',
                 'attr'       => [
                     'class'       => 'form-control',

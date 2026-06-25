@@ -429,7 +429,9 @@ class LeadApiController extends CommonApiController
 
         $channelId = (int) $request->request->get('channelId');
         if ($channelId) {
-            $channel = [$channel => $channelId];
+            $channel = [
+                $channel => $channelId,
+            ];
         }
 
         // If no reason is set, default to 3 (manual)
@@ -448,7 +450,9 @@ class LeadApiController extends CommonApiController
 
         $doNotContact = $this->doNotContactModel;
         $doNotContact->addDncForContact($entity->getId(), $channel, $reason, $comments);
-        $view = $this->view([$this->entityNameOne => $entity]);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ]);
 
         return $this->handleView($view);
     }
@@ -519,7 +523,9 @@ class LeadApiController extends CommonApiController
                 ]
             );
         } else {
-            $view = $this->view([$this->entityNameOne => $entity]);
+            $view = $this->view([
+                $this->entityNameOne => $entity,
+            ]);
         }
 
         return $this->handleView($view);

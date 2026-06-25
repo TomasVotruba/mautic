@@ -56,7 +56,10 @@ class FocusModelFunctionalTest extends MauticMysqlTestCase
         $this->focusModel->addStat($focus, Stat::TYPE_CLICK, $hitPopupA, $lead);
         $this->focusModel->addStat($focus, Stat::TYPE_CLICK, $hitPopupA, $lead);
 
-        return ['view' => 1, 'click' => 4];
+        return [
+            'view' => 1,
+            'click' => 4,
+        ];
     }
 
     private function createFocus(string $name): Focus

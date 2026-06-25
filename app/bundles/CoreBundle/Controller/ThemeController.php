@@ -34,7 +34,9 @@ class ThemeController extends FormController
 
         $dir    = $pathsHelper->getSystemPath('themes', true);
         $action = $this->generateUrl('mautic_themes_index');
-        $form   = $this->formFactory->create(ThemeUploadType::class, [], ['action' => $action]);
+        $form   = $this->formFactory->create(ThemeUploadType::class, [], [
+            'action' => $action,
+        ]);
 
         if ('POST' === $request->getMethod()) {
             if (!$this->isFormCancelled($form)) {
@@ -57,7 +59,9 @@ class ThemeController extends FormController
                             try {
                                 $fileData->move($dir, $fileName);
                                 $themeHelper->install($dir.'/'.$fileName);
-                                $this->addFlashMessage('mautic.core.theme.installed', ['%name%' => $themeName]);
+                                $this->addFlashMessage('mautic.core.theme.installed', [
+                                    '%name%' => $themeName,
+                                ]);
                             } catch (\Exception $e) {
                                 $form->addError(
                                     new FormError(
@@ -68,7 +72,9 @@ class ThemeController extends FormController
                         } else {
                             $form->addError(
                                 new FormError(
-                                    $this->translator->trans('mautic.core.not.allowed.file.extension', ['%extension%' => $extension], 'validators')
+                                    $this->translator->trans('mautic.core.not.allowed.file.extension', [
+                                        '%extension%' => $extension,
+                                    ], 'validators')
                                 )
                             );
                         }
@@ -116,7 +122,9 @@ class ThemeController extends FormController
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.error.notfound',
-                'msgVars' => ['%theme%' => $themeName],
+                'msgVars' => [
+                    '%theme%' => $themeName,
+                ],
             ];
             $error = true;
         }
@@ -238,7 +246,9 @@ class ThemeController extends FormController
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.error.notfound',
-                'msgVars' => ['%theme%' => $themeName],
+                'msgVars' => [
+                    '%theme%' => $themeName,
+                ],
             ];
         } elseif (!$this->security->isGranted('core:themes:delete')) {
             $this->throwAccessDenied();
@@ -246,7 +256,9 @@ class ThemeController extends FormController
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.cannot.be.removed',
-                'msgVars' => ['%theme%' => $themeName],
+                'msgVars' => [
+                    '%theme%' => $themeName,
+                ],
             ];
         } else {
             try {
@@ -256,7 +268,9 @@ class ThemeController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.core.error.delete.error',
-                    'msgVars' => ['%error%' => $e->getMessage()],
+                    'msgVars' => [
+                        '%error%' => $e->getMessage(),
+                    ],
                 ];
             }
 
@@ -320,7 +334,9 @@ class ThemeController extends FormController
                 [
                     'type'    => 'error',
                     'msg'     => 'mautic.core.theme.error.notfound',
-                    'msgVars' => ['%theme%' => $themeName],
+                    'msgVars' => [
+                        '%theme%' => $themeName,
+                    ],
                 ],
             ];
         }
@@ -330,7 +346,9 @@ class ThemeController extends FormController
                 [
                     'type'    => 'error',
                     'msg'     => 'mautic.core.theme.cannot.change.visibility',
-                    'msgVars' => ['%theme%' => $themeName],
+                    'msgVars' => [
+                        '%theme%' => $themeName,
+                    ],
                 ],
             ];
         }
@@ -343,25 +361,33 @@ class ThemeController extends FormController
             $flashes[] = [
                 'type'    => 'notice',
                 'msg'     => 'mautic.core.theme.visibility.changed',
-                'msgVars' => ['%theme%' => $theme->getName()],
+                'msgVars' => [
+                    '%theme%' => $theme->getName(),
+                ],
             ];
         } catch (IOException) {
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.visibility.error',
-                'msgVars' => ['%error%' => 'Failed to change the theme visibility'],
+                'msgVars' => [
+                    '%error%' => 'Failed to change the theme visibility',
+                ],
             ];
         } catch (BadConfigurationException) {
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.visibility.error',
-                'msgVars' => ['%error%' => sprintf('Theme %s not configured properly: builder property in the config.json', $themeName)],
+                'msgVars' => [
+                    '%error%' => sprintf('Theme %s not configured properly: builder property in the config.json', $themeName),
+                ],
             ];
         } catch (FileNotFoundException) {
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.visibility.error',
-                'msgVars' => ['%error%' => sprintf('Theme %s not found', $themeName)],
+                'msgVars' => [
+                    '%error%' => sprintf('Theme %s not found', $themeName),
+                ],
             ];
         }
 

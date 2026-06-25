@@ -46,7 +46,9 @@ class RedirectModelTest extends PageTestAbstract
         $dispatcher = new EventDispatcher();
 
         $url          = 'https://mautic.org';
-        $clickthrough = ['foo' => 'bar'];
+        $clickthrough = [
+            'foo' => 'bar',
+        ];
 
         $router = $this->createMock(Router::class);
         $router->expects($this->exactly(2))

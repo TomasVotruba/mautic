@@ -26,7 +26,9 @@ class PasswordResetConfirmType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.user.auth.form.loginusername',
-                'label_attr' => ['class' => 'sr-only'],
+                'label_attr' => [
+                    'class' => 'sr-only',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'preaddon'    => 'ri-user-6-fill',
@@ -34,7 +36,9 @@ class PasswordResetConfirmType extends AbstractType
                 ],
                 'required'    => true,
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mautic.user.user.passwordreset.notblank']),
+                    new Assert\NotBlank([
+                        'message' => 'mautic.user.user.passwordreset.notblank',
+                    ]),
                 ],
             ]
         );
@@ -46,7 +50,9 @@ class PasswordResetConfirmType extends AbstractType
                 'first_name'    => 'password',
                 'first_options' => [
                     'label'      => 'mautic.core.password',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'placeholder'  => 'mautic.user.user.passwordreset.password.placeholder',
@@ -57,7 +63,9 @@ class PasswordResetConfirmType extends AbstractType
                     'required'       => true,
                     'error_bubbling' => false,
                     'constraints'    => [
-                        new Assert\NotBlank(['message' => 'mautic.user.user.passwordreset.notblank']),
+                        new Assert\NotBlank([
+                            'message' => 'mautic.user.user.passwordreset.notblank',
+                        ]),
                         new Assert\Length([
                             'min'        => 6,
                             'minMessage' => 'mautic.user.user.password.minlength',
@@ -70,7 +78,9 @@ class PasswordResetConfirmType extends AbstractType
                 'second_name'    => 'confirm',
                 'second_options' => [
                     'label'      => 'mautic.user.user.form.passwordconfirm',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'placeholder'  => 'mautic.user.user.passwordreset.confirm.placeholder',
@@ -81,7 +91,9 @@ class PasswordResetConfirmType extends AbstractType
                     'required'       => true,
                     'error_bubbling' => false,
                     'constraints'    => [
-                        new Assert\NotBlank(['message' => 'mautic.user.user.passwordreset.notblank']),
+                        new Assert\NotBlank([
+                            'message' => 'mautic.user.user.passwordreset.notblank',
+                        ]),
                     ],
                 ],
                 'type'            => PasswordType::class,

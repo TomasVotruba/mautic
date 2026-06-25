@@ -84,7 +84,9 @@ EOT
                 $output->writeln(
                     $this->translator->trans(
                         'mautic.core.command.transifex_processing_resource',
-                        ['%resource%' => $name]
+                        [
+                            '%resource%' => $name,
+                        ]
                     )
                 );
 
@@ -109,7 +111,9 @@ EOT
                     $output->writeln(
                         $this->translator->trans(
                             'mautic.core.command.transifex_error_pushing_data',
-                            ['%message%' => $exception->getMessage()]
+                            [
+                                '%message%' => $exception->getMessage(),
+                            ]
                         )
                     );
                 }
@@ -122,7 +126,9 @@ EOT
                 $output->writeln(
                     $this->translator->trans(
                         'mautic.core.command.transifex_resource_updated',
-                        ['%file%' => $promise->getFilePath()]
+                        [
+                            '%file%' => $promise->getFilePath(),
+                        ]
                     )
                 );
             },

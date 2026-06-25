@@ -83,7 +83,9 @@ class CompanyControllerTest extends MauticMysqlTestCase
     {
         $this->createLead();
         $segment = $this->createSegment();
-        $this->testSymfonyCommand('mautic:segments:update', ['--list-id' => $segment->getId()]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '--list-id' => $segment->getId(),
+        ]);
         $crawler  = $this->client->request('GET', "s/company/graph/{$this->company1Id}");
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
@@ -405,10 +407,14 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $this->assertStringContainsString($company2->getName(), $content);
 
         $translator  = self::getContainer()->get('translator');
-        $itemMessage = $translator->trans('mautic.core.pagination.items', ['%count%' => 2]);
+        $itemMessage = $translator->trans('mautic.core.pagination.items', [
+            '%count%' => 2,
+        ]);
         $this->assertStringContainsString($itemMessage, $content);
 
-        $pageMessage = $translator->trans('mautic.core.pagination.pages', ['%count%' => 1]);
+        $pageMessage = $translator->trans('mautic.core.pagination.pages', [
+            '%count%' => 1,
+        ]);
         $this->assertStringContainsString($pageMessage, $content);
     }
 

@@ -65,7 +65,9 @@ class SearchSubscriberFunctionalTest extends MauticMysqlTestCase
                 'field'      => 'lastname',
                 'object'     => 'lead',
                 'type'       => 'text',
-                'properties' => ['filter' => 'L'],
+                'properties' => [
+                    'filter' => 'L',
+                ],
                 'operator'   => 'startsWith',
             ],
         ];

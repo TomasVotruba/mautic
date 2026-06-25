@@ -27,14 +27,18 @@ class VariantType extends AbstractType
             IntegerType::class,
             [
                 'label'      => 'mautic.core.ab_test.form.traffic_weight',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.core.ab_test.form.traffic_weight.help',
                 ],
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.email.variant.weight.notblank']
+                        [
+                            'message' => 'mautic.email.variant.weight.notblank',
+                        ]
                     ),
                 ],
             ]
@@ -50,7 +54,9 @@ class VariantType extends AbstractType
                 'winnerCriteria',
                 ChoiceType::class, [
                     'label'             => 'mautic.core.ab_test.form.winner',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'attr'              => [
                         'class'    => 'form-control',
                         'onchange' => 'Mautic.getAbTestWinnerForm(\'email\', \'emailform\', this);',
@@ -61,7 +67,9 @@ class VariantType extends AbstractType
                     'placeholder' => 'mautic.core.form.chooseone',
                     'constraints' => [
                         new NotBlank(
-                            ['message' => 'mautic.core.ab_test.winner_criteria.not_blank']
+                            [
+                                'message' => 'mautic.core.ab_test.winner_criteria.not_blank',
+                            ]
                         ),
                     ],
                 ]

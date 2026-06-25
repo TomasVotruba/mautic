@@ -270,7 +270,10 @@ class Mailbox
             $fullPath .= $settings['folder'];
         }
 
-        return ['path' => $path, 'full' => $fullPath];
+        return [
+            'path' => $path,
+            'full' => $fullPath,
+        ];
     }
 
     /**

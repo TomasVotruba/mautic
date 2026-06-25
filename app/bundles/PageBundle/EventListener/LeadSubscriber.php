@@ -102,7 +102,10 @@ class LeadSubscriber implements EventSubscriberInterface
                     $page       = $this->pageModel->getEntity($hit['page_id']);
                     $eventLabel = [
                         'label' => $page->getTitle(),
-                        'href'  => $this->router->generate('mautic_page_action', ['objectAction' => 'view', 'objectId' => $hit['page_id']]),
+                        'href'  => $this->router->generate('mautic_page_action', [
+                            'objectAction' => 'view',
+                            'objectId' => $hit['page_id'],
+                        ]),
                     ];
                 } else {
                     $eventLabel = [

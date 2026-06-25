@@ -270,8 +270,12 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $this->transportMock->append($this->responseDataAssertion(
             [
                 'include_player_ids' => ['web-1'],
-                'contents'           => ['en' => 'Message '.$leadOne->getEmail()],
-                'headings'           => ['en' => $notification->getHeading()],
+                'contents'           => [
+                    'en' => 'Message '.$leadOne->getEmail(),
+                ],
+                'headings'           => [
+                    'en' => $notification->getHeading(),
+                ],
                 'app_id'             => self::API_ID,
             ],
             'POST',
@@ -283,8 +287,12 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $this->transportMock->append($this->responseDataAssertion(
             [
                 'include_player_ids' => ['web-2a', 'web-2b'],
-                'contents'           => ['en' => 'Message '.$leadTwo->getEmail()],
-                'headings'           => ['en' => $notification->getHeading()],
+                'contents'           => [
+                    'en' => 'Message '.$leadTwo->getEmail(),
+                ],
+                'headings'           => [
+                    'en' => $notification->getHeading(),
+                ],
                 'app_id'             => self::API_ID,
             ],
             'POST',
@@ -324,8 +332,12 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $this->transportMock->append($this->responseDataAssertion(
             [
                 'include_player_ids' => ['web-2'],
-                'contents'           => ['en' => $notification->getMessage()],
-                'headings'           => ['en' => $notification->getHeading()],
+                'contents'           => [
+                    'en' => $notification->getMessage(),
+                ],
+                'headings'           => [
+                    'en' => $notification->getHeading(),
+                ],
                 'url'                => $urlThree,
                 'web_buttons'        => [
                     [
@@ -343,8 +355,12 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $this->transportMock->append($this->responseDataAssertion(
             [
                 'include_player_ids' => ['web-3a', 'web-3b'],
-                'contents'           => ['en' => $notification->getMessage()],
-                'headings'           => ['en' => $notification->getHeading()],
+                'contents'           => [
+                    'en' => $notification->getMessage(),
+                ],
+                'headings'           => [
+                    'en' => $notification->getHeading(),
+                ],
                 'url'                => $urlFour,
                 'web_buttons'        => [
                     [
@@ -389,9 +405,15 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $this->transportMock->append($this->responseDataAssertion(
             [
                 'include_player_ids' => ['mobile-1', 'mobile-2a', 'mobile-2b'],
-                'contents'           => ['en' => $notification->getMessage()],
-                'headings'           => ['en' => $notification->getHeading()],
-                'subtitle'           => ['en' => $notification->getMobileSettings()['ios_subtitle']],
+                'contents'           => [
+                    'en' => $notification->getMessage(),
+                ],
+                'headings'           => [
+                    'en' => $notification->getHeading(),
+                ],
+                'subtitle'           => [
+                    'en' => $notification->getMobileSettings()['ios_subtitle'],
+                ],
                 'android_led_color'  => 'FF'.$notification->getMobileSettings()['android_led_color'],
                 'buttons'            => [
                     [
@@ -491,7 +513,9 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $campaignEvent->setName('Send notification');
         $campaignEvent->setType($type);
         $campaignEvent->setEventType('action');
-        $campaignEvent->setProperties(['notification' => $notification->getId()]);
+        $campaignEvent->setProperties([
+            'notification' => $notification->getId(),
+        ]);
         $this->em->persist($campaignEvent);
 
         return $campaignEvent;
@@ -538,10 +562,16 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
     private function getExpectedResponsePushIds(array $pushIds, Notification $notification): array
     {
         return array_merge(
-            ['include_player_ids' => $pushIds],
             [
-                'contents' => ['en' => $notification->getMessage()],
-                'headings' => ['en' => $notification->getHeading()],
+                'include_player_ids' => $pushIds,
+            ],
+            [
+                'contents' => [
+                    'en' => $notification->getMessage(),
+                ],
+                'headings' => [
+                    'en' => $notification->getHeading(),
+                ],
                 'app_id'   => self::API_ID,
             ]
         );

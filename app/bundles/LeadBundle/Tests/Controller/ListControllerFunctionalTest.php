@@ -162,7 +162,10 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $contact1Id = $contacts[0]->getId();
 
         // Rebuild segment - set current count to the cache.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+            '--env' => 'test',
+        ]);
 
         // Verify last built date is set.
         $this->em->detach($segment);
@@ -194,7 +197,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('label label-gray col-count', $spClass);
 
         // Add 1 contact back to segment.
-        $parameters = ['ids' => [$contact1Id]];
+        $parameters = [
+            'ids' => [$contact1Id],
+        ];
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
         $this->assertResponseIsSuccessful();
@@ -207,7 +212,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('label label-gray col-count', $spClass);
 
         // Check segment count AJAX for 4 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 4 Contacts', $response['content']['html']);
         self::assertSame('label label-gray col-count', $response['content']['className']);
@@ -220,7 +227,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
 
         // Check segment count AJAX for 3 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 3 Contacts', $response['content']['html']);
         self::assertSame('label label-gray col-count', $response['content']['className']);
@@ -228,13 +237,17 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame(Response::HTTP_OK, $response['statusCode']);
 
         // Add 1 contact back to segment.
-        $parameters = ['ids' => [$contact1Id]];
+        $parameters = [
+            'ids' => [$contact1Id],
+        ];
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
         $this->assertResponseIsSuccessful();
 
         // Check segment count AJAX for 4 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 4 Contacts', $response['content']['html']);
         self::assertSame('label label-gray col-count', $response['content']['className']);
@@ -257,7 +270,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('label label-info col-count', $spClass);
 
         // Check segment count AJAX for building 4 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('Building (4 Contacts)', $response['content']['html']);
         self::assertSame('label label-info col-count', $response['content']['className']);
@@ -289,7 +304,10 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         // Check segment count UI for no contacts.
         usleep(1000000);
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+            '--env' => 'test',
+        ]);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
@@ -300,7 +318,10 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $contact1Id = $contacts[0]->getId();
 
         // Rebuild segment - set current count to the cache.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+            '--env' => 'test',
+        ]);
 
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
@@ -322,7 +343,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('View 3 Contacts', $html);
 
         // Add 1 contact back to segment.
-        $parameters = ['ids' => [$contact1Id]];
+        $parameters = [
+            'ids' => [$contact1Id],
+        ];
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
         self::assertResponseIsSuccessful();
@@ -335,7 +358,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('View 4 Contacts', $html);
 
         // Check segment count AJAX for 4 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 4 Contacts', $response['content']['html']);
         self::assertSame(4, $response['content']['leadCount']);
@@ -349,14 +374,18 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment count AJAX for 3 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 3 Contacts', $response['content']['html']);
         self::assertSame(3, $response['content']['leadCount']);
         self::assertSame(Response::HTTP_OK, $response['statusCode']);
 
         // Add 1 contact back to segment.
-        $parameters = ['ids' => [$contact1Id]];
+        $parameters = [
+            'ids' => [$contact1Id],
+        ];
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
         $this->assertResponseIsSuccessful();
@@ -364,7 +393,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment count AJAX for 4 contacts.
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('View 4 Contacts', $response['content']['html']);
         self::assertSame(4, $response['content']['leadCount']);
@@ -423,7 +454,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     public function testSegmentNotFoundOnAjax(): void
     {
         // Emulate invalid request parameter.
-        $parameter = ['id' => 'ABC'];
+        $parameter = [
+            'id' => 'ABC',
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
 
         self::assertSame('No Contacts', $response['content']['html']);
@@ -457,7 +490,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
         $expectedErrorMessage = sprintf('The segment %s is used in %s, please go back and check segments before unpublishing', $list1->getName(), $list2->getName());
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', ['action' => 'togglePublishStatus', 'model' => 'lead.list', 'id' => $list1->getId()]);
+        $this->client->request(Request::METHOD_POST, '/s/ajax', [
+            'action' => 'togglePublishStatus',
+            'model' => 'lead.list',
+            'id' => $list1->getId(),
+        ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString($expectedErrorMessage, $this->client->getResponse()->getContent());
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$list1->getId());
@@ -474,7 +511,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $list2 = $this->saveSegment('s2', 's2');
         $this->em->clear();
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', ['action' => 'togglePublishStatus', 'model' => 'lead.list', 'id' => $list1->getId()]);
+        $this->client->request(Request::METHOD_POST, '/s/ajax', [
+            'action' => 'togglePublishStatus',
+            'model' => 'lead.list',
+            'id' => $list1->getId(),
+        ]);
         $this->assertResponseIsSuccessful();
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$list2->getId());
@@ -728,7 +769,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('label label-gray col-count', $spClass);
 
         // Check segment count AJAX - should also show "No Contacts"
-        $parameter = ['id' => $segmentId];
+        $parameter = [
+            'id' => $segmentId,
+        ];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
         self::assertSame('No Contacts', $response['content']['html']);
         self::assertSame('label label-gray col-count', $response['content']['className']);

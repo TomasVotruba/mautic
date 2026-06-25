@@ -18,7 +18,9 @@ class MautibotExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('mautibotGetImage', [$this, 'getImage'], ['is_safe' => ['all']]),
+            new TwigFunction('mautibotGetImage', [$this, 'getImage'], [
+                'is_safe' => ['all'],
+            ]),
         ];
     }
 

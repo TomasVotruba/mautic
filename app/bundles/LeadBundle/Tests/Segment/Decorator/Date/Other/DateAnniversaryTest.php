@@ -93,7 +93,9 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $dateDecorator    = $this->createMock(DateDecorator::class);
         $timezoneResolver = $this->createMock(TimezoneResolver::class);
 
-        $filter                    = ['field' => 'last_active'];
+        $filter                    = [
+            'field' => 'last_active',
+        ];
         $contactSegmentFilterCrate = new ContactSegmentFilterCrate($filter);
 
         $dateOptionParameters = new DateOptionParameters($contactSegmentFilterCrate, [], $timezoneResolver);
@@ -116,7 +118,9 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $dateDecorator    = $this->createMock(DateDecorator::class);
         $timezoneResolver = $this->createMock(TimezoneResolver::class);
 
-        $filter                    = ['field' => 'last_active'];
+        $filter                    = [
+            'field' => 'last_active',
+        ];
         $contactSegmentFilterCrate = new ContactSegmentFilterCrate($filter);
         $dateOptionParameters      = new DateOptionParameters($contactSegmentFilterCrate, [], $timezoneResolver);
 
@@ -134,7 +138,9 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $dateDecorator    = $this->createMock(DateDecorator::class);
         $timezoneResolver = $this->createMock(TimezoneResolver::class);
 
-        $filter                    = ['field' => 'last_active'];
+        $filter                    = [
+            'field' => 'last_active',
+        ];
         $contactSegmentFilterCrate = new ContactSegmentFilterCrate($filter);
         $dateOptionParameters      = new DateOptionParameters($contactSegmentFilterCrate, [], $timezoneResolver);
 

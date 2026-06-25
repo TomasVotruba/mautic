@@ -345,7 +345,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $variantA->method('isVariant')
             ->willReturn(true);
         $variantA->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $variantB = $this->createMock(Email::class);
         $variantB->expects($this->any())
@@ -366,7 +368,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $variantB->method('isVariant')
             ->willReturn(true);
         $variantB->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $this->emailEntity->method('getVariantChildren')
             ->willReturn(new ArrayCollection([$variantA, $variantB]));
@@ -479,7 +483,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $variantA->method('isVariant')
             ->willReturn(true);
         $variantA->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $variantB = $this->createMock(Email::class);
         $variantB->expects($this->any())
@@ -500,7 +506,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $variantB->method('isVariant')
             ->willReturn(true);
         $variantB->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
+            ->willReturn([
+                'weight' => '25',
+            ]);
 
         $this->emailEntity->method('getVariantChildren')
             ->willReturn(new ArrayCollection([$variantA, $variantB]));
@@ -569,7 +577,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn(false);
 
         $this->emailRepository->method('getDoNotEmailList')
-            ->willReturn([1 => 'someone@domain.com']);
+            ->willReturn([
+                1 => 'someone@domain.com',
+            ]);
 
         $this->entityManager->expects($this->any())
             ->method('getRepository')
@@ -588,7 +598,12 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailEntity->method('getId')
             ->willReturn(1);
 
-        $this->assertTrue(0 === count($this->emailModel->sendEmail($this->emailEntity, [1 => ['id' => 1, 'email' => 'someone@domain.com']])));
+        $this->assertTrue(0 === count($this->emailModel->sendEmail($this->emailEntity, [
+            1 => [
+                'id' => 1,
+                'email' => 'someone@domain.com',
+            ],
+        ])));
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('dataStatRecordExistance')]
@@ -625,8 +640,16 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         );
 
         $contacts = [
-            1 => ['id' => 1, 'email' => 'someone@domain.com', 'stateExists' => $recordExist],
-            2 => ['id' => 2, 'email' => 'someone2@domain.com', 'stateExists' => false],
+            1 => [
+                'id' => 1,
+                'email' => 'someone@domain.com',
+                'stateExists' => $recordExist,
+            ],
+            2 => [
+                'id' => 2,
+                'email' => 'someone2@domain.com',
+                'stateExists' => false,
+            ],
         ];
 
         $sendToContactModelMock
@@ -707,7 +730,11 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailRepository->method('getDoNotEmailList')
             ->willReturn([]);
         $this->frequencyRepository->method('getAppliedFrequencyRules')
-            ->willReturn([['lead_id' => 1, 'frequency_number' => 1, 'frequency_time' => 'DAY']]);
+            ->willReturn([[
+                'lead_id' => 1,
+                'frequency_number' => 1,
+                'frequency_time' => 'DAY',
+            ]]);
 
         $this->entityManager->expects($this->any())
             ->method('getRepository')
@@ -785,7 +812,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
                     'lastname'  => 'someone',
                 ],
             ],
-            ['email_type' => MailHelper::EMAIL_TYPE_MARKETING]
+            [
+                'email_type' => MailHelper::EMAIL_TYPE_MARKETING,
+            ]
         );
         $this->assertTrue(0 === count($result), print_r($result, true));
     }
@@ -931,8 +960,14 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->assertSame(
-            ['EN' => ['Email 123' => 123]],
-            $this->emailModel->getLookupResults('email', '', 0, 0, ['name_is_key' => true])
+            [
+                'EN' => [
+                    'Email 123' => 123,
+                ],
+            ],
+            $this->emailModel->getLookupResults('email', '', 0, 0, [
+                'name_is_key' => true,
+            ])
         );
     }
 
@@ -963,7 +998,11 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->assertSame(
-            ['EN' => [123 => 'Email 123 (123)']],
+            [
+                'EN' => [
+                    123 => 'Email 123 (123)',
+                ],
+            ],
             $this->emailModel->getLookupResults('email', '', 0, 0)
         );
     }

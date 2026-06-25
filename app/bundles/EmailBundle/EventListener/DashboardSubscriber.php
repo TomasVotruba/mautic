@@ -123,7 +123,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
                             ArrayHelper::getValue('limit', $params, $defaultLimit),
                             $params['dateFrom'],
                             $params['dateTo'],
-                            ['groupBy' => 'sends', 'canViewOthers' => $canViewOthers],
+                            [
+                                'groupBy' => 'sends',
+                                'canViewOthers' => $canViewOthers,
+                            ],
                             ArrayHelper::getValue('companyId', $params),
                             ArrayHelper::getValue('campaignId', $params),
                             ArrayHelper::getValue('segmentId', $params)
@@ -153,7 +156,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
                         ArrayHelper::getValue('limit', $params, $defaultLimit),
                         $params['dateFrom'],
                         $params['dateTo'],
-                        ['groupBy' => 'sends', 'canViewOthers' => $canViewOthers],
+                        [
+                            'groupBy' => 'sends',
+                            'canViewOthers' => $canViewOthers,
+                        ],
                         ArrayHelper::getValue('companyId', $params),
                         ArrayHelper::getValue('campaignId', $params),
                         ArrayHelper::getValue('segmentId', $params)
@@ -190,7 +196,9 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $upcomingEmails = $this->emailModel->getUpcomingEmails($limit, $canViewOthers);
 
             $event->setTemplate('@MauticDashboard/Dashboard/upcomingemails.html.twig');
-            $event->setTemplateData(['upcomingEmails' => $upcomingEmails]);
+            $event->setTemplateData([
+                'upcomingEmails' => $upcomingEmails,
+            ]);
             $event->stopPropagation();
         }
 
@@ -202,13 +210,19 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     $params['dateFrom'],
                     $params['dateTo'],
                     [],
-                    ['groupBy' => 'sends', 'canViewOthers' => $canViewOthers]
+                    [
+                        'groupBy' => 'sends',
+                        'canViewOthers' => $canViewOthers,
+                    ]
                 );
                 $items = [];
 
                 // Build table rows with links
                 foreach ($emails as &$email) {
-                    $emailUrl = $this->router->generate('mautic_email_action', ['objectAction' => 'view', 'objectId' => $email['id']]);
+                    $emailUrl = $this->router->generate('mautic_email_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $email['id'],
+                    ]);
                     $row      = [
                         [
                             'value' => $email['name'],
@@ -244,13 +258,19 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     $params['dateFrom'],
                     $params['dateTo'],
                     [],
-                    ['groupBy' => 'reads', 'canViewOthers' => $canViewOthers]
+                    [
+                        'groupBy' => 'reads',
+                        'canViewOthers' => $canViewOthers,
+                    ]
                 );
                 $items = [];
 
                 // Build table rows with links
                 foreach ($emails as &$email) {
-                    $emailUrl = $this->router->generate('mautic_email_action', ['objectAction' => 'view', 'objectId' => $email['id']]);
+                    $emailUrl = $this->router->generate('mautic_email_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $email['id'],
+                    ]);
                     $row      = [
                         [
                             'value' => $email['name'],
@@ -286,7 +306,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     $params['dateFrom'],
                     $params['dateTo'],
                     [],
-                    ['groupBy' => 'creations', 'canViewOthers' => $canViewOthers]
+                    [
+                        'groupBy' => 'creations',
+                        'canViewOthers' => $canViewOthers,
+                    ]
                 );
                 $items = [];
 

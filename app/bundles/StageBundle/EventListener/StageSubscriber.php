@@ -54,7 +54,9 @@ class StageSubscriber implements EventSubscriberInterface
             'object'    => 'stage',
             'objectId'  => $stage->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $stage->getName()],
+            'details'   => [
+                'name' => $stage->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

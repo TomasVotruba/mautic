@@ -23,14 +23,18 @@ class PasswordResetType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.user.auth.form.loginusername',
-                'label_attr' => ['class' => 'sr-only'],
+                'label_attr' => [
+                    'class' => 'sr-only',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'preaddon'    => 'ri-user-6-fill',
                     'placeholder' => 'mautic.user.auth.form.loginusername',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mautic.user.user.passwordreset.notblank']),
+                    new Assert\NotBlank([
+                        'message' => 'mautic.user.user.passwordreset.notblank',
+                    ]),
                 ],
             ]
         );

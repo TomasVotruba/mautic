@@ -19,7 +19,10 @@ class CleanupMaintenanceCommandTest extends MauticMysqlTestCase
         $inactiveLead  = $this->createLead('-1 year');
         $contactId     = $inactiveLead->getId();
 
-        $this->testSymfonyCommand('mautic:maintenance:cleanup', ['--days-old' => 180, '--no-interaction' => true]);
+        $this->testSymfonyCommand('mautic:maintenance:cleanup', [
+            '--days-old' => 180,
+            '--no-interaction' => true,
+        ]);
 
         $this->assertNull(
             static::getContainer()->get('mautic.lead.model.lead')->getEntity($contactId),
@@ -38,7 +41,10 @@ class CleanupMaintenanceCommandTest extends MauticMysqlTestCase
         $activeLead = $this->createLead('-170 days');
         $contactId  = $activeLead->getId();
 
-        $this->testSymfonyCommand('mautic:maintenance:cleanup', ['--days-old' => 180, '--no-interaction' => true]);
+        $this->testSymfonyCommand('mautic:maintenance:cleanup', [
+            '--days-old' => 180,
+            '--no-interaction' => true,
+        ]);
 
         $this->assertNotNull(
             static::getContainer()->get('mautic.lead.model.lead')->getEntity($contactId),
@@ -56,7 +62,10 @@ class CleanupMaintenanceCommandTest extends MauticMysqlTestCase
         $NotPurgeableContact  = $this->createLead($lastActive, $identified);
         $contactId            = $NotPurgeableContact->getId();
 
-        $this->testSymfonyCommand('mautic:maintenance:cleanup', ['--gdpr' => 1, '--no-interaction' => true]);
+        $this->testSymfonyCommand('mautic:maintenance:cleanup', [
+            '--gdpr' => 1,
+            '--no-interaction' => true,
+        ]);
         $this->assertNotNull(
             $this->getContainer()->get('mautic.lead.model.lead')->getEntity($contactId),
             'Keep an identified contact that is still considered active.'
@@ -66,18 +75,26 @@ class CleanupMaintenanceCommandTest extends MauticMysqlTestCase
         $purgeableContact = $this->createLead($lastActive, $identified);
         $contactId        = $purgeableContact->getId();
 
-        $this->testSymfonyCommand('mautic:maintenance:cleanup', ['--gdpr' => 1, '--no-interaction' => true]);
+        $this->testSymfonyCommand('mautic:maintenance:cleanup', [
+            '--gdpr' => 1,
+            '--no-interaction' => true,
+        ]);
         $this->assertNull(
             $this->getContainer()->get('mautic.lead.model.lead')->getEntity($contactId),
             'Purge an identified contact that is considered inactive'
         );
 
-        $this->setUpSymfony($this->configParams + ['gdpr_user_purge_threshold' => '1825']);
+        $this->setUpSymfony($this->configParams + [
+            'gdpr_user_purge_threshold' => '1825',
+        ]);
 
         $NotPurgeableContact  = $this->createLead($lastActive, $identified);
         $contactId            = $NotPurgeableContact->getId();
 
-        $this->testSymfonyCommand('mautic:maintenance:cleanup', ['--gdpr' => 1, '--no-interaction' => true]);
+        $this->testSymfonyCommand('mautic:maintenance:cleanup', [
+            '--gdpr' => 1,
+            '--no-interaction' => true,
+        ]);
         $this->assertNotNull(
             $this->getContainer()->get('mautic.lead.model.lead')->getEntity($contactId),
             'Keep an identified contact that is still considered active because of custom "gdpr_user_purge_threshold".'

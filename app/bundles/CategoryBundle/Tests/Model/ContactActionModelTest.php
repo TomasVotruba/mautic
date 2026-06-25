@@ -94,7 +94,9 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($this->once())
             ->method('removeFromCategories')
-            ->with([1 => 2]);
+            ->with([
+                1 => 2,
+            ]);
 
         $this->actionModel->removeContactsFromCategories($contacts, $categories);
     }

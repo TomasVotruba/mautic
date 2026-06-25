@@ -294,7 +294,9 @@ class PublishStateService
                     Criteria::expr()->eq('object', 'campaign'),
                     Criteria::expr()->eq('objectId', $campaign->getId()),
                 ),
-                ['id' => Order::Ascending]
+                [
+                    'id' => Order::Ascending,
+                ]
             )
         );
 

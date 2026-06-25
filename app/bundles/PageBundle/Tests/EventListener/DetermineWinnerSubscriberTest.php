@@ -40,10 +40,15 @@ class DetermineWinnerSubscriberTest extends TestCase
     {
         $parentMock    = $this->createMock(Page::class);
         $childMock     = $this->createMock(Page::class);
-        $children      = [2 => $childMock];
+        $children      = [
+            2 => $childMock,
+        ];
         $transChildren = $this->createMock(Collection::class);
         $ids           = [1, 3];
-        $parameters    = ['parent' => $parentMock, 'children' => $children];
+        $parameters    = [
+            'parent' => $parentMock,
+            'children' => $children,
+        ];
         $event         = new DetermineWinnerEvent($parameters);
         $startDate     = new \DateTime();
         $translation   = 'bounces';
@@ -134,7 +139,9 @@ class DetermineWinnerSubscriberTest extends TestCase
     {
         $parentMock  = $this->createMock(Page::class);
         $ids         = [1, 2];
-        $parameters  = ['parent' => $parentMock];
+        $parameters  = [
+            'parent' => $parentMock,
+        ];
         $event       = new DetermineWinnerEvent($parameters);
         $startDate   = new \DateTime();
         $translation = 'dewlltime';
@@ -176,7 +183,9 @@ class DetermineWinnerSubscriberTest extends TestCase
 
         $this->hitRepository->expects($this->once())
             ->method('getDwellTimesForPages')
-            ->with($ids, ['fromDate' => $startDate])
+            ->with($ids, [
+                'fromDate' => $startDate,
+            ])
             ->willReturn($counts);
 
         $this->subscriber->onDetermineDwellTimeWinner($event);

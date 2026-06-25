@@ -229,7 +229,9 @@ final class BouncedHelperTest extends MauticMysqlTestCase
         $event->setType('email.send');
         $event->setCampaign($this->campaign);
         $event->setEventType('action');
-        $event->setProperties(['email' => $this->email->getId()]);
+        $event->setProperties([
+            'email' => $this->email->getId(),
+        ]);
         $this->em->persist($event);
 
         $this->em->flush();
@@ -254,7 +256,9 @@ final class BouncedHelperTest extends MauticMysqlTestCase
 
         // Get the campaign event we created in createEmailAndCampaign
         $event = $this->em->getRepository(Event::class)
-            ->findOneBy(['campaign' => $this->campaign]);
+            ->findOneBy([
+                'campaign' => $this->campaign,
+            ]);
 
         // Create campaign_lead_event_log entries (required for campaign filter)
         $leadEventLog1 = new LeadEventLog();

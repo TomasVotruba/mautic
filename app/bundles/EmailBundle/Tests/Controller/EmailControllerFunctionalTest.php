@@ -44,8 +44,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->configParams['disable_trackable_urls'] = false;
         $this->configParams['mailer_from_name']       = 'Mautic Admin';
         $this->configParams['mailer_from_email']      = 'admin@email.com';
-        $this->configParams['mailer_custom_headers']  = ['x-global-custom-header' => 'value123'];
-        $this->clientOptions                          = ['debug' => true];
+        $this->configParams['mailer_custom_headers']  = [
+            'x-global-custom-header' => 'value123',
+        ];
+        $this->clientOptions                          = [
+            'debug' => true,
+        ];
 
         parent::setUp();
     }
@@ -373,9 +377,25 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
     public static function provideHtmlForEmailTracking(): \Generator
     {
-        $variantQuotes   = ['single quote' => "'", 'double quote' => '"'];
-        $variantSpaces   = ['no space' => '$', 'start space' => ' $', 'end space' => '$ ', 'both spaces' => ' $ '];
-        $variantNewlines = ['no newlines' => '$', 'start \r\n' => "\r\n$", 'end \r\n' => "$\r\n", 'both \r\n' => "\r\n$\r\n", 'start \n' => "\n$", 'end \n' => "$\n", 'both \n' => "\n$\n"];
+        $variantQuotes   = [
+            'single quote' => "'",
+            'double quote' => '"',
+        ];
+        $variantSpaces   = [
+            'no space' => '$',
+            'start space' => ' $',
+            'end space' => '$ ',
+            'both spaces' => ' $ ',
+        ];
+        $variantNewlines = [
+            'no newlines' => '$',
+            'start \r\n' => "\r\n$",
+            'end \r\n' => "$\r\n",
+            'both \r\n' => "\r\n$\r\n",
+            'start \n' => "\n$",
+            'end \n' => "$\n",
+            'both \n' => "\n$\n",
+        ];
 
         foreach ($variantQuotes as $quotesName => $variantQuote) {
             foreach ($variantSpaces as $spaceName => $variantSpace) {
@@ -402,7 +422,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $email->setFromName('Custom From Name');
         $email->setReplyToAddress('custom@replyto.address');
         $email->setBccAddress('custom@bcc.address');
-        $email->setHeaders(['x-global-custom-header' => 'value123 overridden']);
+        $email->setHeaders([
+            'x-global-custom-header' => 'value123 overridden',
+        ]);
         $email->setUtmTags(
             [
                 'utmSource'   => 'utmSourceA',
@@ -514,7 +536,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $emails = $this->em->getRepository(Email::class)->findBy([], ['id' => 'ASC']);
+        $emails = $this->em->getRepository(Email::class)->findBy([], [
+            'id' => 'ASC',
+        ]);
         Assert::assertCount(2, $emails);
 
         $firstEmail  = $emails[0];
@@ -543,7 +567,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $translation->setTranslationParent($parent);
         $parent->addTranslationChild($translation);
 
-        $variantSettings = ['weight' => 50, 'winnerCriteria' => 'email.openrate'];
+        $variantSettings = [
+            'weight' => 50,
+            'winnerCriteria' => 'email.openrate',
+        ];
         $variant         = $this->createEmail(
             'Variant email',
             'Variant subject',
@@ -587,14 +614,24 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->em->clear();
         $emailRepository = $this->em->getRepository(Email::class);
-        $emails          = $emailRepository->findBy([], ['id' => 'ASC']);
+        $emails          = $emailRepository->findBy([], [
+            'id' => 'ASC',
+        ]);
 
         Assert::assertCount(8, $emails);
 
-        $clonedParent             = $emailRepository->findOneBy(['name' => 'Parent email (copy)']);
-        $clonedTranslation        = $emailRepository->findOneBy(['name' => 'Parent French (copy)']);
-        $clonedVariant            = $emailRepository->findOneBy(['name' => 'Variant email (copy)']);
-        $clonedVariantTranslation = $emailRepository->findOneBy(['name' => 'Variant French (copy)']);
+        $clonedParent             = $emailRepository->findOneBy([
+            'name' => 'Parent email (copy)',
+        ]);
+        $clonedTranslation        = $emailRepository->findOneBy([
+            'name' => 'Parent French (copy)',
+        ]);
+        $clonedVariant            = $emailRepository->findOneBy([
+            'name' => 'Variant email (copy)',
+        ]);
+        $clonedVariantTranslation = $emailRepository->findOneBy([
+            'name' => 'Variant French (copy)',
+        ]);
 
         Assert::assertInstanceOf(Email::class, $clonedParent);
         Assert::assertInstanceOf(Email::class, $clonedTranslation);
@@ -653,7 +690,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     public function testAbTestAction(): void
     {
         $segment        = $this->createSegment('Segment B', 'segment-B');
-        $varientSetting = ['totalWeight' => 100, 'winnerCriteria' => 'email.openrate'];
+        $varientSetting = [
+            'totalWeight' => 100,
+            'winnerCriteria' => 'email.openrate',
+        ];
         $email          = $this->createEmail('Email B', 'Email B Subject', 'list', 'blank', 'Test html', $segment, $varientSetting);
         $this->em->flush();
 
@@ -670,7 +710,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $emails = $this->em->getRepository(Email::class)->findBy([], ['id' => 'ASC']);
+        $emails = $this->em->getRepository(Email::class)->findBy([], [
+            'id' => 'ASC',
+        ]);
         Assert::assertCount(2, $emails);
 
         $firstEmail  = $emails[0];
@@ -835,7 +877,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
 
-        $email = $this->em->getRepository(Email::class)->findOneBy(['name' => 'Email publish test']);
+        $email = $this->em->getRepository(Email::class)->findOneBy([
+            'name' => 'Email publish test',
+        ]);
         Assert::assertTrue($email->getIsPublished());
     }
 
@@ -846,8 +890,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     public function testPublishPermissionOnCreate(array $permissions, bool $expectDisabled, bool $publishedByDefault, bool $publishAfterSave): void
     {
         // Set user to be able to create emails, but not publish them.
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'sales']);
-        $this->setPermission($user->getRole(), ['email:emails' => $permissions]);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'sales',
+        ]);
+        $this->setPermission($user->getRole(), [
+            'email:emails' => $permissions,
+        ]);
         $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'sales');
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
@@ -878,7 +926,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
 
-        $email = $this->em->getRepository(Email::class)->findOneBy(['name' => 'Email publish test']);
+        $email = $this->em->getRepository(Email::class)->findOneBy([
+            'name' => 'Email publish test',
+        ]);
         Assert::assertSame($publishAfterSave, $email->getIsPublished());
     }
 
@@ -931,14 +981,20 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     #[DataProvider('editPermissionDataProvider')]
     public function testPublishPermissionOnEdit(string $owner, string $user, array $permissions, bool $expectDisabled, bool $publishAfterSave): void
     {
-        $ownerUser  = $this->em->getRepository(User::class)->findOneBy(['username' => $owner]);
+        $ownerUser  = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $owner,
+        ]);
         $email      = $this->createEmail('Email A', 'Email A Subject', 'template', 'blank', 'Test html');
         $email->setCreatedBy($ownerUser);
         $this->em->flush();
 
         // Set user to be able to create emails, but not publish them.
-        $loggedInUser = $this->em->getRepository(User::class)->findOneBy(['username' => $user]);
-        $this->setPermission($loggedInUser->getRole(), ['email:emails' => $permissions]);
+        $loggedInUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $user,
+        ]);
+        $this->setPermission($loggedInUser->getRole(), [
+            'email:emails' => $permissions,
+        ]);
 
         $this->loginUser($loggedInUser);
         $this->client->setServerParameter('PHP_AUTH_USER', $loggedInUser->getUserIdentifier());
@@ -973,7 +1029,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
 
-        $email = $this->em->getRepository(Email::class)->findOneBy(['name' => 'Email publish test']);
+        $email = $this->em->getRepository(Email::class)->findOneBy([
+            'name' => 'Email publish test',
+        ]);
         Assert::assertSame($publishAfterSave, $email->getIsPublished());
     }
 
@@ -1096,10 +1154,16 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', [
+            '--channel' => 'email',
+            '--id' => $email->getId(),
+        ]);
         $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
 
-        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', [
+            '--channel' => 'email',
+            '--id' => $email->getId(),
+        ]);
 
         $email = $this->em->getRepository(Email::class)->find($email->getId());
         $this->assertFalse($email->getIsPublished(), $commandTester->getDisplay());
@@ -1143,10 +1207,16 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', [
+            '--channel' => 'email',
+            '--id' => $email->getId(),
+        ]);
         $this->assertStringContainsString('Email: Email A | 3', $commandTester->getDisplay());
 
-        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', [
+            '--channel' => 'email',
+            '--id' => $email->getId(),
+        ]);
 
         $email = $this->em->getRepository(Email::class)->find($email->getId());
         $this->assertTrue($email->getIsPublished(), $commandTester->getDisplay());
@@ -1310,7 +1380,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
 
-        $email = $this->em->getRepository(Email::class)->findOneBy(['name' => $name]);
+        $email = $this->em->getRepository(Email::class)->findOneBy([
+            'name' => $name,
+        ]);
 
         if ($expectSaved) {
             $this->assertInstanceOf(Email::class, $email);

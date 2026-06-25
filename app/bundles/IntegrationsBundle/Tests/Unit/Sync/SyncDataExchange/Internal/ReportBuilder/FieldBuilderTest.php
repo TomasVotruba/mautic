@@ -43,7 +43,9 @@ class FieldBuilderTest extends TestCase
 
     public function testIdFieldIsAdded(): void
     {
-        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_id', ['id' => 1], new ObjectDAO('Test'), 'Test');
+        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_id', [
+            'id' => 1,
+        ], new ObjectDAO('Test'), 'Test');
         $this->assertEquals('mautic_internal_id', $field->getName());
         $this->assertEquals(FieldDAO::FIELD_CHANGED, $field->getState());
         $this->assertEquals(1, $field->getValue()->getNormalizedValue());
@@ -53,7 +55,10 @@ class FieldBuilderTest extends TestCase
     {
         $field = $this->getFieldBuilder()->buildObjectField(
             'owner_id',
-            ['id' => 1, 'owner_id' => 123],
+            [
+                'id' => 1,
+                'owner_id' => 123,
+            ],
             new ObjectDAO('Test'),
             'Test'
         );
@@ -70,7 +75,9 @@ class FieldBuilderTest extends TestCase
             ->with(1, 'email')
             ->willReturn(0);
 
-        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_dnc_email', ['id' => 1], new ObjectDAO('Test'), 'Test');
+        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_dnc_email', [
+            'id' => 1,
+        ], new ObjectDAO('Test'), 'Test');
 
         $this->assertEquals('mautic_internal_dnc_email', $field->getName());
         $this->assertEquals(FieldDAO::FIELD_CHANGED, $field->getState());
@@ -90,7 +97,9 @@ class FieldBuilderTest extends TestCase
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_contact_timeline', ['id' => 1], new ObjectDAO('Test'), 'Test');
+        $field = $this->getFieldBuilder()->buildObjectField('mautic_internal_contact_timeline', [
+            'id' => 1,
+        ], new ObjectDAO('Test'), 'Test');
 
         $this->assertEquals('mautic_internal_contact_timeline', $field->getName());
         $this->assertEquals(FieldDAO::FIELD_CHANGED, $field->getState());
@@ -113,7 +122,10 @@ class FieldBuilderTest extends TestCase
         $objectDAO = new ObjectDAO('Test');
         $objectDAO->setRequiredFields(['email']);
 
-        $field = $this->getFieldBuilder()->buildObjectField('email', ['id' => 1, 'email' => 'test@test.com'], $objectDAO, 'Test');
+        $field = $this->getFieldBuilder()->buildObjectField('email', [
+            'id' => 1,
+            'email' => 'test@test.com',
+        ], $objectDAO, 'Test');
 
         $this->assertEquals('email', $field->getName());
         $this->assertEquals(FieldDAO::FIELD_REQUIRED, $field->getState());
@@ -135,7 +147,10 @@ class FieldBuilderTest extends TestCase
 
         $this->expectException(FieldNotFoundException::class);
 
-        $this->getFieldBuilder()->buildObjectField('badfield', ['id' => 1, 'email' => 'test@test.com'], new ObjectDAO('Test'), 'Test');
+        $this->getFieldBuilder()->buildObjectField('badfield', [
+            'id' => 1,
+            'email' => 'test@test.com',
+        ], new ObjectDAO('Test'), 'Test');
     }
 
     public function getFieldBuilder(): FieldBuilder

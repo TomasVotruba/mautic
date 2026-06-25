@@ -41,7 +41,9 @@ final class LeadFieldSubscriber implements EventSubscriberInterface
         if (count($segments)) {
             $url = $this->router->generate(
                 'mautic_segment_index',
-                ['search' => 'filters_field:'.$field->getAlias()]
+                [
+                    'search' => 'filters_field:'.$field->getAlias(),
+                ]
             );
             $messageVars = [
                 '%name%' => $field->getName(),

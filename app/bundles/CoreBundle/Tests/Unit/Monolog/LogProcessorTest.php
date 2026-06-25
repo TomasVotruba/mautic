@@ -22,7 +22,9 @@ class LogProcessorTest extends TestCase
             level: Level::Debug,
             message: 'This is debug message',
             context: [],
-            extra: ['existing' => 'value']
+            extra: [
+                'existing' => 'value',
+            ]
         );
 
         $processed = $logProcessor($record);

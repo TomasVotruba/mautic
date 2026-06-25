@@ -44,16 +44,24 @@ final class FieldModelDeleteTest extends MauticMysqlTestCase
         $leadFieldRepository = $this->em->getRepository(LeadField::class);
         \assert($leadFieldRepository instanceof LeadFieldRepository);
 
-        Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertCount(1, $leadFieldRepository->findBy([
+            'alias' => 'test_lead_field',
+        ]));
         Assert::assertTrue($this->columnExists('leads', 'test_lead_field'));
-        Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
+        Assert::assertCount(1, $leadFieldRepository->findBy([
+            'alias' => 'test_company_field',
+        ]));
         Assert::assertTrue($this->columnExists('companies', 'test_company_field'));
 
         $fieldModel->deleteEntities([$leadField->getId(), $companyField->getId()]);
 
-        Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertCount(0, $leadFieldRepository->findBy([
+            'alias' => 'test_lead_field',
+        ]));
         Assert::assertFalse($this->columnExists('leads', 'test_lead_field'));
-        Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
+        Assert::assertCount(0, $leadFieldRepository->findBy([
+            'alias' => 'test_company_field',
+        ]));
         Assert::assertFalse($this->columnExists('companies', 'test_company_field'));
     }
 

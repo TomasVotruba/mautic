@@ -59,10 +59,14 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         }
 
         // update the segment
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+        ]);
 
         // get the lead list leads stored in db after the segment update
-        $leadListLeads = $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]);
+        $leadListLeads = $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment,
+        ]);
         foreach ($leadListLeads as $listLead) {
             $leadListLeadsIds[] = (int) $listLead->getLead()->getId();
         }
@@ -122,7 +126,9 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
                     ],
                 ]);
                 $leadModel = static::getContainer()->get('mautic.lead.model.lead');
-                $leadModel->setFieldValues($contact, [self::FIELD_NAME => [$cars[$i % 3]]]);
+                $leadModel->setFieldValues($contact, [
+                    self::FIELD_NAME => [$cars[$i % 3]],
+                ]);
             }
             $contacts[] = $contact;
         }
@@ -182,9 +188,18 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
             'type'                => 'multiselect',
             'properties'          => [
                 'list' => [
-                    ['label' => 'car1', 'value' => 'value1'],
-                    ['label' => 'car2', 'value' => 'value2'],
-                    ['label' => 'car3', 'value' => 'value3'],
+                    [
+                        'label' => 'car1',
+                        'value' => 'value1',
+                    ],
+                    [
+                        'label' => 'car2',
+                        'value' => 'value2',
+                    ],
+                    [
+                        'label' => 'car3',
+                        'value' => 'value3',
+                    ],
                 ],
             ],
         ];

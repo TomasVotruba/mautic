@@ -33,7 +33,9 @@ class TokenReplacementEventTest extends TestCase
         $event  = new TokenReplacementEvent('');
         self::assertSame([], $event->getTokens());
         $event->addToken($token, $value);
-        self::assertSame([$token => $value], $event->getTokens());
+        self::assertSame([
+            $token => $value,
+        ], $event->getTokens());
         $event->addToken($token1, $value1);
         self::assertSame(
             [
@@ -48,10 +50,14 @@ class TokenReplacementEventTest extends TestCase
     {
         $leadId           = 1;
         $leadEntity['id'] = $leadId;
-        $clickthrough     = ['lead' => $leadEntity];
+        $clickthrough     = [
+            'lead' => $leadEntity,
+        ];
         $event            = new TokenReplacementEvent('', $leadEntity, $clickthrough);
         self::assertSame(
-            ['lead' => 1],
+            [
+                'lead' => 1,
+            ],
             $event->getClickthrough()
         );
 
@@ -65,10 +71,14 @@ class TokenReplacementEventTest extends TestCase
         );
 
         $leadEntity->setId($leadId);
-        $clickthrough = ['lead' => $leadEntity];
+        $clickthrough = [
+            'lead' => $leadEntity,
+        ];
         $event        = new TokenReplacementEvent('', $leadEntity, $clickthrough);
         self::assertSame(
-            ['lead' => 1],
+            [
+                'lead' => 1,
+            ],
             $event->getClickthrough()
         );
     }

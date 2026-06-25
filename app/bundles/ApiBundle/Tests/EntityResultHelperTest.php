@@ -21,7 +21,10 @@ class EntityResultHelperTest extends TestCase
         $lead5 = new Lead();
         $lead5->setId(5);
 
-        $results = [2 => $lead2, 5 => $lead5];
+        $results = [
+            2 => $lead2,
+            5 => $lead5,
+        ];
 
         $arrayResult = $resultHelper->getArray($results);
 
@@ -85,7 +88,16 @@ class EntityResultHelperTest extends TestCase
         $lead7 = new Lead();
         $lead7->setId(7);
 
-        $data = [[$lead2, 'title' => 'Title 2'], [$lead5, 'title' => 'Title 5'], [$lead7, 'title' => 'Title 7']];
+        $data = [[
+            $lead2,
+            'title' => 'Title 2',
+        ], [
+            $lead5,
+            'title' => 'Title 5',
+        ], [
+            $lead7,
+            'title' => 'Title 7',
+        ]];
 
         $expectedResult = [$lead2, $lead5, $lead7];
 

@@ -26,8 +26,12 @@ class DashboardLeadsInTimeWidgetType extends AbstractType
                     'mautic.lead.show.top'                               => 'top',
                     'mautic.lead.show.top.leads.identified.vs.anonymous' => 'topIdentifiedVsAnonymous',
                 ],
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'empty_data' => '',
                 'required'   => false,
             ]

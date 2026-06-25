@@ -80,7 +80,9 @@ class PartialObjectReportBuilderTest extends TestCase
 
     public function testTrackedContactChanges(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(Contact::NAME, $fromDateTime, $toDateTime);
@@ -171,7 +173,9 @@ class PartialObjectReportBuilderTest extends TestCase
 
     public function testTrackedCompanyChanges(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(MauticSyncDataExchange::OBJECT_COMPANY, $fromDateTime, $toDateTime);
@@ -262,7 +266,9 @@ class PartialObjectReportBuilderTest extends TestCase
 
     public function testTrackedContactChangesThrowsObjectNotFoundException(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(Contact::NAME, $fromDateTime, $toDateTime);
@@ -311,7 +317,9 @@ class PartialObjectReportBuilderTest extends TestCase
         $exception = new FieldNotFoundException('email', 'company');
         $this->expectExceptionObject($exception);
 
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(MauticSyncDataExchange::OBJECT_COMPANY, $fromDateTime, $toDateTime);

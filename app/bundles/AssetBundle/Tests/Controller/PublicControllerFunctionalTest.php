@@ -84,7 +84,9 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $downloadRepo = $this->em->getRepository(Download::class);
 
-        $download = $downloadRepo->findOneBy(['asset' => $this->asset]);
+        $download = $downloadRepo->findOneBy([
+            'asset' => $this->asset,
+        ]);
         \assert($download instanceof Download);
         $this->assertSame('test2', $download->getUtmSource());
         $this->assertSame('test3', $download->getUtmMedium());
@@ -102,7 +104,10 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
     public function testDownloadActionWithUnpublishedAsset(): void
     {
         $this->logoutUser();
-        $asset = $this->createAsset(['title' => 'Unpublished Asset', 'isPublished' => false]);
+        $asset = $this->createAsset([
+            'title' => 'Unpublished Asset',
+            'isPublished' => false,
+        ]);
         $this->em->flush();
 
         $this->client->request('GET', '/asset/'.$asset->getSlug());
@@ -132,7 +137,9 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
     public function testDownloadActionWithMissingLocalFile(): void
     {
         $this->logoutUser();
-        $asset                = $this->createAsset(['title' => 'Missing Local File Asset']);
+        $asset                = $this->createAsset([
+            'title' => 'Missing Local File Asset',
+        ]);
         $coreParametersHelper = static::getContainer()->get('mautic.helper.core_parameters');
         $asset->setUploadDir($coreParametersHelper->get('upload_dir'));
         $this->em->flush();
@@ -151,7 +158,9 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
     public function testDownloadActionWithDisallowedAssetSetsRobotsTag(): void
     {
         $this->logoutUser();
-        $asset = $this->createAsset(['title' => 'Disallowed Asset']);
+        $asset = $this->createAsset([
+            'title' => 'Disallowed Asset',
+        ]);
         $asset->setDisallow(true);
         $this->em->flush();
 

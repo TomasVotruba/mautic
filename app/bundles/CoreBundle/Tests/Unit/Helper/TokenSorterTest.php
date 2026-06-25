@@ -34,7 +34,9 @@ class TokenSorterTest extends TestCase
 
     public function testSortSingleToken(): void
     {
-        $tokens = ['{contactfield=email}' => 'Email'];
+        $tokens = [
+            '{contactfield=email}' => 'Email',
+        ];
 
         $result = $this->tokenSorter->sortTokens($tokens);
 

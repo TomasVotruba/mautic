@@ -78,7 +78,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                     'description'      => 'mautic.notification.campaign.send_mobile_notification.tooltip',
                     'batchEventName'   => NotificationEvents::ON_CAMPAIGN_BATCH_ACTION,
                     'formType'         => MobileNotificationSendType::class,
-                    'formTypeOptions'  => ['update_select' => 'campaignevent_properties_notification'],
+                    'formTypeOptions'  => [
+                        'update_select' => 'campaignevent_properties_notification',
+                    ],
                     'formTheme'        => '@MauticNotification/FormTheme/NotificationSendList/_notificationsend_list_row.html.twig',
                     'timelineTemplate' => '@MauticNotification/SubscribedEvents/Timeline/index.html.twig',
                     'channel'          => 'mobile_notification',
@@ -94,7 +96,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'description'      => 'mautic.notification.campaign.send_notification.tooltip',
                 'batchEventName'   => NotificationEvents::ON_CAMPAIGN_BATCH_ACTION,
                 'formType'         => NotificationSendType::class,
-                'formTypeOptions'  => ['update_select' => 'campaignevent_properties_notification'],
+                'formTypeOptions'  => [
+                    'update_select' => 'campaignevent_properties_notification',
+                ],
                 'formTheme'        => '@MauticNotification/FormTheme/NotificationSendList/_notificationsend_list_row.html.twig',
                 'timelineTemplate' => '@MauticNotification/SubscribedEvents/Timeline/index.html.twig',
                 'channel'          => 'notification',
@@ -224,7 +228,9 @@ class CampaignSubscriber implements EventSubscriberInterface
             new TokenReplacementEvent(
                 $notification->getMessage(),
                 $lead,
-                ['channel' => ['notification', $notification->getId()]]
+                [
+                    'channel' => ['notification', $notification->getId()],
+                ]
             ),
             NotificationEvents::TOKEN_REPLACEMENT
         );

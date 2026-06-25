@@ -321,7 +321,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         $builder->createOneToMany('pointsChangeLog', 'PointsChangeLog')
             ->orphanRemoval()
-            ->setOrderBy(['dateAdded' => 'DESC'])
+            ->setOrderBy([
+                'dateAdded' => 'DESC',
+            ])
             ->mappedBy('lead')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -329,7 +331,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         $builder->createOneToMany('companyChangeLog', 'CompanyChangeLog')
             ->orphanRemoval()
-            ->setOrderBy(['dateAdded' => 'DESC'])
+            ->setOrderBy([
+                'dateAdded' => 'DESC',
+            ])
             ->mappedBy('lead')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -390,7 +394,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         $builder->createOneToMany('notes', 'LeadNote')
             ->orphanRemoval()
-            ->setOrderBy(['dateAdded' => 'DESC'])
+            ->setOrderBy([
+                'dateAdded' => 'DESC',
+            ])
             ->mappedBy('lead')
             ->cascadeDetach()
             ->cascadeMerge()
@@ -406,7 +412,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
             ->setJoinTable('lead_tags_xref')
             ->addInverseJoinColumn('tag_id', 'id', false)
             ->addJoinColumn('lead_id', 'id', false, false, 'CASCADE')
-            ->setOrderBy(['tag' => 'ASC'])
+            ->setOrderBy([
+                'tag' => 'ASC',
+            ])
             ->setIndexBy('tag')
             ->fetchLazy()
             ->cascadeMerge()
@@ -423,7 +431,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         $builder->createOneToMany('stageChangeLog', 'StagesChangeLog')
             ->orphanRemoval()
-            ->setOrderBy(['dateAdded' => 'DESC'])
+            ->setOrderBy([
+                'dateAdded' => 'DESC',
+            ])
             ->mappedBy('lead')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -439,7 +449,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         $builder->createOneToMany('frequencyRules', FrequencyRule::class)
             ->orphanRemoval()
             ->setIndexBy('channel')
-            ->setOrderBy(['dateAdded' => 'DESC'])
+            ->setOrderBy([
+                'dateAdded' => 'DESC',
+            ])
             ->mappedBy('lead')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -531,7 +543,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
-        $metadata->addConstraint(new UniqueCustomField(['object' => 'lead']));
+        $metadata->addConstraint(new UniqueCustomField([
+            'object' => 'lead',
+        ]));
     }
 
     public static function getDefaultIdentifierFields(): array
@@ -1136,7 +1150,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('action', $action))
-            ->orderBy(['dateAdded' => Order::Descending->value])
+            ->orderBy([
+                'dateAdded' => Order::Descending->value,
+            ])
             ->setFirstResult(0)
             ->setMaxResults(1);
 

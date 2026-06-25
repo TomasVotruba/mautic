@@ -29,7 +29,9 @@ class ContactSegmentService
         $segmentFilters = $this->contactSegmentFilterFactory->getSegmentFilters($segment, $batchLimiters);
 
         if (!count($segmentFilters)) {
-            $this->logger->debug('Segment QB: Segment has no filters', ['segmentId' => $segment->getId()]);
+            $this->logger->debug('Segment QB: Segment has no filters', [
+                'segmentId' => $segment->getId(),
+            ]);
 
             return [
                 $segment->getId() => [
@@ -49,11 +51,15 @@ class ContactSegmentService
 
         $qb = $this->contactSegmentQueryBuilder->wrapInCount($qb);
 
-        $this->logger->debug('Segment QB: Create SQL: '.$qb->getDebugOutput(), ['segmentId' => $segment->getId()]);
+        $this->logger->debug('Segment QB: Create SQL: '.$qb->getDebugOutput(), [
+            'segmentId' => $segment->getId(),
+        ]);
 
         $result = $this->timedFetch($qb, $segment->getId());
 
-        return [$segment->getId() => $result];
+        return [
+            $segment->getId() => $result,
+        ];
     }
 
     /**
@@ -66,7 +72,9 @@ class ContactSegmentService
         $segmentFilters = $this->contactSegmentFilterFactory->getSegmentFilters($segment);
 
         if (!count($segmentFilters)) {
-            $this->logger->debug('Segment QB: Segment has no filters', ['segmentId' => $segment->getId()]);
+            $this->logger->debug('Segment QB: Segment has no filters', [
+                'segmentId' => $segment->getId(),
+            ]);
 
             return [
                 $segment->getId() => [
@@ -84,11 +92,15 @@ class ContactSegmentService
 
         $qb = $this->contactSegmentQueryBuilder->wrapInCount($qb);
 
-        $this->logger->debug('Segment QB: Create SQL: '.$qb->getDebugOutput(), ['segmentId' => $segment->getId()]);
+        $this->logger->debug('Segment QB: Create SQL: '.$qb->getDebugOutput(), [
+            'segmentId' => $segment->getId(),
+        ]);
 
         $result = $this->timedFetch($qb, $segment->getId());
 
-        return [$segment->getId() => $result];
+        return [
+            $segment->getId() => $result,
+        ];
     }
 
     /**
@@ -106,7 +118,9 @@ class ContactSegmentService
 
         $result = $this->timedFetchAll($queryBuilder, $segment->getId());
 
-        return [$segment->getId() => $result];
+        return [
+            $segment->getId() => $result,
+        ];
     }
 
     /**
@@ -135,7 +149,9 @@ class ContactSegmentService
         $queryBuilder->resetQueryPart('select');
         $queryBuilder->select($select);
 
-        $this->logger->debug('Segment QB: Create Leads SQL: '.$queryBuilder->getDebugOutput(), ['segmentId' => $segment->getId()]);
+        $this->logger->debug('Segment QB: Create Leads SQL: '.$queryBuilder->getDebugOutput(), [
+            'segmentId' => $segment->getId(),
+        ]);
 
         $this->addLeadAndMinMaxLimiters($queryBuilder, $batchLimiters, 'leads', 'id');
 
@@ -165,11 +181,15 @@ class ContactSegmentService
         $queryBuilder = $this->getOrphanedLeadListLeadsQueryBuilder($segment, $batchLimiters);
         $queryBuilder = $this->contactSegmentQueryBuilder->wrapInCount($queryBuilder);
 
-        $this->logger->debug('Segment QB: Orphan Leads Count SQL: '.$queryBuilder->getDebugOutput(), ['segmentId' => $segment->getId()]);
+        $this->logger->debug('Segment QB: Orphan Leads Count SQL: '.$queryBuilder->getDebugOutput(), [
+            'segmentId' => $segment->getId(),
+        ]);
 
         $result = $this->timedFetch($queryBuilder, $segment->getId());
 
-        return [$segment->getId() => $result];
+        return [
+            $segment->getId() => $result,
+        ];
     }
 
     /**
@@ -182,11 +202,15 @@ class ContactSegmentService
     {
         $queryBuilder = $this->getOrphanedLeadListLeadsQueryBuilder($segment, $batchLimiters, $limit);
 
-        $this->logger->debug('Segment QB: Orphan Leads SQL: '.$queryBuilder->getDebugOutput(), ['segmentId' => $segment->getId()]);
+        $this->logger->debug('Segment QB: Orphan Leads SQL: '.$queryBuilder->getDebugOutput(), [
+            'segmentId' => $segment->getId(),
+        ]);
 
         $result = $this->timedFetchAll($queryBuilder, $segment->getId());
 
-        return [$segment->getId() => $result];
+        return [
+            $segment->getId() => $result,
+        ];
     }
 
     /**
@@ -297,7 +321,9 @@ class ContactSegmentService
 
             $end = microtime(true) - $start;
 
-            $this->logger->debug('Segment QB: Query took: '.$this->formatPeriod($end).', Result count: '.count($result), ['segmentId' => $segmentId]);
+            $this->logger->debug('Segment QB: Query took: '.$this->formatPeriod($end).', Result count: '.count($result), [
+                'segmentId' => $segmentId,
+            ]);
         } catch (\Exception $e) {
             $this->logger->error(
                 'Segment QB: Query Exception: '.$e->getMessage(),
@@ -329,7 +355,9 @@ class ContactSegmentService
 
             $this->logger->debug(
                 'Segment QB: Query took: '.$this->formatPeriod($end).'ms. Result count: '.count($result),
-                ['segmentId' => $segmentId]
+                [
+                    'segmentId' => $segmentId,
+                ]
             );
         } catch (\Exception $e) {
             $this->logger->error(

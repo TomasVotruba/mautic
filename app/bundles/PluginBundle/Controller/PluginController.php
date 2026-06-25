@@ -108,7 +108,10 @@ class PluginController extends FormController
                 'viewParameters' => [
                     'items'        => $integrations,
                     'tmpl'         => $tmpl,
-                    'pluginFilter' => ($pluginFilter) ? ['id' => $pluginId, 'name' => $pluginName] : false,
+                    'pluginFilter' => ($pluginFilter) ? [
+                        'id' => $pluginId,
+                        'name' => $pluginName,
+                    ] : false,
                     'plugins'      => $plugins,
                 ],
                 'contentTemplate' => '@MauticPlugin/Integration/grid.html.twig',
@@ -172,7 +175,9 @@ class PluginController extends FormController
                 'lead_fields'        => $leadFields,
                 'company_fields'     => $companyFields,
                 'integration_object' => $integrationObject,
-                'action'             => $this->generateUrl('mautic_plugin_config', ['name' => $name]),
+                'action'             => $this->generateUrl('mautic_plugin_config', [
+                    'name' => $name,
+                ]),
             ]
         );
 

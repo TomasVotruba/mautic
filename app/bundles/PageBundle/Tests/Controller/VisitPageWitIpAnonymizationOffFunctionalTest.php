@@ -44,7 +44,9 @@ class VisitPageWitIpAnonymizationOffFunctionalTest extends MauticMysqlTestCase
         $hitRepository = $this->em->getRepository(Hit::class);
 
         /** @var Hit[] $hits */
-        $hits = $hitRepository->findBy(['page' => $pageObject->getId()]);
+        $hits = $hitRepository->findBy([
+            'page' => $pageObject->getId(),
+        ]);
         Assert::assertCount(1, $hits);
         Assert::assertSame('127.0.0.1', $hits[0]->getIpAddress()->getIpAddress());
     }

@@ -24,10 +24,16 @@ class CoreHelpersExtension extends AbstractExtension
     {
         return [
             // Used by CoreBundle:Helper:list_filters.html.twig
-            new TwigFunction('getFilterAttributes', [$this, 'getFilterAttributes'], ['is_safe' => 'all']),
+            new TwigFunction('getFilterAttributes', [$this, 'getFilterAttributes'], [
+                'is_safe' => 'all',
+            ]),
             // Used by CoreBundle:Helper:pagination.html.twig
-            new TwigFunction('getPaginationAction', [$this, 'getPaginationAction'], ['is_safe' => 'all']),
-            new TwigFunction('md5', fn (string $string): string => md5($string), ['is_safe' => 'all']),
+            new TwigFunction('getPaginationAction', [$this, 'getPaginationAction'], [
+                'is_safe' => 'all',
+            ]),
+            new TwigFunction('md5', fn (string $string): string => md5($string), [
+                'is_safe' => 'all',
+            ]),
         ];
     }
 

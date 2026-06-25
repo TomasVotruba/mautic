@@ -289,7 +289,9 @@ class SendEmailToContact
             foreach ($this->badEmails as $contactId => $contactEmail) {
                 $this->dncModel->addDncForContact(
                     $contactId,
-                    ['email' => $this->emailEntityId],
+                    [
+                        'email' => $this->emailEntityId,
+                    ],
                     DNC::BOUNCED,
                     $this->translator->trans('mautic.email.bounce.reason.bad_email'),
                     true,

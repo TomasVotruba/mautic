@@ -33,15 +33,21 @@ class EmailValidator
         }
 
         if (!$this->isValidFormat($address)) {
-            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_format', ['%email%' => $address ?: '?']));
+            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_format', [
+                '%email%' => $address ?: '?',
+            ]));
         }
 
         if ($this->hasValidCharacters($address)) {
-            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_characters', ['%email%' => $address]));
+            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_characters', [
+                '%email%' => $address,
+            ]));
         }
 
         if ($doDnsCheck && !$this->hasValidDomain($address)) {
-            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_domain', ['%email%' => $address]));
+            throw new InvalidEmailException($address, $this->translator->trans('mautic.email.address.invalid_domain', [
+                '%email%' => $address,
+            ]));
         }
 
         $this->doPluginValidation($address);

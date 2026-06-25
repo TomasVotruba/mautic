@@ -66,7 +66,9 @@ class CampaignMapStatsController extends AbstractController
 
         $key = array_key_first(self::MAP_OPTIONS);
 
-        return [$key => self::MAP_OPTIONS[$key]];
+        return [
+            $key => self::MAP_OPTIONS[$key],
+        ];
     }
 
     public function getMapOptionsTitle(): string

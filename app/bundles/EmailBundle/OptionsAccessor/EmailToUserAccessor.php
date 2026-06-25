@@ -40,12 +40,16 @@ class EmailToUserAccessor
         $users = [];
         if ($userIds) {
             foreach ($userIds as $userId) {
-                $users[] = ['id' => $userId];
+                $users[] = [
+                    'id' => $userId,
+                ];
             }
         }
 
         if ($this->shouldSentToOwner() && $owner && !in_array($owner->getId(), $userIds)) {
-            $users[] = ['id' => $owner->getId()];
+            $users[] = [
+                'id' => $owner->getId(),
+            ];
         }
 
         return $users;

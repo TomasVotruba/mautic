@@ -31,12 +31,16 @@ trait LeadAccessTrait
             if (method_exists($this, 'postActionRedirect')) {
                 // set the return URL
                 $page      = $this->getCurrentRequest()->getSession()->get($isPlugin ? 'mautic.'.$integration.'.page' : 'mautic.lead.page', 1);
-                $returnUrl = $this->generateUrl($isPlugin ? 'mautic_plugin_timeline_index' : 'mautic_contact_index', ['page' => $page]);
+                $returnUrl = $this->generateUrl($isPlugin ? 'mautic_plugin_timeline_index' : 'mautic_contact_index', [
+                    'page' => $page,
+                ]);
 
                 return $this->postActionRedirect(
                     [
                         'returnUrl'       => $returnUrl,
-                        'viewParameters'  => ['page' => $page],
+                        'viewParameters'  => [
+                            'page' => $page,
+                        ],
                         'contentTemplate' => $isPlugin ? 'Mautic\LeadBundle\Controller\LeadController::pluginIndexAction' : 'Mautic\LeadBundle\Controller\LeadController::indexAction',
                         'passthroughVars' => [
                             'activeLink'    => $isPlugin ? '#mautic_plugin_timeline_index' : '#mautic_contact_index',
@@ -46,7 +50,9 @@ trait LeadAccessTrait
                             [
                                 'type'    => 'error',
                                 'msg'     => 'mautic.lead.lead.error.notfound',
-                                'msgVars' => ['%id%' => $leadId],
+                                'msgVars' => [
+                                    '%id%' => $leadId,
+                                ],
                             ],
                         ],
                     ]
@@ -60,7 +66,9 @@ trait LeadAccessTrait
             $lead->getPermissionUser()
         )
         ) {
-            throw new AccessDeniedHttpException($this->translator->trans('mautic.core.url.error.401', ['%url%' => $this->getCurrentRequest()->getRequestUri()]));
+            throw new AccessDeniedHttpException($this->translator->trans('mautic.core.url.error.401', [
+                '%url%' => $this->getCurrentRequest()->getRequestUri(),
+            ]));
         }
 
         return $lead;

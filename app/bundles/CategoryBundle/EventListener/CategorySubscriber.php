@@ -81,7 +81,9 @@ class CategorySubscriber implements EventSubscriberInterface
             'object'    => 'category',
             'objectId'  => $category->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $category->getTitle()],
+            'details'   => [
+                'name' => $category->getTitle(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

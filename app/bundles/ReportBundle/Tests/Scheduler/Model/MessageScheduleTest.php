@@ -37,7 +37,9 @@ class MessageScheduleTest extends \PHPUnit\Framework\TestCase
 
         $this->router->expects($this->once())
             ->method('generate')
-            ->with('mautic_report_view', ['objectId' => 33], UrlGeneratorInterface::ABSOLUTE_URL)
+            ->with('mautic_report_view', [
+                'objectId' => 33,
+            ], UrlGeneratorInterface::ABSOLUTE_URL)
             ->willReturn('absolute/link');
 
         $this->translatorMock->expects($this->once())
@@ -62,7 +64,9 @@ class MessageScheduleTest extends \PHPUnit\Framework\TestCase
 
         $this->router->expects($this->once())
             ->method('generate')
-            ->with('mautic_report_download', ['reportId' => 33], UrlGeneratorInterface::ABSOLUTE_URL)
+            ->with('mautic_report_download', [
+                'reportId' => 33,
+            ], UrlGeneratorInterface::ABSOLUTE_URL)
             ->willReturn('absolute/link');
 
         $this->translatorMock->expects($this->once())

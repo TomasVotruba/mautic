@@ -46,7 +46,10 @@ final class PointSubscriberFunctionalTest extends MauticMysqlTestCase
             'lastname'  => 'User',
         ];
 
-        $event = new EmailSendEvent(null, ['email' => $email, 'lead' => $leadArray]);
+        $event = new EmailSendEvent(null, [
+            'email' => $email,
+            'lead' => $leadArray,
+        ]);
 
         $dispatcher = self::getContainer()->get('event_dispatcher');
         self::assertInstanceOf(EventDispatcherInterface::class, $dispatcher);

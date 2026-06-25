@@ -83,7 +83,9 @@ class ReportModelTest extends \PHPUnit\Framework\TestCase
     public function testFormulaColumnOrderUsesFormulaExpression(): void
     {
         $allowedColumns              = new \stdClass();
-        $allowedColumns->choices     = ['read_ratio' => 'Read ratio'];
+        $allowedColumns->choices     = [
+            'read_ratio' => 'Read ratio',
+        ];
         $allowedColumns->definitions = [
             'read_ratio' => [
                 'formula' => 'IFNULL(ROUND((e.read_count/e.sent_count)*100, 1), \'0.0\')',
@@ -103,7 +105,9 @@ class ReportModelTest extends \PHPUnit\Framework\TestCase
     public function testInvalidOrderColumnIsRemoved(): void
     {
         $allowedColumns              = new \stdClass();
-        $allowedColumns->choices     = ['read_ratio' => 'Read ratio'];
+        $allowedColumns->choices     = [
+            'read_ratio' => 'Read ratio',
+        ];
         $allowedColumns->definitions = [
             'read_ratio' => [
                 'formula' => 'IFNULL(ROUND((e.read_count/e.sent_count)*100, 1), \'0.0\')',
@@ -120,7 +124,9 @@ class ReportModelTest extends \PHPUnit\Framework\TestCase
     public function testEmptyOrderColumnIsRemoved(): void
     {
         $allowedColumns          = new \stdClass();
-        $allowedColumns->choices = ['read_ratio' => 'Read ratio'];
+        $allowedColumns->choices = [
+            'read_ratio' => 'Read ratio',
+        ];
 
         $result = $this->invokeGetOrderBySanitized(['   '], $allowedColumns);
 

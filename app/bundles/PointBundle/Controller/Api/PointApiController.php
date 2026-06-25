@@ -65,7 +65,9 @@ class PointApiController extends CommonApiController
         }
 
         $actionTypes = $this->model->getPointActions();
-        $view        = $this->view(['pointActionTypes' => $actionTypes['list']]);
+        $view        = $this->view([
+            'pointActionTypes' => $actionTypes['list'],
+        ]);
 
         return $this->handleView($view);
     }
@@ -92,7 +94,9 @@ class PointApiController extends CommonApiController
             return $this->returnError($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->handleView($this->view(['success' => 1], Response::HTTP_OK));
+        return $this->handleView($this->view([
+            'success' => 1,
+        ], Response::HTTP_OK));
     }
 
     /**

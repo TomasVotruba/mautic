@@ -263,10 +263,14 @@ class ReportSubscriber implements EventSubscriberInterface
             $context = self::CONTEXT_PAGE_HITS;
             $event->addGraph($context, 'line', 'mautic.page.graph.line.hits');
             $event->addGraph($context, 'line', 'mautic.page.graph.line.time.on.site');
-            $event->addGraph($context, 'pie', 'mautic.page.graph.pie.time.on.site', ['translate' => false]);
+            $event->addGraph($context, 'pie', 'mautic.page.graph.pie.time.on.site', [
+                'translate' => false,
+            ]);
             $event->addGraph($context, 'pie', 'mautic.page.graph.pie.new.vs.returning');
             $event->addGraph($context, 'pie', 'mautic.page.graph.pie.devices');
-            $event->addGraph($context, 'pie', 'mautic.page.graph.pie.languages', ['translate' => false]);
+            $event->addGraph($context, 'pie', 'mautic.page.graph.pie.languages', [
+                'translate' => false,
+            ]);
             $event->addGraph($context, 'table', 'mautic.page.table.referrers');
             $event->addGraph($context, 'table', 'mautic.page.table.most.visited');
             $event->addGraph($context, 'table', 'mautic.page.table.most.visited.unique');
@@ -477,7 +481,10 @@ class ReportSubscriber implements EventSubscriberInterface
                     $allQ    = clone $queryBuilder;
                     $uniqueQ = clone $queryBuilder;
                     $chartQuery->modifyCountQuery($allQ, 'date_hit', [], 'ph');
-                    $chartQuery->modifyCountQuery($uniqueQ, 'date_hit', ['getUnique' => true, 'selectAlso' => ['ph.page_id']], 'ph');
+                    $chartQuery->modifyCountQuery($uniqueQ, 'date_hit', [
+                        'getUnique' => true,
+                        'selectAlso' => ['ph.page_id'],
+                    ], 'ph');
                     $all       = $chartQuery->fetchCount($allQ);
                     $unique    = $chartQuery->fetchCount($uniqueQ);
                     $returning = $all - $unique;

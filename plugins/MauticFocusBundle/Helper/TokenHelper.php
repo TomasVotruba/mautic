@@ -41,7 +41,9 @@ class TokenHelper
                     $script = '<script src="'.
                         $this->router->generate(
                             'mautic_focus_generate',
-                            ['id' => $id],
+                            [
+                                'id' => $id,
+                            ],
                             UrlGeneratorInterface::ABSOLUTE_URL
                         ).
                     '" type="text/javascript" charset="utf-8" async="async"></script>';

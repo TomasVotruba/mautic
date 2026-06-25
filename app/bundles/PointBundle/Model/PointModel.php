@@ -345,7 +345,11 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
     {
         $filter = [
             'force'  => [
-                ['column' => 'p.type', 'expr' => 'in', 'value' => ['email.send', 'email.open']],
+                [
+                    'column' => 'p.type',
+                    'expr' => 'in',
+                    'value' => ['email.send', 'email.open'],
+                ],
             ],
         ];
         $entities = $this->getEntities(

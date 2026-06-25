@@ -129,7 +129,9 @@ class WebhookModelTest extends TestCase
 
     public function testGetWebhookPayloadForPayloadInWebhook(): void
     {
-        $payload = ['the' => 'payload'];
+        $payload = [
+            'the' => 'payload',
+        ];
         $webhook = new Webhook();
         $webhook->setPayload($payload);
 

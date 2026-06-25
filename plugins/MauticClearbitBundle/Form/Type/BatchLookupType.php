@@ -35,7 +35,9 @@ class BatchLookupType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label'      => 'mautic.plugin.clearbit.notify',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],

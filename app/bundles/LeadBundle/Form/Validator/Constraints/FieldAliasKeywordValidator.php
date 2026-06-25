@@ -55,7 +55,9 @@ class FieldAliasKeywordValidator extends ConstraintValidator
                 $this->context->addViolation(
                     $this->translator->trans(
                         'mautic.lead.field.keyword.restricted',
-                        ['%alias%' => $field->getAlias()],
+                        [
+                            '%alias%' => $field->getAlias(),
+                        ],
                         'validators'
                     )
                 );
@@ -65,7 +67,9 @@ class FieldAliasKeywordValidator extends ConstraintValidator
             $choices = array_merge($this->listModel->getChoiceFields()[$field->getObject()] ?? [], $this->contactSegmentFilterDictionary->getFilters());
 
             if (isset($choices[$field->getAlias()])) {
-                $this->context->addViolation($constraint->message, ['%keyword%' => $field->getAlias()]);
+                $this->context->addViolation($constraint->message, [
+                    '%keyword%' => $field->getAlias(),
+                ]);
             }
         }
     }

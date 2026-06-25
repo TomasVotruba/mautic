@@ -171,29 +171,47 @@ class BuilderSubscriber implements EventSubscriberInterface
 
         $unsubscribeText = $this->coreParametersHelper->get('unsubscribe_text');
         if (!$unsubscribeText) {
-            $unsubscribeText = $this->translator->trans('mautic.email.unsubscribe.text', ['%link%' => '|URL|']);
+            $unsubscribeText = $this->translator->trans('mautic.email.unsubscribe.text', [
+                '%link%' => '|URL|',
+            ]);
         }
 
         // We will replace tokens in unsubscribe text too
-        $unsubscribeLink = $this->emailModel->buildUrl('mautic_email_unsubscribe', ['idHash' => $idHash, 'urlEmail' => $toEmail, 'secretHash' => $unsubscribeHash]);
+        $unsubscribeLink = $this->emailModel->buildUrl('mautic_email_unsubscribe', [
+            'idHash' => $idHash,
+            'urlEmail' => $toEmail,
+            'secretHash' => $unsubscribeHash,
+        ]);
         $unsubscribeText = \Mautic\LeadBundle\Helper\TokenHelper::findLeadTokens($unsubscribeText, $lead, true);
         $unsubscribeText = str_replace('|URL|', $unsubscribeLink, $unsubscribeText);
         $event->addToken('{unsubscribe_text}', EmojiHelper::toHtml($unsubscribeText));
         $event->addToken('{unsubscribe_url}', $unsubscribeLink);
-        $event->addToken('{dnc_url}', $this->emailModel->buildUrl('mautic_email_unsubscribe_all', ['idHash' => $idHash, 'urlEmail' => $toEmail, 'secretHash' => $unsubscribeHash]));
-        $event->addToken('{resubscribe_url}', $this->emailModel->buildUrl('mautic_email_resubscribe', ['idHash' => $idHash]));
+        $event->addToken('{dnc_url}', $this->emailModel->buildUrl('mautic_email_unsubscribe_all', [
+            'idHash' => $idHash,
+            'urlEmail' => $toEmail,
+            'secretHash' => $unsubscribeHash,
+        ]));
+        $event->addToken('{resubscribe_url}', $this->emailModel->buildUrl('mautic_email_resubscribe', [
+            'idHash' => $idHash,
+        ]));
 
         $webviewText = $this->coreParametersHelper->get('webview_text');
         if (!$webviewText) {
-            $webviewText = $this->translator->trans('mautic.email.webview.text', ['%link%' => '|URL|']);
+            $webviewText = $this->translator->trans('mautic.email.webview.text', [
+                '%link%' => '|URL|',
+            ]);
         }
-        $webviewLink = $this->emailModel->buildUrl('mautic_email_webview', ['idHash' => $idHash]);
+        $webviewLink = $this->emailModel->buildUrl('mautic_email_webview', [
+            'idHash' => $idHash,
+        ]);
         $webviewText = str_replace('|URL|', $webviewLink, $webviewText);
         $event->addToken('{webview_text}', EmojiHelper::toHtml($webviewText));
 
         // Show public email preview if the lead is not known to prevent 404
         if (empty($lead['id']) && $email) {
-            $event->addToken('{webview_url}', $this->emailModel->buildUrl('mautic_email_preview', ['objectId' => $email->getId()]));
+            $event->addToken('{webview_url}', $this->emailModel->buildUrl('mautic_email_preview', [
+                'objectId' => $email->getId(),
+            ]));
         } else {
             $event->addToken('{webview_url}', $webviewLink);
         }

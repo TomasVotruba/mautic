@@ -55,7 +55,9 @@ class ThemeApiController extends CommonApiController
             return $this->accessDenied();
         }
 
-        $response  = ['success' => false];
+        $response  = [
+            'success' => false,
+        ];
         $themeZip  = $request->files->get('file');
         $extension = $themeZip->getClientOriginalExtension();
 
@@ -66,7 +68,9 @@ class ThemeApiController extends CommonApiController
             );
         } elseif ('zip' !== $extension) {
             return $this->returnError(
-                $this->translator->trans('mautic.core.not.allowed.file.extension', ['%extension%' => $extension], 'validators'),
+                $this->translator->trans('mautic.core.not.allowed.file.extension', [
+                    '%extension%' => $extension,
+                ], 'validators'),
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -110,7 +114,9 @@ class ThemeApiController extends CommonApiController
             return $this->returnError(
                 $this->translator->trans(
                     'mautic.core.dir.not.accesssible',
-                    ['%dir%' => $theme]
+                    [
+                        '%dir%' => $theme,
+                    ]
                 )
             );
         }
@@ -138,7 +144,9 @@ class ThemeApiController extends CommonApiController
             return $this->returnError($e->getMessage());
         }
 
-        $view = $this->view(['themes' => $themes]);
+        $view = $this->view([
+            'themes' => $themes,
+        ]);
 
         return $this->handleView($view);
     }
@@ -158,7 +166,9 @@ class ThemeApiController extends CommonApiController
 
         try {
             $this->themeHelper->delete($theme);
-            $response = ['success' => true];
+            $response = [
+                'success' => true,
+            ];
         } catch (\Exception $e) {
             return $this->returnError($e->getMessage());
         }

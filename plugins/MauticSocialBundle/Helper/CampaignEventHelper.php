@@ -36,7 +36,10 @@ class CampaignEventHelper
         $tweetEntity = $this->tweetModel->getEntity($event['channelId']);
 
         if (!$tweetEntity) {
-            return ['failed' => 1, 'response' => 'Tweet entity '.$event['channelId'].' not found'];
+            return [
+                'failed' => 1,
+                'response' => 'Tweet entity '.$event['channelId'].' not found',
+            ];
         }
 
         /** @var \MauticPlugin\MauticSocialBundle\Integration\TwitterIntegration $twitterIntegration */
@@ -55,10 +58,14 @@ class CampaignEventHelper
         $tweetText = $tweetEntity->getText();
         $tweetText = $this->parseTweetText($tweetText, $leadArray, $tweetEntity->getId());
         $tweetUrl  = $twitterIntegration->getApiUrl('statuses/update');
-        $status    = ['status' => $tweetText];
+        $status    = [
+            'status' => $tweetText,
+        ];
 
         // fire the tweet
-        $sendResponse = $twitterIntegration->makeRequest($tweetUrl, $status, 'POST', ['append_callback' => false]);
+        $sendResponse = $twitterIntegration->makeRequest($tweetUrl, $status, 'POST', [
+            'append_callback' => false,
+        ]);
 
         // verify the tweet was sent by checking for a tweet id
         if (is_array($sendResponse) && array_key_exists('id_str', $sendResponse)) {
@@ -68,10 +75,16 @@ class CampaignEventHelper
         if ($tweetSent) {
             $this->tweetModel->registerSend($tweetEntity, $lead, $sendResponse, 'campaign.event', $event['id']);
 
-            return ['timeline' => $tweetText, 'response' => $sendResponse];
+            return [
+                'timeline' => $tweetText,
+                'response' => $sendResponse,
+            ];
         }
 
-        $response = ['failed' => 1, 'response' => $sendResponse];
+        $response = [
+            'failed' => 1,
+            'response' => $sendResponse,
+        ];
         if (!empty($sendResponse['error']['message'])) {
             $response['reason'] = $sendResponse['error']['message'];
         }
@@ -114,7 +127,9 @@ class CampaignEventHelper
          * @var Trackable $trackable
          */
         foreach ($trackables as $token => $trackable) {
-            $tokens[$token] = $this->trackableModel->generateTrackableUrl($trackable, array_merge($this->clickthrough, ['lead' => $lead['id']]));
+            $tokens[$token] = $this->trackableModel->generateTrackableUrl($trackable, array_merge($this->clickthrough, [
+                'lead' => $lead['id'],
+            ]));
         }
 
         return str_replace(array_keys($tokens), array_values($tokens), $text);

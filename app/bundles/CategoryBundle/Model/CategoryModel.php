@@ -223,7 +223,9 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
         $data = [];
         foreach ($types as $type) {
             $class     = $type['class'];
-            $resources = $this->em->getRepository($class)->findBy(['category' => $category->getId()]);
+            $resources = $this->em->getRepository($class)->findBy([
+                'category' => $category->getId(),
+            ]);
 
             if (!$resources) {
                 continue;

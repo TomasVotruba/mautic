@@ -22,7 +22,16 @@ final class CampaignSubscriberActionEmailToContactFunctionalTest extends MauticM
 
         $campaign = $this->createCampaign('Campaign');
 
-        $segment  = $this->createSegment('Segment A', [['object' => 'lead', 'glue' => 'and', 'field' => 'firstname', 'type' => 'text', 'operator' => 'startsWith', 'properties' => ['filter' => 'Lead']]]);
+        $segment  = $this->createSegment('Segment A', [[
+            'object' => 'lead',
+            'glue' => 'and',
+            'field' => 'firstname',
+            'type' => 'text',
+            'operator' => 'startsWith',
+            'properties' => [
+                'filter' => 'Lead',
+            ],
+        ]]);
 
         $campaign->addList($segment);
 
@@ -33,15 +42,23 @@ final class CampaignSubscriberActionEmailToContactFunctionalTest extends MauticM
         $this->createLeadCategory($leadC, $category, false);
 
         $email      = $this->createEmailWithCategory('Email', $category);
-        $property   = ['email' => $email->getId()];
+        $property   = [
+            'email' => $email->getId(),
+        ];
         $this->createEvent('Event 1', $campaign, 'email.send', 'action', $property);
 
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:segments:update', ['--list-id' => $segment->getId()]);
-        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $campaign->getId()]);
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '--list-id' => $segment->getId(),
+        ]);
+        $this->testSymfonyCommand('mautic:campaigns:update', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         /** @var LeadEventLogRepository $logRepo */
         $logRepo  = static::getContainer()->get('mautic.campaign.repository.lead_event_log');
@@ -55,13 +72,18 @@ final class CampaignSubscriberActionEmailToContactFunctionalTest extends MauticM
         $translator = static::getContainer()->get('translator');
         $noEmailLog = $translator->trans(
             'mautic.email.contact_has_no_email',
-            ['%contact%' => $leadB->getPrimaryIdentifier()]
+            [
+                '%contact%' => $leadB->getPrimaryIdentifier(),
+            ]
         );
         $this->assertSame($noEmailLog, $metaData[$leadB->getId()], 'here');
 
         $unsubscribedLog = $translator->trans(
             'mautic.email.contact_has_unsubscribed_from_category',
-            ['%contact%' => $leadC->getPrimaryIdentifier(), '%category%' => $category->getId()]
+            [
+                '%contact%' => $leadC->getPrimaryIdentifier(),
+                '%category%' => $category->getId(),
+            ]
         );
         $this->assertSame($unsubscribedLog, $metaData[$leadC->getId()], 'here 2');
     }

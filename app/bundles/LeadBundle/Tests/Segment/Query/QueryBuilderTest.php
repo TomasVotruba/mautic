@@ -104,7 +104,10 @@ class QueryBuilderTest extends TestCase
     public function testGetSQLInsert(): void
     {
         $this->queryBuilder->insert('table1')
-            ->values(['name' => 'Jack', 'enabled' => 1]);
+            ->values([
+                'name' => 'Jack',
+                'enabled' => 1,
+            ]);
         $this->assertSQL('INSERT INTO table1 (name, enabled) VALUES(Jack, 1)', 2);
     }
 

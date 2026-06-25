@@ -44,7 +44,10 @@ class MonitoringController extends FormController
         $search = $request->get('search', $session->get('mautic.social.monitoring.filter', ''));
         $session->set('mautic.social.monitoring.filter', $search);
 
-        $filter = ['string' => $search, 'force' => []];
+        $filter = [
+            'string' => $search,
+            'force' => [],
+        ];
 
         $orderBy    = $session->get('mautic.social.monitoring.orderby', 'e.title');
         $orderByDir = $session->get('mautic.social.monitoring.orderbydir', 'DESC');
@@ -68,12 +71,16 @@ class MonitoringController extends FormController
                 $lastPage = (floor($limit / $count)) ?: 1;
             }
             $session->set('mautic.social.monitoring.page', $lastPage);
-            $returnUrl = $this->generateUrl('mautic_social_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_social_index', [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'MauticPlugin\MauticSocialBundle\Controller\MonitoringController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_social_index',
@@ -102,7 +109,9 @@ class MonitoringController extends FormController
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_social_index',
                     'mauticContent' => 'monitoring',
-                    'route'         => $this->generateUrl('mautic_social_index', ['page' => $page]),
+                    'route'         => $this->generateUrl('mautic_social_index', [
+                        'page' => $page,
+                    ]),
                 ],
             ]
         );
@@ -117,7 +126,9 @@ class MonitoringController extends FormController
             $this->throwAccessDenied();
         }
 
-        $action = $this->generateUrl('mautic_social_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_social_action', [
+            'objectAction' => 'new',
+        ]);
 
         $entity  = $model->getEntity();
         $method  = $request->getMethod();
@@ -147,7 +158,9 @@ class MonitoringController extends FormController
         $page = $session->get('mautic.social.monitoring.page', 1);
         // /Check for a submitted form and process it
         if ('POST' === $method) {
-            $viewParameters = ['page' => $page];
+            $viewParameters = [
+                'page' => $page,
+            ];
             $template       = 'MauticPlugin\MauticSocialBundle\Controller\MonitoringController::indexAction';
             $valid          = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -234,7 +247,10 @@ class MonitoringController extends FormController
             $this->throwAccessDenied();
         }
 
-        $action = $this->generateUrl('mautic_social_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_social_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
 
         /** @var MonitoringModel $model */
         $model = $this->getModel('social.monitoring');
@@ -246,11 +262,15 @@ class MonitoringController extends FormController
         $page = $session->get('mautic.social.monitoring.page', 1);
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_social_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_social_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'MauticSocial:Monitoring:index',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_social_index',
@@ -268,7 +288,9 @@ class MonitoringController extends FormController
                             [
                                 'type'    => 'error',
                                 'msg'     => 'mautic.social.monitoring.error.notfound',
-                                'msgVars' => ['%id%' => $objectId],
+                                'msgVars' => [
+                                    '%id%' => $objectId,
+                                ],
                             ],
                         ],
                     ]
@@ -406,12 +428,16 @@ class MonitoringController extends FormController
 
         if (null === $monitoringEntity) {
             // set the return URL
-            $returnUrl = $this->generateUrl('mautic_social_index', ['page' => $page]);
+            $returnUrl = $this->generateUrl('mautic_social_index', [
+                'page' => $page,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => [
+                        'page' => $page,
+                    ],
                     'contentTemplate' => 'MauticPlugin\MauticSocialBundle\Controller\MonitoringController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_social_index',
@@ -421,7 +447,9 @@ class MonitoringController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.social.monitoring.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -443,7 +471,9 @@ class MonitoringController extends FormController
 
         // Init the date range filter form
         $dateRangeValues = $request->get('daterange', []);
-        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $returnUrl]);
+        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $returnUrl,
+        ]);
         $dateFrom        = new \DateTime($dateRangeForm['date_from']->getData());
         $dateTo          = new \DateTime($dateRangeForm['date_to']->getData());
 
@@ -451,7 +481,9 @@ class MonitoringController extends FormController
         $leadStats = $postCountRepo->getLeadStatsPost(
             $dateFrom,
             $dateTo,
-            ['monitor_id' => $monitoringEntity->getId()]
+            [
+                'monitor_id' => $monitoringEntity->getId(),
+            ]
         );
         $chart->setDataset($this->translator->trans('mautic.social.twitter.tweet.count'), $leadStats);
 
@@ -499,12 +531,16 @@ class MonitoringController extends FormController
 
         $session   = $request->getSession();
         $page      = $session->get('mautic.social.monitoring.page', 1);
-        $returnUrl = $this->generateUrl('mautic_social_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_social_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'MauticPlugin\MauticSocialBundle\Controller\MonitoringController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_social_index',
@@ -521,7 +557,9 @@ class MonitoringController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.social.monitoring.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'plugin.mauticSocial.monitoring');
@@ -564,12 +602,16 @@ class MonitoringController extends FormController
 
         $session   = $request->getSession();
         $page      = $session->get('mautic.social.monitoring.page', 1);
-        $returnUrl = $this->generateUrl('mautic_social_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_social_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'MauticPlugin\MauticSocialBundle\Controller\MonitoringController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_social_index',
@@ -592,7 +634,9 @@ class MonitoringController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.social.monitoring.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif ($model->isLocked($entity)) {
                     $flashes[] = $this->isLocked($postActionVars, $entity, 'monitoring', true);
@@ -659,7 +703,9 @@ class MonitoringController extends FormController
             'object'    => 'monitoring',
             'objectId'  => $monitoring->getId(),
             'action'    => $action,
-            'details'   => ['name' => $monitoring->getTitle()],
+            'details'   => [
+                'name' => $monitoring->getTitle(),
+            ],
             'ipAddress' => $ipLookupHelper->getIpAddressFromRequest(),
         ];
 

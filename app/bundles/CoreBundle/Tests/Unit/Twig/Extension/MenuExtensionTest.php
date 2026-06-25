@@ -35,8 +35,15 @@ class MenuExtensionTest extends AbstractMauticTestCase
         // create a menu and menu items to test with
         $factory = new MenuFactory();
         $menu    = $factory->createItem('My menu');
-        $menu->addChild('First item', ['uri' => '/']);
-        $menu->addChild('Second item', ['uri' => '/', 'attributes' => ['class' => 'test-class']]);
+        $menu->addChild('First item', [
+            'uri' => '/',
+        ]);
+        $menu->addChild('Second item', [
+            'uri' => '/',
+            'attributes' => [
+                'class' => 'test-class',
+            ],
+        ]);
 
         $matcher        = null;
         $options        = [];
@@ -50,12 +57,18 @@ class MenuExtensionTest extends AbstractMauticTestCase
 
         // test an item with an inherrent class
         Assert::assertArrayHasKey('class', $menuExtension->buildMenuClasses($itemSecond, $matcher, $options, $extraClasses));
-        Assert::assertEquals(['class' => 'test-class'], $menuExtension->buildMenuClasses($itemSecond, $matcher, $options, $extraClasses));
+        Assert::assertEquals([
+            'class' => 'test-class',
+        ], $menuExtension->buildMenuClasses($itemSecond, $matcher, $options, $extraClasses));
 
         // test an item with an 'extra' class
         $extraClasses = 'extra-class';
         Assert::assertArrayHasKey('class', $menuExtension->buildMenuClasses($itemFirst, $matcher, $options, $extraClasses));
-        Assert::assertEquals(['class' => 'extra-class'], $menuExtension->buildMenuClasses($itemFirst, $matcher, $options, $extraClasses));
-        Assert::assertEquals(['class' => 'test-class extra-class'], $menuExtension->buildMenuClasses($itemSecond, $matcher, $options, $extraClasses));
+        Assert::assertEquals([
+            'class' => 'extra-class',
+        ], $menuExtension->buildMenuClasses($itemFirst, $matcher, $options, $extraClasses));
+        Assert::assertEquals([
+            'class' => 'test-class extra-class',
+        ], $menuExtension->buildMenuClasses($itemSecond, $matcher, $options, $extraClasses));
     }
 }

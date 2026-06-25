@@ -91,7 +91,9 @@ EOT
             foreach ($stringFiles as $file) {
                 $name     = $bundle.' '.str_replace('.ini', '', basename($file));
                 $resource = UrlHelper::stringURLUnicodeSlug($name);
-                $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_resource', ['%resource%' => $name]));
+                $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_resource', [
+                    '%resource%' => $name,
+                ]));
 
                 try {
                     $response      = $statistics->getLanguageStats($resource);
@@ -108,7 +110,9 @@ EOT
                             continue;
                         }
 
-                        $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_language', ['%language%' => $language]));
+                        $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_language', [
+                            '%language%' => $language,
+                        ]));
 
                         $completed = $stats['attributes']['translated_strings'] / $stats['attributes']['total_strings'];
 
@@ -125,7 +129,9 @@ EOT
                         }
                     }
                 } catch (\Exception $exception) {
-                    $output->writeln($this->translator->trans('mautic.core.command.transifex_error_pulling_data', ['%message%' => $exception->getMessage()]));
+                    $output->writeln($this->translator->trans('mautic.core.command.transifex_error_pulling_data', [
+                        '%message%' => $exception->getMessage(),
+                    ]));
 
                     return Command::FAILURE;
                 }

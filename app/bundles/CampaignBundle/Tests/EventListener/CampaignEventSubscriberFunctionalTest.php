@@ -31,7 +31,9 @@ class CampaignEventSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Schedule the first campaign event.
-        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         $output        = $commandTester->getDisplay();
         self::assertStringContainsString('150 total events were executed', $output);
 
@@ -135,7 +137,9 @@ class CampaignEventSubscriberFunctionalTest extends MauticMysqlTestCase
                 'to'        => '',
                 'cc'        => '',
                 'bcc'       => '',
-                'useremail' => ['email' => $emailId],
+                'useremail' => [
+                    'email' => $emailId,
+                ],
             ]
         );
         $event->setTriggerInterval(1);

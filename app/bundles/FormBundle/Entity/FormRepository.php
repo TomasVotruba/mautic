@@ -124,7 +124,9 @@ class FormRepository extends CommonRepository
                     $q->expr()->neq('f.publishDown', $q->expr()->literal('')),
                     $q->expr()->lt('f.publishDown', 'CURRENT_TIMESTAMP()')
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.form.form.searchcommand.ispending'):
             case $this->translator->trans('mautic.form.form.searchcommand.ispending', [], null, 'en_US'):
@@ -134,7 +136,9 @@ class FormRepository extends CommonRepository
                     $q->expr()->neq('f.publishUp', $q->expr()->literal('')),
                     $q->expr()->gt('f.publishUp', 'CURRENT_TIMESTAMP()')
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.form.form.searchcommand.hasresults'):
             case $this->translator->trans('mautic.form.form.searchcommand.hasresults', [], null, 'en_US'):
@@ -176,7 +180,9 @@ class FormRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [

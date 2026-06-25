@@ -30,7 +30,10 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
 
     public function testAuthenticateWithExistingUser(): void
     {
-        $request = new Request([], ['username' => 'testuser', 'password' => 'password']);
+        $request = new Request([], [
+            'username' => 'testuser',
+            'password' => 'password',
+        ]);
         $request->setSession(new Session(new MockArraySessionStorage()));
         $user    = new User();
         $user->setUsername('testuser');
@@ -74,7 +77,10 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
     {
         $this->expectException(UserNotFoundException::class);
 
-        $request = new Request([], ['username' => 'testuser', 'password' => 'password']);
+        $request = new Request([], [
+            'username' => 'testuser',
+            'password' => 'password',
+        ]);
         $request->setSession(new Session(new MockArraySessionStorage()));
 
         /** @var UserProviderInterface|\PHPUnit\Framework\MockObject\MockObject $userProvider */

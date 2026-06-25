@@ -97,7 +97,9 @@ class SalesforceApiTest extends \PHPUnit\Framework\TestCase
                 ],
                 [
                     [
-                        ['success' => true],
+                        [
+                            'success' => true,
+                        ],
                     ],
                 ]
             );
@@ -160,7 +162,9 @@ class SalesforceApiTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 [
-                    ['success' => true],
+                    [
+                        'success' => true,
+                    ],
                 ]
             );
 
@@ -496,7 +500,11 @@ class SalesforceApiTest extends \PHPUnit\Framework\TestCase
 
         $integration->method('getEntityManager')->willReturn($entityManager);
         $integration->method('getIntegrationSettings')->willReturn($entity);
-        $entity->method('getFeatureSettings')->willReturn(['leadFields' => ['extraField__Lead' => '']]);
+        $entity->method('getFeatureSettings')->willReturn([
+            'leadFields' => [
+                'extraField__Lead' => '',
+            ],
+        ]);
 
         $this->expectException(ApiErrorException::class);
         $integration->expects($this->atLeastOnce())

@@ -104,7 +104,9 @@ class AjaxController extends CommonController
             return $this->executeAjaxAction($request, $action, $bundleName);
         }
 
-        return $this->sendJsonResponse(['success' => 0]);
+        return $this->sendJsonResponse([
+            'success' => 0,
+        ]);
     }
 
     /**
@@ -127,12 +129,16 @@ class AjaxController extends CommonController
             );
         }
 
-        return $this->sendJsonResponse(['success' => 0]);
+        return $this->sendJsonResponse([
+            'success' => 0,
+        ]);
     }
 
     public function globalSearchAction(Request $request): JsonResponse
     {
-        $dataArray = ['success' => 1];
+        $dataArray = [
+            'success' => 1,
+        ];
         $searchStr = $request->query->get('global_search', '');
         $request->getSession()->set('mautic.global_search', $searchStr);
 
@@ -141,7 +147,9 @@ class AjaxController extends CommonController
 
         $dataArray['newContent'] = $this->renderView(
             '@MauticCore/GlobalSearch/results.html.twig',
-            ['results' => $event->getResults()]
+            [
+                'results' => $event->getResults(),
+            ]
         );
 
         return $this->sendJsonResponse($dataArray);
@@ -159,13 +167,17 @@ class AjaxController extends CommonController
                     $command = $translator->trans($k);
                     $command = (!str_contains($command, ':')) ? $command.':' : $command;
 
-                    $dataArray[$command.$translator->trans($subc)] = ['value' => $command.$translator->trans($subc)];
+                    $dataArray[$command.$translator->trans($subc)] = [
+                        'value' => $command.$translator->trans($subc),
+                    ];
                 }
             } else {
                 $command = $translator->trans($c);
                 $command = (!str_contains($command, ':')) ? $command.':' : $command;
 
-                $dataArray[$command] = ['value' => $command];
+                $dataArray[$command] = [
+                    'value' => $command,
+                ];
             }
         }
         sort($dataArray);
@@ -191,7 +203,9 @@ class AjaxController extends CommonController
                     foreach ($c as $subc) {
                         $subcommand = $command.$translator->trans($subc);
                         if (!in_array($subcommand, $dupChecker)) {
-                            $dataArray[]  = ['value' => $subcommand];
+                            $dataArray[]  = [
+                                'value' => $subcommand,
+                            ];
                             $dupChecker[] = $subcommand;
                         }
                     }
@@ -200,7 +214,9 @@ class AjaxController extends CommonController
                     $command = (!str_contains($command, ':')) ? $command.':' : $command;
 
                     if (!in_array($command, $dupChecker)) {
-                        $dataArray[]  = ['value' => $command];
+                        $dataArray[]  = [
+                            'value' => $command,
+                        ];
                         $dupChecker[] = $command;
                     }
                 }
@@ -215,7 +231,9 @@ class AjaxController extends CommonController
 
     public function togglePublishStatusAction(Request $request): JsonResponse
     {
-        $dataArray      = ['success' => 0];
+        $dataArray      = [
+            'success' => 0,
+        ];
         $name           = InputHelper::clean($request->request->get('model'));
         $id             = InputHelper::clean($request->request->get('id'));
         $customToggle   = InputHelper::clean($request->request->get('customToggle'));
@@ -300,7 +318,9 @@ class AjaxController extends CommonController
      */
     public function unlockEntityAction(Request $request): JsonResponse
     {
-        $dataArray   = ['success' => 0];
+        $dataArray   = [
+            'success' => 0,
+        ];
         $name        = InputHelper::clean($request->request->get('model'));
         $id          = (int) $request->request->get('id');
         $extra       = InputHelper::clean($request->request->all()['parameter']);
@@ -329,7 +349,9 @@ class AjaxController extends CommonController
         $model = $this->getModel('core.notification');
         $model->clearNotification($id, 200);
 
-        return $this->sendJsonResponse(['success' => 1]);
+        return $this->sendJsonResponse([
+            'success' => 1,
+        ]);
     }
 
     public function getBuilderTokensAction(Request $request, TokenSorter $tokenSorter): JsonResponse
@@ -353,7 +375,9 @@ class AjaxController extends CommonController
      */
     public function downloadIpLookupDataStoreAction(Request $request, IpLookupFactory $ipServiceFactory): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         if ($request->request->has('service')) {
             $serviceName = $request->request->get('service');
@@ -394,7 +418,10 @@ class AjaxController extends CommonController
      */
     public function getIpLookupFormAction(Request $request, FormFactoryInterface $formFactory, IpLookupFactory $ipServiceFactory): JsonResponse
     {
-        $dataArray = ['html' => '', 'attribution' => ''];
+        $dataArray = [
+            'html' => '',
+            'attribution' => '',
+        ];
 
         if ($request->request->has('service')) {
             $serviceName = $request->request->get('service');
@@ -408,7 +435,9 @@ class AjaxController extends CommonController
                         $themes   = $ipService->getConfigFormThemes();
                         $themes[] = '@MauticCore/FormTheme/Config/config_layout.html.twig';
 
-                        $form = $formFactory->create($formType, [], ['ip_lookup_service' => $ipService]);
+                        $form = $formFactory->create($formType, [], [
+                            'ip_lookup_service' => $ipService,
+                        ]);
                         $html = $this->renderView(
                             '@MauticCore/FormTheme/Config/ip_lookup_config_row.html.twig',
                             [

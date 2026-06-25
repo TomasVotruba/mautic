@@ -44,7 +44,9 @@ class LogoutListener implements \Symfony\Component\EventDispatcher\EventSubscrib
      */
     public static function getSubscribedEvents(): array
     {
-        return [\Symfony\Component\Security\Http\Event\LogoutEvent::class => 'onLogout'];
+        return [
+            \Symfony\Component\Security\Http\Event\LogoutEvent::class => 'onLogout',
+        ];
     }
 
     public function onSymfonyComponentSecurityHttpEventLogoutEvent(\Symfony\Component\Security\Http\Event\LogoutEvent $logoutEvent): void

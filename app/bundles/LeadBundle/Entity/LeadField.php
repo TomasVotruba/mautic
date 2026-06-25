@@ -308,7 +308,9 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('label', new Assert\NotBlank(
-            ['message' => 'mautic.lead.field.label.notblank']
+            [
+                'message' => 'mautic.lead.field.label.notblank',
+            ]
         ));
 
         $metadata->addPropertyConstraint('label', new Assert\Length([

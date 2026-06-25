@@ -71,7 +71,9 @@ class PageSubscriber implements EventSubscriberInterface
             'object'    => 'page',
             'objectId'  => $page->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $page->getTitle()],
+            'details'   => [
+                'name' => $page->getTitle(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

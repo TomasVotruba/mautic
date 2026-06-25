@@ -116,7 +116,9 @@ final class ContactSegmentFilterFactoryFunctionalTest extends MauticMysqlTestCas
         $this->assertSame(0, $exitCode, 'Segment update command should complete successfully without TypeError: '.$applicationTester->getDisplay());
 
         // Verify segment membership - get all leads in the segment
-        $segmentMembers = $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]);
+        $segmentMembers = $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment->getId(),
+        ]);
         $memberLeadIds  = array_map(fn (ListLead $member) => $member->getLead()->getId(), $segmentMembers);
 
         // Leads matching the date filters should be in the segment

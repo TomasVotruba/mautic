@@ -88,7 +88,9 @@ class GrapesJsBuilderModel extends AbstractCommonModel
             return;
         }
 
-        $grapesJsBuilder = $this->getRepository()->findOneBy(['email' => $entity]);
+        $grapesJsBuilder = $this->getRepository()->findOneBy([
+            'email' => $entity,
+        ]);
 
         if (!$grapesJsBuilder) {
             $grapesJsBuilder = new GrapesJsBuilder();
@@ -211,7 +213,9 @@ class GrapesJsBuilderModel extends AbstractCommonModel
     public function getGrapesJsFromEmailId(?int $emailId)
     {
         if ($email = $this->emailModel->getEntity($emailId)) {
-            return $this->getRepository()->findOneBy(['email' => $email]);
+            return $this->getRepository()->findOneBy([
+                'email' => $email,
+            ]);
         }
     }
 }

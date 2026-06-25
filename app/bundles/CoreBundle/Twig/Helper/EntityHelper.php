@@ -48,6 +48,8 @@ class EntityHelper extends AbstractExtension
      */
     public function getEntities(string $entityName, array $ids): array
     {
-        return $this->entityManager->getRepository($entityName)->findBy(['id' => $ids]);
+        return $this->entityManager->getRepository($entityName)->findBy([
+            'id' => $ids,
+        ]);
     }
 }

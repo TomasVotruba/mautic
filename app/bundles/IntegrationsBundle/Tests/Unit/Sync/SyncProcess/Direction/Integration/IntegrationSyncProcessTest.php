@@ -65,7 +65,9 @@ class IntegrationSyncProcessTest extends TestCase
         $this->mappingHelper          = $this->createMock(MappingHelper::class);
         $this->objectChangeGenerator  = $this->createMock(ObjectChangeGenerator::class);
         $this->syncDataExchange       = $this->createMock(SyncDataExchangeInterface::class);
-        $this->inputOptionsDAO        = new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]);
+        $this->inputOptionsDAO        = new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]);
         $this->integrationSyncProcess = new IntegrationSyncProcess($this->syncDateHelper, $this->mappingHelper, $this->objectChangeGenerator);
     }
 
@@ -166,7 +168,11 @@ class IntegrationSyncProcessTest extends TestCase
         $syncOrder = $this->getSyncProcess($mappingManual)->getSyncOrder($syncReport);
 
         // The change should have been added to the order as an identified object
-        $this->assertEquals([$objectName => [2 => $objectChangeDAO]], $syncOrder->getIdentifiedObjects());
+        $this->assertEquals([
+            $objectName => [
+                2 => $objectChangeDAO,
+            ],
+        ], $syncOrder->getIdentifiedObjects());
     }
 
     private function getSyncProcess(MappingManualDAO $mappingManualDAO): IntegrationSyncProcess

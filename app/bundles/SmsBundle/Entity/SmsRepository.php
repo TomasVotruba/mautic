@@ -152,7 +152,9 @@ class SmsRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

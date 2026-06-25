@@ -81,7 +81,9 @@ final class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $targetActionLogsAfter = $this->em->getRepository(LeadEventLog::class)->findBy([
             'event' => $targetAction,
             'lead'  => $contact,
-        ], ['rotation' => 'ASC']);
+        ], [
+            'rotation' => 'ASC',
+        ]);
 
         // Verify that rotation was incremented
         if (count($targetActionLogsAfter) >= 2) {
@@ -384,7 +386,9 @@ final class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $event->setName($name);
         $event->setType('lead.changepoints');
         $event->setEventType(Event::TYPE_ACTION);
-        $event->setProperties(['points' => 10]);
+        $event->setProperties([
+            'points' => 10,
+        ]);
         $event->setTriggerMode(Event::TRIGGER_MODE_IMMEDIATE);
         $event->setOrder($parent ? 3 : 1);
 

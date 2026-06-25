@@ -12,7 +12,9 @@ return [
                 'path'       => '/marketplace/{page}',
                 'controller' => 'Mautic\MarketplaceBundle\Controller\Package\ListController::listAction',
                 'method'     => 'GET|POST',
-                'defaults'   => ['page' => 1],
+                'defaults'   => [
+                    'page' => 1,
+                ],
             ],
             RouteProvider::ROUTE_DETAIL => [
                 'path'       => '/marketplace/detail/{vendor}/{package}',

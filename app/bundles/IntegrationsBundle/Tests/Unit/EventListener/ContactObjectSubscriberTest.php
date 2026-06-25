@@ -127,12 +127,16 @@ class ContactObjectSubscriberTest extends TestCase
 
     public function testCreateContactsWithRightObject(): void
     {
-        $event = new InternalObjectCreateEvent(new Contact(), [['somefield' => 'somevalue']]);
+        $event = new InternalObjectCreateEvent(new Contact(), [[
+            'somefield' => 'somevalue',
+        ]]);
 
         $objectMapping = $this->createMock(ObjectMapping::class);
         $this->contactObjectHelper->expects($this->once())
             ->method('create')
-            ->with([['somefield' => 'somevalue']])
+            ->with([[
+                'somefield' => 'somevalue',
+            ]])
             ->willReturn([$objectMapping]);
 
         $this->subscriber->createContacts($event);
@@ -260,11 +264,15 @@ class ContactObjectSubscriberTest extends TestCase
     {
         $event = new InternalObjectFindEvent(new Contact());
 
-        $event->setFieldValues(['field_a' => 123]);
+        $event->setFieldValues([
+            'field_a' => 123,
+        ]);
 
         $this->contactObjectHelper->expects($this->once())
             ->method('findObjectsByFieldValues')
-            ->with(['field_a' => 123])
+            ->with([
+                'field_a' => 123,
+            ])
             ->willReturn([['object_1']]);
 
         $this->subscriber->findContactsByFieldValues($event);

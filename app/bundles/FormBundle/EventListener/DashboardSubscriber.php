@@ -137,7 +137,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
                 // Build table rows with links
                 foreach ($submitters as &$submitter) {
                     $name    = $submitter['lead_id'];
-                    $leadUrl = $this->router->generate('mautic_contact_action', ['objectAction' => 'view', 'objectId' => $submitter['lead_id']]);
+                    $leadUrl = $this->router->generate('mautic_contact_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $submitter['lead_id'],
+                    ]);
                     if ($submitter['firstname'] || $submitter['lastname']) {
                         $name = trim($submitter['firstname'].' '.$submitter['lastname']);
                     } elseif ($submitter['email']) {
@@ -182,12 +185,17 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     $limit = $params['limit'];
                 }
 
-                $forms = $this->formModel->getFormList($limit, $params['dateFrom'], $params['dateTo'], [], ['canViewOthers' => true]);
+                $forms = $this->formModel->getFormList($limit, $params['dateFrom'], $params['dateTo'], [], [
+                    'canViewOthers' => true,
+                ]);
                 $items = [];
 
                 // Build table rows with links
                 foreach ($forms as &$form) {
-                    $formUrl = $this->router->generate('mautic_form_action', ['objectAction' => 'view', 'objectId' => $form['id']]);
+                    $formUrl = $this->router->generate('mautic_form_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $form['id'],
+                    ]);
                     $row     = [
                         [
                             'value' => $form['name'],

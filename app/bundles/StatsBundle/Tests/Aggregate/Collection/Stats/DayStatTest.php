@@ -38,7 +38,9 @@ class DayStatTest extends TestCase
     public function testGetStats(): void
     {
         $result = $this->dayStat->getStats();
-        $this->assertSame(["$this->day $this->hour" => $this->hourStat], $result);
+        $this->assertSame([
+            "$this->day $this->hour" => $this->hourStat,
+        ], $result);
     }
 
     public function testGetSum(): void

@@ -93,7 +93,16 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetLookupResultsWhenTypeIsClass(): void
     {
-        $entities = [['name' => 'Mautic', 'id' => 1, 'language' => 'cs'], ['name' => 'Mautic MMS', 'id' => 2, 'media' => ['test.jpg'], 'language' => 'cs']];
+        $entities = [[
+            'name' => 'Mautic',
+            'id' => 1,
+            'language' => 'cs',
+        ], [
+            'name' => 'Mautic MMS',
+            'id' => 2,
+            'media' => ['test.jpg'],
+            'language' => 'cs',
+        ]];
 
         /** @var MockObject|SmsRepository $repositoryMock */
         $repositoryMock = $this->createMock(SmsRepository::class);
@@ -208,7 +217,9 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
                 });
         }
 
-        $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);
+        $results = $smsModel->sendSms($sms, [$lead1, $lead2], [
+            'channel' => ['campaign.event', 1],
+        ]);
         $this->assertCount(2, $results);
     }
 

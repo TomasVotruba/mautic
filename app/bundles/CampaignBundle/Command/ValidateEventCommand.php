@@ -76,7 +76,9 @@ class ValidateEventCommand extends Command
         if (!$contactIds && !$contactId) {
             $output->writeln(
                 "\n".
-                '<comment>'.$this->translator->trans('mautic.campaign.trigger.events_executed', ['%count%' => 0])
+                '<comment>'.$this->translator->trans('mautic.campaign.trigger.events_executed', [
+                    '%count%' => 0,
+                ])
                 .'</comment>'
             );
 

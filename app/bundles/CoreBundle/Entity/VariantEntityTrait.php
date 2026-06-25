@@ -47,7 +47,9 @@ trait VariantEntityTrait
 
         $builder->createOneToMany('variantChildren', $entityClass)
             ->setIndexBy('id')
-            ->setOrderBy(['isPublished' => 'DESC'])
+            ->setOrderBy([
+                'isPublished' => 'DESC',
+            ])
             ->mappedBy('variantParent')
             ->build();
 

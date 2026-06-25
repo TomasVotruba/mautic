@@ -72,7 +72,10 @@ class ExportHelper
             return $this->exportAsCsv($data, $filename);
         }
 
-        throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.specific.export.type', ['%type%' => $type, '%expected_type%' => self::EXPORT_TYPE_EXCEL]));
+        throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.specific.export.type', [
+            '%type%' => $type,
+            '%expected_type%' => self::EXPORT_TYPE_EXCEL,
+        ]));
     }
 
     public function exportDataIntoFile(IteratorExportDataModel $data, string $type, string $fileName): string
@@ -85,7 +88,10 @@ class ExportHelper
             return $this->exportAsCsvIntoFile($data, $fileName);
         }
 
-        throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.specific.export.type', ['%type%' => $type, '%expected_type%' => self::EXPORT_TYPE_CSV]));
+        throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.specific.export.type', [
+            '%type%' => $type,
+            '%expected_type%' => self::EXPORT_TYPE_CSV,
+        ]));
     }
 
     public function zipFile(string $filePath, string $fileName): string

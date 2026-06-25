@@ -25,7 +25,9 @@ final class UserInviteType extends AbstractType
             EmailType::class,
             [
                 'label'      => 'mautic.user.invite.email.label',
-                'label_attr' => ['class' => 'sr-only'],
+                'label_attr' => [
+                    'class' => 'sr-only',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.user.invite.email.label',
@@ -46,7 +48,9 @@ final class UserInviteType extends AbstractType
             EntityType::class,
             [
                 'label'      => 'mautic.user.invite.role.label',
-                'label_attr' => ['class' => 'sr-only'],
+                'label_attr' => [
+                    'class' => 'sr-only',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],

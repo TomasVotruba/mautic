@@ -19,7 +19,9 @@ final class LeadListSearchFunctionalTest extends MauticMysqlTestCase
     /**
      * @var mixed[]
      */
-    protected array $clientOptions = ['debug' => true];
+    protected array $clientOptions = [
+        'debug' => true,
+    ];
 
     /** @noinspection SqlResolve */
     public function testSegmentSearch(): void

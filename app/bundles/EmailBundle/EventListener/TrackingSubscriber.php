@@ -32,7 +32,9 @@ class TrackingSubscriber implements EventSubscriberInterface
         }
 
         /** @var Stat $stat */
-        $stat = $this->statRepository->findOneBy(['trackingHash' => $clickthrough['stat']]);
+        $stat = $this->statRepository->findOneBy([
+            'trackingHash' => $clickthrough['stat'],
+        ]);
 
         if (!$stat) {
             // Stat doesn't exist so use the tracked lead

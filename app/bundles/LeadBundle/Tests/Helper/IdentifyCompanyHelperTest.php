@@ -46,7 +46,9 @@ class IdentifyCompanyHelperTest extends \PHPUnit\Framework\TestCase
 
         $model->expects($this->any())
             ->method('fetchCompanyFields')
-            ->willReturn([['alias' => 'companyname']]);
+            ->willReturn([[
+                'alias' => 'companyname',
+            ]]);
 
         $helper                     = new IdentifyCompanyHelper();
         $reflection                 = new \ReflectionClass(IdentifyCompanyHelper::class);
@@ -76,7 +78,9 @@ class IdentifyCompanyHelperTest extends \PHPUnit\Framework\TestCase
 
         $model->expects($this->any())
             ->method('fetchCompanyFields')
-            ->willReturn([['alias' => 'companyname']]);
+            ->willReturn([[
+                'alias' => 'companyname',
+            ]]);
 
         $helper                     = new IdentifyCompanyHelper();
         $reflection                 = new \ReflectionClass(IdentifyCompanyHelper::class);
@@ -108,7 +112,9 @@ class IdentifyCompanyHelperTest extends \PHPUnit\Framework\TestCase
 
         $model->expects($this->any())
             ->method('fetchCompanyFields')
-            ->willReturn([['alias' => 'companyname']]);
+            ->willReturn([[
+                'alias' => 'companyname',
+            ]]);
 
         $helper                     = new IdentifyCompanyHelper();
         $reflection                 = new \ReflectionClass(IdentifyCompanyHelper::class);

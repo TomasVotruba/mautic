@@ -24,7 +24,12 @@ final class MaxMindDoNotSellPurgeCommandTest extends TestCase
         parent::setUp();
 
         $ip = new IpAddress('123.123.123.123');
-        $ip->setIpDetails(['city' => 'Boston', 'region' => 'MA', 'country' => 'United States', 'zipcode' => '02113']);
+        $ip->setIpDetails([
+            'city' => 'Boston',
+            'region' => 'MA',
+            'country' => 'United States',
+            'zipcode' => '02113',
+        ]);
 
         $lead = new Lead();
         $lead->addIpAddress($ip);
@@ -34,7 +39,9 @@ final class MaxMindDoNotSellPurgeCommandTest extends TestCase
         $lead->setZipcode('02113');
 
         $this->mockLeadRepository = $this->createMock(LeadRepository::class);
-        $this->mockLeadRepository->method('findOneBy')->with(['id' => 1])->willReturn($lead);
+        $this->mockLeadRepository->method('findOneBy')->with([
+            'id' => 1,
+        ])->willReturn($lead);
     }
 
     public function testCommandDryRun(): void
@@ -45,7 +52,9 @@ final class MaxMindDoNotSellPurgeCommandTest extends TestCase
         $command       = new MaxMindDoNotSellPurgeCommand($mockEntityManager, $this->mockLeadRepository, $mockDoNotSellList);
         $commandTester = new CommandTester($command);
 
-        $result = $commandTester->execute(['--dry-run' => true]);
+        $result = $commandTester->execute([
+            '--dry-run' => true,
+        ]);
         $output = $commandTester->getDisplay();
 
         $this->assertStringContainsString('Dry run; skipping purge', $output);
@@ -72,7 +81,10 @@ final class MaxMindDoNotSellPurgeCommandTest extends TestCase
 
     public function testPurge(): void
     {
-        $mockEntityManager = $this->buildMockEntityManager([['id' => 1, 'ip_address' => '123.123.123.123']]);
+        $mockEntityManager = $this->buildMockEntityManager([[
+            'id' => 1,
+            'ip_address' => '123.123.123.123',
+        ]]);
         $mockDoNotSellList = $this->createMock(MaxMindDoNotSellList::class);
 
         $command       = new MaxMindDoNotSellPurgeCommand($mockEntityManager, $this->mockLeadRepository, $mockDoNotSellList);

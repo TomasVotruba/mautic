@@ -23,7 +23,9 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
     public function testGetWhereReturnsCompositeExpression(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);
-        $filterCrate   = new ContactSegmentFilterCrate(['field' => 'last_active']);
+        $filterCrate   = new ContactSegmentFilterCrate([
+            'field' => 'last_active',
+        ]);
 
         // Configure DateDecorator mock to return CompositeExpression
         $dateDecorator->expects($this->once())
@@ -42,7 +44,9 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
     public function testGetWhereReturnsString(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);
-        $filterCrate   = new ContactSegmentFilterCrate(['field' => 'last_active']);
+        $filterCrate   = new ContactSegmentFilterCrate([
+            'field' => 'last_active',
+        ]);
 
         // Configure to return string
         $dateDecorator->expects($this->once())
@@ -60,7 +64,9 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
     public function testGetWhereReturnsNull(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);
-        $filterCrate   = new ContactSegmentFilterCrate(['field' => 'last_active']);
+        $filterCrate   = new ContactSegmentFilterCrate([
+            'field' => 'last_active',
+        ]);
 
         // Configure to return null
         $dateDecorator->expects($this->once())

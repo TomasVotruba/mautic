@@ -26,7 +26,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $report = $this->createReport(
             source: 'leads',
             columns: ['l.id', 'dnc_preferences'],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -66,7 +69,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     ],
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -102,7 +108,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     'value'     => ['email:'.DoNotContact::BOUNCED], // Exclude bounced emails
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -137,7 +146,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     'value'     => [], // Empty value as we're looking for contacts without DNC
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -171,7 +183,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     'value'     => [], // Empty value as we're looking for any contacts with DNC
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -192,7 +207,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $report = $this->createReport(
             source: 'leads',
             columns: ['l.id', 'l.generated_email_domain'],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [

@@ -16,7 +16,9 @@ class FullContact_Icon extends FullContact_Base
 
     public function available()
     {
-        $this->_execute(['method' => 'available']);
+        $this->_execute([
+            'method' => 'available',
+        ]);
 
         return $this->response_obj;
     }

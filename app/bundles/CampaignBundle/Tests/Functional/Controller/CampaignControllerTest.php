@@ -84,7 +84,9 @@ class CampaignControllerTest extends MauticMysqlTestCase
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
-        $adminUser      = $userRepository->findOneBy(['username' => 'admin']);
+        $adminUser      = $userRepository->findOneBy([
+            'username' => 'admin',
+        ]);
 
         // create users
         $nonAdminUser = $this->createUserWithPermission([
@@ -121,13 +123,18 @@ class CampaignControllerTest extends MauticMysqlTestCase
         $this->createEvent('Add 10 points', $this->campaign,
             'lead.changepoints',
             'action',
-            ['points' => 10]
+            [
+                'points' => 10,
+            ]
         );
 
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $this->campaign->getId(), '-vv']);
+        $this->testSymfonyCommand('mautic:campaigns:update', [
+            '--campaign-id' => $this->campaign->getId(),
+            '-vv',
+        ]);
 
         return $nonAdminUser;
     }

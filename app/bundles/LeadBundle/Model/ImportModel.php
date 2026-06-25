@@ -109,7 +109,11 @@ class ImportModel extends FormModel
 
         return '<a href="'.$this->router->generate(
             'mautic_import_action',
-            ['objectAction' => 'view', 'object' => 'lead', 'objectId' => $import->getId()]
+            [
+                'objectAction' => 'view',
+                'object' => 'lead',
+                'objectId' => $import->getId(),
+            ]
         ).'" data-toggle="ajax">'.$linkText.'</a>';
     }
 
@@ -128,18 +132,24 @@ class ImportModel extends FormModel
 
         foreach ($imports as $import) {
             $import->setStatus($import::FAILED)
-                ->setStatusInfo($this->translator->trans('mautic.lead.import.ghost.limit.hit', ['%limit%' => $ghostDelay]))
+                ->setStatusInfo($this->translator->trans('mautic.lead.import.ghost.limit.hit', [
+                    '%limit%' => $ghostDelay,
+                ]))
                 ->removeFile();
 
             if ($import->getCreatedBy()) {
                 $this->notificationModel->addNotification(
                     $this->translator->trans(
                         'mautic.lead.import.result.info',
-                        ['%import%' => $this->generateLink($import)]
+                        [
+                            '%import%' => $this->generateLink($import),
+                        ]
                     ),
                     'info',
                     false,
-                    $this->translator->trans('mautic.lead.import.failed', ['%reason%' =>  $import->getStatusInfo()]),
+                    $this->translator->trans('mautic.lead.import.failed', [
+                        '%reason%' =>  $import->getStatusInfo(),
+                    ]),
                     'ri-download-line',
                     null,
                     $this->em->getReference(\Mautic\UserBundle\Entity\User::class, $import->getCreatedBy())
@@ -178,7 +188,9 @@ class ImportModel extends FormModel
         if (!$this->checkParallelImportLimit()) {
             $info = $this->translator->trans(
                 'mautic.lead.import.parallel.limit.hit',
-                ['%limit%' => $this->getParallelImportLimit()]
+                [
+                    '%limit%' => $this->getParallelImportLimit(),
+                ]
             );
             $import->setStatus($import::DELAYED)->setStatusInfo($info);
             $this->saveEntity($import);
@@ -213,7 +225,9 @@ class ImportModel extends FormModel
             // The EntityManager is probably closed. The entity cannot be saved.
             $info = $this->translator->trans(
                 'mautic.lead.import.database.exception',
-                ['%message%' => $e->getMessage()]
+                [
+                    '%message%' => $e->getMessage(),
+                ]
             );
 
             $import->setStatus($import::DELAYED)->setStatusInfo($info);
@@ -546,7 +560,9 @@ class ImportModel extends FormModel
             return null;
         }
 
-        return $this->getEventLogRepository()->getFailedRows($importId, ['select' => 'properties,id'], $object);
+        return $this->getEventLogRepository()->getFailedRows($importId, [
+            'select' => 'properties,id',
+        ], $object);
     }
 
     /**

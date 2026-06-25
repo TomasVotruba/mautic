@@ -158,7 +158,9 @@ class TagModel extends FormModel
 
         $connection->executeStatement(
             sprintf('DELETE FROM %slead_tags_xref WHERE tag_id = :secondaryTagId', MAUTIC_TABLE_PREFIX),
-            ['secondaryTagId' => (int) $secondaryTag->getId()],
+            [
+                'secondaryTagId' => (int) $secondaryTag->getId(),
+            ],
         );
     }
 
@@ -168,19 +170,25 @@ class TagModel extends FormModel
         $secondaryTagId = (int) $secondaryTag->getId();
 
         $this->replaceTagPropertiesInEntities(
-            $this->em->getRepository(CampaignEvent::class)->findBy(['type' => ['lead.changetags', 'lead.tags']]),
+            $this->em->getRepository(CampaignEvent::class)->findBy([
+                'type' => ['lead.changetags', 'lead.tags'],
+            ]),
             $primaryTag,
             $secondaryTag,
         );
 
         $this->replaceTagPropertiesInEntities(
-            $this->em->getRepository(Action::class)->findBy(['type' => 'lead.changetags']),
+            $this->em->getRepository(Action::class)->findBy([
+                'type' => 'lead.changetags',
+            ]),
             $primaryTag,
             $secondaryTag,
         );
 
         $this->replaceTagPropertiesInEntities(
-            $this->em->getRepository(TriggerEvent::class)->findBy(['type' => 'lead.changetags']),
+            $this->em->getRepository(TriggerEvent::class)->findBy([
+                'type' => 'lead.changetags',
+            ]),
             $primaryTag,
             $secondaryTag,
         );

@@ -29,7 +29,9 @@ final class CampaignAuditLogTest extends MauticMysqlTestCase
         $event->setType('lead.changepoints');
         $event->setEventType('action');
         $event->setOrder(1);
-        $event->setProperties(['points' => 21]);
+        $event->setProperties([
+            'points' => 21,
+        ]);
         $event->setTriggerMode('date');
         $event->setTriggerDate(new \DateTime('2023-09-27 21:37'));
         $event->setCampaign($campaign);
@@ -46,7 +48,9 @@ final class CampaignAuditLogTest extends MauticMysqlTestCase
 
         // 2.b Get the event edit form.
         $uri = "/s/campaigns/events/edit/{$eventId}?campaignId={$campaignId}&anchor=leadsource";
-        $this->client->xmlHttpRequest('GET', $uri, ['modifiedEvents' => json_encode($modifiedEvents)]);
+        $this->client->xmlHttpRequest('GET', $uri, [
+            'modifiedEvents' => json_encode($modifiedEvents),
+        ]);
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
 
@@ -110,7 +114,9 @@ final class CampaignAuditLogTest extends MauticMysqlTestCase
         );
 
         $this->assertStringContainsString(
-            $translator->trans('mautic.campaign.changelog.event_updated_details', ['%event_id%' => $eventId]),
+            $translator->trans('mautic.campaign.changelog.event_updated_details', [
+                '%event_id%' => $eventId,
+            ]),
             $this->client->getResponse()->getContent()
         );
     }

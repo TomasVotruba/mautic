@@ -80,7 +80,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -127,7 +129,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['callback' => [self::class, 'bogusCallback']]);
+            ->willReturn([
+                'callback' => [self::class, 'bogusCallback'],
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -172,7 +176,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -180,7 +186,9 @@ class LegacyEventDispatcherTest extends TestCase
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setEvent($event);
         $leadEventLog->setLead(new Lead());
-        $leadEventLog->setMetadata(['bar' => 'foo']);
+        $leadEventLog->setMetadata([
+            'bar' => 'foo',
+        ]);
 
         $logs = new ArrayCollection([$leadEventLog]);
 
@@ -199,7 +207,9 @@ class LegacyEventDispatcherTest extends TestCase
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
                     $this->assertSame('something', $eventName);
-                    $event->setResult(['foo' => 'bar']);
+                    $event->setResult([
+                        'foo' => 'bar',
+                    ]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
@@ -219,14 +229,19 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
 
-        $this->assertEquals(['bar' => 'foo', 'foo' => 'bar'], $leadEventLog->getMetadata());
+        $this->assertEquals([
+            'bar' => 'foo',
+            'foo' => 'bar',
+        ], $leadEventLog->getMetadata());
     }
 
     public function testFailedResultAsFalseIsProcessed(): void
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $lead     = new Lead();
         $event    = new Event();
@@ -235,7 +250,9 @@ class LegacyEventDispatcherTest extends TestCase
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setEvent($event);
         $leadEventLog->setLead($lead);
-        $leadEventLog->setMetadata(['bar' => 'foo']);
+        $leadEventLog->setMetadata([
+            'bar' => 'foo',
+        ]);
 
         $logs = new ArrayCollection([$leadEventLog]);
 
@@ -278,7 +295,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -304,7 +323,10 @@ class LegacyEventDispatcherTest extends TestCase
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
                     $this->assertSame('something', $eventName);
-                    $event->setResult(['result' => false, 'foo' => 'bar']);
+                    $event->setResult([
+                        'result' => false,
+                        'foo' => 'bar',
+                    ]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
@@ -328,7 +350,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -336,7 +360,9 @@ class LegacyEventDispatcherTest extends TestCase
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setEvent($event);
         $leadEventLog->setLead(new Lead());
-        $leadEventLog->setMetadata(['bar' => 'foo']);
+        $leadEventLog->setMetadata([
+            'bar' => 'foo',
+        ]);
 
         $logs = new ArrayCollection([$leadEventLog]);
 
@@ -355,7 +381,10 @@ class LegacyEventDispatcherTest extends TestCase
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
                     $this->assertSame('something', $eventName);
-                    $event->setResult(['failed' => 1, 'reason' => 'because']);
+                    $event->setResult([
+                        'failed' => 1,
+                        'reason' => 'because',
+                    ]);
                 }
 
                 return $event;
@@ -368,7 +397,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(2))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -376,7 +407,9 @@ class LegacyEventDispatcherTest extends TestCase
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setEvent($event);
         $leadEventLog->setLead(new Lead());
-        $leadEventLog->setMetadata(['bar' => 'foo']);
+        $leadEventLog->setMetadata([
+            'bar' => 'foo',
+        ]);
 
         $logs = new ArrayCollection([$leadEventLog]);
 
@@ -407,7 +440,9 @@ class LegacyEventDispatcherTest extends TestCase
     {
         $this->config->expects($this->exactly(1))
             ->method('getConfig')
-            ->willReturn(['eventName' => 'something']);
+            ->willReturn([
+                'eventName' => 'something',
+            ]);
 
         $event    = new Event();
         $campaign = new Campaign();
@@ -415,7 +450,9 @@ class LegacyEventDispatcherTest extends TestCase
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setEvent($event);
         $leadEventLog->setLead(new Lead());
-        $leadEventLog->setMetadata(['bar' => 'foo']);
+        $leadEventLog->setMetadata([
+            'bar' => 'foo',
+        ]);
 
         $logs = new ArrayCollection([$leadEventLog]);
 

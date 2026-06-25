@@ -201,11 +201,17 @@ class FieldType extends AbstractType
             TextType::class,
             [
                 'label'       => !empty($labelText) ? $labelText : 'mautic.form.field.form.label',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'constraints' => [
                     new Assert\NotBlank(
-                        ['message' => 'mautic.form.field.label.notblank']
+                        [
+                            'message' => 'mautic.form.field.label.notblank',
+                        ]
                     ),
                 ],
             ]
@@ -217,7 +223,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.form.field.form.alias',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.form.field.form.alias.tooltip',
@@ -246,8 +254,12 @@ class FieldType extends AbstractType
                 ('textarea' == $type) ? TextareaType::class : TextType::class,
                 [
                     'label'      => 'mautic.core.defaultvalue',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control',
+                    ],
                     'required'   => false,
                 ]
             );
@@ -259,7 +271,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.form.field.form.helpmessage',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.form.field.help.helpmessage',
@@ -285,7 +299,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.form.field.form.validationmsg',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'tooltip'      => $this->translator->trans('mautic.core.form.default').': '.$this->translator->trans('mautic.form.field.generic.required', [], 'validators'),
@@ -302,7 +318,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => $labelAttributesText ?? 'mautic.form.field.form.labelattr',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'     => 'form-control',
                         'tooltip'   => 'mautic.form.field.help.attr',
@@ -319,7 +337,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => $inputAttributesText ?? 'mautic.form.field.form.inputattr',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'     => 'form-control',
                         'tooltip'   => 'mautic.form.field.help.attr',
@@ -336,7 +356,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.form.field.form.container_attr',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'     => 'form-control',
                         'tooltip'   => 'mautic.form.field.help.container_attr',
@@ -353,7 +375,9 @@ class FieldType extends AbstractType
                 ChoiceType::class,
                 [
                     'label'      => 'mautic.form.field.form.field_width',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.form.field.help.field_width',
@@ -422,7 +446,9 @@ class FieldType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.form.field.form.show.after.x.submissions',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'tooltip'      => 'mautic.form.field.help.show.after.x.submissions',
@@ -476,7 +502,9 @@ class FieldType extends AbstractType
                     [
                         'choices'    => $this->objectCollector->getObjects()->toChoices(),
                         'label'      => 'mautic.form.field.form.mapped.object',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'    => 'form-control',
                             'tooltip'  => 'mautic.form.field.help.mapped.object',
@@ -503,7 +531,9 @@ class FieldType extends AbstractType
                             try {
                                 $field = $fields->getFieldByKey($val);
                                 if ($field->isListType()) {
-                                    return ['data-list-type' => 1];
+                                    return [
+                                        'data-list-type' => 1,
+                                    ];
                                 }
                             } catch (FieldNotFoundException) {
                             }
@@ -511,7 +541,9 @@ class FieldType extends AbstractType
                             return [];
                         },
                         'label'      => 'mautic.form.field.form.mapped.field',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'   => 'form-control',
                             'tooltip' => 'mautic.form.field.help.mapped.field',
@@ -569,7 +601,9 @@ class FieldType extends AbstractType
         // Put properties last so that the other values are available to form events
         $propertiesData = $options['data']['properties'] ?? [];
         if (!empty($options['customParameters'])) {
-            $formTypeOptions = array_merge($formTypeOptions, ['data' => $propertiesData]);
+            $formTypeOptions = array_merge($formTypeOptions, [
+                'data' => $propertiesData,
+            ]);
             $builder->add('properties', $customParams['formType'], $formTypeOptions);
         } else {
             switch ($type) {

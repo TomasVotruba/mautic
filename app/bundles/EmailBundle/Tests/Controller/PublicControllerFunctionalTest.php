@@ -128,7 +128,9 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $form = $crawler->filter('form')->form();
 
         // Unsubscribe from email.
-        $form->setValues(['lead_contact_frequency_rules[lead_channels][subscribed_channels][0]' => false]);
+        $form->setValues([
+            'lead_contact_frequency_rules[lead_channels][subscribed_channels][0]' => false,
+        ]);
 
         $this->assertStringContainsString('/email/unsubscribe/tracking_hash_unsubscribe_form_email', $form->getUri());
         $crawler = $this->client->submit($form);
@@ -143,7 +145,9 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         // Assert that the contact has the DNC record now.
         $dncRepository = $this->em->getRepository(DoNotContact::class);
         \assert($dncRepository instanceof DoNotContactRepository);
-        $dncRecords = $dncRepository->findBy(['lead' => $lead->getId()]);
+        $dncRecords = $dncRepository->findBy([
+            'lead' => $lead->getId(),
+        ]);
         Assert::assertCount(1, $dncRecords);
         Assert::assertSame(DoNotContact::UNSUBSCRIBED, $dncRecords[0]->getReason());
         Assert::assertSame('email', $dncRecords[0]->getChannel());
@@ -473,7 +477,9 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
         $this->assertStringContainsString($message, $clientResponse->getContent());
-        $doNotContacts       = $this->em->getRepository(DoNotContact::class)->findBy(['lead' => $this->leadId]);
+        $doNotContacts       = $this->em->getRepository(DoNotContact::class)->findBy([
+            'lead' => $this->leadId,
+        ]);
         $isAddedDoNotContact = (bool) count($doNotContacts);
         $addedDoNotContact   = $isAddedDoNotContact ? $doNotContacts[0] : null;
         $this->assertSame($addedRow, $isAddedDoNotContact);
@@ -640,7 +646,9 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $dncRepository = $this->em->getRepository(DoNotContact::class);
 
         /** @var DoNotContact[] $dncRecords */
-        $dncRecords = $dncRepository->findBy(['lead' => $lead]);
+        $dncRecords = $dncRepository->findBy([
+            'lead' => $lead,
+        ]);
 
         $this->assertCount(1, $dncRecords, 'Expected one DoNotContact record');
         $this->assertEquals(DoNotContact::UNSUBSCRIBED, $dncRecords[0]->getReason(), 'Expected reason to be UNSUBSCRIBED');

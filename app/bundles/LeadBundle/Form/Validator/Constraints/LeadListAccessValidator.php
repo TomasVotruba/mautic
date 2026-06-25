@@ -29,7 +29,9 @@ class LeadListAccessValidator extends ConstraintValidator
                 if (!isset($lists[$l->getId()])) {
                     $this->context->addViolation(
                         $constraint->message,
-                        ['%string%' => $l->getName()]
+                        [
+                            '%string%' => $l->getName(),
+                        ]
                     );
                     break;
                 }

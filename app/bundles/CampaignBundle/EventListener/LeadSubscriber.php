@@ -102,7 +102,9 @@ class LeadSubscriber implements EventSubscriberInterface
                     && !empty($log['metadata']['originalEventName'])) {
                     $label = $log['event_name'].' / '.$log['campaign_name'].
                         ' <span class="small">'.$this->translator->trans('mautic.campaign.event.redirected',
-                            ['%original%' => $log['metadata']['originalEventName']]).'</span>';
+                            [
+                                '%original%' => $log['metadata']['originalEventName'],
+                            ]).'</span>';
                 }
 
                 // Case 2: Event executed before being deleted - show "Deleted" label
@@ -138,7 +140,9 @@ class LeadSubscriber implements EventSubscriberInterface
                         $extra['parentDetails'] = $this->getParentDetails($parentEvent, $log);
 
                         $toolTipClass = 'yes' === $log['decision_path'] ? 'text-success' : 'text-danger';
-                        $toolTip      = $this->translator->trans('mautic.campaign.event.path.tooltip', ['%path%' => ucfirst($log['decision_path'])]);
+                        $toolTip      = $this->translator->trans('mautic.campaign.event.path.tooltip', [
+                            '%path%' => ucfirst($log['decision_path']),
+                        ]);
 
                         $label .= sprintf(' <i class="ri-node-tree %s" data-toggle="tooltip" title="%s"></i>', $toolTipClass, $toolTip);
                     }
@@ -156,7 +160,10 @@ class LeadSubscriber implements EventSubscriberInterface
                             'label' => $label,
                             'href'  => $this->router->generate(
                                 'mautic_campaign_action',
-                                ['objectAction' => 'view', 'objectId' => $log['campaign_id']]
+                                [
+                                    'objectAction' => 'view',
+                                    'objectId' => $log['campaign_id'],
+                                ]
                             ),
                         ],
                         'eventType'       => $eventTypeName,

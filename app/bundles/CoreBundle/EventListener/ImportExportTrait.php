@@ -39,8 +39,13 @@ trait ImportExportTrait
         }
 
         $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'uuids' => [],
+            ],
             'errors'                  => [],
         ];
 
@@ -53,7 +58,9 @@ trait ImportExportTrait
                 break;
             }
 
-            $existing = $repository->findOneBy(['uuid' => $item['uuid']]);
+            $existing = $repository->findOneBy([
+                'uuid' => $item['uuid'],
+            ]);
             if ($existing) {
                 $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->{'get'.ucfirst($nameField)}();
                 $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
@@ -65,13 +72,17 @@ trait ImportExportTrait
         foreach ($summary as $type => $data) {
             if ('errors' === $type) {
                 if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
+                    $event->setSummary('errors', [
+                        'messages' => $data,
+                    ]);
                 }
                 break;
             }
 
             if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [$entityName => $data]);
+                $event->setSummary($type, [
+                    $entityName => $data,
+                ]);
             }
         }
     }

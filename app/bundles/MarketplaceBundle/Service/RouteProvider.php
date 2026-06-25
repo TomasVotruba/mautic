@@ -25,14 +25,19 @@ class RouteProvider
 
     public function buildListRoute(int $page = 1): string
     {
-        return $this->router->generate(static::ROUTE_LIST, ['page' => $page]);
+        return $this->router->generate(static::ROUTE_LIST, [
+            'page' => $page,
+        ]);
     }
 
     public function buildDetailRoute(string $vendor, string $package): string
     {
         return $this->router->generate(
             static::ROUTE_DETAIL,
-            ['vendor' => $vendor, 'package' => $package]
+            [
+                'vendor' => $vendor,
+                'package' => $package,
+            ]
         );
     }
 
@@ -40,7 +45,10 @@ class RouteProvider
     {
         return $this->router->generate(
             static::ROUTE_DETAIL,
-            ['vendor' => $vendor, 'package' => $package]
+            [
+                'vendor' => $vendor,
+                'package' => $package,
+            ]
         );
     }
 
@@ -48,7 +56,10 @@ class RouteProvider
     {
         return $this->router->generate(
             static::ROUTE_REMOVE,
-            ['vendor' => $vendor, 'package' => $package]
+            [
+                'vendor' => $vendor,
+                'package' => $package,
+            ]
         );
     }
 

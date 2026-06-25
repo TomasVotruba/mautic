@@ -300,9 +300,18 @@ class FormModelFunctionalTest extends MauticMysqlTestCase
 
         $properties = [
             'list' => [
-                ['label' => 'a', 'value' => 'a'],
-                ['label' => 'b', 'value' => 'b'],
-                ['label' => 'c', 'value' => 'c'],
+                [
+                    'label' => 'a',
+                    'value' => 'a',
+                ],
+                [
+                    'label' => 'b',
+                    'value' => 'b',
+                ],
+                [
+                    'label' => 'c',
+                    'value' => 'c',
+                ],
             ],
         ];
         $field->setProperties($properties);

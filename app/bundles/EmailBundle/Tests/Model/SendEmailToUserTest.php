@@ -211,16 +211,25 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
             ->method('sendEmailToUser')
             ->willReturnCallback(function ($email, $users, $leadCredentials, $tokens, $assetAttachments, $saveStat, $to, $cc, $bcc): void {
                 $expectedUsers = [
-                    ['id' => 6],
-                    ['id' => 7],
-                    ['id' => 10], // owner ID
+                    [
+                        'id' => 6,
+                    ],
+                    [
+                        'id' => 7,
+                    ],
+                    [
+                        'id' => 10,
+                    ], // owner ID
                 ];
                 $this->assertInstanceOf(Email::class, $email);
                 $this->assertEquals($expectedUsers, $users);
                 $this->assertFalse($saveStat);
                 $this->assertEquals(['hello@there.com', 'bob@bobek.cz', 'default@email.com'], $to);
                 $this->assertEquals([], $cc);
-                $this->assertEquals([0 => 'hidden@translation.in', 2 => 'replaced.token@email.address'], $bcc);
+                $this->assertEquals([
+                    0 => 'hidden@translation.in',
+                    2 => 'replaced.token@email.address',
+                ], $bcc);
             });
 
         $config = [

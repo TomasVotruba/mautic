@@ -189,7 +189,9 @@ final class BuilderSubscriber implements EventSubscriberInterface
             $content = $this->handlePreferenceCenterReplacements($content, $params);
         }
 
-        if ($tokens = $this->tokenHelper->findPageTokens($content, ['source' => ['page', $page->getId()]])) {
+        if ($tokens = $this->tokenHelper->findPageTokens($content, [
+            'source' => ['page', $page->getId()],
+        ])) {
             $content = str_ireplace(array_keys($tokens), $tokens, $content);
         }
 
@@ -355,7 +357,9 @@ final class BuilderSubscriber implements EventSubscriberInterface
     {
         return $this->renderTemplate(
             '@MauticPage/SubscribedEvents/PageToken/langbar.html.twig',
-            ['pages' => $this->getRelatedPagesForLanguageBar($page)]
+            [
+                'pages' => $this->getRelatedPagesForLanguageBar($page),
+            ]
         );
     }
 

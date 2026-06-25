@@ -72,7 +72,9 @@ final class RemoveDeletedFilesStep implements StepInterface
         @chmod($path, 0644);
 
         $this->logger->error(
-            'UPDATE ERROR: '.$this->translator->trans('mautic.core.update.error.removing.file', ['%path%' => $file])
+            'UPDATE ERROR: '.$this->translator->trans('mautic.core.update.error.removing.file', [
+                '%path%' => $file,
+            ])
         );
     }
 }

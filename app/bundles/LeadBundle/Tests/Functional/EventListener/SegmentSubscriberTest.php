@@ -94,14 +94,18 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
                 'object'     => 'lead',
                 'type'       => 'text',
                 'operator'   => 'like',
-                'properties' => ['filter' => 'Contact'],
+                'properties' => [
+                    'filter' => 'Contact',
+                ],
             ],
         ];
         $segment   = $this->saveSegment('SegmentD', 'segment-d', $filters);
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+        ]);
 
         $listModel = $this->getContainer()->get('mautic.lead.model.list');
         \assert($listModel instanceof ListModel);

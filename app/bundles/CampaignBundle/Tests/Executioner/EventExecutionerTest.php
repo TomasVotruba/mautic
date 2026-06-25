@@ -119,7 +119,10 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
                 'description'          => 'mautic.email.campaign.event.send_descr',
                 'batchEventName'       => EmailEvents::ON_CAMPAIGN_BATCH_ACTION,
                 'formType'             => EmailSendType::class,
-                'formTypeOptions'      => ['update_select' => 'campaignevent_properties_email', 'with_email_types' => true],
+                'formTypeOptions'      => [
+                    'update_select' => 'campaignevent_properties_email',
+                    'with_email_types' => true,
+                ],
                 'formTheme'            => 'MauticEmailBundle:FormTheme\EmailSendList',
                 'channel'              => 'email',
                 'channelIdField'       => 'email',
@@ -225,7 +228,9 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $event->setEventType(ActionExecutioner::TYPE)
             ->setType(CampaignActionJumpToEventSubscriber::EVENT_NAME)
             ->setCampaign($campaign)
-            ->setProperties(['jumpToEvent' => 999]);
+            ->setProperties([
+                'jumpToEvent' => 999,
+            ]);
 
         $lead = $this->createMock(Lead::class);
         $lead->method('getId')

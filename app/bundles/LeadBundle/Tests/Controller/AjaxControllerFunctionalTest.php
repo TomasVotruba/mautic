@@ -53,7 +53,11 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         // Ensure the contact 1 is a campaign 1 member now.
         $this->assertSame(
-            [['lead_id' => (string) $contact->getId(), 'manually_added' => '1', 'manually_removed' => '0']],
+            [[
+                'lead_id' => (string) $contact->getId(),
+                'manually_added' => '1',
+                'manually_removed' => '0',
+            ]],
             $this->getMembersForCampaign($campaign->getId()),
             $this->client->getResponse()->getContent()
         );
@@ -74,7 +78,11 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $response       = json_decode($clientResponse->getContent(), true);
 
         // Ensure the contact 1 was removed as a member of campaign 1 member now.
-        $this->assertSame([['lead_id' => (string) $contact->getId(), 'manually_added' => '0', 'manually_removed' => '1']], $this->getMembersForCampaign($campaign->getId()));
+        $this->assertSame([[
+            'lead_id' => (string) $contact->getId(),
+            'manually_added' => '0',
+            'manually_removed' => '1',
+        ]], $this->getMembersForCampaign($campaign->getId()));
 
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $this->assertTrue(isset($response['success']), 'The response does not contain the `success` param.');
@@ -236,14 +244,18 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => 'in',
-                    'properties' => ['filter' => [$segmentB->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentB->getId()],
+                    ],
                 ], [
                     'object'     => 'lead',
                     'glue'       => 'or',
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => '!in',
-                    'properties' => ['filter' => [$segmentC->getId(), $segmentD->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentC->getId(), $segmentD->getId()],
+                    ],
                 ],
             ]
         );
@@ -256,7 +268,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => 'in',
-                    'properties' => ['filter' => [$segmentE->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentE->getId()],
+                    ],
                 ],
             ]
         );
@@ -274,27 +288,59 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                 'levels' => [
                     [
                         'nodes' => [
-                            ['id' => "0-{$segmentA->getId()}", 'name' => $segmentA->getName(), 'link' => "/s/segments/view/{$segmentA->getId()}"],
+                            [
+                                'id' => "0-{$segmentA->getId()}",
+                                'name' => $segmentA->getName(),
+                                'link' => "/s/segments/view/{$segmentA->getId()}",
+                            ],
                         ],
                     ],
                     [
                         'nodes' => [
-                            ['id' => "{$segmentA->getId()}-{$segmentB->getId()}", 'name' => $segmentB->getName(), 'link' => "/s/segments/view/{$segmentB->getId()}"],
-                            ['id' => "{$segmentA->getId()}-{$segmentC->getId()}", 'name' => $segmentC->getName(), 'link' => "/s/segments/view/{$segmentC->getId()}"],
-                            ['id' => "{$segmentA->getId()}-{$segmentD->getId()}", 'name' => $segmentD->getName(), 'link' => "/s/segments/view/{$segmentD->getId()}"],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentB->getId()}",
+                                'name' => $segmentB->getName(),
+                                'link' => "/s/segments/view/{$segmentB->getId()}",
+                            ],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentC->getId()}",
+                                'name' => $segmentC->getName(),
+                                'link' => "/s/segments/view/{$segmentC->getId()}",
+                            ],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentD->getId()}",
+                                'name' => $segmentD->getName(),
+                                'link' => "/s/segments/view/{$segmentD->getId()}",
+                            ],
                         ],
                     ],
                     [
                         'nodes' => [
-                            ['id' => "{$segmentC->getId()}-{$segmentE->getId()}", 'name' => $segmentE->getName(), 'link' => "/s/segments/view/{$segmentE->getId()}"],
+                            [
+                                'id' => "{$segmentC->getId()}-{$segmentE->getId()}",
+                                'name' => $segmentE->getName(),
+                                'link' => "/s/segments/view/{$segmentE->getId()}",
+                            ],
                         ],
                     ],
                 ],
                 'edges' => [
-                    ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentB->getId()}"],
-                    ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentC->getId()}"],
-                    ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentD->getId()}"],
-                    ['source' => "{$segmentA->getId()}-{$segmentC->getId()}", 'target' => "{$segmentC->getId()}-{$segmentE->getId()}"],
+                    [
+                        'source' => "0-{$segmentA->getId()}",
+                        'target' => "{$segmentA->getId()}-{$segmentB->getId()}",
+                    ],
+                    [
+                        'source' => "0-{$segmentA->getId()}",
+                        'target' => "{$segmentA->getId()}-{$segmentC->getId()}",
+                    ],
+                    [
+                        'source' => "0-{$segmentA->getId()}",
+                        'target' => "{$segmentA->getId()}-{$segmentD->getId()}",
+                    ],
+                    [
+                        'source' => "{$segmentA->getId()}-{$segmentC->getId()}",
+                        'target' => "{$segmentC->getId()}-{$segmentE->getId()}",
+                    ],
                 ],
             ],
             json_decode($response->getContent(), true)
@@ -343,14 +389,18 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => 'in',
-                    'properties' => ['filter' => [$segmentB->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentB->getId()],
+                    ],
                 ], [
                     'object'     => 'lead',
                     'glue'       => 'or',
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => '!in',
-                    'properties' => ['filter' => [$segmentC->getId(), $segmentD->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentC->getId(), $segmentD->getId()],
+                    ],
                 ],
             ]
         );
@@ -363,7 +413,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => 'in',
-                    'properties' => ['filter' => [$segmentE->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentE->getId()],
+                    ],
                 ],
             ]
         );
@@ -376,7 +428,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'leadlist',
                     'type'       => 'leadlist',
                     'operator'   => 'in',
-                    'properties' => ['filter' => [$segmentA->getId()]],
+                    'properties' => [
+                        'filter' => [$segmentA->getId()],
+                    ],
                 ],
             ]
         );
@@ -396,19 +450,39 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                 'levels' => [
                     [
                         'nodes' => [
-                            ['id' => "0-{$segmentA->getId()}", 'name' => $segmentA->getName(), 'link' => "/s/segments/view/{$segmentA->getId()}"],
+                            [
+                                'id' => "0-{$segmentA->getId()}",
+                                'name' => $segmentA->getName(),
+                                'link' => "/s/segments/view/{$segmentA->getId()}",
+                            ],
                         ],
                     ],
                     [
                         'nodes' => [
-                            ['id' => "{$segmentA->getId()}-{$segmentB->getId()}", 'name' => $segmentB->getName(), 'link' => "/s/segments/view/{$segmentB->getId()}"],
-                            ['id' => "{$segmentA->getId()}-{$segmentC->getId()}", 'name' => $segmentC->getName(), 'link' => "/s/segments/view/{$segmentC->getId()}"],
-                            ['id' => "{$segmentA->getId()}-{$segmentD->getId()}", 'name' => $segmentD->getName(), 'link' => "/s/segments/view/{$segmentD->getId()}"],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentB->getId()}",
+                                'name' => $segmentB->getName(),
+                                'link' => "/s/segments/view/{$segmentB->getId()}",
+                            ],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentC->getId()}",
+                                'name' => $segmentC->getName(),
+                                'link' => "/s/segments/view/{$segmentC->getId()}",
+                            ],
+                            [
+                                'id' => "{$segmentA->getId()}-{$segmentD->getId()}",
+                                'name' => $segmentD->getName(),
+                                'link' => "/s/segments/view/{$segmentD->getId()}",
+                            ],
                         ],
                     ],
                     [
                         'nodes' => [
-                            ['id' => "{$segmentC->getId()}-{$segmentE->getId()}", 'name' => $segmentE->getName(), 'link' => "/s/segments/view/{$segmentE->getId()}"],
+                            [
+                                'id' => "{$segmentC->getId()}-{$segmentE->getId()}",
+                                'name' => $segmentE->getName(),
+                                'link' => "/s/segments/view/{$segmentE->getId()}",
+                            ],
                         ],
                     ],
                     [
@@ -429,11 +503,26 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         );
 
         $expectedEdges = [
-            ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentB->getId()}"],
-            ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentC->getId()}"],
-            ['source' => "0-{$segmentA->getId()}", 'target' => "{$segmentA->getId()}-{$segmentD->getId()}"],
-            ['source' => "{$segmentA->getId()}-{$segmentC->getId()}", 'target' => "{$segmentC->getId()}-{$segmentE->getId()}"],
-            ['source' => "{$segmentC->getId()}-{$segmentE->getId()}", 'target' => "{$segmentE->getId()}-{$segmentA->getId()}"],
+            [
+                'source' => "0-{$segmentA->getId()}",
+                'target' => "{$segmentA->getId()}-{$segmentB->getId()}",
+            ],
+            [
+                'source' => "0-{$segmentA->getId()}",
+                'target' => "{$segmentA->getId()}-{$segmentC->getId()}",
+            ],
+            [
+                'source' => "0-{$segmentA->getId()}",
+                'target' => "{$segmentA->getId()}-{$segmentD->getId()}",
+            ],
+            [
+                'source' => "{$segmentA->getId()}-{$segmentC->getId()}",
+                'target' => "{$segmentC->getId()}-{$segmentE->getId()}",
+            ],
+            [
+                'source' => "{$segmentC->getId()}-{$segmentE->getId()}",
+                'target' => "{$segmentE->getId()}-{$segmentA->getId()}",
+            ],
         ];
 
         $actualEdges = $responseData['edges'];
@@ -490,10 +579,14 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $userRepository = $this->em->getRepository(User::class);
 
         /** @var User $adminUser */
-        $adminUser = $userRepository->findOneBy(['username' => 'admin']);
+        $adminUser = $userRepository->findOneBy([
+            'username' => 'admin',
+        ]);
         self::assertInstanceOf(User::class, $adminUser);
 
-        $salesUser = $userRepository->findOneBy(['username' => 'sales']);
+        $salesUser = $userRepository->findOneBy([
+            'username' => 'sales',
+        ]);
         self::assertInstanceOf(User::class, $salesUser);
 
         $leads = [];
@@ -537,7 +630,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         /** @var UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
 
-        $adminUser = $userRepository->findOneBy(['username' => 'admin']);
+        $adminUser = $userRepository->findOneBy([
+            'username' => 'admin',
+        ]);
         self::assertInstanceOf(User::class, $adminUser);
 
         $leads = [];
@@ -558,7 +653,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $role = new Role();
         $role->setName('Role');
         $role->setIsAdmin(false);
-        $role->setRawPermissions(['lead:leads' => ['viewown']]);
+        $role->setRawPermissions([
+            'lead:leads' => ['viewown'],
+        ]);
 
         /** @var RoleRepository $roleRepository */
         $roleRepository = $this->em->getRepository(Role::class);
@@ -580,7 +677,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $userRepository->saveEntity($user);
 
         /** @var User $nonAdminUser */
-        $nonAdminUser = $userRepository->findOneBy(['email' => 'non-admin-user@test.com']);
+        $nonAdminUser = $userRepository->findOneBy([
+            'email' => 'non-admin-user@test.com',
+        ]);
 
         $nonAdminLeads = [];
 

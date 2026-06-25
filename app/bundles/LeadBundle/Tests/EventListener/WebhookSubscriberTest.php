@@ -201,7 +201,9 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $changeEvent = $this->createMock(ListChangeEvent::class);
 
-        $contact       = ['id' => 1];
+        $contact       = [
+            'id' => 1,
+        ];
         $contactEntity = new Lead();
         $contactEntity->setId($contact['id']);
 
@@ -284,7 +286,9 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $changeEvent = $this->createMock(ListChangeEvent::class);
 
-        $contact       = ['id' => 1];
+        $contact       = [
+            'id' => 1,
+        ];
         $contactEntity = new Lead();
         $contactEntity->setId($contact['id']);
 

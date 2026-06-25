@@ -113,7 +113,9 @@ class CategoryController extends AbstractFormController
             $start = 0;
         }
 
-        $filter = ['string' => $search];
+        $filter = [
+            'string' => $search,
+        ];
 
         if ('category' != $bundle) {
             $filter['force'] = [
@@ -153,7 +155,9 @@ class CategoryController extends AbstractFormController
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\CategoryBundle\Controller\CategoryController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_'.$bundle.'category_index',
@@ -163,7 +167,9 @@ class CategoryController extends AbstractFormController
             );
         }
 
-        $categoryTypes = ['category' => $this->translator->trans('mautic.core.select')];
+        $categoryTypes = [
+            'category' => $this->translator->trans('mautic.core.select'),
+        ];
 
         $dispatcher = $this->dispatcher;
         if ($dispatcher->hasListeners(CategoryEvents::CATEGORY_ON_BUNDLE_LIST_BUILD)) {
@@ -226,7 +232,10 @@ class CategoryController extends AbstractFormController
             'objectAction' => 'new',
             'bundle'       => $bundle,
         ]);
-        $form = $model->createForm($entity, $this->formFactory, $action, ['bundle' => $bundle, 'show_bundle_select' => 'category' === $bundle]);
+        $form = $model->createForm($entity, $this->formFactory, $action, [
+            'bundle' => $bundle,
+            'show_bundle_select' => 'category' === $bundle,
+        ]);
         $form['inForm']->setData($inForm);
         // /Check for a submitted form and process it
         if (Request::METHOD_POST === $method) {
@@ -342,7 +351,9 @@ class CategoryController extends AbstractFormController
                 'bundle'       => $bundle,
             ]
         );
-        $form = $model->createForm($entity, $this->formFactory, $action, ['bundle' => $bundle]);
+        $form = $model->createForm($entity, $this->formFactory, $action, [
+            'bundle' => $bundle,
+        ]);
         $form['inForm']->setData($inForm);
 
         // /Check for a submitted form and process it
@@ -374,7 +385,9 @@ class CategoryController extends AbstractFormController
                                 'bundle'       => $bundle,
                             ]
                         );
-                        $form = $model->createForm($entity, $this->formFactory, $action, ['bundle' => $bundle]);
+                        $form = $model->createForm($entity, $this->formFactory, $action, [
+                            'bundle' => $bundle,
+                        ]);
                     }
                 }
             } else {
@@ -477,7 +490,9 @@ class CategoryController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.category.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->isGranted($model->getPermissionBase($bundle).':delete')) {
                 $this->throwAccessDenied();
@@ -554,7 +569,9 @@ class CategoryController extends AbstractFormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.category.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->isGranted($model->getPermissionBase($bundle).':delete')) {
                     $flashes[] = $this->getAccessDeniedFlash();

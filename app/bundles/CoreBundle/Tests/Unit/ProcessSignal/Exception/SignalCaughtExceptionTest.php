@@ -20,7 +20,9 @@ class SignalCaughtExceptionTest extends TestCase
 
     public function testGetState(): void
     {
-        $state     = new ProcessSignalState(['key' => 'value']);
+        $state     = new ProcessSignalState([
+            'key' => 'value',
+        ]);
         $exception = new SignalCaughtException(15, $state);
         Assert::assertSame($state, $exception->getState());
     }

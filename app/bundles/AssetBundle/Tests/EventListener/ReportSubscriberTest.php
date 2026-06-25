@@ -190,7 +190,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $report             = new Report();
         $report->setSource(ReportSubscriber::CONTEXT_ASSET_DOWNLOAD);
         $this->queryBuilder->method('from')->willReturn($this->queryBuilder);
-        $report->setGroupBy(['a.id' => 'desc']);
+        $report->setGroupBy([
+            'a.id' => 'desc',
+        ]);
         $event              = new ReportGeneratorEvent($report, [], $this->queryBuilder, $this->channelListHelper);
         $subscriber         = new ReportSubscriber($this->companyReportData, $this->downloadRepository, $this->dncReportService);
         $subscriber->onReportGenerate($event);

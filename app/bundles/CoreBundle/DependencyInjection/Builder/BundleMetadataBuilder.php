@@ -78,7 +78,9 @@ class BundleMetadataBuilder
 
         $coreBundle = $this->coreMetadata['MauticCoreBundle'];
         unset($this->coreMetadata['MauticCoreBundle']);
-        $this->coreMetadata = array_merge(['MauticCoreBundle' => $coreBundle], $this->coreMetadata);
+        $this->coreMetadata = array_merge([
+            'MauticCoreBundle' => $coreBundle,
+        ], $this->coreMetadata);
     }
 
     private function buildPluginMetadata(string $namespace, string $symfonyBundle): array

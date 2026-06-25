@@ -57,7 +57,10 @@ final class MauticReportBuilderTest extends TestCase
         $report->setColumns(['a.b', 'b.c']);
         $builder = $this->buildBuilder($report);
         $query   = $builder->getQuery([
-            'columns' => ['a.b' => [], 'b.c' => []],
+            'columns' => [
+                'a.b' => [],
+                'b.c' => [],
+            ],
         ]);
         Assert::assertSame('SELECT `a`.`b`, `b`.`c`', $query->getSql());
     }
@@ -107,7 +110,9 @@ final class MauticReportBuilderTest extends TestCase
         ]);
         $builder = $this->buildBuilder($report);
         $query   = $builder->getQuery([
-            'columns' => ['a.someField' => []],
+            'columns' => [
+                'a.someField' => [],
+            ],
             'filters' => [
                 'a.notEqualString' => [
                     'label' => 'Not equal string',
@@ -308,7 +313,9 @@ final class MauticReportBuilderTest extends TestCase
     private function buildQueryWithFilters(Report $report, array $filterDefinitions): QueryBuilder
     {
         return $this->buildBuilder($report)->getQuery([
-            'columns' => ['a.someField' => []],
+            'columns' => [
+                'a.someField' => [],
+            ],
             'filters' => $filterDefinitions,
         ]);
     }

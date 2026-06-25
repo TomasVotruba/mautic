@@ -10,7 +10,9 @@ class ClickthroughHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testEncodingCanBeDecoded(): void
     {
-        $array = ['foo' => 'bar'];
+        $array = [
+            'foo' => 'bar',
+        ];
 
         $this->assertEquals($array, ClickthroughHelper::decodeArrayFromUrl(ClickthroughHelper::encodeArrayForUrl($array)));
     }
@@ -19,7 +21,9 @@ class ClickthroughHelperTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $array = ['foo' => new WakeupCall()];
+        $array = [
+            'foo' => new WakeupCall(),
+        ];
 
         ClickthroughHelper::decodeArrayFromUrl(ClickthroughHelper::encodeArrayForUrl($array));
     }

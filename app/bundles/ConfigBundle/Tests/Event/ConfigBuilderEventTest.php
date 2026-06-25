@@ -10,7 +10,9 @@ class ConfigBuilderEventTest extends CommonMocks
     public function testAddForm(): void
     {
         $event  = $this->initEvent();
-        $form   = ['formAlias' => 'testform'];
+        $form   = [
+            'formAlias' => 'testform',
+        ];
         $result = $event->addForm($form);
 
         $this->assertTrue($result instanceof ConfigBuilderEvent);
@@ -23,7 +25,9 @@ class ConfigBuilderEventTest extends CommonMocks
     public function testRemoveForm(): void
     {
         $event = $this->initEvent();
-        $form  = ['formAlias' => 'testform'];
+        $form  = [
+            'formAlias' => 'testform',
+        ];
 
         $event->addForm($form);
 

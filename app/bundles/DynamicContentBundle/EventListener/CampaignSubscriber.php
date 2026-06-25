@@ -44,7 +44,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'description'            => 'mautic.dynamicContent.campaign.send_dwc.tooltip',
                 'eventName'              => DynamicContentEvents::ON_CAMPAIGN_TRIGGER_ACTION,
                 'formType'               => DynamicContentSendType::class,
-                'formTypeOptions'        => ['update_select' => 'campaignevent_properties_dynamicContent'],
+                'formTypeOptions'        => [
+                    'update_select' => 'campaignevent_properties_dynamicContent',
+                ],
                 'formTheme'              => '@MauticDynamicContent/FormTheme/DynamicContentPushList/_dynamiccontentpush_list_row.html.twig',
                 'timelineTemplate'       => '@MauticDynamicContent/SubscribedEvents/Timeline/index.html.twig',
                 'hideTriggerMode'        => true,
@@ -70,7 +72,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'description'     => 'mautic.dynamicContent.campaign.decision_dwc.tooltip',
                 'eventName'       => DynamicContentEvents::ON_CAMPAIGN_TRIGGER_DECISION,
                 'formType'        => DynamicContentDecisionType::class,
-                'formTypeOptions' => ['update_select' => 'campaignevent_properties_dynamicContent'],
+                'formTypeOptions' => [
+                    'update_select' => 'campaignevent_properties_dynamicContent',
+                ],
                 'formTheme'       => '@MauticDynamicContent/FormTheme/DynamicContentDecisionList/_dynamiccontentdecision_list_row.html.twig',
                 'channel'         => 'dynamicContent',
                 'channelIdField'  => 'dynamicContent',
@@ -134,7 +138,10 @@ class CampaignSubscriber implements EventSubscriberInterface
 
             $stat = $this->dynamicContentModel->createStatEntry($dwc, $lead, $slot);
 
-            $tokenEvent = new TokenReplacementEvent($dwc->getContent(), $lead, ['slot' => $slot, 'dynamic_content_id' => $dwc->getId()]);
+            $tokenEvent = new TokenReplacementEvent($dwc->getContent(), $lead, [
+                'slot' => $slot,
+                'dynamic_content_id' => $dwc->getId(),
+            ]);
             $tokenEvent->setStat($stat);
             $this->dispatcher->dispatch($tokenEvent, DynamicContentEvents::TOKEN_REPLACEMENT);
 

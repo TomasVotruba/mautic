@@ -54,9 +54,13 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
             );
 
         $this->assertEquals(
-            ['dnc' => 0],
+            [
+                'dnc' => 0,
+            ],
             $integration->populateLeadData(
-                ['id' => 1],
+                [
+                    'id' => 1,
+                ],
                 [
                     'leadFields' => [
                         'dnc' => 'mauticContactIsContactableByEmail',
@@ -131,7 +135,9 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
         // Test with JSON.
         yield [
             'https://some.uri',
-            ['this will be' => 'encoded to json string'],
+            [
+                'this will be' => 'encoded to json string',
+            ],
             'POST',
             [
                 'ignore_event_dispatch' => true,
@@ -148,7 +154,9 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
                     Assert::assertSame(
                         [
                             RequestOptions::BODY => '{"this will be":"encoded to json string"}',
-                            'headers'            => ['Content-Type' => 'application/json'],
+                            'headers'            => [
+                                'Content-Type' => 'application/json',
+                            ],
                             'timeout'            => 10,
                         ],
                         $options
@@ -160,9 +168,13 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
         // Test with form params.
         yield [
             'https://some.uri',
-            ['this will be' => 'encoded to form array'],
+            [
+                'this will be' => 'encoded to form array',
+            ],
             'POST',
-            ['ignore_event_dispatch' => true],
+            [
+                'ignore_event_dispatch' => true,
+            ],
             new class {
                 /**
                  * @param mixed[] $options
@@ -173,7 +185,9 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
                     Assert::assertSame('https://some.uri', $uri);
                     Assert::assertSame(
                         [
-                            RequestOptions::FORM_PARAMS => ['this will be' => 'encoded to form array'],
+                            RequestOptions::FORM_PARAMS => [
+                                'this will be' => 'encoded to form array',
+                            ],
                             'headers'                   => [],
                             'timeout'                   => 10,
                         ],

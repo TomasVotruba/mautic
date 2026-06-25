@@ -49,7 +49,9 @@ trait EntityFieldsBuildFormTrait
             if (false === $field['isPublished'] || $field['object'] !== $object) {
                 continue;
             }
-            $attr       = ['class' => 'form-control'];
+            $attr       = [
+                'class' => 'form-control',
+            ];
             $properties = $field['properties'];
             $type       = $field['type'];
             $required   = ($isObject) ? $field['isRequired'] : false;
@@ -74,7 +76,9 @@ trait EntityFieldsBuildFormTrait
             $constraints = [];
             if ($required && empty($options['ignore_required_constraints'])) {
                 $constraints[] = new NotBlank(
-                    ['message' => 'mautic.lead.customfield.notblank']
+                    [
+                        'message' => 'mautic.lead.customfield.notblank',
+                    ]
                 );
             } elseif (!empty($options['ignore_required_constraints'])) {
                 $required            = false;
@@ -82,7 +86,9 @@ trait EntityFieldsBuildFormTrait
             }
 
             if ($field['charLengthLimit'] > 0) {
-                $constraints[] = new Length(['max' => $field['charLengthLimit']]);
+                $constraints[] = new Length([
+                    'max' => $field['charLengthLimit'],
+                ]);
             }
 
             switch ($type) {
@@ -105,7 +111,9 @@ trait EntityFieldsBuildFormTrait
                         [
                             'required'      => $required,
                             'label'         => $field['label'],
-                            'label_attr'    => ['class' => 'control-label'],
+                            'label_attr'    => [
+                                'class' => 'control-label',
+                            ],
                             'attr'          => $attr,
                             'data'          => (null !== $value) ? (float) $value : $value,
                             'mapped'        => $mapped,
@@ -121,7 +129,9 @@ trait EntityFieldsBuildFormTrait
                     $opts                = [
                         'required'    => $required,
                         'label'       => $field['label'],
-                        'label_attr'  => ['class' => 'control-label'],
+                        'label_attr'  => [
+                            'class' => 'control-label',
+                        ],
                         'attr'        => $attr,
                         'mapped'      => $mapped,
                         'constraints' => $constraints,
@@ -194,7 +204,9 @@ trait EntityFieldsBuildFormTrait
                 case MultiselectType::class:
                 case BooleanType::class:
                     if (MultiselectType::class === $type) {
-                        $constraints[] = new Length(['max' => 65535]);
+                        $constraints[] = new Length([
+                            'max' => 65535,
+                        ]);
                     }
 
                     $typeProperties = [
@@ -256,7 +268,9 @@ trait EntityFieldsBuildFormTrait
                     switch ($type) {
                         case LookupType::class:
                             $attr['data-target'] = $alias;
-                            $constraints[]       = new Length(['max' => 191]);
+                            $constraints[]       = new Length([
+                                'max' => 191,
+                            ]);
                             if (!empty($properties['list'])) {
                                 $attr['data-options'] = FormFieldHelper::formatList(FormFieldHelper::FORMAT_BAR, array_keys(FormFieldHelper::parseList($properties['list'])));
                             }
@@ -267,11 +281,15 @@ trait EntityFieldsBuildFormTrait
                             $constraints[]         = new EmailAddress();
                             break;
                         case TextType::class:
-                            $constraints[] = new Length(['max' => 191]);
+                            $constraints[] = new Length([
+                                'max' => 191,
+                            ]);
                             break;
 
                         case MultiselectType::class:
-                            $constraints[] = new Length(['max' => 65535]);
+                            $constraints[] = new Length([
+                                'max' => 65535,
+                            ]);
                             break;
                         case HtmlType::class:
                             $cleaningRules[$field['alias']] = 'html';
@@ -286,7 +304,9 @@ trait EntityFieldsBuildFormTrait
                         [
                             'required'    => $field['isRequired'],
                             'label'       => $field['label'],
-                            'label_attr'  => ['class' => 'control-label'],
+                            'label_attr'  => [
+                                'class' => 'control-label',
+                            ],
                             'attr'        => $attr,
                             'data'        => $value,
                             'mapped'      => $mapped,

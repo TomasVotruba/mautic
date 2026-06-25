@@ -167,7 +167,9 @@ class ListApiController extends CommonApiController
         \assert($leadModel instanceof LeadModel);
         $leadModel->addToLists($leadId, $entity);
 
-        $view = $this->view(['success' => 1], Response::HTTP_OK);
+        $view = $this->view([
+            'success' => 1,
+        ], Response::HTTP_OK);
 
         return $this->handleView($view);
     }
@@ -204,17 +206,24 @@ class ListApiController extends CommonApiController
         foreach ($contactIds as $contactId) {
             $contact = $this->checkLeadAccess($contactId, 'edit');
             if ($contact instanceof Response) {
-                $responseDetail[$contactId] = ['success' => false];
+                $responseDetail[$contactId] = [
+                    'success' => false,
+                ];
             } else {
                 $leadModel = $this->getModel('lead');
                 \assert($leadModel instanceof LeadModel);
                 /* @var \Mautic\LeadBundle\Entity\Lead $contact */
                 $leadModel->addToLists($contact, $entity);
-                $responseDetail[$contact->getId()] = ['success' => true];
+                $responseDetail[$contact->getId()] = [
+                    'success' => true,
+                ];
             }
         }
 
-        $view = $this->view(['success' => 1, 'details' => $responseDetail], Response::HTTP_OK);
+        $view = $this->view([
+            'success' => 1,
+            'details' => $responseDetail,
+        ], Response::HTTP_OK);
 
         return $this->handleView($view);
     }
@@ -252,7 +261,9 @@ class ListApiController extends CommonApiController
         \assert($leadModel instanceof LeadModel);
         $leadModel->removeFromLists($leadId, $entity);
 
-        $view = $this->view(['success' => 1], Response::HTTP_OK);
+        $view = $this->view([
+            'success' => 1,
+        ], Response::HTTP_OK);
 
         return $this->handleView($view);
     }

@@ -81,7 +81,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                 'field'      => 'leadlist',
                 'object'     => 'lead',
                 'type'       => 'leadlist',
-                'properties' => ['filter' => [1]],
+                'properties' => [
+                    'filter' => [1],
+                ],
                 'display'    => null,
                 'operator'   => 'in',
             ],
@@ -93,7 +95,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                 'field'      => 'first_name',
                 'object'     => 'lead',
                 'type'       => 'text',
-                'properties' => ['filter' => 'John'],
+                'properties' => [
+                    'filter' => 'John',
+                ],
                 'display'    => null,
                 'operator'   => '=',
             ],
@@ -142,7 +146,11 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                 ->method('addViolation');
         }
 
-        $this->request->request->add(['_route_params' => ['objectId' => $currentSegmentId]]);
+        $this->request->request->add([
+            '_route_params' => [
+                'objectId' => $currentSegmentId,
+            ],
+        ]);
 
         return $this->validator;
     }
@@ -156,13 +164,17 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidateOnInvalid(?string $message, int $currentSegmentId, array $filters): void
     {
         $this->configureValidator($message, $currentSegmentId)
-            ->validate($filters, new CircularDependency(['message' => 'mautic.core.segment.circular_dependency_exists']));
+            ->validate($filters, new CircularDependency([
+                'message' => 'mautic.core.segment.circular_dependency_exists',
+            ]));
     }
 
     /** @return array<int, array{0: ?string, 1: int, 2: array<int, array<string, mixed>>}> */
     public static function validateDataProvider(): array
     {
-        $constraint = new CircularDependency(['message' => 'mautic.core.segment.circular_dependency_exists']);
+        $constraint = new CircularDependency([
+            'message' => 'mautic.core.segment.circular_dependency_exists',
+        ]);
 
         return [
             // Segment 1 is dependent on Segment 2 which is dependent on segment 1 - circular
@@ -191,7 +203,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                         'field'      => 'leadlist',
                         'object'     => 'lead',
                         'type'       => 'leadlist',
-                        'properties' => ['filter' => [2]],
+                        'properties' => [
+                            'filter' => [2],
+                        ],
                         'display'    => null,
                         'operator'   => 'in',
                     ],
@@ -208,7 +222,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                         'field'      => 'leadlist',
                         'object'     => 'lead',
                         'type'       => 'leadlist',
-                        'properties' => ['filter' => [3]],
+                        'properties' => [
+                            'filter' => [3],
+                        ],
                         'display'    => null,
                         'operator'   => 'in',
                     ],
@@ -240,7 +256,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                         'field'      => 'leadlist',
                         'object'     => 'lead',
                         'type'       => 'leadlist',
-                        'properties' => ['filter' => [1]],
+                        'properties' => [
+                            'filter' => [1],
+                        ],
                         'display'    => null,
                         'operator'   => 'in',
                     ],
@@ -249,7 +267,9 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
                         'field'      => 'leadlist',
                         'object'     => 'lead',
                         'type'       => 'leadlist',
-                        'properties' => ['filter' => [3]],
+                        'properties' => [
+                            'filter' => [3],
+                        ],
                         'display'    => null,
                         'operator'   => 'in',
                     ],

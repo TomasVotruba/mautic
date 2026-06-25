@@ -17,7 +17,9 @@ class ConfigSubscriberTest extends CommonMocks
          * to enable basic auth on the API). Saving the config shouldn't throw
          * any undefined notices/warnings in that case.
          */
-        $config = ['apiconfig' => []];
+        $config = [
+            'apiconfig' => [],
+        ];
 
         $subscriber  = new ConfigSubscriber();
         $configEvent = new ConfigEvent($config, new ParameterBag());

@@ -19,7 +19,9 @@ class TagEntityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('buttons', FormButtonsType::class);
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'html',
+        ]));
 
         // We only allow to set tag field value if we are creating new tag.
         $tagReadOnly = !empty($options['data']) && $options['data']->getId();
@@ -29,8 +31,13 @@ class TagEntityType extends AbstractType
             TextType::class,
             [
                 'label'       => 'mautic.core.name',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control', 'readonly' => $tagReadOnly],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                    'readonly' => $tagReadOnly,
+                ],
                 'constraints' => [
                     new NotBlank(
                         [
@@ -47,8 +54,13 @@ class TagEntityType extends AbstractType
             [
                 'required'   => false,
                 'label'      => 'mautic.core.description',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control editor', 'readonly' => $tagReadOnly],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control editor',
+                    'readonly' => $tagReadOnly,
+                ],
             ]
         );
 

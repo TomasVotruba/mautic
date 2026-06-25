@@ -28,7 +28,9 @@ class CampaignEventFormFieldValueType extends AbstractType
             FormListType::class,
             [
                 'label'       => 'mautic.form.campaign.event.forms',
-                'label_attr'  => ['class' => 'control-label'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
                 'multiple'    => false,
                 'placeholder' => 'mautic.core.select',
                 'attr'        => [
@@ -39,7 +41,9 @@ class CampaignEventFormFieldValueType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
             ]
@@ -121,7 +125,9 @@ class CampaignEventFormFieldValueType extends AbstractType
                     'required'    => true,
                     'constraints' => [
                         new NotBlank(
-                            ['message' => 'mautic.core.value.required']
+                            [
+                                'message' => 'mautic.core.value.required',
+                            ]
                         ),
                     ],
                 ]
@@ -134,14 +140,18 @@ class CampaignEventFormFieldValueType extends AbstractType
                     TextType::class,
                     [
                         'label'      => 'mautic.form.field.form.value',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class' => 'form-control',
                         ],
                         'required'    => true,
                         'constraints' => [
                             new NotBlank(
-                                ['message' => 'mautic.core.value.required']
+                                [
+                                    'message' => 'mautic.core.value.required',
+                                ]
                             ),
                         ],
                     ]
@@ -153,14 +163,18 @@ class CampaignEventFormFieldValueType extends AbstractType
                     [
                         'choices'    => array_flip($options[$data['field']]),
                         'label'      => 'mautic.form.field.form.value',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class' => 'form-control not-chosen',
                         ],
                         'required'    => true,
                         'constraints' => [
                             new NotBlank(
-                                ['message' => 'mautic.core.value.required']
+                                [
+                                    'message' => 'mautic.core.value.required',
+                                ]
                             ),
                         ],
                     ]

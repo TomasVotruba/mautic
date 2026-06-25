@@ -410,7 +410,9 @@ class AssetModel extends FormModel implements GlobalSearchInterface
      */
     public function generateUrl(Asset $entity, bool $absolute = true, array $clickthrough = [], ?string $stream = null): string
     {
-        $routeParams = ['slug' => $entity->getSlug()];
+        $routeParams = [
+            'slug' => $entity->getSlug(),
+        ];
         if (!is_null($stream)) {
             $routeParams['stream'] = $stream;
         }
@@ -527,7 +529,9 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         $chart   = new PieChart();
         $query   = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
         $allQ    = $query->getCountQuery('asset_downloads', 'id', 'date_download', $filters);
-        $uniqueQ = $query->getCountQuery('asset_downloads', 'lead_id', 'date_download', $filters, ['getUnique' => true]);
+        $uniqueQ = $query->getCountQuery('asset_downloads', 'lead_id', 'date_download', $filters, [
+            'getUnique' => true,
+        ]);
 
         if (!$canViewOthers) {
             $allQ->join('t', MAUTIC_TABLE_PREFIX.'assets', 'a', 'a.id = t.asset_id')

@@ -173,7 +173,11 @@ class SourceControllerTest extends MauticMysqlTestCase
         $this->assertJsonResponseEquals('success', 1, $json);
         $this->assertArrayHasKey('modifiedSources', $json);
         $this->assertSame(
-            ['lists' => [$segment->getId() => true]],
+            [
+                'lists' => [
+                    $segment->getId() => true,
+                ],
+            ],
             $json['modifiedSources']
         );
     }

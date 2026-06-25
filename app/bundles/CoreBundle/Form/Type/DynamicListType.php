@@ -64,7 +64,9 @@ class DynamicListType extends AbstractType
 
                     'constraints'    => fn (Options $options): array => ($options['option_notblank']) ? [
                         new NotBlank(
-                            ['message' => 'mautic.form.lists.notblank']
+                            [
+                                'message' => 'mautic.form.lists.notblank',
+                            ]
                         ),
                     ] : [],
                     'error_bubbling' => true,

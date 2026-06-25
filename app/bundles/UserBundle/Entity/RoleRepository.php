@@ -119,7 +119,9 @@ class RoleRepository extends CommonRepository
 
         if ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [

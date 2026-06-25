@@ -107,7 +107,9 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk());
-        $savedSms = $this->em->getRepository(Sms::class)->findOneBy(['name' => $clonedName]);
+        $savedSms = $this->em->getRepository(Sms::class)->findOneBy([
+            'name' => $clonedName,
+        ]);
         Assert::assertInstanceOf(Sms::class, $savedSms);
         Assert::assertSame($clonedMessage, $savedSms->getMessage());
         Assert::assertSame($media, $savedSms->getMedia());

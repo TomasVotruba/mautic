@@ -154,7 +154,9 @@ class Webhook extends FormEntity implements SkipModifiedInterface
             ->cascadeDetach()
             ->build();
 
-        $builder->createOneToMany('logs', 'Log')->setOrderBy(['dateAdded' => Order::Descending->value])
+        $builder->createOneToMany('logs', 'Log')->setOrderBy([
+            'dateAdded' => Order::Descending->value,
+        ])
             ->fetchExtraLazy()
             ->mappedBy('webhook')
             ->cascadePersist()

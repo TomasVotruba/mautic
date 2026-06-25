@@ -511,7 +511,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.salesforce.form.sandbox',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                     'attr'              => [
@@ -530,7 +532,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.salesforce.form.updateOwner',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                     'attr'              => [
@@ -548,7 +552,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.integrations.form.blanks',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -563,7 +569,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.integrations.form.update.dnc.by.date.label',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -582,7 +590,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.salesforce.form.objects_to_pull_from',
-                    'label_attr'        => ['class' => ''],
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -610,8 +620,12 @@ class SalesforceIntegration extends CrmAbstractIntegration
                 TextType::class,
                 [
                     'label'      => 'mautic.salesforce.form.namespace_prefix',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control',
+                    ],
                     'required'   => false,
                 ]
             );
@@ -955,7 +969,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
     private function getAdminUsers(): array
     {
         $userRepository = $this->em->getRepository(User::class);
-        $adminRole      = $this->em->getRepository(Role::class)->findOneBy(['isAdmin' => true]);
+        $adminRole      = $this->em->getRepository(Role::class)->findOneBy([
+            'isAdmin' => true,
+        ]);
 
         return $userRepository->findBy(
             [
@@ -1057,7 +1073,10 @@ class SalesforceIntegration extends CrmAbstractIntegration
                                 $salesForceLeadData[$sfId]['leadId']  = $ids['internal_entity_id'];
                                 $salesForceLeadData[$sfId]['leadUrl'] = $this->router->generate(
                                     'mautic_plugin_timeline_view',
-                                    ['integration' => 'Salesforce', 'leadId' => $leadId],
+                                    [
+                                        'integration' => 'Salesforce',
+                                        'leadId' => $leadId,
+                                    ],
                                     UrlGeneratorInterface::ABSOLUTE_URL
                                 );
                             } else {
@@ -1877,7 +1896,11 @@ class SalesforceIntegration extends CrmAbstractIntegration
 
         $mauticLeadFieldString = implode(', l.', $leadFields);
         $mauticLeadFieldString = 'l.'.$mauticLeadFieldString;
-        $availableFields       = $this->getAvailableLeadFields(['feature_settings' => ['objects' => $supportedObjects]]);
+        $availableFields       = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => $supportedObjects,
+            ],
+        ]);
 
         // Setup required fields and field types
         foreach ($supportedObjects as $object) {
@@ -1981,7 +2004,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
 
                     if ($integrationEntity) {
                         $integrationEntity->setInternalEntity('ENTITY_IS_DELETED' === $item['body'][0]['errorCode'] ? $internalObject.'-deleted' : $internalObject.'-error')
-                            ->setInternal(['error' => $item['body'][0]['message']]);
+                            ->setInternal([
+                                'error' => $item['body'][0]['message'],
+                            ]);
                         $this->persistIntegrationEntities[] = $integrationEntity;
                     }
                     ++$totalErrored;
@@ -1989,7 +2014,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     if (201 === $item['httpStatusCode']) {
                         // New object created
                         if ('CampaignMember' === $object) {
-                            $internal = ['Id' => $item['body']['id']];
+                            $internal = [
+                                'Id' => $item['body']['id'],
+                            ];
                         } else {
                             $internal = [];
                         }
@@ -2094,7 +2121,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
             :
             'select Id, '.$requiredFieldString.' from Contact where isDeleted = false and Email in ('.$fieldString.')';
 
-        return $this->getApiHelper()->request('query', ['q' => $findQuery], 'GET', false, null, $queryUrl);
+        return $this->getApiHelper()->request('query', [
+            'q' => $findQuery,
+        ], 'GET', false, null, $queryUrl);
     }
 
     protected function prepareMauticContactsToUpdate(
@@ -2226,7 +2255,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     )
                 ) {
                     $company = IdentifyCompanyHelper::identifyLeadsCompany(
-                        ['company' => $sfEntityRecord['Company']],
+                        [
+                            'company' => $sfEntityRecord['Company'],
+                        ],
                         null,
                         $this->companyModel
                     );
@@ -2540,7 +2571,9 @@ class SalesforceIntegration extends CrmAbstractIntegration
 
         $url      = $this->getQueryUrl();
 
-        return $this->getApiHelper()->request('query', ['q' => $query], 'GET', false, null, $url);
+        return $this->getApiHelper()->request('query', [
+            'q' => $query,
+        ], 'GET', false, null, $url);
     }
 
     /**
@@ -2662,7 +2695,11 @@ class SalesforceIntegration extends CrmAbstractIntegration
         $sfObject     = 'Account';
 
         // all available fields in Salesforce for Account
-        $availableFields = $this->getAvailableLeadFields(['feature_settings' => ['objects' => [$sfObject]]]);
+        $availableFields = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => [$sfObject],
+            ],
+        ]);
 
         // get company fields from Mautic that have been mapped
         $mauticCompanyFieldString = 'l.'.implode(', l.', $config['companyFields']);

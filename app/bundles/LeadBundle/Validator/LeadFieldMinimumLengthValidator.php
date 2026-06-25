@@ -37,7 +37,9 @@ final class LeadFieldMinimumLengthValidator extends ConstraintValidator
             return;
         }
 
-        $this->context->buildViolation($constraint->message, ['%length%' => $maxCharacterLengthInUse])
+        $this->context->buildViolation($constraint->message, [
+            '%length%' => $maxCharacterLengthInUse,
+        ])
             ->atPath('charLengthLimit')
             ->addViolation();
     }

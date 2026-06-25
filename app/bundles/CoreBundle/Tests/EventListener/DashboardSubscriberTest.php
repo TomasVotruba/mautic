@@ -153,13 +153,41 @@ class DashboardSubscriberTest extends TestCase
 
         $logs   = $expectedLogs   = [];
         $logs[] = $expectedLogs[] = ['something', 'else']; // corrupt database data
-        $logs[] = $expectedLogs[] = ['bundle' => 'null', 'object' => 'object', 'objectId' => 123];
-        $logs[] = $expectedLogs[] = ['bundle' => 'model', 'object' => 'not_form_model', 'objectId' => 234];
-        $logs[] = $expectedLogs[] = ['bundle' => 'model', 'object' => 'has_no_getter', 'objectId' => 345];
-        $logs[] = $expectedLogs[] = ['bundle' => 'item', 'object' => 'not_lead', 'objectId' => 456];
-        $logs[] = $expectedLogs[] = ['bundle' => 'lead', 'object' => 'not_anonymous', 'objectId' => 567];
-        $logs[] = $expectedLogs[] = ['bundle' => 'lead', 'object' => 'is_anonymous', 'objectId' => 678];
-        $logs[] = ['bundle' => 'object', 'object' => 'exception', 'objectId' => 789];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'null',
+            'object' => 'object',
+            'objectId' => 123,
+        ];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'model',
+            'object' => 'not_form_model',
+            'objectId' => 234,
+        ];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'model',
+            'object' => 'has_no_getter',
+            'objectId' => 345,
+        ];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'item',
+            'object' => 'not_lead',
+            'objectId' => 456,
+        ];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'lead',
+            'object' => 'not_anonymous',
+            'objectId' => 567,
+        ];
+        $logs[] = $expectedLogs[] = [
+            'bundle' => 'lead',
+            'object' => 'is_anonymous',
+            'objectId' => 678,
+        ];
+        $logs[] = [
+            'bundle' => 'object',
+            'object' => 'exception',
+            'objectId' => 789,
+        ];
 
         $this->auditLogModel->expects(self::once())
             ->method('getLogForObject')
@@ -262,9 +290,18 @@ class DashboardSubscriberTest extends TestCase
         $this->router->expects(self::exactly(3))
             ->method('generate')
             ->willReturnMap([
-                ['mautic_model_action', ['objectAction' => 'view', 'objectId' => 345], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-getter'],
-                ['mautic_item_action', ['objectAction' => 'view', 'objectId' => 456], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-lead'],
-                ['mautic_lead_action', ['objectAction' => 'view', 'objectId' => 567], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-anonymous'],
+                ['mautic_model_action', [
+                    'objectAction' => 'view',
+                    'objectId' => 345,
+                ], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-getter'],
+                ['mautic_item_action', [
+                    'objectAction' => 'view',
+                    'objectId' => 456,
+                ], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-lead'],
+                ['mautic_lead_action', [
+                    'objectAction' => 'view',
+                    'objectId' => 567,
+                ], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-anonymous'],
             ]);
 
         $iconEvent = new IconEvent($this->security);
@@ -287,7 +324,10 @@ class DashboardSubscriberTest extends TestCase
 
         $this->event->expects(self::once())
             ->method('setTemplateData')
-            ->with(['logs' => $expectedLogs, 'icons' => []]);
+            ->with([
+                'logs' => $expectedLogs,
+                'icons' => [],
+            ]);
 
         $subscriber = new DashboardSubscriber(
             $this->auditLogModel,

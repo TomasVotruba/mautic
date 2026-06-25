@@ -42,8 +42,14 @@ final class ConditionalFieldOrderTestData
             $parent['properties'] = [
                 'list' => [
                     'list' => [
-                        ['label' => 'Yes', 'value' => 'yes'],
-                        ['label' => 'No', 'value' => 'no'],
+                        [
+                            'label' => 'Yes',
+                            'value' => 'yes',
+                        ],
+                        [
+                            'label' => 'No',
+                            'value' => 'no',
+                        ],
                     ],
                 ],
             ];
@@ -51,7 +57,9 @@ final class ConditionalFieldOrderTestData
             $parent['order'] = 1;
         }
 
-        $fields = [$parentKey => $parent];
+        $fields = [
+            $parentKey => $parent,
+        ];
 
         foreach (self::getChildFieldDefinitions() as $id => $definition) {
             $child = [
@@ -84,9 +92,18 @@ final class ConditionalFieldOrderTestData
     private static function getChildFieldDefinitions(): array
     {
         return [
-            'child_a' => ['label' => 'Question A', 'alias' => 'question_a'],
-            'child_b' => ['label' => 'Question B', 'alias' => 'question_b'],
-            'child_c' => ['label' => 'Question C', 'alias' => 'question_c'],
+            'child_a' => [
+                'label' => 'Question A',
+                'alias' => 'question_a',
+            ],
+            'child_b' => [
+                'label' => 'Question B',
+                'alias' => 'question_b',
+            ],
+            'child_c' => [
+                'label' => 'Question C',
+                'alias' => 'question_c',
+            ],
         ];
     }
 }

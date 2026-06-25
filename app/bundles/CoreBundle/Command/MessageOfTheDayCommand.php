@@ -123,7 +123,10 @@ final class MessageOfTheDayCommand extends Command
             throw new MessageOfTheDayException('Could not decode MOTD JSON');
         }
 
-        $messages = ['timed' => [], 'timeless' => []];
+        $messages = [
+            'timed' => [],
+            'timeless' => [],
+        ];
 
         if (empty($data['messages']) || !is_array($data['messages'])) {
             return $messages;

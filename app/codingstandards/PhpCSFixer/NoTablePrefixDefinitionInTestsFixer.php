@@ -60,7 +60,7 @@ class ExampleTest {
     }
 }
 "),
-            new CodeSample("<?php
+              new CodeSample("<?php
 
 class ExampleTest {
     public function setUp(): void

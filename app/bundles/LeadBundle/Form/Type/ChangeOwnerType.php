@@ -27,8 +27,12 @@ class ChangeOwnerType extends AbstractType
                 'multiple'          => false,
                 'choices'           => $this->userModel->getOwnerListChoices(),
                 'required'          => true,
-                'label_attr'        => ['class' => 'control-label'],
-                'attr'              => ['class' => 'form-control'],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
+                'attr'              => [
+                    'class' => 'form-control',
+                ],
             ]
         );
     }

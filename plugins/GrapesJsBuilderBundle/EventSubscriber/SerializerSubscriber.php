@@ -45,7 +45,9 @@ class SerializerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy(['email' => $object]);
+        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy([
+            'email' => $object,
+        ]);
         if (is_null($grapesJsBuilder)) {
             return;
         }
@@ -55,8 +57,12 @@ class SerializerSubscriber implements EventSubscriberInterface
         if ($visitor instanceof JsonSerializationVisitor && !empty($grapesJsBuilder->getCustomMjml())) {
             $visitor->visitProperty(
                 new StaticPropertyMetadata(
-                    '', 'grapesjsbuilder', ['customMjml' => $grapesJsBuilder->getCustomMjml()]
-                ), ['customMjml' => $grapesJsBuilder->getCustomMjml()]
+                    '', 'grapesjsbuilder', [
+                        'customMjml' => $grapesJsBuilder->getCustomMjml(),
+                    ]
+                ), [
+                    'customMjml' => $grapesJsBuilder->getCustomMjml(),
+                ]
             );
         }
     }

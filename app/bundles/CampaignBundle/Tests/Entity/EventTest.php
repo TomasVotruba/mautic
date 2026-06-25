@@ -24,7 +24,9 @@ final class EventTest extends TestCase
     {
         $event = new Event();
         $event->setName(self::TEST_NAME);
-        $event->setTriggerHour(['date' => self::DATE]);
+        $event->setTriggerHour([
+            'date' => self::DATE,
+        ]);
         $this->assertEquals(new \DateTime(self::DATE), $event->getTriggerHour());
     }
 

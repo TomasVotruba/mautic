@@ -43,7 +43,10 @@ class LeadListFiltersChoicesEventTest extends TestCase
             ],
         ];
 
-        $choices                     = [0 => 'Choice1', 1 => 'Choice2'];
+        $choices                     = [
+            0 => 'Choice1',
+            1 => 'Choice2',
+        ];
         $search                      = 'Test Search';
         $translator                  = $this->createMock(TranslatorInterface::class);
         $leadListFiltersChoicesEvent = new LeadListFiltersChoicesEvent($choices, $operators, $translator, new Request(), $search);

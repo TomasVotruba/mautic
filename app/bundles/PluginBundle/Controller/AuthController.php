@@ -26,21 +26,33 @@ class AuthController extends FormController
 
         // check to see if the service exists
         if (!$integrationObject) {
-            $session->set('mautic.integration.postauth.message', ['mautic.integration.notfound', ['%name%' => $integration], 'error']);
+            $session->set('mautic.integration.postauth.message', ['mautic.integration.notfound', [
+                '%name%' => $integration,
+            ], 'error']);
             if ($isAjax) {
-                return new JsonResponse(['url' => $this->generateUrl('mautic_integration_auth_postauth', ['integration' => $integration])]);
+                return new JsonResponse([
+                    'url' => $this->generateUrl('mautic_integration_auth_postauth', [
+                        'integration' => $integration,
+                    ]),
+                ]);
             }
 
-            return new RedirectResponse($this->generateUrl('mautic_integration_auth_postauth', ['integration' => $integration]));
+            return new RedirectResponse($this->generateUrl('mautic_integration_auth_postauth', [
+                'integration' => $integration,
+            ]));
         }
 
         try {
             $error = $integrationObject->authCallback();
         } catch (\InvalidArgumentException $e) {
             $session->set('mautic.integration.postauth.message', [$e->getMessage(), [], 'error']);
-            $redirectUrl = $this->generateUrl('mautic_integration_auth_postauth', ['integration' => $integration]);
+            $redirectUrl = $this->generateUrl('mautic_integration_auth_postauth', [
+                'integration' => $integration,
+            ]);
             if ($isAjax) {
-                return new JsonResponse(['url' => $redirectUrl]);
+                return new JsonResponse([
+                    'url' => $redirectUrl,
+                ]);
             }
 
             return new RedirectResponse($redirectUrl);
@@ -50,7 +62,9 @@ class AuthController extends FormController
         if ($error) {
             $type    = 'error';
             $message = 'mautic.integration.error.oauthfail';
-            $params  = ['%error%' => $error];
+            $params  = [
+                '%error%' => $error,
+            ];
         } else {
             $type    = 'notice';
             $message = 'mautic.integration.notice.oauthsuccess';
@@ -65,7 +79,9 @@ class AuthController extends FormController
 
         $session->set('mautic.integration.'.$integration.'.userdata', $userData);
 
-        return new RedirectResponse($this->generateUrl('mautic_integration_auth_postauth', ['integration' => $integration]));
+        return new RedirectResponse($this->generateUrl('mautic_integration_auth_postauth', [
+            'integration' => $integration,
+        ]));
     }
 
     public function authStatusAction(Request $request, $integration): \Symfony\Component\HttpFoundation\Response
@@ -91,7 +107,11 @@ class AuthController extends FormController
             }
         }
 
-        return $this->render($postAuthTemplate, ['message' => $message, 'alert' => $alert, 'data' => $userData]);
+        return $this->render($postAuthTemplate, [
+            'message' => $message,
+            'alert' => $alert,
+            'data' => $userData,
+        ]);
     }
 
     public function authUserAction(IntegrationHelper $integrationHelper, $integration): RedirectResponse

@@ -33,7 +33,9 @@ class DefaultController extends CommonController
 
         $request->attributes->set('ignore_mismatch', true);
 
-        return $this->forward('Mautic\PageBundle\Controller\PublicController::indexAction', ['slug' => $slug]);
+        return $this->forward('Mautic\PageBundle\Controller\PublicController::indexAction', [
+            'slug' => $slug,
+        ]);
     }
 
     public function globalSearchAction(Request $request): \Symfony\Component\HttpFoundation\Response

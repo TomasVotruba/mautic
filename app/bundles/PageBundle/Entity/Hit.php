@@ -143,7 +143,11 @@ class Hit
             ->addIndex(['code'], 'page_hit_code_search')
             ->addIndex(['source', 'source_id'], 'page_hit_source_search')
             ->addIndex(['date_hit', 'date_left'], 'date_hit_left_index')
-            ->addIndexWithOptions(['url'], 'page_hit_url', ['lengths' => [0 => 128]]);
+            ->addIndexWithOptions(['url'], 'page_hit_url', [
+                'lengths' => [
+                    0 => 128,
+                ],
+            ]);
 
         $builder->addBigIntIdField();
 

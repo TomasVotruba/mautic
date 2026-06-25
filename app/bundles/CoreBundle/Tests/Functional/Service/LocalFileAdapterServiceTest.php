@@ -56,7 +56,9 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
         static::getContainer()->set('fm_elfinder.loader', $elFinderLoader);
 
         $this->folderName = (string) time();
-        $user             = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user             = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
         $_SERVER['REQUEST_METHOD'] = Request::METHOD_POST;
         $this->client->request(

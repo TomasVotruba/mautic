@@ -31,7 +31,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testDeviceDetectorBotsDetectionTrue(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
 
         $this->deviceDetector
             ->method('isBot')
@@ -43,7 +45,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testDeviceDetectorBotsDetectionFalse(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.53']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.53',
+        ]);
 
         $this->deviceDetector
             ->method('isBot')
@@ -64,7 +68,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that the first IP is returned when the request is a proxy')]
     public function testClientIpIsReturnedFromProxy(): void
     {
-        $request = new Request([], [], [], [], [], ['HTTP_X_FORWARDED_FOR' => '73.77.245.52,10.8.0.2,192.168.0.1']);
+        $request = new Request([], [], [], [], [], [
+            'HTTP_X_FORWARDED_FOR' => '73.77.245.52,10.8.0.2,192.168.0.1',
+        ]);
         $ip      = $this->getIpHelper($request)->getIpAddress();
 
         $this->assertEquals('73.77.245.52', $ip->getIpAddress());
@@ -73,7 +79,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that the first IP is returned with a web proxy')]
     public function testClientIpIsReturnedFromRequest(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.53']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.53',
+        ]);
         $ip      = $this->getIpHelper($request)->getIpAddress();
 
         $this->assertEquals('73.77.245.53', $ip->getIpAddress());
@@ -82,7 +90,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that a local IP is returned for internal IPs')]
     public function testLocalIpIsReturnedForInternalNetworkIp(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '192.168.0.1']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '192.168.0.1',
+        ]);
         $ip      = $this->getIpHelper($request)->getIpAddress();
 
         $this->assertEquals('127.0.0.1', $ip->getIpAddress());
@@ -91,7 +101,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that internal IP is returned if track_private_ip_ranges is set to true')]
     public function testInternalNetworkIpIsReturnedIfSetToTrack(): void
     {
-        $request                  = new Request([], [], [], [], [], ['REMOTE_ADDR' => '192.168.0.1']);
+        $request                  = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '192.168.0.1',
+        ]);
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $mockCoreParametersHelper->expects($this->any())
             ->method('get')
@@ -106,7 +118,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that prefetch requests are not trackable')]
     public function testIsRequestTrackableWithPrefetchHeader(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
         $request->headers->set('Purpose', 'prefetch');
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
@@ -117,7 +131,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that prerender requests are not trackable')]
     public function testIsRequestTrackableWithSecPurposePrerenderHeader(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
         $request->headers->set('Sec-Purpose', 'prerender');
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
@@ -128,7 +144,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that GPC requests are not trackable')]
     public function testIsRequestTrackableWithGpcHeader(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
         $request->headers->set('Sec-GPC', '1');
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
@@ -139,7 +157,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that DNT requests are not trackable')]
     public function testIsRequestTrackableWithDntHeader(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
         $request->headers->set('DNT', '1');
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
@@ -150,7 +170,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that HEAD requests are not trackable')]
     public function testIsRequestTrackableWithHeadMethod(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
         $request->setMethod('HEAD');
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
@@ -161,7 +183,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Check that normal requests are trackable')]
     public function testIsRequestTrackableReturnsTrueForNormalRequest(): void
     {
-        $request = new Request([], [], [], [], [], ['REMOTE_ADDR' => '73.77.245.52']);
+        $request = new Request([], [], [], [], [], [
+            'REMOTE_ADDR' => '73.77.245.52',
+        ]);
 
         $result = $this->getIpHelper($request)->isRequestTrackable();
 

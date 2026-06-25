@@ -110,7 +110,9 @@ class BounceTest extends \PHPUnit\Framework\TestCase
         $bouncer = new Bounce($transport, $contactFinder, $emailStatModel, $leadModel, $translator, $logger, $doNotContact);
 
         $message            = new Message();
-        $message->to        = ['contact+bounce_123abc@test.com' => null];
+        $message->to        = [
+            'contact+bounce_123abc@test.com' => null,
+        ];
         $message->dsnReport = <<<'DSN'
 Original-Recipient: sdfgsdfg@seznan.cz
 Final-Recipient: rfc822;sdfgsdfg@seznan.cz

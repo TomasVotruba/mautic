@@ -75,9 +75,15 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $event   = $this->createMock(EmailSendEvent::class);
         $contact = $this->createMock(Lead::class);
         $email   = $this->createMock(Email::class);
-        $tokens  = ['{unsubscribe_text}' => '<a href=\"https://...'];
-        $headers = ['List-Unsubscribe' => '<a href=\"https://...'];
-        $source  = ['List-Unsubscribe' => '<a href=\"https://...']; // todo find out real source example
+        $tokens  = [
+            '{unsubscribe_text}' => '<a href=\"https://...',
+        ];
+        $headers = [
+            'List-Unsubscribe' => '<a href=\"https://...',
+        ];
+        $source  = [
+            'List-Unsubscribe' => '<a href=\"https://...',
+        ]; // todo find out real source example
 
         $event->expects($this->once())
             ->method('isInternalSend')

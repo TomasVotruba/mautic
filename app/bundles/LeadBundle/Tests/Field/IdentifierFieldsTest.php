@@ -35,12 +35,17 @@ class IdentifierFieldsTest extends TestCase
     {
         $this->fieldsWithUniqueIdentifiers->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => 'lead'])
+            ->with([
+                'object' => 'lead',
+            ])
             ->willReturn([]);
 
         $this->fieldList->expects($this->once())
             ->method('getFieldList')
-            ->with(true, false, ['isPublished' => true, 'object' => 'lead'])
+            ->with(true, false, [
+                'isPublished' => true,
+                'object' => 'lead',
+            ])
             ->willReturn([]);
 
         $fields = $this->identifierFields->getFieldList('lead');
@@ -60,12 +65,17 @@ class IdentifierFieldsTest extends TestCase
     {
         $this->fieldsWithUniqueIdentifiers->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => 'company'])
+            ->with([
+                'object' => 'company',
+            ])
             ->willReturn([]);
 
         $this->fieldList->expects($this->once())
             ->method('getFieldList')
-            ->with(true, false, ['isPublished' => true, 'object' => 'company'])
+            ->with(true, false, [
+                'isPublished' => true,
+                'object' => 'company',
+            ])
             ->willReturn([]);
 
         $fields = $this->identifierFields->getFieldList('company');
@@ -87,7 +97,9 @@ class IdentifierFieldsTest extends TestCase
     {
         $this->fieldsWithUniqueIdentifiers->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => 'lead'])
+            ->with([
+                'object' => 'lead',
+            ])
             ->willReturn(
                 [
                     'unique_id' => 'Unique ID',
@@ -96,7 +108,10 @@ class IdentifierFieldsTest extends TestCase
 
         $this->fieldList->expects($this->once())
             ->method('getFieldList')
-            ->with(true, false, ['isPublished' => true, 'object' => 'lead'])
+            ->with(true, false, [
+                'isPublished' => true,
+                'object' => 'lead',
+            ])
             ->willReturn([]);
 
         $fields = $this->identifierFields->getFieldList('lead');
@@ -117,7 +132,9 @@ class IdentifierFieldsTest extends TestCase
     {
         $this->fieldsWithUniqueIdentifiers->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => 'lead'])
+            ->with([
+                'object' => 'lead',
+            ])
             ->willReturn(
                 [
                     'unique_id' => 'Unique ID',
@@ -126,7 +143,10 @@ class IdentifierFieldsTest extends TestCase
 
         $this->fieldList->expects($this->once())
             ->method('getFieldList')
-            ->with(true, false, ['isPublished' => true, 'object' => 'lead'])
+            ->with(true, false, [
+                'isPublished' => true,
+                'object' => 'lead',
+            ])
             ->willReturn(
                 [
                     'Social' => [

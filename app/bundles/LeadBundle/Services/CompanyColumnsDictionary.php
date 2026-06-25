@@ -62,7 +62,10 @@ final class CompanyColumnsDictionary
             $this->cachedChoices += $this->fieldList->getFieldList(
                 false,
                 true,
-                ['isPublished' => true, 'object' => 'company']
+                [
+                    'isPublished' => true,
+                    'object' => 'company',
+                ]
             );
         }
 

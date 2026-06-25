@@ -71,12 +71,22 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $group = $this->entityManager->getRepository(Group::class)->findOneBy(['uuid' => $element['uuid']]);
+            $group = $this->entityManager->getRepository(Group::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew = !$group;
 
             $group ??= new Group();
@@ -84,7 +94,9 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
                 $element,
                 Group::class,
                 null,
-                ['object_to_populate' => $group]
+                [
+                    'object_to_populate' => $group,
+                ]
             );
             $this->pointGroupModel->saveEntity($group);
 
@@ -100,7 +112,9 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Group::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Group::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -121,7 +135,9 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Group::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Group::class,
+                ]);
             }
         }
 

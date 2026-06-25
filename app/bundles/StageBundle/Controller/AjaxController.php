@@ -34,7 +34,10 @@ class AjaxController extends CommonAjaxController
                 $formType        = (!empty($actions['actions'][$type]['formType'])) ? $actions['actions'][$type]['formType'] : 'genericstage_settings';
                 $formTypeOptions = (!empty($actions['actions'][$type]['formTypeOptions'])) ? $actions['actions'][$type]['formTypeOptions'] : [];
 
-                $form = $formFactory->create(StageActionType::class, [], ['formType' => $formType, 'formTypeOptions' => $formTypeOptions]);
+                $form = $formFactory->create(StageActionType::class, [], [
+                    'formType' => $formType,
+                    'formTypeOptions' => $formTypeOptions,
+                ]);
                 $html = $this->renderView('@MauticStage/Stage/actionform.html.twig', [
                     'form' => $this->setFormTheme($form, $twig, $themes),
                 ]);

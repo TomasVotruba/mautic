@@ -36,7 +36,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
             LeadFieldsType::class,
             [
                 'label'                 => 'mautic.lead.campaign.event.field',
-                'label_attr'            => ['class' => 'control-label'],
+                'label_attr'            => [
+                    'class' => 'control-label',
+                ],
                 'multiple'              => false,
                 'with_company_fields'   => true,
                 'with_tags'             => true,
@@ -50,7 +52,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
             ]
@@ -67,7 +71,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
             $operator    = '=';
 
             if (isset($data['field'])) {
-                $field    = $this->fieldModel->getRepository()->findOneBy(['alias' => $data['field']]);
+                $field    = $this->fieldModel->getRepository()->findOneBy([
+                    'alias' => $data['field'],
+                ]);
                 $operator = $data['operator'];
 
                 if ($field) {
@@ -114,7 +120,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
 
                                     $choiceAttr = function ($value, $key, $index) use ($customValue): array {
                                         if ($customValue === $value) {
-                                            return ['data-custom' => 1];
+                                            return [
+                                                'data-custom' => 1,
+                                            ];
                                         }
 
                                         return [];
@@ -144,7 +152,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
                     'choices'    => array_flip($fieldValues),
                     'label'      => 'mautic.form.field.form.value',
                     'multiple'   => $isMultiple,
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'                => 'form-control',
                         'onchange'             => 'Mautic.updateLeadFieldValueOptions(this)',
@@ -155,7 +165,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
                     'required'    => true,
                     'constraints' => [
                         new NotBlank(
-                            ['message' => 'mautic.core.value.required']
+                            [
+                                'message' => 'mautic.core.value.required',
+                            ]
                         ),
                     ],
                     'auto_initialize' => false,
@@ -188,11 +200,15 @@ class CampaignEventLeadFieldValueType extends AbstractType
                     TextType::class,
                     [
                         'label'       => 'mautic.form.field.form.value',
-                        'label_attr'  => ['class' => 'control-label'],
+                        'label_attr'  => [
+                            'class' => 'control-label',
+                        ],
                         'attr'        => $attr,
                         'constraints' => ($supportsValue) ? [
                             new NotBlank(
-                                ['message' => 'mautic.core.value.required']
+                                [
+                                    'message' => 'mautic.core.value.required',
+                                ]
                             ),
                         ] : [],
                     ]
@@ -205,7 +221,9 @@ class CampaignEventLeadFieldValueType extends AbstractType
                 [
                     'choices'           => $this->leadModel->getOperatorsForFieldType(null == $fieldType ? 'default' : $fieldType, ['date']),
                     'label'             => 'mautic.lead.lead.submitaction.operator',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'attr'              => [
                         'onchange' => 'Mautic.updateLeadFieldValues(this)',
                     ],

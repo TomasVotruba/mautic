@@ -98,7 +98,9 @@ class PreferenceBuilder
 
             // Add the rest of the channels as least priority
             foreach ($allChannels as $channel => $messageSettings) {
-                $this->addChannelRule($channel, ['dnc' => DoNotContact::IS_CONTACTABLE], $log, $priority);
+                $this->addChannelRule($channel, [
+                    'dnc' => DoNotContact::IS_CONTACTABLE,
+                ], $log, $priority);
                 ++$priority;
             }
         }

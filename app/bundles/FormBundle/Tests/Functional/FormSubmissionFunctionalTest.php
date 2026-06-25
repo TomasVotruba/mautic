@@ -42,7 +42,9 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepo = $this->em->getRepository(Submission::class);
 
         // Set tracking_id on submission using direct SQL (simulates device tracking which doesn't work in functional tests)
-        $submissions = $submissionRepo->findBy(['page' => $pageA]);
+        $submissions = $submissionRepo->findBy([
+            'page' => $pageA,
+        ]);
         $this->assertCount(1, $submissions);
         $trackingId = hash('sha1', uniqid((string) random_int(0, mt_getrandmax()), true));
 
@@ -86,7 +88,8 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
             'id'        => $lead->getId(),
             'email'     => $lead->getEmail(),
             'firstname' => $lead->getFirstname(),
-            'lastname'  => $lead->getLastname(), ]]);
+            'lastname'  => $lead->getLastname(),
+        ]]);
 
         /** @var StatRepository $emailStatRepository */
         $emailStatRepository = $this->em->getRepository(Stat::class);
@@ -119,7 +122,9 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepo = $this->em->getRepository(Submission::class);
 
         // Verify submission is associated with the page
-        $submissions = $submissionRepo->findBy(['page' => $pageA]);
+        $submissions = $submissionRepo->findBy([
+            'page' => $pageA,
+        ]);
         $this->assertCount(1, $submissions);
 
         // Verify referer is tracked
@@ -144,7 +149,9 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
 
         $this->assertEmpty($submissionRepo->validateSubmissions([9999999999999], $formId));
 
-        $submissionIds = [$submissionRepo->findOneBy(['page' => $page])->getId()];
+        $submissionIds = [$submissionRepo->findOneBy([
+            'page' => $page,
+        ])->getId()];
         $this->assertCount(1, $submissionRepo->validateSubmissions($submissionIds, $formId));
     }
 

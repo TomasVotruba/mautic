@@ -22,9 +22,13 @@ class CleanupCommandTest extends MauticMysqlTestCase
         Assert::assertSame(Command::SUCCESS, $response->getStatusCode());
         Assert::assertStringContainsString('1 records deleted.', $response->getDisplay());
 
-        $fieldChangeRecordDeleted = $this->em->getRepository(FieldChange::class)->findOneBy(['id' => $fieldChangeNonExistLead->getId()]);
+        $fieldChangeRecordDeleted = $this->em->getRepository(FieldChange::class)->findOneBy([
+            'id' => $fieldChangeNonExistLead->getId(),
+        ]);
         Assert::assertNull($fieldChangeRecordDeleted);
-        $fieldChangeRecordShouldNotDeleted = $this->em->getRepository(FieldChange::class)->findOneBy(['id' => $fieldChangeExistLead->getId()]);
+        $fieldChangeRecordShouldNotDeleted = $this->em->getRepository(FieldChange::class)->findOneBy([
+            'id' => $fieldChangeExistLead->getId(),
+        ]);
         Assert::assertNotNull($fieldChangeRecordShouldNotDeleted);
     }
 

@@ -173,7 +173,10 @@ class FieldModel extends FormModel
         ],
         'attribution' => [
             'type'       => 'number',
-            'properties' => ['roundmode' => 4, 'scale' => 2],
+            'properties' => [
+                'roundmode' => 4,
+                'scale' => 2,
+            ],
             'fixed'      => true,
             'listable'   => true,
             'object'     => 'lead',
@@ -276,7 +279,10 @@ class FieldModel extends FormModel
         ],
         'companynumber_of_employees' => [
             'type'       => 'number',
-            'properties' => ['roundmode' => 4, 'scale' => 0],
+            'properties' => [
+                'roundmode' => 4,
+                'scale' => 0,
+            ],
             'group'      => 'professional',
             'listable'   => true,
             'object'     => 'company',
@@ -289,7 +295,10 @@ class FieldModel extends FormModel
         ],
         'companyannual_revenue' => [
             'type'       => 'number',
-            'properties' => ['roundmode' => 4, 'scale' => 2],
+            'properties' => [
+                'roundmode' => 4,
+                'scale' => 2,
+            ],
             'listable'   => true,
             'group'      => 'professional',
             'object'     => 'company',
@@ -739,7 +748,9 @@ class FieldModel extends FormModel
             throw new MethodNotAllowedHttpException(['LeadEntity']);
         }
 
-        $fields = $this->getRepository()->findBy([], ['order' => 'ASC']);
+        $fields = $this->getRepository()->findBy([], [
+            'order' => 'ASC',
+        ]);
         $count  = 1;
         $order  = $entity->getOrder();
         $id     = $entity->getId();
@@ -771,7 +782,9 @@ class FieldModel extends FormModel
      */
     public function reorderFieldsByList(array $list, $start = 1): void
     {
-        $fields = $this->getRepository()->findBy([], ['order' => 'ASC']);
+        $fields = $this->getRepository()->findBy([], [
+            'order' => 'ASC',
+        ]);
         foreach ($fields as $field) {
             if (in_array($field->getId(), $list)) {
                 $order = ((int) array_search($field->getId(), $list) + $start);
@@ -899,7 +912,10 @@ class FieldModel extends FormModel
      *
      * @return mixed[]
      */
-    public function getFieldList($byGroup = true, $alphabetical = true, $filters = ['isPublished' => true, 'object' => 'lead']): array
+    public function getFieldList($byGroup = true, $alphabetical = true, $filters = [
+        'isPublished' => true,
+        'object' => 'lead',
+    ]): array
     {
         return $this->fieldList->getFieldList($byGroup, $alphabetical, $filters);
     }
@@ -938,7 +954,9 @@ class FieldModel extends FormModel
      */
     public function getFieldListWithProperties($object = 'lead'): array
     {
-        return $this->getFieldsProperties(['object' => $object]);
+        return $this->getFieldsProperties([
+            'object' => $object,
+        ]);
     }
 
     /**
@@ -991,7 +1009,9 @@ class FieldModel extends FormModel
      *
      * @param array $filters
      */
-    public function getGroupFields($group, $filters = ['isPublished' => true]): array
+    public function getGroupFields($group, $filters = [
+        'isPublished' => true,
+    ]): array
     {
         $forceFilters = [
             [

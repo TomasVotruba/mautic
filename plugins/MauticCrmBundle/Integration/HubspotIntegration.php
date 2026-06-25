@@ -306,7 +306,9 @@ class HubspotIntegration extends CrmAbstractIntegration
                 TextType::class,
                 [
                     'label'       => 'mautic.hubspot.form.accessKey',
-                    'label_attr'  => ['class' => 'control-label'],
+                    'label_attr'  => [
+                        'class' => 'control-label',
+                    ],
                     'attr'        => [
                         'class'    => 'form-control',
                     ],
@@ -319,7 +321,9 @@ class HubspotIntegration extends CrmAbstractIntegration
                 TextType::class,
                 [
                     'label'       => 'mautic.hubspot.form.apikey',
-                    'label_attr'  => ['class' => 'control-label'],
+                    'label_attr'  => [
+                        'class' => 'control-label',
+                    ],
                     'attr'        => [
                         'class'    => 'form-control',
                         'readonly' => true,
@@ -339,8 +343,12 @@ class HubspotIntegration extends CrmAbstractIntegration
                     ],
                     'expanded'          => true,
                     'multiple'          => true,
-                    'label'             => $this->getTranslator()->trans('mautic.crm.form.objects_to_pull_from', ['%crm%' => 'Hubspot']),
-                    'label_attr'        => ['class' => ''],
+                    'label'             => $this->getTranslator()->trans('mautic.crm.form.objects_to_pull_from', [
+                        '%crm%' => 'Hubspot',
+                    ]),
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -593,7 +601,9 @@ class HubspotIntegration extends CrmAbstractIntegration
             [
                 'leadFields'       => $createFields,
                 'object'           => $object,
-                'feature_settings' => ['objects' => $config['objects']],
+                'feature_settings' => [
+                    'objects' => $config['objects'],
+                ],
             ]
         );
         $this->amendLeadDataBeforePush($mappedData);

@@ -91,7 +91,9 @@ final class AnalyseCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
 
         $this->assertStringNotContainsString($extraField['label'], $output->getDisplay());
 
-        $output = $this->testSymfonyCommand('mautic:fields:analyse', ['--display-table' => true]);
+        $output = $this->testSymfonyCommand('mautic:fields:analyse', [
+            '--display-table' => true,
+        ]);
 
         foreach ($fields as $alias => $field) {
             $this->assertStringContainsString($alias, $output->getDisplay());

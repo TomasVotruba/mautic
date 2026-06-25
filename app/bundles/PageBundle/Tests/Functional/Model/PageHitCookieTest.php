@@ -53,7 +53,11 @@ final class PageHitCookieTest extends MauticMysqlTestCase
         Assert::assertIsNumeric($cookieValue, 'Cookie value should be numeric (the Hit ID)');
 
         // Verify the first hit was created
-        $hits = $this->hitRepository->findBy(['page' => $page->getId()], ['dateHit' => 'ASC']);
+        $hits = $this->hitRepository->findBy([
+            'page' => $page->getId(),
+        ], [
+            'dateHit' => 'ASC',
+        ]);
         Assert::assertCount(1, $hits);
         $firstHit = $hits[0];
         Assert::assertNull($firstHit->getDateLeft(), 'First hit should not have date_left set yet');
@@ -77,7 +81,11 @@ final class PageHitCookieTest extends MauticMysqlTestCase
         );
 
         // Verify second hit was created
-        $allHits = $this->hitRepository->findBy(['page' => $page->getId()], ['dateHit' => 'ASC']);
+        $allHits = $this->hitRepository->findBy([
+            'page' => $page->getId(),
+        ], [
+            'dateHit' => 'ASC',
+        ]);
         Assert::assertCount(2, $allHits, 'Should have two hits after second page visit');
         $secondHit = $allHits[1];
         Assert::assertNull($secondHit->getDateLeft(), 'Second hit should not have date_left set yet');
@@ -100,7 +108,11 @@ final class PageHitCookieTest extends MauticMysqlTestCase
         );
 
         // Verify third hit was created
-        $allHits = $this->hitRepository->findBy(['page' => $page->getId()], ['dateHit' => 'ASC']);
+        $allHits = $this->hitRepository->findBy([
+            'page' => $page->getId(),
+        ], [
+            'dateHit' => 'ASC',
+        ]);
         Assert::assertCount(3, $allHits, 'Should have three hits after third page visit');
         $thirdHit = $allHits[2];
         Assert::assertNull($thirdHit->getDateLeft(), 'Third hit should not have date_left set yet');

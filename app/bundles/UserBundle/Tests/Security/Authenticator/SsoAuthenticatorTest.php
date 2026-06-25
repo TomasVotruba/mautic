@@ -35,7 +35,11 @@ class SsoAuthenticatorTest extends TestCase
     public function testIsPost(string $method, bool $isPost, bool $expected): void
     {
         $path              = '/path';
-        $options           = ['post_only' => $isPost, 'check_path' => $path, 'form_only' => false];
+        $options           = [
+            'post_only' => $isPost,
+            'check_path' => $path,
+            'form_only' => false,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProviderInterface::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -83,7 +87,11 @@ class SsoAuthenticatorTest extends TestCase
     public function testCheckPath(bool $expected): void
     {
         $path              = '/path';
-        $options           = ['post_only' => true, 'check_path' => $path, 'form_only' => false];
+        $options           = [
+            'post_only' => true,
+            'check_path' => $path,
+            'form_only' => false,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProviderInterface::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -123,7 +131,11 @@ class SsoAuthenticatorTest extends TestCase
     public function testFormOnly(string $mimeType, bool $isForm, bool $expected): void
     {
         $path              = '/path';
-        $options           = ['post_only' => true, 'check_path' => $path, 'form_only' => $isForm];
+        $options           = [
+            'post_only' => true,
+            'check_path' => $path,
+            'form_only' => $isForm,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProviderInterface::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -167,7 +179,11 @@ class SsoAuthenticatorTest extends TestCase
     public function testHasRequestIntegrationParameter(?bool $addToPost, bool $isPost, bool $expected): void
     {
         $path              = '/path';
-        $options           = ['post_only' => $isPost, 'check_path' => $path, 'form_only' => false];
+        $options           = [
+            'post_only' => $isPost,
+            'check_path' => $path,
+            'form_only' => false,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProviderInterface::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -220,7 +236,10 @@ class SsoAuthenticatorTest extends TestCase
         $password          = 'pw';
         $integration       = 'integration';
         $csrfToken         = 'token';
-        $options           = ['post_only' => true, 'enable_csrf' => $enableCsrf];
+        $options           = [
+            'post_only' => true,
+            'enable_csrf' => $enableCsrf,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProviderInterface::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -291,7 +310,9 @@ class SsoAuthenticatorTest extends TestCase
         $password          = 'pw';
         $integration       = 'integration';
         $csrfToken         = 'token';
-        $options           = ['post_only' => true];
+        $options           = [
+            'post_only' => true,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProvider::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -353,7 +374,9 @@ class SsoAuthenticatorTest extends TestCase
         $password          = 'pw';
         $integration       = 'integration';
         $csrfToken         = 'token';
-        $options           = ['post_only' => true];
+        $options           = [
+            'post_only' => true,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProvider::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);
@@ -417,7 +440,9 @@ class SsoAuthenticatorTest extends TestCase
         $integration       = 'integration';
         $csrfToken         = 'token';
         $userRoles         = ['ROLE'];
-        $options           = ['post_only' => true];
+        $options           = [
+            'post_only' => true,
+        ];
         $failedMessage     = 'Failure';
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProvider::class);
@@ -511,7 +536,9 @@ class SsoAuthenticatorTest extends TestCase
         $password          = 'pw';
         $integration       = 'integration';
         $csrfToken         = 'token';
-        $options           = ['post_only' => true];
+        $options           = [
+            'post_only' => true,
+        ];
         $httpUtils         = $this->createMock(HttpUtils::class);
         $userProvider      = $this->createMock(UserProvider::class);
         $successHandler    = $this->createMock(AuthenticationSuccessHandlerInterface::class);

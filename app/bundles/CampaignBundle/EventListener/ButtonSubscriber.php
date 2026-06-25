@@ -38,7 +38,9 @@ final class ButtonSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $exportRoute = $this->router->generate('mautic_campaign_action', ['objectAction' => 'batchExport']);
+        $exportRoute = $this->router->generate('mautic_campaign_action', [
+            'objectAction' => 'batchExport',
+        ]);
 
         $event->addButton(
             [
@@ -48,7 +50,9 @@ final class ButtonSubscriber implements EventSubscriberInterface
                     'data-precheck'         => 'batchActionPrecheck',
                     'data-message'          => $this->translator->trans(
                         'mautic.core.export.items',
-                        ['%items%' => 'campaigns']
+                        [
+                            '%items%' => 'campaigns',
+                        ]
                     ),
                     'data-confirm-text'     => $this->translator->trans('mautic.core.export.zip'),
                     'data-confirm-callback' => 'executeBatchAction',

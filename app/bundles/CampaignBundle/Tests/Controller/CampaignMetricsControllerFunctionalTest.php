@@ -66,7 +66,10 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[1], $contacts[1], '2024-12-11 21:37:00');
         $this->em->flush();
 
-        return ['campaign' => $campaign, 'email' => $email];
+        return [
+            'campaign' => $campaign,
+            'email' => $email,
+        ];
     }
 
     public function testEmailWeekdaysAction(): void
@@ -86,9 +89,18 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
 
         $expectedDaysLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         $expectedDaysData   = [
-            ['label' => 'Email sent', 'data' => [0, 2, 0, 0, 0, 0, 0]],
-            ['label' => 'Email read', 'data' => [0, 1, 1, 0, 0, 0, 0]],
-            ['label' => 'Email clicked', 'data' => [0, 4, 1, 0, 0, 0, 0]],
+            [
+                'label' => 'Email sent',
+                'data' => [0, 2, 0, 0, 0, 0, 0],
+            ],
+            [
+                'label' => 'Email read',
+                'data' => [0, 1, 1, 0, 0, 0, 0],
+            ],
+            [
+                'label' => 'Email clicked',
+                'data' => [0, 4, 1, 0, 0, 0, 0],
+            ],
         ];
         Assert::assertEquals($expectedDaysLabels, $daysData['labels']);
         foreach ($daysDatasets as $index => $dataset) {
@@ -128,9 +140,18 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals($expectedHoursLabels, $hoursData['labels']);
 
         $expectedHoursData = [
-            ['label' => 'Email sent', 'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-            ['label' => 'Email read', 'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]],
-            ['label' => 'Email clicked', 'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]],
+            [
+                'label' => 'Email sent',
+                'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ],
+            [
+                'label' => 'Email read',
+                'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+            ],
+            [
+                'label' => 'Email clicked',
+                'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+            ],
         ];
         foreach ($hoursDatasets as $index => $dataset) {
             Assert::assertEquals($expectedHoursData[$index]['label'], $dataset['label']);
@@ -181,12 +202,30 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $conditionEventDetails,
             expected: [
-                'total_executions'     => ['value' => 0, 'tooltip' => null],
-                'unique_executions'    => ['value' => 0, 'tooltip' => null],
-                'max_rotations'        => ['value' => 0, 'tooltip' => null],
-                'pending_executions'   => ['value' => 0, 'tooltip' => null],
-                'negative_path_count'  => ['value' => 0, 'tooltip' => null],
-                'positive_path_count'  => ['value' => 0, 'tooltip' => null],
+                'total_executions'     => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'unique_executions'    => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'max_rotations'        => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'pending_executions'   => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'negative_path_count'  => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'positive_path_count'  => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
             ]
         );
 
@@ -195,20 +234,52 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $emailEventDetails,
             expected: [
-                'total_executions'          => ['value' => 0, 'tooltip' => null],
-                'unique_executions'         => ['value' => 0, 'tooltip' => null],
-                'max_rotations'             => ['value' => 0, 'tooltip' => null],
-                'pending_executions'        => ['value' => 0, 'tooltip' => null],
-                'sent_count'                => ['value' => 0, 'tooltip' => null],
-                'read_count'                => ['value' => 0, 'tooltip' => null],
-                'clicked_count'             => ['value' => 0, 'tooltip' => null],
-                'open_rate'                 => ['value' => '0%', 'tooltip' => null],
-                'click_through_rate'        => ['value' => '0%', 'tooltip' => null],
-                'click_through_open_rate'   => ['value' => '0%', 'tooltip' => null],
+                'total_executions'          => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'unique_executions'         => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'max_rotations'             => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'pending_executions'        => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'sent_count'                => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'read_count'                => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'clicked_count'             => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'open_rate'                 => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
+                'click_through_rate'        => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
+                'click_through_open_rate'   => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
             ]
         );
 
-        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         Assert::assertStringContainsString('7 total events were executed', $commandResult->getDisplay());
 
         // check condition event details after running the campaign
@@ -216,12 +287,30 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $conditionEventDetails,
             expected: [
-                'total_executions'     => ['value' => 4, 'tooltip' => null],
-                'unique_executions'    => ['value' => 4, 'tooltip' => null],
-                'max_rotations'        => ['value' => 1, 'tooltip' => null],
-                'pending_executions'   => ['value' => 0, 'tooltip' => null],
-                'negative_path_count'  => ['value' => 1, 'tooltip' => null],
-                'positive_path_count'  => ['value' => 3, 'tooltip' => null],
+                'total_executions'     => [
+                    'value' => 4,
+                    'tooltip' => null,
+                ],
+                'unique_executions'    => [
+                    'value' => 4,
+                    'tooltip' => null,
+                ],
+                'max_rotations'        => [
+                    'value' => 1,
+                    'tooltip' => null,
+                ],
+                'pending_executions'   => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'negative_path_count'  => [
+                    'value' => 1,
+                    'tooltip' => null,
+                ],
+                'positive_path_count'  => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
@@ -231,22 +320,54 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $emailEventDetails,
             expected: [
-                'total_executions'          => ['value' => 3, 'tooltip' => null],
-                'unique_executions'         => ['value' => 3, 'tooltip' => null],
-                'max_rotations'             => ['value' => 1, 'tooltip' => null],
-                'pending_executions'        => ['value' => 0, 'tooltip' => null],
-                'sent_count'                => ['value' => 3, 'tooltip' => null],
-                'read_count'                => ['value' => 0, 'tooltip' => null],
-                'clicked_count'             => ['value' => 0, 'tooltip' => null],
-                'open_rate'                 => ['value' => '0%', 'tooltip' => null],
-                'click_through_rate'        => ['value' => '0%', 'tooltip' => null],
-                'click_through_open_rate'   => ['value' => '0%', 'tooltip' => null],
+                'total_executions'          => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'unique_executions'         => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'max_rotations'             => [
+                    'value' => 1,
+                    'tooltip' => null,
+                ],
+                'pending_executions'        => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'sent_count'                => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'read_count'                => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'clicked_count'             => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'open_rate'                 => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
+                'click_through_rate'        => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
+                'click_through_open_rate'   => [
+                    'value' => '0%',
+                    'tooltip' => null,
+                ],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
 
         // emulate email read and link click
-        $emailStats = $this->em->getRepository(Stat::class)->findBy(['email' => $email]);
+        $emailStats = $this->em->getRepository(Stat::class)->findBy([
+            'email' => $email,
+        ]);
         $email      = $emailStats[0]->getEmail();
         Assert::assertCount(3, $emailStats);
         $this->emailFixturesHelper->emulateEmailRead($emailStats[0], $email);
@@ -261,16 +382,46 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $emailEventDetails,
             expected: [
-                'total_executions'          => ['value' => 3, 'tooltip' => null],
-                'unique_executions'         => ['value' => 3, 'tooltip' => null],
-                'max_rotations'             => ['value' => 1, 'tooltip' => null],
-                'pending_executions'        => ['value' => 0, 'tooltip' => null],
-                'sent_count'                => ['value' => 3, 'tooltip' => null],
-                'read_count'                => ['value' => 2, 'tooltip' => null],
-                'clicked_count'             => ['value' => 1, 'tooltip' => null],
-                'open_rate'                 => ['value' => '66.67%', 'tooltip' => null],
-                'click_through_rate'        => ['value' => '33.33%', 'tooltip' => null],
-                'click_through_open_rate'   => ['value' => '50%', 'tooltip' => null],
+                'total_executions'          => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'unique_executions'         => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'max_rotations'             => [
+                    'value' => 1,
+                    'tooltip' => null,
+                ],
+                'pending_executions'        => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'sent_count'                => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
+                'read_count'                => [
+                    'value' => 2,
+                    'tooltip' => null,
+                ],
+                'clicked_count'             => [
+                    'value' => 1,
+                    'tooltip' => null,
+                ],
+                'open_rate'                 => [
+                    'value' => '66.67%',
+                    'tooltip' => null,
+                ],
+                'click_through_rate'        => [
+                    'value' => '33.33%',
+                    'tooltip' => null,
+                ],
+                'click_through_open_rate'   => [
+                    'value' => '50%',
+                    'tooltip' => null,
+                ],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
@@ -284,7 +435,9 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($campaignLead);
         $this->em->flush();
 
-        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         Assert::assertStringContainsString('1 total event was executed', $commandResult->getDisplay());
 
         // check condition event details after second rotation for the lead
@@ -292,12 +445,30 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $conditionEventDetails,
             expected: [
-                'total_executions'     => ['value' => 5, 'tooltip' => null],
-                'unique_executions'    => ['value' => 4, 'tooltip' => null],
-                'max_rotations'        => ['value' => 2, 'tooltip' => null],
-                'pending_executions'   => ['value' => 0, 'tooltip' => null],
-                'negative_path_count'  => ['value' => 2, 'tooltip' => null],
-                'positive_path_count'  => ['value' => 3, 'tooltip' => null],
+                'total_executions'     => [
+                    'value' => 5,
+                    'tooltip' => null,
+                ],
+                'unique_executions'    => [
+                    'value' => 4,
+                    'tooltip' => null,
+                ],
+                'max_rotations'        => [
+                    'value' => 2,
+                    'tooltip' => null,
+                ],
+                'pending_executions'   => [
+                    'value' => 0,
+                    'tooltip' => null,
+                ],
+                'negative_path_count'  => [
+                    'value' => 2,
+                    'tooltip' => null,
+                ],
+                'positive_path_count'  => [
+                    'value' => 3,
+                    'tooltip' => null,
+                ],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );

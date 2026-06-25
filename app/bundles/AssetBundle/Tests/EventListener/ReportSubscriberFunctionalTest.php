@@ -45,7 +45,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     ],
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [

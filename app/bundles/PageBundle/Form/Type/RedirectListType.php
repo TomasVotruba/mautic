@@ -27,10 +27,14 @@ class RedirectListType extends AbstractType
             'expanded'    => false,
             'multiple'    => false,
             'label'       => 'mautic.page.form.redirecttype',
-            'label_attr'  => ['class' => 'control-label'],
+            'label_attr'  => [
+                'class' => 'control-label',
+            ],
             'placeholder' => false,
             'required'    => false,
-            'attr'        => ['class' => 'form-control'],
+            'attr'        => [
+                'class' => 'form-control',
+            ],
             'feature'     => 'all',
         ]);
 

@@ -37,6 +37,9 @@ final class FieldOperatorsEventTest extends \PHPUnit\Framework\TestCase
 
         $event->addOperator('!=');
 
-        $this->assertSame(['equals' => '=', 'not equal' => '!='], $event->getOperators());
+        $this->assertSame([
+            'equals' => '=',
+            'not equal' => '!=',
+        ], $event->getOperators());
     }
 }

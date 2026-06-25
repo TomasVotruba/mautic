@@ -194,12 +194,17 @@ class NotificationModel extends FormModel
             if (isset($updateData['version'])) {
                 $announcement = $this->translator->trans(
                     'mautic.core.updater.update.announcement_link',
-                    ['%announcement%' => $updateData['announcement']]
+                    [
+                        '%announcement%' => $updateData['announcement'],
+                    ]
                 );
 
                 $updateMessage = $this->translator->trans(
                     $updateData['message'],
-                    ['%version%' => $updateData['version'], '%announcement%' => $announcement]
+                    [
+                        '%version%' => $updateData['version'],
+                        '%announcement%' => $announcement,
+                    ]
                 );
 
                 $alreadyNotified = $this->getSession()->get('mautic.update.notified');
@@ -211,7 +216,11 @@ class NotificationModel extends FormModel
             }
         }
 
-        return [$notifications, $showNewIndicator, ['isNew' => $newUpdate, 'message' => $updateMessage]];
+        return [
+            $notifications, $showNewIndicator, [
+                'isNew' => $newUpdate,
+                'message' => $updateMessage,
+            ]];
     }
 
     private function isDuplicate(int $userId, string $deduplicate, ?\DateTime $from = null): bool

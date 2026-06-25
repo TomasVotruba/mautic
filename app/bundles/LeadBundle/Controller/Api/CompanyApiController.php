@@ -85,7 +85,9 @@ class CompanyApiController extends CommonApiController
     public function addContactAction($companyId, $contactId)
     {
         $company = $this->model->getEntity($companyId);
-        $view    = $this->view(['success' => 1], Response::HTTP_OK);
+        $view    = $this->view([
+            'success' => 1,
+        ], Response::HTTP_OK);
 
         if (null === $company) {
             return $this->notFound();
@@ -114,7 +116,9 @@ class CompanyApiController extends CommonApiController
     public function removeContactAction($companyId, $contactId)
     {
         $company = $this->model->getEntity($companyId);
-        $view    = $this->view(['success' => 1], Response::HTTP_OK);
+        $view    = $this->view([
+            'success' => 1,
+        ], Response::HTTP_OK);
 
         if (null === $company) {
             return $this->notFound();

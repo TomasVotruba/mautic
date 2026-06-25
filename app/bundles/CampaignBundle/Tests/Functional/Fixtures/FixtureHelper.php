@@ -83,12 +83,16 @@ final class FixtureHelper
                 'triggerRestrictedStartHour' => '',
                 'triggerRestrictedStopHour'  => '',
                 'anchor'                     => 'leadsource',
-                'properties'                 => ['points' => '5'],
+                'properties'                 => [
+                    'points' => '5',
+                ],
                 'type'                       => 'lead.changepoints',
                 'eventType'                  => 'action',
                 'anchorEventType'            => 'source',
                 'campaignId'                 => $campaign->getId(),
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'points'                     => 5,
             ]
         );

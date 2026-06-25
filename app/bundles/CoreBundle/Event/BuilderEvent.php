@@ -42,7 +42,9 @@ class BuilderEvent extends Event
                 $b['group']
             )
         );
-        $array = ['criteria' => $this->abTestWinnerCriteria];
+        $array = [
+            'criteria' => $this->abTestWinnerCriteria,
+        ];
 
         $choices = [];
         foreach ($this->abTestWinnerCriteria as $k => $c) {

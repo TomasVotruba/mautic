@@ -20,7 +20,8 @@ class IntegrationCampaignsType extends AbstractType
             [
                 'choices'           => array_flip($options['campaignContactStatus']),
                 'attr'              => [
-                    'class' => 'form-control', ],
+                    'class' => 'form-control',
+                ],
                 'label'    => 'mautic.plugin.integration.campaigns.member.status',
                 'required' => false,
             ]
@@ -30,7 +31,9 @@ class IntegrationCampaignsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
-            ['campaignContactStatus' => []]);
+            [
+                'campaignContactStatus' => [],
+            ]);
     }
 
     public function getBlockPrefix(): string

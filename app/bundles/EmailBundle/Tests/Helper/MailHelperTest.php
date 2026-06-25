@@ -359,8 +359,18 @@ class MailHelperTest extends TestCase
 
         $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
-                ['email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => null, 'signature' => 'owner 1'],
-                ['email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => null, 'signature' => 'owner 2'],
+                [
+                    'email' => 'owner1@owner.com',
+                    'first_name' => 'owner 1',
+                    'last_name' => null,
+                    'signature' => 'owner 1',
+                ],
+                [
+                    'email' => 'owner2@owner.com',
+                    'first_name' => 'owner 2',
+                    'last_name' => null,
+                    'signature' => 'owner 2',
+                ],
             );
         $transport     = new BatchTransport();
         $symfonyMailer = new Mailer($transport);
@@ -451,8 +461,20 @@ class MailHelperTest extends TestCase
 
         $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
-                ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
-                ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
+                [
+                    'id' => 1,
+                    'email' => 'owner1@owner.com',
+                    'first_name' => 'owner 1',
+                    'last_name' => '',
+                    'signature' => 'owner 1',
+                ],
+                [
+                    'id' => 2,
+                    'email' => 'owner2@owner.com',
+                    'first_name' => 'owner 2',
+                    'last_name' => '',
+                    'signature' => 'owner 2',
+                ],
             );
 
         $transport     = new BatchTransport();
@@ -582,8 +604,20 @@ class MailHelperTest extends TestCase
 
         $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
-                ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
-                ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
+                [
+                    'id' => 1,
+                    'email' => 'owner1@owner.com',
+                    'first_name' => 'owner 1',
+                    'last_name' => '',
+                    'signature' => 'owner 1',
+                ],
+                [
+                    'id' => 2,
+                    'email' => 'owner2@owner.com',
+                    'first_name' => 'owner 2',
+                    'last_name' => '',
+                    'signature' => 'owner 2',
+                ],
             );
         $transport = new BatchTransport();
         $mailer    = new MailHelper(
@@ -640,8 +674,20 @@ class MailHelperTest extends TestCase
     {
         $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
-                ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
-                ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
+                [
+                    'id' => 1,
+                    'email' => 'owner1@owner.com',
+                    'first_name' => 'owner 1',
+                    'last_name' => '',
+                    'signature' => 'owner 1',
+                ],
+                [
+                    'id' => 2,
+                    'email' => 'owner2@owner.com',
+                    'first_name' => 'owner 2',
+                    'last_name' => '',
+                    'signature' => 'owner 2',
+                ],
             );
 
         $transport     = new BcInterfaceTokenTransport();
@@ -861,8 +907,20 @@ class MailHelperTest extends TestCase
 
         $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
-                ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
-                ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
+                [
+                    'id' => 1,
+                    'email' => 'owner1@owner.com',
+                    'first_name' => 'owner 1',
+                    'last_name' => '',
+                    'signature' => 'owner 1',
+                ],
+                [
+                    'id' => 2,
+                    'email' => 'owner2@owner.com',
+                    'first_name' => 'owner 2',
+                    'last_name' => '',
+                    'signature' => 'owner 2',
+                ],
             );
 
         $transport     = new SmtpTransport();
@@ -1021,7 +1079,11 @@ class MailHelperTest extends TestCase
     public function testGlobalHeadersAreSet(): void
     {
         $params = [
-            ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
+            [
+                'mailer_custom_headers', [], [
+                    'X-Mautic-Test' => 'test',
+                    'X-Mautic-Test2' => 'test',
+                ]],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
@@ -1070,7 +1132,11 @@ class MailHelperTest extends TestCase
     public function testGlobalHeadersAreMergedIfEmailEntityIsSet(): void
     {
         $params = [
-            ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
+            [
+                'mailer_custom_headers', [], [
+                    'X-Mautic-Test' => 'test',
+                    'X-Mautic-Test2' => 'test',
+                ]],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
@@ -1120,7 +1186,13 @@ class MailHelperTest extends TestCase
     public function testEmailHeadersAreSet(): void
     {
         $params = [
-            ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test', 'custom-mautic-header' => '{contactfield=email}', 'Reply-to' => '{contactfield=email}']],
+            [
+                'mailer_custom_headers', [], [
+                    'X-Mautic-Test' => 'test',
+                    'X-Mautic-Test2' => 'test',
+                    'custom-mautic-header' => '{contactfield=email}',
+                    'Reply-to' => '{contactfield=email}',
+                ]],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
@@ -1154,7 +1226,10 @@ class MailHelperTest extends TestCase
         $email = new Email();
         $email->setSubject('Test');
         $email->setCustomHtml('{signature}');
-        $email->setHeaders(['X-Mautic-Test3' => 'test2', 'X-Mautic-Test4' => 'test2']);
+        $email->setHeaders([
+            'X-Mautic-Test3' => 'test2',
+            'X-Mautic-Test4' => 'test2',
+        ]);
         $mailer->setEmail($email);
         $mailer->send();
 
@@ -1189,7 +1264,11 @@ class MailHelperTest extends TestCase
     public function testUnsubscribeHeader(): void
     {
         $params = [
-            ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
+            [
+                'mailer_custom_headers', [], [
+                    'X-Mautic-Test' => 'test',
+                    'X-Mautic-Test2' => 'test',
+                ]],
             ['secret_key', null, 'secret'],
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
@@ -1203,12 +1282,18 @@ class MailHelperTest extends TestCase
             ->willReturnCallback(function ($route, $params = []) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl, $emailSecret) {
                 if (0 === $callCount++) {
                     $this->assertSame('mautic_email_unsubscribe', $route);
-                    $this->assertSame(['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret], $params);
+                    $this->assertSame([
+                        'idHash' => 'hash',
+                        'urlEmail' => 'someemail@email.test',
+                        'secretHash' => $emailSecret,
+                    ], $params);
 
                     return $unsubscribeUrl;
                 }
                 $this->assertSame('mautic_email_tracker', $route);
-                $this->assertSame(['idHash' => 'hash'], $params);
+                $this->assertSame([
+                    'idHash' => 'hash',
+                ], $params);
 
                 return $trackingPixelUrl;
             });
@@ -1356,9 +1441,30 @@ class MailHelperTest extends TestCase
         $mockLeadRepository->method('getLeadOwner')
             ->willReturnMap(
                 [
-                    [1, ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 1']],
-                    [2, ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 2']],
-                    [3, ['id' => 3, 'email' => 'owner3@owner.com', 'first_name' => 'John', 'last_name' => 'S&#39;mith', 'signature' => 'owner 2']],
+                    [
+                        1, [
+                            'id' => 1,
+                            'email' => 'owner1@owner.com',
+                            'first_name' => '',
+                            'last_name' => '',
+                            'signature' => 'owner 1',
+                        ]],
+                    [
+                        2, [
+                            'id' => 2,
+                            'email' => 'owner2@owner.com',
+                            'first_name' => '',
+                            'last_name' => '',
+                            'signature' => 'owner 2',
+                        ]],
+                    [
+                        3, [
+                            'id' => 3,
+                            'email' => 'owner3@owner.com',
+                            'first_name' => 'John',
+                            'last_name' => 'S&#39;mith',
+                            'signature' => 'owner 2',
+                        ]],
                 ]
             );
 
@@ -1490,7 +1596,10 @@ class MailHelperTest extends TestCase
         $this->coreParametersHelper->method('get')
             ->willReturnMap(
                 [
-                    ['mailer_custom_headers', [], ['X-Mautic-Test-1' => '{tracking_pixel}']],
+                    [
+                        'mailer_custom_headers', [], [
+                            'X-Mautic-Test-1' => '{tracking_pixel}',
+                        ]],
                     ['mailer_reply_to_email', false, '{tracking_pixel}'],
                     ['mailer_from_email', null, 'nobody@nowhere.com'],
                     ['mailer_from_name', null, 'No Body'],
@@ -1523,7 +1632,9 @@ class MailHelperTest extends TestCase
         $email = new Email();
         $email->setSubject('Test');
         $email->setCustomHtml('<html>{unsubscribe_url}</html>');
-        $email->setHeaders(['X-Mautic-Test-2' => '{tracking_pixel}']);
+        $email->setHeaders([
+            'X-Mautic-Test-2' => '{tracking_pixel}',
+        ]);
         $email->setSendToDnc(false);
         $smtpMailHelper->setEmail($email);
         $smtpMailHelper->send();
@@ -1784,7 +1895,9 @@ class MailHelperTest extends TestCase
         $mailer->setBody('Test email body with {firstname} token');
 
         // Manually add metadata to verify clearing functionality
-        $mailer->message->addMetadata($contact['email'], ['test' => 'metadata']);
+        $mailer->message->addMetadata($contact['email'], [
+            'test' => 'metadata',
+        ]);
 
         // Verify metadata exists before sending
         $metadataBeforeSend = $mailer->message->getMetadata();

@@ -119,7 +119,10 @@ class EventLogApiController extends FetchCommonApiController
                 return $this->returnError(
                     $this->translator->trans(
                         'mautic.campaign.error.contact_not_in_campaign',
-                        ['%campaign%' => $campaignId, '%contact%' => $contactId]
+                        [
+                            '%campaign%' => $campaignId,
+                            '%contact%' => $contactId,
+                        ]
                     ),
                     Response::HTTP_CONFLICT
                 );

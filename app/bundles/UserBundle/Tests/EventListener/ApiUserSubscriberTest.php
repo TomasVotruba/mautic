@@ -215,7 +215,9 @@ class ApiUserSubscriberTest extends TestCase
     public function testIfOauthAuthenticationAndIdentifierIsUserFromLoader(): void
     {
         $userIdentifier = 'The user';
-        $userRoles      = ['role' => 'test'];
+        $userRoles      = [
+            'role' => 'test',
+        ];
         $userBadge      = $this->createMock(UserBadge::class);
         $userBadge->expects(self::once())
             ->method('getUserLoader')
@@ -289,7 +291,9 @@ class ApiUserSubscriberTest extends TestCase
     public function testIfOauthAuthenticationAndIdentifierIsFromTokenPermisions(): void
     {
         $userIdentifier = 'The user';
-        $userRoles      = ['role' => 'test'];
+        $userRoles      = [
+            'role' => 'test',
+        ];
         $userBadge      = $this->createMock(UserBadge::class);
         $userBadge->expects(self::once())
             ->method('getUserLoader')

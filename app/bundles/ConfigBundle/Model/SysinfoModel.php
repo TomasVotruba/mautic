@@ -62,7 +62,9 @@ class SysinfoModel
             // ensure TZ is set back to default
             date_default_timezone_set($currentTz);
         } elseif (function_exists('phpversion')) {
-            $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.phpversion', ['%phpversion%' => phpversion()]);
+            $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.phpversion', [
+                '%phpversion%' => phpversion(),
+            ]);
         } else {
             $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.missing');
         }

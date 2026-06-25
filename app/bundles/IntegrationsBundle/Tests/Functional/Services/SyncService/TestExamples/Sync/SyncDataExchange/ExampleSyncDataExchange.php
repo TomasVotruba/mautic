@@ -48,7 +48,10 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
     /**
      * @var array
      */
-    private $payload = ['create' => [], 'update' => []];
+    private $payload = [
+        'create' => [],
+        'update' => [],
+    ];
 
     /**
      * @var ValueNormalizer
@@ -89,7 +92,9 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
                 $byEmail[$emailAddress] = $unidentifiedObject;
 
                 // Build the person's profile
-                $person = ['object' => $objectName];
+                $person = [
+                    'object' => $objectName,
+                ];
                 foreach ($fields as $field) {
                     $person[$field->getName()] = $this->valueNormalizer->normalizeForIntegration($field->getValue());
                 }

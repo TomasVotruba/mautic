@@ -13,7 +13,9 @@ class BooleanType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label_attr'        => ['class' => 'control-label'],
+            'label_attr'        => [
+                'class' => 'control-label',
+            ],
             'attr'              => [],
             'multiple'          => false,
             'expanded'          => true,

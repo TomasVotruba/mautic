@@ -74,7 +74,9 @@ class ContactObjectHelperTest extends TestCase
             );
 
         $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
-            ->with(['object' => Contact::NAME])
+            ->with([
+                'object' => Contact::NAME,
+            ])
             ->willReturn(
                 [
                     'email' => [],
@@ -107,9 +109,15 @@ class ContactObjectHelperTest extends TestCase
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
-        $object1 = $this->getObject(1, ['email' => 'email1@email.com']);
-        $object2 = $this->getObject(2, ['email' => 'email2@email.com']);
-        $object3 = $this->getObject(3, ['email' => 'email1@email.com']);
+        $object1 = $this->getObject(1, [
+            'email' => 'email1@email.com',
+        ]);
+        $object2 = $this->getObject(2, [
+            'email' => 'email2@email.com',
+        ]);
+        $object3 = $this->getObject(3, [
+            'email' => 'email1@email.com',
+        ]);
 
         $objects = [$object1, $object2, $object3];
 
@@ -161,10 +169,18 @@ class ContactObjectHelperTest extends TestCase
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
-        $object1 = $this->getObject(1, ['email' => 'email1@email.com']);
-        $object2 = $this->getObject(2, ['email' => 'email2@email.com']);
-        $object3 = $this->getObject(3, ['email' => 'email1@email.com']);
-        $object4 = $this->getObject(4, ['firstname' => 'Somebody']);
+        $object1 = $this->getObject(1, [
+            'email' => 'email1@email.com',
+        ]);
+        $object2 = $this->getObject(2, [
+            'email' => 'email2@email.com',
+        ]);
+        $object3 = $this->getObject(3, [
+            'email' => 'email1@email.com',
+        ]);
+        $object4 = $this->getObject(4, [
+            'firstname' => 'Somebody',
+        ]);
 
         $objects = [$object1, $object2, $object3, $object4];
 

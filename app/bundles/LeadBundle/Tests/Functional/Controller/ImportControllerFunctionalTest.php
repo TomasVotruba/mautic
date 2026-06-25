@@ -33,7 +33,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     public function testScheduleImport(): void
     {
         $this->generateSmallCSV();
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
         $tagName = 'tag1';
         $tag     = $this->createTag($tagName);
@@ -63,7 +65,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         ]);
         $this->client->submit($importForm);
 
-        $importData = $this->em->getRepository(Import::class)->findOneBy(['object' => 'lead']);
+        $importData = $this->em->getRepository(Import::class)->findOneBy([
+            'object' => 'lead',
+        ]);
         Assert::assertInstanceOf(Import::class, $importData);
         $importProperty = $importData->getProperties();
         Assert::assertSame([$tagName], $importProperty['defaults']['tags']);
@@ -91,8 +95,14 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         $this->createField('text', 'file');
         $stateProperties = [
             'list' => [
-                ['label' => 'MH', 'value' => 'MH'],
-                ['label' => 'MP', 'value' => 'MP'],
+                [
+                    'label' => 'MH',
+                    'value' => 'MH',
+                ],
+                [
+                    'label' => 'MP',
+                    'value' => 'MP',
+                ],
             ],
         ];
         $this->createField('select', 'state_from', $stateProperties);
@@ -106,11 +116,15 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var LeadRepository $leadRepository */
         $leadRepository = $this->em->getRepository(Lead::class);
-        $leadCount      = $leadRepository->count(['firstname' => 'John']);
+        $leadCount      = $leadRepository->count([
+            'firstname' => 'John',
+        ]);
         Assert::assertSame(3, $leadCount);
 
         if ($createLead) {
-            $lead       = $leadRepository->findOneBy(['email' => 'john1@doe.email']);
+            $lead       = $leadRepository->findOneBy([
+                'email' => 'john1@doe.email',
+            ]);
             $fieldValue = $lead ? $lead->getFieldValue('state_from') : null;
 
             // Assert that existing leads are not updated by import
@@ -124,7 +138,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     public function testImportWithSpecialCharacterTag(): void
     {
         $this->generateSmallCSV();
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->client->loginUser($user, 'mautic');
 
         $tagRepository  = $this->em->getRepository(Tag::class);
@@ -147,10 +163,14 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         $importButton = $html->selectButton('Import');
         $importForm   = $importButton->form();
-        $importForm->setValues(['lead_field_import[tags]' => [$tag->getId()]]);
+        $importForm->setValues([
+            'lead_field_import[tags]' => [$tag->getId()],
+        ]);
         $this->client->submit($importForm);
 
-        $import = $this->em->getRepository(Import::class)->findOneBy(['object' => 'lead']);
+        $import = $this->em->getRepository(Import::class)->findOneBy([
+            'object' => 'lead',
+        ]);
         $output = $this->testSymfonyCommand('mautic:import', [
             '-e'      => 'dev',
             '--id'    => $import->getId(),
@@ -163,7 +183,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         );
 
         $leadRepository = $this->em->getRepository(Lead::class);
-        $leads          = $leadRepository->findBy(['firstname' => 'John']);
+        $leads          = $leadRepository->findBy([
+            'firstname' => 'John',
+        ]);
         Assert::assertCount(3, $leads);
 
         foreach ($leads as $lead) {
@@ -174,7 +196,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         $tagCountAfter = $tagRepository->count([]);
         Assert::assertSame($tagCountBefore + 1, $tagCountAfter);
-        Assert::assertNotNull($tagRepository->findOneBy(['tag' => $tagName]));
+        Assert::assertNotNull($tagRepository->findOneBy([
+            'tag' => $tagName,
+        ]));
     }
 
     /**
@@ -207,8 +231,14 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         $this->createField('text', 'file');
         $this->createField('select', 'state_from', [
             'list' => [
-                ['label' => 'MH', 'value' => 'MH'],
-                ['label' => 'MP', 'value' => 'MP'],
+                [
+                    'label' => 'MH',
+                    'value' => 'MH',
+                ],
+                [
+                    'label' => 'MP',
+                    'value' => 'MP',
+                ],
             ],
         ]);
         $this->createField('datetime', 'birth_date');
@@ -221,7 +251,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var LeadRepository $leadRepository */
         $leadRepository = $this->em->getRepository(Lead::class);
-        $leadCount      = $leadRepository->count(['firstname' => 'John']);
+        $leadCount      = $leadRepository->count([
+            'firstname' => 'John',
+        ]);
         Assert::assertSame(2, $leadCount);
 
         // Recheck import entity for ignored count
@@ -274,7 +306,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertSelectorTextContains(
             '.alert.alert-danger a.text-danger',
-            $translator->trans('mautic.user.exception.user.not_found', ['%identifier%' => $invalidOwner])
+            $translator->trans('mautic.user.exception.user.not_found', [
+                '%identifier%' => $invalidOwner,
+            ])
         );
     }
 
@@ -288,7 +322,12 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         ]);
 
         $import = $this->createCsvContactImport(
-            ['email' => 'email', 'firstname' => 'firstname', 'lastname' => 'lastname', 'ownerusername' => 'ownerusername'],
+            [
+                'email' => 'email',
+                'firstname' => 'firstname',
+                'lastname' => 'lastname',
+                'ownerusername' => 'ownerusername',
+            ],
             ['email', 'firstname', 'lastname', 'ownerusername']
         );
 
@@ -297,7 +336,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var LeadRepository $leadRepository */
         $leadRepository = $this->em->getRepository(Lead::class);
-        $lead           = $leadRepository->findOneBy(['email' => 'john1@doe.email']);
+        $lead           = $leadRepository->findOneBy([
+            'email' => 'john1@doe.email',
+        ]);
 
         $this->assertInstanceOf(Lead::class, $lead);
         $this->assertInstanceOf(User::class, $lead->getOwner());
@@ -314,7 +355,12 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         ]);
 
         $import = $this->createCsvContactImport(
-            ['email' => 'email', 'firstname' => 'firstname', 'lastname' => 'lastname', 'ownerusername' => 'ownerusername'],
+            [
+                'email' => 'email',
+                'firstname' => 'firstname',
+                'lastname' => 'lastname',
+                'ownerusername' => 'ownerusername',
+            ],
             ['email', 'firstname', 'lastname', 'ownerusername']
         );
 
@@ -328,7 +374,9 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var LeadRepository $leadRepository */
         $leadRepository = $this->em->getRepository(Lead::class);
-        $validLead      = $leadRepository->findOneBy(['email' => 'john1@doe.email']);
+        $validLead      = $leadRepository->findOneBy([
+            'email' => 'john1@doe.email',
+        ]);
 
         $this->assertInstanceOf(Lead::class, $validLead);
         $this->assertInstanceOf(User::class, $validLead->getOwner());

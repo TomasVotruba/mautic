@@ -102,12 +102,17 @@ class LeadListModelTest extends \PHPUnit\Framework\TestCase
         return [
             [
                 [1],
-                [1 => '1'],
+                [
+                    1 => '1',
+                ],
                 '2 is dependent on 1, so 1 cannot be deleted.',
             ],
             [
                 [1, 3],
-                [1 => '1', 3 => '3'],
+                [
+                    1 => '1',
+                    3 => '3',
+                ],
                 '2 is dependent on 1 & 3, so 1 & 3 cannot be deleted.',
             ],
             [

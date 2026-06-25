@@ -23,7 +23,9 @@ trait DeduperTrait
 
     public function getUniqueData(array $queryFields): array
     {
-        $uniqueLeadFields    = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => $this->object]);
+        $uniqueLeadFields    = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier([
+            'object' => $this->object,
+        ]);
         $uniqueLeadFieldData = [];
         $inQuery             = array_intersect_key($queryFields, $this->getAvailableFields());
         foreach ($inQuery as $k => $v) {

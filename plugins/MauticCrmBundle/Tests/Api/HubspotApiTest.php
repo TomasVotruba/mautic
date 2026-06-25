@@ -68,7 +68,9 @@ class HubspotApiTest extends TestCase
 
         $integration->expects(self::once())
             ->method('makeRequest')
-            ->willReturn(['error' => $response]);
+            ->willReturn([
+                'error' => $response,
+            ]);
         $integration->expects(self::once())
             ->method('getAuthenticationType')
             ->willReturn('oauth2');

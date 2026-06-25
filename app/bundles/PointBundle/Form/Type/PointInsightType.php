@@ -28,7 +28,9 @@ final class PointInsightType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'html',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('point.insight', $options));
 
         $builder->add(
@@ -36,8 +38,12 @@ final class PointInsightType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -46,8 +52,12 @@ final class PointInsightType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.core.description',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control editor'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control editor',
+                ],
                 'required'   => false,
             ]
         );
@@ -57,7 +67,9 @@ final class PointInsightType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.point.insight.action.set_custom_field_to_winning_point_group',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'mapped'     => false,
                 'required'   => false,
                 'attr'       => [
@@ -91,7 +103,9 @@ final class PointInsightType extends AbstractType
             [
                 'choices'    => $insightTypes,
                 'label'      => 'mautic.point.insight.type',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -110,7 +124,9 @@ final class PointInsightType extends AbstractType
             [
                 'choices'    => $insightActions,
                 'label'      => 'mautic.point.insight.action',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -124,7 +140,9 @@ final class PointInsightType extends AbstractType
             GroupListType::class,
             [
                 'label'      => 'mautic.point.insight.pointgroups.compare',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'                => 'form-control',
                     'data-toggle'          => 'multiselect',
@@ -141,7 +159,9 @@ final class PointInsightType extends AbstractType
             ChoiceType::class,
             [
                 'label'      => 'mautic.point.insight.customfield',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'            => 'form-control',
                     'data-placeholder' => 'mautic.core.form.chooseone',

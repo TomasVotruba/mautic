@@ -26,7 +26,9 @@ class BundleMetadataBuilderTest extends TestCase
 
     public function testCoreBundleMetadataLoaded(): void
     {
-        $bundles = ['MauticCoreBundle' => \Mautic\CoreBundle\MauticCoreBundle::class];
+        $bundles = [
+            'MauticCoreBundle' => \Mautic\CoreBundle\MauticCoreBundle::class,
+        ];
 
         $builder  = new BundleMetadataBuilder($bundles, $this->paths);
         $metadata = $builder->getCoreBundleMetadata();
@@ -52,7 +54,9 @@ class BundleMetadataBuilderTest extends TestCase
 
     public function testPluginMetadataLoaded(): void
     {
-        $bundles = ['MauticFocusBundle' => \MauticPlugin\MauticFocusBundle\MauticFocusBundle::class];
+        $bundles = [
+            'MauticFocusBundle' => \MauticPlugin\MauticFocusBundle\MauticFocusBundle::class,
+        ];
 
         $builder  = new BundleMetadataBuilder($bundles, $this->paths);
         $metadata = $builder->getPluginMetadata();
@@ -77,7 +81,9 @@ class BundleMetadataBuilderTest extends TestCase
 
     public function testSymfonyBundleIgnored(): void
     {
-        $bundles = ['FooBarBundle' => 'Foo\Bar\BarBundle'];
+        $bundles = [
+            'FooBarBundle' => 'Foo\Bar\BarBundle',
+        ];
 
         $builder = new BundleMetadataBuilder($bundles, $this->paths);
         $this->assertEquals([], $builder->getCoreBundleMetadata());

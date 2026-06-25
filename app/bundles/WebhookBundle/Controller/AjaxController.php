@@ -88,7 +88,9 @@ class AjaxController extends CommonAjaxController
         );
 
         return $this->sendJsonResponse(
-            ['html' => $html],
+            [
+                'html' => $html,
+            ],
             $status
         );
     }

@@ -73,7 +73,9 @@ class SummarizeCommand extends ModeratedCommand
         $rebuild    = (bool) $input->getOption('rebuild');
 
         $output->writeln(
-            "<info>{$this->translator->trans('mautic.campaign.summarizing', ['%batch%' => $batchLimit])}</info>"
+            "<info>{$this->translator->trans('mautic.campaign.summarizing', [
+                '%batch%' => $batchLimit,
+            ])}</info>"
         );
 
         $this->summaryModel->summarize($output, $batchLimit, $maxHours, $rebuild);

@@ -42,7 +42,9 @@ class EmailApiController extends CommonApiController
     /**
      * @var array<string, mixed>
      */
-    protected $extraGetEntitiesArguments = ['ignoreListJoin' => true];
+    protected $extraGetEntitiesArguments = [
+        'ignoreListJoin' => true,
+    ];
 
     public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper)
     {
@@ -160,7 +162,9 @@ class EmailApiController extends CommonApiController
         $post       = $request->request->all();
         $tokens     = (!empty($post['tokens'])) ? $post['tokens'] : [];
         $assetsIds  = (!empty($post['assetAttachments'])) ? $post['assetAttachments'] : [];
-        $response   = ['success' => false];
+        $response   = [
+            'success' => false,
+        ];
 
         $cleanTokens = [];
 
@@ -173,7 +177,9 @@ class EmailApiController extends CommonApiController
             $cleanTokens[$token] = $value;
         }
 
-        $leadFields = array_merge(['id' => $leadId], $lead->getProfileFields());
+        $leadFields = array_merge([
+            'id' => $leadId,
+        ], $lead->getProfileFields());
         // Set owner_id to support the "Owner is mailer" feature
         if ($lead->getOwner()) {
             $leadFields['owner_id'] = $lead->getOwner()->getId();
@@ -216,7 +222,9 @@ class EmailApiController extends CommonApiController
         }
 
         return $this->handleView(
-            $this->view(['success' => true], Response::HTTP_CREATED)
+            $this->view([
+                'success' => true,
+            ], Response::HTTP_CREATED)
         );
     }
 

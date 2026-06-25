@@ -20,7 +20,9 @@ class EmailUtmTagsType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.campaign_source',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -33,7 +35,9 @@ class EmailUtmTagsType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.campaign_medium',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -46,7 +50,9 @@ class EmailUtmTagsType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.campaign_name',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -59,12 +65,16 @@ class EmailUtmTagsType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.campaign_content',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
                 'required'          => false,
-                'constraints'       => new Length(['max' => ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH]),
+                'constraints'       => new Length([
+                    'max' => ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH,
+                ]),
             ]
         );
     }

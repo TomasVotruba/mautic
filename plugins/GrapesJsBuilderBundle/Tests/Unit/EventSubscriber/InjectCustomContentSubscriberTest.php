@@ -44,7 +44,9 @@ final class InjectCustomContentSubscriberTest extends TestCase
         $this->config->method('isPublished')->willReturn(false);
 
         $subscriber = new InjectCustomContentSubscriber($this->config, $this->model, $this->twig, $requestStack, $this->router);
-        $event      = new CustomContentEvent('view', 'email.settings.advanced', ['email' => new Email()]);
+        $event      = new CustomContentEvent('view', 'email.settings.advanced', [
+            'email' => new Email(),
+        ]);
 
         $this->twig->expects(self::never())->method('render');
 
@@ -56,7 +58,9 @@ final class InjectCustomContentSubscriberTest extends TestCase
     public function testInjectViewCustomContentUsesRequestCustomMjmlOnPost(): void
     {
         $request = new Request([], [
-            'grapesjsbuilder' => ['customMjml' => '<mjml>request</mjml>'],
+            'grapesjsbuilder' => [
+                'customMjml' => '<mjml>request</mjml>',
+            ],
         ]);
         $request->setMethod('POST');
 
@@ -71,11 +75,15 @@ final class InjectCustomContentSubscriberTest extends TestCase
 
         $this->twig->expects(self::once())
             ->method('render')
-            ->with('@GrapesJsBuilder/Setting/fields.html.twig', ['customMjml' => '<mjml>request</mjml>'])
+            ->with('@GrapesJsBuilder/Setting/fields.html.twig', [
+                'customMjml' => '<mjml>request</mjml>',
+            ])
             ->willReturn('<div>ok</div>');
 
         $subscriber = new InjectCustomContentSubscriber($this->config, $this->model, $this->twig, $requestStack, $this->router);
-        $event      = new CustomContentEvent('view', 'email.settings.advanced', ['email' => new Email()]);
+        $event      = new CustomContentEvent('view', 'email.settings.advanced', [
+            'email' => new Email(),
+        ]);
 
         $subscriber->injectViewCustomContent($event);
 
@@ -85,7 +93,9 @@ final class InjectCustomContentSubscriberTest extends TestCase
     public function testInjectViewCustomContentUsesStoredMjmlOnGet(): void
     {
         $requestStack = new RequestStack();
-        $requestStack->push(new Request([], [], [], [], [], ['REQUEST_METHOD' => 'GET']));
+        $requestStack->push(new Request([], [], [], [], [], [
+            'REQUEST_METHOD' => 'GET',
+        ]));
 
         $grapesJsBuilder = $this->createMock(GrapesJsBuilder::class);
         $grapesJsBuilder->method('getCustomMjml')->willReturn('<mjml>stored</mjml>');
@@ -98,11 +108,15 @@ final class InjectCustomContentSubscriberTest extends TestCase
 
         $this->twig->expects(self::once())
             ->method('render')
-            ->with('@GrapesJsBuilder/Setting/fields.html.twig', ['customMjml' => '<mjml>stored</mjml>'])
+            ->with('@GrapesJsBuilder/Setting/fields.html.twig', [
+                'customMjml' => '<mjml>stored</mjml>',
+            ])
             ->willReturn('<div>stored</div>');
 
         $subscriber = new InjectCustomContentSubscriber($this->config, $this->model, $this->twig, $requestStack, $this->router);
-        $event      = new CustomContentEvent('view', 'email.settings.advanced', ['email' => new Email()]);
+        $event      = new CustomContentEvent('view', 'email.settings.advanced', [
+            'email' => new Email(),
+        ]);
 
         $subscriber->injectViewCustomContent($event);
 

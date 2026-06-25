@@ -236,13 +236,17 @@ class ContactMerger
      */
     public function mergeCompanies(Lead $winner, Lead $loser): self
     {
-        $loserCompanyLeads = $this->companyLeadRepository->findBy(['lead' => $loser]);
+        $loserCompanyLeads = $this->companyLeadRepository->findBy([
+            'lead' => $loser,
+        ]);
 
         if (!$loserCompanyLeads) {
             return $this;
         }
 
-        $winnerCompanyLeads = $this->companyLeadRepository->findBy(['lead' => $winner]);
+        $winnerCompanyLeads = $this->companyLeadRepository->findBy([
+            'lead' => $winner,
+        ]);
         $winnerCompanyIds   = array_map(
             fn (CompanyLead $companyLead): int => (int) $companyLead->getCompany()->getId(),
             $winnerCompanyLeads

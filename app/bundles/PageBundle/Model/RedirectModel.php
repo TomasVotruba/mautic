@@ -47,7 +47,9 @@ class RedirectModel extends FormModel
      */
     public function getRedirectById($identifier)
     {
-        return $this->getRepository()->findOneBy(['redirectId' => $identifier]);
+        return $this->getRepository()->findOneBy([
+            'redirectId' => $identifier,
+        ]);
     }
 
     /**
@@ -84,7 +86,9 @@ class RedirectModel extends FormModel
 
         $url = $this->buildUrl(
             'mautic_url_redirect',
-            ['redirectId' => $redirect->getRedirectId()],
+            [
+                'redirectId' => $redirect->getRedirectId(),
+            ],
             true,
             $clickthrough
         );
@@ -126,7 +130,9 @@ class RedirectModel extends FormModel
         $url = UrlHelper::decodeAmpersands($url);
 
         $repo     = $this->getRepository();
-        $redirect = $repo->findOneBy(['url' => $url]);
+        $redirect = $repo->findOneBy([
+            'url' => $url,
+        ]);
 
         if (null == $redirect) {
             $redirect = $this->createRedirectEntity($url);

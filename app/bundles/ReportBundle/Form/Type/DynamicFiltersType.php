@@ -47,7 +47,9 @@ class DynamicFiltersType extends AbstractType
 
                 $args = [
                     'label'      => $label,
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'    => 'form-control',
                         'onchange' => "Mautic.filterTableData('report.".$options['report']->getId()."','".$column."',mQuery(this).val(),'list','.report-content');",

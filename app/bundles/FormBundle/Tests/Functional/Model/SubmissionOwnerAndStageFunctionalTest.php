@@ -38,8 +38,12 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
         ?string $expectedOwnerUsername = null,
         ?string $expectedStageName = null,
     ): void {
-        $salesUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'sales']);
-        $adminUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $salesUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'sales',
+        ]);
+        $adminUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
 
         $stage = new Stage();
         $stage->setName(self::STAGE_NAME);
@@ -56,13 +60,17 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
 
         $expectedOwnerId = null;
         if ($expectedOwnerUsername) {
-            $expectedOwner   = $this->em->getRepository(User::class)->findOneBy(['username' => $expectedOwnerUsername]);
+            $expectedOwner   = $this->em->getRepository(User::class)->findOneBy([
+                'username' => $expectedOwnerUsername,
+            ]);
             $expectedOwnerId = $expectedOwner->getId();
         }
 
         $expectedStageId = null;
         if ($expectedStageName) {
-            $expectedStage   = $this->em->getRepository(Stage::class)->findOneBy(['name' => $expectedStageName]);
+            $expectedStage   = $this->em->getRepository(Stage::class)->findOneBy([
+                'name' => $expectedStageName,
+            ]);
             $expectedStageId = $expectedStage->getId();
         }
 
@@ -91,7 +99,9 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
 
         $this->client->submit($form, $formValues);
 
-        $submissions = $this->em->getRepository(Submission::class)->findBy(['form' => $formId]);
+        $submissions = $this->em->getRepository(Submission::class)->findBy([
+            'form' => $formId,
+        ]);
         $this->assertCount(1, $submissions, "Submission was not created for test: {$testName}");
 
         /** @var Submission $submission */
@@ -122,11 +132,34 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
     private function createFormFields(): array
     {
         return [
-            ['label' => 'Email', 'type' => 'email', 'alias' => 'email', 'leadField' => 'email'],
-            ['label' => 'Owners Email', 'type' => 'text', 'alias' => 'owner_by_email', 'leadField' => 'ownerbyemail'],
-            ['label' => 'Owners id', 'type' => 'text', 'alias' => 'owner_by_id', 'leadField' => 'ownerbyid'],
-            ['label' => 'Stage', 'type' => 'text', 'alias' => 'stage', 'leadField' => 'stagebyname'],
-            ['label' => 'Submit', 'type' => 'button'],
+            [
+                'label' => 'Email',
+                'type' => 'email',
+                'alias' => 'email',
+                'leadField' => 'email',
+            ],
+            [
+                'label' => 'Owners Email',
+                'type' => 'text',
+                'alias' => 'owner_by_email',
+                'leadField' => 'ownerbyemail',
+            ],
+            [
+                'label' => 'Owners id',
+                'type' => 'text',
+                'alias' => 'owner_by_id',
+                'leadField' => 'ownerbyid',
+            ],
+            [
+                'label' => 'Stage',
+                'type' => 'text',
+                'alias' => 'stage',
+                'leadField' => 'stagebyname',
+            ],
+            [
+                'label' => 'Submit',
+                'type' => 'button',
+            ],
         ];
     }
 

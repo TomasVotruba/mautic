@@ -465,8 +465,12 @@ class IntegrationHelper
         }
 
         if ($specificIntegration) {
-            return ($returnSettings) ? [[$specificIntegration => $socialCache[$specificIntegration]], $featureSettings]
-                : [$specificIntegration => $socialCache[$specificIntegration]];
+            return ($returnSettings) ? [[
+                $specificIntegration => $socialCache[$specificIntegration],
+            ], $featureSettings]
+                : [
+                    $specificIntegration => $socialCache[$specificIntegration],
+                ];
         }
 
         return ($returnSettings) ? [$socialCache, $featureSettings] : $socialCache;

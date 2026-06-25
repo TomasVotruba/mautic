@@ -36,7 +36,9 @@ class AssetType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['description' => 'html']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'description' => 'html',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('asset.asset', $options));
 
         $builder->add('storageLocation', ButtonGroupType::class, [
@@ -55,8 +57,12 @@ class AssetType extends AbstractType
             'tempName',
             HiddenType::class,
             [
-                'label'       => $this->translator->trans('mautic.asset.asset.form.file.upload', ['%max%' => $maxUploadSize]),
-                'label_attr'  => ['class' => 'control-label'],
+                'label'       => $this->translator->trans('mautic.asset.asset.form.file.upload', [
+                    '%max%' => $maxUploadSize,
+                ]),
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
                 'required'    => false,
             ]
         );
@@ -86,8 +92,12 @@ class AssetType extends AbstractType
             TextType::class,
             [
                 'label'       => 'mautic.asset.asset.form.remotePath',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'required'    => false,
             ]
         );
@@ -97,8 +107,12 @@ class AssetType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.title',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -107,8 +121,12 @@ class AssetType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.core.description',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control editor'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control editor',
+                ],
                 'required'   => false,
             ]
         );
@@ -125,7 +143,9 @@ class AssetType extends AbstractType
 
         $builder->add('language', LocaleType::class, [
             'label'      => 'mautic.core.language',
-            'label_attr' => ['class' => 'control-label'],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
             'attr'       => [
                 'class'   => 'form-control',
                 'tooltip' => 'mautic.asset.asset.form.language.help',
@@ -163,6 +183,8 @@ class AssetType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Asset::class]);
+        $resolver->setDefaults([
+            'data_class' => Asset::class,
+        ]);
     }
 }

@@ -69,7 +69,9 @@ class PRedisConnectionHelper
         }
 
         if (!empty($redisConfiguration['password'])) {
-            $redisOptions['parameters'] = ['password' => $redisConfiguration['password']];
+            $redisOptions['parameters'] = [
+                'password' => $redisConfiguration['password'],
+            ];
         }
 
         foreach (['cluster', 'scheme', 'ssl'] as $key) {
@@ -100,7 +102,9 @@ class PRedisConnectionHelper
 
         $inputOptions['commands'] = array_merge(
             $inputOptions['commands'] ?? [],
-            [Unlink::ID => Unlink::class]
+            [
+                Unlink::ID => Unlink::class,
+            ]
         );
 
         // Convert single-endpoint array to string to avoid Predis 3 aggregate connection error

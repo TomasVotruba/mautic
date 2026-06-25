@@ -12,6 +12,8 @@ class StatsSubscriber extends CommonStatsSubscriber
     public function __construct(CorePermissions $security, EntityManager $entityManager)
     {
         parent::__construct($security, $entityManager);
-        $this->addRestrictedRepostories([Log::class], ['webhook' => 'webhook:webhooks']);
+        $this->addRestrictedRepostories([Log::class], [
+            'webhook' => 'webhook:webhooks',
+        ]);
     }
 }

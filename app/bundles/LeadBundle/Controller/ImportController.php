@@ -224,14 +224,19 @@ class ImportController extends FormController
         if (!file_exists($fullPath) && self::STEP_UPLOAD_CSV !== $step) {
             // Force step one if the file doesn't exist
             $this->logger->log(LogLevel::WARNING, "File {$fullPath} does not exist anymore. Reseting import to step STEP_UPLOAD_CSV.");
-            $this->addFlashMessage('mautic.import.file.missing', ['%file%' => $this->getImportFileName($object)], FlashBag::LEVEL_ERROR);
+            $this->addFlashMessage('mautic.import.file.missing', [
+                '%file%' => $this->getImportFileName($object),
+            ], FlashBag::LEVEL_ERROR);
             $step = self::STEP_UPLOAD_CSV;
             $this->requestStack->getSession()->set('mautic.'.$object.'.import.step', self::STEP_UPLOAD_CSV);
         }
 
         $progress = (new Progress())->bindArray($this->requestStack->getSession()->get('mautic.'.$object.'.import.progress', [0, 0]));
         $import   = $this->importModel->getEntity();
-        $action   = $this->generateUrl('mautic_import_action', ['object' => $request->get('object'), 'objectAction' => 'new']);
+        $action   = $this->generateUrl('mautic_import_action', [
+            'object' => $request->get('object'),
+            'objectAction' => 'new',
+        ]);
 
         switch ($step) {
             case self::STEP_UPLOAD_CSV:
@@ -241,7 +246,9 @@ class ImportController extends FormController
                     $this->logger->log(LogLevel::WARNING, "Import for file {$fullPath} was force-stopped.");
                 }
 
-                $form = $this->formFactory->create(LeadImportType::class, [], ['action' => $action]);
+                $form = $this->formFactory->create(LeadImportType::class, [], [
+                    'action' => $action,
+                ]);
                 break;
             case self::STEP_MATCH_FIELDS:
                 $mappingEvent = $dispatcher->dispatch(
@@ -489,7 +496,10 @@ class ImportController extends FormController
         if (!$complete && $request->query->has('importbatch')) {
             // Ajax request to batch process so just return ajax response unless complete
 
-            $response = new JsonResponse(['success' => 1, 'ignore_wdt' => 1]);
+            $response = new JsonResponse([
+                'success' => 1,
+                'ignore_wdt' => 1,
+            ]);
         } else {
             $viewParameters['step'] = $step;
 
@@ -652,7 +662,9 @@ class ImportController extends FormController
     private function getImportCancellationMessage(string $fileName, ?Import $import, ?User $notificationUser): string
     {
         if (!$import || !$import->getId()) {
-            return $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+            return $this->translator->trans('mautic.lead.import.canceled', [
+                '%file%' => $fileName,
+            ]);
         }
 
         if ($notificationUser && $this->user && $notificationUser->getId() !== $this->user->getId()) {
@@ -663,7 +675,10 @@ class ImportController extends FormController
             ]);
         }
 
-        return $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()]);
+        return $this->translator->trans('mautic.lead.import.canceled.with_id', [
+            '%file%' => $fileName,
+            '%id%' => $import->getId(),
+        ]);
     }
 
     /**

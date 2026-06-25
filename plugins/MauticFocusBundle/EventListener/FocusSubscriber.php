@@ -65,7 +65,9 @@ class FocusSubscriber implements EventSubscriberInterface
                 $id = InputHelper::_($this->requestStack->getCurrentRequest()->get('id'));
                 if (str_starts_with($id, 'mf-')) {
                     $mfId             = str_replace('mf-', '', $id);
-                    $focusGenerateUrl = $this->router->generate('mautic_focus_generate', ['id' => $mfId]);
+                    $focusGenerateUrl = $this->router->generate('mautic_focus_generate', [
+                        'id' => $mfId,
+                    ]);
 
                     $event->setResponse(new RedirectResponse($focusGenerateUrl));
                 }
@@ -103,7 +105,9 @@ class FocusSubscriber implements EventSubscriberInterface
             'object'    => 'focus',
             'objectId'  => $entity->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $entity->getName()],
+            'details'   => [
+                'name' => $entity->getName(),
+            ],
             'ipAddress' => $this->ipHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

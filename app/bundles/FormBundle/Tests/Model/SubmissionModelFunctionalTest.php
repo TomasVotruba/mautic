@@ -23,16 +23,22 @@ final class SubmissionModelFunctionalTest extends MauticMysqlTestCase
 
         // Check the address.
         $companyRepository = $this->em->getRepository(Company::class);
-        $companiesOriginal = $companyRepository->findBy(['address1' => 'Keplerova']);
+        $companiesOriginal = $companyRepository->findBy([
+            'address1' => 'Keplerova',
+        ]);
         Assert::assertCount(1, $companiesOriginal);
 
         // Create contact with the same company but different address.
         $this->submitFormWithCompanies($formId, $formAlias, 'test2@acquia.cz', 'Luk', 'Syk', 'Acquia', 'Krejpskeho');
 
         // Check that the address is changed.
-        $companiesOld = $companyRepository->findBy(['address1' => 'Keplerova']);
+        $companiesOld = $companyRepository->findBy([
+            'address1' => 'Keplerova',
+        ]);
         Assert::assertCount(0, $companiesOld);
-        $companiesNew = $companyRepository->findBy(['address1' => 'Krejpskeho']);
+        $companiesNew = $companyRepository->findBy([
+            'address1' => 'Krejpskeho',
+        ]);
         Assert::assertCount(1, $companiesNew);
     }
 
@@ -44,16 +50,22 @@ final class SubmissionModelFunctionalTest extends MauticMysqlTestCase
 
         // Check the contact.
         $contactRepository = $this->em->getRepository(Lead::class);
-        $contactsOriginal  = $contactRepository->findBy(['lastname' => 'Doe Smith']);
+        $contactsOriginal  = $contactRepository->findBy([
+            'lastname' => 'Doe Smith',
+        ]);
         Assert::assertCount(1, $contactsOriginal);
 
         // Create contact with the same email but different lastname.
         $this->submitFormWithoutCompanies($formId, $formAlias, 'test@acquia.cz', 'Luk', 'Sykora');
 
         // Check that the address is changed.
-        $contactsOld = $contactRepository->findBy(['lastname' => 'Doe Smith']);
+        $contactsOld = $contactRepository->findBy([
+            'lastname' => 'Doe Smith',
+        ]);
         Assert::assertCount(0, $contactsOld);
-        $contactsNew = $contactRepository->findBy(['lastname' => 'Sykora']);
+        $contactsNew = $contactRepository->findBy([
+            'lastname' => 'Sykora',
+        ]);
         Assert::assertCount(1, $contactsNew);
     }
 

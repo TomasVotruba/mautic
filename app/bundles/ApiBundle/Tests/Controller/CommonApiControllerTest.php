@@ -75,7 +75,9 @@ class CommonApiControllerTest extends CampaignTestAbstract
             ],
         ];
 
-        $request = new Request(['where' => $where]);
+        $request = new Request([
+            'where' => $where,
+        ]);
         $result  = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request]);
 
         $this->assertEquals($where, $result);
@@ -110,8 +112,16 @@ class CommonApiControllerTest extends CampaignTestAbstract
     public function testSanitizeWhereClauseRemovesTopLevelInternalFlag(): void
     {
         $where = [
-            ['col' => 'id', 'expr' => 'eq', 'val' => 1],
-            ['internal' => true, 'expr' => 'formula', 'val' => '1=1'],
+            [
+                'col' => 'id',
+                'expr' => 'eq',
+                'val' => 1,
+            ],
+            [
+                'internal' => true,
+                'expr' => 'formula',
+                'val' => '1=1',
+            ],
         ];
 
         $this->invokeProtectedSanitize($where);
@@ -131,8 +141,16 @@ class CommonApiControllerTest extends CampaignTestAbstract
             [
                 'expr' => 'andX',
                 'val'  => [
-                    ['internal' => true, 'expr' => 'formula', 'val' => '1=1 UNION SELECT password FROM users--'],
-                    ['col' => 'firstname', 'expr' => 'eq', 'val' => 'test'],
+                    [
+                        'internal' => true,
+                        'expr' => 'formula',
+                        'val' => '1=1 UNION SELECT password FROM users--',
+                    ],
+                    [
+                        'col' => 'firstname',
+                        'expr' => 'eq',
+                        'val' => 'test',
+                    ],
                 ],
             ],
         ];
@@ -153,8 +171,16 @@ class CommonApiControllerTest extends CampaignTestAbstract
             [
                 'expr' => 'orX',
                 'val'  => [
-                    ['internal' => true, 'expr' => 'formula', 'val' => 'injected SQL'],
-                    ['col' => 'email', 'expr' => 'like', 'val' => '%@example.com'],
+                    [
+                        'internal' => true,
+                        'expr' => 'formula',
+                        'val' => 'injected SQL',
+                    ],
+                    [
+                        'col' => 'email',
+                        'expr' => 'like',
+                        'val' => '%@example.com',
+                    ],
                 ],
             ],
         ];
@@ -178,8 +204,16 @@ class CommonApiControllerTest extends CampaignTestAbstract
                     [
                         'expr' => 'orX',
                         'val'  => [
-                            ['internal' => true, 'expr' => 'formula', 'val' => 'injected SQL'],
-                            ['col' => 'id', 'expr' => 'gt', 'val' => 0],
+                            [
+                                'internal' => true,
+                                'expr' => 'formula',
+                                'val' => 'injected SQL',
+                            ],
+                            [
+                                'col' => 'id',
+                                'expr' => 'gt',
+                                'val' => 0,
+                            ],
                         ],
                     ],
                 ],
@@ -199,11 +233,19 @@ class CommonApiControllerTest extends CampaignTestAbstract
     public function testSanitizeWhereClausePreservesNonInternalClauses(): void
     {
         $where = [
-            ['col' => 'id', 'expr' => 'eq', 'val' => 5],
+            [
+                'col' => 'id',
+                'expr' => 'eq',
+                'val' => 5,
+            ],
             [
                 'expr' => 'andX',
                 'val'  => [
-                    ['col' => 'firstname', 'expr' => 'eq', 'val' => 'John'],
+                    [
+                        'col' => 'firstname',
+                        'expr' => 'eq',
+                        'val' => 'John',
+                    ],
                 ],
             ],
         ];

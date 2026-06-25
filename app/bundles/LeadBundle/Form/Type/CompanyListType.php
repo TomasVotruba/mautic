@@ -37,7 +37,9 @@ class CompanyListType extends AbstractType
                 'lookup_arguments'    => fn (Options $options): array => [
                     'type'      => 'lead.company',
                     'limit'     => self::DEFAULT_LIMIT,
-                ] + ((isset($options['model_lookup_method']) && ('getSimpleLookupResults' === $options['model_lookup_method'])) ? ['exclude' => $options['main_entity']] : []),
+                ] + ((isset($options['model_lookup_method']) && ('getSimpleLookupResults' === $options['model_lookup_method'])) ? [
+                    'exclude' => $options['main_entity'],
+                ] : []),
                 'multiple'            => true,
                 'main_entity'         => null,
             ]
@@ -53,7 +55,9 @@ class CompanyListType extends AbstractType
             $missingIds      = array_diff($selectedIds, $existingChoices);
 
             if ($missingIds) {
-                $missingCompanies = $this->companyRepository->findBy(['id' => $missingIds]);
+                $missingCompanies = $this->companyRepository->findBy([
+                    'id' => $missingIds,
+                ]);
                 foreach ($missingCompanies as $company) {
                     $view->vars['choices'][] = new ChoiceView(
                         $company->getId(),

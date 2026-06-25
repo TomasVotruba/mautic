@@ -46,7 +46,9 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
         $attributes = [
             'onchange'               => 'Mautic.showCampaignConfirmation(mQuery(this));',
             'data-toggle'            => 'confirmation',
-            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', [
+                '%republishBehavior%' => $republishBehavior,
+            ]),
             'data-message-unpublish' => $translator->trans('mautic.campaign.form.confirmation.message'),
             'data-confirm-text'      => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
             'data-confirm-callback'  => 'dismissConfirmation',
@@ -80,7 +82,9 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
             'data-toggle'            => 'confirmation',
             'data-confirm-callback'  => 'confirmCallbackCampaignPublishStatus',
             'data-cancel-callback'   => 'dismissConfirmation',
-            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', [
+                '%republishBehavior%' => $republishBehavior,
+            ]),
             'data-message-unpublish' => $translator->trans('mautic.campaign.form.confirmation.message'),
             'data-confirm-text'      => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
             'data-cancel-text'       => $translator->trans('mautic.campaign.form.confirmation.cancel_text'),
@@ -97,7 +101,11 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
         $campaign   = $this->saveSomeCampaignLeadEventLogs();
         $translator = static::getContainer()->get('translator');
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', ['action' => 'togglePublishStatus', 'model' => 'campaign', 'id' => $campaign->getId()]);
+        $this->client->request(Request::METHOD_POST, '/s/ajax', [
+            'action' => 'togglePublishStatus',
+            'model' => 'campaign',
+            'id' => $campaign->getId(),
+        ]);
         $response = $this->client->getResponse();
 
         $this->assertResponseIsSuccessful();

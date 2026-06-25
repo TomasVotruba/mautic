@@ -33,8 +33,13 @@ final class CompanyColumnsDictionaryTest extends TestCase
 
         $this->fieldList->expects($this->once())
             ->method('getFieldList')
-            ->with(false, true, ['isPublished' => true, 'object' => 'company'])
-            ->willReturn(['annual_revenue' => 'Annual Revenue']);
+            ->with(false, true, [
+                'isPublished' => true,
+                'object' => 'company',
+            ])
+            ->willReturn([
+                'annual_revenue' => 'Annual Revenue',
+            ]);
 
         $this->dictionary = new CompanyColumnsDictionary(
             $this->fieldList,
@@ -55,7 +60,10 @@ final class CompanyColumnsDictionaryTest extends TestCase
 
         $columns = $this->dictionary->getColumns();
 
-        self::assertSame(['companywebsite' => 'mautic.company.website', 'companyname' => 'mautic.company.name'], $columns);
+        self::assertSame([
+            'companywebsite' => 'mautic.company.website',
+            'companyname' => 'mautic.company.name',
+        ], $columns);
     }
 
     public function testGetFieldsMergesCoreAndCompanyCustomFields(): void

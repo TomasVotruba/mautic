@@ -85,7 +85,9 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
         yield 'timeless message for cli channel' => [
             [
                 'categories' => [
-                    'news' => ['label' => 'News'],
+                    'news' => [
+                        'label' => 'News',
+                    ],
                 ],
                 'messages' => [
                     [
@@ -106,7 +108,9 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
         yield 'timed message within active window' => [
             [
                 'categories' => [
-                    'news' => ['label' => 'News'],
+                    'news' => [
+                        'label' => 'News',
+                    ],
                 ],
                 'messages' => [
                     [
@@ -127,7 +131,9 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
         yield 'expired timed message is ignored' => [
             [
                 'categories' => [
-                    'news' => ['label' => 'News'],
+                    'news' => [
+                        'label' => 'News',
+                    ],
                 ],
                 'messages' => [
                     [
@@ -148,7 +154,9 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
         yield 'message without cli channel is ignored' => [
             [
                 'categories' => [
-                    'news' => ['label' => 'News'],
+                    'news' => [
+                        'label' => 'News',
+                    ],
                 ],
                 'messages' => [
                     [
@@ -185,7 +193,9 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
         $httpClient = static::getContainer()->get(HttpClientInterface::class);
         self::assertInstanceOf(MockHttpClient::class, $httpClient);
         $httpClient->setResponseFactory([
-            new MockResponse('', ['http_code' => 500]),
+            new MockResponse('', [
+                'http_code' => 500,
+            ]),
         ]);
 
         $tester = $this->testSymfonyCommand('mautic:motd');

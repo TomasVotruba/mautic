@@ -92,7 +92,9 @@ class FacebookIntegration extends SocialIntegration
             'fields'       => implode(',', $fields),
         ];
 
-        $data = $this->makeRequest($url, $parameters, 'GET', ['auth_type' => 'rest']);
+        $data = $this->makeRequest($url, $parameters, 'GET', [
+            'auth_type' => 'rest',
+        ]);
 
         if (is_object($data) && isset($data->id)) {
             $info = $this->matchUpData($data);
@@ -124,21 +126,51 @@ class FacebookIntegration extends SocialIntegration
     public function getAvailableLeadFields($settings = []): array
     {
         return [
-            'about'       => ['type' => 'string'],
-            'birthday'    => ['type' => 'string'],
-            'email'       => ['type' => 'string'],
-            'first_name'  => ['type' => 'string'],
-            'gender'      => ['type' => 'string'],
-            'last_name'   => ['type' => 'string'],
-            'link'        => ['type' => 'string'],
-            'locale'      => ['type' => 'string'],
-            'middle_name' => ['type' => 'string'],
-            'name'        => ['type' => 'string'],
-            'political'   => ['type' => 'string'],
-            'quotes'      => ['type' => 'string'],
-            'religion'    => ['type' => 'string'],
-            'timezone'    => ['type' => 'string'],
-            'website'     => ['type' => 'string'],
+            'about'       => [
+                'type' => 'string',
+            ],
+            'birthday'    => [
+                'type' => 'string',
+            ],
+            'email'       => [
+                'type' => 'string',
+            ],
+            'first_name'  => [
+                'type' => 'string',
+            ],
+            'gender'      => [
+                'type' => 'string',
+            ],
+            'last_name'   => [
+                'type' => 'string',
+            ],
+            'link'        => [
+                'type' => 'string',
+            ],
+            'locale'      => [
+                'type' => 'string',
+            ],
+            'middle_name' => [
+                'type' => 'string',
+            ],
+            'name'        => [
+                'type' => 'string',
+            ],
+            'political'   => [
+                'type' => 'string',
+            ],
+            'quotes'      => [
+                'type' => 'string',
+            ],
+            'religion'    => [
+                'type' => 'string',
+            ],
+            'timezone'    => [
+                'type' => 'string',
+            ],
+            'website'     => [
+                'type' => 'string',
+            ],
         ];
     }
 

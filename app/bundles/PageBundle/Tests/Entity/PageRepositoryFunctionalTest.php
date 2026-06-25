@@ -29,7 +29,9 @@ final class PageRepositoryFunctionalTest extends MauticMysqlTestCase
         $variantPage->setTitle('Page One variant');
         $variantPage->setTemplate('blank');
         $variantPage->setCustomHtml('This is Page One variant');
-        $variantPage->setVariantSettings(['weight' => 10]);
+        $variantPage->setVariantSettings([
+            'weight' => 10,
+        ]);
         $variantPage->setVariantParent($parentPage);
 
         $pageModel->saveEntity($variantPage);
@@ -45,7 +47,9 @@ final class PageRepositoryFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(5, $variantPage->getVariantHits());
 
         // Change the variant setting this will cause the variant hits to reset to zero.
-        $variantPage->setVariantSettings(['weight' => 30]);
+        $variantPage->setVariantSettings([
+            'weight' => 30,
+        ]);
         $pageModel->saveEntity($variantPage);
 
         $this->assertSame(0, $variantPage->getVariantHits());

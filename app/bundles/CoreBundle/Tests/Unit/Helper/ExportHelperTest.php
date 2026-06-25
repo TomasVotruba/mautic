@@ -109,7 +109,9 @@ class ExportHelperTest extends TestCase
         file_put_contents($assetFilePath2, 'Asset content 2');
 
         $assetList  = [$assetFilePath1, $assetFilePath2];
-        $jsonOutput = json_encode(['key' => 'value']);
+        $jsonOutput = json_encode([
+            'key' => 'value',
+        ]);
 
         // Call the method
         $zipFilePath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList, '');
@@ -145,7 +147,9 @@ class ExportHelperTest extends TestCase
         file_put_contents($assetFilePath2, 'Asset content 2');
 
         $assetList  = [$assetFilePath1, $assetFilePath2];
-        $jsonOutput = json_encode(['key' => 'value']);
+        $jsonOutput = json_encode([
+            'key' => 'value',
+        ]);
 
         // Pre-create entity_data.json to trigger unlink in method
         $jsonFilePath = sprintf('%s/entity_data.json', $customDir);
@@ -238,7 +242,9 @@ class ExportHelperTest extends TestCase
         $lead->setStage($stage);
 
         $result   = $this->exportHelper->parseLeadToExport($lead);
-        $expected = $leadFieldsData + ['stage' => 'Stage 3'];
+        $expected = $leadFieldsData + [
+            'stage' => 'Stage 3',
+        ];
         $this->assertEquals($expected, $result);
     }
 

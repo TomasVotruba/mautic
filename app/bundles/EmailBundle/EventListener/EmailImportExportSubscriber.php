@@ -131,12 +131,22 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $email = $this->entityManager->getRepository(Email::class)->findOneBy(['uuid' => $element['uuid']]);
+            $email = $this->entityManager->getRepository(Email::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew = !$email;
 
             $email ??= new Email();
@@ -155,7 +165,9 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
                 $element,
                 Email::class,
                 null,
-                ['object_to_populate' => $email]
+                [
+                    'object_to_populate' => $email,
+                ]
             );
             $this->emailModel->saveEntity($email);
 
@@ -171,7 +183,9 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Email::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Email::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -192,7 +206,9 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Email::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Email::class,
+                ]);
             }
         }
 

@@ -57,7 +57,9 @@ class CorePermissionsTest extends \PHPUnit\Framework\TestCase
     public function testSettingPermissionObject(): void
     {
         $this->coreParametersHelper->method('all')
-            ->willReturn(['parameter_a' => 'value_a']);
+            ->willReturn([
+                'parameter_a' => 'value_a',
+            ]);
 
         $assetPermissions = new AssetPermissions($this->coreParametersHelper);
         $this->corePermissions->setPermissionObject($assetPermissions);
@@ -76,6 +78,10 @@ class CorePermissionsTest extends \PHPUnit\Framework\TestCase
     /** @return array{permissionClasses: array<class-string, class-string>} */
     private function mockBundleArray(string $permissionClass): array
     {
-        return ['permissionClasses' => [$permissionClass => $permissionClass]];
+        return [
+            'permissionClasses' => [
+                $permissionClass => $permissionClass,
+            ],
+        ];
     }
 }

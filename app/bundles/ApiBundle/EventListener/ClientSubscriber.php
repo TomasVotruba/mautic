@@ -56,7 +56,9 @@ class ClientSubscriber implements EventSubscriberInterface
             'object'    => 'client',
             'objectId'  => $client->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $client->getName()],
+            'details'   => [
+                'name' => $client->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

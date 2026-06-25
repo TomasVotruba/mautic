@@ -103,7 +103,9 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
         }
 
         foreach ($data as $entityName => $entities) {
-            $event->addEntities([$entityName => $entities]);
+            $event->addEntities([
+                $entityName => $entities,
+            ]);
         }
     }
 
@@ -114,12 +116,22 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $formData) {
-            $form  = $this->entityManager->getRepository(Form::class)->findOneBy(['uuid' => $formData['uuid']]);
+            $form  = $this->entityManager->getRepository(Form::class)->findOneBy([
+                'uuid' => $formData['uuid'],
+            ]);
             $isNew = !$form;
 
             $form ??= new Form();
@@ -127,7 +139,9 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
                 $formData,
                 Form::class,
                 null,
-                ['object_to_populate' => $form]
+                [
+                    'object_to_populate' => $form,
+                ]
             );
             $this->formModel->saveEntity($form);
 
@@ -142,7 +156,9 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Form::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Form::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -163,7 +179,9 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Form::class], 'form');
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Form::class,
+                ], 'form');
             }
         }
 

@@ -265,7 +265,9 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
                 'notification' => (int) $notificationId,
                 'lead'         => (int) $leadId,
             ],
-            ['dateSent' => 'DESC']
+            [
+                'dateSent' => 'DESC',
+            ]
         );
     }
 

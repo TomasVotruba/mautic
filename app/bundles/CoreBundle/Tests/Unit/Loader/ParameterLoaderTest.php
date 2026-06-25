@@ -9,7 +9,9 @@ class ParameterLoaderTest extends TestCase
 {
     public function testParametersAreLoaded(): void
     {
-        $envParameters = json_encode(['default_daterange_filter' => '-1 day']);
+        $envParameters = json_encode([
+            'default_daterange_filter' => '-1 day',
+        ]);
         putenv('MAUTIC_CONFIG_PARAMETERS='.$envParameters);
 
         $loader = new ParameterLoader(__DIR__.'/TestRoot/app');

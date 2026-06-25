@@ -22,7 +22,9 @@ final class Version20240229101323 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $schema->getTable($this->getPrefixedTableName(Email::TABLE_NAME))->addColumn(self::COLUMN_NAME, Types::BOOLEAN, ['default' => false]);
+        $schema->getTable($this->getPrefixedTableName(Email::TABLE_NAME))->addColumn(self::COLUMN_NAME, Types::BOOLEAN, [
+            'default' => false,
+        ]);
     }
 
     public function down(Schema $schema): void

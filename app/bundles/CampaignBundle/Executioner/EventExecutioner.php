@@ -53,7 +53,9 @@ class EventExecutioner
             $this->responses = $responses;
         }
 
-        $contacts = new ArrayCollection([$contact->getId() => $contact]);
+        $contacts = new ArrayCollection([
+            $contact->getId() => $contact,
+        ]);
 
         $this->executeForContacts($event, $contacts, $counter);
     }
@@ -70,7 +72,9 @@ class EventExecutioner
             $this->responses = $responses;
         }
 
-        $contacts = new ArrayCollection([$contact->getId() => $contact]);
+        $contacts = new ArrayCollection([
+            $contact->getId() => $contact,
+        ]);
 
         $this->executeEventsForContacts($events, $contacts, $counter);
     }

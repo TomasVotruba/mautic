@@ -90,7 +90,9 @@ class FormApiController extends CommonApiController
 
         $this->model->deleteFields($entity, $fieldsToDelete);
 
-        $view = $this->view([$this->entityNameOne => $entity]);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ]);
 
         return $this->handleView($view);
     }
@@ -120,7 +122,9 @@ class FormApiController extends CommonApiController
 
         $this->model->deleteActions($entity, $actionsToDelete);
 
-        $view = $this->view([$this->entityNameOne => $entity]);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ]);
 
         return $this->handleView($view);
     }
@@ -210,7 +214,9 @@ class FormApiController extends CommonApiController
 
                 // Check that the alias is not already in use by another field
                 if (in_array($fieldEntityArray['alias'], $requestUsedAliases)) {
-                    $msg = $this->translator->trans('mautic.form.field.alias.unique', ['%alias%' => $fieldEntityArray['alias']], 'validators');
+                    $msg = $this->translator->trans('mautic.form.field.alias.unique', [
+                        '%alias%' => $fieldEntityArray['alias'],
+                    ], 'validators');
 
                     return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
                 }
@@ -361,7 +367,9 @@ class FormApiController extends CommonApiController
         $parameters = $request->request->all();
 
         if (!isset($parameters['postAction'])) {
-            $request->request->add(['postAction' => 'return']);
+            $request->request->add([
+                'postAction' => 'return',
+            ]);
         }
 
         return parent::newEntityAction($request);

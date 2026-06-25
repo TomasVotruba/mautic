@@ -51,11 +51,18 @@ class AssetController extends FormController
         $search = $request->get('search', $request->getSession()->get('mautic.asset.filter', ''));
         $request->getSession()->set('mautic.asset.filter', $search);
 
-        $filter = ['string' => $search, 'force' => []];
+        $filter = [
+            'string' => $search,
+            'force' => [],
+        ];
 
         if (!$permissions['asset:assets:viewother']) {
             $filter['force'][] =
-                ['column' => 'a.createdBy', 'expr' => 'eq', 'value' => $this->user->getId()];
+                [
+                    'column' => 'a.createdBy',
+                    'expr' => 'eq',
+                    'value' => $this->user->getId(),
+                ];
         }
 
         $orderBy    = $request->getSession()->get('mautic.asset.orderby', 'a.dateModified');
@@ -80,11 +87,15 @@ class AssetController extends FormController
                 $lastPage = (ceil($count / $limit)) ?: 1;
             }
             $request->getSession()->set('mautic.asset.asset', $lastPage);
-            $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_asset_index', [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['asset' => $lastPage],
+                'viewParameters'  => [
+                    'asset' => $lastPage,
+                ],
                 'contentTemplate' => 'Mautic\AssetBundle\Controller\AssetController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_asset_index',
@@ -117,7 +128,9 @@ class AssetController extends FormController
             'passthroughVars' => [
                 'activeLink'    => '#mautic_asset_index',
                 'mauticContent' => 'asset',
-                'route'         => $this->generateUrl('mautic_asset_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_asset_index', [
+                    'page' => $page,
+                ]),
             ],
         ]);
     }
@@ -138,16 +151,25 @@ class AssetController extends FormController
 
         // Init the date range filter form
         $dateRangeValues = $request->get('daterange', []);
-        $action          = $this->generateUrl('mautic_asset_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+        $action          = $this->generateUrl('mautic_asset_action', [
+            'objectAction' => 'view',
+            'objectId' => $objectId,
+        ]);
+        $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $action,
+        ]);
 
         if (null === $activeAsset) {
             // set the return URL
-            $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
+            $returnUrl = $this->generateUrl('mautic_asset_index', [
+                'page' => $page,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $page],
+                'viewParameters'  => [
+                    'page' => $page,
+                ],
                 'contentTemplate' => 'Mautic\AssetBundle\Controller\AssetController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_asset_index',
@@ -157,7 +179,9 @@ class AssetController extends FormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.asset.asset.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
@@ -195,7 +219,9 @@ class AssetController extends FormController
                             new \DateTime($dateRangeForm->get('date_from')->getData()),
                             new \DateTime($dateRangeForm->get('date_to')->getData()),
                             null,
-                            ['asset_id' => $activeAsset->getId()]
+                            [
+                                'asset_id' => $activeAsset->getId(),
+                            ]
                         ),
                     ],
                 ],
@@ -303,7 +329,9 @@ class AssetController extends FormController
 
         // Set the page we came from
         $page   = $session->get('mautic.asset.page', 1);
-        $action = $this->generateUrl('mautic_asset_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_asset_action', [
+            'objectAction' => 'new',
+        ]);
 
         $uploadEndpoint = $uploaderHelper->endpoint('asset');
 
@@ -347,7 +375,9 @@ class AssetController extends FormController
                     $template  = 'Mautic\AssetBundle\Controller\AssetController::viewAction';
                 }
             } else {
-                $viewParameters = ['page' => $page];
+                $viewParameters = [
+                    'page' => $page,
+                ];
                 $returnUrl      = $this->generateUrl('mautic_asset_index', $viewParameters);
                 $template       = 'Mautic\AssetBundle\Controller\AssetController::indexAction';
             }
@@ -425,13 +455,17 @@ class AssetController extends FormController
         ], 'validators');
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_asset_index', [
+            'page' => $page,
+        ]);
 
         $uploadEndpoint = $uploaderHelper->endpoint('asset');
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\AssetBundle\Controller\AssetController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_asset_index',
@@ -447,7 +481,9 @@ class AssetController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.asset.asset.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -468,7 +504,10 @@ class AssetController extends FormController
         $entity->setTempId($tempId);
 
         // Create the form
-        $action = $this->generateUrl('mautic_asset_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_asset_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
@@ -499,7 +538,9 @@ class AssetController extends FormController
                         'objectAction' => 'view',
                         'objectId'     => $entity->getId(),
                     ]);
-                    $viewParams = ['objectId' => $entity->getId()];
+                    $viewParams = [
+                        'objectId' => $entity->getId(),
+                    ];
                     $template   = 'Mautic\AssetBundle\Controller\AssetController::viewAction';
                 }
             } else {
@@ -508,8 +549,12 @@ class AssetController extends FormController
                 // unlock the entity
                 $model->unlockEntity($entity);
 
-                $returnUrl  = $this->generateUrl('mautic_asset_index', ['page' => $page]);
-                $viewParams = ['page' => $page];
+                $returnUrl  = $this->generateUrl('mautic_asset_index', [
+                    'page' => $page,
+                ]);
+                $viewParams = [
+                    'page' => $page,
+                ];
                 $template   = 'Mautic\AssetBundle\Controller\AssetController::indexAction';
             }
 
@@ -596,12 +641,16 @@ class AssetController extends FormController
     public function deleteAction(Request $request, AssetModel $model, $objectId)
     {
         $page      = $request->getSession()->get('mautic.asset.page', 1);
-        $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_asset_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\AssetBundle\Controller\AssetController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_asset_index',
@@ -616,7 +665,9 @@ class AssetController extends FormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.asset.asset.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->hasEntityAccess(
                 'asset:assets:deleteown',
@@ -655,12 +706,16 @@ class AssetController extends FormController
     public function batchDeleteAction(Request $request, AssetModel $model): Response
     {
         $page      = $request->getSession()->get('mautic.asset.page', 1);
-        $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_asset_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\AssetBundle\Controller\AssetController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => 'mautic_asset_index',
@@ -680,7 +735,9 @@ class AssetController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.asset.asset.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->hasEntityAccess(
                     'asset:assets:deleteown', 'asset:assets:deleteother', $entity->getCreatedBy()
@@ -736,7 +793,9 @@ class AssetController extends FormController
             'passthroughVars' => [
                 'activeLink'    => '#mautic_asset_index',
                 'mauticContent' => 'asset',
-                'route'         => $this->generateUrl('mautic_asset_index', ['page' => $request->getSession()->get('mautic.asset.page', 1)]),
+                'route'         => $this->generateUrl('mautic_asset_index', [
+                    'page' => $request->getSession()->get('mautic.asset.page', 1),
+                ]),
             ],
         ]);
     }

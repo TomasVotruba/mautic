@@ -123,7 +123,10 @@ class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterfa
 
         $campaignEntities = [];
         if (!empty($campaigns)) {
-            $campaignEntities = $this->campaignModel->getEntities(['ids' => $campaigns, 'ignore_paginator' => true]);
+            $campaignEntities = $this->campaignModel->getEntities([
+                'ids' => $campaigns,
+                'ignore_paginator' => true,
+            ]);
         }
 
         // Include executing campaign if the keyword this was used

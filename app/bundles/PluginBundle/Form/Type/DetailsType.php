@@ -111,7 +111,9 @@ class DetailsType extends AbstractType
                 [
                     'choices'     => $choices,
                     'expanded'    => true,
-                    'label_attr'  => ['class' => 'control-label'],
+                    'label_attr'  => [
+                        'class' => 'control-label',
+                    ],
                     'multiple'    => true,
                     'label'       => 'mautic.integration.form.features',
                     'required'    => false,
@@ -137,7 +139,9 @@ class DetailsType extends AbstractType
                 'label'              => 'mautic.integration.form.feature.settings',
                 'required'           => true,
                 'data'               => $integration->getFeatureSettings(),
-                'label_attr'         => ['class' => 'control-label'],
+                'label_attr'         => [
+                    'class' => 'control-label',
+                ],
                 'integration'        => $options['integration'],
                 'integration_object' => $integrationObject,
                 'lead_fields'        => $options['lead_fields'],
@@ -145,9 +149,13 @@ class DetailsType extends AbstractType
             ]
         );
 
-        $builder->add('name', HiddenType::class, ['data' => $options['integration']]);
+        $builder->add('name', HiddenType::class, [
+            'data' => $options['integration'],
+        ]);
 
-        $builder->add('in_auth', HiddenType::class, ['mapped' => false]);
+        $builder->add('in_auth', HiddenType::class, [
+            'mapped' => false,
+        ]);
 
         $builder->add('buttons', FormButtonsType::class);
 

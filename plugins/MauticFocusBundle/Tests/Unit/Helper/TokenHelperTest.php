@@ -53,7 +53,9 @@ class TokenHelperTest extends TestCase
     {
         $content = 'content {focus=1}';
 
-        self::assertSame(['{focus=1}' => ''], $this->helper->findFocusTokens($content));
+        self::assertSame([
+            '{focus=1}' => '',
+        ], $this->helper->findFocusTokens($content));
     }
 
     public function testFindFocusTokensFoundAddScriptByFocusPublishedStatus(): void
@@ -70,7 +72,9 @@ class TokenHelperTest extends TestCase
             ->willReturn($focusItem);
 
         self::assertSame(
-            ['{focus=1}' => '<script src="" type="text/javascript" charset="utf-8" async="async"></script>'],
+            [
+                '{focus=1}' => '<script src="" type="text/javascript" charset="utf-8" async="async"></script>',
+            ],
             $this->helper->findFocusTokens($content)
         );
     }
@@ -100,7 +104,9 @@ class TokenHelperTest extends TestCase
             ->willReturn(true);
 
         self::assertSame(
-            ['{focus=1}' => '<script src="" type="text/javascript" charset="utf-8" async="async"></script>'],
+            [
+                '{focus=1}' => '<script src="" type="text/javascript" charset="utf-8" async="async"></script>',
+            ],
             $this->helper->findFocusTokens($content)
         );
     }

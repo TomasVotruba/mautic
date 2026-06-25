@@ -67,28 +67,36 @@ class FieldModelTest extends MauticMysqlTestCase
 
         yield 'Contact fields' => [
             // Filters
-            ['object' => 'lead'],
+            [
+                'object' => 'lead',
+            ],
             // Expected count
             29,
         ];
 
         yield 'Company fields' => [
             // Filters
-            ['object' => 'company'],
+            [
+                'object' => 'company',
+            ],
             // Expected count
             15,
         ];
 
         yield 'Text fields' => [
             // Filters
-            ['type' => 'text'],
+            [
+                'type' => 'text',
+            ],
             // Expected count
             20,
         ];
 
         yield 'Unpublished fields' => [
             // Filters
-            ['isPublished' => false],
+            [
+                'isPublished' => false,
+            ],
             // Expected count
             1,
         ];

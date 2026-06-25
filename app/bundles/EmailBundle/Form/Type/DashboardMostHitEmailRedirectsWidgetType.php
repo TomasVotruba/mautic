@@ -20,8 +20,12 @@ class DashboardMostHitEmailRedirectsWidgetType extends AbstractType
             CompanyListType::class,
             [
                 'label'       => 'mautic.email.companyId.filter',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'empty_data'  => '',
                 'required'    => false,
                 'multiple'    => false,
@@ -34,8 +38,12 @@ class DashboardMostHitEmailRedirectsWidgetType extends AbstractType
             CampaignListType::class,
             [
                 'label'       => 'mautic.email.campaignId.filter',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'empty_data'  => '',
                 'placeholder' => '',
                 'required'    => false,
@@ -48,8 +56,12 @@ class DashboardMostHitEmailRedirectsWidgetType extends AbstractType
             LeadListType::class,
             [
                 'label'      => 'mautic.email.segmentId.filter',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'empty_data' => '',
                 'required'   => false,
             ]

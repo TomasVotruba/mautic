@@ -13,6 +13,8 @@ class ClientFactory
 {
     public static function stub(MockHandler $handler): ClientInterface
     {
-        return new Client(['handler' => HandlerStack::create($handler)]);
+        return new Client([
+            'handler' => HandlerStack::create($handler),
+        ]);
     }
 }

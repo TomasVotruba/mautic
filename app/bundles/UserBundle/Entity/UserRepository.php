@@ -34,14 +34,20 @@ class UserRepository extends CommonRepository
         $conn->update(MAUTIC_TABLE_PREFIX.'users', [
             'last_login'  => $datetime,
             'last_active' => $datetime,
-        ], ['id' => (int) $user->getId()]);
+        ], [
+            'id' => (int) $user->getId(),
+        ]);
     }
 
     public function setLastActive($user): void
     {
         $now  = new DateTimeHelper();
         $conn = $this->_em->getConnection();
-        $conn->update(MAUTIC_TABLE_PREFIX.'users', ['last_active' => $now->toUtcString()], ['id' => (int) $user->getId()]);
+        $conn->update(MAUTIC_TABLE_PREFIX.'users', [
+            'last_active' => $now->toUtcString(),
+        ], [
+            'id' => (int) $user->getId(),
+        ]);
     }
 
     /**
@@ -231,19 +237,25 @@ class UserRepository extends CommonRepository
             case $this->translator->trans('mautic.core.searchcommand.ispublished'):
             case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('u.isPublished', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
 
                 break;
             case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
             case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('u.isPublished', ":$unique");
-                $forceParameters = [$unique => false];
+                $forceParameters = [
+                    $unique => false,
+                ];
 
                 break;
             case $this->translator->trans('mautic.user.user.searchcommand.isadmin'):
             case $this->translator->trans('mautic.user.user.searchcommand.isadmin', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('r.isAdmin', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.email'):
             case $this->translator->trans('mautic.core.searchcommand.email', [], null, 'en_US'):
@@ -287,7 +299,9 @@ class UserRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

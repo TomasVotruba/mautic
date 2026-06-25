@@ -115,7 +115,9 @@ class AssertCustomMjmlTest extends MauticMysqlTestCase
             'isPublished' => true,
         ];
 
-        $this->client->request('POST', '/api/emails/new', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($emailData));
+        $this->client->request('POST', '/api/emails/new', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode($emailData));
         $this->assertResponseStatusCodeSame(201);
 
         return json_decode($this->client->getResponse()->getContent(), true);

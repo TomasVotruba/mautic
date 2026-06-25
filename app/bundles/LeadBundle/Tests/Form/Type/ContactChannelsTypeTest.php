@@ -47,7 +47,9 @@ final class ContactChannelsTypeTest extends AbstractMauticTestCase
             ContactChannelsType::class,
             null,
             [
-                'channels'    => ['Email' => 'email'],
+                'channels'    => [
+                    'Email' => 'email',
+                ],
                 'public_view' => $publicView,
             ]
         );

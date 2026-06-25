@@ -79,7 +79,9 @@ final class ImportController extends AbstractFormController
         $this->resetImport();
 
         $form = $this->formFactory->create(CampaignImportType::class, [], [
-            'action' => $this->generateUrl('mautic_campaign_import_action', ['objectAction' => 'upload']),
+            'action' => $this->generateUrl('mautic_campaign_import_action', [
+                'objectAction' => 'upload',
+            ]),
         ]);
 
         return $this->delegateView([
@@ -102,7 +104,9 @@ final class ImportController extends AbstractFormController
 
         $importDir = $this->pathsHelper->getImportCampaignsPath();
         $form      = $this->formFactory->create(CampaignImportType::class, [], [
-            'action' => $this->generateUrl('mautic_campaign_import_action', ['objectAction' => 'upload']),
+            'action' => $this->generateUrl('mautic_campaign_import_action', [
+                'objectAction' => 'upload',
+            ]),
         ]);
 
         // Handle cancel action
@@ -148,7 +152,9 @@ final class ImportController extends AbstractFormController
                     $this->requestStack->getSession()->set('mautic.campaign.import.file', $fullPath);
                     $this->logger->info("File successfully uploaded: {$fullPath}");
 
-                    return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'progress']);
+                    return $this->redirectToRoute('mautic_campaign_import_action', [
+                        'objectAction' => 'progress',
+                    ]);
                 } catch (FileException $e) {
                     $this->logger->error('File upload failed: '.$e->getMessage());
 
@@ -192,7 +198,9 @@ final class ImportController extends AbstractFormController
         $this->resetImport();
         $this->addFlashMessage('mautic.campaign.notice.import.canceled', [], FlashBag::LEVEL_NOTICE);
 
-        return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'new']);
+        return $this->redirectToRoute('mautic_campaign_import_action', [
+            'objectAction' => 'new',
+        ]);
     }
 
     private function resetImport(): void
@@ -247,7 +255,9 @@ final class ImportController extends AbstractFormController
             }
             $this->resetImport();
 
-            return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'new']);
+            return $this->redirectToRoute('mautic_campaign_import_action', [
+                'objectAction' => 'new',
+            ]);
         }
 
         if (self::STEP_PROGRESS_BAR === $step) {
@@ -258,7 +268,9 @@ final class ImportController extends AbstractFormController
                 $this->removeImportFile($fullPath);
                 $this->resetImport();
 
-                return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'new']);
+                return $this->redirectToRoute('mautic_campaign_import_action', [
+                    'objectAction' => 'new',
+                ]);
             }
             $session->set('mautic.campaign.import.step', self::STEP_IMPORT_FROM_ZIP);
             $session->set('mautic.campaign.import.analyzeSummary', $analyzeSummary);
@@ -477,6 +489,8 @@ final class ImportController extends AbstractFormController
             $this->addFlashMessage('mautic.campaign.notice.import.undo_no_data');
         }
 
-        return new JsonResponse(['flashes' => $this->getFlashContent()]);
+        return new JsonResponse([
+            'flashes' => $this->getFlashContent(),
+        ]);
     }
 }

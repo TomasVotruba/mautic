@@ -129,7 +129,9 @@ final class ThemeHelperSandboxTest extends MauticMysqlTestCase
         $page->setTemplate($themeName);
         $page->setIsPublished(true);
         $page->setPublicPreview(true);
-        $page->setContent(['main' => 'test content']);
+        $page->setContent([
+            'main' => 'test content',
+        ]);
 
         $this->em->persist($page);
         $this->em->flush();

@@ -35,7 +35,9 @@ class SchemaDefinitionTest extends TestCase
                 [
                     'name'    => 'some',
                     'type'    => $type,
-                    'options' => ['notnull' => false],
+                    'options' => [
+                        'notnull' => false,
+                    ],
                 ],
             ];
         }
@@ -74,7 +76,10 @@ class SchemaDefinitionTest extends TestCase
             }
         }
 
-        foreach (['description' => 'text', 'descriptionOfArticle' => 'text'] as $alias => $type) {
+        foreach ([
+            'description' => 'text',
+            'descriptionOfArticle' => 'text',
+        ] as $alias => $type) {
             yield [
                 $alias,
                 'text',
@@ -114,7 +119,10 @@ class SchemaDefinitionTest extends TestCase
             [
                 'name'    => 'some',
                 'type'    => 'text',
-                'options' => ['notnull' => false, 'length' => 65535],
+                'options' => [
+                    'notnull' => false,
+                    'length' => 65535,
+                ],
             ],
         ];
 
@@ -127,7 +135,9 @@ class SchemaDefinitionTest extends TestCase
                 [
                     'name'    => 'some',
                     'type'    => 'text',
-                    'options' => ['notnull' => false],
+                    'options' => [
+                        'notnull' => false,
+                    ],
                 ],
             ];
         }
@@ -161,7 +171,9 @@ class SchemaDefinitionTest extends TestCase
                 [
                     'name'    => 'some',
                     'type'    => 'string',
-                    'options' => ['notnull' => false],
+                    'options' => [
+                        'notnull' => false,
+                    ],
                 ],
             ];
         }

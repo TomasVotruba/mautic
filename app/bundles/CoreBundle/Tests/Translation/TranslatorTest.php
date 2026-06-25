@@ -40,12 +40,16 @@ class TranslatorTest extends AbstractMauticTestCase
         );
         $this->assertSame(
             'Этот сегмент не перестраивался в течение 2 часов.',
-            $translator->trans('test.problematic.message', ['%count%' => 2], null, $locale),
+            $translator->trans('test.problematic.message', [
+                '%count%' => 2,
+            ], null, $locale),
             'Russian plural message expected.'
         );
         $this->assertSame(
             'This segment hasn\'t been rebuilt for 5 hours.',
-            $translator->trans('test.problematic.message', ['%count%' => 5], null, $locale),
+            $translator->trans('test.problematic.message', [
+                '%count%' => 5,
+            ], null, $locale),
             'Fallback to english plural message expected.'
         );
     }

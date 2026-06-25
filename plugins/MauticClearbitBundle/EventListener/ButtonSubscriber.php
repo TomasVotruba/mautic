@@ -46,7 +46,9 @@ class ButtonSubscriber implements EventSubscriberInterface
                         'onclick'     => 'this.href=\''.
                             $this->router->generate(
                                 'mautic_plugin_clearbit_action',
-                                ['objectAction' => 'batchLookupPerson']
+                                [
+                                    'objectAction' => 'batchLookupPerson',
+                                ]
                             ).
                             '?\' + mQuery.param({\'clearbit_batch_lookup\':{\'ids\':JSON.parse(Mautic.getCheckedListIds(false, true))}});return true;',
                         'data-header' => $this->translator->trans('mautic.plugin.clearbit.button.caption'),
@@ -64,11 +66,16 @@ class ButtonSubscriber implements EventSubscriberInterface
                         'data-target' => '#MauticSharedModal',
                         'data-header' => $this->translator->trans(
                             'mautic.plugin.clearbit.lookup.header',
-                            ['%item%' => $event->getItem()->getEmail()]
+                            [
+                                '%item%' => $event->getItem()->getEmail(),
+                            ]
                         ),
                         'href' => $this->router->generate(
                             'mautic_plugin_clearbit_action',
-                            ['objectId' => $event->getItem()->getId(), 'objectAction' => 'lookupPerson']
+                            [
+                                'objectId' => $event->getItem()->getId(),
+                                'objectAction' => 'lookupPerson',
+                            ]
                         ),
                     ],
                     'btnText'   => $this->translator->trans('mautic.plugin.clearbit.button.caption'),
@@ -78,7 +85,10 @@ class ButtonSubscriber implements EventSubscriberInterface
                 $event->addButton(
                     $lookupContactButton,
                     ButtonHelper::LOCATION_PAGE_ACTIONS,
-                    ['mautic_contact_action', ['objectAction' => 'view']]
+                    [
+                        'mautic_contact_action', [
+                            'objectAction' => 'view',
+                        ]]
                 );
 
                 $event->addButton(
@@ -98,7 +108,9 @@ class ButtonSubscriber implements EventSubscriberInterface
                             'onclick'     => 'this.href=\''.
                                 $this->router->generate(
                                     'mautic_plugin_clearbit_action',
-                                    ['objectAction' => 'batchLookupCompany']
+                                    [
+                                        'objectAction' => 'batchLookupCompany',
+                                    ]
                                 ).
                                 '?\' + mQuery.param({\'clearbit_batch_lookup\':{\'ids\':JSON.parse(Mautic.getCheckedListIds(false, true))}});return true;',
                             'data-header' => $this->translator->trans(
@@ -118,11 +130,16 @@ class ButtonSubscriber implements EventSubscriberInterface
                             'data-target' => '#MauticSharedModal',
                             'data-header' => $this->translator->trans(
                                 'mautic.plugin.clearbit.lookup.header',
-                                ['%item%' => $event->getItem()->getName()]
+                                [
+                                    '%item%' => $event->getItem()->getName(),
+                                ]
                             ),
                             'href' => $this->router->generate(
                                 'mautic_plugin_clearbit_action',
-                                ['objectId' => $event->getItem()->getId(), 'objectAction' => 'lookupCompany']
+                                [
+                                    'objectId' => $event->getItem()->getId(),
+                                    'objectAction' => 'lookupCompany',
+                                ]
                             ),
                         ],
                         'btnText'   => $this->translator->trans('mautic.plugin.clearbit.button.caption'),

@@ -69,15 +69,25 @@ class UserSummaryNotificationHelperTest extends TestCase
             ->method('getOwnersForObjectIds')->willReturnCallback(function (...$parameters) use ($matcher) {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
-                    $this->assertSame([1 => 1], $parameters[1]);
+                    $this->assertSame([
+                        1 => 1,
+                    ], $parameters[1]);
 
-                    return [['owner_id' => 1, 'id' => 1]];
+                    return [[
+                        'owner_id' => 1,
+                        'id' => 1,
+                    ]];
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
-                    $this->assertSame([2 => 2], $parameters[1]);
+                    $this->assertSame([
+                        2 => 2,
+                    ], $parameters[1]);
 
-                    return [['owner_id' => 2, 'id' => 2]];
+                    return [[
+                        'owner_id' => 2,
+                        'id' => 2,
+                    ]];
                 }
             });
 
@@ -122,13 +132,17 @@ class UserSummaryNotificationHelperTest extends TestCase
             ->method('getOwnersForObjectIds')->willReturnCallback(function (...$parameters) use ($matcher) {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
-                    $this->assertSame([1 => 1], $parameters[1]);
+                    $this->assertSame([
+                        1 => 1,
+                    ], $parameters[1]);
 
                     return [];
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
-                    $this->assertSame([2 => 2], $parameters[1]);
+                    $this->assertSame([
+                        2 => 2,
+                    ], $parameters[1]);
 
                     return [];
                 }

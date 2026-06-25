@@ -38,7 +38,9 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
                 'field'      => 'points',
                 'type'       => 'number',
                 'operator'   => '=',
-                'properties' => ['filter' => 1],
+                'properties' => [
+                    'filter' => 1,
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -46,7 +48,9 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
                 'field'      => 'points',
                 'type'       => 'number',
                 'operator'   => '=',
-                'properties' => ['filter' => 2],
+                'properties' => [
+                    'filter' => 2,
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -54,15 +58,21 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
                 'field'      => 'points',
                 'type'       => 'number',
                 'operator'   => '=',
-                'properties' => ['filter' => 3],
+                'properties' => [
+                    'filter' => 3,
+                ],
             ],
         ]);
 
         $this->em->persist($segment);
         $this->em->flush();
 
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
-        self::assertCount(3, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]));
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segment->getId(),
+        ]);
+        self::assertCount(3, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment,
+        ]));
     }
 
     public function testSegmentNuberFilterWithRegexCommand(): void
@@ -89,14 +99,20 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
                 'field'      => 'points',
                 'type'       => 'number',
                 'operator'   => 'regexp',
-                'properties' => ['filter' => '^(1|3)$'],
+                'properties' => [
+                    'filter' => '^(1|3)$',
+                ],
             ],
         ]);
 
         $this->em->persist($segment);
         $this->em->flush();
 
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
-        self::assertCount(2, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]));
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segment->getId(),
+        ]);
+        self::assertCount(2, $this->em->getRepository(ListLead::class)->findBy([
+            'list' => $segment,
+        ]));
     }
 }

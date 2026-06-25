@@ -108,7 +108,9 @@ EOT
             return Command::FAILURE;
         }
 
-        $output->writeln('<info>'.$this->translator->trans('mautic.lead.field.column_was_created', ['%id%' => $leadFieldId]).'</info>');
+        $output->writeln('<info>'.$this->translator->trans('mautic.lead.field.column_was_created', [
+            '%id%' => $leadFieldId,
+        ]).'</info>');
         $this->completeRun();
 
         return Command::SUCCESS;

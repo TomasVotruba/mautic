@@ -165,7 +165,9 @@ class CustomFieldIndex
     private function getUniqueIdentifierIndexColumns(string $object = 'lead'): array
     {
         // Filters
-        $filters = ['object' => $object];
+        $filters = [
+            'object' => $object,
+        ];
 
         // Get list of current uniques
         $uniqueIdentifierFields = $this->fieldsWithUniqueIdentifier->getLiveFields($filters);

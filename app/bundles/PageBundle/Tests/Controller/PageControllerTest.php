@@ -95,7 +95,9 @@ class PageControllerTest extends MauticMysqlTestCase
           SELECT `id`, `action`
           FROM `'.$this->prefix.'lead_event_log`
           WHERE `lead_id` = :leadId
-          AND `bundle` = "page" AND `object` = "page";', ['leadId' => $leadId]
+          AND `bundle` = "page" AND `object` = "page";', [
+            'leadId' => $leadId,
+        ]
         );
         $this->assertCount(1, $leadEventLogs);
         $this->assertSame('created_contact', reset($leadEventLogs)['action']);
@@ -133,7 +135,9 @@ class PageControllerTest extends MauticMysqlTestCase
           SELECT `id`, `action`
           FROM `'.$this->prefix.'lead_event_log`
           WHERE `lead_id` = :leadId
-          AND `bundle` = "page" AND `object` = "page";', ['leadId' => $leadId]
+          AND `bundle` = "page" AND `object` = "page";', [
+            'leadId' => $leadId,
+        ]
         );
         $this->assertCount(1, $eventLogsAfterFirstVisit);
         $this->assertSame('created_contact', reset($eventLogsAfterFirstVisit)['action']);
@@ -143,7 +147,9 @@ class PageControllerTest extends MauticMysqlTestCase
           SELECT `id`, `action`
           FROM `'.$this->prefix.'lead_event_log`
           WHERE `lead_id` = :leadId
-          AND `bundle` = "page" AND `object` = "page";', ['leadId' => $leadId]
+          AND `bundle` = "page" AND `object` = "page";', [
+            'leadId' => $leadId,
+        ]
         );
         $this->assertCount(1, $eventLogsAfterSecondVisit);
         $this->assertSame(reset($eventLogsAfterFirstVisit)['id'], reset($eventLogsAfterSecondVisit)['id']);

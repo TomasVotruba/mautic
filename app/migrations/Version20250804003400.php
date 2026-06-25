@@ -23,7 +23,9 @@ class Version20250804003400 extends AbstractMauticMigration
         $listsWithMultiselect = $this->connection->executeQuery($sql)->fetchAllAssociative();
 
         foreach ($listsWithMultiselect as $listData) {
-            $filters = unserialize($listData['filters'], ['allowed_classes' => false]);
+            $filters = unserialize($listData['filters'], [
+                'allowed_classes' => false,
+            ]);
             $changed = false;
             foreach ($filters as $index => $filter) {
                 if ('multiselect' !== $filter['type']) {
@@ -62,7 +64,9 @@ class Version20250804003400 extends AbstractMauticMigration
         $listsWithMultiselect = $this->connection->executeQuery($sql)->fetchAllAssociative();
 
         foreach ($listsWithMultiselect as $listData) {
-            $filters = unserialize($listData['filters'], ['allowed_classes' => false]);
+            $filters = unserialize($listData['filters'], [
+                'allowed_classes' => false,
+            ]);
             $changed = false;
             foreach ($filters as $index => $filter) {
                 if ('multiselect' !== $filter['type']) {

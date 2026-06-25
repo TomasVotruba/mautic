@@ -27,7 +27,10 @@ class PointTriggerFunctionalTest extends MauticMysqlTestCase
         $this->createAddTagEvent('tag6', $trigger);
 
         $lead = new Lead();
-        $data = ['email' => 'pointtest@example.com', 'points' => 5];
+        $data = [
+            'email' => 'pointtest@example.com',
+            'points' => 5,
+        ];
         $model->setFieldValues($lead, $data, false, true, true);
         $model->saveEntity($lead);
 
@@ -56,7 +59,10 @@ class PointTriggerFunctionalTest extends MauticMysqlTestCase
         $this->createAddTagEvent('tagB', $triggerB);
 
         $lead = new Lead();
-        $data = ['email' => 'pointtest@example.com', 'points' => 0];
+        $data = [
+            'email' => 'pointtest@example.com',
+            'points' => 0,
+        ];
         $model->setFieldValues($lead, $data, false, true, true);
         $model->saveEntity($lead);
 
@@ -78,7 +84,10 @@ class PointTriggerFunctionalTest extends MauticMysqlTestCase
         $triggerModel = self::getContainer()->get('mautic.point.model.trigger');
 
         $lead = new Lead();
-        $data = ['email' => 'pointtest@example.com', 'points' => 5];
+        $data = [
+            'email' => 'pointtest@example.com',
+            'points' => 5,
+        ];
         $leadModel->setFieldValues($lead, $data, false, true, true);
         $leadModel->saveEntity($lead);
 
@@ -115,7 +124,9 @@ class PointTriggerFunctionalTest extends MauticMysqlTestCase
         $groupB = $this->createGroup('Group B');
 
         $lead = new Lead();
-        $data = ['email' => 'pointtest@example.com'];
+        $data = [
+            'email' => 'pointtest@example.com',
+        ];
         $leadModel->setFieldValues($lead, $data, false, true, true);
         $leadModel->saveEntity($lead);
         $pointGroupModel->adjustPoints($lead, $groupA, 5);

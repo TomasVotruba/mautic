@@ -21,7 +21,9 @@ class FormExitSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [FormEvents::PRE_SET_DATA => 'preSetData'];
+        return [
+            FormEvents::PRE_SET_DATA => 'preSetData',
+        ];
     }
 
     public function preSetData(FormEvent $event): void
@@ -38,7 +40,9 @@ class FormExitSubscriber implements EventSubscriberInterface
                     'data'     => $this->model,
                     'required' => false,
                     'mapped'   => false,
-                    'attr'     => ['class' => 'form-exit-unlock-model'],
+                    'attr'     => [
+                        'class' => 'form-exit-unlock-model',
+                    ],
                 ]
             );
 
@@ -49,7 +53,9 @@ class FormExitSubscriber implements EventSubscriberInterface
                     'data'     => $id,
                     'required' => false,
                     'mapped'   => false,
-                    'attr'     => ['class' => 'form-exit-unlock-id'],
+                    'attr'     => [
+                        'class' => 'form-exit-unlock-id',
+                    ],
                 ]
             );
 
@@ -61,7 +67,9 @@ class FormExitSubscriber implements EventSubscriberInterface
                         'data'     => $this->options['unlockParameter'],
                         'required' => false,
                         'mapped'   => false,
-                        'attr'     => ['class' => 'form-exit-unlock-parameter'],
+                        'attr'     => [
+                            'class' => 'form-exit-unlock-parameter',
+                        ],
                     ]
                 );
             }

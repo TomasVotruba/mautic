@@ -40,13 +40,17 @@ final class CleanupExportedFilesCommandFunctionalTest extends MauticMysqlTestCas
         $this->client->request(
             Request::METHOD_POST,
             's/contacts/batchExport',
-            ['filetype' => 'csv']
+            [
+                'filetype' => 'csv',
+            ]
         );
         self::assertResponseIsSuccessful();
         $contactExportSchedulerRows = $this->checkContactExportScheduler(1);
         /** @var ContactExportScheduler $contactExportScheduler */
         $contactExportScheduler     = $contactExportSchedulerRows[0];
-        $this->testSymfonyCommand(ContactScheduledExportCommand::COMMAND_NAME, ['--ids' => $contactExportScheduler->getId()]);
+        $this->testSymfonyCommand(ContactScheduledExportCommand::COMMAND_NAME, [
+            '--ids' => $contactExportScheduler->getId(),
+        ]);
 
         /** @var CoreParametersHelper $coreParametersHelper */
         $coreParametersHelper    = self::getContainer()->get('mautic.helper.core_parameters');

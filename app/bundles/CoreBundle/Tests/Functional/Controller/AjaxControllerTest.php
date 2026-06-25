@@ -440,7 +440,9 @@ final class AjaxControllerTest extends MauticMysqlTestCase
 
         $translator = self::getContainer()->get('translator');
         $this->assertStringContainsString('s/contacts?search='.$searchString, $content['newContent']);
-        $this->assertStringContainsString($translator->trans('mautic.core.search.more', ['%count%' => 1]), $content['newContent']);
+        $this->assertStringContainsString($translator->trans('mautic.core.search.more', [
+            '%count%' => 1,
+        ]), $content['newContent']);
 
         $crawler = new Crawler($content['newContent']);
         $this->assertCount(4, $crawler->filterXPath("//li[contains(@class, 'gsearch--results-item')]"));
@@ -454,7 +456,9 @@ final class AjaxControllerTest extends MauticMysqlTestCase
 
         $translator = self::getContainer()->get('translator');
         $this->assertStringContainsString('s/credentials?search='.$searchString, $content['newContent']);
-        $this->assertStringContainsString($translator->trans('mautic.core.search.more', ['%count%' => 1]), $content['newContent']);
+        $this->assertStringContainsString($translator->trans('mautic.core.search.more', [
+            '%count%' => 1,
+        ]), $content['newContent']);
 
         $crawler = new Crawler($content['newContent']);
         $this->assertCount(4, $crawler->filterXPath("//li[contains(@class, 'gsearch--results-item')]"));
@@ -463,7 +467,9 @@ final class AjaxControllerTest extends MauticMysqlTestCase
     private function loginOtherUser(string $name): void
     {
         $this->client->request(Request::METHOD_GET, '/s/logout');
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => $name]);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $name,
+        ]);
 
         $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $name);
@@ -633,7 +639,9 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         $pointAction->setName('Read email action');
         $pointAction->setDelta(1);
         $pointAction->setType('email.open');
-        $pointAction->setProperties(['emails' => [1]]);
+        $pointAction->setProperties([
+            'emails' => [1],
+        ]);
 
         return $pointAction;
     }

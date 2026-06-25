@@ -19,7 +19,9 @@ class FileManagerController extends AjaxController
     public function uploadAction(Request $request, FileManager $fileManager): Response
     {
         try {
-            $response = $this->sendJsonResponse(['data'=> $fileManager->uploadFiles($request)]);
+            $response = $this->sendJsonResponse([
+                'data'=> $fileManager->uploadFiles($request),
+            ]);
         } catch (FileUploadException $error) {
             return new Response($error->getMessage(), Response::HTTP_BAD_REQUEST);
         }
@@ -33,12 +35,16 @@ class FileManagerController extends AjaxController
         $filePath = $fileManager->getCompleteFilePath($fileName);
 
         if (!file_exists($filePath) || !exif_imagetype($filePath)) {
-            return $this->sendJsonResponse(['success'=> false]);
+            return $this->sendJsonResponse([
+                'success'=> false,
+            ]);
         }
 
         $fileManager->deleteFile($fileName);
 
-        return $this->sendJsonResponse(['success'=> true]);
+        return $this->sendJsonResponse([
+            'success'=> true,
+        ]);
     }
 
     /**

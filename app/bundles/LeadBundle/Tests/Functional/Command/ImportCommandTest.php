@@ -48,7 +48,11 @@ class ImportCommandTest extends MauticMysqlTestCase
         $import = $this->createCsvContactImport();
 
         // Run command to import CSV.
-        $this->testSymfonyCommand('mautic:import', ['-e' => 'test', '-i' => $import->getId(), '--limit' => 10000]);
+        $this->testSymfonyCommand('mautic:import', [
+            '-e' => 'test',
+            '-i' => $import->getId(),
+            '--limit' => 10000,
+        ]);
 
         // See the notifications.
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/import');

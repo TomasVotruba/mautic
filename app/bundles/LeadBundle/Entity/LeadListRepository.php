@@ -389,7 +389,10 @@ class LeadListRepository extends CommonRepository
             if (is_array($value)) {
                 $subFunc                        = 'in';
                 $subExpr[]                      = $subQb->expr()->in(sprintf('%s.%s', $alias, $column), ":$subFilterParamter");
-                $parameters[$subFilterParamter] = ['value' => $value, 'type' => ArrayParameterType::STRING];
+                $parameters[$subFilterParamter] = [
+                    'value' => $value,
+                    'type' => ArrayParameterType::STRING,
+                ];
             } else {
                 $parameters[$subFilterParamter] = $value;
             }
@@ -439,7 +442,9 @@ class LeadListRepository extends CommonRepository
             case $this->translator->trans('mautic.lead.list.searchcommand.isglobal'):
             case $this->translator->trans('mautic.lead.list.searchcommand.isglobal', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('l.isGlobal', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.name'):
             case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
@@ -450,7 +455,9 @@ class LeadListRepository extends CommonRepository
             case $this->translator->trans('mautic.lead.list.searchcommand.filters_field', [], null, 'en_US'):
                 $pattern         = sprintf('%%s:5:"field";s:%d:"%s"%%', strlen($filter->string), $filter->string);
                 $expr            = $q->expr()->like('l.filters', ':'.$unique);
-                $forceParameters = [$unique => $pattern];
+                $forceParameters = [
+                    $unique => $pattern,
+                ];
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
             case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
@@ -468,7 +475,9 @@ class LeadListRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [
@@ -691,8 +700,13 @@ SQL;
 
         $this->getEntityManager()->getConnection()->update(
             MAUTIC_TABLE_PREFIX.LeadList::TABLE_NAME,
-            ['deleted'   => $dateTime, 'is_published' => 0],
-            ['id'        => $leadListId]
+            [
+                'deleted'   => $dateTime,
+                'is_published' => 0,
+            ],
+            [
+                'id'        => $leadListId,
+            ]
         );
     }
 
@@ -777,7 +791,9 @@ SQL;
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
-        return array_map(fn ($segment): array => ['item_id' => (string) $segment], $segmentIds);
+        return array_map(fn ($segment): array => [
+            'item_id' => (string) $segment,
+        ], $segmentIds);
     }
 
     /**
@@ -803,7 +819,9 @@ SQL;
             foreach ($segmentMembershipFilters as $filter) {
                 if (is_array($filter['properties']['filter'])) {
                     foreach ($filter['properties']['filter'] as $childSegmentId) {
-                        $childSegmentIds[] = ['item_id' => (string) $childSegmentId];
+                        $childSegmentIds[] = [
+                            'item_id' => (string) $childSegmentId,
+                        ];
                     }
                 }
             }
@@ -879,7 +897,9 @@ SQL;
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
-        return array_map(fn ($segment): array => ['item_id' => (string) $segment], $segmentIds);
+        return array_map(fn ($segment): array => [
+            'item_id' => (string) $segment,
+        ], $segmentIds);
     }
 
     /**

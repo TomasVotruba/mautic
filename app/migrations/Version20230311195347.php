@@ -22,7 +22,9 @@ final class Version20230311195347 extends AbstractMauticMigration
 
         while ($rowCount) {
             $sql      = "DELETE FROM $tableName WHERE $columnName = :value LIMIT ".self::BATCH_SIZE;
-            $rowCount = $connection->executeStatement($sql, ['value' => $value]);
+            $rowCount = $connection->executeStatement($sql, [
+                'value' => $value,
+            ]);
         }
     }
 }

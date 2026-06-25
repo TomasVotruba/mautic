@@ -82,7 +82,9 @@ class FinalizeUpdateStepTest extends AbstractStepTestCase
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame($updateSuccessfulKey, $parameters[0]);
-                    $this->assertSame(['%version%' => '10.0.0'], $parameters[1]);
+                    $this->assertSame([
+                        '%version%' => '10.0.0',
+                    ], $parameters[1]);
 
                     return $updateSuccessfulKey;
                 }

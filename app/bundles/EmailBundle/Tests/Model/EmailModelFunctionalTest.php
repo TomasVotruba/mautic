@@ -477,7 +477,9 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
 
     public function testReturnsContactAsIsIfNoId(): void
     {
-        $contact = ['email' => 'test@example.com'];
+        $contact = [
+            'email' => 'test@example.com',
+        ];
 
         $result = $this->emailModel->enrichedContactWithCompanies($contact);
 

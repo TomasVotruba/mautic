@@ -16,7 +16,9 @@ final class PublicControllerFunctionalTest extends MauticMysqlTestCase
 {
     public function testLookupActionWithNoLookupFormField(): void
     {
-        $this->makeRequest(['string' => 'Company']);
+        $this->makeRequest([
+            'string' => 'Company',
+        ]);
         $clientResponse = $this->client->getResponse();
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $clientResponse->getContent());
@@ -25,7 +27,10 @@ final class PublicControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testLookupActionWithInvalidLookupFormField(): void
     {
-        $this->makeRequest(['string' => 'Company', 'formId' => 3]);
+        $this->makeRequest([
+            'string' => 'Company',
+            'formId' => 3,
+        ]);
         $clientResponse = $this->client->getResponse();
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $clientResponse->getContent());
@@ -36,7 +41,10 @@ final class PublicControllerFunctionalTest extends MauticMysqlTestCase
     {
         $form = $this->createForm();
 
-        $this->makeRequest(['string' => 'Co', 'formId' => $form->getId()]);
+        $this->makeRequest([
+            'string' => 'Co',
+            'formId' => $form->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $clientResponse->getContent());
@@ -50,7 +58,10 @@ final class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $companyB = $this->createCompany('Company B', 'Boston', 'Massachusetts');
         $form     = $this->createForm();
 
-        $this->makeRequest(['search' => 'Company', 'formId' => $form->getId()]);
+        $this->makeRequest([
+            'search' => 'Company',
+            'formId' => $form->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
 
         self::assertResponseIsSuccessful();
@@ -82,7 +93,9 @@ final class PublicControllerFunctionalTest extends MauticMysqlTestCase
             '/form/company-lookup/autocomplete',
             [],
             [],
-            ['Content-Type' => 'application/json'],
+            [
+                'Content-Type' => 'application/json',
+            ],
             json_encode($payload)
         );
     }

@@ -27,7 +27,9 @@ class TimeFormatType extends AbstractType
             'expanded'    => false,
             'multiple'    => false,
             'label'       => 'mautic.core.type.time_format',
-            'label_attr'  => ['class' => ''],
+            'label_attr'  => [
+                'class' => '',
+            ],
             'empty_value' => false,
             'required'    => false,
         ]);

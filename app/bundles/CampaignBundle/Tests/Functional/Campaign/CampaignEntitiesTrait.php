@@ -68,7 +68,9 @@ trait CampaignEntitiesTrait
         int $index,
     ): Lead {
         $fieldValue      = !empty($fieldDetails) ?
-            array_merge($fieldDetails, ['value' => array_merge(['v'.$index], $additionalValue)]) : [];
+            array_merge($fieldDetails, [
+                'value' => array_merge(['v'.$index], $additionalValue),
+            ]) : [];
         $leadFieldValue  = 'lead' === $object ? $fieldValue : [];
         $lead            = $this->createLead('l'.$index, $leadFieldValue);
         if ('company' === $object) {
@@ -101,7 +103,9 @@ trait CampaignEntitiesTrait
             ]);
             $leadModel = self::getContainer()->get('mautic.lead.model.lead');
             \assert($leadModel instanceof LeadModel);
-            $leadModel->setFieldValues($lead, [$customField['alias'] => $customField['value']]);
+            $leadModel->setFieldValues($lead, [
+                $customField['alias'] => $customField['value'],
+            ]);
         }
         $contactRepo->saveEntity($lead);
 
@@ -128,7 +132,9 @@ trait CampaignEntitiesTrait
             ]);
             $companyModel = self::getContainer()->get('mautic.lead.model.company');
             \assert($companyModel instanceof CompanyModel);
-            $companyModel->setFieldValues($company, [$customField['alias'] => $customField['value']]);
+            $companyModel->setFieldValues($company, [
+                $customField['alias'] => $customField['value'],
+            ]);
         }
         $companyRepo->saveEntity($company);
 

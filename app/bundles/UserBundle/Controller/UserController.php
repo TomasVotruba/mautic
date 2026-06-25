@@ -50,7 +50,10 @@ class UserController extends FormController
         $request->getSession()->set('mautic.user.filter', $search);
 
         // do some default filtering
-        $filter = ['string' => $search, 'force' => ''];
+        $filter = [
+            'string' => $search,
+            'force' => '',
+        ];
         $tmpl   = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
         $users  = $this->getModel('user.user')->getEntities(
             [
@@ -67,7 +70,9 @@ class UserController extends FormController
             // the number of entities are now less then the current page so redirect to the last page
             $lastPage = $pageHelper->countPage($count);
             $pageHelper->rememberPage($lastPage);
-            $returnUrl = $this->generateUrl('mautic_user_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_user_index', [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'      => $returnUrl,
@@ -87,8 +92,12 @@ class UserController extends FormController
 
         $inviteForm = null;
         if ($this->security->isGranted('user:users:create')) {
-            $action     = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
-            $inviteForm = $this->createForm(UserInviteType::class, [], ['action' => $action]);
+            $action     = $this->generateUrl('mautic_user_action', [
+                'objectAction' => 'invite',
+            ]);
+            $inviteForm = $this->createForm(UserInviteType::class, [], [
+                'action' => $action,
+            ]);
         }
 
         return $this->delegateView([
@@ -108,7 +117,9 @@ class UserController extends FormController
             ],
             'contentTemplate' => '@MauticUser/User/list.html.twig',
             'passthroughVars' => [
-                'route'         => $this->generateUrl('mautic_user_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_user_index', [
+                    'page' => $page,
+                ]),
                 'mauticContent' => 'user',
             ],
         ]);
@@ -122,8 +133,12 @@ class UserController extends FormController
         if (!$this->security->isGranted('user:users:create')) {
             $this->throwAccessDenied();
         }
-        $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
-        $form   = $this->createForm(UserInviteType::class, [], ['action' => $action]);
+        $action = $this->generateUrl('mautic_user_action', [
+            'objectAction' => 'invite',
+        ]);
+        $form   = $this->createForm(UserInviteType::class, [], [
+            'action' => $action,
+        ]);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -137,7 +152,9 @@ class UserController extends FormController
                 \assert($role instanceof Role);
 
                 $model->createInvite($email, $role);
-                $this->addFlashMessage('mautic.user.invite.flash.sent', ['%email%' => $email], 'notice', 'flashes');
+                $this->addFlashMessage('mautic.user.invite.flash.sent', [
+                    '%email%' => $email,
+                ], 'notice', 'flashes');
 
                 if ($request->isXmlHttpRequest()) {
                     $response = new JsonResponse([
@@ -190,7 +207,9 @@ class UserController extends FormController
         $user = $model->getEntity();
 
         // get the user form factory
-        $action   = $this->generateUrl('mautic_user_action', ['objectAction' => 'new']);
+        $action   = $this->generateUrl('mautic_user_action', [
+            'objectAction' => 'new',
+        ]);
         $form     = $model->createForm($user, $this->formFactory, $action);
         $response = null;
 
@@ -215,7 +234,10 @@ class UserController extends FormController
         if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
             $response = $this->postActionRedirect([
                 'returnUrl'       => $this->generateUrl('mautic_user_index'),
-                'viewParameters'  => ['page' => $request->getSession()->get('mautic.user.page', 1), 'isSamlUser' => false],
+                'viewParameters'  => [
+                    'page' => $request->getSession()->get('mautic.user.page', 1),
+                    'isSamlUser' => false,
+                ],
                 'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_user_index',
@@ -275,7 +297,10 @@ class UserController extends FormController
     private function renderNewUserForm(FormInterface $form, string $action): JsonResponse|Response
     {
         return $this->delegateView([
-            'viewParameters'  => ['form' => $form->createView(), 'isSamlUser' => false],
+            'viewParameters'  => [
+                'form' => $form->createView(),
+                'isSamlUser' => false,
+            ],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_new',
@@ -308,7 +333,9 @@ class UserController extends FormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
@@ -330,11 +357,15 @@ class UserController extends FormController
         $page = $request->getSession()->get('mautic.user.page', 1);
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_user_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_user_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_index',
@@ -347,7 +378,10 @@ class UserController extends FormController
             return $this->isLocked($postActionVars, $user, 'user.user');
         }
 
-        $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_user_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $form   = $model->createForm($user, $this->formFactory, $action);
 
         $isSamlUser    = $samlHelper->isSamlSession();
@@ -458,12 +492,16 @@ class UserController extends FormController
 
         $currentUser    = $this->user;
         $page           = $request->getSession()->get('mautic.user.page', 1);
-        $returnUrl      = $this->generateUrl('mautic_user_index', ['page' => $page]);
+        $returnUrl      = $this->generateUrl('mautic_user_index', [
+            'page' => $page,
+        ]);
         $success        = 0;
         $flashes        = [];
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_index',
@@ -483,7 +521,9 @@ class UserController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif ($model->isLocked($entity)) {
                     return $this->isLocked($postActionVars, $entity, 'user.user');
@@ -533,14 +573,21 @@ class UserController extends FormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
         }
 
-        $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'contact', 'objectId' => $objectId]);
-        $form   = $this->createForm(ContactType::class, [], ['action' => $action]);
+        $action = $this->generateUrl('mautic_user_action', [
+            'objectAction' => 'contact',
+            'objectId' => $objectId,
+        ]);
+        $form   = $this->createForm(ContactType::class, [], [
+            'action' => $action,
+        ]);
 
         $currentUser = $this->user;
 
@@ -592,7 +639,9 @@ class UserController extends FormController
                     \assert($auditLogModel instanceof AuditLogModel);
                     $auditLogModel->writeToLog($log);
 
-                    $this->addFlashMessage('mautic.user.user.notice.messagesent', ['%name%' => $user->getName()]);
+                    $this->addFlashMessage('mautic.user.user.notice.messagesent', [
+                        '%name%' => $user->getName(),
+                    ]);
                 }
             }
             if ($cancelled || $valid) {
@@ -639,12 +688,16 @@ class UserController extends FormController
     public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.user.page', 1);
-        $returnUrl = $this->generateUrl('mautic_user_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_user_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_index',
@@ -672,7 +725,9 @@ class UserController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->isGranted('user:users:delete')) {
                     $flashes[] = $this->getAccessDeniedFlash();

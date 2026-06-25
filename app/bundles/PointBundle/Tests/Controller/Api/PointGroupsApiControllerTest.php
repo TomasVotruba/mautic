@@ -128,11 +128,26 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
         $this->assertContactSinglePointGroup($contact, $pointGroupB, 21);
 
         $this->assertPointsChangeLogEntries($contact, [
-            ['delta' => 10, 'groupId' => $pointGroupA->getId()],
-            ['delta' => -2, 'groupId' => $pointGroupA->getId()],
-            ['delta' => -4, 'groupId' => $pointGroupA->getId()],
-            ['delta' => 12, 'groupId' => $pointGroupA->getId()],
-            ['delta' => 21, 'groupId' => $pointGroupB->getId()],
+            [
+                'delta' => 10,
+                'groupId' => $pointGroupA->getId(),
+            ],
+            [
+                'delta' => -2,
+                'groupId' => $pointGroupA->getId(),
+            ],
+            [
+                'delta' => -4,
+                'groupId' => $pointGroupA->getId(),
+            ],
+            [
+                'delta' => 12,
+                'groupId' => $pointGroupA->getId(),
+            ],
+            [
+                'delta' => 21,
+                'groupId' => $pointGroupB->getId(),
+            ],
         ]);
 
         // Try to GET the group points that should not exist
@@ -192,7 +207,9 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
      */
     private function assertPointsChangeLogEntries(Lead $contact, array $expectedEntries): void
     {
-        $logs = $this->em->getRepository(PointsChangeLog::class)->findBy(['lead' => $contact->getId()]);
+        $logs = $this->em->getRepository(PointsChangeLog::class)->findBy([
+            'lead' => $contact->getId(),
+        ]);
         $this->assertCount(count($expectedEntries), $logs);
         foreach ($expectedEntries as $index => $expectedEntry) {
             $this->assertEquals($expectedEntry['delta'], $logs[$index]->getDelta());

@@ -25,7 +25,9 @@ class EmailActionModel
      */
     public function setCategory(array $emailsIds, Category $newCategory): array
     {
-        $emails = $this->emailRepository->findBy(['id' => $emailsIds]);
+        $emails = $this->emailRepository->findBy([
+            'id' => $emailsIds,
+        ]);
 
         $affected = [];
 

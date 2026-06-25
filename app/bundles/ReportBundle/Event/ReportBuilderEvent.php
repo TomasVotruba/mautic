@@ -135,7 +135,9 @@ class ReportBuilderEvent extends AbstractReportEvent
 
         foreach ($this->leadFields as $fieldArray) {
             $fields[$prefix.$fieldArray['alias']] = [
-                'label' => $this->translator->trans('mautic.report.field.lead.label', ['%field%' => $fieldArray['label']]),
+                'label' => $this->translator->trans('mautic.report.field.lead.label', [
+                    '%field%' => $fieldArray['label'],
+                ]),
                 'type'  => $this->reportHelper->getReportBuilderFieldType($fieldArray['type']),
                 'alias' => $fieldArray['alias'],
             ];

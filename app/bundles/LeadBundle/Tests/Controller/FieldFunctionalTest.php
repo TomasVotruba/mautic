@@ -31,7 +31,13 @@ class FieldFunctionalTest extends MauticMysqlTestCase
     public function testNewMultiSelectField(): void
     {
         $fieldModel = static::getContainer()->get('mautic.lead.model.field');
-        $field      = $this->createField('s', 'select', ['properties' => ['list' => ['choice_a' => 'Choice A']]]);
+        $field      = $this->createField('s', 'select', [
+            'properties' => [
+                'list' => [
+                    'choice_a' => 'Choice A',
+                ],
+            ],
+        ]);
         $fieldModel->saveEntity($field);
 
         $tablePrefix = static::getContainer()->getParameter('mautic.db_table_prefix');

@@ -57,7 +57,9 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->assertSame(
-            ['is equal to' => OperatorOptions::EQUAL_TO],
+            [
+                'is equal to' => OperatorOptions::EQUAL_TO,
+            ],
             $this->provider->getOperatorsIncluding([OperatorOptions::EQUAL_TO])
         );
     }

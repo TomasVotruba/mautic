@@ -161,7 +161,9 @@ class UpdateLeadCampaignsCommand extends ModeratedCommand
         if ($id) {
             $campaign = $this->campaignRepository->getEntity($id);
             if (null === $campaign) {
-                $output->writeln('<error>'.$this->translator->trans('mautic.campaign.rebuild.not_found', ['%id%' => $id]).'</error>');
+                $output->writeln('<error>'.$this->translator->trans('mautic.campaign.rebuild.not_found', [
+                    '%id%' => $id,
+                ]).'</error>');
 
                 return \Symfony\Component\Console\Command\Command::FAILURE;
             }
@@ -208,7 +210,9 @@ class UpdateLeadCampaignsCommand extends ModeratedCommand
 
         try {
             $this->output->writeln(
-                '<info>'.$this->translator->trans('mautic.campaign.rebuild.rebuilding', ['%id%' => $campaign->getId()]).'</info>'
+                '<info>'.$this->translator->trans('mautic.campaign.rebuild.rebuilding', [
+                    '%id%' => $campaign->getId(),
+                ]).'</info>'
             );
 
             // Reset batch limiter

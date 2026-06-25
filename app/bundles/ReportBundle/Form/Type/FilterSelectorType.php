@@ -30,7 +30,9 @@ class FilterSelectorType extends AbstractType
                 'expanded'          => false,
                 'multiple'          => false,
                 'label'             => 'mautic.report.report.label.filtercolumn',
-                'label_attr'        => ['class' => 'control-label filter-column'],
+                'label_attr'        => [
+                    'class' => 'control-label filter-column',
+                ],
                 'placeholder'       => false,
                 'required'          => false,
                 'attr'              => [
@@ -57,7 +59,9 @@ class FilterSelectorType extends AbstractType
                     'expanded'          => false,
                     'multiple'          => false,
                     'label'             => 'mautic.report.report.label.filtercondition',
-                    'label_attr'        => ['class' => 'control-label filter-condition'],
+                    'label_attr'        => [
+                        'class' => 'control-label filter-condition',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                     'attr'              => [
@@ -72,8 +76,12 @@ class FilterSelectorType extends AbstractType
                     'allow_add'     => true,
                     'allow_delete'  => true,
                     'label'         => 'mautic.report.report.label.filtervalue',
-                    'label_attr'    => ['class' => 'control-label'],
-                    'attr'          => ['class' => 'form-control filter-value'],
+                    'label_attr'    => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'          => [
+                        'class' => 'form-control filter-value',
+                    ],
                     'required'      => false,
                 ]);
             } else {
@@ -82,8 +90,12 @@ class FilterSelectorType extends AbstractType
                     TextType::class,
                     [
                         'label'      => 'mautic.report.report.label.filtervalue',
-                        'label_attr' => ['class' => 'control-label'],
-                        'attr'       => ['class' => 'form-control filter-value'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
+                        'attr'       => [
+                            'class' => 'form-control filter-value',
+                        ],
                         'required'   => false,
                     ]
                 );
@@ -105,8 +117,12 @@ class FilterSelectorType extends AbstractType
             ChoiceType::class,
             [
                 'label'             => false,
-                'label_attr'        => ['class' => 'control-label'],
-                'attr'              => ['class' => 'form-control filter-glue not-chosen'],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
+                'attr'              => [
+                    'class' => 'form-control filter-glue not-chosen',
+                ],
                 'required'          => false,
                 'choices'           => [
                     'mautic.report.report.glue.choice.and' => 'and',
@@ -121,7 +137,9 @@ class FilterSelectorType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label'      => 'mautic.report.report.label.filterdynamic',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.report.report.label.filterdynamic_tooltip',

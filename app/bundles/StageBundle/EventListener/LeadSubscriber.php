@@ -55,7 +55,10 @@ class LeadSubscriber implements EventSubscriberInterface
                 if (isset($log['reference']) && null != $log['reference']) {
                     $eventLabel = [
                         'label'      => $log['eventName'],
-                        'href'       => $this->router->generate('mautic_stage_action', ['objectAction' => 'edit', 'objectId' => $log['reference']]),
+                        'href'       => $this->router->generate('mautic_stage_action', [
+                            'objectAction' => 'edit',
+                            'objectId' => $log['reference'],
+                        ]),
                         'isExternal' => false,
                     ];
                 } else {

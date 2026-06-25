@@ -48,7 +48,9 @@ class FieldApiControllerTest extends TestCase
             ],
         ];
 
-        $request = new Request(['where' => $where]);
+        $request = new Request([
+            'where' => $where,
+        ]);
         $result  = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request], $request);
 
         $this->assertEquals(array_merge($where, $this->defaultWhere), $result);

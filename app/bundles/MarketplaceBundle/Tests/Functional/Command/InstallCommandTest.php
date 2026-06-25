@@ -50,7 +50,9 @@ final class InstallCommandTest extends AbstractMauticTestCase
 
         $result = $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $this->packageName],
+            [
+                'package' => $this->packageName,
+            ],
             $command
         );
 
@@ -71,7 +73,10 @@ final class InstallCommandTest extends AbstractMauticTestCase
 
         $result = $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $this->packageName, '--dry-run' => null],
+            [
+                'package' => $this->packageName,
+                '--dry-run' => null,
+            ],
             $command
         );
 
@@ -93,7 +98,9 @@ final class InstallCommandTest extends AbstractMauticTestCase
 
         $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $packageName],
+            [
+                'package' => $packageName,
+            ],
             $command
         );
     }
@@ -112,7 +119,9 @@ final class InstallCommandTest extends AbstractMauticTestCase
 
         $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $packageName],
+            [
+                'package' => $packageName,
+            ],
             $command
         );
     }
@@ -133,7 +142,9 @@ final class InstallCommandTest extends AbstractMauticTestCase
 
         $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $packageName],
+            [
+                'package' => $packageName,
+            ],
             $command
         );
     }
@@ -153,7 +164,9 @@ final class InstallCommandTest extends AbstractMauticTestCase
         $command = new InstallCommand($this->composerHelper, $this->packageModel);
         $result  = $this->testSymfonyCommand(
             'mautic:marketplace:install',
-            ['package' => $packageName],
+            [
+                'package' => $packageName,
+            ],
             $command
         );
 

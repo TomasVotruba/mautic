@@ -54,7 +54,9 @@ class AssetSubscriber implements EventSubscriberInterface
             'object'    => 'asset',
             'objectId'  => $asset->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $asset->getTitle()],
+            'details'   => [
+                'name' => $asset->getTitle(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

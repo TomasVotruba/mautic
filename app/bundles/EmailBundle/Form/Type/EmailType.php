@@ -65,7 +65,11 @@ class EmailType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventSubscriber(new CleanFormSubscriber(['content' => 'html', 'customHtml' => 'html', 'headers' => 'clean']));
+        $builder->addEventSubscriber(new CleanFormSubscriber([
+            'content' => 'html',
+            'customHtml' => 'html',
+            'headers' => 'clean',
+        ]));
         $builder->addEventSubscriber(new FormExitSubscriber('email.email', $options));
 
         $emailEntity =  $options['data'];
@@ -81,8 +85,12 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.form.internal.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -91,7 +99,9 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.subject',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'onBlur'  => 'Mautic.copySubjectToName(mQuery(this))',
@@ -104,7 +114,9 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.from_name',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'preaddon' => 'ri-user-6-fill',
@@ -119,7 +131,9 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.from_email',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'preaddon' => 'ri-mail-line',
@@ -134,7 +148,9 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.reply_to_email',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'preaddon' => 'ri-mail-line',
@@ -149,7 +165,9 @@ class EmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.email.bcc',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'preaddon' => 'ri-mail-line',
@@ -164,7 +182,9 @@ class EmailType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label'      => 'mautic.email.use.owner.as.mailer',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'data'       => $this->getUseOwnerAsMailerOrDefaultValue($emailEntity),
                 'required'   => false,
                 'attr'       => [
@@ -173,7 +193,9 @@ class EmailType extends AbstractType
                     'tooltip'                     => 'mautic.email.use.owner.as.mailer.tooltip',
                     'data-warning'                => $this->translator->trans(
                         'mautic.email.config.mailer.is.owner.local.warning',
-                        ['%value%' => $this->translator->trans($this->getGlobalMailerIsOwner() ? 'mautic.core.yes' : 'mautic.core.no')]
+                        [
+                            '%value%' => $this->translator->trans($this->getGlobalMailerIsOwner() ? 'mautic.core.yes' : 'mautic.core.no'),
+                        ]
                     ),
                 ],
             ]
@@ -205,7 +227,9 @@ class EmailType extends AbstractType
             EmailUtmTagsType::class,
             [
                 'label'      => 'mautic.email.utm_tags',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.email.utm_tags.tooltip',
@@ -257,19 +281,27 @@ class EmailType extends AbstractType
 
         if (!$canPublish) {
             $isPublishOptions['disabled'] = true; // Duplicated here for Symfony validations
-            $isPublishOptions['attr']     = ['disabled' => true]; // Duplicated here for the JS switch library
+            $isPublishOptions['attr']     = [
+                'disabled' => true,
+            ]; // Duplicated here for the JS switch library
         }
 
         $builder->add('isPublished', YesNoButtonGroupType::class, $isPublishOptions);
-        $builder->add('publishUp', PublishUpDateType::class, ['disabled' => !$canPublish]);
-        $builder->add('publishDown', PublishDownDateType::class, ['disabled' => !$canPublish]);
+        $builder->add('publishUp', PublishUpDateType::class, [
+            'disabled' => !$canPublish,
+        ]);
+        $builder->add('publishDown', PublishDownDateType::class, [
+            'disabled' => !$canPublish,
+        ]);
 
         $builder->add(
             'plainText',
             TextareaType::class,
             [
                 'label'      => 'mautic.email.form.plaintext',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'tooltip'              => 'mautic.email.form.plaintext.help',
                     'class'                => 'form-control',
@@ -291,7 +323,9 @@ class EmailType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.email.form.body',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'required'   => false,
                 'attr'       => [
                     'tooltip'              => 'mautic.email.form.body.help',
@@ -311,7 +345,9 @@ class EmailType extends AbstractType
                 FormListType::class,
                 [
                     'label'      => 'mautic.email.form.unsubscribeform',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'            => 'form-control',
                         'tooltip'          => 'mautic.email.form.unsubscribeform.tooltip',
@@ -332,7 +368,9 @@ class EmailType extends AbstractType
                 PreferenceCenterListType::class,
                 [
                     'label'      => 'mautic.email.form.preference_center',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'            => 'form-control',
                         'tooltip'          => 'mautic.email.form.preference_center.tooltip',
@@ -368,7 +406,9 @@ class EmailType extends AbstractType
             EmailListType::class,
             [
                 'label'      => 'mautic.core.form.translation_parent',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.core.form.translation_parent.help',
@@ -390,7 +430,9 @@ class EmailType extends AbstractType
             EmailListType::class,
             [
                 'label'      => 'mautic.core.form.translation_parent',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.core.form.translation_parent.help',
@@ -467,7 +509,9 @@ class EmailType extends AbstractType
                 LeadListType::class,
                 [
                     'label'      => 'mautic.email.form.list',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'data-show-on' => '{"emailform_segmentTranslationParent":[""]}',
@@ -486,7 +530,9 @@ class EmailType extends AbstractType
                 LeadListType::class,
                 [
                     'label'      => 'mautic.email.form.excluded_list',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class' => 'form-control',
                     ],
@@ -502,7 +548,9 @@ class EmailType extends AbstractType
             LocaleType::class,
             [
                 'label'      => 'mautic.core.language',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
@@ -524,7 +572,9 @@ class EmailType extends AbstractType
                 AssetListType::class,
                 [
                     'label'      => 'mautic.email.attachments',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'    => 'form-control',
                         'onchange' => 'Mautic.getTotalAttachmentSize();',
@@ -569,7 +619,9 @@ class EmailType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.email.preheader_text',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'    => 'form-control',
                         'tooltip'  => 'mautic.email.preheader_text.tooltip',
@@ -585,7 +637,9 @@ class EmailType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.email.preheader_text',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'    => 'form-control',
                         'tooltip'  => 'mautic.email.preheader_text.tooltip',

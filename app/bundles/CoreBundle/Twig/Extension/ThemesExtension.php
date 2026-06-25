@@ -54,9 +54,18 @@ final class ThemesExtension extends AbstractExtension
         $baseRadius = (int) $this->coreParametersHelper->get('rounded_corners', 0);
 
         $radiusMapping = [
-            8  => ['md' => 4, 'sm' => 3],
-            16 => ['md' => 6, 'sm' => 4],
-            32 => ['md' => 8, 'sm' => 5],
+            8  => [
+                'md' => 4,
+                'sm' => 3,
+            ],
+            16 => [
+                'md' => 6,
+                'sm' => 4,
+            ],
+            32 => [
+                'md' => 8,
+                'sm' => 5,
+            ],
         ];
 
         $roundedCorners = [

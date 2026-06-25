@@ -54,7 +54,9 @@ class Connection
 
         $payload = json_decode($body, true);
 
-        $this->logger->debug('Successful Packagist API response', ['payload' => $payload]);
+        $this->logger->debug('Successful Packagist API response', [
+            'payload' => $payload,
+        ]);
 
         return $payload;
     }

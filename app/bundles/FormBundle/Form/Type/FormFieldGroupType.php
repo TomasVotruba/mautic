@@ -20,7 +20,9 @@ class FormFieldGroupType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.group.labelattr',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'     => 'form-control',
                     'tooltip'   => 'mautic.form.field.help.group.labelattr',
@@ -34,7 +36,9 @@ class FormFieldGroupType extends AbstractType
             $data = $options['data']['optionlist'];
         } elseif (isset($options['data']['list'])) {
             // BC support
-            $data = ['list' => $options['data']['list']];
+            $data = [
+                'list' => $options['data']['list'],
+            ];
         } else {
             $data = [];
         }

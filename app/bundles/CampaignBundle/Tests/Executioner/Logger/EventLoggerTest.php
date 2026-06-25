@@ -92,9 +92,24 @@ class EventLoggerTest extends TestCase
         $this->leadRepository->expects($this->exactly(3))
             ->method('getContactRotations')
             ->willReturnOnConsecutiveCalls(
-                [1 => ['rotation' => 1, 'manually_removed' => 0]],
-                [1 => ['rotation' => 2, 'manually_removed' => 0]],
-                [1 => ['rotation' => 1, 'manually_removed' => 0]],
+                [
+                    1 => [
+                        'rotation' => 1,
+                        'manually_removed' => 0,
+                    ],
+                ],
+                [
+                    1 => [
+                        'rotation' => 2,
+                        'manually_removed' => 0,
+                    ],
+                ],
+                [
+                    1 => [
+                        'rotation' => 1,
+                        'manually_removed' => 0,
+                    ],
+                ],
             );
 
         /** @var MockObject&Campaign $campaign */

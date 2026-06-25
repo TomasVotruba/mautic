@@ -13,7 +13,9 @@ class KeysSaveEventTest extends TestCase
     public function testGetters(): void
     {
         $integration = $this->createMock(Integration::class);
-        $keys        = ['apikey' => 'test'];
+        $keys        = [
+            'apikey' => 'test',
+        ];
         $integration->expects(self::once())
             ->method('getApiKeys')
             ->willReturn($keys);

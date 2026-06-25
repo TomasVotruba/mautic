@@ -35,7 +35,9 @@ final class EventRedirectionHelperTest extends TestCase
         $events = new ArrayCollection([$deletedEvent, $redirectEvent]);
         $this->setPrivateProperty($campaign, 'events', $events);
 
-        $logs   = new ArrayCollection([0 => $deletedEvent]);
+        $logs   = new ArrayCollection([
+            0 => $deletedEvent,
+        ]);
         $logger = $this->createMock(LoggerInterface::class);
 
         $logger->expects($this->once())
@@ -58,7 +60,9 @@ final class EventRedirectionHelperTest extends TestCase
         $event    = $this->createEventWithId(1);
         $event->setCampaign($campaign);
 
-        $logs   = new ArrayCollection([0 => $event]);
+        $logs   = new ArrayCollection([
+            0 => $event,
+        ]);
         $logger = $this->createMock(LoggerInterface::class);
         $helper = new EventRedirectionHelper($logger);
         $result = $helper->handleEventRedirection($event, $logs, 0);
@@ -91,7 +95,9 @@ final class EventRedirectionHelperTest extends TestCase
         $events = new ArrayCollection([$deletedEvent]);
         $this->setPrivateProperty($campaign, 'events', $events);
 
-        $logs = new ArrayCollection([0 => $deletedEvent]);
+        $logs = new ArrayCollection([
+            0 => $deletedEvent,
+        ]);
 
         $logger = $this->createMock(LoggerInterface::class);
 

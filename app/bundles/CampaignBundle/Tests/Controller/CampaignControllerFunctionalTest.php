@@ -173,7 +173,9 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
             new \DateTime($from),
             new \DateTime($to),
             null,
-            ['campaign_id' => $campaignId]
+            [
+                'campaign_id' => $campaignId,
+            ]
         );
         $datasets      = $stats['datasets'] ?? [];
 

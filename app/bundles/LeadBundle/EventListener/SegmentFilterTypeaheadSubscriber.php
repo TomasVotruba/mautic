@@ -102,19 +102,25 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
         $dataArray = [];
         if ('lookup' === $field->getType() && !empty($field->getProperties()['list'])) {
             foreach ($field->getProperties()['list'] as $predefinedValue) {
-                $dataArray[] = ['value' => $predefinedValue];
+                $dataArray[] = [
+                    'value' => $predefinedValue,
+                ];
             }
         }
 
         if ('company' === $field->getObject()) {
             $results = $this->companyModel->getLookupResults('companyfield', [$fieldAlias, $filter]);
             foreach ($results as $r) {
-                $dataArray[] = ['value' => $r['label']];
+                $dataArray[] = [
+                    'value' => $r['label'],
+                ];
             }
         } elseif ('lead' === $field->getObject()) {
             $results = $this->fieldModel->getLookupResults($fieldAlias, $filter);
             foreach ($results as $r) {
-                $dataArray[] = ['value' => $r[$fieldAlias]];
+                $dataArray[] = [
+                    'value' => $r[$fieldAlias],
+                ];
             }
         }
 

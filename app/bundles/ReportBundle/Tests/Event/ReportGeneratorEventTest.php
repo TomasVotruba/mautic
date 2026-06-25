@@ -278,7 +278,10 @@ class ReportGeneratorEventTest extends TestCase
       ->method('getQueryParts')
       ->willReturn([
           'join' => [
-              'l' => [['joinTable' => MAUTIC_TABLE_PREFIX.'companies_leads', 'joinAlias' => ReportGeneratorEvent::COMPANY_LEAD_PREFIX]],
+              'l' => [[
+                  'joinTable' => MAUTIC_TABLE_PREFIX.'companies_leads',
+                  'joinAlias' => ReportGeneratorEvent::COMPANY_LEAD_PREFIX,
+              ]],
           ],
       ]);
         $this->queryBuilder->expects($this->never())

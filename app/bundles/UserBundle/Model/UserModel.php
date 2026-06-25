@@ -149,7 +149,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function getSystemAdministrator()
     {
-        $adminRole = $this->em->getRepository(Role::class)->findOneBy(['isAdmin' => true]);
+        $adminRole = $this->em->getRepository(Role::class)->findOneBy([
+            'isAdmin' => true,
+        ]);
 
         return $this->getRepository()->findOneBy(
             [
@@ -276,13 +278,20 @@ class UserModel extends FormModel implements GlobalSearchInterface
             $this->logger->error($this->translator->trans('mautic.user.password.reset.token.creation.database.error', [], 'messages').': '.$exception->getMessage());
             throw new PasswordResetTokenCreationFailedException($this->translator->trans('mautic.user.password.reset.token.creation.failed'), 0, $exception);
         }
-        $resetLink  = $this->router->generate('mautic_user_passwordresetconfirm', ['token' => $resetToken->getSecret()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $resetLink  = $this->router->generate('mautic_user_passwordresetconfirm', [
+            'token' => $resetToken->getSecret(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $mailer->setTo([$user->getEmail() ?? '' => $user->getName()]);
+        $mailer->setTo([
+            $user->getEmail() ?? '' => $user->getName(),
+        ]);
         $mailer->setSubject($this->translator->trans('mautic.user.user.passwordreset.subject'));
         $text = $this->translator->trans(
             'mautic.user.user.passwordreset.email.body',
-            ['%name%' => $user->getFirstName(), '%resetlink%' => '<a href="'.$resetLink.'">'.$resetLink.'</a>']
+            [
+                '%name%' => $user->getFirstName(),
+                '%resetlink%' => '<a href="'.$resetLink.'">'.$resetLink.'</a>',
+            ]
         );
         $text = str_replace('\\n', "\n", $text);
         $html = nl2br($text);
@@ -301,7 +310,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
     {
         $text = $this->translator->trans(
             'mautic.user.user.passwordchange.email.body',
-            ['%name%' => $user->getFirstName()]
+            [
+                '%name%' => $user->getFirstName(),
+            ]
         );
         $text = str_replace('\\n', "\n", $text);
         $html = nl2br($text);
@@ -321,12 +332,16 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $mailer = $this->mailHelper->getMailer();
         $text   = $this->translator->trans(
             'mautic.user.user.emailchange.email.body',
-            ['%name%' => $user->getFirstName()]
+            [
+                '%name%' => $user->getFirstName(),
+            ]
         );
         $text = str_replace('\\n', "\n", $text);
         $html = nl2br($text);
 
-        $mailer->setTo([$oldEmail => $user->getName()]);
+        $mailer->setTo([
+            $oldEmail => $user->getName(),
+        ]);
         $mailer->setBody($html);
         $mailer->setSubject($this->translator->trans('mautic.user.user.emailchange.subject'));
         $mailer->send();
@@ -335,7 +350,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function emailUser(User $user, string $subject, string $content): void
     {
         $mailer  = $this->prepareEMail($subject, $content);
-        $mailer->setTo([$user->getEmail() ?? '' => $user->getName()]);
+        $mailer->setTo([
+            $user->getEmail() ?? '' => $user->getName(),
+        ]);
         $mailer->send();
     }
 
@@ -401,7 +418,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
     public function hasUserWithEmail(string $email): bool
     {
-        return null !== $this->getRepository()->findOneBy(['email' => $email]);
+        return null !== $this->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
     }
 
     public function createInvite(string $email, Role $role): UserInvite
@@ -416,11 +435,17 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $this->em->persist($invite);
         $this->em->flush();
 
-        $link   = $this->router->generate('mautic_user_invite_register', ['token' => $inviteToken['token']], UrlGeneratorInterface::ABSOLUTE_URL);
+        $link   = $this->router->generate('mautic_user_invite_register', [
+            'token' => $inviteToken['token'],
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
         $mailer = $this->mailHelper->getMailer();
-        $mailer->setTo([$email => $email]);
+        $mailer->setTo([
+            $email => $email,
+        ]);
         $mailer->setSubject($this->translator->trans('mautic.user.invite.subject'));
-        $text = $this->translator->trans('mautic.user.invite.email.body', ['%invite_link%' => $link]);
+        $text = $this->translator->trans('mautic.user.invite.email.body', [
+            '%invite_link%' => $link,
+        ]);
         $text = str_replace('\\n', "\n", $text);
         $mailer->setBody($this->twig->render('@MauticUser/Email/invite.html.twig', [
             'inviteLink' => $link,
@@ -524,7 +549,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
                 'email'     => $invite->getEmail(),
             ];
         } elseif (null !== $selector) {
-            $context = ['selector' => $selector];
+            $context = [
+                'selector' => $selector,
+            ];
         } else {
             $context = [];
         }

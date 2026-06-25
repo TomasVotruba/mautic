@@ -47,7 +47,9 @@ class SegmentStressTest extends MauticMysqlTestCase
         $segmentA   = $this->saveSegment();
         $segmentAId = $segmentA->getId();
         $this->em->clear();
-        $commandTester = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, ['-i' => $segmentAId]);
+        $commandTester = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, [
+            '-i' => $segmentAId,
+        ]);
         self::assertSame(Command::SUCCESS, $commandTester->getStatusCode(), $commandTester->getDisplay());
     }
 
@@ -75,7 +77,9 @@ class SegmentStressTest extends MauticMysqlTestCase
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => 'startsWith',
-                'properties' => ['filter' => 'fn'],
+                'properties' => [
+                    'filter' => 'fn',
+                ],
             ],
             [
                 'object'     => 'lead',
@@ -83,7 +87,9 @@ class SegmentStressTest extends MauticMysqlTestCase
                 'field'      => 'lastname',
                 'type'       => 'text',
                 'operator'   => 'startsWith',
-                'properties' => ['filter' => 'ln'],
+                'properties' => [
+                    'filter' => 'ln',
+                ],
             ],
         ];
 

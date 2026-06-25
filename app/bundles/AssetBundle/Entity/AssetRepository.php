@@ -98,7 +98,9 @@ class AssetRepository extends CommonRepository
                     "(a.isPublished = :%1\$s AND a.publishDown IS NOT NULL AND a.publishDown <> '' AND a.publishDown < CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.asset.asset.searchcommand.ispending'):
             case $this->translator->trans('mautic.asset.asset.searchcommand.ispending', [], null, 'en_US'):
@@ -106,7 +108,9 @@ class AssetRepository extends CommonRepository
                     "(a.isPublished = :%1\$s AND a.publishUp IS NOT NULL AND a.publishUp <> '' AND a.publishUp > CURRENT_TIMESTAMP())",
                     $unique
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.asset.asset.searchcommand.lang'):
                 $langUnique      = $this->generateRandomParameterName();
@@ -140,7 +144,9 @@ class AssetRepository extends CommonRepository
             $parameters = [];
         } else {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];
@@ -251,7 +257,9 @@ class AssetRepository extends CommonRepository
             ->getOneOrNullResult();
 
         if (!$asset) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['uuid' => $slug]);
+            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, [
+                'uuid' => $slug,
+            ]);
         }
 
         return $asset;

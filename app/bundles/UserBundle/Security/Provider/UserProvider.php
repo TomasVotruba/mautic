@@ -54,7 +54,9 @@ class UserProvider implements UserProviderInterface
         $user = $query->getOneOrNullResult();
 
         if (!$user instanceof User) {
-            throw new UserNotFoundException($this->translator->trans('mautic.user.exception.user.not_found', ['%identifier%' => $identifier]));
+            throw new UserNotFoundException($this->translator->trans('mautic.user.exception.user.not_found', [
+                '%identifier%' => $identifier,
+            ]));
         }
 
         // load permissions

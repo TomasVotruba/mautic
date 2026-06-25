@@ -59,14 +59,18 @@ class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTestCase
                 'lastname'      => 'One',
                 'email'         => 'c@one.com',
                 'company'       => 'One',
-                'customFields'  => [$customFieldAlias => 'client_1'],
+                'customFields'  => [
+                    $customFieldAlias => 'client_1',
+                ],
             ],
             [
                 'firstname'     => 'Contact',
                 'lastname'      => 'Two',
                 'email'         => 'c@two.com',
                 'company'       => 'Two',
-                'customFields'  => [$customFieldAlias => 'client_2'],
+                'customFields'  => [
+                    $customFieldAlias => 'client_2',
+                ],
             ],
             [
                 'firstname' => 'Contact',
@@ -105,7 +109,9 @@ class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTestCase
         $this->createCompany([
             'name'          => 'ABC',
             'email'         => 'hello@abcexample.com',
-            'customFields'  => [$customFieldAlias => 'client_id'],
+            'customFields'  => [
+                $customFieldAlias => 'client_id',
+            ],
         ]);
 
         $this->createCompany([
@@ -124,12 +130,16 @@ class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTestCase
         $translator = static::getContainer()->get('translator');
 
         $this->assertStringContainsString(
-            $translator->trans('mautic.core.pagination.items', ['%count%' => 1]),
+            $translator->trans('mautic.core.pagination.items', [
+                '%count%' => 1,
+            ]),
             $crawler->html()
         );
 
         $this->assertStringContainsString(
-            $translator->trans('mautic.core.pagination.pages', ['%count%' => 1]),
+            $translator->trans('mautic.core.pagination.pages', [
+                '%count%' => 1,
+            ]),
             $crawler->html()
         );
     }

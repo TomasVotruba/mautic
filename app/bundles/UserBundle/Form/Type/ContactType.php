@@ -28,11 +28,19 @@ class ContactType extends AbstractType
                 TextType::class,
                 [
                     'label'       => 'mautic.email.subject',
-                    'label_attr'  => ['class' => 'control-label'],
-                    'attr'        => ['class' => 'form-control'],
+                    'label_attr'  => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'        => [
+                        'class' => 'form-control',
+                    ],
                     'constraints' => [
-                        new NotBlank(['message' => 'Subject should not be blank.']),
-                        new Length(['min' => 3]),
+                        new NotBlank([
+                            'message' => 'Subject should not be blank.',
+                        ]),
+                        new Length([
+                            'min' => 3,
+                        ]),
                     ],
                 ]
             )
@@ -41,14 +49,20 @@ class ContactType extends AbstractType
                 TextareaType::class,
                 [
                     'label'      => 'mautic.user.user.contact.message',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class' => 'form-control',
                         'rows'  => 10,
                     ],
                     'constraints' => [
-                        new NotBlank(['message' => 'Message should not be blank.']),
-                        new Length(['min' => 5]),
+                        new NotBlank([
+                            'message' => 'Message should not be blank.',
+                        ]),
+                        new Length([
+                            'min' => 5,
+                        ]),
                     ],
                 ]
             )

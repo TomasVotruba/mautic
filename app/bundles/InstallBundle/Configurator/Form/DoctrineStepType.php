@@ -33,7 +33,9 @@ class DoctrineStepType extends AbstractType
                 'expanded'          => false,
                 'multiple'          => false,
                 'label'             => 'mautic.install.form.database.driver',
-                'label_attr'        => ['class' => 'control-label'],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
                 'placeholder'       => false,
                 'required'          => true,
                 'attr'              => [
@@ -54,8 +56,12 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.database.host',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => true,
             ]
         );
@@ -65,8 +71,12 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.database.port',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
             ]
         );
@@ -76,8 +86,12 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.database.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => true,
             ]
         );
@@ -87,8 +101,12 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.database.table.prefix',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
             ]
         );
@@ -98,8 +116,12 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.database.user',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => true,
             ]
         );
@@ -109,7 +131,9 @@ class DoctrineStepType extends AbstractType
             PasswordType::class,
             [
                 'label'      => 'mautic.install.form.database.password',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'preaddon' => 'ri-lock-fill',
@@ -135,7 +159,9 @@ class DoctrineStepType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.install.form.backup_prefix',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],

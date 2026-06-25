@@ -18,7 +18,9 @@ class ColorType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.primary_color',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'data-toggle' => 'color',
@@ -33,7 +35,9 @@ class ColorType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.text_color',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'data-toggle' => 'color',
@@ -48,7 +52,9 @@ class ColorType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.button_color',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'data-toggle' => 'color',
@@ -63,7 +69,9 @@ class ColorType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.button_text_color',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'data-toggle' => 'color',

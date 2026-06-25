@@ -33,7 +33,9 @@ class ShortenerTest extends TestCase
 
         $this->shortener->addService($service);
 
-        $this->assertSame([$service::class => $service], $this->shortener->getServices());
+        $this->assertSame([
+            $service::class => $service,
+        ], $this->shortener->getServices());
     }
 
     public function testGetService(): void
@@ -120,6 +122,8 @@ class ShortenerTest extends TestCase
         $this->shortener->addService($enabledService);
         $this->shortener->addService($disabledService);
 
-        $this->assertSame([$enabledService::class => $enabledService], $this->shortener->getEnabledServices());
+        $this->assertSame([
+            $enabledService::class => $enabledService,
+        ], $this->shortener->getEnabledServices());
     }
 }

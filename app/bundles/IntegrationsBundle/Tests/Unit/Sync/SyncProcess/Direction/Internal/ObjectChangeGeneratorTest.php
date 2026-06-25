@@ -386,7 +386,9 @@ class ObjectChangeGeneratorTest extends TestCase
                 {
                     Assert::assertSame(Contact::NAME, $object);
 
-                    return ['email' => []];
+                    return [
+                        'email' => [],
+                    ];
                 }
             },
             new class extends BulkNotification {

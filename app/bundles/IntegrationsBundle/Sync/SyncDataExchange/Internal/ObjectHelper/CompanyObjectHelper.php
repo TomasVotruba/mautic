@@ -99,7 +99,9 @@ class CompanyObjectHelper implements ObjectHelperInterface
         }
 
         /** @var Company[] $companies */
-        $companies = $this->model->getEntities(['ids' => $ids]);
+        $companies = $this->model->getEntities([
+            'ids' => $ids,
+        ]);
         DebugLogger::log(
             MauticSyncDataExchange::NAME,
             sprintf(
@@ -238,7 +240,9 @@ class CompanyObjectHelper implements ObjectHelperInterface
     private function getUniqueIdentifierFields(): array
     {
         if (null === $this->uniqueIdentifierFields) {
-            $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => MauticSyncDataExchange::OBJECT_COMPANY]);
+            $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier([
+                'object' => MauticSyncDataExchange::OBJECT_COMPANY,
+            ]);
             $this->uniqueIdentifierFields = array_keys($uniqueIdentifierFields);
         }
 

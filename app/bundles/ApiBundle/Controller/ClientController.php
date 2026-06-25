@@ -79,13 +79,17 @@ class ClientController extends AbstractStandardFormController
         $count = count($clients);
         if ($count && $count < ($start + 1)) {
             $lastPage  = $pageHelper->countPage($count);
-            $returnUrl = $this->generateUrl('mautic_client_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_client_index', [
+                'page' => $lastPage,
+            ]);
             $pageHelper->rememberPage($lastPage);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\ApiBundle\Controller\ClientController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_client_index',
@@ -125,7 +129,9 @@ class ClientController extends AbstractStandardFormController
                 ],
                 'contentTemplate' => '@MauticApi/Client/list.html.twig',
                 'passthroughVars' => [
-                    'route'         => $this->generateUrl('mautic_client_index', ['page' => $page]),
+                    'route'         => $this->generateUrl('mautic_client_index', [
+                        'page' => $page,
+                    ]),
                     'mauticContent' => 'client',
                 ],
             ]
@@ -138,7 +144,9 @@ class ClientController extends AbstractStandardFormController
         \assert($me instanceof User);
         $clients = $this->clientModel->getUserClients($me);
 
-        return $this->render('@MauticApi/Client/authorized.html.twig', ['clients' => $clients]);
+        return $this->render('@MauticApi/Client/authorized.html.twig', [
+            'clients' => $clients,
+        ]);
     }
 
     /**
@@ -156,7 +164,9 @@ class ClientController extends AbstractStandardFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.api.client.error.notfound',
-                    'msgVars' => ['%id%' => $clientId],
+                    'msgVars' => [
+                        '%id%' => $clientId,
+                    ],
                 ];
             } else {
                 $name = $client->getName();
@@ -208,7 +218,9 @@ class ClientController extends AbstractStandardFormController
         $returnUrl = $this->generateUrl('mautic_client_index');
 
         // get the user form factory
-        $action = $this->generateUrl('mautic_client_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_client_action', [
+            'objectAction' => 'new',
+        ]);
         $form   = $this->clientModel->createForm($client, $this->formFactory, $action);
 
         // remove the client id and secret fields as they'll be auto generated
@@ -318,7 +330,9 @@ class ClientController extends AbstractStandardFormController
                             [
                                 'type'    => 'error',
                                 'msg'     => 'mautic.api.client.error.notfound',
-                                'msgVars' => ['%id%' => $objectId],
+                                'msgVars' => [
+                                    '%id%' => $objectId,
+                                ],
                             ],
                         ],
                     ]
@@ -329,7 +343,10 @@ class ClientController extends AbstractStandardFormController
             return $this->isLocked($postActionVars, $client, 'api.client');
         }
 
-        $action = $this->generateUrl('mautic_client_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action = $this->generateUrl('mautic_client_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $form   = $this->clientModel->createForm($client, $this->formFactory, $action);
 
         // remove api_mode field
@@ -420,7 +437,9 @@ class ClientController extends AbstractStandardFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.api.client.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif ($this->clientModel->isLocked($entity)) {
                 // deny access if the entity is locked

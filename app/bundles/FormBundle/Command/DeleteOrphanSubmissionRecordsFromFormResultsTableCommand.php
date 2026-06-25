@@ -63,7 +63,9 @@ class DeleteOrphanSubmissionRecordsFromFormResultsTableCommand extends Command
             }
         }
 
-        $output->writeln($this->translator->trans('mautic.forms.command.orphan_submission_records_deleted', ['%record_count%' => $totalDeletedRecords]));
+        $output->writeln($this->translator->trans('mautic.forms.command.orphan_submission_records_deleted', [
+            '%record_count%' => $totalDeletedRecords,
+        ]));
 
         return ExitCode::SUCCESS;
     }

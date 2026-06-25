@@ -26,7 +26,9 @@ class FocusShowType extends AbstractType
             FocusListType::class,
             [
                 'label'      => 'mautic.focus.focusitem.selectitem',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.focus.focusitem.selectitem_descr',
@@ -36,7 +38,9 @@ class FocusShowType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.focus.choosefocus.notblank']
+                        [
+                            'message' => 'mautic.focus.choosefocus.notblank',
+                        ]
                     ),
                 ],
                 'data' => $options['data']['focus'] ?? null,

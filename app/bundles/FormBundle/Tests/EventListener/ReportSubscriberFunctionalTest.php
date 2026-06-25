@@ -52,7 +52,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     'value'     => $formId,
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [
@@ -117,7 +120,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
                     ],
                 ],
             ],
-            order: [['column' => 'l.id', 'direction' => 'ASC']]
+            order: [[
+                'column' => 'l.id',
+                'direction' => 'ASC',
+            ]]
         );
 
         $expectedReport = [

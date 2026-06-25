@@ -82,7 +82,9 @@ class RoleModel extends FormModel implements GlobalSearchInterface
 
         $users = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->findByRole($entity);
         if (count($users)) {
-            throw new PreconditionRequiredHttpException($this->translator->trans('mautic.user.role.error.deletenotallowed', ['%name%' => $entity->getName()], 'flashes'));
+            throw new PreconditionRequiredHttpException($this->translator->trans('mautic.user.role.error.deletenotallowed', [
+                '%name%' => $entity->getName(),
+            ], 'flashes'));
         }
 
         parent::deleteEntity($entity);

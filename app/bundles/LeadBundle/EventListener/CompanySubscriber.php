@@ -112,7 +112,9 @@ class CompanySubscriber implements EventSubscriberInterface
         $connection = $this->entityManager->getConnection();
         $connection->executeStatement(
             'UPDATE '.MAUTIC_TABLE_PREFIX.'leads SET company = NULL WHERE company = :companyName',
-            ['companyName' => $companyName]
+            [
+                'companyName' => $companyName,
+            ]
         );
     }
 }

@@ -465,7 +465,9 @@ class LeadFieldRepository extends CommonRepository
      */
     public function getFieldsByType($type)
     {
-        return $this->findBy(['type' => $type]);
+        return $this->findBy([
+            'type' => $type,
+        ]);
     }
 
     /**
@@ -521,12 +523,16 @@ class LeadFieldRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.lead.field.searchcommand.isindexed'):
                 $expr            = $q->expr()->eq($prefix.'.isIndex', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.lead.field.searchcommand.isunique'):
                 $expr            = $q->expr()->eq($prefix.'.isUniqueIdentifer', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.lead.field.searchcommand.type'):
@@ -553,7 +559,9 @@ class LeadFieldRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

@@ -344,7 +344,9 @@ class LeadModel extends FormModel
                     $entity->setFields($fields);
 
                     // Add the entity to the array to the right place.
-                    $entities = array_slice($entities, $i, 0, true) + [$entity->getId() => $entity] + $entities;
+                    $entities = array_slice($entities, $i, 0, true) + [
+                        $entity->getId() => $entity,
+                    ] + $entities;
                 }
             }
         }
@@ -597,7 +599,9 @@ class LeadModel extends FormModel
                         $this->translator->trans('mautic.stage.event.changed')
                     );
                 } else {
-                    throw new ImportFailedException($this->translator->trans('mautic.lead.import.stage.not.exists', ['%id%' => $newLeadStageIdOrName]));
+                    throw new ImportFailedException($this->translator->trans('mautic.lead.import.stage.not.exists', [
+                        '%id%' => $newLeadStageIdOrName,
+                    ]));
                 }
             }
         }
@@ -611,7 +615,10 @@ class LeadModel extends FormModel
                 /** @var Paginator<mixed[]> $paginator */
                 $paginator = $this->leadFieldModel->getEntities(
                     [
-                        'filter'         => ['isPublished' => true, 'object' => 'lead'],
+                        'filter'         => [
+                            'isPublished' => true,
+                            'object' => 'lead',
+                        ],
                         'hydration_mode' => 'HYDRATE_ARRAY',
                         'result_cache'   => new ResultCacheOptions(LeadField::CACHE_NAMESPACE),
                     ]
@@ -631,7 +638,11 @@ class LeadModel extends FormModel
                 new Lead(), // use empty lead to prevent binding errors
                 $this->formFactory,
                 null,
-                ['fields' => $this->flattenedFields, 'csrf_protection' => false, 'allow_extra_fields' => true]
+                [
+                    'fields' => $this->flattenedFields,
+                    'csrf_protection' => false,
+                    'allow_extra_fields' => true,
+                ]
             );
 
             // Unset stage and owner from the form because it's already been handled
@@ -735,10 +746,16 @@ class LeadModel extends FormModel
 
         switch ($type) {
             case 'user':
-                $results = $this->em->getRepository(User::class)->getUserList($filter, $limit, $start, ['lead' => 'leads']);
+                $results = $this->em->getRepository(User::class)->getUserList($filter, $limit, $start, [
+                    'lead' => 'leads',
+                ]);
                 break;
             case 'contact':
-                $fetchResults = $this->getEntities(['start' => $start, 'limit' => $limit, 'filter' => $filter]);
+                $fetchResults = $this->getEntities([
+                    'start' => $start,
+                    'limit' => $limit,
+                    'filter' => $filter,
+                ]);
 
                 $results = [];
 
@@ -883,7 +900,10 @@ class LeadModel extends FormModel
     {
         // Search for lead by request and/or update lead fields if some data were sent in the URL query
         if (empty($this->availableLeadFields)) {
-            $filter = ['isPublished' => true, 'object' => 'lead'];
+            $filter = [
+                'isPublished' => true,
+                'object' => 'lead',
+            ];
 
             if ($onlyPubliclyUpdateable) {
                 $filter['isPubliclyUpdatable'] = true;
@@ -1155,7 +1175,10 @@ class LeadModel extends FormModel
             $dispatchEvent = false;
 
             /** @var ?LeadCategory $leadCategory */
-            $leadCategory = $this->getLeadCategoryRepository()->findOneBy(['lead' => $lead, 'category' => $category]);
+            $leadCategory = $this->getLeadCategoryRepository()->findOneBy([
+                'lead' => $lead,
+                'category' => $category,
+            ]);
             if (is_null($leadCategory)) {
                 $dispatchEvent = true;
 
@@ -1311,7 +1334,9 @@ class LeadModel extends FormModel
         }
 
         if (!$granted) {
-            throw new \Exception($this->translator->trans('mautic.lead.import.error.unauthorized', ['%username%' => $this->userHelper->getUser()->getUsername()]));
+            throw new \Exception($this->translator->trans('mautic.lead.import.error.unauthorized', [
+                '%username%' => $this->userHelper->getUser()->getUsername(),
+            ]));
         }
 
         if (!empty($fields['dateAdded']) && !empty($data[$fields['dateAdded']])) {
@@ -1651,8 +1676,10 @@ class LeadModel extends FormModel
     public function addUTMTags(Lead $lead, $params): void
     {
         // known "synonym" fields expected
-        $synonyms = ['useragent'  => 'user_agent',
-            'remotehost'          => 'remote_host', ];
+        $synonyms = [
+            'useragent'  => 'user_agent',
+            'remotehost'          => 'remote_host',
+        ];
 
         // convert 'query' option to an array if necessary
         if (isset($params['query']) && !is_array($params['query'])) {
@@ -2308,7 +2335,10 @@ class LeadModel extends FormModel
         // Clear CompanyLead entities from Doctrine memory
         $this->companyModel->getCompanyLeadRepository()->detachEntities($companyLeads);
 
-        return ['oldPrimary' => $oldPrimaryCompany, 'newPrimary' => $companyId];
+        return [
+            'oldPrimary' => $oldPrimaryCompany,
+            'newPrimary' => $companyId,
+        ];
     }
 
     public function scoreContactsCompany(Lead $lead, $score): bool
@@ -2358,7 +2388,9 @@ class LeadModel extends FormModel
                     $manipulationLog->setAction('identified_contact');
                 }
                 $description = $manipulator->getObjectDescription();
-                $manipulationLog->setProperties(['object_description' => $description]);
+                $manipulationLog->setProperties([
+                    'object_description' => $description,
+                ]);
 
                 $lead->addEventLog($manipulationLog);
                 $manipulator->setAsLogged();

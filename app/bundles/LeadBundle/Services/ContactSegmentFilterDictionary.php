@@ -218,7 +218,8 @@ class ContactSegmentFilterDictionary
             'type'          => ForeignValueFilterQueryBuilder::getServiceId(),
             'foreign_table' => 'page_hits',
         ];
-        $this->filters['email_id'] = [ // kept as email_id for BC
+        $this->filters['email_id'] = [
+            // kept as email_id for BC
             'type' => ChannelClickQueryBuilder::getServiceId(),
         ];
         $this->filters['email_clicked_link_date'] = [

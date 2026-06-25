@@ -52,7 +52,9 @@ class FormSubscriber implements EventSubscriberInterface
             'label'              => 'mautic.asset.asset.submitaction.downloadfile',
             'description'        => 'mautic.asset.asset.submitaction.downloadfile_descr',
             'formType'           => FormSubmitActionDownloadFileType::class,
-            'formTypeCleanMasks' => ['message' => 'html'],
+            'formTypeCleanMasks' => [
+                'message' => 'html',
+            ],
             'eventName'          => FormEvents::ON_EXECUTE_SUBMIT_ACTION,
             'template'           => '@MauticAsset/Action/asset.html.twig',
         ]);
@@ -116,11 +118,15 @@ class FormSubscriber implements EventSubscriberInterface
 
         $url = $this->assetModel->generateUrl($asset, true, [
             'lead'    => $event->getLead() ? $event->getLead()->getId() : null,
-            'channel' => ['form' => $form->getId()],
+            'channel' => [
+                'form' => $form->getId(),
+            ],
         ]).'&stream=0';
 
         if ($messengerMode) {
-            $event->setPostSubmitResponse(['download' => $url]);
+            $event->setPostSubmitResponse([
+                'download' => $url,
+            ]);
 
             return;
         }

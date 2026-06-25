@@ -297,7 +297,9 @@ New line',
 
         $this->mailer->expects(self::once())
             ->method('setTo')
-            ->with([$leadEmail => null]);
+            ->with([
+                $leadEmail => null,
+            ]);
         $this->mailer->expects(self::once())
             ->method('setSubject')
             ->with($subject);
@@ -359,7 +361,9 @@ New line',
 
         $this->mailer->expects(self::once())
             ->method('setTo')
-            ->with([$ownerEmail => null]);
+            ->with([
+                $ownerEmail => null,
+            ]);
         $this->mailer->expects(self::once())
             ->method('setSubject')
             ->with($subject);
@@ -428,13 +432,19 @@ New line',
         $this->mailer->expects($matcher)
             ->method('setTo')->willReturnCallback(function (...$parameters) use ($matcher, $to, $leadEmail, $ownerEmail) {
                 if (1 === $matcher->numberOfInvocations()) {
-                    $this->assertSame([$to => null], $parameters[0]);
+                    $this->assertSame([
+                        $to => null,
+                    ], $parameters[0]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
-                    $this->assertSame([$leadEmail => null], $parameters[0]);
+                    $this->assertSame([
+                        $leadEmail => null,
+                    ], $parameters[0]);
                 }
                 if (3 === $matcher->numberOfInvocations()) {
-                    $this->assertSame([$ownerEmail => null], $parameters[0]);
+                    $this->assertSame([
+                        $ownerEmail => null,
+                    ], $parameters[0]);
                 }
 
                 return true;
@@ -444,7 +454,9 @@ New line',
             ->with(array_fill_keys(array_map('trim', explode(',', $cc)), null));
         $this->mailer->expects(self::once())
             ->method('setBcc')
-            ->with([$bcc => null]);
+            ->with([
+                $bcc => null,
+            ]);
         $this->mailer->expects(self::exactly(3))
             ->method('setSubject')
             ->with($subject);

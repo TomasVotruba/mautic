@@ -48,7 +48,11 @@ class SmsSubscriberTest extends TestCase
         $mockSmsHelper->expects($this->any())->method('getDisableTrackableUrls')->willReturn(false);
 
         $lead                  = new Lead();
-        $tokenReplacementEvent = new TokenReplacementEvent($this->messageText, $lead, ['channel' => [1 => 'sms']]);
+        $tokenReplacementEvent = new TokenReplacementEvent($this->messageText, $lead, [
+            'channel' => [
+                1 => 'sms',
+            ],
+        ]);
         $subscriber            = new SmsSubscriber(
             $mockAuditLogModel,
             $mockTrackableModel,
@@ -82,7 +86,9 @@ class SmsSubscriberTest extends TestCase
         $mockSmsHelper->expects($this->any())->method('getDisableTrackableUrls')->willReturn(true);
 
         $lead                  = new Lead();
-        $tokenReplacementEvent = new TokenReplacementEvent($this->messageText, $lead, ['channel' => ['sms', 1]]);
+        $tokenReplacementEvent = new TokenReplacementEvent($this->messageText, $lead, [
+            'channel' => ['sms', 1],
+        ]);
         $subscriber            = new SmsSubscriber(
             $mockAuditLogModel,
             $mockTrackableModel,

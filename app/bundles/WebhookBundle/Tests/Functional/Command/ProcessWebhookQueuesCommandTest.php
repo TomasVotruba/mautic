@@ -54,15 +54,23 @@ final class ProcessWebhookQueuesCommandTest extends MauticMysqlTestCase
         // Process queue records from 4 to 9 including. 6 in total.
         $output = $this->testSymfonyCommand(
             ProcessWebhookQueuesCommand::COMMAND_NAME,
-            ['--webhook-id' => $webhook->getId(), '--min-id' => $queueIds[3], '--max-id' => $queueIds[8]]
+            [
+                '--webhook-id' => $webhook->getId(),
+                '--min-id' => $queueIds[3],
+                '--max-id' => $queueIds[8],
+            ]
         );
         Assert::assertStringContainsString('Webhook Processing Complete', $output->getDisplay());
 
         // There will be 2 batches of webhook events sent. We've set we want to send 3 events per batch.
-        Assert::assertCount(2, $this->em->getRepository(Log::class)->findBy(['webhook' => $webhook]));
+        Assert::assertCount(2, $this->em->getRepository(Log::class)->findBy([
+            'webhook' => $webhook,
+        ]));
 
         // And 4 out of 10 queue records will be left alone as they did not fit the ID range.
-        Assert::assertCount(4, $this->em->getRepository(WebhookQueue::class)->findBy(['webhook' => $webhook]));
+        Assert::assertCount(4, $this->em->getRepository(WebhookQueue::class)->findBy([
+            'webhook' => $webhook,
+        ]));
     }
 
     public function testCommandWhenNoWebhooksFound(): void

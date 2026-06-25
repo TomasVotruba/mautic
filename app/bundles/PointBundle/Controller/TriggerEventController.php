@@ -55,7 +55,9 @@ class TriggerEventController extends CommonFormController
         \assert($pointTriggerModel instanceof TriggerModel);
         $events = $pointTriggerModel->getEvents();
         $form   = $this->formFactory->create(TriggerEventType::class, $triggerEvent, [
-            'action'   => $this->generateUrl('mautic_pointtriggerevent_action', ['objectAction' => 'new']),
+            'action'   => $this->generateUrl('mautic_pointtriggerevent_action', [
+                'objectAction' => 'new',
+            ]),
             'settings' => $events[$eventType],
         ]);
         $form->get('triggerId')->setData($triggerId);
@@ -85,7 +87,9 @@ class TriggerEventController extends CommonFormController
             }
         }
 
-        $viewParams = ['type' => $eventType];
+        $viewParams = [
+            'type' => $eventType,
+        ];
         if ($cancelled || $valid) {
             $closeModal = true;
         } else {
@@ -173,7 +177,10 @@ class TriggerEventController extends CommonFormController
             }
 
             $form = $this->formFactory->create(TriggerEventType::class, $triggerEvent, [
-                'action'   => $this->generateUrl('mautic_pointtriggerevent_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
+                'action'   => $this->generateUrl('mautic_pointtriggerevent_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $objectId,
+                ]),
                 'settings' => $triggerEvent['settings'],
             ]);
             $form->get('triggerId')->setData($triggerId);
@@ -205,7 +212,9 @@ class TriggerEventController extends CommonFormController
                 }
             }
 
-            $viewParams = ['type' => $eventType];
+            $viewParams = [
+                'type' => $eventType,
+            ];
             if ($cancelled || $valid) {
                 $closeModal = true;
             } else {
@@ -256,7 +265,9 @@ class TriggerEventController extends CommonFormController
             ]);
         }
 
-        return new JsonResponse(['success' => 0]);
+        return new JsonResponse([
+            'success' => 0,
+        ]);
     }
 
     /**
@@ -314,7 +325,9 @@ class TriggerEventController extends CommonFormController
                 ]),
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);
@@ -376,7 +389,9 @@ class TriggerEventController extends CommonFormController
                 ]),
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);

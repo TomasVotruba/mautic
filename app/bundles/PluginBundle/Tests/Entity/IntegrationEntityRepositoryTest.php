@@ -124,7 +124,11 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
         $prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
 
         $this->connection->executeQuery('SET FOREIGN_KEY_CHECKS=0;');
-        $this->connection->executeQuery("INSERT INTO {$prefix}plugin_integration_settings(plugin_id, name, is_published, api_keys) VALUES (:id, :name, :isPublished, '')", ['id' => 1, 'name' => self::INTEGRATION, 'isPublished' => 1]);
+        $this->connection->executeQuery("INSERT INTO {$prefix}plugin_integration_settings(plugin_id, name, is_published, api_keys) VALUES (:id, :name, :isPublished, '')", [
+            'id' => 1,
+            'name' => self::INTEGRATION,
+            'isPublished' => 1,
+        ]);
         $this->connection->executeQuery('SET FOREIGN_KEY_CHECKS=1;');
 
         $integrationEntityId = random_int(1, 1000);
@@ -150,8 +154,12 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
 
         $this->integrationEntityRepository->markAsDeleted([$integrationEntityId], self::INTEGRATION, self::INTERNAL_ENTITY);
 
-        $this->assertCount(0, $this->integrationEntityRepository->findBy(['internalEntity' =>  self::INTERNAL_ENTITY]));
-        $this->assertCount(1, $this->integrationEntityRepository->findBy(['internalEntity' => sprintf('%s-deleted', self::INTERNAL_ENTITY)]));
+        $this->assertCount(0, $this->integrationEntityRepository->findBy([
+            'internalEntity' =>  self::INTERNAL_ENTITY,
+        ]));
+        $this->assertCount(1, $this->integrationEntityRepository->findBy([
+            'internalEntity' => sprintf('%s-deleted', self::INTERNAL_ENTITY),
+        ]));
     }
 
     private function createLead(string $email, string $firstName): Lead

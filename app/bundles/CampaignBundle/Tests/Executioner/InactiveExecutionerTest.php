@@ -107,8 +107,12 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
             ->method('getContacts')
             ->with(1, $decision, $limiter)
             ->willReturnOnConsecutiveCalls(
-                new ArrayCollection([3 => new Lead()]),
-                new ArrayCollection([10 => new Lead()]),
+                new ArrayCollection([
+                    3 => new Lead(),
+                ]),
+                new ArrayCollection([
+                    10 => new Lead(),
+                ]),
                 new ArrayCollection([])
             );
 
@@ -175,8 +179,12 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
             ->method('getContacts')
             ->with(1, $decision, $limiter)
             ->willReturnOnConsecutiveCalls(
-                new ArrayCollection([3 => new Lead()]),
-                new ArrayCollection([10 => new Lead()]),
+                new ArrayCollection([
+                    3 => new Lead(),
+                ]),
+                new ArrayCollection([
+                    10 => new Lead(),
+                ]),
                 new ArrayCollection([])
             );
 

@@ -64,8 +64,13 @@ class FieldType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.lead.field.label',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control', 'length' => 191],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                    'length' => 191,
+                ],
             ]
         );
 
@@ -157,8 +162,12 @@ class FieldType extends AbstractType
                 [
                     'choices'    => $choices,
                     'label'      => 'mautic.core.defaultvalue',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control not-chosen'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control not-chosen',
+                    ],
                     'required'   => false,
                     'mapped'     => false,
                 ]
@@ -170,8 +179,12 @@ class FieldType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.defaultvalue',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
                 'mapped'     => false,
             ]
@@ -182,8 +195,12 @@ class FieldType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.core.defaultvalue',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'required'   => false,
                 'mapped'     => false,
             ]
@@ -194,8 +211,12 @@ class FieldType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label'       => 'mautic.core.defaultvalue',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'required'    => false,
                 'mapped'      => false,
                 'data'        => 0,
@@ -218,7 +239,9 @@ class FieldType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.defaultvalue',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.lead.field.help.defaultvalue',
@@ -276,8 +299,12 @@ class FieldType extends AbstractType
                         ChoiceType::class,
                         [
                             'label'       => 'mautic.core.defaultvalue',
-                            'label_attr'  => ['class' => 'control-label is-chosen'],
-                            'attr'        => ['class' => 'form-control'],
+                            'label_attr'  => [
+                                'class' => 'control-label is-chosen',
+                            ],
+                            'attr'        => [
+                                'class' => 'form-control',
+                            ],
                             'required'    => false,
                             'choices'     => array_flip($list),
                             'multiple'    => 'multiselect' === $type,
@@ -297,8 +324,12 @@ class FieldType extends AbstractType
                         [
                             'choices'    => $listChoices[$type],
                             'label'      => 'mautic.core.defaultvalue',
-                            'label_attr' => ['class' => 'control-label'],
-                            'attr'       => ['class' => 'form-control'],
+                            'label_attr' => [
+                                'class' => 'control-label',
+                            ],
+                            'attr'       => [
+                                'class' => 'form-control',
+                            ],
                             'required'   => false,
                             'disabled'   => $disableDefaultValue,
                         ]
@@ -325,8 +356,12 @@ class FieldType extends AbstractType
                         YesNoButtonGroupType::class,
                         [
                             'label'       => 'mautic.core.defaultvalue',
-                            'label_attr'  => ['class' => 'control-label'],
-                            'attr'        => ['class' => 'form-control'],
+                            'label_attr'  => [
+                                'class' => 'control-label',
+                            ],
+                            'attr'        => [
+                                'class' => 'form-control',
+                            ],
                             'required'    => false,
                             'data'        => $value,
                             'no_label'    => $noLabel,
@@ -375,7 +410,9 @@ class FieldType extends AbstractType
                                             $validator  = $context->getValidator();
                                             $violations = $validator->validate(
                                                 $object,
-                                                new Assert\Regex(['pattern' => '/(2[0-3]|[01][0-9]):([0-5][0-9])/'])
+                                                new Assert\Regex([
+                                                    'pattern' => '/(2[0-3]|[01][0-9]):([0-5][0-9])/',
+                                                ])
                                             );
 
                                             if (count($violations) > 0) {
@@ -393,7 +430,9 @@ class FieldType extends AbstractType
                         TextType::class,
                         [
                             'label'       => 'mautic.core.defaultvalue',
-                            'label_attr'  => ['class' => 'control-label'],
+                            'label_attr'  => [
+                                'class' => 'control-label',
+                            ],
                             'attr'        => [
                                 'class'       => 'form-control',
                                 'data-toggle' => $type,
@@ -414,7 +453,9 @@ class FieldType extends AbstractType
                         TextType::class,
                         [
                             'label'      => 'mautic.core.defaultvalue',
-                            'label_attr' => ['class' => 'control-label'],
+                            'label_attr' => [
+                                'class' => 'control-label',
+                            ],
                             'attr'       => [
                                 'class' => 'form-control',
                                 'type'  => $type,
@@ -442,7 +483,9 @@ class FieldType extends AbstractType
                 'label'         => 'mautic.core.order.field',
                 'class'         => LeadField::class,
                 'choice_label'  => 'label',
-                'label_attr'    => ['class' => 'control-label'],
+                'label_attr'    => [
+                    'class' => 'control-label',
+                ],
                 'attr'          => [
                     'class'   => 'form-control',
                     'tooltip' => $disabled ? 'mautic.core.order.field.tooltip.disabled' : 'mautic.core.order.field.tooltip',
@@ -511,7 +554,9 @@ class FieldType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.alias',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'length'  => 25,
@@ -587,7 +632,9 @@ class FieldType extends AbstractType
         $constraints = [];
 
         if (false === $options['data']->isIsindex() && false === $this->indexHelper->isNewIndexAllowed()) {
-            $constraints[] = new IsFalse(['message' => 'mautic.lead.field.form.index_count.error']);
+            $constraints[] = new IsFalse([
+                'message' => 'mautic.lead.field.form.index_count.error',
+            ]);
         }
 
         $builder->add(
@@ -595,12 +642,17 @@ class FieldType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label'      => 'mautic.lead.field.indexable',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'yes_label'  => 'mautic.lead.field.indexable.yes',
                 'no_label'   => 'mautic.lead.field.indexable.no',
                 'attr'       => [
                     'class'   => 'form-control',
-                    'tooltip' => $this->translator->trans('mautic.lead.field.form.isIndex.tooltip', ['%indexCount%' => $this->indexHelper->getIndexCount(), '%maxCount%' => $this->indexHelper->getMaxCount()]),
+                    'tooltip' => $this->translator->trans('mautic.lead.field.form.isIndex.tooltip', [
+                        '%indexCount%' => $this->indexHelper->getIndexCount(),
+                        '%maxCount%' => $this->indexHelper->getMaxCount(),
+                    ]),
                     'readonly'=> (false === $isIndex && $this->indexHelper->getIndexCount() >= $this->indexHelper->getMaxCount()),
                 ],
                 'required'    => false,
@@ -726,7 +778,9 @@ class FieldType extends AbstractType
             NumberType::class,
             [
                 'label'       => 'mautic.lead.field.form.maximum.character.length',
-                'label_attr'  => ['class' => 'control-label'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
                 'attr'        => [
                     'class'        => 'form-control',
                     'data-show-on' => '{
@@ -734,8 +788,14 @@ class FieldType extends AbstractType
                      }',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['groups' => 'indexableFieldWithLimits']),
-                    new Assert\Range(['min' => 1, 'max' => SchemaDefinition::MAX_VARCHAR_LENGTH, 'groups' => 'indexableFieldWithLimits']),
+                    new Assert\NotBlank([
+                        'groups' => 'indexableFieldWithLimits',
+                    ]),
+                    new Assert\Range([
+                        'min' => 1,
+                        'max' => SchemaDefinition::MAX_VARCHAR_LENGTH,
+                        'groups' => 'indexableFieldWithLimits',
+                    ]),
                 ],
             ]
         );

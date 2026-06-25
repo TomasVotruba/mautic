@@ -144,7 +144,9 @@ class VideoModel extends FormModel
             }
             $this->logger->error(
                 $exception->getMessage(),
-                ['exception' => $exception]
+                [
+                    'exception' => $exception,
+                ]
             );
         }
 

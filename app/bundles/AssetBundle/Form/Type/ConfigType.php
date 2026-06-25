@@ -20,7 +20,9 @@ class ConfigType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.asset.config.form.upload.dir',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.asset.config.form.upload.dir.tooltip',
@@ -38,7 +40,9 @@ class ConfigType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.asset.config.form.max.size',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.asset.config.form.max.size.tooltip',
@@ -58,7 +62,9 @@ class ConfigType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.asset.config.form.allowed.extensions',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.asset.config.form.allowed.extensions.tooltip',

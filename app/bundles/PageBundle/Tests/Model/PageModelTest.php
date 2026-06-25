@@ -26,12 +26,16 @@ class PageModelTest extends PageTestAbstract
         $pageModel     = $this->getPageModel();
 
         $hit->setIpAddress(new IpAddress());
-        $hit->setQuery(['page_title' => $providedTitle]);
+        $hit->setQuery([
+            'page_title' => $providedTitle,
+        ]);
 
         $pageModel->processPageHit($hit, $page, $request, $contact, false);
 
         $this->assertSame($expectedTitle, $hit->getUrlTitle());
-        $this->assertSame(['page_title' => $expectedTitle], $hit->getQuery());
+        $this->assertSame([
+            'page_title' => $expectedTitle,
+        ], $hit->getQuery());
     }
 
     public function testUtf8CharsInTitleWithTransletirationDisabled(): void
@@ -45,12 +49,16 @@ class PageModelTest extends PageTestAbstract
         $pageModel     = $this->getPageModel(false);
 
         $hit->setIpAddress(new IpAddress());
-        $hit->setQuery(['page_title' => $providedTitle]);
+        $hit->setQuery([
+            'page_title' => $providedTitle,
+        ]);
 
         $pageModel->processPageHit($hit, $page, $request, $contact, false);
 
         $this->assertSame($expectedTitle, $hit->getUrlTitle());
-        $this->assertSame(['page_title' => $expectedTitle], $hit->getQuery());
+        $this->assertSame([
+            'page_title' => $expectedTitle,
+        ], $hit->getQuery());
     }
 
     public function testGenerateUrlWhenCalledReturnsValidUrl(): void
@@ -64,7 +72,9 @@ class PageModelTest extends PageTestAbstract
             ->willReturnCallback(
                 function (string $route, array $routeParams, int $referenceType) {
                     $this->assertSame('mautic_page_public', $route);
-                    $this->assertSame(['slug' => 'this-is-a-test'], $routeParams);
+                    $this->assertSame([
+                        'slug' => 'this-is-a-test',
+                    ], $routeParams);
                     $this->assertSame(0, $referenceType);
 
                     return '/'.$routeParams['slug'];
@@ -166,7 +176,9 @@ class PageModelTest extends PageTestAbstract
 
         $this->contactRequestHelper->expects($this->once())
             ->method('getContactFromQuery')
-            ->with(['page_url' => $redirectUrl])
+            ->with([
+                'page_url' => $redirectUrl,
+            ])
             ->willReturn(null);
 
         $result = $pageModel->hitPage($redirect, new Request());

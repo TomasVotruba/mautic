@@ -54,7 +54,9 @@ class FileApiController extends CommonApiController
             return $this->returnError($e->getMessage(), Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $response = [$this->entityNameOne => []];
+        $response = [
+            $this->entityNameOne => [],
+        ];
         if ($request->files->count() > 0) {
             foreach ($request->files as $file) {
                 $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
@@ -106,7 +108,9 @@ class FileApiController extends CommonApiController
             return $this->returnError(ucfirst($dir).' dir is not readable');
         }
 
-        $view = $this->view([$this->entityNameMulti => $fnames]);
+        $view = $this->view([
+            $this->entityNameMulti => $fnames,
+        ]);
 
         return $this->handleView($view);
     }
@@ -118,7 +122,9 @@ class FileApiController extends CommonApiController
      */
     public function deleteAction(Request $request, PathsHelper $pathsHelper, LoggerInterface $mauticLogger, $dir, $file)
     {
-        $response = ['success' => false];
+        $response = [
+            'success' => false,
+        ];
 
         try {
             $filePath = $this->getAbsolutePath($request, $pathsHelper, $mauticLogger, $dir).'/'.basename($file);
@@ -192,7 +198,9 @@ class FileApiController extends CommonApiController
 
             return $path;
         } catch (\Exception $e) {
-            $mauticLogger->error($e->getMessage(), ['exception' => $e]);
+            $mauticLogger->error($e->getMessage(), [
+                'exception' => $e,
+            ]);
 
             throw $e;
         }

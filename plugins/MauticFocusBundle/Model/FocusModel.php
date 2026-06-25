@@ -159,7 +159,9 @@ class FocusModel extends FormModel implements GlobalSearchInterface
         ];
 
         // Replace tokens to ensure clickthroughs, lead tokens etc. are appropriate
-        $tokenEvent = new TokenReplacementEvent($data['focus'], $lead, ['focus_id' => $focus->getId()]);
+        $tokenEvent = new TokenReplacementEvent($data['focus'], $lead, [
+            'focus_id' => $focus->getId(),
+        ]);
         if ($trackableUrl) {
             $tokenEvent->addToken($url, $trackableUrl);
         }
@@ -364,7 +366,10 @@ class FocusModel extends FormModel implements GlobalSearchInterface
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo, $unit);
 
-        $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', ['type' => Stat::TYPE_NOTIFICATION, 'focus_id' => $focus->getId()]);
+        $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', [
+            'type' => Stat::TYPE_NOTIFICATION,
+            'focus_id' => $focus->getId(),
+        ]);
         if (!$canViewOthers) {
             $this->limitQueryToCreator($q);
         }
@@ -373,14 +378,20 @@ class FocusModel extends FormModel implements GlobalSearchInterface
 
         if ('notification' != $focus->getType()) {
             if ('link' == $focus->getType()) {
-                $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', ['type' => Stat::TYPE_CLICK, 'focus_id' => $focus->getId()]);
+                $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', [
+                    'type' => Stat::TYPE_CLICK,
+                    'focus_id' => $focus->getId(),
+                ]);
                 if (!$canViewOthers) {
                     $this->limitQueryToCreator($q);
                 }
                 $data = $query->loadAndBuildTimeData($q);
                 $chart->setDataset($this->translator->trans('mautic.focus.graph.clicks'), $data);
             } else {
-                $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', ['type' => Stat::TYPE_FORM, 'focus_id' => $focus->getId()]);
+                $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', [
+                    'type' => Stat::TYPE_FORM,
+                    'focus_id' => $focus->getId(),
+                ]);
                 if (!$canViewOthers) {
                     $this->limitQueryToCreator($q);
                 }

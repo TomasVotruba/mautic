@@ -11,9 +11,18 @@ use Mautic\LeadBundle\Model\DoNotContact;
 class DncReportService
 {
     public const DEFAULT_DNC_OPTIONS = [
-        ['reason' => DNC::UNSUBSCRIBED, 'channel' => 'email'],
-        ['reason' => DNC::BOUNCED, 'channel' => 'email'],
-        ['reason' => DNC::MANUAL, 'channel' => 'email'],
+        [
+            'reason' => DNC::UNSUBSCRIBED,
+            'channel' => 'email',
+        ],
+        [
+            'reason' => DNC::BOUNCED,
+            'channel' => 'email',
+        ],
+        [
+            'reason' => DNC::MANUAL,
+            'channel' => 'email',
+        ],
     ];
 
     public function __construct(

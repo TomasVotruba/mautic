@@ -33,7 +33,9 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $companyModel->setFieldValues($company, ['multiselect' => ['abc', 'def']]);
+        $companyModel->setFieldValues($company, [
+            'multiselect' => ['abc', 'def'],
+        ]);
 
         $updatedFields = $company->getUpdatedFields();
 
@@ -50,7 +52,9 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyModel = $this->getCompanyModelForImport();
 
         $duplicatedCompany = $this->createMock(Company::class);
-        $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
+        $duplicatedCompany->method('getProfileFields')->willReturn([
+            'companyfield'=> 'xxx',
+        ]);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
         $this->setProperty($companyModel, CompanyModel::class, 'companyDeduper', $companyDeduper);
@@ -63,7 +67,9 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyModel = $this->getCompanyModelForImport();
 
         $duplicatedCompany = $this->createMock(Company::class);
-        $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
+        $duplicatedCompany->method('getProfileFields')->willReturn([
+            'companyfield'=> 'xxx',
+        ]);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
         $this->setProperty($companyModel, CompanyModel::class, 'companyDeduper', $companyDeduper);
@@ -93,7 +99,10 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $data = ['companyfield' => 'test', 'custom_html_field' => '<p>html content</p>'];
+        $data = [
+            'companyfield' => 'test',
+            'custom_html_field' => '<p>html content</p>',
+        ];
         $companyModel->method('getFieldData')
             ->willReturn($data);
         $this->setSecurity($companyModel);
@@ -127,7 +136,9 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
                 ],
             ]
         );
-        $companyModel->method('getFieldData')->willReturn(['companyfield' => 'xxx']);
+        $companyModel->method('getFieldData')->willReturn([
+            'companyfield' => 'xxx',
+        ]);
         $this->setSecurity($companyModel);
 
         return $companyModel;
@@ -167,9 +178,15 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
 
         $companyModel->method('fetchCompanyFields')
             ->willReturn([
-                ['alias' => 'companyname'],
-                ['alias' => 'companyemail'],
-                ['alias' => 'companyindustry'],
+                [
+                    'alias' => 'companyname',
+                ],
+                [
+                    'alias' => 'companyemail',
+                ],
+                [
+                    'alias' => 'companyindustry',
+                ],
             ]);
 
         $fields = [

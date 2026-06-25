@@ -39,8 +39,14 @@ class EmailPermissionsTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $role               = $this->em->getRepository(Role::class)->findOneBy(['name' => 'Send To DNC Permission']);
+        $role               = $this->em->getRepository(Role::class)->findOneBy([
+            'name' => 'Send To DNC Permission',
+        ]);
         $readablePermission = $role->getRawPermissions();
-        Assert::assertSame(['email:emails' => [8 => 'sendtodnc']], $readablePermission);
+        Assert::assertSame([
+            'email:emails' => [
+                8 => 'sendtodnc',
+            ],
+        ], $readablePermission);
     }
 }

@@ -11,32 +11,46 @@ class BatchIdToEntityHelperTest extends TestCase
 {
     public function testIdsAreExtractedFromIdKeyArray(): void
     {
-        $parameters = ['ids' => [1, 2, 3]];
+        $parameters = [
+            'ids' => [1, 2, 3],
+        ];
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
 
-        $parameters = ['ids' => [1 => 1, 2 => 2, 3 => 3]];
+        $parameters = [
+            'ids' => [
+                1 => 1,
+                2 => 2,
+                3 => 3,
+            ],
+        ];
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
     }
 
     public function testIdsAreExtractedFromIdKeyCSVString(): void
     {
-        $parameters = ['ids' => '1,2,3'];
+        $parameters = [
+            'ids' => '1,2,3',
+        ];
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
     }
 
     public function testIdIsExtractedFromIdKeyWithNumericValue(): void
     {
-        $parameters = ['ids' => '12'];
+        $parameters = [
+            'ids' => '12',
+        ];
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([12], $helper->getIds());
     }
 
     public function testErrorSetForIdKeyThatsNotRecognized(): void
     {
-        $parameters = ['ids' => 'foo'];
+        $parameters = [
+            'ids' => 'foo',
+        ];
 
         $helper = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([], $helper->getIds());
@@ -50,7 +64,11 @@ class BatchIdToEntityHelperTest extends TestCase
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
 
-        $parameters = [1 => 1, 2 => 2, 3 => 3];
+        $parameters = [
+            1 => 1,
+            2 => 2,
+            3 => 3,
+        ];
         $helper     = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
     }
@@ -58,17 +76,35 @@ class BatchIdToEntityHelperTest extends TestCase
     public function testIdsAreExtractedFromAssociativeArray(): void
     {
         $parameters = [
-            ['id' => 1, 'foo' => 'bar'],
-            ['id' => 2, 'foo' => 'bar'],
-            ['id' => 3, 'foo' => 'bar'],
+            [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
         ];
         $helper = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
 
         $parameters = [
-            1 => ['id' => 1, 'foo' => 'bar'],
-            2 => ['id' => 2, 'foo' => 'bar'],
-            3 => ['id' => 3, 'foo' => 'bar'],
+            1 => [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            2 => [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            3 => [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
         ];
         $helper = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 2, 3], $helper->getIds());
@@ -77,15 +113,25 @@ class BatchIdToEntityHelperTest extends TestCase
     public function testErrorsSetForAssociativeArrayWhenIdKeyIsNotFound(): void
     {
         $parameters = [
-            ['id' => 1, 'foo' => 'bar'],
-            ['foo' => 'bar'],
-            ['id'  => 3, 'foo' => 'bar'],
+            [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            [
+                'foo' => 'bar',
+            ],
+            [
+                'id'  => 3,
+                'foo' => 'bar',
+            ],
         ];
         $helper = new BatchIdToEntityHelper($parameters);
         $this->assertEquals([1, 3], $helper->getIds());
 
         $this->assertTrue($helper->hasErrors());
-        $this->assertEquals([1 => 'mautic.api.call.id_missing'], $helper->getErrors());
+        $this->assertEquals([
+            1 => 'mautic.api.call.id_missing',
+        ], $helper->getErrors());
     }
 
     public function testOriginalKeyOrderingForIdKeyArray(): void
@@ -105,12 +151,21 @@ class BatchIdToEntityHelperTest extends TestCase
         // Simulating ID 3 as not found
         $entities = [$entityMock4, $entityMock2, $entityMock1];
 
-        $parameters      = ['ids' => [1, 2, 3, 4]];
+        $parameters      = [
+            'ids' => [1, 2, 3, 4],
+        ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([0, 1, 2], array_keys($orderedEntities));
 
-        $parameters      = ['ids' => [1 => 1, 2 => 2, 3 => 3, 4 => 4]];
+        $parameters      = [
+            'ids' => [
+                1 => 1,
+                2 => 2,
+                3 => 3,
+                4 => 4,
+            ],
+        ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([1, 2, 4], array_keys($orderedEntities));
@@ -130,7 +185,9 @@ class BatchIdToEntityHelperTest extends TestCase
         // Simulating ID 3 as not found
         $entities = [$entityMock4, $entityMock2, $entityMock1];
 
-        $parameters      = ['ids' => '1,2,3,4'];
+        $parameters      = [
+            'ids' => '1,2,3,4',
+        ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([0, 1, 2], array_keys($orderedEntities));
@@ -158,7 +215,12 @@ class BatchIdToEntityHelperTest extends TestCase
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([0, 1, 2], array_keys($orderedEntities));
 
-        $parameters      = [1 => 1, 2 => 2, 3 => 3, 4 => 4];
+        $parameters      = [
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4,
+        ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([1, 2, 4], array_keys($orderedEntities));
@@ -182,20 +244,44 @@ class BatchIdToEntityHelperTest extends TestCase
         $entities = [$entityMock4, $entityMock2, $entityMock1];
 
         $parameters = [
-            ['id' => 1, 'foo' => 'bar'],
-            ['id' => 2, 'foo' => 'bar'],
-            ['id' => 3, 'foo' => 'bar'],
-            ['id' => 4, 'foo' => 'bar'],
+            [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 4,
+                'foo' => 'bar',
+            ],
         ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
         $this->assertEquals([0, 1, 2], array_keys($orderedEntities));
 
         $parameters = [
-            1 => ['id' => 1, 'foo' => 'bar'],
-            2 => ['id' => 2, 'foo' => 'bar'],
-            3 => ['id' => 3, 'foo' => 'bar'],
-            4 => ['id' => 4, 'foo' => 'bar'],
+            1 => [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            2 => [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            3 => [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
+            4 => [
+                'id' => 4,
+                'foo' => 'bar',
+            ],
         ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
@@ -223,10 +309,22 @@ class BatchIdToEntityHelperTest extends TestCase
         $entities = [$entityMock4, $entityMock2, $entityMock1, $entityMock3];
 
         $parameters = [
-            ['id' => 1, 'foo' => 'bar'],
-            ['id' => 2, 'foo' => 'bar'],
-            ['id' => 3, 'foo' => 'bar'],
-            ['id' => 4, 'foo' => 'bar'],
+            [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
+            [
+                'id' => 4,
+                'foo' => 'bar',
+            ],
         ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);
@@ -236,10 +334,22 @@ class BatchIdToEntityHelperTest extends TestCase
         }
 
         $parameters = [
-            1 => ['id' => 1, 'foo' => 'bar'],
-            2 => ['id' => 2, 'foo' => 'bar'],
-            3 => ['id' => 3, 'foo' => 'bar'],
-            4 => ['id' => 4, 'foo' => 'bar'],
+            1 => [
+                'id' => 1,
+                'foo' => 'bar',
+            ],
+            2 => [
+                'id' => 2,
+                'foo' => 'bar',
+            ],
+            3 => [
+                'id' => 3,
+                'foo' => 'bar',
+            ],
+            4 => [
+                'id' => 4,
+                'foo' => 'bar',
+            ],
         ];
         $helper          = new BatchIdToEntityHelper($parameters);
         $orderedEntities = $helper->orderByOriginalKey($entities);

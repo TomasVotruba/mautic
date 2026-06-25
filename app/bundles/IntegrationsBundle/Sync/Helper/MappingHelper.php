@@ -58,7 +58,9 @@ class MappingHelper
         }
 
         // We don't know who this is so search Mautic
-        $uniqueIdentifierFields = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => $internalObjectName]);
+        $uniqueIdentifierFields = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier([
+            'object' => $internalObjectName,
+        ]);
         $identifiers            = [];
 
         foreach ($uniqueIdentifierFields as $field => $fieldLabel) {

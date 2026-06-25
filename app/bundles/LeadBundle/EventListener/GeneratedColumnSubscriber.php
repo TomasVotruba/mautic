@@ -48,7 +48,9 @@ class GeneratedColumnSubscriber implements EventSubscriberInterface
     {
         $event->addChoice('lead', 'generated_email_domain', [
             'label'      => $this->translator->trans('mautic.email.segment.choice.generated_email_domain'),
-            'properties' => ['type' => 'text'],
+            'properties' => [
+                'type' => 'text',
+            ],
             'operators'  => $this->segmentModel->getOperatorsForFieldType(
                 [
                     'include' => [

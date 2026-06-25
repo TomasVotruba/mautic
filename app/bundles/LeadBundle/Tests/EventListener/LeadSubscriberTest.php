@@ -227,7 +227,10 @@ class LeadSubscriberTest extends CommonMocks
                     $this->assertNull($parameters[3]);
                     $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
 
-                    return ['total' => 0, 'results' => []];
+                    return [
+                        'total' => 0,
+                        'results' => [],
+                    ];
                 }
             });
 

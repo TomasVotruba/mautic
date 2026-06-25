@@ -51,7 +51,9 @@ class PhoneNumberConstraintValidator extends ConstraintValidator
     {
         $this->context->addViolation(
             $constraint->getMessage(),
-            ['{{ value }}' => $value]
+            [
+                '{{ value }}' => $value,
+            ]
         );
     }
 }

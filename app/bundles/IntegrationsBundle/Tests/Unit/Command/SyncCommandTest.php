@@ -95,7 +95,9 @@ class SyncCommandTest extends TestCase
             }))
             ->will($this->throwException(new \Exception()));
 
-        $code = $this->commandTester->execute(['integration' => self::INTEGRATION_NAME]);
+        $code = $this->commandTester->execute([
+            'integration' => self::INTEGRATION_NAME,
+        ]);
 
         $this->assertSame(1, $code);
     }

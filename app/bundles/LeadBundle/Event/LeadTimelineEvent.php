@@ -399,7 +399,10 @@ class LeadTimelineEvent extends Event
      */
     public function getCountDateRange(): array
     {
-        return ['from' => $this->dateFrom, 'to' => $this->dateTo];
+        return [
+            'from' => $this->dateFrom,
+            'to' => $this->dateTo,
+        ];
     }
 
     /**

@@ -130,7 +130,10 @@ class ReportSubscriber implements EventSubscriberInterface
         if ($event->checkContext([self::CONTEXT_MESSAGE_CHANNEL])) {
             if (isset($data[0]['channel']) && isset($data[0]['channel_id'])) {
                 foreach ($data as &$row) {
-                    $href = $this->router->generate('mautic_'.$row['channel'].'_action', ['objectAction' => 'view', 'objectId' => $row['channel_id']]);
+                    $href = $this->router->generate('mautic_'.$row['channel'].'_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $row['channel_id'],
+                    ]);
                     if (isset($row['channel'])) {
                         $row['channel'] = '<a href="'.$href.'">'.$row['channel'].'</a>';
                     }

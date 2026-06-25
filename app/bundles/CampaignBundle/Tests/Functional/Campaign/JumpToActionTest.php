@@ -87,7 +87,9 @@ final class JumpToActionTest extends MauticMysqlTestCase
         $this->em->persist($tag);
         $this->em->flush();
 
-        $jumpTo->setProperties(['jumpToEvent' => $addTag->getId()]);
+        $jumpTo->setProperties([
+            'jumpToEvent' => $addTag->getId(),
+        ]);
 
         $campaign->setCanvasSettings(
             [
@@ -146,7 +148,9 @@ final class JumpToActionTest extends MauticMysqlTestCase
         $this->em->persist($jumpTo);
         $this->em->flush();
 
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['-i' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '-i' => $campaign->getId(),
+        ]);
 
         $eventLogs = $this->getEventLogsForContact($contact);
 
@@ -170,7 +174,9 @@ final class JumpToActionTest extends MauticMysqlTestCase
         $this->em->detach($tag);
 
         // Executing the command for the second time should not schedule any new events:
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['-i' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '-i' => $campaign->getId(),
+        ]);
 
         $eventLogs = $this->getEventLogsForContact($contact);
 
@@ -185,7 +191,9 @@ final class JumpToActionTest extends MauticMysqlTestCase
     {
         $eventLogRepository = $this->em->getRepository(LeadEventLog::class);
 
-        return $eventLogRepository->findBy(['lead' => $contact->getId()]);
+        return $eventLogRepository->findBy([
+            'lead' => $contact->getId(),
+        ]);
     }
 
     /**

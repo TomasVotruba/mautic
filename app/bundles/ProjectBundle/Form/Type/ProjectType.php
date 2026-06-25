@@ -23,7 +23,9 @@ final class ProjectType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $attr = ['data-placeholder' => $this->translator->trans('mautic.project.mautic.project.select')];
+        $attr = [
+            'data-placeholder' => $this->translator->trans('mautic.project.mautic.project.select'),
+        ];
 
         if ($this->corePermissions->isGranted(ProjectPermissions::CAN_CREATE)) {
             $attr['data-placeholder']     = $this->translator->trans('mautic.project.select_or_create');

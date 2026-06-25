@@ -34,7 +34,9 @@ final class Version20250828070131 extends PreUpAssertionMigration
                 $table,
                 ['translation_parent_id'],
                 ['id'],
-                ['onDelete' => 'CASCADE'],
+                [
+                    'onDelete' => 'CASCADE',
+                ],
                 'FK_SMS_TRANSLATION_PARENT'
             );
         }

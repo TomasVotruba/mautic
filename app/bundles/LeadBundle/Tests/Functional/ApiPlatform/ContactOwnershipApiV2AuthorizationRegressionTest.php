@@ -43,7 +43,9 @@ final class ContactOwnershipApiV2AuthorizationRegressionTest extends OwnershipSc
         $this->em->flush();
         $this->em->clear();
 
-        $attacker = $this->em->getRepository(User::class)->findOneBy(['username' => 'attacker.user']);
+        $attacker = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'attacker.user',
+        ]);
         \assert($attacker instanceof User);
         $this->client->getCookieJar()->clear();
         $this->client->setServerParameter('PHP_AUTH_USER', $attacker->getUserIdentifier());
@@ -104,7 +106,9 @@ final class ContactOwnershipApiV2AuthorizationRegressionTest extends OwnershipSc
         $this->em->flush();
         $this->em->clear();
 
-        $attacker = $this->em->getRepository(User::class)->findOneBy(['username' => 'attacker.collection.user']);
+        $attacker = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'attacker.collection.user',
+        ]);
         \assert($attacker instanceof User);
 
         $this->client->getCookieJar()->clear();
@@ -334,7 +338,9 @@ final class ContactOwnershipApiV2AuthorizationRegressionTest extends OwnershipSc
         $this->em->clear();
 
         // Test 1: newOwner (current owner) SHOULD see the contact
-        $newOwner = $this->em->getRepository(User::class)->findOneBy(['username' => 'new.contact.owner']);
+        $newOwner = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'new.contact.owner',
+        ]);
         \assert($newOwner instanceof User);
         $this->loginUser($newOwner);
         $this->client->setServerParameter('PHP_AUTH_USER', $newOwner->getUserIdentifier());
@@ -354,7 +360,9 @@ final class ContactOwnershipApiV2AuthorizationRegressionTest extends OwnershipSc
         self::assertSame($contact->getId(), $data['member'][0]['id']);
 
         // Test 2: originalOwner (creator but no longer owner) should NOT see the contact
-        $originalOwner = $this->em->getRepository(User::class)->findOneBy(['username' => 'original.contact.owner']);
+        $originalOwner = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'original.contact.owner',
+        ]);
         \assert($originalOwner instanceof User);
         $this->loginUser($originalOwner);
         $this->client->setServerParameter('PHP_AUTH_USER', $originalOwner->getUserIdentifier());

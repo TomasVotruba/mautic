@@ -96,7 +96,9 @@ class CommonApiControllerTest extends MauticMysqlTestCase
             '/api/emails/batch/edit',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($payload)
         );
 

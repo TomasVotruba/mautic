@@ -42,7 +42,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
      */
     private function createTestEntities(): array
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $segment = new LeadList();
@@ -240,12 +242,16 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals($payload['events'][0]['name'], $response['campaign']['events'][0]['name']);
         Assert::assertEquals($segment->getId(), $response['campaign']['lists'][0]['id']);
 
-        $commandTester = $this->testSymfonyCommand('mautic:campaigns:update', ['-i' => $campaignId]);
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:update', [
+            '-i' => $campaignId,
+        ]);
         $commandTester->assertCommandIsSuccessful();
         Assert::assertStringContainsString('2 total contact(s) to be added', $commandTester->getDisplay());
         Assert::assertStringContainsString('100%', $commandTester->getDisplay());
 
-        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', ['-i' => $campaignId]);
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '-i' => $campaignId,
+        ]);
         $commandTester->assertCommandIsSuccessful();
         // 2 events were executed for each of the 2 contacts (= 4). The third event is waiting for the decision interval.
         Assert::assertStringContainsString('4 total events were executed', $commandTester->getDisplay());
@@ -406,7 +412,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignActionJson(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $this->client->request(
@@ -434,7 +442,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignActionZip(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $systemTempDir = sys_get_temp_dir();
@@ -458,8 +468,12 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             '/api/campaigns/import',
             [],
-            ['file'         => new \Symfony\Component\HttpFoundation\File\UploadedFile($zipPath, 'import.zip')],
-            ['CONTENT_TYPE' => 'multipart/form-data']
+            [
+                'file'         => new \Symfony\Component\HttpFoundation\File\UploadedFile($zipPath, 'import.zip'),
+            ],
+            [
+                'CONTENT_TYPE' => 'multipart/form-data',
+            ]
         );
 
         $response = $this->client->getResponse();
@@ -505,7 +519,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignNoFileUploaded(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         // Attempt to import with no files
@@ -519,7 +535,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testEditCampaignAcceptsRoundTrippedIso8601PublishUp(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $campaign = new Campaign();
@@ -554,7 +572,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignInvalidFile(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         // Create a temporary file
@@ -563,7 +583,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         // Upload the invalid file
         $file = new \Symfony\Component\HttpFoundation\File\UploadedFile($filePath, 'test.txt', null, null, true);
 
-        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
+        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], [
+            'file' => $file,
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -576,14 +598,18 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignUnsupportedFileType(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         // Create a temporary file with a non-ZIP extension
         $filePath = $this->createTemporaryFile('txt');
         $file     = new \Symfony\Component\HttpFoundation\File\UploadedFile($filePath, 'test.txt', null, null, true);
 
-        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
+        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], [
+            'file' => $file,
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -596,7 +622,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCampaignMalformedJson(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         // Create a temporary ZIP file with valid structure but malformed JSON
@@ -613,7 +641,9 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $file = new \Symfony\Component\HttpFoundation\File\UploadedFile($zipPath, 'test.zip', null, null, true);
 
         try {
-            $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
+            $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], [
+                'file' => $file,
+            ]);
 
             $response = $this->client->getResponse();
 

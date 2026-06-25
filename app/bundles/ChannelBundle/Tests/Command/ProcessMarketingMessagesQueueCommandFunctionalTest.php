@@ -82,7 +82,9 @@ final class ProcessMarketingMessagesQueueCommandFunctionalTest extends MauticMys
         }
         $this->em->flush();
 
-        $commandTester = $this->testSymfonyCommand('mautic:messages:send', ['--limit' => 2]);
+        $commandTester = $this->testSymfonyCommand('mautic:messages:send', [
+            '--limit' => 2,
+        ]);
         Assert::assertSame(0, $commandTester->getStatusCode());
         Assert::assertStringContainsString('Messages sent: 2', $commandTester->getDisplay());
     }

@@ -218,7 +218,9 @@ class CorePermissions implements ResetInterface
 
             $parts = explode(':', $permission);
             if (false === in_array(count($parts), [3, 4])) {
-                throw new PermissionBadFormatException($this->getTranslator()->trans('mautic.core.permissions.badformat', ['%permission%' => $permission]));
+                throw new PermissionBadFormatException($this->getTranslator()->trans('mautic.core.permissions.badformat', [
+                    '%permission%' => $permission,
+                ]));
             }
 
             if ($userEntity->isAdmin()) {
@@ -235,7 +237,9 @@ class CorePermissions implements ResetInterface
                     if ($allowUnknown) {
                         $permissions[$permission] = false;
                     } else {
-                        throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.notfound', ['%permission%' => $permission]));
+                        throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.notfound', [
+                            '%permission%' => $permission,
+                        ]));
                     }
                 } elseif ('anon.' == $userEntity) {
                     // anon user or session timeout
@@ -262,7 +266,9 @@ class CorePermissions implements ResetInterface
         } elseif ('RETURN_ARRAY' == $mode) {
             return $permissions;
         }
-        throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.mode.notfound', ['%mode%' => $mode]));
+        throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.mode.notfound', [
+            '%mode%' => $mode,
+        ]));
     }
 
     /**

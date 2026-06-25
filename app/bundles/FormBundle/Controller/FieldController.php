@@ -165,7 +165,9 @@ class FieldController extends CommonFormController
             }
         }
 
-        $viewParams = ['type' => $fieldType];
+        $viewParams = [
+            'type' => $fieldType,
+        ];
         if ($cancelled || $valid) {
             $closeModal = true;
         } else {
@@ -303,7 +305,9 @@ class FieldController extends CommonFormController
                 }
             }
 
-            $viewParams       = ['type' => $fieldType];
+            $viewParams       = [
+                'type' => $fieldType,
+            ];
             $customComponents = $this->formModel->getCustomComponents();
             $customParams     = $customComponents['fields'][$fieldType] ?? false;
 
@@ -372,7 +376,9 @@ class FieldController extends CommonFormController
             );
         }
 
-        return new JsonResponse(['success' => 0]);
+        return new JsonResponse([
+            'success' => 0,
+        ]);
     }
 
     /**
@@ -416,7 +422,9 @@ class FieldController extends CommonFormController
                 'route'         => false,
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);
@@ -442,9 +450,16 @@ class FieldController extends CommonFormController
             $formField,
             $this->formFactory,
             (!empty($formField['id'])) ?
-                $this->generateUrl('mautic_formfield_action', ['objectAction' => 'edit', 'objectId' => $formField['id']])
-                : $this->generateUrl('mautic_formfield_action', ['objectAction' => 'new']),
-            ['customParameters' => $customParams]
+                $this->generateUrl('mautic_formfield_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $formField['id'],
+                ])
+                : $this->generateUrl('mautic_formfield_action', [
+                    'objectAction' => 'new',
+                ]),
+            [
+                'customParameters' => $customParams,
+            ]
         );
         $form->get('formId')->setData($formId);
 

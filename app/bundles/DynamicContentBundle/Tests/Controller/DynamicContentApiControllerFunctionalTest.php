@@ -56,7 +56,9 @@ class DynamicContentApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($dwcContact);
         $this->em->flush();
 
-        $ct = ClickthroughHelper::encodeArrayForUrl(['stat' => 'tracking-hash-1']);
+        $ct = ClickthroughHelper::encodeArrayForUrl([
+            'stat' => 'tracking-hash-1',
+        ]);
 
         $this->client->request(Request::METHOD_GET, "/dwc/slot-a?ct={$ct}");
 

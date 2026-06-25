@@ -8,7 +8,9 @@ class ConnectionBuilder
 {
     private static array $eventTypes = [];
 
-    private static array $connectionRestrictions = ['anchor' => []];
+    private static array $connectionRestrictions = [
+        'anchor' => [],
+    ];
 
     /**
      * Used by JS/JsPlumb to restrict how events can be associated to each other in the UI.
@@ -18,7 +20,9 @@ class ConnectionBuilder
     public static function buildRestrictionsArray(array $events)
     {
         // Reset restrictions
-        self::$connectionRestrictions = ['anchor' => []];
+        self::$connectionRestrictions = [
+            'anchor' => [],
+        ];
 
         // Build the restrictions
         self::$eventTypes = array_fill_keys(array_keys($events), []);

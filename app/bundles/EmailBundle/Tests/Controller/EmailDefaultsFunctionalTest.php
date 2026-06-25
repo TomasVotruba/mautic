@@ -48,9 +48,13 @@ final class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
         $pageId = $preferenceCenter->getId();
 
         // Reboot the kernel so CoreParametersHelper picks up the actual page ID.
-        $this->setUpSymfony(array_merge($this->configParams, ['email_default_preference_center_id' => $pageId]));
+        $this->setUpSymfony(array_merge($this->configParams, [
+            'email_default_preference_center_id' => $pageId,
+        ]));
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');

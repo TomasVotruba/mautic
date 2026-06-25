@@ -39,7 +39,10 @@ class NotificationHelper
                 [
                     '%contact%' => '<a href="'.$this->router->generate(
                         'mautic_contact_action',
-                        ['objectAction' => 'view', 'objectId' => $contact->getId()]
+                        [
+                            'objectAction' => 'view',
+                            'objectId' => $contact->getId(),
+                        ]
                     ).'" data-toggle="ajax">'.$contact->getPrimaryIdentifier().'</a>',
                 ]
             ),

@@ -29,7 +29,9 @@ class ConnectwiseApi extends CrmApi
             $url,
             $parameters,
             $method,
-            ['encode_parameters' => 'json']
+            [
+                'encode_parameters' => 'json',
+            ]
         );
 
         $errors = [];
@@ -151,7 +153,10 @@ class ConnectwiseApi extends CrmApi
      */
     public function getCampaignMembers($campaignId, $page = 1)
     {
-        return $this->request('marketing/groups/'.$campaignId.'/contacts', ['page' => $page, 'pageSize' => ConnectwiseIntegration::PAGESIZE]);
+        return $this->request('marketing/groups/'.$campaignId.'/contacts', [
+            'page' => $page,
+            'pageSize' => ConnectwiseIntegration::PAGESIZE,
+        ]);
     }
 
     /**
@@ -193,7 +198,10 @@ class ConnectwiseApi extends CrmApi
         $pageSize    = ConnectwiseIntegration::PAGESIZE;
         $allRecords  = [];
         try {
-            while ($pagedRecords = $this->request($endpoint, ['page' => $page, 'pageSize' => $pageSize])) {
+            while ($pagedRecords = $this->request($endpoint, [
+                'page' => $page,
+                'pageSize' => $pageSize,
+            ])) {
                 $allRecords = array_merge($allRecords, $pagedRecords);
                 ++$page;
 

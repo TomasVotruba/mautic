@@ -219,7 +219,9 @@ class ModeratedCommandTest extends TestCase
     {
         $this->coreParametersHelper->expects($this->once())
             ->method('get')
-            ->willReturn(['dsn' => '']);
+            ->willReturn([
+                'dsn' => '',
+            ]);
 
         $this->input->method('getOption')
             ->willReturnCallback(

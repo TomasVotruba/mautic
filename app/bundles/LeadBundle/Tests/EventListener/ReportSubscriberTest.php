@@ -225,7 +225,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     return '(lp.date_added IS NULL OR (lp.date_added BETWEEN :dateFrom AND :dateTo)) AND (s.leadlist_id = :i3csleadlistid))';
                 }
 
-                return [['alias' => 'lp']];
+                return [[
+                    'alias' => 'lp',
+                ]];
             });
 
         $this->queryBuilderMock->expects($this->any())

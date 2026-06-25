@@ -45,7 +45,10 @@ EOT
         } elseif ('mautic.core.updater.running.latest.version' == $updateData['message']) {
             $output->writeln('<info>'.$this->translator->trans($updateData['message']).'</info>');
         } else {
-            $output->writeln($this->translator->trans($updateData['message'], ['%version%' => $updateData['version'], '%announcement%' => $updateData['announcement']]));
+            $output->writeln($this->translator->trans($updateData['message'], [
+                '%version%' => $updateData['version'],
+                '%announcement%' => $updateData['announcement'],
+            ]));
             $output->writeln($this->translator->trans('mautic.core.updater.cli.update'));
         }
 

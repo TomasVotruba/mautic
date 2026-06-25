@@ -48,7 +48,9 @@ class LeadSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $prefix = self::getContainer()->getParameter('mautic.db_table_prefix');
-        $count  = $this->connection->fetchNumeric("SELECT count(lead_id) FROM {$prefix}lead_lists_leads WHERE leadlist_id = :id", ['id' => $segmentC->getId()]);
+        $count  = $this->connection->fetchNumeric("SELECT count(lead_id) FROM {$prefix}lead_lists_leads WHERE leadlist_id = :id", [
+            'id' => $segmentC->getId(),
+        ]);
 
         $this->assertNotEmpty($count);
         $this->assertEquals(1, $count[0]);

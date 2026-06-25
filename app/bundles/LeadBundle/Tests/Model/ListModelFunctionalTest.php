@@ -62,7 +62,12 @@ class ListModelFunctionalTest extends MauticMysqlTestCase
             new \DateTime('1 month ago', new \DateTimeZone('UTC')),
             new \DateTime('now', new \DateTimeZone('UTC')),
             null,
-            ['leadlist_id' => ['value' => $segment->getId(), 'list_column_name' => 't.lead_id']]
+            [
+                'leadlist_id' => [
+                    'value' => $segment->getId(),
+                    'list_column_name' => 't.lead_id',
+                ],
+            ]
         );
 
         Assert::assertSame('added', strtolower($data['datasets'][0]['label']));
@@ -82,7 +87,12 @@ class ListModelFunctionalTest extends MauticMysqlTestCase
             new \DateTime('1 month ago', new \DateTimeZone('UTC')),
             new \DateTime('now', new \DateTimeZone('UTC')),
             null,
-            ['leadlist_id' => ['value' => $segment->getId(), 'list_column_name' => 't.lead_id']]
+            [
+                'leadlist_id' => [
+                    'value' => $segment->getId(),
+                    'list_column_name' => 't.lead_id',
+                ],
+            ]
         );
 
         Assert::assertSame(4, (int) end($data['datasets'][0]['data'])); // Added for today.
@@ -116,7 +126,12 @@ class ListModelFunctionalTest extends MauticMysqlTestCase
             new \DateTime('-2 days', new \DateTimeZone('UTC')),
             new \DateTime('now', new \DateTimeZone('UTC')),
             null,
-            ['leadlist_id' => ['value' => $segment->getId(), 'list_column_name' => 't.lead_id']]
+            [
+                'leadlist_id' => [
+                    'value' => $segment->getId(),
+                    'list_column_name' => 't.lead_id',
+                ],
+            ]
         );
 
         // using old code there should be only 1 label added but now there should be all 3 labels
@@ -136,7 +151,12 @@ class ListModelFunctionalTest extends MauticMysqlTestCase
             new \DateTime('-2 days', new \DateTimeZone('UTC')),
             new \DateTime('now', new \DateTimeZone('UTC')),
             null,
-            ['leadlist_id' => ['value' => $segment->getId(), 'list_column_name' => 't.lead_id']]
+            [
+                'leadlist_id' => [
+                    'value' => $segment->getId(),
+                    'list_column_name' => 't.lead_id',
+                ],
+            ]
         );
 
         Assert::assertSame(1, (int) end($data['datasets'][0]['data'])); // Added for today.

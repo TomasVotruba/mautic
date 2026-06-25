@@ -95,7 +95,9 @@ class UpdateLeadListsCommand extends ModeratedCommand
             $list = $this->listModel->getEntity($id);
 
             if (!$list) {
-                $output->writeln('<error>'.$this->translator->trans('mautic.lead.list.rebuild.not_found', ['%id%' => $id]).'</error>');
+                $output->writeln('<error>'.$this->translator->trans('mautic.lead.list.rebuild.not_found', [
+                    '%id%' => $id,
+                ]).'</error>');
 
                 return \Symfony\Component\Console\Command\Command::FAILURE;
             }
@@ -158,7 +160,9 @@ class UpdateLeadListsCommand extends ModeratedCommand
 
         if ($enableTimeMeasurement) {
             $totalTime = round(microtime(true) - $startTime, 2);
-            $output->writeln('<fg=magenta>'.$this->translator->trans('mautic.lead.list.rebuild.total.time', ['%time%' => $totalTime]).'</>'."\n");
+            $output->writeln('<fg=magenta>'.$this->translator->trans('mautic.lead.list.rebuild.total.time', [
+                '%time%' => $totalTime,
+            ]).'</>'."\n");
         }
 
         return \Symfony\Component\Console\Command\Command::SUCCESS;
@@ -200,7 +204,9 @@ class UpdateLeadListsCommand extends ModeratedCommand
                         $output->writeln(
                             '<error>'.$this->translator->trans(
                                 'Circular dependency detected in segment chain: %chain%',
-                                ['%chain%' => implode(' → ', array_merge($dependencyChain, [$dependentListId]))]
+                                [
+                                    '%chain%' => implode(' → ', array_merge($dependencyChain, [$dependentListId])),
+                                ]
                             ).'</error>'
                         );
                         continue; // Skip this dependency to prevent infinite recursion
@@ -240,7 +246,9 @@ class UpdateLeadListsCommand extends ModeratedCommand
             return;
         }
 
-        $output->writeln('<info>'.$this->translator->trans('mautic.lead.list.rebuild.rebuilding', ['%id%' => $segment->getId()]).'</info>');
+        $output->writeln('<info>'.$this->translator->trans('mautic.lead.list.rebuild.rebuilding', [
+            '%id%' => $segment->getId(),
+        ]).'</info>');
         $startTime   = microtime(true);
         $processed   = $this->listModel->rebuildListLeads($segment, $batch, $max, $output);
         $rebuildTime = round(microtime(true) - $startTime, 2);
@@ -253,13 +261,17 @@ class UpdateLeadListsCommand extends ModeratedCommand
         }
 
         $output->writeln(
-            '<comment>'.$this->translator->trans('mautic.lead.list.rebuild.leads_affected', ['%leads%' => $processed]).'</comment>'
+            '<comment>'.$this->translator->trans('mautic.lead.list.rebuild.leads_affected', [
+                '%leads%' => $processed,
+            ]).'</comment>'
         );
 
         if ($enableTimeMeasurement) {
             $output->writeln('<fg=cyan>'.$this->translator->trans(
                 'mautic.lead.list.rebuild.contacts.time',
-                ['%time%' => $rebuildTime]
+                [
+                    '%time%' => $rebuildTime,
+                ]
             ).'</>'."\n");
         }
     }

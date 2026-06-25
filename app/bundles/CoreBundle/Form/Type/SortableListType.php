@@ -36,7 +36,9 @@ class SortableListType extends AbstractType
 
         if ($options['option_notblank']) {
             $options['option_constraint'][] = new NotBlank(
-                ['message' => 'mautic.form.lists.notblank']
+                [
+                    'message' => 'mautic.form.lists.notblank',
+                ]
             );
         }
 

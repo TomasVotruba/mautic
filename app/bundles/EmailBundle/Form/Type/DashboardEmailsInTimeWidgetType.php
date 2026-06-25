@@ -28,8 +28,12 @@ class DashboardEmailsInTimeWidgetType extends AbstractType
                     'mautic.email.flag.sent.and.opened'            => 'sent_and_opened',
                     'mautic.email.flag.sent.and.opened.and.failed' => 'sent_and_opened_and_failed',
                 ],
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'empty_data' => '',
                 'required'   => false,
             ]
@@ -40,8 +44,12 @@ class DashboardEmailsInTimeWidgetType extends AbstractType
             CompanyListType::class,
             [
                 'label'       => 'mautic.email.companyId.filter',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'placeholder' => '',
                 'required'    => false,
                 'multiple'    => false,
@@ -54,8 +62,12 @@ class DashboardEmailsInTimeWidgetType extends AbstractType
             CampaignListType::class,
             [
                 'label'       => 'mautic.email.campaignId.filter',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'empty_data'  => '',
                 'placeholder' => '',
                 'required'    => false,
@@ -68,8 +80,12 @@ class DashboardEmailsInTimeWidgetType extends AbstractType
             LeadListType::class,
             [
                 'label'       => 'mautic.email.segmentId.filter',
-                'label_attr'  => ['class' => 'control-label'],
-                'attr'        => ['class' => 'form-control'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
+                'attr'        => [
+                    'class' => 'form-control',
+                ],
                 'placeholder' => '',
                 'required'    => false,
             ]

@@ -79,7 +79,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                         'object'     => 'lead',
                         'type'       => 'text',
                         'operator'   => $operator,
-                        'properties' => ['filter' => $regex],
+                        'properties' => [
+                            'filter' => $regex,
+                        ],
                     ],
                 ],
             ]
@@ -127,7 +129,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                     'glue'       => 'and',
                     'field'      => 'city',
                     'type'       => 'text',
-                    'properties' => ['filter' => 'Prague'],
+                    'properties' => [
+                        'filter' => 'Prague',
+                    ],
                     'operator'   => '=',
                 ],
                 [
@@ -175,7 +179,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                 'glue'       => 'and',
                 'field'      => 'city',
                 'type'       => 'text',
-                'properties' => ['filter' => 'Prague'],
+                'properties' => [
+                    'filter' => 'Prague',
+                ],
                 'operator'   => '=',
             ],
             [
@@ -194,7 +200,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                 'glue'       => 'and',
                 'field'      => 'city',
                 'type'       => 'text',
-                'properties' => ['filter' => 'Prague'],
+                'properties' => [
+                    'filter' => 'Prague',
+                ],
                 'operator'   => '=',
             ],
             [
@@ -223,7 +231,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         );
 
         // Edit:
-        $this->client->request('PATCH', "/api/segments/{$segmentId}/edit", ['name' => 'API segment renamed']);
+        $this->client->request('PATCH', "/api/segments/{$segmentId}/edit", [
+            'name' => 'API segment renamed',
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
@@ -284,7 +294,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                         'glue'       => 'and',
                         'field'      => 'city',
                         'type'       => 'text',
-                        'properties' => ['filter' => 'Prague'],
+                        'properties' => [
+                            'filter' => 'Prague',
+                        ],
                         'operator'   => '=',
                     ],
                 ],
@@ -350,7 +362,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'city',
                     'type'       => 'text',
                     'operator'   => '=',
-                    'properties' => ['filter' => 'Prague'],
+                    'properties' => [
+                        'filter' => 'Prague',
+                    ],
                     'filter'     => 'Prague',
                     'display'    => null,
                 ],
@@ -360,7 +374,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
                     'field'      => 'city',
                     'type'       => 'text',
                     'operator'   => '=',
-                    'properties' => ['filter' => 'Prague'],
+                    'properties' => [
+                        'filter' => 'Prague',
+                    ],
                     'filter'     => 'Prague',
                     'display'    => null,
                 ],
@@ -394,7 +410,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
             'leadlist_id'   => $segment->getId(),
         ]);
 
-        $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", ['isPublished' => 0]);
+        $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", [
+            'isPublished' => 0,
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -427,7 +445,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($campaign);
         $this->em->flush();
 
-        $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", ['isPublished' => 0]);
+        $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", [
+            'isPublished' => 0,
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
         self::assertResponseIsSuccessful();
@@ -459,7 +479,10 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $list2 = $this->saveSegment('s2', 's2', $filter);
         $this->em->clear();
 
-        $this->client->request('PATCH', "/api/segments/{$list1->getId()}/edit", ['name' => 'API segment renamed', 'isPublished' => false]);
+        $this->client->request('PATCH', "/api/segments/{$list1->getId()}/edit", [
+            'name' => 'API segment renamed',
+            'isPublished' => false,
+        ]);
         $expectedErrorMessage = sprintf('isPublished: The segment %s is used in %s, please go back and check segments before unpublishing', 'API segment renamed', $list2->getName());
 
         $clientResponse = $this->client->getResponse();
@@ -495,8 +518,14 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $expectedErrorMessage = sprintf('isPublished: The segment %s is used in %s, please go back and check segments before unpublishing', $list1->getName(), $list2->getName());
 
         $segments = [
-            ['id' => $list1->getId(), 'isPublished' => false],
-            ['id' => $list2->getId(), 'isPublished' => false],
+            [
+                'id' => $list1->getId(),
+                'isPublished' => false,
+            ],
+            [
+                'id' => $list2->getId(),
+                'isPublished' => false,
+            ],
         ];
 
         $this->client->request('PATCH', '/api/segments/batch/edit', $segments);
@@ -534,7 +563,9 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $list2 = $this->saveSegment('s2', 's2', $filter);
         $this->em->clear();
 
-        $this->client->request('PATCH', "/api/segments/{$list1->getId()}/edit", ['isPublished' => false]);
+        $this->client->request('PATCH', "/api/segments/{$list1->getId()}/edit", [
+            'isPublished' => false,
+        ]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);

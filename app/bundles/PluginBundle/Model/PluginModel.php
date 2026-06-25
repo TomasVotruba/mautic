@@ -75,7 +75,10 @@ class PluginModel extends FormModel
      */
     public function getCompanyFields(): array
     {
-        return $this->fieldList->getFieldList(true, true, ['isPublished' => true, 'object' => 'company']);
+        return $this->fieldList->getFieldList(true, true, [
+            'isPublished' => true,
+            'object' => 'company',
+        ]);
     }
 
     public function saveFeatureSettings($entity): void

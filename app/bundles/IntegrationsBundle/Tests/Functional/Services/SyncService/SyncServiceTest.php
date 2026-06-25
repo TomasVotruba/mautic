@@ -36,7 +36,11 @@ class SyncServiceTest extends MauticMysqlTestCase
         $exampleIntegration = new ExampleIntegration($dataExchange);
 
         $settings = new Integration();
-        $settings->setFeatureSettings(['sync' => ['objects' => [Contact::NAME]]]);
+        $settings->setFeatureSettings([
+            'sync' => [
+                'objects' => [Contact::NAME],
+            ],
+        ]);
         $settings->setIsPublished(true);
         $exampleIntegration->setIntegrationConfiguration($settings);
 

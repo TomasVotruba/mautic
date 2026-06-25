@@ -50,7 +50,9 @@ class ContactHelper
 
         $collection = new ArrayCollection();
         /** @var Lead[] $contacts */
-        $contacts = $this->leadRepository->getEntities(['ids' => $ids]);
+        $contacts = $this->leadRepository->getEntities([
+            'ids' => $ids,
+        ]);
         foreach ($contacts as $contact) {
             $collection->set($contact->getId(), $contact);
         }

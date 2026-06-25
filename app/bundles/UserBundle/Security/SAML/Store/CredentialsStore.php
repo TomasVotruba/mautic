@@ -62,7 +62,9 @@ class CredentialsStore implements CredentialStoreInterface
         $keyPassword = '';
 
         if (!file_exists($cache_dir.'/saml_default.key') || !file_exists($cache_dir.'/saml_default.crt')) {
-            $dn = ['commonName' => 'Mautic dummy cert'];
+            $dn = [
+                'commonName' => 'Mautic dummy cert',
+            ];
 
             // Generate a new private (and public) key pair
             $privkey = openssl_pkey_new([
@@ -71,10 +73,14 @@ class CredentialsStore implements CredentialStoreInterface
             ]);
 
             // Generate a certificate signing request
-            $csr = openssl_csr_new($dn, $privkey, ['digest_alg' => 'sha256']);
+            $csr = openssl_csr_new($dn, $privkey, [
+                'digest_alg' => 'sha256',
+            ]);
 
             // Generate a self-signed cert, valid for 365 days
-            $x509 = openssl_csr_sign($csr, null, $privkey, $days=365, ['digest_alg' => 'sha256']);
+            $x509 = openssl_csr_sign($csr, null, $privkey, $days=365, [
+                'digest_alg' => 'sha256',
+            ]);
 
             openssl_x509_export_to_file($x509, $cache_dir.'/saml_default.crt');
             openssl_pkey_export_to_file($privkey, $cache_dir.'/saml_default.key', $keyPassword);

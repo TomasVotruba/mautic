@@ -49,7 +49,10 @@ class ImportModelTest extends StandardImportTestHelper
         Assert::assertSame($userName, $log->getUserName());
         Assert::assertSame('lead', $log->getBundle());
         Assert::assertSame('import', $log->getObject());
-        Assert::assertSame(['line' => $line, 'file' => $fileName], $log->getProperties());
+        Assert::assertSame([
+            'line' => $line,
+            'file' => $fileName,
+        ], $log->getProperties());
     }
 
     public function testProcess(): void
@@ -291,8 +294,14 @@ class ImportModelTest extends StandardImportTestHelper
                 'res' => ['John', 'Do  e'],
             ],
             [
-                'row' => ['key' => '  John  ', 2 => ' Do  e '],
-                'res' => ['key' => 'John', 2 => 'Do  e'],
+                'row' => [
+                    'key' => '  John  ',
+                    2 => ' Do  e ',
+                ],
+                'res' => [
+                    'key' => 'John',
+                    2 => 'Do  e',
+                ],
             ],
         ];
 
@@ -321,13 +330,31 @@ class ImportModelTest extends StandardImportTestHelper
                 'res' => false,
             ],
             [
-                'row' => ['key' => 'John', 2 => 'Doe', 'stuff'],
-                'mod' => ['key' => 'John', 2 => 'Doe', 'stuff'],
+                'row' => [
+                    'key' => 'John',
+                    2 => 'Doe',
+                    'stuff',
+                ],
+                'mod' => [
+                    'key' => 'John',
+                    2 => 'Doe',
+                    'stuff',
+                ],
                 'res' => false,
             ],
             [
-                'row' => ['key' => 'John', 2 => 'Doe', 'stuff', 'this is too much'],
-                'mod' => ['key' => 'John', 2 => 'Doe', 'stuff', 'this is too much'],
+                'row' => [
+                    'key' => 'John',
+                    2 => 'Doe',
+                    'stuff',
+                    'this is too much',
+                ],
+                'mod' => [
+                    'key' => 'John',
+                    2 => 'Doe',
+                    'stuff',
+                    'this is too much',
+                ],
                 'res' => true,
             ],
         ];
@@ -464,7 +491,9 @@ class ImportModelTest extends StandardImportTestHelper
         /** @var MockObject&LeadModel $leadModel */
         $leadModel = $this->getMockBuilder(LeadModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([16 => $this->entityManager])
+            ->setConstructorArgs([
+                16 => $this->entityManager,
+            ])
             ->getMock();
 
         $leadModel->expects($this->any())
@@ -474,13 +503,17 @@ class ImportModelTest extends StandardImportTestHelper
         /** @var MockObject&CompanyModel $companyModel */
         $companyModel = $this->getMockBuilder(CompanyModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([3 => $this->entityManager])
+            ->setConstructorArgs([
+                3 => $this->entityManager,
+            ])
             ->getMock();
 
         /** @var MockObject&NotificationModel $notificationModel */
         $notificationModel = $this->getMockBuilder(NotificationModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([3 => $this->entityManager])
+            ->setConstructorArgs([
+                3 => $this->entityManager,
+            ])
             ->getMock();
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);

@@ -54,7 +54,9 @@ class ImportSubscriber implements EventSubscriberInterface
             'object'    => 'import',
             'objectId'  => $entity->deletedId,
             'action'    => 'delete',
-            'details'   => ['originalFile' => $entity->getOriginalFile()],
+            'details'   => [
+                'originalFile' => $entity->getOriginalFile(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

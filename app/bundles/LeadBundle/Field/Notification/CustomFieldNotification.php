@@ -30,7 +30,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.created_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.created_header');
 
@@ -47,7 +49,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.updated_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.updated_header');
 
@@ -64,7 +68,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.deleted_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.deleted_header');
 
@@ -81,7 +87,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.custom_field_limit_hit_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.custom_field_limit_hit_header');
 
@@ -98,7 +106,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.cannot_be_created_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.cannot_be_created_header');
 
@@ -115,7 +125,9 @@ class CustomFieldNotification
 
         $message = $this->translator->trans(
             'mautic.lead.field.notification.cannot_be_updated_message',
-            ['%label%' => $leadField->getLabel()]
+            [
+                '%label%' => $leadField->getLabel(),
+            ]
         );
         $header  = $this->translator->trans('mautic.lead.field.notification.cannot_be_updated_header');
 

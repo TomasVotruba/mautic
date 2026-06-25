@@ -58,7 +58,9 @@ class InstagramIntegration extends SocialIntegration
         $socialCache['has']['activity'] = false;
         if ($id = $this->getContactUserId($identifier, $socialCache)) {
             // get more than 10 so we can weed out videos
-            $data = $this->makeRequest($this->getApiUrl("users/$id/media/recent"), ['count' => 20]);
+            $data = $this->makeRequest($this->getApiUrl("users/$id/media/recent"), [
+                'count' => 20,
+            ]);
 
             $socialCache['activity'] = [
                 'photos' => [],
@@ -101,9 +103,15 @@ class InstagramIntegration extends SocialIntegration
     public function getAvailableLeadFields($settings = []): array
     {
         return [
-            'full_name' => ['type' => 'string'],
-            'bio'       => ['type' => 'string'],
-            'website'   => ['type' => 'string'],
+            'full_name' => [
+                'type' => 'string',
+            ],
+            'bio'       => [
+                'type' => 'string',
+            ],
+            'website'   => [
+                'type' => 'string',
+            ],
         ];
     }
 
@@ -115,7 +123,9 @@ class InstagramIntegration extends SocialIntegration
             return false;
         }
 
-        $data = $this->makeRequest($this->getApiUrl('users/search'), ['q' => $identifier]);
+        $data = $this->makeRequest($this->getApiUrl('users/search'), [
+            'q' => $identifier,
+        ]);
 
         if (!empty($data->data)) {
             foreach ($data->data as $user) {

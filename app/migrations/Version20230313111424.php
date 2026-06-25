@@ -20,6 +20,9 @@ final class Version20230313111424 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $schema->getTable($this->getPrefixedTableName(Sms::TABLE_NAME))->addColumn('is_mms', Types::BOOLEAN, ['default' => false, 'notnull' => true]);
+        $schema->getTable($this->getPrefixedTableName(Sms::TABLE_NAME))->addColumn('is_mms', Types::BOOLEAN, [
+            'default' => false,
+            'notnull' => true,
+        ]);
     }
 }

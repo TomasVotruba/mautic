@@ -248,7 +248,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $entity    = new Lead();
         $ipAddress = new IpAddress('some.ip');
 
-        $ipAddress->setIpDetails(['organization' => 'Doctors Without Borders']);
+        $ipAddress->setIpDetails([
+            'organization' => 'Doctors Without Borders',
+        ]);
 
         $entity->addIpAddress($ipAddress);
 
@@ -276,7 +278,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $entity              = new Lead();
         $ipAddress           = new IpAddress('some.ip');
 
-        $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
+        $ipAddress->setIpDetails([
+            'organization' => $companyFromIpLookup,
+        ]);
 
         $entity->addIpAddress($ipAddress);
 
@@ -308,7 +312,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $ipAddress           = new IpAddress('some.ip');
 
         $entity->setCompany($companyFromEntity);
-        $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
+        $ipAddress->setIpDetails([
+            'organization' => $companyFromIpLookup,
+        ]);
 
         $entity->addIpAddress($ipAddress);
 
@@ -326,12 +332,20 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->fieldModelMock->expects($this->once())
             ->method('getFieldList')
-            ->with(false, false, ['isPublished' => true, 'object' => 'lead'])
-            ->willReturn(['email' => 'Email', 'firstname' => 'First Name']);
+            ->with(false, false, [
+                'isPublished' => true,
+                'object' => 'lead',
+            ])
+            ->willReturn([
+                'email' => 'Email',
+                'firstname' => 'First Name',
+            ]);
 
         $this->fieldsWithUniqueIdentifier->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->willReturn(['email' => 'Email']);
+            ->willReturn([
+                'email' => 'Email',
+            ]);
 
         $this->fieldModelMock->expects($this->once())
             ->method('getEntities')
@@ -341,14 +355,22 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->leadRepositoryMock->expects($this->once())
             ->method('getLeadsByUniqueFields')
-            ->with(['email' => 'john@doe.com'], null)
+            ->with([
+                'email' => 'john@doe.com',
+            ], null)
             ->willReturn([]);
 
         // The availableLeadFields property should start empty.
         $this->assertEquals([], $mockLeadModel->getAvailableLeadFields());
 
-        $contact = $mockLeadModel->checkForDuplicateContact(['email' => 'john@doe.com', 'firstname' => 'John']);
-        $this->assertEquals(['email' => 'Email', 'firstname' => 'First Name'], $mockLeadModel->getAvailableLeadFields());
+        $contact = $mockLeadModel->checkForDuplicateContact([
+            'email' => 'john@doe.com',
+            'firstname' => 'John',
+        ]);
+        $this->assertEquals([
+            'email' => 'Email',
+            'firstname' => 'First Name',
+        ], $mockLeadModel->getAvailableLeadFields());
         $this->assertEquals('john@doe.com', $contact->getEmail());
         $this->assertEquals('John', $contact->getFirstname());
     }
@@ -357,12 +379,20 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->fieldModelMock->expects($this->once())
             ->method('getFieldList')
-            ->with(false, false, ['isPublished' => true, 'object' => 'lead', 'isPubliclyUpdatable' => true])
-            ->willReturn(['email' => 'Email']);
+            ->with(false, false, [
+                'isPublished' => true,
+                'object' => 'lead',
+                'isPubliclyUpdatable' => true,
+            ])
+            ->willReturn([
+                'email' => 'Email',
+            ]);
 
         $this->fieldsWithUniqueIdentifier->expects($this->once())
             ->method('getFieldsWithUniqueIdentifier')
-            ->willReturn(['email' => 'Email']);
+            ->willReturn([
+                'email' => 'Email',
+            ]);
 
         $this->fieldModelMock->expects($this->once())
             ->method('getEntities')
@@ -373,17 +403,26 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->leadRepositoryMock->expects($this->once())
             ->method('getLeadsByUniqueFields')
-            ->with(['email' => 'john@doe.com'], null)
+            ->with([
+                'email' => 'john@doe.com',
+            ], null)
             ->willReturn([]);
 
         // The availableLeadFields property should start empty.
         $this->assertEquals([], $mockLeadModel->getAvailableLeadFields());
 
-        [$contact, $fields] = $mockLeadModel->checkForDuplicateContact(['email' => 'john@doe.com', 'firstname' => 'John'], true, true);
-        $this->assertEquals(['email' => 'Email'], $mockLeadModel->getAvailableLeadFields());
+        [$contact, $fields] = $mockLeadModel->checkForDuplicateContact([
+            'email' => 'john@doe.com',
+            'firstname' => 'John',
+        ], true, true);
+        $this->assertEquals([
+            'email' => 'Email',
+        ], $mockLeadModel->getAvailableLeadFields());
         $this->assertEquals('john@doe.com', $contact->getEmail());
         $this->assertNull($contact->getFirstname());
-        $this->assertEquals(['email' => 'john@doe.com'], $fields);
+        $this->assertEquals([
+            'email' => 'john@doe.com',
+        ], $fields);
     }
 
     /**
@@ -437,7 +476,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $mockLeadModel->expects($this->once())->method('checkForDuplicateContact')->willReturn(new Lead());
         $mockLeadModel->expects($this->once())->method('modifyTags')->willReturn(true);
 
-        $mockLeadModel->import(['tag' => 'tags'], ['tag' => 'Test 1|Test 2|Test 3']);
+        $mockLeadModel->import([
+            'tag' => 'tags',
+        ], [
+            'tag' => 'Test 1|Test 2|Test 3',
+        ]);
     }
 
     /**
@@ -455,7 +498,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $mockLeadModel->expects($this->once())->method('getEntity')->willReturn($lead);
 
-        $merged = $mockLeadModel->import(['identifier' => 'id'], ['identifier' => '21'], null, null, null, true, $leadEventLog);
+        $merged = $mockLeadModel->import([
+            'identifier' => 'id',
+        ], [
+            'identifier' => '21',
+        ], null, null, null, true, $leadEventLog);
         $this->assertTrue($merged);
     }
 
@@ -463,12 +510,16 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $lead = new Lead();
         $lead->setId(1);
-        $lead->setFields(['all' => 'sth']);
+        $lead->setFields([
+            'all' => 'sth',
+        ]);
         $stageMock = $this->createMock(Stage::class);
         $stageMock->expects($this->any())
             ->method('getId')
             ->willReturn(1);
-        $data = ['stage' => $stageMock];
+        $data = [
+            'stage' => $stageMock,
+        ];
 
         $stagesChangeLogRepo = $this->createMock(StagesChangeLogRepository::class);
         $stagesChangeLogRepo->expects($this->once())
@@ -508,7 +559,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $lead = new Lead();
         $lead->setId(1);
-        $data = ['stage' => 'not found'];
+        $data = [
+            'stage' => 'not found',
+        ];
 
         $stagesChangeLogRepo = $this->createMock(StagesChangeLogRepository::class);
         $stagesChangeLogRepo->expects($this->once())
@@ -539,7 +592,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->translator->expects($this->once())
             ->method('trans')
-            ->with('mautic.lead.import.stage.not.exists', ['%id%' => $data['stage']])
+            ->with('mautic.lead.import.stage.not.exists', [
+                '%id%' => $data['stage'],
+            ])
             ->willReturn('Stage not found');
 
         $this->expectException(ImportFailedException::class);
@@ -605,8 +660,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $fieldEntity->setGroup('core');
         $fieldEntity->setObject('lead');
 
-        $fields = ['custom_html_field' => 'custom_html_field'];
-        $data   = ['custom_html_field' => '<html><head></head><body>Test</body></html>'];
+        $fields = [
+            'custom_html_field' => 'custom_html_field',
+        ];
+        $data   = [
+            'custom_html_field' => '<html><head></head><body>Test</body></html>',
+        ];
 
         $this->userHelperMock->method('getUser')
             ->willReturn(new User());
@@ -668,7 +727,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         // Imitate that companies with id 3 and 4 are already added to the lead
         for ($i = 3; $i <= 4; ++$i) {
             // Taking only company_id into consideration as only this is required in this case
-            $leadCompanies[] = ['company_id' => $i];
+            $leadCompanies[] = [
+                'company_id' => $i,
+            ];
         }
 
         $this->companyModelMock->expects($this->once())
@@ -719,8 +780,24 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             public function getIterator()
             {
                 return new \ArrayIterator([
-                    4 => ['label' => 'Email', 'alias' => 'email', 'isPublished' => true, 'id' => 4, 'object' => 'lead', 'group' => 'basic', 'type' => 'email'],
-                    5 => ['label' => 'First Name', 'alias' => 'firstname', 'isPublished' => true, 'id' => 5, 'object' => 'lead', 'group' => 'basic', 'type' => 'text'],
+                    4 => [
+                        'label' => 'Email',
+                        'alias' => 'email',
+                        'isPublished' => true,
+                        'id' => 4,
+                        'object' => 'lead',
+                        'group' => 'basic',
+                        'type' => 'email',
+                    ],
+                    5 => [
+                        'label' => 'First Name',
+                        'alias' => 'firstname',
+                        'isPublished' => true,
+                        'id' => 5,
+                        'object' => 'lead',
+                        'group' => 'basic',
+                        'type' => 'text',
+                    ],
                 ]);
             }
         };
@@ -732,7 +809,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         for ($x = 0; $x < 2; ++$x) {
             $lead = new Lead();
             $lead->setEmail(sprintf('test%s@test.cz', $x));
-            $leadsParams[] = ['entity' => $lead, 'isNew'=> true, 'event'=> null];
+            $leadsParams[] = [
+                'entity' => $lead,
+                'isNew'=> true,
+                'event'=> null,
+            ];
         }
         $action = 'post_batch_save';
 
@@ -839,7 +920,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->setProperty($mockLeadModel, LeadModel::class, 'companyModel', $mockCompanyModel);
         $this->setProperty($mockLeadModel, LeadModel::class, 'leadFields', [
-            ['alias' => 'email', 'type' => 'email', 'defaultValue' => ''],
+            [
+                'alias' => 'email',
+                'type' => 'email',
+                'defaultValue' => '',
+            ],
         ]);
     }
 
@@ -882,11 +967,17 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $emailField->setGroup('core');
         $emailField->setObject('lead');
 
-        $fields = ['email' => 'email'];
-        $data   = ['email' => $emailValue];
+        $fields = [
+            'email' => 'email',
+        ];
+        $data   = [
+            'email' => $emailValue,
+        ];
 
         $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
-            ->willReturn(['email' => 'Email']);
+            ->willReturn([
+                'email' => 'Email',
+            ]);
         $this->fieldModelMock->method('getFieldListWithProperties')
             ->willReturn([]);
 

@@ -67,7 +67,9 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $token = '{contactfield=country}';
 
         $tokenList = TokenHelper::findLeadTokens($token, $lead);
-        $this->assertEquals([$token => 'USA'], $tokenList);
+        $this->assertEquals([
+            $token => 'USA',
+        ], $tokenList);
     }
 
     public function testCompanyTokensAreReplaced(): void
@@ -101,13 +103,19 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $token = '{contactfield=companyzip}';
 
         $tokenList = TokenHelper::findLeadTokens($token, $leads[0]);
-        $this->assertEquals([$token => '77008'], $tokenList);
+        $this->assertEquals([
+            $token => '77008',
+        ], $tokenList);
 
         $tokenList = TokenHelper::findLeadTokens($token, $leads[1]);
-        $this->assertEquals([$token => ''], $tokenList);
+        $this->assertEquals([
+            $token => '',
+        ], $tokenList);
 
         $tokenList = TokenHelper::findLeadTokens($token, $leads[2]);
-        $this->assertEquals([$token => ''], $tokenList);
+        $this->assertEquals([
+            $token => '',
+        ], $tokenList);
     }
 
     public function testDefaultValueIsUsed(): void
@@ -126,7 +134,9 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $token = '{contactfield=country|USA}';
 
         $tokenList = TokenHelper::findLeadTokens($token, $lead);
-        $this->assertEquals([$token => 'USA'], $tokenList);
+        $this->assertEquals([
+            $token => 'USA',
+        ], $tokenList);
     }
 
     public function testValueIsUrlEncoded(): void
@@ -145,7 +155,9 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $token = '{contactfield=country|true}';
 
         $tokenList = TokenHelper::findLeadTokens($token, $lead);
-        $this->assertEquals([$token => 'Somewhere%26Else'], $tokenList);
+        $this->assertEquals([
+            $token => 'Somewhere%26Else',
+        ], $tokenList);
     }
 
     public function testGetValueFromTokensWhenSomeValue(): void

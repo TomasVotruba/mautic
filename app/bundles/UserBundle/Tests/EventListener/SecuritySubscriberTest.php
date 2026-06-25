@@ -35,7 +35,9 @@ class SecuritySubscriberTest extends \PHPUnit\Framework\TestCase
             'object'    => 'security',
             'objectId'  => $userId,
             'action'    => 'login',
-            'details'   => ['username' => $userName],
+            'details'   => [
+                'username' => $userName,
+            ],
             'ipAddress' => $ip,
         ];
 

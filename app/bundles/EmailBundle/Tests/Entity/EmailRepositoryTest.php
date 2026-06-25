@@ -300,7 +300,12 @@ class EmailRepositoryTest extends TestCase
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
-        $filter = (object) ['command' => 'is:expired', 'string' => '', 'not' => false, 'strict' => false];
+        $filter = (object) [
+            'command' => 'is:expired',
+            'string' => '',
+            'not' => false,
+            'strict' => false,
+        ];
 
         $method = new \ReflectionMethod(EmailRepository::class, 'addSearchCommandWhereClause');
 
@@ -310,13 +315,20 @@ class EmailRepositoryTest extends TestCase
             '(e.isPublished = :par1 AND e.publishDown IS NOT NULL AND e.publishDown <> \'\' AND e.publishDown < CURRENT_TIMESTAMP())',
             (string) $expr
         );
-        self::assertSame(['par1' => true], $params);
+        self::assertSame([
+            'par1' => true,
+        ], $params);
     }
 
     public function testAddSearchCommandWhereClauseHandlesPendingFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
-        $filter = (object) ['command' => 'is:pending', 'string' => '', 'not' => false, 'strict' => false];
+        $filter = (object) [
+            'command' => 'is:pending',
+            'string' => '',
+            'not' => false,
+            'strict' => false,
+        ];
 
         $method = new \ReflectionMethod(EmailRepository::class, 'addSearchCommandWhereClause');
 
@@ -326,7 +338,9 @@ class EmailRepositoryTest extends TestCase
             '(e.isPublished = :par1 AND e.publishUp IS NOT NULL AND e.publishUp <> \'\' AND e.publishUp > CURRENT_TIMESTAMP())',
             (string) $expr
         );
-        self::assertSame(['par1' => true], $params);
+        self::assertSame([
+            'par1' => true,
+        ], $params);
     }
 
     public function testGetSearchCommandsContainsExpirationFilters(): void

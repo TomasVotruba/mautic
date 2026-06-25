@@ -31,7 +31,9 @@ class EmailSendType extends AbstractType
             EmailListType::class,
             [
                 'label'      => 'mautic.email.send.selectemails',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'                => 'form-control',
                     'tooltip'              => 'mautic.email.choose.emails_descr',
@@ -42,7 +44,9 @@ class EmailSendType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.email.chooseemail.notblank']
+                        [
+                            'message' => 'mautic.email.chooseemail.notblank',
+                        ]
                     ),
                 ],
             ]
@@ -58,7 +62,9 @@ class EmailSendType extends AbstractType
                         'mautic.core.form.yes' => MailHelper::EMAIL_TYPE_TRANSACTIONAL,
                     ],
                     'label'      => 'mautic.email.send.emailtype',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control email-type',
                         'tooltip' => 'mautic.email.send.emailtype.tooltip',
@@ -119,7 +125,9 @@ class EmailSendType extends AbstractType
             );
 
             // create button preview email
-            $windowUrlPreview = $this->router->generate('mautic_email_preview', ['objectId' => 'emailId']);
+            $windowUrlPreview = $this->router->generate('mautic_email_preview', [
+                'objectId' => 'emailId',
+            ]);
 
             $builder->add(
                 'previewEmailButton',

@@ -37,7 +37,9 @@ abstract class AbstractFormStandardType extends AbstractType
             throw new \Exception('$options[\'data\'] must be defined');
         }
 
-        $masks = ['description' => 'strict_html'];
+        $masks = [
+            'description' => 'strict_html',
+        ];
         if (isset($options['clean_masks'])) {
             $masks = array_merge($masks, $options['clean_masks']);
         }
@@ -53,8 +55,12 @@ abstract class AbstractFormStandardType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.core.name',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control',
+                    ],
                 ]
             );
         }
@@ -65,8 +71,12 @@ abstract class AbstractFormStandardType extends AbstractType
                 TextareaType::class,
                 [
                     'label'      => 'mautic.core.description',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control editor'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control editor',
+                    ],
                     'required'   => false,
                 ]
             );
@@ -138,7 +148,9 @@ abstract class AbstractFormStandardType extends AbstractType
                 LocaleType::class,
                 [
                     'label'      => 'mautic.core.language',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class' => 'form-control',
                     ],
@@ -154,7 +166,9 @@ abstract class AbstractFormStandardType extends AbstractType
                     'buttons',
                     FormButtonsType::class,
                     array_merge(
-                        ['apply_text' => false],
+                        [
+                            'apply_text' => false,
+                        ],
                         $buttonOptions
                     )
                 );

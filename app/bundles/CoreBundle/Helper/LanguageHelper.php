@@ -149,7 +149,9 @@ class LanguageHelper
         try {
             $data = $this->client->get(
                 $this->coreParametersHelper->get('translations_list_url'),
-                [\GuzzleHttp\RequestOptions::TIMEOUT => 10]
+                [
+                    \GuzzleHttp\RequestOptions::TIMEOUT => 10,
+                ]
             );
             $manifest  = json_decode($data->getBody(), true);
             $languages = [];
@@ -333,12 +335,16 @@ class LanguageHelper
             }
 
             if (!mkdir($dir)) {
-                throw new \RuntimeException($this->translator->trans('mautic.core.command.transifex_error_creating_directory', ['%directory%' => $dir]));
+                throw new \RuntimeException($this->translator->trans('mautic.core.command.transifex_error_creating_directory', [
+                    '%directory%' => $dir,
+                ]));
             }
         }
 
         if (!file_put_contents($filePath, $content)) {
-            throw new \RuntimeException($this->translator->trans('mautic.core.command.transifex_error_creating_file', ['%file%' => $filePath]));
+            throw new \RuntimeException($this->translator->trans('mautic.core.command.transifex_error_creating_file', [
+                '%file%' => $filePath,
+            ]));
         }
     }
 

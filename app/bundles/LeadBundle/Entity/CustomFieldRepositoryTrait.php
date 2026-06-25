@@ -281,7 +281,9 @@ trait CustomFieldRepositoryTrait
         $this->prepareDbalFieldsForSave($fields);
 
         if (!empty($fields)) {
-            $this->getEntityManager()->getConnection()->update($table, $fields, ['id' => $entity->getId()]);
+            $this->getEntityManager()->getConnection()->update($table, $fields, [
+                'id' => $entity->getId(),
+            ]);
         }
 
         $this->postSaveEntity($entity);

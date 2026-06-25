@@ -268,8 +268,12 @@ class EventRepository extends CommonRepository
     {
         $this->getEntityManager()->getConnection()->update(
             MAUTIC_TABLE_PREFIX.'campaign_events',
-            ['parent_id'   => null],
-            ['campaign_id' => (int) $campaignId]
+            [
+                'parent_id'   => null,
+            ],
+            [
+                'campaign_id' => (int) $campaignId,
+            ]
         );
     }
 
@@ -529,7 +533,10 @@ class EventRepository extends CommonRepository
             ->innerJoin('le', MAUTIC_TABLE_PREFIX.'campaign_lead_event_failed_log', 'fle', 'le.id = fle.log_id')
             ->where('le.lead_id = :leadId')
             ->andWhere('le.event_id = :eventId')
-            ->setParameters(['leadId' => $leadId, 'eventId' => $eventId]);
+            ->setParameters([
+                'leadId' => $leadId,
+                'eventId' => $eventId,
+            ]);
 
         return (int) $q->executeQuery()->fetchOne();
     }

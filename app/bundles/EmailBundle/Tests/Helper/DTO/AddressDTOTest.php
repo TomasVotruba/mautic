@@ -12,7 +12,9 @@ class AddressDTOTest extends TestCase
 {
     public function testNameTokenReturnsTrue(): void
     {
-        $this->assertTrue(AddressDTO::fromAddressArray(['someone@somewhere.com' => '{contactfield=other_name}'])->isNameTokenized());
+        $this->assertTrue(AddressDTO::fromAddressArray([
+            'someone@somewhere.com' => '{contactfield=other_name}',
+        ])->isNameTokenized());
     }
 
     public function testNameTokenReturnsFalse(): void
@@ -24,12 +26,16 @@ class AddressDTOTest extends TestCase
     {
         $this->expectException(TokenNotFoundOrEmptyException::class);
 
-        AddressDTO::fromAddressArray(['someone@somewhere.com' => '{contactfield=other_name}'])->getNameTokenValue([]);
+        AddressDTO::fromAddressArray([
+            'someone@somewhere.com' => '{contactfield=other_name}',
+        ])->getNameTokenValue([]);
     }
 
     public function testNameTokenIsReturned(): void
     {
-        $contact = ['other_name' => 'Thing Two'];
+        $contact = [
+            'other_name' => 'Thing Two',
+        ];
 
         $this->assertEquals(
             'Thing Two',
@@ -56,7 +62,9 @@ class AddressDTOTest extends TestCase
 
     public function testEmailTokenIsReturned(): void
     {
-        $contact = ['other_email' => 'other@somewhere.com'];
+        $contact = [
+            'other_email' => 'other@somewhere.com',
+        ];
 
         $this->assertEquals(
             'other@somewhere.com',

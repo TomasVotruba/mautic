@@ -58,7 +58,9 @@ final class ProjectController extends AbstractFormController
         $filter     = '';
 
         if ($search) {
-            $filter = ['string' => $search];
+            $filter = [
+                'string' => $search,
+            ];
         }
 
         $tmpl  = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
@@ -93,7 +95,9 @@ final class ProjectController extends AbstractFormController
                 $lastPage = (ceil($count / $limit)) ?: 1;
             }
             $session->set('mautic.projects.page', $lastPage);
-            $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl(self::ROUTE_INDEX, [
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'      => $returnUrl,
@@ -125,7 +129,9 @@ final class ProjectController extends AbstractFormController
             'contentTemplate' => '@MauticProject/Project/list.html.twig',
             'passthroughVars' => [
                 'activeLink'    => self::LINK_ID_INDEX,
-                'route'         => $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]),
+                'route'         => $this->generateUrl(self::ROUTE_INDEX, [
+                    'page' => $page,
+                ]),
                 'mauticContent' => 'projects',
             ],
         ]);
@@ -139,8 +145,12 @@ final class ProjectController extends AbstractFormController
 
         $project   = new Project();
         $page      = $request->getSession()->get('mautic.project.page', 1);
-        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
-        $action    = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'new']);
+        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, [
+            'page' => $page,
+        ]);
+        $action    = $this->generateUrl(self::ROUTE_ACTION, [
+            'objectAction' => 'new',
+        ]);
 
         $form = $this->buildForm($project, $action, $formFactory);
 
@@ -162,7 +172,9 @@ final class ProjectController extends AbstractFormController
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => [
+                        'page' => $page,
+                    ],
                     'contentTemplate' => self::TEMPLATE_INDEX,
                     'passthroughVars' => [
                         'activeLink'    => self::LINK_ID_INDEX,
@@ -184,7 +196,9 @@ final class ProjectController extends AbstractFormController
             'contentTemplate' => self::TEMPLATE_FORM,
             'passthroughVars' => [
                 'activeLink'    => self::LINK_ID_INDEX,
-                'route'         => $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'new']),
+                'route'         => $this->generateUrl(self::ROUTE_ACTION, [
+                    'objectAction' => 'new',
+                ]),
                 'mauticContent' => 'project',
             ],
         ]);
@@ -206,7 +220,10 @@ final class ProjectController extends AbstractFormController
                 throw new EntityNotFoundException(sprintf('Project with id %s not found.', $objectId));
             }
 
-            $action = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'edit', 'objectId' => $objectId]);
+            $action = $this->generateUrl(self::ROUTE_ACTION, [
+                'objectAction' => 'edit',
+                'objectId' => $objectId,
+            ]);
             $form   = $this->buildForm($project, $action, $formFactory);
 
             if (!$ignorePost && 'POST' === $request->getMethod()) {
@@ -237,7 +254,10 @@ final class ProjectController extends AbstractFormController
 
                         // Re-create the form once more with the fresh project and action.
                         // The alias was empty on redirect after cloning.
-                        $editAction = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'edit', 'objectId' => $project->getId()]);
+                        $editAction = $this->generateUrl(self::ROUTE_ACTION, [
+                            'objectAction' => 'edit',
+                            'objectId' => $project->getId(),
+                        ]);
                         $form       = $this->buildForm($project, $editAction, $formFactory);
 
                         $postActionVars['viewParameters'] = [
@@ -280,7 +300,9 @@ final class ProjectController extends AbstractFormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.project.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -294,13 +316,23 @@ final class ProjectController extends AbstractFormController
     private function getPostActionVars(Request $request, string|int|null $objectId = null): array
     {
         if ($objectId) {
-            $returnUrl       = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'view', 'objectId' => $objectId]);
-            $viewParameters  = ['objectAction' => 'view', 'objectId' => $objectId];
+            $returnUrl       = $this->generateUrl(self::ROUTE_ACTION, [
+                'objectAction' => 'view',
+                'objectId' => $objectId,
+            ]);
+            $viewParameters  = [
+                'objectAction' => 'view',
+                'objectId' => $objectId,
+            ];
             $contentTemplate = 'Mautic\ProjectBundle\Controller\ProjectController::viewAction';
         } else {
             $page            = $request->getSession()->get('mautic.project.page', 1);
-            $returnUrl       = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
-            $viewParameters  = ['page' => $page];
+            $returnUrl       = $this->generateUrl(self::ROUTE_INDEX, [
+                'page' => $page,
+            ]);
+            $viewParameters  = [
+                'page' => $page,
+            ];
             $contentTemplate = self::TEMPLATE_INDEX;
         }
 
@@ -322,11 +354,15 @@ final class ProjectController extends AbstractFormController
 
         $page = $request->getSession()->get('mautic.project.page', 1);
         if (null === $project) {
-            $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
+            $returnUrl = $this->generateUrl(self::ROUTE_INDEX, [
+                'page' => $page,
+            ]);
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $page],
+                'viewParameters'  => [
+                    'page' => $page,
+                ],
                 'contentTemplate' => self::TEMPLATE_INDEX,
                 'passthroughVars' => [
                     'activeLink'    => self::LINK_ID_INDEX,
@@ -336,7 +372,9 @@ final class ProjectController extends AbstractFormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.project.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
@@ -350,7 +388,10 @@ final class ProjectController extends AbstractFormController
         $projectEntities = $entityLoader->getProjectEntities($project, $entityTypes);
 
         return $this->delegateView([
-            'returnUrl'      => $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'view', 'objectId' => $project->getId()]),
+            'returnUrl'      => $this->generateUrl(self::ROUTE_ACTION, [
+                'objectAction' => 'view',
+                'objectId' => $project->getId(),
+            ]),
             'viewParameters' => [
                 'project'         => $project,
                 'projectEntities' => $projectEntities,
@@ -367,12 +408,16 @@ final class ProjectController extends AbstractFormController
     public function deleteAction(string $objectId, Request $request, ProjectModel $projectModel, CorePermissions $corePermissions): Response
     {
         $page      = $request->getSession()->get('mautic.project.page', 1);
-        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
+        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => self::TEMPLATE_INDEX,
             'passthroughVars' => [
                 'activeLink'    => self::LINK_ID_INDEX,
@@ -388,7 +433,9 @@ final class ProjectController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.project.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$corePermissions->isGranted(ProjectPermissions::CAN_DELETE)) {
                 $this->throwAccessDenied();
@@ -406,18 +453,24 @@ final class ProjectController extends AbstractFormController
             ];
         }
 
-        return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+        return $this->postActionRedirect(array_merge($postActionVars, [
+            'flashes' => $flashes,
+        ]));
     }
 
     public function batchDeleteAction(Request $request, ProjectModel $projectModel, CorePermissions $corePermissions): Response
     {
         $page      = $request->getSession()->get('mautic.project.page', 1);
-        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
+        $returnUrl = $this->generateUrl(self::ROUTE_INDEX, [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => self::TEMPLATE_INDEX,
             'passthroughVars' => [
                 'activeLink'    => self::LINK_ID_INDEX,
@@ -437,7 +490,9 @@ final class ProjectController extends AbstractFormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.project.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$corePermissions->isGranted(ProjectPermissions::CAN_DELETE)) {
                     $flashes[] = $this->getAccessDeniedFlash();
@@ -457,7 +512,9 @@ final class ProjectController extends AbstractFormController
                     ];
 
                     return $this->postActionRedirect(
-                        array_merge($postActionVars, ['flashes' => $flashes])
+                        array_merge($postActionVars, [
+                            'flashes' => $flashes,
+                        ])
                     );
                 }
 
@@ -471,7 +528,9 @@ final class ProjectController extends AbstractFormController
             }
         }
 
-        return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+        return $this->postActionRedirect(array_merge($postActionVars, [
+            'flashes' => $flashes,
+        ]));
     }
 
     public function selectEntityTypeAction(Request $request, ProjectModel $projectModel, CorePermissions $corePermissions, ProjectEntityLoaderService $entityLoader): Response
@@ -525,7 +584,10 @@ final class ProjectController extends AbstractFormController
 
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['objectAction' => 'view', 'objectId' => $projectId],
+                'viewParameters'  => [
+                    'objectAction' => 'view',
+                    'objectId' => $projectId,
+                ],
                 'contentTemplate' => 'Mautic\ProjectBundle\Controller\ProjectController::viewAction',
                 'passthroughVars' => [
                     'closeModal' => 1,
@@ -535,7 +597,9 @@ final class ProjectController extends AbstractFormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.project.error.invalid_entity_type',
-                        'msgVars' => ['%type%' => $entityType],
+                        'msgVars' => [
+                            '%type%' => $entityType,
+                        ],
                     ],
                 ],
             ]);
@@ -564,7 +628,10 @@ final class ProjectController extends AbstractFormController
 
             $postActionVars = [
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['objectAction' => 'view', 'objectId' => $projectId],
+                'viewParameters'  => [
+                    'objectAction' => 'view',
+                    'objectId' => $projectId,
+                ],
                 'contentTemplate' => 'Mautic\ProjectBundle\Controller\ProjectController::viewAction',
                 'passthroughVars' => [
                     'closeModal' => 1,
@@ -576,14 +643,18 @@ final class ProjectController extends AbstractFormController
             $isValid     = $this->isFormValid($form);
 
             if ($isCancelled || !$isValid) {
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             $data      = $form->getData();
             $entityIds = $data['entityIds'] ?? [];
 
             if (empty($entityIds)) {
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             // Get entity types configuration
@@ -594,7 +665,9 @@ final class ProjectController extends AbstractFormController
                     'msg'  => 'mautic.core.error.badrequest',
                 ];
 
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             $entityConfig = $entityTypes[$entityType];
@@ -633,7 +706,9 @@ final class ProjectController extends AbstractFormController
                 ];
             }
 
-            return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+            return $this->postActionRedirect(array_merge($postActionVars, [
+                'flashes' => $flashes,
+            ]));
         }
 
         return $this->delegateView([
@@ -664,7 +739,10 @@ final class ProjectController extends AbstractFormController
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['objectAction' => 'view', 'objectId' => $projectId],
+            'viewParameters'  => [
+                'objectAction' => 'view',
+                'objectId' => $projectId,
+            ],
             'contentTemplate' => 'Mautic\ProjectBundle\Controller\ProjectController::viewAction',
             'passthroughVars' => [
                 'activeLink'    => self::LINK_ID_INDEX,
@@ -679,10 +757,14 @@ final class ProjectController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.project.error.notfound',
-                    'msgVars' => ['%id%' => $projectId],
+                    'msgVars' => [
+                        '%id%' => $projectId,
+                    ],
                 ];
 
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             // Get entity types configuration
@@ -693,7 +775,9 @@ final class ProjectController extends AbstractFormController
                     'msg'  => 'mautic.core.error.badrequest',
                 ];
 
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             $entityConfig = $entityTypes[$entityType];
@@ -705,7 +789,9 @@ final class ProjectController extends AbstractFormController
                     'msg'  => 'mautic.core.error.notfound',
                 ];
 
-                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+                return $this->postActionRedirect(array_merge($postActionVars, [
+                    'flashes' => $flashes,
+                ]));
             }
 
             // Remove the project from the entity's projects collection
@@ -725,7 +811,9 @@ final class ProjectController extends AbstractFormController
             ];
         }
 
-        return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+        return $this->postActionRedirect(array_merge($postActionVars, [
+            'flashes' => $flashes,
+        ]));
     }
 
     /**
@@ -733,6 +821,8 @@ final class ProjectController extends AbstractFormController
      */
     private function buildForm(Project $project, string $action, FormFactoryInterface $formFactory): FormInterface
     {
-        return $formFactory->create(ProjectEntityType::class, $project, ['action' => $action]);
+        return $formFactory->create(ProjectEntityType::class, $project, [
+            'action' => $action,
+        ]);
     }
 }

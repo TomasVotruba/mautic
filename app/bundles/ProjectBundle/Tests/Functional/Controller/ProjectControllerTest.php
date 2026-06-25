@@ -130,7 +130,9 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         $form['project_entity[name]']->setValue($projectName);
         $this->client->submit($form);
 
-        $this->assertSame(1, $this->projectRepository->count(['name' => $projectName]));
+        $this->assertSame(1, $this->projectRepository->count([
+            'name' => $projectName,
+        ]));
     }
 
     public function testEditActionNotFound(): void
@@ -151,7 +153,9 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         $form['project_entity[name]']->setValue($projectName);
         $this->client->submit($form);
 
-        $this->assertSame(1, $this->projectRepository->count(['name' => $projectName]));
+        $this->assertSame(1, $this->projectRepository->count([
+            'name' => $projectName,
+        ]));
     }
 
     public function testBatchDeleteAction(): void
@@ -172,7 +176,9 @@ final class ProjectControllerTest extends MauticMysqlTestCase
 
         $buttonCrawler  = $crawler->selectButton('Save & Close');
         $form           = $buttonCrawler->form();
-        $form->setValues(['project_entity[name]' => '']);
+        $form->setValues([
+            'project_entity[name]' => '',
+        ]);
         $this->client->submit($form);
         $this->assertResponseIsSuccessful();
         Assert::assertStringContainsString('A name is required.', $this->client->getResponse()->getContent());

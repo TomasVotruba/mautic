@@ -31,7 +31,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['dateIdentified' => ['foo', 'bar']]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'dateIdentified' => ['foo', 'bar'],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that point changes dispatches correct event')]
@@ -51,7 +53,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['points' => [10, 20]]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'points' => [10, 20],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that points change event is not dispatched if we did an import')]
@@ -69,7 +73,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['points' => [10, 20]]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'points' => [10, 20],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that points change event is not dispatched if points are empty (false positive)')]
@@ -85,7 +91,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['points' => [0, 0]]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'points' => [0, 0],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that points change event is dispatched if points are changed from something to nothing')]
@@ -105,7 +113,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['points' => [10, 0]]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'points' => [10, 0],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that points change event is not dispatched if this is a new Lead')]
@@ -120,7 +130,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $leadEventDispatcher = new LeadChangeEventDispatcher($dispatcher);
 
-        $leadEventDispatcher->dispatchEvents($event, ['points' => [10, 0]]);
+        $leadEventDispatcher->dispatchEvents($event, [
+            'points' => [10, 0],
+        ]);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Test that utm event is dispatched')]
@@ -130,7 +142,9 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $lead         = new Lead();
         $event        = new LeadEvent($lead);
-        $changes      = ['utmtags' => ['foo', 'bar']];
+        $changes      = [
+            'utmtags' => ['foo', 'bar'],
+        ];
         $utmTagsEvent = new LeadUtmTagsEvent($lead, $changes['utmtags']);
         $dispatcher->expects($this->once())
             ->method('dispatch')
@@ -151,7 +165,14 @@ class LeadChangeEventDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $lead    = new Lead();
         $event   = new LeadEvent($lead);
-        $changes = ['dnc_channel_status' => ['email' => ['old_reason' => DoNotContact::IS_CONTACTABLE, 'reason' => DoNotContact::UNSUBSCRIBED]]];
+        $changes = [
+            'dnc_channel_status' => [
+                'email' => [
+                    'old_reason' => DoNotContact::IS_CONTACTABLE,
+                    'reason' => DoNotContact::UNSUBSCRIBED,
+                ],
+            ],
+        ];
 
         $dncEvent = new ChannelSubscriptionChange($lead, 'email', DoNotContact::IS_CONTACTABLE, DoNotContact::UNSUBSCRIBED);
         $dispatcher->expects($this->once())

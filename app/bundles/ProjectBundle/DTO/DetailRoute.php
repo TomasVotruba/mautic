@@ -21,6 +21,8 @@ final readonly class DetailRoute
      */
     public function getParameters(int|string|\Stringable $id): array
     {
-        return [$this->idParameterName => $id] + $this->otherParameters;
+        return [
+            $this->idParameterName => $id,
+        ] + $this->otherParameters;
     }
 }

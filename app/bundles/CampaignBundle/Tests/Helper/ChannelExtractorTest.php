@@ -40,7 +40,9 @@ class ChannelExtractorTest extends \PHPUnit\Framework\TestCase
     public function testChannelIdIsSet(): void
     {
         $event = new Event();
-        $event->setProperties(['email' => 1]);
+        $event->setProperties([
+            'email' => 1,
+        ]);
         $config = $this->createMock(AbstractEventAccessor::class);
         $config->expects($this->once())
             ->method('getChannel')
@@ -80,7 +82,9 @@ class ChannelExtractorTest extends \PHPUnit\Framework\TestCase
     public function testChannelIdIsIgnoredIfChannelIdFieldIsNotSet(): void
     {
         $event = new Event();
-        $event->setProperties(['email' => 1]);
+        $event->setProperties([
+            'email' => 1,
+        ]);
         $config = $this->createMock(AbstractEventAccessor::class);
         $config->expects($this->once())
             ->method('getChannel')

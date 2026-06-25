@@ -46,8 +46,12 @@ class SegmentFilterSubscriber implements EventSubscriberInterface
         /** @var Group $group */
         foreach ($groups as $group) {
             $choices['group_points_'.$group->getId()] = [
-                'label'      => $this->translator->trans('mautic.lead.lead.event.grouppoints', ['%group%' => $group->getName()]),
-                'properties' => ['type' => 'number'],
+                'label'      => $this->translator->trans('mautic.lead.lead.event.grouppoints', [
+                    '%group%' => $group->getName(),
+                ]),
+                'properties' => [
+                    'type' => 'number',
+                ],
                 'operators'  => $this->typeOperatorProvider->getOperatorsForFieldType('default'),
                 'object'     => 'lead',
             ];

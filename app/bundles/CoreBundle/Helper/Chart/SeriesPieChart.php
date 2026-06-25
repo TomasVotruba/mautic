@@ -26,7 +26,11 @@ class SeriesPieChart extends AbstractChart implements ChartInterface
         $dataset = [];
 
         foreach ($this->datasets as $datasetId => $value) {
-            $data        = ['data' => [], 'backgroundColor' => [], 'hoverBackgroundColor' => []];
+            $data        = [
+                'data' => [],
+                'backgroundColor' => [],
+                'hoverBackgroundColor' => [],
+            ];
 
             foreach ($value as $key => $item) {
                 $color = $this->configureColorHelper($key);

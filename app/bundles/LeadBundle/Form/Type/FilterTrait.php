@@ -48,7 +48,9 @@ trait FilterTrait
         $fieldType   = $data['type'];
         $fieldName   = $data['field'] ?? '';
         $type        = TextType::class;
-        $attr        = ['class' => 'form-control filter-value'];
+        $attr        = [
+            'class' => 'form-control filter-value',
+        ];
         $displayType = HiddenType::class;
         $displayAttr = [];
         $operator    = $data['operator'] ?? '';
@@ -208,7 +210,9 @@ trait FilterTrait
                 $customOptions['multiple']                  = in_array($operator, ['in', '!in']);
 
                 if ($customOptions['multiple']) {
-                    array_unshift($customOptions['choices'], ['' => '']);
+                    array_unshift($customOptions['choices'], [
+                        '' => '',
+                    ]);
 
                     if (!isset($data['filter'])) {
                         $data['filter'] = [];

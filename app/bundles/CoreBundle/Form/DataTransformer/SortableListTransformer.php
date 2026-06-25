@@ -52,7 +52,9 @@ class SortableListTransformer implements DataTransformerInterface
     private function formatList(?array $array): array
     {
         if (null === $array || !isset($array['list'])) {
-            return ['list' => []];
+            return [
+                'list' => [],
+            ];
         }
 
         // Reindex the array before processing
@@ -76,7 +78,9 @@ class SortableListTransformer implements DataTransformerInterface
     private function transformKeyValuePair($array): array
     {
         if (null === $array) {
-            return ['list' => []];
+            return [
+                'list' => [],
+            ];
         }
 
         $formattedArray = [];
@@ -88,7 +92,9 @@ class SortableListTransformer implements DataTransformerInterface
             ];
         }
 
-        return ['list' => $formattedArray];
+        return [
+            'list' => $formattedArray,
+        ];
     }
 
     /**

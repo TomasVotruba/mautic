@@ -20,7 +20,9 @@ class StatsSubscriber extends CommonStatsSubscriber
         /** @var StatDeviceRepository $repo */
         $repo                                     = $entityManager->getRepository(StatDevice::class);
         $this->repositories[]                     = $repo;
-        $this->permissions[$repo->getTableName()] = ['stat.lead' => 'lead:leads'];
+        $this->permissions[$repo->getTableName()] = [
+            'stat.lead' => 'lead:leads',
+        ];
 
         $this->addContactRestrictedRepositories([EmailReply::class]);
 
@@ -28,7 +30,9 @@ class StatsSubscriber extends CommonStatsSubscriber
         $repo                           = $entityManager->getRepository(Stat::class);
         $this->repositories[]           = $repo;
         $statsTable                     = $repo->getTableName();
-        $this->permissions[$statsTable] = ['lead' => 'lead:leads'];
+        $this->permissions[$statsTable] = [
+            'lead' => 'lead:leads',
+        ];
         $this->selects[$statsTable]     = [
             'id',
             'email_id',

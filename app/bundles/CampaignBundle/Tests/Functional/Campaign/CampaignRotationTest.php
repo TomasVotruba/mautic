@@ -111,13 +111,17 @@ class CampaignRotationTest extends MauticMysqlTestCase
         $leadLogWithJump = $this->leadEventLogRepository->findOneBy([
             'lead'     => $this->lead->getId(),
             'campaign' => $this->campaignWithJump->getId(),
-        ], ['id' => 'DESC']);
+        ], [
+            'id' => 'DESC',
+        ]);
 
         /** @var LeadEventLog $leadLogWithoutJump */
         $leadLogWithoutJump = $this->leadEventLogRepository->findOneBy([
             'lead'     => $this->lead->getId(),
             'campaign' => $this->campaignWithoutJump->getId(),
-        ], ['id' => 'DESC']);
+        ], [
+            'id' => 'DESC',
+        ]);
 
         // Now we can verify that leads exist for both campaigns
         Assert::assertNotNull($leadLogWithJump);
@@ -198,7 +202,9 @@ class CampaignRotationTest extends MauticMysqlTestCase
         $pageHitEvent->setName('Page Hit');
         $pageHitEvent->setType('page.pagehit');
         $pageHitEvent->setEventType('decision');
-        $pageHitEvent->setProperties(['pages' => []]);
+        $pageHitEvent->setProperties([
+            'pages' => [],
+        ]);
         $pageHitEvent->setParent($fieldValueEvent);
         $pageHitEvent->setDecisionPath('yes');
         $pageHitEvent->setChannel('page');
@@ -211,7 +217,9 @@ class CampaignRotationTest extends MauticMysqlTestCase
         $jumpToEvent->setName('Jump to Condition');
         $jumpToEvent->setType('campaign.jump_to_event');
         $jumpToEvent->setEventType('action');
-        $jumpToEvent->setProperties(['jumpToEvent' => $fieldValueEvent->getId()]);
+        $jumpToEvent->setProperties([
+            'jumpToEvent' => $fieldValueEvent->getId(),
+        ]);
         $jumpToEvent->setParent($pageHitEvent);
         $jumpToEvent->setDecisionPath('yes');
         $jumpToEvent->setTriggerMode('immediate');

@@ -64,7 +64,11 @@ class ActionModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'LIKE', 'value'=>'lead.changelist'],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'LIKE',
+                    'value'=>'lead.changelist',
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -92,7 +96,11 @@ class ActionModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'LIKE', 'value' => 'email.send%'],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'LIKE',
+                    'value' => 'email.send%',
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -121,7 +129,11 @@ class ActionModel extends CommonFormModel
     {
         $filter = [
             'force'  => [
-                ['column' => 'e.type', 'expr' => 'EQ', 'value' => 'lead.changetags'],
+                [
+                    'column' => 'e.type',
+                    'expr' => 'EQ',
+                    'value' => 'lead.changetags',
+                ],
             ],
         ];
         $entities = $this->getEntities(

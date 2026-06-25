@@ -47,7 +47,10 @@ class VideoHitRepository extends CommonRepository
      */
     public function getHitForLeadByGuid(Lead $lead, $guid)
     {
-        $result = $this->findOneBy(['guid' => $guid, 'lead' => $lead]);
+        $result = $this->findOneBy([
+            'guid' => $guid,
+            'lead' => $lead,
+        ]);
 
         return $result ?: new VideoHit();
     }

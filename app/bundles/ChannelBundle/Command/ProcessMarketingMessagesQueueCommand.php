@@ -90,7 +90,9 @@ class ProcessMarketingMessagesQueueCommand extends ModeratedCommand
             } while ($batchProcessed > 0 && (!$limit || $processed < $limit));
         }
 
-        $output->writeln('<comment>'.$this->translator->trans('mautic.campaign.command.messages.sent', ['%events%' => $processed]).'</comment>'."\n");
+        $output->writeln('<comment>'.$this->translator->trans('mautic.campaign.command.messages.sent', [
+            '%events%' => $processed,
+        ]).'</comment>'."\n");
 
         $this->completeRun();
 

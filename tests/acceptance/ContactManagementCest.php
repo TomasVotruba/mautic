@@ -73,7 +73,10 @@ class ContactManagementCest
         $I->see('FirstName LastName', '.page-header-title .span-block');
 
         // Check the database for the created contact
-        $I->seeInDatabase('test_leads', ['firstname' => 'FirstName', 'email' => $email]);
+        $I->seeInDatabase('test_leads', [
+            'firstname' => 'FirstName',
+            'email' => $email,
+        ]);
     }
 
     public function accessEditContactFormFromList(
@@ -106,7 +109,9 @@ class ContactManagementCest
         $contactName = $contact->grabContactNameFromList(1);
 
         // Click on the contact name to view the contact details
-        $I->click(['link' => $contactName]);
+        $I->click([
+            'link' => $contactName,
+        ]);
 
         // Wait for the contact details page to load and confirm we're on the correct page
         $I->waitForText($contactName, 30);
@@ -163,7 +168,9 @@ class ContactManagementCest
         $contactName = $contact->grabContactNameFromList(1);
 
         // Click on the contact name to view the contact details
-        $I->click(['link' => $contactName]);
+        $I->click([
+            'link' => $contactName,
+        ]);
 
         // Wait for the contact details page to load and confirm we're on the correct page
         $I->waitForText($contactName, 30);
@@ -218,8 +225,12 @@ class ContactManagementCest
         // Confirm the contacts are deleted
         $I->dontSee($contactName1);
         $I->dontSee($contactName2);
-        $I->dontSeeInDatabase('test_leads', ['firstname' => $contactName1]);
-        $I->dontSeeInDatabase('test_leads', ['firstname' => $contactName2]);
+        $I->dontSeeInDatabase('test_leads', [
+            'firstname' => $contactName1,
+        ]);
+        $I->dontSeeInDatabase('test_leads', [
+            'firstname' => $contactName2,
+        ]);
     }
 
     public function batchAddToCampaign(
@@ -321,8 +332,16 @@ class ContactManagementCest
         $I->waitForJS('return document.querySelector("#leads-container .contact-cards") !== null || document.querySelector("#leads-container h4") !== null;', 15);
 
         // Mautic soft-deletes campaign membership: the row is kept with manually_removed=1 rather than deleted.
-        $I->seeInDatabase('test_campaign_leads', ['lead_id' => $leadId1, 'campaign_id' => $campaignId, 'manually_removed' => 1]);
-        $I->seeInDatabase('test_campaign_leads', ['lead_id' => $leadId2, 'campaign_id' => $campaignId, 'manually_removed' => 1]);
+        $I->seeInDatabase('test_campaign_leads', [
+            'lead_id' => $leadId1,
+            'campaign_id' => $campaignId,
+            'manually_removed' => 1,
+        ]);
+        $I->seeInDatabase('test_campaign_leads', [
+            'lead_id' => $leadId2,
+            'campaign_id' => $campaignId,
+            'manually_removed' => 1,
+        ]);
     }
 
     public function batchChangeOwner(

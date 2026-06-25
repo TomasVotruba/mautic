@@ -125,6 +125,8 @@ class IntegrationTokenFactoryTest extends TestCase
         $this->assertEquals($data['access_token'], $token->getAccessToken());
         $this->assertEquals($data['refresh_token'], $token->getRefreshToken());
         $this->assertFalse($token->isExpired());
-        $this->assertEquals(['foo' => 'bar'], $token->getExtraData());
+        $this->assertEquals([
+            'foo' => 'bar',
+        ], $token->getExtraData());
     }
 }

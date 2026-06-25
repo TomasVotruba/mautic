@@ -30,7 +30,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $this->campaignFixturesHelper->createCampaignWithScheduledEvent($campaign);
         $this->em->flush();
 
-        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         Assert::assertStringContainsString('1 total event was scheduled', $commandResult->getDisplay());
 
@@ -51,7 +53,10 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $leadEventLogRepository = $this->em->getRepository(LeadEventLog::class);
 
         /** @var LeadEventLog $log */
-        $log = $leadEventLogRepository->findOneBy(['lead' => $contact, 'campaign' => $campaign]);
+        $log = $leadEventLogRepository->findOneBy([
+            'lead' => $contact,
+            'campaign' => $campaign,
+        ]);
 
         self::assertResponseIsSuccessful();
         Assert::assertSame('{"success":1}', $this->client->getResponse()->getContent());

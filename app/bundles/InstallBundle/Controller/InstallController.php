@@ -71,14 +71,20 @@ class InstallController extends CommonController
         if ((empty($params) || empty($params['db_driver'])) && $index > 1) {
             $session->set('mautic.installer.completedsteps', [0]);
 
-            return $this->redirectToRoute('mautic_installer_step', ['index' => 1]);
+            return $this->redirectToRoute('mautic_installer_step', [
+                'index' => 1,
+            ]);
         }
 
         $step   = $this->configurator->getStep($index)[0];
         \assert($step instanceof StepInterface);
-        $action = $this->generateUrl('mautic_installer_step', ['index' => $index]);
+        $action = $this->generateUrl('mautic_installer_step', [
+            'index' => $index,
+        ]);
 
-        $form = $this->createForm($step->getFormType(), $step, ['action' => $action]);
+        $form = $this->createForm($step->getFormType(), $step, [
+            'action' => $action,
+        ]);
         $tmpl = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
 
         // Note if this step is complete
@@ -115,7 +121,9 @@ class InstallController extends CommonController
                         $entityManager->getConfiguration()->getMetadataCache()->clear();
 
                         // Refresh to install schema with new connection information in the container
-                        return $this->redirectToRoute('mautic_installer_step', ['index' => 1.1]);
+                        return $this->redirectToRoute('mautic_installer_step', [
+                            'index' => 1.1,
+                        ]);
                     case InstallService::USER_STEP:
                         $messages = $this->installer->createAdminUserStep($formData);
 
@@ -143,16 +151,22 @@ class InstallController extends CommonController
                             if (!empty($messages)) {
                                 $this->handleInstallerErrors($form, $messages);
 
-                                return $this->redirectToRoute('mautic_installer_step', ['index' => 1]);
+                                return $this->redirectToRoute('mautic_installer_step', [
+                                    'index' => 1,
+                                ]);
                             }
 
-                            return $this->redirectToRoute('mautic_installer_step', ['index' => 1.2]);
+                            return $this->redirectToRoute('mautic_installer_step', [
+                                'index' => 1.2,
+                            ]);
                         case 2:
                             $messages = $this->installer->createFixturesStep();
                             if (!empty($messages)) {
                                 $this->handleInstallerErrors($form, $messages);
 
-                                return $this->redirectToRoute('mautic_installer_step', ['index' => 1]);
+                                return $this->redirectToRoute('mautic_installer_step', [
+                                    'index' => 1,
+                                ]);
                             }
 
                             $complete = true;
@@ -170,7 +184,9 @@ class InstallController extends CommonController
             if ($index < $this->configurator->getStepCount()) {
                 // On to the next step
 
-                return $this->redirectToRoute('mautic_installer_step', ['index' => (int) $index]);
+                return $this->redirectToRoute('mautic_installer_step', [
+                    'index' => (int) $index,
+                ]);
             }
             $siteUrl  = $request->getSchemeAndHttpHost().$request->getBaseUrl();
             $messages = $this->installer->createFinalConfigStep($siteUrl);
@@ -196,7 +212,9 @@ class InstallController extends CommonController
         // Redirect back to last step if the user advanced ahead via the URL
         $last = (int) end($completedSteps) + 1;
         if ($index && $index > $last) {
-            return $this->redirectToRoute('mautic_installer_step', ['index' => $last]);
+            return $this->redirectToRoute('mautic_installer_step', [
+                'index' => $last,
+            ]);
         }
 
         return $this->delegateView(
@@ -217,7 +235,9 @@ class InstallController extends CommonController
                 ],
                 'contentTemplate' => $step->getTemplate(),
                 'passthroughVars' => [
-                    'route' => $this->generateUrl('mautic_installer_step', ['index' => $index]),
+                    'route' => $this->generateUrl('mautic_installer_step', [
+                        'index' => $index,
+                    ]),
                 ],
             ]
         );

@@ -88,7 +88,9 @@ final class ChangeOwnerTypeFunctionalTest extends MauticMysqlTestCase
         ];
 
         $uri = '/s/campaigns/events/edit/'.$modifyTagsEventId.'?campaignId='.self::TEMP_CAMPAIGN_ID;
-        $this->client->xmlHttpRequest('GET', $uri, ['modifiedEvents' => json_encode($modifiedEvents)]);
+        $this->client->xmlHttpRequest('GET', $uri, [
+            'modifiedEvents' => json_encode($modifiedEvents),
+        ]);
         $this->assertResponseIsSuccessful();
 
         $responseData = json_decode($this->client->getResponse()->getContent(), true);

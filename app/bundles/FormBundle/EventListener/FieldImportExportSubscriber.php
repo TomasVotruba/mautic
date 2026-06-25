@@ -111,7 +111,9 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
         }
 
         foreach ($data as $entityName => $entities) {
-            $event->addEntities([$entityName => $entities]);
+            $event->addEntities([
+                $entityName => $entities,
+            ]);
         }
     }
 
@@ -122,12 +124,22 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $fieldData) {
-            $field = $this->entityManager->getRepository(Field::class)->findOneBy(['uuid' => $fieldData['uuid']]);
+            $field = $this->entityManager->getRepository(Field::class)->findOneBy([
+                'uuid' => $fieldData['uuid'],
+            ]);
             $isNew = !$field;
             $field ??= new Field();
 
@@ -151,7 +163,9 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
                 $fieldData,
                 Field::class,
                 null,
-                ['object_to_populate' => $field]
+                [
+                    'object_to_populate' => $field,
+                ]
             );
 
             $this->fieldModel->saveEntity($field);
@@ -167,7 +181,9 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Field::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Field::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -189,7 +205,9 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
 
             if ($field) {
                 $this->entityManager->remove($field);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Field::class], 'formField');
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Field::class,
+                ], 'formField');
             }
         }
 
@@ -203,8 +221,13 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
         }
 
         $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'uuids' => [],
+            ],
             'errors'                  => [],
         ];
 
@@ -214,7 +237,9 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
                 break;
             }
 
-            $existing = $this->entityManager->getRepository(Field::class)->findOneBy(['uuid' => $item['uuid']]);
+            $existing = $this->entityManager->getRepository(Field::class)->findOneBy([
+                'uuid' => $item['uuid'],
+            ]);
             if ($existing) {
                 $summary[EntityImportEvent::UPDATE]['names'][] = $existing->getLabel() ?? $existing->getAlias();
                 $summary[EntityImportEvent::UPDATE]['uuids'][] = $existing->getUuid();
@@ -226,13 +251,17 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
         foreach ($summary as $type => $data) {
             if ('errors' === $type) {
                 if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
+                    $event->setSummary('errors', [
+                        'messages' => $data,
+                    ]);
                 }
                 break;
             }
 
             if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Field::ENTITY_NAME => $data]);
+                $event->setSummary($type, [
+                    Field::ENTITY_NAME => $data,
+                ]);
             }
         }
     }

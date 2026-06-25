@@ -48,7 +48,9 @@ class AjaxController extends CommonAjaxController
                     'id'          => $id,
                     'pending'     => $this->translator->trans(
                         'mautic.sms.stat.leadcount',
-                        ['%count%' => $pending]
+                        [
+                            '%count%' => $pending,
+                        ]
                     ),
                 ];
             }
@@ -76,7 +78,9 @@ class AjaxController extends CommonAjaxController
         $eventDispatcher->dispatch($event, SmsEvents::ON_SMS_TOKENS_BUILD);
         $sortedTokens = $tokenSorter->sortTokens($event->getTokens());
 
-        return $this->sendJsonResponse(['tokens' => $sortedTokens]);
+        return $this->sendJsonResponse([
+            'tokens' => $sortedTokens,
+        ]);
     }
 
     /**

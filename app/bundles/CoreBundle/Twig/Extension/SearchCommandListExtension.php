@@ -18,7 +18,9 @@ class SearchCommandListExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('searchCommandList', [$this, 'getSearchCommandList'], ['is_safe' => ['all']]),
+            new TwigFunction('searchCommandList', [$this, 'getSearchCommandList'], [
+                'is_safe' => ['all'],
+            ]),
         ];
     }
 

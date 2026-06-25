@@ -18,7 +18,9 @@ class CampaignEventLeadOwnerType extends AbstractType
             UserListType::class,
             [
                 'label'      => 'mautic.lead.lead.field.owner',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],

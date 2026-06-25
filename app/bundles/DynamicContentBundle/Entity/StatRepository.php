@@ -147,7 +147,9 @@ class StatRepository extends CommonRepository
      */
     public function deleteStat($id): void
     {
-        $this->_em->getConnection()->delete(MAUTIC_TABLE_PREFIX.'dynamic_content_stats', ['id' => (int) $id]);
+        $this->_em->getConnection()->delete(MAUTIC_TABLE_PREFIX.'dynamic_content_stats', [
+            'id' => (int) $id,
+        ]);
     }
 
     public function getTableAlias(): string

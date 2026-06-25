@@ -72,7 +72,9 @@ class DynamicsIntegration extends CrmAbstractIntegration
                 'expanded'          => true,
                 'multiple'          => true,
                 'label'             => 'mautic.integrations.form.blanks',
-                'label_attr'        => ['class' => 'control-label'],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
                 'placeholder'       => false,
                 'required'          => false,
             ]
@@ -89,7 +91,9 @@ class DynamicsIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.dynamics.form.objects_to_pull_from',
-                    'label_attr'        => ['class' => ''],
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -622,7 +626,9 @@ class DynamicsIntegration extends CrmAbstractIntegration
                         )
                     ) {
                         $company = IdentifyCompanyHelper::identifyLeadsCompany(
-                            ['company' => $entityData['parentcustomerid']],
+                            [
+                                'company' => $entityData['parentcustomerid'],
+                            ],
                             null,
                             $this->companyModel
                         );
@@ -714,7 +720,11 @@ class DynamicsIntegration extends CrmAbstractIntegration
         $fields = implode(', l.', $leadFields);
         $fields = 'l.'.$fields;
 
-        $availableFields         = $this->getAvailableLeadFields(['feature_settings' => ['objects' => [$object]]]);
+        $availableFields         = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => [$object],
+            ],
+        ]);
         $fieldsToUpdate[$object] = array_values(array_intersect(array_keys($availableFields[$object]), $fieldsToUpdateInCrm));
         $fieldsToUpdate[$object] = array_intersect_key($config['leadFields'] ?? [], array_flip($fieldsToUpdate[$object]));
 

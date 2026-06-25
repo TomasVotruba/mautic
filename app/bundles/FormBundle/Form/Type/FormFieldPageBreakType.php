@@ -25,14 +25,18 @@ class FormFieldPageBreakType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.form.property_pagebreak_nextpage_label',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                 ],
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.core.value.required']
+                        [
+                            'message' => 'mautic.core.value.required',
+                        ]
                     ),
                 ],
                 'empty_data' => $this->translator->trans('mautic.core.continue'),
@@ -44,7 +48,9 @@ class FormFieldPageBreakType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.form.property_pagebreak_prevpage_label',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.form.field.form.property_pagebreak_prevpage_placeholder',

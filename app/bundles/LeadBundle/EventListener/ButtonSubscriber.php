@@ -80,7 +80,9 @@ class ButtonSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $exportRoute = $this->router->generate('mautic_contact_action', ['objectAction' => 'batchExport']);
+        $exportRoute = $this->router->generate('mautic_contact_action', [
+            'objectAction' => 'batchExport',
+        ]);
 
         $event->addButton(
             [
@@ -90,7 +92,9 @@ class ButtonSubscriber implements EventSubscriberInterface
                     'data-precheck'         => 'batchActionPrecheck',
                     'data-message'          => $this->translator->trans(
                         'mautic.core.export.items',
-                        ['%items%' => 'contacts']
+                        [
+                            '%items%' => 'contacts',
+                        ]
                     ),
                     'data-confirm-text'     => $this->translator->trans('mautic.core.export.xlsx'),
                     'data-confirm-callback' => 'executeBatchAction',
@@ -111,7 +115,9 @@ class ButtonSubscriber implements EventSubscriberInterface
                     'data-precheck'         => 'batchActionPrecheck',
                     'data-message'          => $this->translator->trans(
                         'mautic.core.export.items',
-                        ['%items%' => 'contacts']
+                        [
+                            '%items%' => 'contacts',
+                        ]
                     ),
                     'data-confirm-text'     => $this->translator->trans('mautic.core.export.csv'),
                     'data-confirm-callback' => 'executeBatchAction',

@@ -22,7 +22,9 @@ class StateValidationHelperTest extends \PHPUnit\Framework\TestCase
             'State'   => 'Paris',
         ];
 
-        $this->assertEquals(['Country' => 'France'], StateValidationHelper::validate($payload));
+        $this->assertEquals([
+            'Country' => 'France',
+        ], StateValidationHelper::validate($payload));
     }
 
     public function testStateIsLeftWhenCountryIsSupported(): void

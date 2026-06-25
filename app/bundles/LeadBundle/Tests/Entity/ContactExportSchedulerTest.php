@@ -64,7 +64,9 @@ class ContactExportSchedulerTest extends MauticMysqlTestCase
         $connection    = $this->em->getConnection();
         $query         = sprintf('SELECT scheduled_datetime FROM %scontact_export_scheduler WHERE id = :id', $tablePrefix);
 
-        return $connection->executeQuery($query, ['id' => $id])
+        return $connection->executeQuery($query, [
+            'id' => $id,
+        ])
             ->fetchOne();
     }
 }

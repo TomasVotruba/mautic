@@ -37,7 +37,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'label'           => 'mautic.social.twitter.tweet.event.open',
                 'description'     => 'mautic.social.twitter.tweet.event.open_desc',
                 'eventName'       => SocialEvents::ON_CAMPAIGN_TRIGGER_ACTION,
-                'formTypeOptions' => ['update_select' => 'campaignevent_properties_channelId'],
+                'formTypeOptions' => [
+                    'update_select' => 'campaignevent_properties_channelId',
+                ],
                 'formType'        => TweetSendType::class,
                 'channel'         => 'social.tweet',
                 'channelIdField'  => 'channelId',

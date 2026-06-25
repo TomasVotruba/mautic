@@ -176,7 +176,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepository = $this->em->getRepository(Submission::class);
 
         // Ensure the submission was created properly.
-        $submissions = $submissionRepository->findBy(['form' => $formId]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $formId,
+        ]);
 
         Assert::assertCount(1, $submissions);
 
@@ -461,7 +463,11 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
 
         $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
 
-        $campaignSources = ['forms' => [$formId => $formId]];
+        $campaignSources = [
+            'forms' => [
+                $formId => $formId,
+            ],
+        ];
 
         /** @var CampaignModel $campaignModel */
         $campaignModel = static::getContainer()->get('mautic.campaign.model.campaign');
@@ -484,7 +490,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         ]);
         $this->client->submit($form);
 
-        $campaignLeads = $this->em->getRepository(Lead::class)->findBy(['campaign' => $campaign->getId()]);
+        $campaignLeads = $this->em->getRepository(Lead::class)->findBy([
+            'campaign' => $campaign->getId(),
+        ]);
         Assert::assertCount(1, $campaignLeads);
     }
 
@@ -494,9 +502,15 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     public static function formTypeDataProvider(): array
     {
         return [
-            'campaign form type'   => ['formType' => 'campaign'],
-            'standalone form type' => ['formType' => 'standalone'],
-            'no form type'         => ['formType' => null],
+            'campaign form type'   => [
+                'formType' => 'campaign',
+            ],
+            'standalone form type' => [
+                'formType' => 'standalone',
+            ],
+            'no form type'         => [
+                'formType' => null,
+            ],
         ];
     }
 
@@ -578,7 +592,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $role->setName('api_restricted');
         $role->setDescription('Api Permission Not Granted');
         $role->setIsAdmin(false);
-        $role->setRawPermissions(['form:forms' => ['viewown']]);
+        $role->setRawPermissions([
+            'form:forms' => ['viewown'],
+        ]);
 
         /** @var RoleRepository $roleRepository */
         $roleRepository = $this->em->getRepository(Role::class);
@@ -1229,7 +1245,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
                     'label'        => 'Your story',
                     'type'         => 'freehtml',
                     'alias'        => 'your_story',
-                    'properties'   => ['text' => ''],
+                    'properties'   => [
+                        'text' => '',
+                    ],
                 ],
                 [
                     'label'        => 'Email',
@@ -1455,7 +1473,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepository = $this->em->getRepository(Submission::class);
 
         // Ensure the submission was created properly.
-        $submissions = $submissionRepository->findBy(['form' => $formId]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $formId,
+        ]);
 
         Assert::assertCount(1, $submissions);
 
@@ -1471,7 +1491,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         // we are expecting form results table to be deleted in background, so the table should exists
         $this->assertTrue($this->connection->createSchemaManager()->tablesExist("{$tablePrefix}form_results_{$formId}_{$formAlias}"));
 
-        $submissions = $submissionRepository->findBy(['form' => $formId]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $formId,
+        ]);
 
         Assert::assertCount(0, $submissions);
     }
@@ -1488,7 +1510,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepository = $this->em->getRepository(Submission::class);
 
         // Ensure the submission was created properly.
-        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $form['id'],
+        ]);
 
         Assert::assertCount(1, $submissions);
 
@@ -1523,7 +1547,9 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionRepository = $this->em->getRepository(Submission::class);
 
         // Ensure the submission was created properly.
-        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+        $submissions = $submissionRepository->findBy([
+            'form' => $form['id'],
+        ]);
 
         Assert::assertCount($totalSubmissions, $submissions);
 

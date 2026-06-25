@@ -21,7 +21,10 @@ class FullContact_Company extends FullContact_Base
 
     public function lookupByDomain($search)
     {
-        $this->_execute(['domain' => $search, 'method' => 'domain']);
+        $this->_execute([
+            'domain' => $search,
+            'method' => 'domain',
+        ]);
 
         return $this->response_obj;
     }

@@ -49,7 +49,9 @@ class ActionController extends CommonFormController
         \assert($formModel instanceof FormModel);
         $customComponents = $formModel->getCustomComponents();
         $form             = $this->formFactory->create(ActionType::class, $formAction, [
-            'action'   => $this->generateUrl('mautic_formaction_action', ['objectAction' => 'new']),
+            'action'   => $this->generateUrl('mautic_formaction_action', [
+                'objectAction' => 'new',
+            ]),
             'settings' => $customComponents['actions'][$actionType],
             'formId'   => $formId,
         ]);
@@ -82,7 +84,9 @@ class ActionController extends CommonFormController
             }
         }
 
-        $viewParams = ['type' => $actionType];
+        $viewParams = [
+            'type' => $actionType,
+        ];
 
         if ($cancelled || $valid) {
             $closeModal = true;
@@ -169,7 +173,10 @@ class ActionController extends CommonFormController
             }
 
             $form = $this->formFactory->create(ActionType::class, $formAction, [
-                'action'   => $this->generateUrl('mautic_formaction_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
+                'action'   => $this->generateUrl('mautic_formaction_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $objectId,
+                ]),
                 'settings' => $formAction['settings'],
                 'formId'   => $formId,
             ]);
@@ -217,7 +224,9 @@ class ActionController extends CommonFormController
                 }
             }
 
-            $viewParams = ['type' => $actionType];
+            $viewParams = [
+                'type' => $actionType,
+            ];
             if ($cancelled || $valid) {
                 $closeModal = true;
             } else {
@@ -268,7 +277,9 @@ class ActionController extends CommonFormController
             ]);
         }
 
-        return new JsonResponse(['success' => 0]);
+        return new JsonResponse([
+            'success' => 0,
+        ]);
     }
 
     /**
@@ -315,7 +326,9 @@ class ActionController extends CommonFormController
                 'route'         => false,
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);

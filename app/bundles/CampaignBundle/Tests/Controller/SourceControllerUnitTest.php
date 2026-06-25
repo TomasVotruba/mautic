@@ -37,10 +37,14 @@ class SourceControllerUnitTest extends TestCase
             ->method('create')
             ->with(
                 CampaignLeadSourceType::class,
-                ['sourceType' => 'lists'],
+                [
+                    'sourceType' => 'lists',
+                ],
                 [
                     'action'         => '/campaign/source/new',
-                    'source_choices' => [12 => 'Segment 12'],
+                    'source_choices' => [
+                        12 => 'Segment 12',
+                    ],
                 ]
             )
             ->willReturn($form);
@@ -49,7 +53,9 @@ class SourceControllerUnitTest extends TestCase
         $campaignModel->expects($this->once())
             ->method('getSourceLists')
             ->with('lists')
-            ->willReturn([12 => 'Segment 12']);
+            ->willReturn([
+                12 => 'Segment 12',
+            ]);
 
         $controller = $this->createController($formFactory, $campaignModel);
         $request    = $this->ajaxRequest('POST', [
@@ -64,7 +70,11 @@ class SourceControllerUnitTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $payload = json_decode((string) $response->getContent(), true);
         $this->assertSame(1, $payload['success']);
-        $this->assertSame(['lists' => [12 => true]], $payload['modifiedSources']);
+        $this->assertSame([
+            'lists' => [
+                12 => true,
+            ],
+        ], $payload['modifiedSources']);
         $this->assertSame('lists', $payload['sourceType']);
         $this->assertSame(1, $payload['closeModal']);
     }
@@ -87,10 +97,15 @@ class SourceControllerUnitTest extends TestCase
             ->method('create')
             ->with(
                 CampaignLeadSourceType::class,
-                ['sourceType' => 'lists'],
+                [
+                    'sourceType' => 'lists',
+                ],
                 [
                     'action'         => '/campaign/source/edit',
-                    'source_choices' => [12 => 'Segment 12', 15 => 'Segment 15'],
+                    'source_choices' => [
+                        12 => 'Segment 12',
+                        15 => 'Segment 15',
+                    ],
                 ]
             )
             ->willReturn($form);
@@ -99,12 +114,19 @@ class SourceControllerUnitTest extends TestCase
         $campaignModel->expects($this->once())
             ->method('getSourceLists')
             ->with('lists')
-            ->willReturn([12 => 'Segment 12', 15 => 'Segment 15']);
+            ->willReturn([
+                12 => 'Segment 12',
+                15 => 'Segment 15',
+            ]);
 
         $controller = $this->createController($formFactory, $campaignModel);
         $request    = $this->ajaxRequest('POST', [
             'submit'              => '1',
-            'modifiedSources'     => json_encode(['lists' => [99 => true]], JSON_THROW_ON_ERROR),
+            'modifiedSources'     => json_encode([
+                'lists' => [
+                    99 => true,
+                ],
+            ], JSON_THROW_ON_ERROR),
             'campaign_leadsource' => [
                 'sourceType' => 'lists',
             ],
@@ -115,7 +137,12 @@ class SourceControllerUnitTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $payload = json_decode((string) $response->getContent(), true);
         $this->assertSame(1, $payload['success']);
-        $this->assertSame(['lists' => [12 => true, 15 => true]], $payload['modifiedSources']);
+        $this->assertSame([
+            'lists' => [
+                12 => true,
+                15 => true,
+            ],
+        ], $payload['modifiedSources']);
         $this->assertSame('lists', $payload['sourceType']);
         $this->assertSame(1, $payload['closeModal']);
     }
@@ -130,8 +157,12 @@ class SourceControllerUnitTest extends TestCase
         $request = $this->ajaxRequest('POST', [
             'sourceType'      => 'lists',
             'modifiedSources' => json_encode([
-                'lists' => [12 => true],
-                'forms' => [5 => true],
+                'lists' => [
+                    12 => true,
+                ],
+                'forms' => [
+                    5 => true,
+                ],
             ], JSON_THROW_ON_ERROR),
         ]);
 
@@ -142,7 +173,11 @@ class SourceControllerUnitTest extends TestCase
         $this->assertSame(1, $payload['success']);
         $this->assertSame(1, $payload['deleted']);
         $this->assertSame('lists', $payload['sourceType']);
-        $this->assertSame(['forms' => [5 => true]], $payload['modifiedSources']);
+        $this->assertSame([
+            'forms' => [
+                5 => true,
+            ],
+        ], $payload['modifiedSources']);
     }
 
     public function testDeleteActionWithNonPostRequestReturnsUnsuccessfulResponse(): void
@@ -154,14 +189,20 @@ class SourceControllerUnitTest extends TestCase
 
         $request = $this->ajaxRequest('GET', [
             'sourceType'      => 'lists',
-            'modifiedSources' => json_encode(['lists' => [12 => true]], JSON_THROW_ON_ERROR),
+            'modifiedSources' => json_encode([
+                'lists' => [
+                    12 => true,
+                ],
+            ], JSON_THROW_ON_ERROR),
         ]);
 
         $response = $controller->deleteAction($request, 1);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $payload = json_decode((string) $response->getContent(), true);
-        $this->assertSame(['success' => 0], $payload);
+        $this->assertSame([
+            'success' => 0,
+        ], $payload);
     }
 
     /**
@@ -212,7 +253,9 @@ class SourceControllerUnitTest extends TestCase
      */
     private function ajaxRequest(string $method, array $requestData): Request
     {
-        $request = new Request([], $requestData, [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+        $request = new Request([], $requestData, [], [], [], [
+            'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+        ]);
         $request->setMethod($method);
 
         return $request;

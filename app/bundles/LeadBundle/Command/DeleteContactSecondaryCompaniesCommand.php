@@ -59,7 +59,10 @@ EOT
         try {
             $this->companyLeadsRepository->removeAllSecondaryCompanies();
         } catch (ORMException $e) {
-            $errorMessage = $this->translator->trans('mautic.lead.command.error', ['%name%' => self::NAME, '%error%' => $e->getMessage()]);
+            $errorMessage = $this->translator->trans('mautic.lead.command.error', [
+                '%name%' => self::NAME,
+                '%error%' => $e->getMessage(),
+            ]);
             $output->writeln($errorMessage);
             $this->logger->error($errorMessage);
         }

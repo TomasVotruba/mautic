@@ -225,12 +225,24 @@ class FoursquareIntegration extends SocialIntegration
     public function getAvailableLeadFields($settings = []): array
     {
         return [
-            'profileHandle' => ['type' => 'string'],
-            'firstName'     => ['type' => 'string'],
-            'lastName'      => ['type' => 'string'],
-            'gender'        => ['type' => 'string'],
-            'homeCity'      => ['type' => 'string'],
-            'bio'           => ['type' => 'string'],
+            'profileHandle' => [
+                'type' => 'string',
+            ],
+            'firstName'     => [
+                'type' => 'string',
+            ],
+            'lastName'      => [
+                'type' => 'string',
+            ],
+            'gender'        => [
+                'type' => 'string',
+            ],
+            'homeCity'      => [
+                'type' => 'string',
+            ],
+            'bio'           => [
+                'type' => 'string',
+            ],
             'contact'       => [
                 'type'   => 'object',
                 'fields' => [

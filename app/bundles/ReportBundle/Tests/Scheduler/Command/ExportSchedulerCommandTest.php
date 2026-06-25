@@ -25,11 +25,15 @@ final class ExportSchedulerCommandTest extends MauticMysqlTestCase
         $this->em->persist($scheduler);
         $this->em->flush();
 
-        $schedulersBeforeCommand = $this->em->getRepository(Scheduler::class)->findBy(['report' => $report]);
+        $schedulersBeforeCommand = $this->em->getRepository(Scheduler::class)->findBy([
+            'report' => $report,
+        ]);
         Assert::assertCount(1, $schedulersBeforeCommand, 'Scheduler should exist before command execution');
 
         // Execute command normally
-        $commandTester = $this->testSymfonyCommand('mautic:reports:scheduler', ['--report' => $report->getId()]);
+        $commandTester = $this->testSymfonyCommand('mautic:reports:scheduler', [
+            '--report' => $report->getId(),
+        ]);
         Assert::assertEquals(ExitCode::SUCCESS, $commandTester->getStatusCode());
     }
 
@@ -44,12 +48,17 @@ final class ExportSchedulerCommandTest extends MauticMysqlTestCase
 
         Assert::assertCount(
             1,
-            $this->em->getRepository(Scheduler::class)->findBy(['report' => $report]),
+            $this->em->getRepository(Scheduler::class)->findBy([
+                'report' => $report,
+            ]),
             'Scheduler should exist before command execution'
         );
 
         $this->em->clear();
-        $commandTester = $this->testSymfonyCommand('mautic:reports:scheduler', ['--report' => $reportId, '--cleanup-only' => true]);
+        $commandTester = $this->testSymfonyCommand('mautic:reports:scheduler', [
+            '--report' => $reportId,
+            '--cleanup-only' => true,
+        ]);
 
         Assert::assertSame('', trim($commandTester->getDisplay()), 'Cleanup-only mode should not execute export processing output.');
 
@@ -57,7 +66,9 @@ final class ExportSchedulerCommandTest extends MauticMysqlTestCase
         $reportReference = $this->em->getReference(Report::class, $reportId);
         Assert::assertCount(
             1,
-            $this->em->getRepository(Scheduler::class)->findBy(['report' => $reportReference]),
+            $this->em->getRepository(Scheduler::class)->findBy([
+                'report' => $reportReference,
+            ]),
             'Cleanup-only mode should keep due scheduler entries untouched'
         );
     }

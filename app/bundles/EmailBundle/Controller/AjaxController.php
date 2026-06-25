@@ -35,8 +35,13 @@ class AjaxController extends CommonAjaxController
         return $this->sendJsonResponse($this->getAbTestForm(
             $request,
             $emailModel,
-            fn ($formType, $formOptions): \Symfony\Component\Form\FormInterface => $formFactory->create(AbTestPropertiesType::class, [], ['formType' => $formType, 'formTypeOptions' => $formOptions]),
-            fn ($form): string                                                  => $this->renderView('@MauticEmail/AbTest/form.html.twig', ['form' => $this->setFormTheme($form, $twig, ['@MauticEmail/AbTest/form.html.twig', '@MauticEmail/FormTheme/Email/layout.html.twig'])]),
+            fn ($formType, $formOptions): \Symfony\Component\Form\FormInterface => $formFactory->create(AbTestPropertiesType::class, [], [
+                'formType' => $formType,
+                'formTypeOptions' => $formOptions,
+            ]),
+            fn ($form): string                                                  => $this->renderView('@MauticEmail/AbTest/form.html.twig', [
+                'form' => $this->setFormTheme($form, $twig, ['@MauticEmail/AbTest/form.html.twig', '@MauticEmail/FormTheme/Email/layout.html.twig']),
+            ]),
             'email_abtest_settings',
             'emailform'
         ));
@@ -44,7 +49,9 @@ class AjaxController extends CommonAjaxController
 
     public function sendBatchAction(Request $request): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         /** @var EmailModel $model */
         $model    = $this->getModel('email');
@@ -56,7 +63,11 @@ class AjaxController extends CommonAjaxController
             $dataArray['success'] = 1;
             $session              = $request->getSession();
             $progress             = $session->get('mautic.email.send.progress', [0, (int) $pending]);
-            $stats                = $session->get('mautic.email.send.stats', ['sent' => 0, 'failed' => 0, 'failedRecipients' => []]);
+            $stats                = $session->get('mautic.email.send.stats', [
+                'sent' => 0,
+                'failed' => 0,
+                'failedRecipients' => [],
+            ]);
             $inProgress           = $session->get('mautic.email.send.active', false);
 
             if ($pending && !$inProgress && $entity->isPublished()) {
@@ -122,7 +133,9 @@ class AjaxController extends CommonAjaxController
             $size = $assetModel->getTotalFilesize($assets);
         }
 
-        return $this->sendJsonResponse(['size' => $size]);
+        return $this->sendJsonResponse([
+            'size' => $size,
+        ]);
     }
 
     /**
@@ -130,7 +143,10 @@ class AjaxController extends CommonAjaxController
      */
     public function testMonitoredEmailServerConnectionAction(Request $request, Mailbox $mailbox): JsonResponse
     {
-        $dataArray = ['success' => 0, 'message' => ''];
+        $dataArray = [
+            'success' => 0,
+            'message' => '',
+        ];
 
         if ($this->user->isAdmin()) {
             $settings = $request->request->all();
@@ -180,7 +196,10 @@ class AjaxController extends CommonAjaxController
             $message = $e->getMessage();
         }
 
-        return $this->sendJsonResponse(['success' => $success, 'message' => $message]);
+        return $this->sendJsonResponse([
+            'success' => $success,
+            'message' => $message,
+        ]);
     }
 
     public function getEmailCountStatsAction(Request $request): JsonResponse
@@ -206,12 +225,22 @@ class AjaxController extends CommonAjaxController
                     'id'          => $email->getId(),
                     'pending'     => 'list' === $email->getEmailType() && $pending ? $this->translator->trans(
                         'mautic.email.stat.leadcount',
-                        ['%count%' => $pending]
+                        [
+                            '%count%' => $pending,
+                        ]
                     ) : 0,
-                    'queued'      => ($queued) ? $this->translator->trans('mautic.email.stat.queued', ['%count%' => $queued]) : 0,
-                    'sentCount'   => $this->translator->trans('mautic.email.stat.sentcount', ['%count%' => $email->getSentCount(true)]),
-                    'readCount'   => $this->translator->trans('mautic.email.stat.readcount', ['%count%' => $email->getReadCount(true)]),
-                    'readPercent' => $this->translator->trans('mautic.email.stat.readpercent', ['%count%' => $email->getReadPercentage(true)]),
+                    'queued'      => ($queued) ? $this->translator->trans('mautic.email.stat.queued', [
+                        '%count%' => $queued,
+                    ]) : 0,
+                    'sentCount'   => $this->translator->trans('mautic.email.stat.sentcount', [
+                        '%count%' => $email->getSentCount(true),
+                    ]),
+                    'readCount'   => $this->translator->trans('mautic.email.stat.readcount', [
+                        '%count%' => $email->getReadCount(true),
+                    ]),
+                    'readPercent' => $this->translator->trans('mautic.email.stat.readpercent', [
+                        '%count%' => $email->getReadPercentage(true),
+                    ]),
                 ];
             }
         }
@@ -294,9 +323,13 @@ class AjaxController extends CommonAjaxController
         $totalClicks       = array_sum(array_column($clickStats, 'hits'));
         foreach ($clickStats as &$stat) {
             $stat['unique_hits_rate'] = round($totalUniqueClicks > 0 ? ($stat['unique_hits'] / $totalUniqueClicks) : 0, 4);
-            $stat['unique_hits_text'] = $this->translator->trans('mautic.email.heatmap.clicks', ['%count%' => $stat['unique_hits']]);
+            $stat['unique_hits_text'] = $this->translator->trans('mautic.email.heatmap.clicks', [
+                '%count%' => $stat['unique_hits'],
+            ]);
             $stat['hits_rate']        = round($totalClicks > 0 ? ($stat['hits'] / $totalClicks) : 0, 4);
-            $stat['hits_text']        = $this->translator->trans('mautic.email.heatmap.clicks', ['%count%' => $stat['hits']]);
+            $stat['hits_text']        = $this->translator->trans('mautic.email.heatmap.clicks', [
+                '%count%' => $stat['hits'],
+            ]);
         }
         $legendTemplate = $this->renderView('@MauticEmail/Heatmap/heatmap_legend.html.twig', [
             'totalClicks'       => $totalClicks,

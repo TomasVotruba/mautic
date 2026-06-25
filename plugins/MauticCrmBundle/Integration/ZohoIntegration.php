@@ -267,7 +267,9 @@ class ZohoIntegration extends CrmAbstractIntegration
                         )
                     ) {
                         $company = IdentifyCompanyHelper::identifyLeadsCompany(
-                            ['company' => $entityData['Company']],
+                            [
+                                'company' => $entityData['Company'],
+                            ],
                             null,
                             $this->companyModel
                         );
@@ -342,7 +344,9 @@ class ZohoIntegration extends CrmAbstractIntegration
                             )
                         ) {
                             $company = IdentifyCompanyHelper::identifyLeadsCompany(
-                                ['company' => $entityData['AccountName']],
+                                [
+                                    'company' => $entityData['AccountName'],
+                                ],
                                 null,
                                 $this->companyModel
                             );
@@ -602,7 +606,9 @@ class ZohoIntegration extends CrmAbstractIntegration
 
         return $this->router->generate(
             'mautic_integration_auth_callback',
-            ['integration' => $this->getName()]
+            [
+                'integration' => $this->getName(),
+            ]
         );
     }
 
@@ -626,7 +632,9 @@ class ZohoIntegration extends CrmAbstractIntegration
                     'expanded'    => true,
                     'multiple'    => true,
                     'label'       => 'mautic.integrations.form.blanks',
-                    'label_attr'  => ['class' => 'control-label'],
+                    'label_attr'  => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder' => false,
                     'required'    => false,
                 ]
@@ -663,8 +671,12 @@ class ZohoIntegration extends CrmAbstractIntegration
                     ],
                     'expanded'    => true,
                     'multiple'    => true,
-                    'label'       => $this->getTranslator()->trans('mautic.crm.form.objects_to_pull_from', ['%crm%' => 'Zoho']),
-                    'label_attr'  => ['class' => ''],
+                    'label'       => $this->getTranslator()->trans('mautic.crm.form.objects_to_pull_from', [
+                        '%crm%' => 'Zoho',
+                    ]),
+                    'label_attr'  => [
+                        'class' => '',
+                    ],
                     'placeholder' => false,
                     'required'    => false,
                 ]
@@ -803,7 +815,11 @@ class ZohoIntegration extends CrmAbstractIntegration
         $fields = implode(', l.', $leadFields);
         $fields = 'l.'.$fields;
 
-        $availableFields            = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
+        $availableFields            = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => ['Leads', 'Contacts'],
+            ],
+        ]);
         $fieldsToUpdate['Leads']    = array_values(array_intersect(array_keys($availableFields['Leads']), $fieldsToUpdateInZoho));
         $fieldsToUpdate['Contacts'] = array_values(array_intersect(array_keys($availableFields['Contacts']), $fieldsToUpdateInZoho));
         $fieldsToUpdate['Leads']    = array_intersect_key($config['leadFields'], array_flip($fieldsToUpdate['Leads']));
@@ -1017,7 +1033,11 @@ class ZohoIntegration extends CrmAbstractIntegration
         $zObject = 'Leads';
 
         $fieldsToUpdateInZoho       = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0) : [];
-        $availableFields            = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
+        $availableFields            = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => ['Leads', 'Contacts'],
+            ],
+        ]);
         $fieldsToUpdate['Leads']    = array_values(array_intersect(array_keys($availableFields['Leads']), $fieldsToUpdateInZoho));
         $fieldsToUpdate['Contacts'] = array_values(array_intersect(array_keys($availableFields['Contacts']), $fieldsToUpdateInZoho));
         $fieldsToUpdate['Leads']    = array_intersect_key($config['leadFields'], array_flip($fieldsToUpdate['Leads']));
@@ -1153,7 +1173,11 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     private function getExistingRecord($seachColumn, $searchValue, $object = 'Leads'): array
     {
-        $availableFields = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
+        $availableFields = $this->getAvailableLeadFields([
+            'feature_settings' => [
+                'objects' => ['Leads', 'Contacts'],
+            ],
+        ]);
         $records         = $this->getApiHelper()->getSearchRecords($seachColumn, $searchValue, $object);
         $idField         = [
             'id' => [

@@ -82,7 +82,9 @@ class LeadSubscriber implements EventSubscriberInterface
                 if (!empty($stat['idHash'])) {
                     $eventName = [
                         'label'      => $label,
-                        'href'       => $this->router->generate('mautic_email_webview', ['idHash' => $stat['idHash']]),
+                        'href'       => $this->router->generate('mautic_email_webview', [
+                            'idHash' => $stat['idHash'],
+                        ]),
                         'isExternal' => true,
                     ];
                 } else {

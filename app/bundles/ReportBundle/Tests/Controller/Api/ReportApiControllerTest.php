@@ -31,21 +31,27 @@ class ReportApiControllerTest extends MauticMysqlTestCase
 
     public function testGetReportSuccessByNoCorrectAccessToViewOther(): void
     {
-        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewother']]);
+        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', [
+            'report:reports'=>['viewother'],
+        ]);
         $this->client->request('GET', '/api/reports/'.$reportId);
         $this->assertResponseIsSuccessful();
     }
 
     public function testReportFailByNoCorrectAccessToViewOwn(): void
     {
-        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewown']]);
+        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', [
+            'report:reports'=>['viewown'],
+        ]);
         $this->client->request('GET', '/api/reports/'.$reportId);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testReportSuccessViewOwnBySameUser(): void
     {
-        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewown']], true);
+        $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', [
+            'report:reports'=>['viewown'],
+        ], true);
         $this->client->request('GET', '/api/reports/'.$reportId);
         $this->assertResponseIsSuccessful();
     }
@@ -87,7 +93,10 @@ class ReportApiControllerTest extends MauticMysqlTestCase
             ->delete(Permission::class, 'p')
             ->where('p.bundle = :bundle')
             ->andWhere('p.role = :role_id')
-            ->setParameters(['bundle' => 'report', 'role_id' => $role->getId()])
+            ->setParameters([
+                'bundle' => 'report',
+                'role_id' => $role->getId(),
+            ])
             ->getQuery()
             ->execute();
 

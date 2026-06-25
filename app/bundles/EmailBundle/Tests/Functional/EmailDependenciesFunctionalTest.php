@@ -230,7 +230,9 @@ final class EmailDependenciesFunctionalTest extends MauticMysqlTestCase
         $pointAction->setName('Is sent email');
         $pointAction->setDelta(1);
         $pointAction->setType($type);
-        $pointAction->setProperties(['emails' => [$emailId]]);
+        $pointAction->setProperties([
+            'emails' => [$emailId],
+        ]);
         $this->em->persist($pointAction);
         $this->em->flush();
 
@@ -248,7 +250,9 @@ final class EmailDependenciesFunctionalTest extends MauticMysqlTestCase
         $triggerEvent->setTrigger($pointTrigger);
         $triggerEvent->setName('event');
         $triggerEvent->setType($type);
-        $triggerEvent->setProperties(['email'=>$emailId]);
+        $triggerEvent->setProperties([
+            'email'=>$emailId,
+        ]);
         $this->em->persist($triggerEvent);
         $this->em->flush();
 
@@ -272,7 +276,9 @@ final class EmailDependenciesFunctionalTest extends MauticMysqlTestCase
         $action->setName('send email');
         $action->setForm($form);
         $action->setType('email.send.lead');
-        $action->setProperties(['email'=> $emailId]);
+        $action->setProperties([
+            'email'=> $emailId,
+        ]);
         $this->em->persist($action);
         $this->em->flush();
 
@@ -286,7 +292,9 @@ final class EmailDependenciesFunctionalTest extends MauticMysqlTestCase
         $action->setForm($form);
         $action->setType('email.send.lead');
         $action->setProperties([
-            'useremail' => ['email' => $emailId],
+            'useremail' => [
+                'email' => $emailId,
+            ],
             'user_id'   => [1],
         ]);
         $this->em->persist($action);

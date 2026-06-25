@@ -57,7 +57,11 @@ final class FormAdjustmentsProviderTest extends \PHPUnit\Framework\TestCase
             'email',
             'lead',
             OperatorOptions::EQUAL_TO,
-            ['properties' => ['type' => 'text']]
+            [
+                'properties' => [
+                    'type' => 'text',
+                ],
+            ]
         );
     }
 }

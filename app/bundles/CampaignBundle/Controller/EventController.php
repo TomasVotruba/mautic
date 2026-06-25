@@ -120,7 +120,9 @@ class EventController extends CommonFormController
             EventType::class,
             $event,
             [
-                'action'   => $this->generateUrl('mautic_campaignevent_action', ['objectAction' => 'new']),
+                'action'   => $this->generateUrl('mautic_campaignevent_action', [
+                    'objectAction' => 'new',
+                ]),
                 'settings' => $events[$eventType][$type],
             ]
         );
@@ -154,7 +156,9 @@ class EventController extends CommonFormController
             }
         }
 
-        $viewParams = ['type' => $type];
+        $viewParams = [
+            'type' => $type,
+        ];
         if ($cancelled || $valid) {
             $closeModal = true;
         } else {
@@ -284,7 +288,10 @@ class EventController extends CommonFormController
             EventType::class,
             (array) $event,
             [
-                'action'   => $this->generateUrl('mautic_campaignevent_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
+                'action'   => $this->generateUrl('mautic_campaignevent_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $objectId,
+                ]),
                 'settings' => $supportedEvents[$event['type']],
             ]
         );
@@ -415,7 +422,9 @@ class EventController extends CommonFormController
                 'deletedEvents' => $deletedEvents,
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);
@@ -486,7 +495,9 @@ class EventController extends CommonFormController
                 'deletedEvents' => $deletedEvents,
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);
@@ -532,7 +543,9 @@ class EventController extends CommonFormController
                 'campaignName'  => $campaign ? $campaign->getName() : $this->translator->trans('mautic.campaign.event.clone.new.campaign'),
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);
@@ -623,7 +636,9 @@ class EventController extends CommonFormController
                     '%number%' => $event['triggerInterval'],
                     '%unit%'   => $this->translator->trans(
                         'mautic.campaign.event.intervalunit.'.$event['triggerIntervalUnit'],
-                        ['%count%' => $event['triggerInterval']]
+                        [
+                            '%count%' => $event['triggerInterval'],
+                        ]
                     ),
                 ]
             );

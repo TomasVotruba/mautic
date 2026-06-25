@@ -42,7 +42,9 @@ class UpdateTranslationsStepTest extends AbstractStepTestCase
     {
         $this->languageHelper->expects($this->once())
             ->method('getSupportedLanguages')
-            ->willReturn(['en_US' => []]);
+            ->willReturn([
+                'en_US' => [],
+            ]);
 
         $this->languageHelper->expects($this->never())
             ->method('fetchLanguages');
@@ -63,7 +65,9 @@ class UpdateTranslationsStepTest extends AbstractStepTestCase
 
         $this->languageHelper->expects($this->once())
             ->method('fetchLanguages')
-            ->willReturn(['error' => 'there was an error']);
+            ->willReturn([
+                'error' => 'there was an error',
+            ]);
 
         $this->logger->expects($this->once())
             ->method('error')
@@ -94,7 +98,9 @@ class UpdateTranslationsStepTest extends AbstractStepTestCase
         $this->languageHelper->expects($this->once())
             ->method('extractLanguagePackage')
             ->with('es_MX')
-            ->willReturn(['error' => false]);
+            ->willReturn([
+                'error' => false,
+            ]);
 
         $this->translator->expects($this->any())
             ->method('trans')
@@ -121,7 +127,9 @@ class UpdateTranslationsStepTest extends AbstractStepTestCase
         $this->languageHelper->expects($this->once())
             ->method('extractLanguagePackage')
             ->with('es_MX')
-            ->willReturn(['error' => true]);
+            ->willReturn([
+                'error' => true,
+            ]);
 
         $this->translator->method('trans')
             ->willReturnCallback(

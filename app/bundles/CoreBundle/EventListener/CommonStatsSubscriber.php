@@ -104,7 +104,9 @@ abstract class CommonStatsSubscriber implements EventSubscriberInterface
      */
     protected function addContactRestrictedRepositories(array $repoNames)
     {
-        return $this->addRestrictedRepostories($repoNames, ['lead' => 'lead:leads']);
+        return $this->addRestrictedRepostories($repoNames, [
+            'lead' => 'lead:leads',
+        ]);
     }
 
     protected function addRestrictedRepostories(array $repoNames, array $permissions)

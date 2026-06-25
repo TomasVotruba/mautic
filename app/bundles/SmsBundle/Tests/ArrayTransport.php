@@ -21,7 +21,10 @@ class ArrayTransport implements TransportInterface
 
     public function sendSms(Lead $lead, $content): bool
     {
-        $this->smses[] = ['contact' => $lead, 'content' => $content];
+        $this->smses[] = [
+            'contact' => $lead,
+            'content' => $content,
+        ];
 
         return true;
     }

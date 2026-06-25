@@ -483,7 +483,10 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
 
     public function getPages(array $fields): array
     {
-        $pages = ['open' => [], 'close' => []];
+        $pages = [
+            'open' => [],
+            'close' => [],
+        ];
 
         $openFieldId  =
         $previousId   =
@@ -998,9 +1001,13 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $list = $this->getContactFieldPropertiesList($mappedFieldAlias);
 
         if (!empty($list)) {
-            $formFieldProps['list'] = ['list' => $list];
+            $formFieldProps['list'] = [
+                'list' => $list,
+            ];
             if (array_key_exists('optionlist', $formFieldProps)) {
-                $formFieldProps['optionlist'] = ['list' => $list];
+                $formFieldProps['optionlist'] = [
+                    'list' => $list,
+                ];
             }
             $formField->setProperties($formFieldProps);
         }

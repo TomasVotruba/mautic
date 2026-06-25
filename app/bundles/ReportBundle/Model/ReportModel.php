@@ -811,7 +811,11 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $search = 'lll.leadlist_id';
         $filter = [
             'force'  => [
-                ['column' => 'r.filters', 'expr' => 'LIKE', 'value'=>'%'.$search.'"%'],
+                [
+                    'column' => 'r.filters',
+                    'expr' => 'LIKE',
+                    'value'=>'%'.$search.'"%',
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -840,8 +844,16 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $search = 'e.id';
         $filter = [
             'force'  => [
-                ['column' => 'r.source', 'expr' => 'IN', 'value'=> ['emails', 'email.stats']],
-                ['column' => 'r.filters', 'expr' => 'LIKE', 'value'=>'%'.$search.'"%'],
+                [
+                    'column' => 'r.source',
+                    'expr' => 'IN',
+                    'value'=> ['emails', 'email.stats'],
+                ],
+                [
+                    'column' => 'r.filters',
+                    'expr' => 'LIKE',
+                    'value'=>'%'.$search.'"%',
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -870,7 +882,11 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $search = 'tag';
         $filter = [
             'force'  => [
-                ['column' => 'r.filters', 'expr' => 'LIKE', 'value'=>'%'.$search.'"%'],
+                [
+                    'column' => 'r.filters',
+                    'expr' => 'LIKE',
+                    'value'=>'%'.$search.'"%',
+                ],
             ],
         ];
         $entities = $this->getEntities(

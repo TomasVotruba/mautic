@@ -80,7 +80,9 @@ final class PageDraftFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy(['page' => $page]);
+        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy([
+            'page' => $page,
+        ]);
 
         Assert::assertNull($pageDraft);
         Assert::assertSame('Test html Draft', $page->getCustomHtml());
@@ -93,7 +95,9 @@ final class PageDraftFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy(['page' => $page]);
+        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy([
+            'page' => $page,
+        ]);
 
         Assert::assertNull($pageDraft);
         Assert::assertSame('Test html', $page->getCustomHtml());
@@ -108,7 +112,9 @@ final class PageDraftFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
 
-        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy(['page' => $page]);
+        $pageDraft = $this->em->getRepository(PageDraft::class)->findOneBy([
+            'page' => $page,
+        ]);
         Assert::assertEquals('Test html Draft', $pageDraft->getHtml());
         Assert::assertSame('Test html', $page->getCustomHtml());
     }

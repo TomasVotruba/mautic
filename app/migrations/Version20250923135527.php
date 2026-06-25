@@ -33,7 +33,9 @@ final class Version20250923135527 extends PreUpAssertionMigration
                 $table,
                 [self::COLUMN_NAME],
                 ['id'],
-                ['onDelete' => 'CASCADE'],
+                [
+                    'onDelete' => 'CASCADE',
+                ],
                 'FK_PUSH_NOTIFICATIONS_TRANSLATION_PARENT'
             );
         }

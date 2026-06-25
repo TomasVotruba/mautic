@@ -15,7 +15,11 @@ class MergeRecordRepository extends CommonRepository
     public function findMergedContact($id)
     {
         /** @var MergeRecord $record */
-        if ($record = $this->findOneBy(['mergedId' => (int) $id], ['dateAdded' => 'desc'])) {
+        if ($record = $this->findOneBy([
+            'mergedId' => (int) $id,
+        ], [
+            'dateAdded' => 'desc',
+        ])) {
             $contact = $record->getContact();
 
             // Clear these records from the EM so that subsequent fetches don't return deleted entities

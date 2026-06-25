@@ -65,7 +65,9 @@ class CampaignSubscriber implements EventSubscriberInterface
             'object'    => 'campaign',
             'objectId'  => $campaign->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $campaign->getName()],
+            'details'   => [
+                'name' => $campaign->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

@@ -242,7 +242,13 @@ final class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segment->setPublicName($segmentName);
         $segment->setAlias(mb_strtolower($segmentName));
         $segment->setIsPublished(true);
-        $segment->setFilters([['field' => 'leadlist', 'type' => 'leadlist', 'properties' => ['filter' => [$segmentForFilter->getId()]]]]);
+        $segment->setFilters([[
+            'field' => 'leadlist',
+            'type' => 'leadlist',
+            'properties' => [
+                'filter' => [$segmentForFilter->getId()],
+            ],
+        ]]);
         $this->em->persist($segment);
         $this->em->flush();
 

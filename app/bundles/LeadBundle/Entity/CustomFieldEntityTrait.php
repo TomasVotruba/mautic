@@ -146,7 +146,9 @@ trait CustomFieldEntityTrait
         }
 
         if ($oldValue !== $value && !(('' === $oldValue && null === $value) || (null === $oldValue && '' === $value))) {
-            $this->addChange('fields', [$alias => [$oldValue, $value]]);
+            $this->addChange('fields', [
+                $alias => [$oldValue, $value],
+            ]);
             $this->updatedFields[$alias] = $value;
         }
 

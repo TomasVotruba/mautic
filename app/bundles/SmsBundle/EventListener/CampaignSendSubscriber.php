@@ -40,7 +40,9 @@ class CampaignSendSubscriber implements EventSubscriberInterface
                     'description'      => 'mautic.campaign.sms.send_text_sms.tooltip',
                     'batchEventName'   => SmsEvents::ON_CAMPAIGN_TRIGGER_BATCH_ACTION,
                     'formType'         => SmsSendType::class,
-                    'formTypeOptions'  => ['update_select' => 'campaignevent_properties_sms'],
+                    'formTypeOptions'  => [
+                        'update_select' => 'campaignevent_properties_sms',
+                    ],
                     'formTheme'        => '@MauticSms/FormTheme/SmsSendList/smssend_list_row.html.twig',
                     'channel'          => 'sms',
                     'channelIdField'   => 'sms',
@@ -73,7 +75,9 @@ class CampaignSendSubscriber implements EventSubscriberInterface
     private function sendSmsInBatches(Sms $sms, PendingEvent $event): void
     {
         $contacts = $event->getContacts()->toArray();
-        $result   = $this->smsModel->sendSMS($sms, $contacts, ['channel' => ['campaign.event', $event->getEvent()->getId()]]);
+        $result   = $this->smsModel->sendSMS($sms, $contacts, [
+            'channel' => ['campaign.event', $event->getEvent()->getId()],
+        ]);
         $this->processResponse($event, $result);
     }
 

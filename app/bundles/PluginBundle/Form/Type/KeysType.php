@@ -48,7 +48,9 @@ class KeysType extends AbstractType
                 $type,
                 [
                     'label'      => $label,
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'        => 'form-control',
                         'placeholder'  => (PasswordType::class === $type) ? '**************' : '',
@@ -67,7 +69,10 @@ class KeysType extends AbstractType
     {
         $resolver->setRequired(['integration_object', 'integration_keys']);
         $resolver->setDefined(['secret_keys']);
-        $resolver->setDefaults(['secret_keys' => [], 'is_published' => true]);
+        $resolver->setDefaults([
+            'secret_keys' => [],
+            'is_published' => true,
+        ]);
     }
 
     public function getBlockPrefix(): string

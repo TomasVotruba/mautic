@@ -29,7 +29,9 @@ class FieldToOrderTransformer implements DataTransformerInterface
             return null;
         }
 
-        return $this->leadFieldRepository->findOneBy(['order' => $order]);
+        return $this->leadFieldRepository->findOneBy([
+            'order' => $order,
+        ]);
     }
 
     /**

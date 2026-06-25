@@ -20,8 +20,12 @@ class FormSubmitActionPointsChangeType extends AbstractType
             ChoiceType::class,
             [
                 'label'             => 'mautic.lead.lead.submitaction.operator',
-                'attr'              => ['class' => 'form-control'],
-                'label_attr'        => ['class' => 'control-label'],
+                'attr'              => [
+                    'class' => 'form-control',
+                ],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
                 'choices'           => [
                     'mautic.lead.lead.submitaction.operator_plus'   => 'plus',
                     'mautic.lead.lead.submitaction.operator_minus'  => 'minus',
@@ -37,8 +41,12 @@ class FormSubmitActionPointsChangeType extends AbstractType
             NumberType::class,
             [
                 'label'      => 'mautic.lead.lead.submitaction.points',
-                'attr'       => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'scale'      => 0,
                 'data'       => $default,
             ]
@@ -46,7 +54,9 @@ class FormSubmitActionPointsChangeType extends AbstractType
 
         $builder->add('group', GroupListType::class, [
             'label'            => 'mautic.lead.campaign.event.point_group',
-            'label_attr'       => ['class' => 'control-label'],
+            'label_attr'       => [
+                'class' => 'control-label',
+            ],
             'attr'             => [
                 'class'    => 'form-control',
                 'tooltip'  => 'mautic.lead.campaign.event.point_group.help',

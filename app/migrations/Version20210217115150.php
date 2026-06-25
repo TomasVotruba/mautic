@@ -25,9 +25,13 @@ final class Version20210217115150 extends AbstractMauticMigration
     public function up(Schema $schema): void
     {
         $schema->getTable($this->getPrefixedTableName(Campaign::TABLE_NAME))
-            ->addColumn('deleted', Types::DATETIME_MUTABLE, ['notnull' => false]);
+            ->addColumn('deleted', Types::DATETIME_MUTABLE, [
+                'notnull' => false,
+            ]);
 
         $schema->getTable($this->getPrefixedTableName(Event::TABLE_NAME))
-            ->addColumn('deleted', Types::DATETIME_MUTABLE, ['notnull' => false]);
+            ->addColumn('deleted', Types::DATETIME_MUTABLE, [
+                'notnull' => false,
+            ]);
     }
 }

@@ -169,7 +169,9 @@ class ColumnSchemaHelper
             throw new \OutOfRangeException('Column length should be between 1 and 191.');
         }
 
-        $this->toTable->modifyColumn($column, ['length' => $length]);
+        $this->toTable->modifyColumn($column, [
+            'length' => $length,
+        ]);
 
         return $this;
     }

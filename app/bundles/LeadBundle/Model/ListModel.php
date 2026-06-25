@@ -389,8 +389,13 @@ class ListModel extends FormModel implements GlobalSearchInterface
 
         $dtHelper = new DateTimeHelper();
 
-        $batchLimiters = ['dateTime' => $dtHelper->toUtcString()];
-        $list          = ['id' => $segmentId, 'filters' => $leadList->getFilters()];
+        $batchLimiters = [
+            'dateTime' => $dtHelper->toUtcString(),
+        ];
+        $list          = [
+            'id' => $segmentId,
+            'filters' => $leadList->getFilters(),
+        ];
 
         $this->dispatcher->dispatch(
             new ListPreProcessListEvent($list, false), LeadEvents::LIST_PRE_PROCESS_LIST
@@ -421,7 +426,10 @@ class ListModel extends FormModel implements GlobalSearchInterface
         $this->logger->info('Segment QB - No new leads for segment found');
 
         if ($output) {
-            $output->writeln($this->translator->trans('mautic.lead.list.rebuild.to_be_added', ['%leads%' => $leadCount, '%batch%' => $limit]));
+            $output->writeln($this->translator->trans('mautic.lead.list.rebuild.to_be_added', [
+                '%leads%' => $leadCount,
+                '%batch%' => $limit,
+            ]));
         }
 
         // Handle by batches
@@ -513,7 +521,10 @@ class ListModel extends FormModel implements GlobalSearchInterface
         $leadCount = $orphanLeadsCount[$segmentId]['count'];
 
         if ($output) {
-            $output->writeln($this->translator->trans('mautic.lead.list.rebuild.to_be_removed', ['%leads%' => $leadCount, '%batch%' => $limit]));
+            $output->writeln($this->translator->trans('mautic.lead.list.rebuild.to_be_removed', [
+                '%leads%' => $leadCount,
+                '%batch%' => $limit,
+            ]));
         }
 
         if ($leadCount) {
@@ -1062,8 +1073,12 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $data['labels'][] = substr($result['stage'], 0, 12);
             $data['values'][] = $result['leads'];
         }
-        $data['xAxes'][] = ['display' => true];
-        $data['yAxes'][] = ['display' => true];
+        $data['xAxes'][] = [
+            'display' => true,
+        ];
+        $data['yAxes'][] = [
+            'display' => true,
+        ];
 
         $baseData = [
             'label' => $this->translator->trans('mautic.lead.leads'),
@@ -1079,7 +1094,8 @@ class ListModel extends FormModel implements GlobalSearchInterface
             'options'  => [
                 'xAxes' => $data['xAxes'],
                 'yAxes' => $data['yAxes'],
-            ], ];
+            ],
+        ];
     }
 
     /**
@@ -1125,8 +1141,12 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $data['values'][] = $result['leads'];
         }
 
-        $data['xAxes'][] = ['display' => true];
-        $data['yAxes'][] = ['display' => true];
+        $data['xAxes'][] = [
+            'display' => true,
+        ];
+        $data['yAxes'][] = [
+            'display' => true,
+        ];
 
         $baseData = [
             'label' => $this->translator->trans('mautic.core.device'),
@@ -1181,11 +1201,17 @@ class ListModel extends FormModel implements GlobalSearchInterface
         $likeContent = "%;s:5:\"field\";s:{$aliasLength}:\"{$alias}\";%";
         $filter      = [
             'force'  => [
-                ['column' => 'l.filters', 'expr' => 'LIKE', 'value'=> $likeContent],
+                [
+                    'column' => 'l.filters',
+                    'expr' => 'LIKE',
+                    'value'=> $likeContent,
+                ],
             ],
         ];
 
-        return $this->getEntities(['filter' => $filter]);
+        return $this->getEntities([
+            'filter' => $filter,
+        ]);
     }
 
     /**
@@ -1195,8 +1221,16 @@ class ListModel extends FormModel implements GlobalSearchInterface
     {
         $filter = [
             'force'  => [
-                ['column' => 'l.filters', 'expr' => 'LIKE', 'value'=>'%s:8:"leadlist"%'],
-                ['column' => 'l.id', 'expr' => 'neq', 'value'=>$segmentId],
+                [
+                    'column' => 'l.filters',
+                    'expr' => 'LIKE',
+                    'value'=>'%s:8:"leadlist"%',
+                ],
+                [
+                    'column' => 'l.id',
+                    'expr' => 'neq',
+                    'value'=>$segmentId,
+                ],
             ],
         ];
         $entities = $this->getEntities(
@@ -1306,7 +1340,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
             [
                 'filter' => [
                     'force'  => [
-                        ['column' => 'l.filters', 'expr' => 'LIKE', 'value'=>'%s:8:"leadlist"%'],
+                        [
+                            'column' => 'l.filters',
+                            'expr' => 'LIKE',
+                            'value'=>'%s:8:"leadlist"%',
+                        ],
                     ],
                 ],
             ]
@@ -1436,7 +1474,9 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     public function getSegmentsBuildTime(int $limit = 10, string $order = 'DESC', array $segmentsFilter = [], bool $canViewOthers = true): array
     {
-        $criteria = ['isPublished' => true];
+        $criteria = [
+            'isPublished' => true,
+        ];
 
         if (!$canViewOthers) {
             $criteria['createdBy'] = $this->userHelper->getUser()->getId();
@@ -1446,6 +1486,8 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $criteria['id'] = $segmentsFilter;
         }
 
-        return $this->getRepository()->findBy($criteria, ['lastBuiltTime' => $order], $limit);
+        return $this->getRepository()->findBy($criteria, [
+            'lastBuiltTime' => $order,
+        ], $limit);
     }
 }

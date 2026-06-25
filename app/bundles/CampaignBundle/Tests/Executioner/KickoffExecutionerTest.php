@@ -78,8 +78,12 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->kickoffContactFinder->expects($this->exactly(3))
             ->method('getContacts')
             ->willReturnOnConsecutiveCalls(
-                new ArrayCollection([3 => new Lead()]),
-                new ArrayCollection([10 => new Lead()]),
+                new ArrayCollection([
+                    3 => new Lead(),
+                ]),
+                new ArrayCollection([
+                    10 => new Lead(),
+                ]),
                 new ArrayCollection([])
             );
 

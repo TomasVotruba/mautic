@@ -229,7 +229,9 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('username', new Assert\NotBlank(
-            ['message' => 'mautic.user.user.username.notblank']
+            [
+                'message' => 'mautic.user.user.username.notblank',
+            ]
         ));
 
         $metadata->addConstraint(new UniqueEntity(
@@ -241,15 +243,21 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         ));
 
         $metadata->addPropertyConstraint('firstName', new Assert\NotBlank(
-            ['message' => 'mautic.user.user.firstname.notblank']
+            [
+                'message' => 'mautic.user.user.firstname.notblank',
+            ]
         ));
 
         $metadata->addPropertyConstraint('lastName', new Assert\NotBlank(
-            ['message' => 'mautic.user.user.lastname.notblank']
+            [
+                'message' => 'mautic.user.user.lastname.notblank',
+            ]
         ));
 
         $metadata->addPropertyConstraint('email', new Assert\NotBlank(
-            ['message' => 'mautic.user.user.email.valid']
+            [
+                'message' => 'mautic.user.user.email.valid',
+            ]
         ));
 
         $metadata->addPropertyConstraint('email', new Assert\Email(
@@ -276,7 +284,9 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         ));
 
         $metadata->addPropertyConstraint('role', new Assert\NotBlank(
-            ['message' => 'mautic.user.user.role.notblank']
+            [
+                'message' => 'mautic.user.user.role.notblank',
+            ]
         ));
 
         $metadata->addPropertyConstraint('plainPassword', new Assert\NotBlank(

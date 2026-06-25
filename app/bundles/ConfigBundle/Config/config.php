@@ -18,7 +18,9 @@ return [
         'admin' => [
             'mautic.config.menu.index' => [
                 'route'           => 'mautic_config_action',
-                'routeParameters' => ['objectAction' => 'edit'],
+                'routeParameters' => [
+                    'objectAction' => 'edit',
+                ],
                 'iconClass'       => 'ri-settings-5-line',
                 'id'              => 'mautic_config_index',
                 'parent'          => 'mautic.core.general',

@@ -36,7 +36,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -88,7 +90,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -156,7 +160,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -202,7 +208,9 @@ final class CampaignSubscriberTest extends TestCase
         Assert::assertCount(1, $pendingEvent->getSuccessful());
         Assert::assertSame([], $log->getMetadata());
         Assert::assertSame(123, $contact->getStage()->getId());
-        Assert::assertSame(['stage' => [null, 123]], $contact->getChanges());
+        Assert::assertSame([
+            'stage' => [null, 123],
+        ], $contact->getChanges());
     }
 
     public function testOnCampaignTriggerStageChangeWhenContactHasTheSameStage(): void
@@ -239,7 +247,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -326,7 +336,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -414,7 +426,9 @@ final class CampaignSubscriberTest extends TestCase
         $logs         = new ArrayCollection([$log]);
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $event->setProperties(['stage' => 123]);
+        $event->setProperties([
+            'stage' => 123,
+        ]);
 
         $contactModel = new class extends LeadModel {
             public function __construct()
@@ -461,7 +475,9 @@ final class CampaignSubscriberTest extends TestCase
         Assert::assertCount(1, $pendingEvent->getSuccessful());
         Assert::assertSame([], $log->getMetadata());
         Assert::assertSame(444, $contact->getStage()->getId());
-        Assert::assertSame(['stage' => [444, 123]], $contact->getChanges());
+        Assert::assertSame([
+            'stage' => [444, 123],
+        ], $contact->getChanges());
     }
 
     private function createTranslatorMock(): TranslatorInterface

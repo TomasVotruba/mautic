@@ -43,7 +43,9 @@ final class EventExecutionerLockTest extends MauticMysqlTestCase
 
         Assert::assertSame(0, $contact->getPoints());
 
-        $contacts = new ArrayCollection([$contact->getId() => $contact]);
+        $contacts = new ArrayCollection([
+            $contact->getId() => $contact,
+        ]);
         $this->eventExecutioner->executeForContacts($event, $contacts);
         Assert::assertSame(self::ADD_POINTS, $contact->getPoints(), 'Points should be added.');
 
@@ -72,7 +74,9 @@ final class EventExecutionerLockTest extends MauticMysqlTestCase
         Assert::assertSame(0, $contact->getPoints());
 
         $listener = $this->makeEventExecutionFail();
-        $contacts = new ArrayCollection([$contact->getId() => $contact]);
+        $contacts = new ArrayCollection([
+            $contact->getId() => $contact,
+        ]);
         $this->eventExecutioner->executeForContacts($event, $contacts);
         Assert::assertSame(0, $contact->getPoints(),
             'Points should not be added as the execution failed.');
@@ -110,7 +114,9 @@ final class EventExecutionerLockTest extends MauticMysqlTestCase
         $event->setName('Add points');
         $event->setType('lead.changepoints');
         $event->setEventType('action');
-        $event->setProperties(['points' => self::ADD_POINTS]);
+        $event->setProperties([
+            'points' => self::ADD_POINTS,
+        ]);
         $this->em->persist($event);
 
         return $event;

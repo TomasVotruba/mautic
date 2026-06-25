@@ -56,7 +56,9 @@ class PointSubscriber implements EventSubscriberInterface
             'object'    => 'point',
             'objectId'  => $point->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $point->getName()],
+            'details'   => [
+                'name' => $point->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);
@@ -92,7 +94,9 @@ class PointSubscriber implements EventSubscriberInterface
             'object'    => 'trigger',
             'objectId'  => $trigger->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $trigger->getName()],
+            'details'   => [
+                'name' => $trigger->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

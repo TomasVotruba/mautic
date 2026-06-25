@@ -95,18 +95,36 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
     public static function dataEventProperties(): iterable
     {
         yield [
-            ['type'  => 'datetime', 'alias' => 'date_field'],
-            ['field' => 'date_field', 'operator' => 'empty'],
+            [
+                'type'  => 'datetime',
+                'alias' => 'date_field',
+            ],
+            [
+                'field' => 'date_field',
+                'operator' => 'empty',
+            ],
             true,
         ];
         yield [
-            ['type'  => 'datetime', 'alias' => 'date_field_another'],
-            ['field' => 'date_field_another', 'operator' => '!empty'],
+            [
+                'type'  => 'datetime',
+                'alias' => 'date_field_another',
+            ],
+            [
+                'field' => 'date_field_another',
+                'operator' => '!empty',
+            ],
             false,
         ];
         yield [
-            ['type'  => 'text', 'alias' => 'test_text_field'],
-            ['field' => 'firstname', 'operator' => 'empty'],
+            [
+                'type'  => 'text',
+                'alias' => 'test_text_field',
+            ],
+            [
+                'field' => 'firstname',
+                'operator' => 'empty',
+            ],
             false,
         ];
     }
@@ -154,7 +172,10 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
 
     public function testOnCampaignTriggerConditionReturnsCorrectResultsForContactAddedContext(): void
     {
-        $field = ['type' => 'text', 'alias' => 'test_text_field'];
+        $field = [
+            'type' => 'text',
+            'alias' => 'test_text_field',
+        ];
         $this->makeField($field);
         $lead = $this->createTestLead($field);
 
@@ -171,7 +192,12 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $entityEvent->setName('Test Condition');
         $entityEvent->setEventType('condition');
         $entityEvent->setType('lead.attached');
-        $entityEvent->setProperties(['timestamp' => 'campaign_start_date', 'operator' => 'gt', 'triggerInterval' => '10', 'triggerIntervalUnit' => 'i']);
+        $entityEvent->setProperties([
+            'timestamp' => 'campaign_start_date',
+            'operator' => 'gt',
+            'triggerInterval' => '10',
+            'triggerIntervalUnit' => 'i',
+        ]);
 
         $this->em->persist($entityEvent);
         $this->em->flush();

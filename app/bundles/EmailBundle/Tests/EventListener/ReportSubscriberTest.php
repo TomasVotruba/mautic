@@ -262,7 +262,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $eventMock->expects($this->once())
             ->method('getOptions')
-            ->willReturn(['chartQuery' => $chartQueryMock, 'translator' => $translatorMock]);
+            ->willReturn([
+                'chartQuery' => $chartQueryMock,
+                'translator' => $translatorMock,
+            ]);
 
         $queryBuilderMock->expects($this->once())
             ->method('select')
@@ -275,7 +278,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         // Expect the DNC table has not been joined yet.
         $queryBuilderMock->expects($this->once())
             ->method('getQueryParts')
-            ->willReturn(['join' => []]);
+            ->willReturn([
+                'join' => [],
+            ]);
 
         $queryBuilderMock->expects($this->once())
             ->method('leftJoin')
@@ -319,7 +324,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $eventMock->expects($this->once())
             ->method('getOptions')
-            ->willReturn(['chartQuery' => $chartQueryMock, 'translator' => $translatorMock]);
+            ->willReturn([
+                'chartQuery' => $chartQueryMock,
+                'translator' => $translatorMock,
+            ]);
 
         $this->emailRepository->expects($this->once())
             ->method('getSentReadNotReadCount')
@@ -375,7 +383,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $eventMock->expects($this->once())
             ->method('getOptions')
-            ->willReturn(['chartQuery' => $chartQueryMock, 'translator' => $translatorMock]);
+            ->willReturn([
+                'chartQuery' => $chartQueryMock,
+                'translator' => $translatorMock,
+            ]);
 
         $queryBuilderMock->expects($this->once())
             ->method('select')

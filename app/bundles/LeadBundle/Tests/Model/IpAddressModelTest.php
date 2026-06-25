@@ -53,7 +53,9 @@ class IpAddressModelTest extends TestCase
     {
         $contact      = $this->createMock(Lead::class);
         $ipAddress    = $this->createMock(IpAddress::class);
-        $ipAddresses  = new ArrayCollection(['1.2.3.4' => $ipAddress]);
+        $ipAddresses  = new ArrayCollection([
+            '1.2.3.4' => $ipAddress,
+        ]);
 
         $contact->expects($this->exactly(1))
             ->method('getIpAddresses')
@@ -70,7 +72,10 @@ class IpAddressModelTest extends TestCase
         $contact        = $this->createMock(Lead::class);
         $ipAddressAdded = $this->createMock(IpAddress::class);
         $ipAddressOld   = $this->createMock(IpAddress::class);
-        $ipAddresses    = new ArrayCollection(['1.2.3.999' => $ipAddressOld, '1.2.3.4' => $ipAddressAdded]);
+        $ipAddresses    = new ArrayCollection([
+            '1.2.3.999' => $ipAddressOld,
+            '1.2.3.4' => $ipAddressAdded,
+        ]);
         $connection     = $this->createMock(Connection::class);
         $queryBuilder   = $this->createMock(QueryBuilder::class);
 
@@ -84,7 +89,11 @@ class IpAddressModelTest extends TestCase
 
         $contact->expects($this->exactly(2))
             ->method('getChanges')
-            ->willReturn(['ipAddressList' => ['1.2.3.4' => $ipAddressAdded]]);
+            ->willReturn([
+                'ipAddressList' => [
+                    '1.2.3.4' => $ipAddressAdded,
+                ],
+            ]);
 
         $ipAddressAdded->expects($this->exactly(2))
             ->method('getId')
@@ -121,7 +130,9 @@ class IpAddressModelTest extends TestCase
     {
         $contact      = $this->createMock(Lead::class);
         $ipAddress    = $this->createMock(IpAddress::class);
-        $ipAddresses  = new ArrayCollection(['1.2.3.4' => $ipAddress]);
+        $ipAddresses  = new ArrayCollection([
+            '1.2.3.4' => $ipAddress,
+        ]);
         $connection   = $this->createMock(Connection::class);
         $queryBuilder = $this->createMock(QueryBuilder::class);
 
@@ -135,7 +146,11 @@ class IpAddressModelTest extends TestCase
 
         $contact->expects($this->once())
             ->method('getChanges')
-            ->willReturn(['ipAddressList' => ['1.2.3.4' => $ipAddress]]);
+            ->willReturn([
+                'ipAddressList' => [
+                    '1.2.3.4' => $ipAddress,
+                ],
+            ]);
 
         $ipAddress->expects($this->exactly(3))
             ->method('getId')

@@ -40,7 +40,10 @@ class InputOptionsDAOTest extends TestCase
         $this->assertSame(['hfskjdhf', 'hfskjdhr'], $inputOptionsDAO->getIntegrationObjectIds()->getObjectIdsFor('Lead'));
         $this->assertSame('2019-09-12T12:01:20+00:00', $inputOptionsDAO->getStartDateTime()->format(DATE_ATOM));
         $this->assertSame('2019-10-12T12:01:20+00:00', $inputOptionsDAO->getEndDateTime()->format(DATE_ATOM));
-        $this->assertSame(['custom1' => '1', 'custom2' => '2'], $inputOptionsDAO->getOptions());
+        $this->assertSame([
+            'custom1' => '1',
+            'custom2' => '2',
+        ], $inputOptionsDAO->getOptions());
     }
 
     public function testWorkflowFromCliWithNoValuesSet(): void
@@ -51,7 +54,9 @@ class InputOptionsDAOTest extends TestCase
 
     public function testWorkflowFromCliWithOnlyIntegrationValuesSet(): void
     {
-        $inputOptionsDAO = new InputOptionsDAO(['integration' => 'Magento']);
+        $inputOptionsDAO = new InputOptionsDAO([
+            'integration' => 'Magento',
+        ]);
         $this->assertSame('Magento', $inputOptionsDAO->getIntegration());
         $this->assertFalse($inputOptionsDAO->isFirstTimeSync());
         $this->assertTrue($inputOptionsDAO->pullIsEnabled());
@@ -70,7 +75,10 @@ class InputOptionsDAOTest extends TestCase
         $integrationObjectIds = new ObjectIdsDAO();
         $start                = new \DateTimeImmutable('2019-09-12T12:01:20', new \DateTimeZone('UTC'));
         $end                  = new \DateTimeImmutable('2019-10-12T12:01:20', new \DateTimeZone('UTC'));
-        $options              = ['custom1' => 1, 'custom2' => 2];
+        $options              = [
+            'custom1' => 1,
+            'custom2' => 2,
+        ];
         $inputOptionsDAO      = new InputOptionsDAO(
             [
                 'integration'           => 'Magento',

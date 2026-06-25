@@ -216,7 +216,9 @@ final class LeadFieldRepositoryTest extends TestCase
         // A company column found. Therefore it's a company field.
         $mocks['statementAliasResult']->expects($this->once())
             ->method('fetchAllAssociative')
-            ->willReturn([['alias' => $fieldAlias]]);
+            ->willReturn([[
+                'alias' => $fieldAlias,
+            ]]);
 
         $matcher = $this->exactly(2);
         $mocks['exprCompare']->expects($matcher)
@@ -284,7 +286,9 @@ final class LeadFieldRepositoryTest extends TestCase
         // A contact ID was found by the value so the result should be true.
         $mocks['statementCompareResult']->expects($this->once())
             ->method('fetchAssociative')
-            ->willReturn(['id' => 456]);
+            ->willReturn([
+                'id' => 456,
+            ]);
 
         $this->assertTrue($this->repository->compareDateValue($contactId, $fieldAlias, $value));
     }
@@ -402,8 +406,12 @@ final class LeadFieldRepositoryTest extends TestCase
      */
     public static function dataGetEmptyOperators(): iterable
     {
-        yield ['empty', ['id' => 123],  true];
-        yield ['!empty', ['id' => 123],  true];
+        yield ['empty', [
+            'id' => 123,
+        ],  true];
+        yield ['!empty', [
+            'id' => 123,
+        ],  true];
         yield ['empty', [], false];
         yield ['!empty', [], false];
     }

@@ -28,7 +28,11 @@ class EmailTriggerTest extends MauticMysqlTestCase
 
         $trigger      = $this->createTrigger();
         $triggerEvent = $this->createTriggerEvent($trigger);
-        $triggerEvent->setProperties(['useremail' => ['email' => $email->getId()]]);
+        $triggerEvent->setProperties([
+            'useremail' => [
+                'email' => $email->getId(),
+            ],
+        ]);
 
         $this->em->flush();
         $this->em->detach($trigger);

@@ -42,10 +42,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'notIn', 'values' => []]);
+        $field->setConditions([
+            'expr' => 'notIn',
+            'values' => [],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => 'value A'];
+        $data = [
+            $parentFieldAlias => 'value A',
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -60,10 +65,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'notIn', 'values' => [1]]);
+        $field->setConditions([
+            'expr' => 'notIn',
+            'values' => [1],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => 0];
+        $data = [
+            $parentFieldAlias => 0,
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -78,10 +88,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'notIn', 'values' => ['value A']]);
+        $field->setConditions([
+            'expr' => 'notIn',
+            'values' => ['value A'],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => 'value A'];
+        $data = [
+            $parentFieldAlias => 'value A',
+        ];
 
         $this->assertFalse($field->showForConditionalField($data));
     }
@@ -96,10 +111,16 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => '', 'any' => true, 'values' => ['value A']]);
+        $field->setConditions([
+            'expr' => '',
+            'any' => true,
+            'values' => ['value A'],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => 'value A'];
+        $data = [
+            $parentFieldAlias => 'value A',
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -114,10 +135,16 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => '', 'any' => true, 'values' => [1]]);
+        $field->setConditions([
+            'expr' => '',
+            'any' => true,
+            'values' => [1],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => 0];
+        $data = [
+            $parentFieldAlias => 0,
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -132,10 +159,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'in', 'values' => ['value A']]);
+        $field->setConditions([
+            'expr' => 'in',
+            'values' => ['value A'],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => ['value A']];
+        $data = [
+            $parentFieldAlias => ['value A'],
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -150,10 +182,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'in', 'values' => ['value B']]);
+        $field->setConditions([
+            'expr' => 'in',
+            'values' => ['value B'],
+        ]);
         $parentField->method('getId')->willReturn(55);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => ['value A']];
+        $data = [
+            $parentFieldAlias => ['value A'],
+        ];
 
         $this->assertFalse($field->showForConditionalField($data));
     }
@@ -168,10 +205,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $field->setConditions(['expr' => 'in', 'values' => ['0']]);
+        $field->setConditions([
+            'expr' => 'in',
+            'values' => ['0'],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => [0]];
+        $data = [
+            $parentFieldAlias => [0],
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -187,10 +229,15 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $specialValue = 'čé+äà>&"\'è';
-        $field->setConditions(['expr' => 'in', 'values' => [InputHelper::clean($specialValue)]]);
+        $field->setConditions([
+            'expr' => 'in',
+            'values' => [InputHelper::clean($specialValue)],
+        ]);
         $parentField->method('getId')->willReturn($parentFieldId);
         $parentField->method('getAlias')->willReturn($parentFieldAlias);
-        $data = [$parentFieldAlias => [$specialValue]];
+        $data = [
+            $parentFieldAlias => [$specialValue],
+        ];
 
         $this->assertTrue($field->showForConditionalField($data));
     }
@@ -222,7 +269,9 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
     {
         $field       = new Field();
         $form        = new Form();
-        $submissions = [['field_a' => 'Value A']];
+        $submissions = [[
+            'field_a' => 'Value A',
+        ]];
         $form->setInKioskMode(false);
         $field->setShowWhenValueExists(false);
         $field->setIsAutoFill(false);
@@ -234,7 +283,9 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
     {
         $field       = new Field();
         $form        = new Form();
-        $submissions = [['field_a' => 'Value A']];
+        $submissions = [[
+            'field_a' => 'Value A',
+        ]];
         $form->setInKioskMode(false);
         $field->setShowWhenValueExists(false);
         $field->setIsAutoFill(false);
@@ -321,11 +372,19 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
     public static function dataProvider(): iterable
     {
         yield ['string', [], false];
-        yield ['string', ['multiple' => 0], false];
-        yield ['string', ['multiple' => 1], true];
+        yield ['string', [
+            'multiple' => 0,
+        ], false];
+        yield ['string', [
+            'multiple' => 1,
+        ], true];
         yield ['checkboxgrp', [], true];
-        yield ['checkboxgrp', ['multiple' => 0], true];
-        yield ['checkboxgrp', ['multiple' => 1], true];
+        yield ['checkboxgrp', [
+            'multiple' => 0,
+        ], true];
+        yield ['checkboxgrp', [
+            'multiple' => 1,
+        ], true];
     }
 
     public function testFieldWidth(): void

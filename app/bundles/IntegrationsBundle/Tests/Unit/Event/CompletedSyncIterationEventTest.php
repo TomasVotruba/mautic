@@ -18,7 +18,9 @@ class CompletedSyncIterationEventTest extends TestCase
         $mappingManual = new MappingManualDAO('foobar');
         $orderResults  = new OrderResultsDAO([], [], [], []);
         $iteration     = 1;
-        $inputOptions  = new InputOptionsDAO(['integration' => 'foobar']);
+        $inputOptions  = new InputOptionsDAO([
+            'integration' => 'foobar',
+        ]);
 
         $event = new CompletedSyncIterationEvent($orderResults, $iteration, $inputOptions, $mappingManual);
 

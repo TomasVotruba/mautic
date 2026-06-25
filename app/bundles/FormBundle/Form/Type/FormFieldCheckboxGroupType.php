@@ -30,7 +30,9 @@ final class FormFieldCheckboxGroupType extends AbstractType
             IntegerType::class,
             [
                 'label'      => 'mautic.form.field.checkboxgrp.minimum',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                     'min'   => 0,
@@ -47,7 +49,9 @@ final class FormFieldCheckboxGroupType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.checkboxgrp.min_message',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'         => 'form-control',
                     'placeholder'   => $this->translator->trans('mautic.form.field.checkboxgrp.min_message.placeholder'),
@@ -63,7 +67,9 @@ final class FormFieldCheckboxGroupType extends AbstractType
             IntegerType::class,
             [
                 'label'      => 'mautic.form.field.checkboxgrp.maximum',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class' => 'form-control',
                     'min'   => 0,
@@ -80,7 +86,9 @@ final class FormFieldCheckboxGroupType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.checkboxgrp.max_message',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'         => 'form-control',
                     'placeholder'   => $this->translator->trans('mautic.form.field.checkboxgrp.max_message.placeholder'),

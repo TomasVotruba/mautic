@@ -122,8 +122,12 @@ final class UploadControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request(
             Request::METHOD_POST,
             '/s/_uploader/asset/upload',
-            ['tempId' => $this->tempId],
-            ['file'   => $uploadedFile]
+            [
+                'tempId' => $this->tempId,
+            ],
+            [
+                'file'   => $uploadedFile,
+            ]
         );
     }
 }

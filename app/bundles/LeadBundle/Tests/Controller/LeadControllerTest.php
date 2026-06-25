@@ -258,11 +258,15 @@ class LeadControllerTest extends MauticMysqlTestCase
         $contactModel = static::getContainer()->get('mautic.lead.model.lead');
 
         foreach ([$contactA, $contactB] as $contact) {
-            $contactModel->setFieldValues($contact, ['preferred_locale' => 'en_GB'], true, false);
+            $contactModel->setFieldValues($contact, [
+                'preferred_locale' => 'en_GB',
+            ], true, false);
             $contactModel->saveEntity($contact);
         }
 
-        $contactModel->setFieldValues($contactC, ['preferred_locale' => 'fr_FR'], true, false);
+        $contactModel->setFieldValues($contactC, [
+            'preferred_locale' => 'fr_FR',
+        ], true, false);
         $contactModel->saveEntity($contactC);
 
         $payload = [
@@ -311,11 +315,15 @@ class LeadControllerTest extends MauticMysqlTestCase
         $contactModel = static::getContainer()->get('mautic.lead.model.lead');
 
         foreach ([$contactA, $contactB, $contactC, $contactE, $contactF, $contactG] as $contact) {
-            $contactModel->setFieldValues($contact, ['preferred_locale' => 'en_GB'], true, false);
+            $contactModel->setFieldValues($contact, [
+                'preferred_locale' => 'en_GB',
+            ], true, false);
             $contactModel->saveEntity($contact);
         }
 
-        $contactModel->setFieldValues($contactD, ['preferred_locale' => 'fr_FR'], true, false);
+        $contactModel->setFieldValues($contactD, [
+            'preferred_locale' => 'fr_FR',
+        ], true, false);
         $contactModel->saveEntity($contactD);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=matching.email&name=lead&limit=5');
@@ -392,10 +400,16 @@ class LeadControllerTest extends MauticMysqlTestCase
         self::assertResponseIsSuccessful();
 
         /** @var Lead $contact */
-        $contact = $this->em->getRepository(Lead::class)->findOneBy(['email' => 'john_23657@doe.com']);
+        $contact = $this->em->getRepository(Lead::class)->findOneBy([
+            'email' => 'john_23657@doe.com',
+        ]);
 
         /** @var AuditLog $auditLog */
-        $auditLog = $this->em->getRepository(AuditLog::class)->findOneBy(['object' => 'lead', 'objectId' => $contact, 'userId' => 1]);
+        $auditLog = $this->em->getRepository(AuditLog::class)->findOneBy([
+            'object' => 'lead',
+            'objectId' => $contact,
+            'userId' => 1,
+        ]);
 
         Assert::assertTrue(isset($auditLog->getDetails()['fields']), json_encode($auditLog, JSON_PRETTY_PRINT));
 
@@ -949,7 +963,9 @@ EMAIL;
         self::assertResponseIsSuccessful();
 
         /** @var Lead $contact */
-        $contact = $this->em->getRepository(Lead::class)->findOneBy(['email' => 'john_23657@doe.com']);
+        $contact = $this->em->getRepository(Lead::class)->findOneBy([
+            'email' => 'john_23657@doe.com',
+        ]);
 
         $companies  = $this->getCompanyLeads($contact->getId());
         $collection = new Collection($companies);
@@ -1123,7 +1139,9 @@ EMAIL;
             $this->assertEquals($scoresMap[$score->getGroup()->getId()], $score->getScore());
         }
 
-        $logs = $this->em->getRepository(PointsChangeLog::class)->findBy(['lead' => $contact->getId()]);
+        $logs = $this->em->getRepository(PointsChangeLog::class)->findBy([
+            'lead' => $contact->getId(),
+        ]);
         $this->assertCount(2, $logs);
         foreach ($logs as $log) {
             $this->assertEquals($scoresMap[$log->getGroup()->getId()], $log->getDelta());
@@ -1194,7 +1212,9 @@ EMAIL;
         $contactRepository = $this->em->getRepository(Lead::class);
         \assert($contactRepository instanceof LeadRepository);
 
-        $dnc = $dncRepository->findOneBy(['lead' => $contact]);
+        $dnc = $dncRepository->findOneBy([
+            'lead' => $contact,
+        ]);
         \assert($dnc instanceof DoNotContact);
 
         $fetchedContact = $contactRepository->find($contact->getId());

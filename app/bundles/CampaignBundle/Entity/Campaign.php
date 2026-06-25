@@ -177,7 +177,9 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
         $builder->createOneToMany('events', Event::class)
             ->setIndexBy('id')
-            ->setOrderBy(['order' => 'ASC'])
+            ->setOrderBy([
+                'order' => 'ASC',
+            ])
             ->mappedBy('campaign')
             ->cascadeAll()
             ->fetchExtraLazy()
@@ -726,7 +728,9 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         return $this->leads->matching(
             Criteria::create()
                 ->where(Criteria::expr()->eq('lead', $contact))
-                ->orderBy(['dateAdded' => Order::Descending->value])
+                ->orderBy([
+                    'dateAdded' => Order::Descending->value,
+                ])
         );
     }
 

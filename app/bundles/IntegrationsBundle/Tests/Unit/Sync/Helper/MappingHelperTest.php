@@ -133,7 +133,9 @@ class MappingHelperTest extends TestCase
                 $this->callback(
                     function (InternalObjectFindEvent $event) use ($internalObject) {
                         Assert::assertSame($internalObject, $event->getObject());
-                        Assert::assertSame(['email' => 'test@test.com'], $event->getFieldValues());
+                        Assert::assertSame([
+                            'email' => 'test@test.com',
+                        ], $event->getFieldValues());
 
                         return true;
                     }
@@ -183,7 +185,9 @@ class MappingHelperTest extends TestCase
                 $this->callback(
                     function (InternalObjectFindEvent $event) use ($internalObject) {
                         Assert::assertSame($internalObject, $event->getObject());
-                        Assert::assertSame(['email' => 'test@test.com'], $event->getFieldValues());
+                        Assert::assertSame([
+                            'email' => 'test@test.com',
+                        ], $event->getFieldValues());
 
                         // Mock a subscriber.
                         $event->setFoundObjects(
@@ -242,7 +246,9 @@ class MappingHelperTest extends TestCase
                 $this->callback(
                     function (InternalObjectFindEvent $event) use ($internalObject) {
                         Assert::assertSame($internalObject, $event->getObject());
-                        Assert::assertSame(['email' => 'test@test.com'], $event->getFieldValues());
+                        Assert::assertSame([
+                            'email' => 'test@test.com',
+                        ], $event->getFieldValues());
 
                         // Mock a subscriber.
                         $event->setFoundObjects(

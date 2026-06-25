@@ -148,7 +148,9 @@ class Trigger extends FormEntity implements UuidInterface
 
         $builder->createOneToMany('events', 'TriggerEvent')
             ->setIndexBy('id')
-            ->setOrderBy(['order' => 'ASC'])
+            ->setOrderBy([
+                'order' => 'ASC',
+            ])
             ->mappedBy('trigger')
             ->cascadeAll()
             ->fetchExtraLazy()

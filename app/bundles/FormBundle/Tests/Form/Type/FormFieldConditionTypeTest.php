@@ -113,17 +113,25 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
         $this->fieldModel->expects($this->once())
             ->method('getSessionFields')
             ->with('form_id')
-            ->willReturn(['parent_field_id' => ['some_field_props_here']]);
+            ->willReturn([
+                'parent_field_id' => ['some_field_props_here'],
+            ]);
 
         $this->propertiesAccessor->expects($this->once())
             ->method('getProperties')
             ->with(['some_field_props_here'])
-            ->willReturn(['some_choice_here' => 'Some choice here']);
+            ->willReturn([
+                'some_choice_here' => 'Some choice here',
+            ]);
 
         $this->propertiesAccessor->expects($this->once())
             ->method('getChoices')
-            ->with(['some_choice_here' => 'Some choice here'])
-            ->willReturn(['some_choice_here' => 'Some choice here']);
+            ->with([
+                'some_choice_here' => 'Some choice here',
+            ])
+            ->willReturn([
+                'some_choice_here' => 'Some choice here',
+            ]);
         $matcher = $this->any();
 
         $this->formBuilder->expects($matcher)->method('add')
@@ -133,7 +141,9 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
                         $this->assertSame('values', $parameters[0]);
                         $this->assertSame(ChoiceType::class, $parameters[1]);
                         $this->assertSame([
-                            'choices'  => ['some_choice_here' => 'Some choice here'],
+                            'choices'  => [
+                                'some_choice_here' => 'Some choice here',
+                            ],
                             'multiple' => true,
                             'label'    => false,
                             'attr'     => [

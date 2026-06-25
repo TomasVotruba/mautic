@@ -85,7 +85,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     if (null !== $item && null !== $this->router->getRouteCollection()->get($routeName)) {
                         $log['route'] = $this->router->generate(
                             $routeName,
-                            ['objectAction' => 'view', 'objectId' => $log['objectId']]
+                            [
+                                'objectAction' => 'view',
+                                'objectId' => $log['objectId'],
+                            ]
                         );
                     } else {
                         $log['route'] = false;
@@ -98,7 +101,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
             $iconEvent = new IconEvent($this->security);
             $this->dispatcher->dispatch($iconEvent);
-            $event->setTemplateData(['logs' => $logs, 'icons' => $iconEvent->getIcons()]);
+            $event->setTemplateData([
+                'logs' => $logs,
+                'icons' => $iconEvent->getIcons(),
+            ]);
         }
 
         $event->setTemplate('@MauticDashboard/Dashboard/recentactivity.html.twig');

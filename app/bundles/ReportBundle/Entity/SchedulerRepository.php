@@ -15,7 +15,9 @@ class SchedulerRepository extends CommonRepository
      */
     public function getSchedulerByReport(Report $report)
     {
-        return $this->findOneBy(['report' => $report]);
+        return $this->findOneBy([
+            'report' => $report,
+        ]);
     }
 
     /**

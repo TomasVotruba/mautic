@@ -32,7 +32,9 @@ class PublicController extends CommonController
 
             $content = $model->generateJavascript($focus);
 
-            return new Response($content, 200, ['Content-Type' => 'application/javascript']);
+            return new Response($content, 200, [
+                'Content-Type' => 'application/javascript',
+            ]);
         }
 
         return new Response('', Response::HTTP_NOT_FOUND);

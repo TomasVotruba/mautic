@@ -78,12 +78,16 @@ final class AjaxController extends CommonAjaxController
             $projectOptions .= "<option{$selected} value=\"{$value}\">{$label}</option>";
         }
 
-        return $this->sendJsonResponse(['projects' => $projectOptions]);
+        return $this->sendJsonResponse([
+            'projects' => $projectOptions,
+        ]);
     }
 
     private function createProjectIfNotExists(string $name, ProjectModel $projectModel, ProjectRepository $projectRepository): int
     {
-        if ($project = $projectRepository->findOneBy(['name' => $name])) {
+        if ($project = $projectRepository->findOneBy([
+            'name' => $name,
+        ])) {
             return $project->getId();
         }
 

@@ -282,7 +282,9 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $formField  = new Field();
         $formField->setMappedField('contactselect');
         $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $fields->add($formField);
 
@@ -301,7 +303,9 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
 
         $this->formModel->getEntity(5);
 
-        $this->assertSame(['syncList' => true], $formField->getProperties());
+        $this->assertSame([
+            'syncList' => true,
+        ], $formField->getProperties());
     }
 
     public function testGetEntityForNotLinkedSelectField(): void
@@ -309,7 +313,9 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $formEntity = $this->createMock(Form::class);
         $fields     = new ArrayCollection();
         $formField  = new Field();
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $fields->add($formField);
 
@@ -335,7 +341,9 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $formField  = new Field();
         $formField->setMappedField('contactselect');
         $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => false]);
+        $formField->setProperties([
+            'syncList' => false,
+        ]);
 
         $fields->add($formField);
 
@@ -358,11 +366,16 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
     {
         $formEntity = $this->createMock(Form::class);
         $fields     = new ArrayCollection();
-        $options    = ['no' => 'lunch?', 'yes' => 'dinner?'];
+        $options    = [
+            'no' => 'lunch?',
+            'yes' => 'dinner?',
+        ];
         $formField  = new Field();
         $formField->setMappedField('contactbool');
         $formField->setMappedObject('unicorn');
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $fields->add($formField);
 
@@ -389,11 +402,16 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
     {
         $formEntity = $this->createMock(Form::class);
         $fields     = new ArrayCollection();
-        $options    = ['no' => 'lunch?', 'yes' => 'dinner?'];
+        $options    = [
+            'no' => 'lunch?',
+            'yes' => 'dinner?',
+        ];
         $formField  = new Field();
         $formField->setMappedField('contactbool');
         $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $fields->add($formField);
 
@@ -466,18 +484,28 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $formEntity = $this->createMock(Form::class);
         $fields     = new ArrayCollection();
         $options    = [
-            ['label' => 'label1', 'value' => 'value1'],
-            ['label' => 'label2', 'value' => 'value2'],
+            [
+                'label' => 'label1',
+                'value' => 'value1',
+            ],
+            [
+                'label' => 'label2',
+                'value' => 'value2',
+            ],
         ];
 
         $formField = new Field();
         $formField->setMappedField('contactfieldalias');
         $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $contactField = new LeadField();
         $contactField->setType($type);
-        $contactField->setProperties(['list' => $options]);
+        $contactField->setProperties([
+            'list' => $options,
+        ]);
 
         $fields->add($formField);
 
@@ -515,7 +543,9 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $formField  = new Field();
         $formField->setMappedField('contactfield');
         $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => true]);
+        $formField->setProperties([
+            'syncList' => true,
+        ]);
 
         $fields->add($formField);
 
@@ -565,14 +595,20 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
     {
         $field = new LeadField();
         $field->setType('select');
-        $field->setProperties(['list' => ['choice_a' => 'Choice A']]);
+        $field->setProperties([
+            'list' => [
+                'choice_a' => 'Choice A',
+            ],
+        ]);
 
         $this->leadFieldModel->expects($this->once())
             ->method('getEntityByAlias')
             ->willReturn($field);
 
         $this->assertSame(
-            ['choice_a' => 'Choice A'],
+            [
+                'choice_a' => 'Choice A',
+            ],
             $this->formModel->getContactFieldPropertiesList('alias_a')
         );
     }
@@ -768,7 +804,10 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
 
         $leadField = new LeadField();
         $leadField->setType('boolean');
-        $leadField->setProperties(['yes' => 'Yes', 'no' => 'No']);
+        $leadField->setProperties([
+            'yes' => 'Yes',
+            'no' => 'No',
+        ]);
 
         $this->contactTracker->method('getContact')
             ->willReturn($contact);

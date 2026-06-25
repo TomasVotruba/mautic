@@ -25,11 +25,21 @@ final class Version20250430113559 extends PreUpAssertionMigration
         $projectIdDataType = $this->getColumnTypeSignedOrUnsigned($schema, 'projects', 'id');
 
         $table = $schema->createTable($this->prefix.'asset_projects_xref');
-        $table->addColumn('asset_id', 'integer', ['unsigned' => 'UNSIGNED' === $targetIdDataType, 'notnull' => true]);
-        $table->addColumn('project_id', 'integer', ['unsigned' => 'UNSIGNED' === $projectIdDataType, 'notnull' => true]);
+        $table->addColumn('asset_id', 'integer', [
+            'unsigned' => 'UNSIGNED' === $targetIdDataType,
+            'notnull' => true,
+        ]);
+        $table->addColumn('project_id', 'integer', [
+            'unsigned' => 'UNSIGNED' === $projectIdDataType,
+            'notnull' => true,
+        ]);
         $table->setPrimaryKey(['asset_id', 'project_id']);
-        $table->addForeignKeyConstraint($this->prefix.'assets', ['asset_id'], ['id'], ['onDelete' => 'CASCADE']);
-        $table->addForeignKeyConstraint($this->prefix.'projects', ['project_id'], ['id'], ['onDelete' => 'CASCADE']);
+        $table->addForeignKeyConstraint($this->prefix.'assets', ['asset_id'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ]);
+        $table->addForeignKeyConstraint($this->prefix.'projects', ['project_id'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ]);
     }
 
     public function postUp(Schema $schema): void

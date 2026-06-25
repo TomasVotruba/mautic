@@ -28,7 +28,10 @@ class LeadFieldsType extends AbstractType
                     $fieldList['Core']['mautic.lead.field.tags'] = 'tags';
                 }
                 if ($options['with_company_fields']) {
-                    $fieldList['Company'] = array_flip($this->fieldModel->getFieldList(false, true, ['isPublished' => true, 'object' => 'company']));
+                    $fieldList['Company'] = array_flip($this->fieldModel->getFieldList(false, true, [
+                        'isPublished' => true,
+                        'object' => 'company',
+                    ]));
                 }
                 if ($options['with_utm']) {
                     $fieldList['UTM']['mautic.lead.field.utmcampaign'] = 'utm_campaign';

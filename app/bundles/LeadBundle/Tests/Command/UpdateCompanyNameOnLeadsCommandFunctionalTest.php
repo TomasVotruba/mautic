@@ -53,7 +53,9 @@ final class UpdateCompanyNameOnLeadsCommandFunctionalTest extends MauticMysqlTes
 
         $this->updateCompanyName($company1);
 
-        $this->testSymfonyCommand(UpdateCompanyNameOnLeadsCommand::COMMAND_NAME, ['--company-id' => $company1->getId()]);
+        $this->testSymfonyCommand(UpdateCompanyNameOnLeadsCommand::COMMAND_NAME, [
+            '--company-id' => $company1->getId(),
+        ]);
 
         $this->em->clear();
 

@@ -34,7 +34,9 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $widget = new Widget();
         $widget->setName('Line graph report');
         $widget->setType('report');
-        $widget->setParams(['graph' => sprintf('%s:mautic.lead.graph.line.leads', $report->getId())]);
+        $widget->setParams([
+            'graph' => sprintf('%s:mautic.lead.graph.line.leads', $report->getId()),
+        ]);
         $widget->setWidth(100);
         $widget->setHeight(200);
         $widget->setCreatedBy($user);
@@ -73,7 +75,10 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $widget  = new Widget();
         $widget->setName('Best email read hours');
         $widget->setType('emails.best.hours');
-        $widget->setParams(['timeFormat' => 24, 'segmentId' => $segment->getId()]);
+        $widget->setParams([
+            'timeFormat' => 24,
+            'segmentId' => $segment->getId(),
+        ]);
         $widget->setWidth(100);
         $widget->setHeight(200);
         $widget->setCreatedBy($user);
@@ -113,7 +118,10 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $widget = new Widget();
         $widget->setName('Segments build time');
         $widget->setType('segments.build.time');
-        $widget->setParams(['order' => 'DESC', 'segments' => []]);
+        $widget->setParams([
+            'order' => 'DESC',
+            'segments' => [],
+        ]);
         $widget->setWidth(100);
         $widget->setHeight(300);
         $widget->setCreatedBy($user);
@@ -148,7 +156,9 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testAuditLogWidgetWithDeletedContact(): void
     {
-        $user   = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user   = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $widget = new Widget();
         $widget->setName('Recent activity');
         $widget->setType('recent.activity');
@@ -204,7 +214,9 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testUpcomingEmailsWidget(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
 
         $widget = new Widget();
         $widget->setName('Upcoming Emails');
@@ -222,7 +234,9 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
             $campaign,
             'email.send',
             'action',
-            ['email' => 1]
+            [
+                'email' => 1,
+            ]
         );
 
         $lead = $this->createLead('TestFN', 'TestLN');

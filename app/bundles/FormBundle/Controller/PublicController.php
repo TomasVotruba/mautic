@@ -151,7 +151,9 @@ class PublicController extends CommonFormController
 
             return $this->translator->trans(
                 'mautic.form.submit.error.pending',
-                ['%date%' => $dateTemplateHelper->toFull($publishUp instanceof \DateTime ? $publishUp : $publishUp->format('Y-m-d H:i:s'))],
+                [
+                    '%date%' => $dateTemplateHelper->toFull($publishUp instanceof \DateTime ? $publishUp : $publishUp->format('Y-m-d H:i:s')),
+                ],
                 'flashes'
             );
         }
@@ -161,7 +163,9 @@ class PublicController extends CommonFormController
 
             return $this->translator->trans(
                 'mautic.form.submit.error.expired',
-                ['%date%' => $dateTemplateHelper->toFull($publishDown instanceof \DateTime ? $publishDown : $publishDown->format('Y-m-d H:i:s'))],
+                [
+                    '%date%' => $dateTemplateHelper->toFull($publishDown instanceof \DateTime ? $publishDown : $publishDown->format('Y-m-d H:i:s')),
+                ],
                 'flashes'
             );
         }
@@ -219,7 +223,9 @@ class PublicController extends CommonFormController
         }
 
         $notificationModel->addNotification(
-            $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
+            $this->translator->trans('mautic.form.submission.limit_reached.notification', [
+                '%form%' => $form->getName(),
+            ]),
             'warning',
             false,
             $form->getName(),
@@ -256,11 +262,15 @@ class PublicController extends CommonFormController
                 (bool) $context['isAjax']
             );
 
-            return array_merge(['submissionEvent' => $submissionEvent], $callbackResult);
+            return array_merge([
+                'submissionEvent' => $submissionEvent,
+            ], $callbackResult);
         }
 
         return isset($result['submission'])
-            ? ['submissionEvent' => $result['submission']]
+            ? [
+                'submissionEvent' => $result['submission'],
+            ]
             : [];
     }
 
@@ -309,7 +319,9 @@ class PublicController extends CommonFormController
             }
         }
 
-        return ['callbackResponses' => $callbackResponses];
+        return [
+            'callbackResponses' => $callbackResponses,
+        ];
     }
 
     /**
@@ -318,7 +330,9 @@ class PublicController extends CommonFormController
      */
     private function buildMessengerResponse(array $context, array $submissionResult): Response
     {
-        $data  = ['success' => 1];
+        $data  = [
+            'success' => 1,
+        ];
         $error = $submissionResult['error'];
 
         if (!empty($error)) {
@@ -344,7 +358,9 @@ class PublicController extends CommonFormController
             return new JsonResponse($data);
         }
 
-        return $this->render('@MauticForm/messenger.html.twig', ['response' => json_encode($data)]);
+        return $this->render('@MauticForm/messenger.html.twig', [
+            'response' => json_encode($data),
+        ]);
     }
 
     /**
@@ -617,7 +633,10 @@ class PublicController extends CommonFormController
                 if ($request->get('video')) {
                     return $this->render(
                         '@MauticForm/Public/videoembed.html.twig',
-                        ['form' => $form, 'fieldSettings' => $model->getCustomComponents()['fields']]
+                        [
+                            'form' => $form,
+                            'fieldSettings' => $model->getCustomComponents()['fields'],
+                        ]
                     );
                 }
 
@@ -665,7 +684,9 @@ class PublicController extends CommonFormController
 
         // Intentionally vague message as the JS takes care of this.
         // Make it hard to abuse this public endpoint.
-        $vagueErrorMessage = ['error' => 'Invalid request param'];
+        $vagueErrorMessage = [
+            'error' => 'Invalid request param',
+        ];
 
         if (mb_strlen($search) < 3 || !$formId) {
             return new JsonResponse($vagueErrorMessage, JsonResponse::HTTP_BAD_REQUEST);

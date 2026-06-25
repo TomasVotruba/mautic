@@ -31,7 +31,10 @@ class ContactCampaignApiControllerFunctionalTest extends AbstractCampaignTestCas
 
         // Assert that the campaign member was really added.
         /** @var CampaignMember[] $campaignMembers */
-        $campaignMembers = $campaignMemberRepository->findBy(['lead' => $contact->getId(), 'campaign' => $campaign->getId()]);
+        $campaignMembers = $campaignMemberRepository->findBy([
+            'lead' => $contact->getId(),
+            'campaign' => $campaign->getId(),
+        ]);
         Assert::assertCount(1, $campaignMembers);
         Assert::assertTrue($campaignMembers[0]->getManuallyAdded());
         Assert::assertFalse($campaignMembers[0]->getManuallyRemoved());
@@ -64,7 +67,10 @@ class ContactCampaignApiControllerFunctionalTest extends AbstractCampaignTestCas
 
         // Assert that the campaign member was really removed.
         /** @var CampaignMember[] $campaignMembers */
-        $campaignMembers = $campaignMemberRepository->findBy(['lead' => $contact->getId(), 'campaign' => $campaign->getId()]);
+        $campaignMembers = $campaignMemberRepository->findBy([
+            'lead' => $contact->getId(),
+            'campaign' => $campaign->getId(),
+        ]);
         Assert::assertCount(1, $campaignMembers);
         Assert::assertFalse($campaignMembers[0]->getManuallyAdded());
         Assert::assertTrue($campaignMembers[0]->getManuallyRemoved());

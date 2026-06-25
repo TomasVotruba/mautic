@@ -640,7 +640,9 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
             return true;
         } catch (\Exception $exception) {
-            $this->logger->log('error', $exception->getMessage(), ['exception' => $exception]);
+            $this->logger->log('error', $exception->getMessage(), [
+                'exception' => $exception,
+            ]);
 
             return false;
         }

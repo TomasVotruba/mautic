@@ -31,7 +31,9 @@ final class Version20240708153845 extends AbstractMauticMigration
                         FROM {$this->emailStatsTableName} 
                         WHERE email_id = :email_id 
                         GROUP BY email_id",
-                  ['email_id' => $email['id']]
+                  [
+                      'email_id' => $email['id'],
+                  ]
               )
               ->fetchAssociative();
             if (is_array($totalCountResult) && $email['id'] === $totalCountResult['email_id'] && (int) $email['read_count'] < $totalCountResult['total_read_count']) {

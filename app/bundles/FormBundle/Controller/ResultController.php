@@ -55,7 +55,9 @@ class ResultController extends CommonFormController
         $form           = $formModel->getEntity($objectId);
         $session        = $request->getSession();
         $formPage       = $session->get('mautic.form.page', 1);
-        $returnUrl      = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
+        $returnUrl      = $this->generateUrl('mautic_form_index', [
+            'page' => $formPage,
+        ]);
         $viewOnlyFields = $formModel->getCustomComponents()['viewOnlyFields'];
 
         if (null === $form) {
@@ -63,7 +65,9 @@ class ResultController extends CommonFormController
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $formPage],
+                    'viewParameters'  => [
+                        'page' => $formPage,
+                    ],
                     'contentTemplate' => 'Mautic\FormBundle\Controller\FormController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_form_index',
@@ -73,7 +77,9 @@ class ResultController extends CommonFormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.form.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -109,7 +115,12 @@ class ResultController extends CommonFormController
 
         if ($request->query->has('result')) {
             // Force ID
-            $filters['s.id'] = ['column' => 's.id', 'expr' => 'like', 'value' => (int) $request->query->get('result'), 'strict' => false];
+            $filters['s.id'] = [
+                'column' => 's.id',
+                'expr' => 'like',
+                'value' => (int) $request->query->get('result'),
+                'strict' => false,
+            ];
             $session->set("mautic.formresult.$objectId.filters", $filters);
         }
 
@@ -118,7 +129,9 @@ class ResultController extends CommonFormController
             [
                 'start'          => $start,
                 'limit'          => $limit,
-                'filter'         => ['force' => $filters],
+                'filter'         => [
+                    'force' => $filters,
+                ],
                 'orderBy'        => $orderBy,
                 'orderByDir'     => $orderByDir,
                 'form'           => $form,
@@ -136,12 +149,17 @@ class ResultController extends CommonFormController
             // the number of entities are now less then the current page so redirect to the last page
             $lastPage = $pageHelper->countPage($count);
             $pageHelper->rememberPage($lastPage);
-            $returnUrl = $this->generateUrl('mautic_form_results', ['objectId' => $objectId, 'page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_form_results', [
+                'objectId' => $objectId,
+                'page' => $lastPage,
+            ]);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\FormBundle\Controller\ResultController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_form_index',
@@ -274,7 +292,9 @@ class ResultController extends CommonFormController
         $form      = $formModel->getEntity($objectId);
         $session   = $request->getSession();
         $formPage  = $session->get('mautic.form.page', 1);
-        $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
+        $returnUrl = $this->generateUrl('mautic_form_index', [
+            'page' => $formPage,
+        ]);
 
         if (!$this->security->isAdmin() && !$this->security->isGranted('form:export:enable', 'MATCH_ONE')) {
             $this->throwAccessDenied();
@@ -285,7 +305,9 @@ class ResultController extends CommonFormController
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $formPage],
+                    'viewParameters'  => [
+                        'page' => $formPage,
+                    ],
                     'contentTemplate' => 'Mautic\FormBundle\Controller\FormController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => 'mautic_form_index',
@@ -295,7 +317,9 @@ class ResultController extends CommonFormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.form.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ]
@@ -315,7 +339,9 @@ class ResultController extends CommonFormController
 
         $args = [
             'limit'      => false,
-            'filter'     => ['force' => $filters],
+            'filter'     => [
+                'force' => $filters,
+            ],
             'orderBy'    => $orderBy,
             'orderByDir' => $orderByDir,
             'form'       => $form,
@@ -349,7 +375,9 @@ class ResultController extends CommonFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.form.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->hasEntityAccess('form:forms:editown', 'form:forms:editother', $entity->getCreatedBy())) {
                 $this->throwAccessDenied();
@@ -463,12 +491,16 @@ class ResultController extends CommonFormController
         $form      = $formModel->getEntity($objectId);
         $session   = $request->getSession();
         $formPage  = $session->get('mautic.form.page', 1);
-        $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
+        $returnUrl = $this->generateUrl('mautic_form_index', [
+            'page' => $formPage,
+        ]);
 
         if (null === $form) {
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $formPage],
+                'viewParameters'  => [
+                    'page' => $formPage,
+                ],
                 'contentTemplate' => 'Mautic\\FormBundle\\Controller\\FormController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => 'mautic_form_index',
@@ -478,7 +510,9 @@ class ResultController extends CommonFormController
                     [
                         'type'    => 'error',
                         'msg'     => 'mautic.form.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ],
                 ],
             ]);
@@ -494,7 +528,9 @@ class ResultController extends CommonFormController
 
         $entities = $model->getEntities([
             'limit'          => false,
-            'filter'         => ['force' => $filters],
+            'filter'         => [
+                'force' => $filters,
+            ],
             'orderBy'        => $orderBy,
             'orderByDir'     => $orderByDir,
             'form'           => $form,
@@ -525,7 +561,9 @@ class ResultController extends CommonFormController
 
         $formView = $this->createForm(
             BatchType::class,
-            ['ids' => json_encode($contactIds)],
+            [
+                'ids' => json_encode($contactIds),
+            ],
             [
                 'items'  => $items,
                 'action' => $route,

@@ -81,7 +81,9 @@ class Reply implements ProcessorInterface
     public function createReplyByHash($trackingHash, $messageId): void
     {
         /** @var Stat|null $stat */
-        $stat = $this->emailStatModel->getRepository()->findOneBy(['trackingHash' => $trackingHash]);
+        $stat = $this->emailStatModel->getRepository()->findOneBy([
+            'trackingHash' => $trackingHash,
+        ]);
 
         if (null === $stat) {
             throw new EntityNotFoundException("Email Stat with tracking hash {$trackingHash} was not found");

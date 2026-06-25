@@ -120,7 +120,10 @@ final class ImportCompanySubscriberTest extends \PHPUnit\Framework\TestCase
                  *
                  * @return array<string>
                  */
-                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
+                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = [
+                    'isPublished' => true,
+                    'object' => 'lead',
+                ]): array
                 {
                     return ['some fields'];
                 }

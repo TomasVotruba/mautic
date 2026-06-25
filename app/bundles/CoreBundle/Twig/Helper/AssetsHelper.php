@@ -187,7 +187,9 @@ final class AssetsHelper
 
             if ('head' == $location) {
                 // special place for these so that declarations and scripts can be mingled
-                $assets['headDeclarations'][$name] = ['script' => [$s, $async]];
+                $assets['headDeclarations'][$name] = [
+                    'script' => [$s, $async],
+                ];
             } else {
                 if (!isset($assets['scripts'][$location])) {
                     $assets['scripts'][$location] = [];
@@ -222,7 +224,9 @@ final class AssetsHelper
     {
         if ('head' == $location) {
             // special place for these so that declarations and scripts can be mingled
-            $this->assets[$this->context]['headDeclarations'][] = ['declaration' => $script];
+            $this->assets[$this->context]['headDeclarations'][] = [
+                'declaration' => $script,
+            ];
         } else {
             if (!isset($this->assets[$this->context]['scriptDeclarations'][$location])) {
                 $this->assets[$this->context]['scriptDeclarations'][$location] = [];
@@ -297,7 +301,9 @@ final class AssetsHelper
     public function addCustomDeclaration($declaration, $location = 'head')
     {
         if ('head' == $location) {
-            $this->assets[$this->context]['headDeclarations'][] = ['custom' => $declaration];
+            $this->assets[$this->context]['headDeclarations'][] = [
+                'custom' => $declaration,
+            ];
         } else {
             if (!isset($this->assets[$this->context]['customDeclarations'][$location])) {
                 $this->assets[$this->context]['customDeclarations'][$location] = [];

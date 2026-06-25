@@ -22,7 +22,9 @@ class ContentType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.headline',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'onblur'       => 'Mautic.focusUpdatePreview()',
@@ -37,7 +39,9 @@ class ContentType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.tagline',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'placeholder'  => 'mautic.core.optional',
@@ -53,7 +57,9 @@ class ContentType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.link_text',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'onblur'       => 'Mautic.focusUpdatePreview()',
@@ -67,7 +73,9 @@ class ContentType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.focus.form.link_url',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'onblur'       => 'Mautic.focusUpdatePreview()',
@@ -111,7 +119,9 @@ class ContentType extends AbstractType
                     'Verdana'                  => 'Verdana, Geneva, sans-serif',
                 ],
                 'label'            => 'mautic.focus.form.font',
-                'label_attr'       => ['class' => 'control-label'],
+                'label_attr'       => [
+                    'class' => 'control-label',
+                ],
                 'attr'             => [
                     'class'        => 'form-control',
                     'onchange'     => 'Mautic.focusUpdatePreview()',
@@ -127,7 +137,9 @@ class ContentType extends AbstractType
             TextareaType::class,
             [
                 'label'      => 'mautic.focus.form.custom.css',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'rows'         => 6,

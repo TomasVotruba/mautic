@@ -14,7 +14,9 @@ final class LeadRepositoryTest extends MauticMysqlTestCase
 {
     public function setUp(): void
     {
-        $this->clientOptions = ['debug' => true];
+        $this->clientOptions = [
+            'debug' => true,
+        ];
 
         parent::setUp();
     }
@@ -26,8 +28,12 @@ final class LeadRepositoryTest extends MauticMysqlTestCase
     {
         return [
             [[]],
-            [['joinIpAddresses' => true]],
-            [['joinIpAddresses' => false]],
+            [[
+                'joinIpAddresses' => true,
+            ]],
+            [[
+                'joinIpAddresses' => false,
+            ]],
         ];
     }
 

@@ -48,7 +48,9 @@ class ContactSegmentFilterTest extends TestCase
     public function testGetType(): void
     {
         $type                            = 'type';
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => $type]);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'type' => $type,
+        ]);
         $filter                          = $this->createContactSegmentFilter();
 
         self::assertEquals($type, $filter->getType());
@@ -84,12 +86,16 @@ class ContactSegmentFilterTest extends TestCase
 
     public function testIsColumnTypeBoolean(): void
     {
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => 'boolean']);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'type' => 'boolean',
+        ]);
         $filter                          = $this->createContactSegmentFilter();
 
         self::assertTrue($filter->isColumnTypeBoolean());
 
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => 'something']);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'type' => 'something',
+        ]);
         $filter                          = $this->createContactSegmentFilter();
 
         self::assertFalse($filter->isColumnTypeBoolean());
@@ -167,7 +173,9 @@ class ContactSegmentFilterTest extends TestCase
     {
         $glue = 'glue';
 
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['glue' => $glue]);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'glue' => $glue,
+        ]);
         $filter                          = $this->createContactSegmentFilter();
 
         self::assertSame($glue, $filter->getGlue());
@@ -237,7 +245,9 @@ class ContactSegmentFilterTest extends TestCase
     {
         $value = 'value';
 
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['null_value' => $value]);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'null_value' => $value,
+        ]);
 
         $filter = $this->createContactSegmentFilter();
 
@@ -277,7 +287,10 @@ class ContactSegmentFilterTest extends TestCase
     {
         $dbName    = 'dbName';
         $tableName = 'tableName';
-        $columns   = ['column1' => 'something1', 'column2' => 'something2'];
+        $columns   = [
+            'column1' => 'something1',
+            'column2' => 'something2',
+        ];
 
         $this->tableSchemaColumnCache->expects(self::once())
             ->method('getCurrentDatabaseName')
@@ -410,7 +423,9 @@ class ContactSegmentFilterTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('dataDoesColumnSupportEmptyValue')]
     public function testDoesColumnSupportEmptyValue(string $type, bool $doesColumnSupportEmptyValue): void
     {
-        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => $type]);
+        $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate([
+            'type' => $type,
+        ]);
         $filter                          = $this->createContactSegmentFilter();
 
         self::assertEquals($doesColumnSupportEmptyValue, $filter->doesColumnSupportEmptyValue());

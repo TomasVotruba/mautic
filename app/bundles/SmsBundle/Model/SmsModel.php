@@ -213,7 +213,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         if ($fetchContacts) {
             /** @var Lead[] $foundContacts */
-            $foundContacts = $this->leadModel->getEntities(['ids' => $fetchContacts]);
+            $foundContacts = $this->leadModel->getEntities([
+                'ids' => $fetchContacts,
+            ]);
 
             foreach ($foundContacts as $contact) {
                 $contacts[$contact->getId()] = $contact;
@@ -248,7 +250,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             return $results;
         }
 
-        $queueEvent = new QueueEvent($contacts, array_merge($options, ['sms_id' => $sms->getId()]));
+        $queueEvent = new QueueEvent($contacts, array_merge($options, [
+            'sms_id' => $sms->getId(),
+        ]));
         $this->dispatcher->dispatch($queueEvent, SmsEvents::QUEUE_FILTER_CONTACTS_ON_SEND);
 
         foreach ($queueEvent->getQueuedContacts() as $contactId) {
@@ -530,7 +534,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                 'sms'  => (int) $smsId,
                 'lead' => (int) $leadId,
             ],
-            ['dateSent' => 'DESC']
+            [
+                'dateSent' => 'DESC',
+            ]
         );
     }
 

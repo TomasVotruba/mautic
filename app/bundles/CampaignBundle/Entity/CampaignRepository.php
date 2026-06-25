@@ -47,14 +47,23 @@ class CampaignRepository extends CommonRepository
 
         $this->getEntityManager()->getConnection()->update(
             MAUTIC_TABLE_PREFIX.Event::TABLE_NAME,
-            ['deleted'     => $dateTime],
-            ['campaign_id' => $campaignId]
+            [
+                'deleted'     => $dateTime,
+            ],
+            [
+                'campaign_id' => $campaignId,
+            ]
         );
 
         $this->getEntityManager()->getConnection()->update(
             MAUTIC_TABLE_PREFIX.Campaign::TABLE_NAME,
-            ['deleted'   => $dateTime, 'is_published' => 0],
-            ['id'        => $campaignId]
+            [
+                'deleted'   => $dateTime,
+                'is_published' => 0,
+            ],
+            [
+                'id'        => $campaignId,
+            ]
         );
     }
 
@@ -286,7 +295,9 @@ class CampaignRepository extends CommonRepository
                     $q->expr()->neq('c.publishDown', $q->expr()->literal('')),
                     $q->expr()->lt('c.publishDown', 'CURRENT_TIMESTAMP()')
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.campaign.campaign.searchcommand.ispending'):
             case $this->translator->trans('mautic.campaign.campaign.searchcommand.ispending', [], null, 'en_US'):
@@ -296,7 +307,9 @@ class CampaignRepository extends CommonRepository
                     $q->expr()->neq('c.publishUp', $q->expr()->literal('')),
                     $q->expr()->gt('c.publishUp', 'CURRENT_TIMESTAMP()')
                 );
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
             case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):

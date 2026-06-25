@@ -169,11 +169,23 @@ final class LeadListTest extends \PHPUnit\Framework\TestCase
     /** @return iterable<array{0: mixed, 1: mixed, 2: array<string, array{0: mixed, 1: mixed}>}> */
     public static function setIsGlobalDataProvider(): iterable
     {
-        yield [null, false, ['isGlobal' => [true, false]]];
+        yield [
+            null, false, [
+                'isGlobal' => [true, false],
+            ]];
         yield [true, true, []];
-        yield [false, false, ['isGlobal' => [true, false]]];
-        yield ['', false, ['isGlobal' => [true, false]]];
-        yield [0, false, ['isGlobal' => [true, false]]];
+        yield [
+            false, false, [
+                'isGlobal' => [true, false],
+            ]];
+        yield [
+            '', false, [
+                'isGlobal' => [true, false],
+            ]];
+        yield [
+            0, false, [
+                'isGlobal' => [true, false],
+            ]];
         yield ['string', true, []];
     }
 
@@ -194,11 +206,17 @@ final class LeadListTest extends \PHPUnit\Framework\TestCase
     public static function setIsPreferenceCenterDataProvider(): iterable
     {
         yield [null, false, []];
-        yield [true, true, ['isPreferenceCenter' => [false, true]]];
+        yield [
+            true, true, [
+                'isPreferenceCenter' => [false, true],
+            ]];
         yield [false, false, []];
         yield ['', false, []];
         yield [0, false, []];
-        yield ['string', true, ['isPreferenceCenter' => [false, true]]];
+        yield [
+            'string', true, [
+                'isPreferenceCenter' => [false, true],
+            ]];
     }
 
     public function testFirstFilterGlueIsAlwaysAnd(): void

@@ -56,7 +56,9 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
             $this->markDatabasePrepared();
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER'] ?? 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => $this->clientServer['PHP_AUTH_USER'] ?? 'admin',
+        ]);
         $this->loginUser($user); // also creates session
 
         if ($this->useCleanupRollback) {
@@ -233,7 +235,10 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
 
     private function createDatabase(): void
     {
-        $this->testSymfonyCommand('doctrine:database:drop', ['--if-exists' => true, '--force' => true]);
+        $this->testSymfonyCommand('doctrine:database:drop', [
+            '--if-exists' => true,
+            '--force' => true,
+        ]);
         $this->testSymfonyCommand('doctrine:database:create');
         $this->testSymfonyCommand('doctrine:schema:create');
         $this->testSymfonyCommand('doctrine:migration:sync-metadata-storage');

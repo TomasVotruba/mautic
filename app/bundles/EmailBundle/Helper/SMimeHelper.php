@@ -83,7 +83,9 @@ class SMimeHelper
                 $certPaths = $this->getCertificatePaths($fromEmail);
             } catch (IOException $e) {
                 // Log the exception for debugging
-                $this->logger->error('SMimeHelper: IOException when loading certificates for '.$fromEmail, ['exception' => $e]);
+                $this->logger->error('SMimeHelper: IOException when loading certificates for '.$fromEmail, [
+                    'exception' => $e,
+                ]);
 
                 return $message;
             }
@@ -99,7 +101,9 @@ class SMimeHelper
             return $signer->sign($message);
         } catch (\RuntimeException $e) {
             // Catch OpenSSL signing errors (e.g., invalid certificate, corrupted key)
-            $this->logger->error('SMimeHelper: Failed to sign message', ['exception' => $e]);
+            $this->logger->error('SMimeHelper: Failed to sign message', [
+                'exception' => $e,
+            ]);
 
             return $message;
         }

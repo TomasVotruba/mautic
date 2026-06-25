@@ -19,7 +19,9 @@ class AjaxController extends CommonAjaxController
      */
     public function viewingVisitorsAction(EntityManagerInterface $entityManager): JsonResponse
     {
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         /** @var \Mautic\PageBundle\Entity\PageRepository $pageRepository */
         $pageRepository               = $entityManager->getRepository(Hit::class);
@@ -36,7 +38,9 @@ class AjaxController extends CommonAjaxController
     public function updateWidgetFormAction(Request $request, FormFactoryInterface $formFactory): JsonResponse
     {
         $data      = $request->request->all()['widget'] ?? [];
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         // Clear params if type is not selected
         if (empty($data['type'])) {
@@ -46,7 +50,9 @@ class AjaxController extends CommonAjaxController
         $widget   = new Widget();
         $form     = $formFactory->create(WidgetType::class, $widget);
         $formHtml = $this->render('@MauticDashboard/Widget/form.html.twig',
-            ['form' => $form->submit($data)->createView()]
+            [
+                'form' => $form->submit($data)->createView(),
+            ]
         )->getContent();
 
         $dataArray['formHtml'] = $formHtml;
@@ -65,7 +71,9 @@ class AjaxController extends CommonAjaxController
         \assert($dashboardModel instanceof DashboardModel);
         $repo = $dashboardModel->getRepository();
         $repo->updateOrdering(array_flip($data), $this->user->getId());
-        $dataArray = ['success' => 1];
+        $dataArray = [
+            'success' => 1,
+        ];
 
         return $this->sendJsonResponse($dataArray);
     }
@@ -76,7 +84,9 @@ class AjaxController extends CommonAjaxController
     public function deleteAction(Request $request): JsonResponse
     {
         $objectId  = $request->request->get('widget');
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         // @todo: build permissions
         // if (!$this->security->isGranted('dashobard:widgets:delete')) {

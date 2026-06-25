@@ -103,7 +103,10 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'description'          => 'mautic.email.campaign.event.send_descr',
                 'batchEventName'       => EmailEvents::ON_CAMPAIGN_BATCH_ACTION,
                 'formType'             => EmailSendType::class,
-                'formTypeOptions'      => ['update_select' => 'campaignevent_properties_email', 'with_email_types' => true],
+                'formTypeOptions'      => [
+                    'update_select' => 'campaignevent_properties_email',
+                    'with_email_types' => true,
+                ],
                 'formTheme'            => '@MauticEmail/FormTheme/EmailSendList/emailsend_list_row.html.twig',
                 'channel'              => 'email',
                 'channelIdField'       => 'email',
@@ -133,7 +136,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 'description'          => 'mautic.email.campaign.event.send.to.user_descr',
                 'batchEventName'       => EmailEvents::ON_CAMPAIGN_BATCH_ACTION,
                 'formType'             => EmailToUserType::class,
-                'formTypeOptions'      => ['update_select' => 'campaignevent_properties_useremail_email'],
+                'formTypeOptions'      => [
+                    'update_select' => 'campaignevent_properties_useremail_email',
+                ],
                 'formTheme'            => '@MauticEmail/FormTheme/EmailSendList/email_to_user_row.html.twig',
                 'channel'              => 'email',
                 'channelIdField'       => 'email',
@@ -295,7 +300,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                     $pending->get($logId),
                     $this->translator->trans(
                         'mautic.email.contact_has_no_email',
-                        ['%contact%' => $contact->getPrimaryIdentifier()]
+                        [
+                            '%contact%' => $contact->getPrimaryIdentifier(),
+                        ]
                     )
                 );
                 unset($contactIds[$contact->getId()]);
@@ -310,7 +317,10 @@ class CampaignSubscriber implements EventSubscriberInterface
                         $pending->get($logId),
                         $this->translator->trans(
                             'mautic.email.contact_has_unsubscribed_from_category',
-                            ['%contact%' => $contact->getPrimaryIdentifier(), '%category%' => $emailCategory]
+                            [
+                                '%contact%' => $contact->getPrimaryIdentifier(),
+                                '%category%' => $emailCategory,
+                            ]
                         )
                     );
                     unset($contactIds[$contact->getId()]);
@@ -340,7 +350,9 @@ class CampaignSubscriber implements EventSubscriberInterface
                 // Pass with a note to the UI because no use retrying
                 $event->passWithError(
                     $log,
-                    $this->translator->trans('mautic.email.contact_already_received_marketing_email', ['%contact%' => $credentialArray[$log->getId()]['primaryIdentifier']])
+                    $this->translator->trans('mautic.email.contact_already_received_marketing_email', [
+                        '%contact%' => $credentialArray[$log->getId()]['primaryIdentifier'],
+                    ])
                 );
                 unset($credentialArray[$log->getId()]);
             }

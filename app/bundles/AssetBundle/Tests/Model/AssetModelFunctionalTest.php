@@ -58,7 +58,9 @@ class AssetModelFunctionalTest extends MauticMysqlTestCase
      */
     public static function generateUrlDataProvider(): iterable
     {
-        $clickThrough        = ['ct' => 'encoded-string'];
+        $clickThrough        = [
+            'ct' => 'encoded-string',
+        ];
         $clickThroughEncoded = urlencode(base64_encode(serialize($clickThrough)));
 
         yield 'Absolute URL' => [
@@ -72,7 +74,9 @@ class AssetModelFunctionalTest extends MauticMysqlTestCase
         yield 'Absolute URL with clickthrough' => [
             'asset-with-ct',
             true,
-            ['ct' => 'encoded-string'],
+            [
+                'ct' => 'encoded-string',
+            ],
             null,
             '?ct='.$clickThroughEncoded,
         ];

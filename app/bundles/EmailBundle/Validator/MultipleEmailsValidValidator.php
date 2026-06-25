@@ -31,7 +31,9 @@ class MultipleEmailsValidValidator extends ConstraintValidator
             try {
                 $this->emailValidator->validate($email);
             } catch (InvalidEmailException $e) {
-                $this->context->buildViolation('mautic.email.multiple_emails.not_valid', ['%email%' => $e->getMessage()])
+                $this->context->buildViolation('mautic.email.multiple_emails.not_valid', [
+                    '%email%' => $e->getMessage(),
+                ])
                     ->addViolation();
 
                 return;

@@ -137,7 +137,9 @@ class MembershipManagerTest extends \PHPUnit\Framework\TestCase
         // One is found and one is not
         $this->leadRepository->expects($this->once())
             ->method('getCampaignMembers')
-            ->willReturn([$contact2->getId() => $campaignMember]);
+            ->willReturn([
+                $contact2->getId() => $campaignMember,
+            ]);
 
         $this->adder->expects($this->once())
             ->method('updateExistingMembership')
@@ -149,10 +151,16 @@ class MembershipManagerTest extends \PHPUnit\Framework\TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatchBatchMembershipChange')
-            ->with([$contact->getId() => $contact, $contact2->getId() => $contact2], $campaign, Adder::NAME);
+            ->with([
+                $contact->getId() => $contact,
+                $contact2->getId() => $contact2,
+            ], $campaign, Adder::NAME);
 
         /** @var ArrayCollection<int, Lead> $contacts */
-        $contacts = new ArrayCollection([1 => $contact, 2 => $contact2]);
+        $contacts = new ArrayCollection([
+            1 => $contact,
+            2 => $contact2,
+        ]);
 
         $this->getManager()->addContacts($contacts, $campaign);
     }
@@ -188,7 +196,9 @@ class MembershipManagerTest extends \PHPUnit\Framework\TestCase
         // One is found and one is not
         $this->leadRepository->expects($this->once())
             ->method('getCampaignMembers')
-            ->willReturn([$contact2->getId() => $campaignMember]);
+            ->willReturn([
+                $contact2->getId() => $campaignMember,
+            ]);
 
         $this->remover->expects($this->once())
             ->method('updateExistingMembership')
@@ -196,10 +206,15 @@ class MembershipManagerTest extends \PHPUnit\Framework\TestCase
 
         $this->eventDispatcher->expects($this->once())
             ->method('dispatchBatchMembershipChange')
-            ->with([$contact2->getId() => $contact2], $campaign, Remover::NAME);
+            ->with([
+                $contact2->getId() => $contact2,
+            ], $campaign, Remover::NAME);
 
         /** @var ArrayCollection<int, Lead> $contacts */
-        $contacts = new ArrayCollection([1 => $contact, 2 => $contact2]);
+        $contacts = new ArrayCollection([
+            1 => $contact,
+            2 => $contact2,
+        ]);
 
         $this->getManager()->removeContacts($contacts, $campaign);
     }

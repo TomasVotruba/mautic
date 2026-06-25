@@ -54,7 +54,9 @@ final class FieldChoicesProviderTest extends \PHPUnit\Framework\TestCase
         $this->provider->getChoicesForField('country', 'country_field_a');
         $choices = $this->provider->getChoicesForField('country', 'country_field_a');
 
-        $this->assertSame(['Czech Republic' => 'Czech Republic'], $choices);
+        $this->assertSame([
+            'Czech Republic' => 'Czech Republic',
+        ], $choices);
     }
 
     public function testGetChoicesForFieldThatHasAliasChoices(): void
@@ -70,7 +72,9 @@ final class FieldChoicesProviderTest extends \PHPUnit\Framework\TestCase
         $this->provider->getChoicesForField('select', 'select_a');
         $choices = $this->provider->getChoicesForField('select', 'select_a');
 
-        $this->assertSame(['Choice A' => 'choice_a'], $choices);
+        $this->assertSame([
+            'Choice A' => 'choice_a',
+        ], $choices);
     }
 
     private function setSomeChoicesLikeASubscriber(): callable
@@ -78,12 +82,16 @@ final class FieldChoicesProviderTest extends \PHPUnit\Framework\TestCase
         return function (ListFieldChoicesEvent $event) {
             $event->setChoicesForFieldAlias(
                 'select_a',
-                ['Choice A' => 'choice_a']
+                [
+                    'Choice A' => 'choice_a',
+                ]
             );
 
             $event->setChoicesForFieldType(
                 'country',
-                ['Czech Republic' => 'Czech Republic']
+                [
+                    'Czech Republic' => 'Czech Republic',
+                ]
             );
 
             return true;

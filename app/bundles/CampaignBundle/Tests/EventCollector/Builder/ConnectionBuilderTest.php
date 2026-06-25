@@ -36,7 +36,11 @@ class ConnectionBuilderTest extends \PHPUnit\Framework\TestCase
             ],
             Event::TYPE_DECISION => [
                 'decision1' => [
-                    'connectionRestrictions' => ['source' => ['action' => ['action1']]],
+                    'connectionRestrictions' => [
+                        'source' => [
+                            'action' => ['action1'],
+                        ],
+                    ],
                 ],
                 'decision2' => [
                     // BC From way back

@@ -83,7 +83,9 @@ class CompanyReportData
                 default    => 'string',
             };
             $columns[$prefix.$f->getAlias()] = [
-                'label' => $this->translator->trans('mautic.report.field.company.label', ['%field%' => $f->getLabel()]),
+                'label' => $this->translator->trans('mautic.report.field.company.label', [
+                    '%field%' => $f->getLabel(),
+                ]),
                 'type'  => $type,
             ];
         }

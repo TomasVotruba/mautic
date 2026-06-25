@@ -53,7 +53,9 @@ final class SegmentDateValidator extends ConstraintValidator
                 }
 
                 if (false === $dateTime) {
-                    $this->context->addViolation($this->translator->trans('mautic.lead.segment.date_invalid', ['%value%' => $parameterValue], 'validators'));
+                    $this->context->addViolation($this->translator->trans('mautic.lead.segment.date_invalid', [
+                        '%value%' => $parameterValue,
+                    ], 'validators'));
 
                     return;
                 }

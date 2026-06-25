@@ -55,7 +55,9 @@ class UserApiController extends CommonApiController
         $this->entityNameOne    = 'user';
         $this->entityNameMulti  = 'users';
         $this->serializerGroups = ['userDetails', 'roleList', 'publishDetails'];
-        $this->dataInputMasks   = ['signature' => 'html'];
+        $this->dataInputMasks   = [
+            'signature' => 'html',
+        ];
 
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }

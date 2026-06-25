@@ -48,8 +48,12 @@ final class FormFieldNumberTypeTest extends TypeTestCase
                     $this->assertSame(TextType::class, $parameters[1]);
                     $this->assertSame([
                         'label'      => 'mautic.form.field.form.property_placeholder',
-                        'label_attr' => ['class' => 'control-label'],
-                        'attr'       => ['class' => 'form-control'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
+                        'attr'       => [
+                            'class' => 'form-control',
+                        ],
                         'required'   => false,
                     ], $parameters[2]);
                 }
@@ -58,7 +62,9 @@ final class FormFieldNumberTypeTest extends TypeTestCase
                     $this->assertSame(IntegerType::class, $parameters[1]);
                     $this->assertSame([
                         'label'      => 'mautic.form.field.form.number_precision',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'data'       => 0,
                         'attr'       => [
                             'class'   => 'form-control',

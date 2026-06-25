@@ -169,7 +169,9 @@ abstract class StandardImportTestHelper extends CommonMocks
         /** @var MockObject&LeadModel $leadModel */
         $leadModel = $this->getMockBuilder(LeadModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([16 => $this->entityManager])
+            ->setConstructorArgs([
+                16 => $this->entityManager,
+            ])
             ->getMock();
 
         $leadModel->expects($this->any())
@@ -179,13 +181,17 @@ abstract class StandardImportTestHelper extends CommonMocks
         /** @var MockObject&CompanyModel $companyModel */
         $companyModel = $this->getMockBuilder(CompanyModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([3 => $this->entityManager])
+            ->setConstructorArgs([
+                3 => $this->entityManager,
+            ])
             ->getMock();
 
         /** @var MockObject&NotificationModel $notificationModel */
         $notificationModel = $this->getMockBuilder(NotificationModel::class)
             ->disableOriginalConstructor()
-            ->setConstructorArgs([3 => $this->entityManager])
+            ->setConstructorArgs([
+                3 => $this->entityManager,
+            ])
             ->getMock();
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);

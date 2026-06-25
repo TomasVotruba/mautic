@@ -92,7 +92,9 @@ class AjaxController extends CommonAjaxController
             return $clearCacheResult;
         }
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse([
+            'success' => true,
+        ]);
     }
 
     public function removePackageAction(Request $request): JsonResponse
@@ -143,7 +145,9 @@ class AjaxController extends CommonAjaxController
             return $clearCacheResult;
         }
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse([
+            'success' => true,
+        ]);
     }
 
     private function clearCacheOrReturnError(): ?JsonResponse

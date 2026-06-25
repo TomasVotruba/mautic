@@ -81,7 +81,9 @@ final class AddressDTO
             $tokenValue = TokenHelper::findLeadTokens($content, $contact, true);
         } else {
             // Use a non-empty lead array so token defaults are resolved while preserving the whole content.
-            $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
+            $tokenValue = TokenHelper::findLeadTokens($content, [
+                'id' => 0,
+            ], true);
         }
 
         $tokenValue = trim((string) $tokenValue);
@@ -108,7 +110,9 @@ final class AddressDTO
      */
     public function getAddressArray(): array
     {
-        return [$this->email => $this->name];
+        return [
+            $this->email => $this->name,
+        ];
     }
 
     public function toMailerAddress(): Address

@@ -34,7 +34,9 @@ class FormFieldEmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.form.validationmsg',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'data-show-on' => '{"formfield_validation_donotsubmit_1": "checked"}',
@@ -61,7 +63,9 @@ class FormFieldEmailType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.form.field.form.validationmsg',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'        => 'form-control',
                     'data-show-on' => '{"formfield_validation_blockfreeemail_1": "checked"}',

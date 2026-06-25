@@ -53,7 +53,9 @@ final class FormFieldRatingTypeTest extends TypeTestCase
         $starCount = $form->get('star_count');
         $this->assertInstanceOf(IntegerType::class, $starCount->getConfig()->getType()->getInnerType());
         $this->assertSame('mautic.form.field.form.rating_star_count', $starCount->getConfig()->getOption('label'));
-        $this->assertSame(['class' => 'control-label'], $starCount->getConfig()->getOption('label_attr'));
+        $this->assertSame([
+            'class' => 'control-label',
+        ], $starCount->getConfig()->getOption('label_attr'));
         $this->assertSame([
             'class'   => 'form-control',
             'tooltip' => 'mautic.form.field.help.rating_star_count',
@@ -67,7 +69,10 @@ final class FormFieldRatingTypeTest extends TypeTestCase
         $this->assertInstanceOf(ChoiceType::class, $symbol->getConfig()->getType()->getInnerType());
         $this->assertSame('mautic.form.field.form.rating_symbol', $symbol->getConfig()->getOption('label'));
         $this->assertSame(
-            ['class' => 'form-control', 'tooltip' => 'mautic.form.field.help.rating_symbol'],
+            [
+                'class' => 'form-control',
+                'tooltip' => 'mautic.form.field.help.rating_symbol',
+            ],
             $symbol->getConfig()->getOption('attr')
         );
         $this->assertSame('★', $symbol->getData());

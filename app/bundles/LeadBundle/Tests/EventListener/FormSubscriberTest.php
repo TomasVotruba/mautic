@@ -94,7 +94,10 @@ class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $action = new Action();
         $action->setType('lead.pointschange');
-        $action->setProperties(['points' => 1, 'operator' => 'plus']);
+        $action->setProperties([
+            'points' => 1,
+            'operator' => 'plus',
+        ]);
         $submissionEvent->setAction($action);
 
         $this->subscriber->onFormSubmitActionChangePoints($submissionEvent);

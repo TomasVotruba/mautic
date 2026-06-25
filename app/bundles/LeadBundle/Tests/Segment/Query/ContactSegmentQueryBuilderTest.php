@@ -36,10 +36,19 @@ class ContactSegmentQueryBuilderTest extends TestCase
      */
     public static function dataAddNewContactsRestrictionsWithBatchLimiters(): iterable
     {
-        yield [['minId' => 1,  'maxId' => 2], 'par0.lead_id BETWEEN 1 and 2'];
-        yield [['minId' => 1], 'par0.lead_id >= 1'];
-        yield [['maxId' => 2], 'par0.lead_id <= 2'];
-        yield [['lead_id' => 1], 'par0.lead_id = 1'];
+        yield [[
+            'minId' => 1,
+            'maxId' => 2,
+        ], 'par0.lead_id BETWEEN 1 and 2'];
+        yield [[
+            'minId' => 1,
+        ], 'par0.lead_id >= 1'];
+        yield [[
+            'maxId' => 2,
+        ], 'par0.lead_id <= 2'];
+        yield [[
+            'lead_id' => 1,
+        ], 'par0.lead_id = 1'];
     }
 
     /**

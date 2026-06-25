@@ -54,7 +54,9 @@ class FocusApiController extends CommonApiController
     public function generateJsAction($id)
     {
         $focus = $this->model->getEntity($id);
-        $view  = $this->view(['js' => $this->model->generateJavascript($focus)], Response::HTTP_OK);
+        $view  = $this->view([
+            'js' => $this->model->generateJavascript($focus),
+        ], Response::HTTP_OK);
 
         return $this->handleView($view);
     }

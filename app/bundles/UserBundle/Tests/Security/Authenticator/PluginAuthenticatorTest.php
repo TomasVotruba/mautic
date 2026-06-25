@@ -38,7 +38,9 @@ class PluginAuthenticatorTest extends TestCase
         $integration              = 'the integration';
         $authenticatedIntegration = 'Auth integration';
         $userIdentifier           = 'some identifier';
-        $request                  = new Request(['integration' => $integration]);
+        $request                  = new Request([
+            'integration' => $integration,
+        ]);
 
         $pluginToken = new PluginToken($firewallName, $integration);
 
@@ -113,7 +115,9 @@ class PluginAuthenticatorTest extends TestCase
         $integration              = 'the integration';
         $authenticatedIntegration = 'Auth integration';
         $userIdentifier           = 'some identifier';
-        $request                  = new Request(['integration' => $integration]);
+        $request                  = new Request([
+            'integration' => $integration,
+        ]);
 
         $pluginToken = new PluginToken($firewallName, $integration);
 

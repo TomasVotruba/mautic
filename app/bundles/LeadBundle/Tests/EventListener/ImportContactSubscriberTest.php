@@ -45,7 +45,10 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
                 {
                 }
 
-                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
+                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = [
+                    'isPublished' => true,
+                    'object' => 'lead',
+                ]): array
                 {
                     return [];
                 }
@@ -58,7 +61,9 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
         $subscriber->onValidateImport($event);
 
         Assert::assertSame(['tagLabel'], $event->getTags());
-        Assert::assertSame(['name' => 'Bud'], $event->getMatchedFields());
+        Assert::assertSame([
+            'name' => 'Bud',
+        ], $event->getMatchedFields());
     }
 
     /**
@@ -82,7 +87,10 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
                 {
                 }
 
-                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
+                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = [
+                    'isPublished' => true,
+                    'object' => 'lead',
+                ]): array
                 {
                     return [];
                 }
@@ -94,7 +102,9 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $subscriber->onValidateImport($event);
 
-        Assert::assertSame(['name' => 'Bud'], $event->getMatchedFields());
+        Assert::assertSame([
+            'name' => 'Bud',
+        ], $event->getMatchedFields());
     }
 
     public function testOnImportInitForUknownObject(): void
@@ -194,7 +204,10 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
                  *
                  * @return string[]
                  */
-                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
+                public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = [
+                    'isPublished' => true,
+                    'object' => 'lead',
+                ]): array
                 {
                     return ['some fields'];
                 }

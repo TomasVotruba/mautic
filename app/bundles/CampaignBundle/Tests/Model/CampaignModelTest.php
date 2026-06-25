@@ -14,30 +14,40 @@ class CampaignModelTest extends CampaignTestAbstract
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists();
         $this->assertTrue(isset($lists['lists']));
-        $this->assertSame([parent::$mockAlias => parent::$mockName], $lists['lists']);
+        $this->assertSame([
+            parent::$mockAlias => parent::$mockName,
+        ], $lists['lists']);
         $this->assertTrue(isset($lists['forms']));
-        $this->assertSame([parent::$mockId => parent::$mockName], $lists['forms']);
+        $this->assertSame([
+            parent::$mockId => parent::$mockName,
+        ], $lists['forms']);
     }
 
     public function testGetSourceListsWithLists(): void
     {
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists('lists');
-        $this->assertSame([parent::$mockAlias => parent::$mockName], $lists);
+        $this->assertSame([
+            parent::$mockAlias => parent::$mockName,
+        ], $lists);
     }
 
     public function testGetSourceListsWithForms(): void
     {
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists('forms');
-        $this->assertSame([parent::$mockId => parent::$mockName], $lists);
+        $this->assertSame([
+            parent::$mockId => parent::$mockName,
+        ], $lists);
     }
 
     public function testGetSourceListsWithListsUsingIds(): void
     {
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists('lists', false, true);
-        $this->assertSame([parent::$mockId => parent::$mockName], $lists);
+        $this->assertSame([
+            parent::$mockId => parent::$mockName,
+        ], $lists);
     }
 
     public function testSetLeadSourcesAddsLeadListById(): void
@@ -55,7 +65,11 @@ class CampaignModelTest extends CampaignTestAbstract
             ->method('addList')
             ->with($leadList);
 
-        $model->setLeadSources($campaign, ['lists' => [parent::$mockId => parent::$mockName]], []);
+        $model->setLeadSources($campaign, [
+            'lists' => [
+                parent::$mockId => parent::$mockName,
+            ],
+        ], []);
     }
 
     public function testSetLeadSourcesIgnoresNonNumericLeadListIdentifier(): void
@@ -69,7 +83,11 @@ class CampaignModelTest extends CampaignTestAbstract
         $campaign->expects($this->never())
             ->method('addList');
 
-        $model->setLeadSources($campaign, ['lists' => ['list-one' => 0]], []);
+        $model->setLeadSources($campaign, [
+            'lists' => [
+                'list-one' => 0,
+            ],
+        ], []);
     }
 
     public function testSetLeadSourcesAddsFormById(): void
@@ -87,7 +105,11 @@ class CampaignModelTest extends CampaignTestAbstract
             ->method('addForm')
             ->with($form);
 
-        $model->setLeadSources($campaign, ['forms' => [parent::$mockId => parent::$mockName]], []);
+        $model->setLeadSources($campaign, [
+            'forms' => [
+                parent::$mockId => parent::$mockName,
+            ],
+        ], []);
     }
 
     public function testSetLeadSourcesRemovesLeadListById(): void
@@ -105,7 +127,11 @@ class CampaignModelTest extends CampaignTestAbstract
             ->method('removeList')
             ->with($leadList);
 
-        $model->setLeadSources($campaign, [], ['lists' => [parent::$mockId => parent::$mockName]]);
+        $model->setLeadSources($campaign, [], [
+            'lists' => [
+                parent::$mockId => parent::$mockName,
+            ],
+        ]);
     }
 
     public function testSetLeadSourcesRemovesFormById(): void
@@ -123,7 +149,11 @@ class CampaignModelTest extends CampaignTestAbstract
             ->method('removeForm')
             ->with($form);
 
-        $model->setLeadSources($campaign, [], ['forms' => [parent::$mockId => parent::$mockName]]);
+        $model->setLeadSources($campaign, [], [
+            'forms' => [
+                parent::$mockId => parent::$mockName,
+            ],
+        ]);
     }
 
     public function testSetLeadSourcesIgnoresNonNumericFormIdentifier(): void
@@ -142,8 +172,16 @@ class CampaignModelTest extends CampaignTestAbstract
 
         $model->setLeadSources(
             $campaign,
-            ['forms' => ['form-one' => 0]],
-            ['forms' => ['form-two' => 0]]
+            [
+                'forms' => [
+                    'form-one' => 0,
+                ],
+            ],
+            [
+                'forms' => [
+                    'form-two' => 0,
+                ],
+            ]
         );
     }
 }

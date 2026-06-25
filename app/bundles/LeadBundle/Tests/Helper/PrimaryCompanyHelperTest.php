@@ -53,7 +53,10 @@ class PrimaryCompanyHelperTest extends \PHPUnit\Framework\TestCase
 
         $profileFields = $this->getPrimaryCompanyHelper()->getProfileFieldsWithPrimaryCompany($lead);
 
-        $this->assertEquals(['email' => 'test@test.com', 'companywebsite' => 'https://foo.com'], $profileFields);
+        $this->assertEquals([
+            'email' => 'test@test.com',
+            'companywebsite' => 'https://foo.com',
+        ], $profileFields);
     }
 
     public function testPrimaryCompanyMergedIntoProfileFields(): void
@@ -64,7 +67,10 @@ class PrimaryCompanyHelperTest extends \PHPUnit\Framework\TestCase
 
         $profileFields = $this->getPrimaryCompanyHelper()->mergePrimaryCompanyWithProfileFields(1, $leadFields);
 
-        $this->assertEquals(['email' => 'test@test.com', 'companywebsite' => 'https://foo.com'], $profileFields);
+        $this->assertEquals([
+            'email' => 'test@test.com',
+            'companywebsite' => 'https://foo.com',
+        ], $profileFields);
     }
 
     /**

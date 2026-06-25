@@ -64,7 +64,9 @@ class SegmentReferenceFilterQueryBuilderGlueTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->testSymfonyCommand('mautic:segments:update', ['--list-id' => $segmentD->getId()]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '--list-id' => $segmentD->getId(),
+        ]);
 
         $listModel = static::getContainer()->get('mautic.lead.model.list');
 

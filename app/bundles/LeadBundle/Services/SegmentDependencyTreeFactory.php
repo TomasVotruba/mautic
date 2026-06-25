@@ -75,7 +75,9 @@ class SegmentDependencyTreeFactory
             }
         }
 
-        return $this->segmentModel->getRepository()->findBy(['id' => $childSegmentIds]);
+        return $this->segmentModel->getRepository()->findBy([
+            'id' => $childSegmentIds,
+        ]);
     }
 
     private function generateSegmentDetailRoute(LeadList $segment): string

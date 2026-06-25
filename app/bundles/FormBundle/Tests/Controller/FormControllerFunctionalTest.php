@@ -353,9 +353,13 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             sprintf('/s/forms/action/edit/%s?formId=%s', $action->getId(), $form->getId()),
-            ['formId' => $form->getId()], // Query parameters (handled in URL)
+            [
+                'formId' => $form->getId(),
+            ], // Query parameters (handled in URL)
             [], // Files
-            ['CONTENT_TYPE' => 'application/json'], // server
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ], // server
             json_encode([
                 'formaction' => [
                     'id'          => $action->getId(),
@@ -485,13 +489,17 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
             // input
             [
                 'type'       => 'lead.scorecontactscompanies',
-                'properties' => ['score' => 10],
+                'properties' => [
+                    'score' => 10,
+                ],
             ],
             // expected
             [
                 [
                     'message'     => 'mautic.form.form.change_points_by',
-                    'message_arg' => ['%value%' => 10],
+                    'message_arg' => [
+                        '%value%' => 10,
+                    ],
                 ],
             ],
         ];
@@ -524,7 +532,9 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
             [
                 'type'       => 'email.send.user',
                 'properties' => [
-                    'useremail' => ['email' => 1],
+                    'useremail' => [
+                        'email' => 1,
+                    ],
                     'user_id'   => [1],
                 ],
                 'entities' => [
@@ -654,7 +664,9 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $forms = $this->em->getRepository(Form::class)->findBy([], ['id' => 'ASC']);
+        $forms = $this->em->getRepository(Form::class)->findBy([], [
+            'id' => 'ASC',
+        ]);
         Assert::assertCount(2, $forms);
 
         $originalForm = $forms[0];

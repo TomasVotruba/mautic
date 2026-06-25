@@ -144,7 +144,9 @@ final class EmailDefaultsHelperTest extends TestCase
         $email = new Email();
         $this->helper->applyDefaults($email);
 
-        $this->assertSame(['utmSource' => 'only-source'], $email->getUtmTags());
+        $this->assertSame([
+            'utmSource' => 'only-source',
+        ], $email->getUtmTags());
     }
 
     public function testLeavesFieldsUnchangedWhenConfigIsEmpty(): void
@@ -198,6 +200,8 @@ final class EmailDefaultsHelperTest extends TestCase
         $this->helper->applyDefaults($email);
 
         $this->assertSame($changesBefore, $email->getChanges());
-        $this->assertSame(['utmSource' => 'src'], $email->getUtmTags());
+        $this->assertSame([
+            'utmSource' => 'src',
+        ], $email->getUtmTags());
     }
 }

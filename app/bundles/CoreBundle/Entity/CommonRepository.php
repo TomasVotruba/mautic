@@ -310,7 +310,10 @@ class CommonRepository extends ServiceEntityRepository
      */
     public function getBaseColumns($entityClass, $returnColumnNames = false)
     {
-        static $baseCols = [true => [], false => []];
+        static $baseCols = [
+            true => [],
+            false => [],
+        ];
 
         if ($this->getEntityName() === $entityClass) {
             if (empty($baseCols[$returnColumnNames][$entityClass])) {
@@ -488,7 +491,9 @@ class CommonRepository extends ServiceEntityRepository
                 $expr->add($subExpr);
             }
             if ($setParameter) {
-                $parameter = [$unique => $filter['value']];
+                $parameter = [
+                    $unique => $filter['value'],
+                ];
             }
         } else {
             $func = (!empty($filter['operator'])) ? $filter['operator'] : $filter['expr'];
@@ -508,13 +513,17 @@ class CommonRepository extends ServiceEntityRepository
                     }
                 }
                 $expr      = $q->expr()->{$func}($filter['column'], ':'.$unique);
-                $parameter = [$unique => $filter['value']];
+                $parameter = [
+                    $unique => $filter['value'],
+                ];
             } else {
                 if (isset($filter['strict']) && !$filter['strict']) {
                     $filter['value'] = "%{$filter['value']}%";
                 }
                 $expr      = $q->expr()->{$func}($filter['column'], ':'.$unique);
-                $parameter = [$unique => $filter['value']];
+                $parameter = [
+                    $unique => $filter['value'],
+                ];
             }
             if (!empty($filter['not'])) {
                 $expr = $q->expr()->not($expr);
@@ -1082,7 +1091,9 @@ class CommonRepository extends ServiceEntityRepository
 
         return [
             $expr,
-            ["$unique" => $string],
+            [
+                "$unique" => $string,
+            ],
         ];
     }
 
@@ -1152,7 +1163,9 @@ class CommonRepository extends ServiceEntityRepository
 
         return [
             $expr,
-            ["$unique" => $string],
+            [
+                "$unique" => $string,
+            ],
         ];
     }
 
@@ -1174,13 +1187,17 @@ class CommonRepository extends ServiceEntityRepository
             case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
                 $column          = $isDbalQB ? 'is_published' : 'isPublished';
                 $expr            = $q->expr()->eq("{$prefix}.{$column}", ":{$unique}");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
             case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
                 $column          = $isDbalQB ? 'is_published' : 'isPublished';
                 $expr            = $q->expr()->eq("{$prefix}.{$column}", ":{$unique}");
-                $forceParameters = [$unique => false];
+                $forceParameters = [
+                    $unique => false,
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.isuncategorized'):
             case $this->translator->trans('mautic.core.searchcommand.isuncategorized', [], null, 'en_US'):
@@ -1194,7 +1211,9 @@ class CommonRepository extends ServiceEntityRepository
             case $this->translator->trans('mautic.core.searchcommand.ismine', [], null, 'en_US'):
                 $column          = $isDbalQB ? 'created_by' : 'createdBy';
                 $expr            = $q->expr()->eq("{$prefix}.{$column}", ":{$unique}");
-                $forceParameters = [$unique => $this->currentUser->getId()];
+                $forceParameters = [
+                    $unique => $this->currentUser->getId(),
+                ];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.category'):
             case $this->translator->trans('mautic.core.searchcommand.category', [], null, 'en_US'):
@@ -1242,7 +1261,9 @@ class CommonRepository extends ServiceEntityRepository
                 }
             }
 
-            $parameters = ["$unique" => $string];
+            $parameters = [
+                "$unique" => $string,
+            ];
         }
 
         return [$expr, $parameters];

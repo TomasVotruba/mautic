@@ -165,7 +165,9 @@ class CampaignSubscriberTest extends TestCase
             'object'    => 'campaign',
             'objectId'  => $deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $campaignName],
+            'details'   => [
+                'name' => $campaignName,
+            ],
             'ipAddress' => $ipAddress,
         ];
 

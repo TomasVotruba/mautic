@@ -75,7 +75,9 @@ class VtigerIntegration extends CrmAbstractIntegration
             'username'  => $this->keys['username'],
         ];
 
-        $response = $this->makeRequest($url, $parameters, 'GET', ['authorize_session' => true]);
+        $response = $this->makeRequest($url, $parameters, 'GET', [
+            'authorize_session' => true,
+        ]);
 
         if (empty($response['success'])) {
             return $this->getErrorsFromResponse($response);
@@ -87,7 +89,9 @@ class VtigerIntegration extends CrmAbstractIntegration
             'accessKey' => md5($response['result']['token'].$this->keys['accessKey']),
         ];
 
-        $response = $this->makeRequest($url, $loginParameters, 'POST', ['authorize_session' => true]);
+        $response = $this->makeRequest($url, $loginParameters, 'POST', [
+            'authorize_session' => true,
+        ]);
 
         if (empty($response['success'])) {
             if (is_array($response) && array_key_exists('error', $response)) {
@@ -108,7 +112,9 @@ class VtigerIntegration extends CrmAbstractIntegration
 
     public function getAuthLoginUrl(): string
     {
-        return $this->router->generate('mautic_integration_auth_callback', ['integration' => $this->getName()]);
+        return $this->router->generate('mautic_integration_auth_callback', [
+            'integration' => $this->getName(),
+        ]);
     }
 
     /**
@@ -236,7 +242,9 @@ class VtigerIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.vtiger.form.objects_to_pull_from',
-                    'label_attr'        => ['class' => ''],
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -251,6 +259,8 @@ class VtigerIntegration extends CrmAbstractIntegration
      */
     public function getFormCompanyFields($settings = []): array
     {
-        return parent::getAvailableLeadFields(['cache_suffix' => '.company']);
+        return parent::getAvailableLeadFields([
+            'cache_suffix' => '.company',
+        ]);
     }
 }

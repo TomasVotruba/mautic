@@ -41,7 +41,10 @@ class StageController extends AbstractFormController
         $limit      = $pageHelper->getLimit();
         $start      = $pageHelper->getStart();
         $search     = $request->get('search', $request->getSession()->get('mautic.stage.filter', ''));
-        $filter     = ['string' => $search, 'force' => []];
+        $filter     = [
+            'string' => $search,
+            'force' => [],
+        ];
         $orderBy    = $request->getSession()->get('mautic.stage.orderby', 's.name');
         $orderByDir = $request->getSession()->get('mautic.stage.orderbydir', 'ASC');
         $stageModel = $this->getModel('stage');
@@ -61,13 +64,17 @@ class StageController extends AbstractFormController
         $count = count($stages);
         if ($count && $count < ($start + 1)) {
             $lastPage  = $pageHelper->countPage($count);
-            $returnUrl = $this->generateUrl('mautic_stage_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_stage_index', [
+                'page' => $lastPage,
+            ]);
             $pageHelper->rememberPage($lastPage);
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
+                    'viewParameters'  => [
+                        'page' => $lastPage,
+                    ],
                     'contentTemplate' => 'Mautic\StageBundle\Controller\StageController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_stage_index',
@@ -97,7 +104,9 @@ class StageController extends AbstractFormController
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_stage_index',
                     'mauticContent' => 'stage',
-                    'route'         => $this->generateUrl('mautic_stage_index', ['page' => $page]),
+                    'route'         => $this->generateUrl('mautic_stage_index', [
+                        'page' => $page,
+                    ]),
                 ],
             ]
         );
@@ -129,7 +138,9 @@ class StageController extends AbstractFormController
         $method     = $request->getMethod();
         $stage      = $request->request->all()['stage'] ?? [];
         $actionType = 'POST' === $method ? ($stage['type'] ?? '') : '';
-        $action     = $this->generateUrl('mautic_stage_action', ['objectAction' => 'new']);
+        $action     = $this->generateUrl('mautic_stage_action', [
+            'objectAction' => 'new',
+        ]);
         $actions    = $model->getStageActions();
         $form       = $model->createForm(
             $entity,
@@ -140,7 +151,9 @@ class StageController extends AbstractFormController
                 'actionType'   => $actionType,
             ]
         );
-        $viewParameters = ['page' => $page];
+        $viewParameters = [
+            'page' => $page,
+        ];
 
         // /Check for a submitted form and process it
         if (Request::METHOD_POST === $method) {
@@ -243,10 +256,14 @@ class StageController extends AbstractFormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.stage.page', 1);
 
-        $viewParameters = ['page' => $page];
+        $viewParameters = [
+            'page' => $page,
+        ];
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_stage_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_stage_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
@@ -268,7 +285,9 @@ class StageController extends AbstractFormController
                             [
                                 'type'    => 'error',
                                 'msg'     => 'mautic.stage.error.notfound',
-                                'msgVars' => ['%id%' => $objectId],
+                                'msgVars' => [
+                                    '%id%' => $objectId,
+                                ],
                             ],
                         ],
                     ]
@@ -283,7 +302,10 @@ class StageController extends AbstractFormController
 
         $actionType = 'moved to stage';
 
-        $action  = $this->generateUrl('mautic_stage_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $action  = $this->generateUrl('mautic_stage_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
         $actions = $model->getStageActions();
         $form    = $model->createForm(
             $entity,
@@ -414,12 +436,16 @@ class StageController extends AbstractFormController
     public function deleteAction(Request $request, $objectId)
     {
         $page      = $request->getSession()->get('mautic.stage.page', 1);
-        $returnUrl = $this->generateUrl('mautic_stage_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_stage_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\StageBundle\Controller\StageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_stage_index',
@@ -436,7 +462,9 @@ class StageController extends AbstractFormController
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.stage.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
+                    'msgVars' => [
+                        '%id%' => $objectId,
+                    ],
                 ];
             } elseif (!$this->security->isGranted('stage:stages:delete')) {
                 $this->throwAccessDenied();
@@ -473,12 +501,16 @@ class StageController extends AbstractFormController
     public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.stage.page', 1);
-        $returnUrl = $this->generateUrl('mautic_stage_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_stage_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\StageBundle\Controller\StageController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_stage_index',
@@ -500,7 +532,9 @@ class StageController extends AbstractFormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.stage.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (!$this->security->isGranted('stage:stages:delete')) {
                     $flashes[] = $this->getAccessDeniedFlash();

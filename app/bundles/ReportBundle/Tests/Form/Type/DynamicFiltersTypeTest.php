@@ -62,7 +62,9 @@ final class DynamicFiltersTypeTest extends TestCase
             'label'         => 'Test Label',
             'type'          => 'text',
             'operatorGroup' => 'text',
-            'operators'     => ['eq' => 'mautic.core.operator.equals'],
+            'operators'     => [
+                'eq' => 'mautic.core.operator.equals',
+            ],
         ], $overrides);
     }
 
@@ -104,7 +106,9 @@ final class DynamicFiltersTypeTest extends TestCase
      */
     private function getOptionsWithData(array $data): array
     {
-        return array_merge($this->getBasicOptions(), ['data' => $data]);
+        return array_merge($this->getBasicOptions(), [
+            'data' => $data,
+        ]);
     }
 
     public function testBuildFormWithNoDynamicFilters(): void
@@ -119,7 +123,10 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithNonDynamicFilter(): void
     {
         $this->report->method('getFilters')->willReturn([
-            ['dynamic' => 0, 'column' => 'test_column'],
+            [
+                'dynamic' => 0,
+                'column' => 'test_column',
+            ],
         ]);
 
         $this->formBuilder->expects($this->never())->method('add');
@@ -142,7 +149,9 @@ final class DynamicFiltersTypeTest extends TestCase
                 $this->callback(function (array $args) {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'       => 'form-control',
                             'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
@@ -161,8 +170,14 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterBoolType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => 1])]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['type' => 'bool', 'operatorGroup' => 'bool']));
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => 1,
+            ])]);
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'type' => 'bool',
+            'operatorGroup' => 'bool',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -173,7 +188,9 @@ final class DynamicFiltersTypeTest extends TestCase
                 $this->callback(function (array $args) {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'       => 'form-control',
                             'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
@@ -200,8 +217,14 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterBooleanType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => 0])]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['type' => 'boolean', 'operatorGroup' => 'bool']));
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => 0,
+            ])]);
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'type' => 'boolean',
+            'operatorGroup' => 'bool',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -220,8 +243,14 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterDateType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => '2023-01-01'])]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['type' => 'date', 'operatorGroup' => 'date']));
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => '2023-01-01',
+            ])]);
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'type' => 'date',
+            'operatorGroup' => 'date',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -232,7 +261,9 @@ final class DynamicFiltersTypeTest extends TestCase
                 $this->callback(function (array $args) {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'       => 'form-control datepicker',
                             'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
@@ -255,8 +286,14 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterDateTimeType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => '2023-01-01 12:00:00'])]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['type' => 'datetime', 'operatorGroup' => 'datetime']));
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => '2023-01-01 12:00:00',
+            ])]);
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'type' => 'datetime',
+            'operatorGroup' => 'datetime',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -267,7 +304,9 @@ final class DynamicFiltersTypeTest extends TestCase
                 $this->callback(function (array $args) {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class'       => 'form-control datetimepicker',
                             'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
@@ -290,11 +329,17 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterSelectType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => 'option1'])]);
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => 'option1',
+            ])]);
         $this->setupFilterDefinitions($this->createFilterDefinition([
             'type'          => 'select',
             'operatorGroup' => 'select',
-            'list'          => ['option1' => 'Option 1', 'option2' => 'Option 2'],
+            'list'          => [
+                'option1' => 'Option 1',
+                'option2' => 'Option 2',
+            ],
         ]));
         $this->setupTranslator();
 
@@ -304,7 +349,10 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 ChoiceType::class,
                 $this->callback(function (array $args) {
-                    return $args['choices'] === ['Option 1' => 'option1', 'Option 2' => 'option2'];
+                    return $args['choices'] === [
+                        'Option 1' => 'option1',
+                        'Option 2' => 'option2',
+                    ];
                 })
             );
 
@@ -314,12 +362,21 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterMultiselectType(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['condition' => 'in', 'value' => ['option1', 'option2']])]);
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'condition' => 'in',
+                'value' => ['option1', 'option2'],
+            ])]);
         $this->setupFilterDefinitions($this->createFilterDefinition([
             'type'          => 'multiselect',
             'operatorGroup' => 'multiselect',
-            'operators'     => ['in' => 'mautic.core.operator.in'],
-            'list'          => ['option1' => 'Option 1', 'option2' => 'Option 2'],
+            'operators'     => [
+                'in' => 'mautic.core.operator.in',
+            ],
+            'list'          => [
+                'option1' => 'Option 1',
+                'option2' => 'Option 2',
+            ],
         ]));
         $this->setupTranslator('In');
 
@@ -330,7 +387,10 @@ final class DynamicFiltersTypeTest extends TestCase
                 ChoiceType::class,
                 $this->callback(function (array $args) {
                     return true === $args['multiple']
-                           && $args['choices'] === ['Option 1' => 'option1', 'Option 2' => 'option2'];
+                           && $args['choices'] === [
+                               'Option 1' => 'option1',
+                               'Option 2' => 'option2',
+                           ];
                 })
             );
 
@@ -340,8 +400,14 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterWithData(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['value' => 0])]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['type' => 'bool', 'operatorGroup' => 'bool']));
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'value' => 0,
+            ])]);
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'type' => 'bool',
+            'operatorGroup' => 'bool',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -354,14 +420,18 @@ final class DynamicFiltersTypeTest extends TestCase
                 })
             );
 
-        $this->dynamicFiltersType->buildForm($this->formBuilder, $this->getOptionsWithData(['test_alias' => 1]));
+        $this->dynamicFiltersType->buildForm($this->formBuilder, $this->getOptionsWithData([
+            'test_alias' => 1,
+        ]));
     }
 
     public function testBuildFormWithDynamicFilterInvalidOperatorGroup(): void
     {
         $this->setupBasicReport();
         $this->report->method('getFilters')->willReturn([$this->createFilter()]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['operatorGroup' => 'invalid_group']));
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'operatorGroup' => 'invalid_group',
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -381,7 +451,9 @@ final class DynamicFiltersTypeTest extends TestCase
     {
         $this->setupBasicReport();
         $this->report->method('getFilters')->willReturn([$this->createFilter()]);
-        $this->setupFilterDefinitions($this->createFilterDefinition(['operatorGroup' => null]));
+        $this->setupFilterDefinitions($this->createFilterDefinition([
+            'operatorGroup' => null,
+        ]));
         $this->setupTranslator();
 
         $this->formBuilder->expects($this->once())
@@ -400,7 +472,10 @@ final class DynamicFiltersTypeTest extends TestCase
     public function testBuildFormWithDynamicFilterNoOperatorLabel(): void
     {
         $this->setupBasicReport();
-        $this->report->method('getFilters')->willReturn([$this->createFilter(['condition' => 'invalid_condition'])]);
+        $this->report->method('getFilters')->willReturn([
+            $this->createFilter([
+                'condition' => 'invalid_condition',
+            ])]);
         $this->setupFilterDefinitions($this->createFilterDefinition());
         $this->setupTranslator('');
 

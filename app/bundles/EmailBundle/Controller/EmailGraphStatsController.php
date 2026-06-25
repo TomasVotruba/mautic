@@ -36,9 +36,17 @@ class EmailGraphStatsController extends AbstractController
         $email = $model->getEntity($objectId);
 
         // Init the date range filter form
-        $dateRangeValues = ['date_from' => $dateFrom, 'date_to' => $dateTo];
-        $action          = $this->generateUrl('mautic_email_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-        $dateRangeForm   = $formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+        $dateRangeValues = [
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ];
+        $action          = $this->generateUrl('mautic_email_action', [
+            'objectAction' => 'view',
+            'objectId' => $objectId,
+        ]);
+        $dateRangeForm   = $formFactory->create(DateRangeType::class, $dateRangeValues, [
+            'action' => $action,
+        ]);
 
         if (null === $email || !$security->hasEntityAccess(
             'email:emails:viewown',

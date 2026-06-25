@@ -386,7 +386,9 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
         $contactSegmentFilterCrate->method('getArray')
-            ->willReturn(['operator' => OperatorOptions::INCLUDING_ALL]);
+            ->willReturn([
+                'operator' => OperatorOptions::INCLUDING_ALL,
+            ]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
 
@@ -454,7 +456,9 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
         $contactSegmentFilterCrate->method('getArray')
-            ->willReturn(['operator' => OperatorOptions::EXCLUDING_ALL]);
+            ->willReturn([
+                'operator' => OperatorOptions::EXCLUDING_ALL,
+            ]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
 
@@ -502,7 +506,9 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
         $contactSegmentFilterCrate->method('getArray')
-            ->willReturn(['operator' => OperatorOptions::INCLUDING_ANY]);
+            ->willReturn([
+                'operator' => OperatorOptions::INCLUDING_ANY,
+            ]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
 
@@ -570,7 +576,9 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
         $contactSegmentFilterCrate->method('getArray')
-            ->willReturn(['operator' => OperatorOptions::EXCLUDING_ANY]);
+            ->willReturn([
+                'operator' => OperatorOptions::EXCLUDING_ANY,
+            ]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
 

@@ -10,7 +10,9 @@ class MenuEvent extends Event
     /**
      * @var array
      */
-    protected $menuItems = ['children' => []];
+    protected $menuItems = [
+        'children' => [],
+    ];
 
     /**
      * @param string $type

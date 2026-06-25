@@ -76,7 +76,9 @@ class GeneratedColumnSubscriberTest extends TestCase
         Assert::assertSame(
             [
                 'label'      => 'translated string',
-                'properties' => ['type' => 'text'],
+                'properties' => [
+                    'type' => 'text',
+                ],
                 'operators'  => [
                     'mautic.lead.list.form.operator.equals'     => '=',
                     'mautic.lead.list.form.operator.notequals'  => '!=',

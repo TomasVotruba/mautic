@@ -30,8 +30,12 @@ final class UserInviteRegistrationTypeTest extends TestCase
             ->method('fetchLanguages')
             ->with(false, false)
             ->willReturn([
-                'fr_FR' => ['name' => 'French'],
-                'de_DE' => ['name' => 'German'],
+                'fr_FR' => [
+                    'name' => 'French',
+                ],
+                'de_DE' => [
+                    'name' => 'German',
+                ],
             ]);
 
         $this->languageHelper->expects($this->once())

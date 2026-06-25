@@ -19,7 +19,9 @@ class AjaxController extends CommonAjaxController
         $pluginFilter = (int) $request->get('plugin');
         $session->set('mautic.integrations.filter', $pluginFilter);
 
-        return $this->sendJsonResponse(['success' => 1]);
+        return $this->sendJsonResponse([
+            'success' => 1,
+        ]);
     }
 
     /**
@@ -31,7 +33,9 @@ class AjaxController extends CommonAjaxController
         $settings    = $request->query->all()['settings'] ?? [];
         $page        = $request->query->get('page');
 
-        $dataArray = ['success' => 0];
+        $dataArray = [
+            'success' => 0,
+        ];
 
         if (!empty($integration) && !empty($settings)) {
             /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $integrationObject */
@@ -112,7 +116,9 @@ class AjaxController extends CommonAjaxController
     {
         $integration = $request->query->get('integration');
         $settings    = $request->query->all()['settings'] ?? [];
-        $dataArray   = ['success' => 0];
+        $dataArray   = [
+            'success' => 0,
+        ];
 
         if (!empty($integration) && !empty($settings)) {
             /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $object */
@@ -167,7 +173,9 @@ class AjaxController extends CommonAjaxController
         $integration = $request->query->get('integration');
         $campaign    = $request->query->get('campaign');
         $settings    = $request->query->all()['settings'] ?? [];
-        $dataArray   = ['success' => 0];
+        $dataArray   = [
+            'success' => 0,
+        ];
         $statusData  = [];
         if (!empty($integration) && !empty($campaign)) {
             /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $object */
@@ -243,7 +251,9 @@ class AjaxController extends CommonAjaxController
             if (isset($featureSettings[$fields]) && array_key_exists($integration_field, $featureSettings[$fields])) {
                 unset($featureSettings[$fields][$integration_field]);
             }
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         } else {
             $newFeatureSettings[$integration_field] = $update_mautic;
             if (isset($featureSettings[$updateFields])) {
@@ -258,7 +268,9 @@ class AjaxController extends CommonAjaxController
                 $featureSettings[$fields] = $newFeatureSettings;
             }
 
-            $dataArray = ['success' => 1];
+            $dataArray = [
+                'success' => 1,
+            ];
         }
         $entity->setFeatureSettings($featureSettings);
 

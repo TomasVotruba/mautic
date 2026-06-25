@@ -66,7 +66,9 @@ class EntityLookupType extends AbstractType
         $resolver->setDefaults(
             [
                 'modal_route'            => false,
-                'modal_route_parameters' => ['objectAction' => 'new'],
+                'modal_route_parameters' => [
+                    'objectAction' => 'new',
+                ],
                 'modal_header'           => '',
                 'force_popup'            => false,
                 'entity_label_column'    => 'name',

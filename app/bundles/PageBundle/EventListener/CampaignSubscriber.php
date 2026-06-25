@@ -237,7 +237,11 @@ class CampaignSubscriber implements EventSubscriberInterface
 
         $values = [];
         foreach ($config['services'] as $service) {
-            $values[$service][] = ['category' => $config['category'], 'action' => $config['action'], 'label' => $config['label']];
+            $values[$service][] = [
+                'category' => $config['category'],
+                'action' => $config['action'],
+                'label' => $config['label'],
+            ];
         }
         $this->trackingHelper->updateCacheItem($values);
 

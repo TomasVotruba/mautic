@@ -233,7 +233,9 @@ class InstallService
         if (!empty($dbParams['driver']) && !in_array($dbParams['driver'], DoctrineStep::getDriverKeys())) {
             $messages['driver'] = $this->translator->trans(
                 'mautic.install.database.driver.invalid',
-                ['%drivers%' => implode(', ', DoctrineStep::getDriverKeys())],
+                [
+                    '%drivers%' => implode(', ', DoctrineStep::getDriverKeys()),
+                ],
                 'validators'
             );
         }
@@ -268,7 +270,9 @@ class InstallService
 
             $messages['error'] = $this->translator->trans(
                 'mautic.installer.error.creating.database',
-                ['%name%' => $dbParams['name']],
+                [
+                    '%name%' => $dbParams['name'],
+                ],
                 'flashes'
             );
         } catch (DatabaseVersionTooOldException $e) {
@@ -286,7 +290,9 @@ class InstallService
         } catch (\Exception $exception) {
             $messages['error'] = $this->translator->trans(
                 'mautic.installer.error.connecting.database',
-                ['%exception%' => $exception->getMessage()],
+                [
+                    '%exception%' => $exception->getMessage(),
+                ],
                 'flashes'
             );
         }
@@ -314,7 +320,9 @@ class InstallService
         } catch (\Exception $exception) {
             $messages['error'] = $this->translator->trans(
                 'mautic.installer.error.installing.data',
-                ['%exception%' => $exception->getMessage()],
+                [
+                    '%exception%' => $exception->getMessage(),
+                ],
                 'flashes'
             );
         }
@@ -334,7 +342,9 @@ class InstallService
         } catch (\Exception $exception) {
             $messages['error'] = $this->translator->trans(
                 'mautic.installer.error.adding.fixtures',
-                ['%exception%' => $exception->getMessage()],
+                [
+                    '%exception%' => $exception->getMessage(),
+                ],
                 'flashes'
             );
         }
@@ -416,7 +426,9 @@ class InstallService
         $emailConstraint          = new Assert\Email();
         $emailConstraint->message = $this->translator->trans('mautic.core.email.required', [], 'validators');
 
-        $passwordConstraint             = new Assert\Length(['min' => 6]);
+        $passwordConstraint             = new Assert\Length([
+            'min' => 6,
+        ]);
         $passwordConstraint->minMessage = $this->translator->trans('mautic.install.password.minlength', [], 'validators');
 
         $validations[] = $this->validator->validate($data['email'], $emailConstraint);
@@ -447,7 +459,9 @@ class InstallService
         } catch (\Exception $exception) {
             $messages['error'] = $this->translator->trans(
                 'mautic.installer.error.getting.role',
-                ['%exception%' => $exception->getMessage()],
+                [
+                    '%exception%' => $exception->getMessage(),
+                ],
                 'flashes'
             );
         }
@@ -461,7 +475,9 @@ class InstallService
             } catch (\Exception $exception) {
                 $messages['error'] = $this->translator->trans(
                     'mautic.installer.error.creating.user',
-                    ['%exception%' => $exception->getMessage()],
+                    [
+                        '%exception%' => $exception->getMessage(),
+                    ],
                     'flashes'
                 );
             }

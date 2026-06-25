@@ -27,7 +27,10 @@ class PRedisConnectionHelperTest extends TestCase
     public function testEndpointsStringInput(): void
     {
         // non domain string should be encapsulated into an array
-        Assert::assertSame([['scheme'=>'tcp', 'host'=>'1.1.1.1']], PRedisConnectionHelper::getRedisEndpoints('tcp://1.1.1.1'));
+        Assert::assertSame([[
+            'scheme'=>'tcp',
+            'host'=>'1.1.1.1',
+        ]], PRedisConnectionHelper::getRedisEndpoints('tcp://1.1.1.1'));
 
         // domain should be resolved and an array of ip addresses returned
         $connInfo = PRedisConnectionHelper::getRedisEndpoints('tcp://bing.com:8888?test=car');
@@ -51,7 +54,9 @@ class PRedisConnectionHelperTest extends TestCase
         $result = [
             'replication' => 'sentinel',
             'service'     => 'secondmaster',
-            'parameters'  => ['password' => 'secretpass'],
+            'parameters'  => [
+                'password' => 'secretpass',
+            ],
         ];
         Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration));
 
@@ -62,7 +67,9 @@ class PRedisConnectionHelperTest extends TestCase
             'password' => 'secretpass',
         ];
         $result = [
-            'parameters' => ['password' => 'secretpass'],
+            'parameters' => [
+                'password' => 'secretpass',
+            ],
         ];
         Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration));
     }
@@ -70,7 +77,9 @@ class PRedisConnectionHelperTest extends TestCase
     public function testCreateClientWithoutSentinel(): void
     {
         $prefix  = 'somePrefix';
-        $client  = PRedisConnectionHelper::createClient(['tcp://1.1.1.1'], ['prefix' => $prefix]);
+        $client  = PRedisConnectionHelper::createClient(['tcp://1.1.1.1'], [
+            'prefix' => $prefix,
+        ]);
         $options = $client->getOptions();
 
         \assert($options->prefix instanceof KeyPrefixProcessor);
@@ -93,7 +102,10 @@ class PRedisConnectionHelperTest extends TestCase
     public function testCreateClientWithSentinel(): void
     {
         $prefix  = 'somePrefix';
-        $client  = PRedisConnectionHelper::createClient(['tcp://1.1.1.1'], ['prefix' => $prefix, 'replication' => 'sentinel']);
+        $client  = PRedisConnectionHelper::createClient(['tcp://1.1.1.1'], [
+            'prefix' => $prefix,
+            'replication' => 'sentinel',
+        ]);
         $options = $client->getOptions();
 
         \assert($options->prefix instanceof KeyPrefixProcessor);

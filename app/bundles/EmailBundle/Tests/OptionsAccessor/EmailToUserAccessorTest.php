@@ -15,8 +15,12 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
         $emailToUserAccessor = new EmailToUserAccessor($config);
 
         $expected = [
-            ['id' => 4],
-            ['id' => 6],
+            [
+                'id' => 4,
+            ],
+            [
+                'id' => 6,
+            ],
         ];
 
         $this->assertEquals($expected, $emailToUserAccessor->getUserIdsToSend());
@@ -30,8 +34,12 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
         $emailToUserAccessor = new EmailToUserAccessor($config);
 
         $expected = [
-            ['id' => 4],
-            ['id' => 6],
+            [
+                'id' => 4,
+            ],
+            [
+                'id' => 6,
+            ],
         ];
 
         $mockOwner = $this->createMock(User::class);
@@ -52,9 +60,15 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
         $emailToUserAccessor = new EmailToUserAccessor($config);
 
         $expected = [
-            ['id' => 4],
-            ['id' => 6],
-            ['id' => 5],
+            [
+                'id' => 4,
+            ],
+            [
+                'id' => 6,
+            ],
+            [
+                'id' => 5,
+            ],
         ];
 
         $mockOwner = $this->createMock(User::class);
@@ -75,8 +89,12 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
         $emailToUserAccessor = new EmailToUserAccessor($config);
 
         $expected = [
-            ['id' => 4],
-            ['id' => 6],
+            [
+                'id' => 4,
+            ],
+            [
+                'id' => 6,
+            ],
         ];
 
         $mockOwner = $this->createMock(User::class);

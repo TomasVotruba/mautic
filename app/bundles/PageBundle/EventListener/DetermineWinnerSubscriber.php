@@ -121,7 +121,9 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
 
         if (null != $startDate && !empty($pageIds)) {
             // get their bounce rates
-            $counts  = $this->hitRepository->getDwellTimesForPages($pageIds, ['fromDate' => $startDate]);
+            $counts  = $this->hitRepository->getDwellTimesForPages($pageIds, [
+                'fromDate' => $startDate,
+            ]);
             $support = [];
 
             if ($counts) {

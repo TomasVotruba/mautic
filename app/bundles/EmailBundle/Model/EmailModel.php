@@ -666,7 +666,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 'email' => (int) $emailId,
                 'lead'  => (int) $leadId,
             ],
-            ['dateSent' => 'DESC']
+            [
+                'dateSent' => 'DESC',
+            ]
         );
     }
 
@@ -1213,7 +1215,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                     'isVariant'    => null !== $email->getVariantStartDate(),
                     'entity'       => $email,
                     'translations' => $email->getTranslations(true),
-                    'languages'    => ['default' => $email->getId()],
+                    'languages'    => [
+                        'default' => $email->getId(),
+                    ],
                 ],
             ];
 
@@ -1257,7 +1261,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                                 'weight'       => ($variantSettings['weight'] / 100),
                                 'entity'       => $child,
                                 'translations' => $child->getTranslations(true),
-                                'languages'    => ['default' => $child->getId()],
+                                'languages'    => [
+                                    'default' => $child->getId(),
+                                ],
                             ];
 
                             $variantWeight += $variantSettings['weight'];
@@ -1377,7 +1383,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         if (isset($leads['id'])) {
             $singleEmail           = $leads['id'];
             $leadIds[$leads['id']] = $leads['id'];
-            $leads                 = [$leads['id'] => $leads];
+            $leads                 = [
+                $leads['id'] => $leads,
+            ];
             $sendTo                = $leads;
         } else {
             $sendTo = [];
@@ -1593,7 +1601,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         // In case only user ID was provided
         if (!is_array($users)) {
-            $users = [['id' => $users]];
+            $users = [[
+                'id' => $users,
+            ]];
         }
 
         // Get email settings
@@ -1653,7 +1663,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
             if (!is_array($user)) {
                 $id   = $user;
-                $user = ['id' => $id];
+                $user = [
+                    'id' => $id,
+                ];
             } else {
                 $id = $user['id'];
             }
@@ -1761,7 +1773,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         if ($lead instanceof Lead) {
             $email   = $stat->getEmail();
-            $channel = ($email) ? ['email' => $email->getId()] : 'email';
+            $channel = ($email) ? [
+                'email' => $email->getId(),
+            ] : 'email';
 
             return $this->doNotContact->addDncForContact($lead->getId(), $channel, $reason, $comments, $flush);
         }
@@ -1901,7 +1915,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $percentage = round(($percentage / $total) * 100, 1);
         });
 
-        $chart->setDataset($this->translator->trans('mautic.widget.emails.best.hours.reads_total', ['%reads%'=>$total]), $counts);
+        $chart->setDataset($this->translator->trans('mautic.widget.emails.best.hours.reads_total', [
+            '%reads%'=>$total,
+        ]), $counts);
 
         return $chart->render();
     }
@@ -2243,7 +2259,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         if (!is_array($users)) {
-            $user  = ['id' => $users];
+            $user  = [
+                'id' => $users,
+            ];
             $users = [$user];
         }
 
@@ -2262,7 +2280,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 'content'      => $email->getCustomHtml(),
                 'email'        => $email,
                 'idHash'       => 'xxxxxxxxxxxxxx', // bogus ID
-                'tokens'       => ['{tracking_pixel}' => ''], // Override tracking_pixel
+                'tokens'       => [
+                    '{tracking_pixel}' => '',
+                ], // Override tracking_pixel
                 'internalSend' => true,
                 'lead'         => $leadFields,
             ]
@@ -2281,7 +2301,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
             if (!is_array($user)) {
                 $id   = $user;
-                $user = ['id' => $id];
+                $user = [
+                    'id' => $id,
+                ];
             } else {
                 $id = $user['id'];
             }

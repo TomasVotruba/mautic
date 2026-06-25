@@ -31,7 +31,9 @@ class TransportCallback
             $this->updateStatDetails($stat, $comments, $dncReason);
 
             $email   = $stat->getEmail();
-            $channel = ($email) ? ['email' => $email->getId()] : 'email';
+            $channel = ($email) ? [
+                'email' => $email->getId(),
+            ] : 'email';
             foreach ($contacts as $contact) {
                 $this->dncModel->addDncForContact($contact->getId(), $channel, $dncReason, $comments);
             }
@@ -50,7 +52,9 @@ class TransportCallback
 
         if ($contacts = $result->getContacts()) {
             foreach ($contacts as $contact) {
-                $channel = ($channelId) ? ['email' => $channelId] : 'email';
+                $channel = ($channelId) ? [
+                    'email' => $channelId,
+                ] : 'email';
                 $this->dncModel->addDncForContact($contact->getId(), $channel, $dncReason, $comments);
             }
         }
@@ -62,7 +66,9 @@ class TransportCallback
      */
     public function addFailureByContactId($id, $comments, $dncReason = DNC::BOUNCED, $channelId = null): void
     {
-        $channel = ($channelId) ? ['email' => $channelId] : 'email';
+        $channel = ($channelId) ? [
+            'email' => $channelId,
+        ] : 'email';
         $this->dncModel->addDncForContact($id, $channel, $dncReason, $comments);
     }
 

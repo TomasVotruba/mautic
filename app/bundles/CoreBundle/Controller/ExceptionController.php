@@ -43,7 +43,9 @@ class ExceptionController extends CommonController
                 ? $exception->getMessage()
                 : $this->translator->trans(
                     'mautic.core.error.generic',
-                    ['%code%' => $code]
+                    [
+                        '%code%' => $code,
+                    ]
                 );
             $dataArray = [
                 'errors' => [

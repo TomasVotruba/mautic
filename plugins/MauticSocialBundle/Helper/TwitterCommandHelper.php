@@ -86,7 +86,9 @@ class TwitterCommandHelper
      */
     public function createLeadsFromStatuses($statusList, $monitor): int
     {
-        $leadField = $this->fieldModel->getRepository()->findOneBy(['alias' => $this->twitterHandleField]);
+        $leadField = $this->fieldModel->getRepository()->findOneBy([
+            'alias' => $this->twitterHandleField,
+        ]);
 
         if (!$leadField) {
             // Field has been deleted or something
@@ -103,7 +105,10 @@ class TwitterCommandHelper
 
         // Get a list of existing leads to tone down on queries
         $usersByHandles    = [];
-        $usersByName       = ['firstnames' => [], 'lastnames' => []];
+        $usersByName       = [
+            'firstnames' => [],
+            'lastnames' => [],
+        ];
         $expr              = $this->leadModel->getRepository()->createQueryBuilder('f')->expr();
         $monitorProperties = $monitor->getProperties();
 

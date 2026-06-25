@@ -66,7 +66,9 @@ class TokenPermissions
     private function assignRoleFromToken(string $tokenIdentifier): User
     {
         /** @var AccessToken|null $accessToken assert ill yield phpstan error. */
-        $accessToken = $this->entityManager->getRepository(AccessToken::class)->findOneBy(['token' => $tokenIdentifier]);
+        $accessToken = $this->entityManager->getRepository(AccessToken::class)->findOneBy([
+            'token' => $tokenIdentifier,
+        ]);
 
         if (null === $accessToken) {
             throw new UserNotFoundException('API access token not found.');

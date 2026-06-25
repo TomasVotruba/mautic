@@ -47,7 +47,10 @@ class TwilioTransportTest extends TestCase
         $reflection = new \ReflectionClass($this->twilioTransport::class);
         $method     = $reflection->getMethod('createPayload');
 
-        $payload = ['messagingServiceSid' => 'MS1234', 'body' => 'some_content'];
+        $payload = [
+            'messagingServiceSid' => 'MS1234',
+            'body' => 'some_content',
+        ];
 
         $result = $method->invokeArgs($this->twilioTransport, [...array_values($payload), []]);
         Assert::assertSame($payload, $result);

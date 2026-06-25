@@ -141,7 +141,9 @@ class PointGroupsApiController extends CommonApiController
         );
         $this->leadModel->saveEntity($contact, false);
 
-        $view    = $this->view(['groupScore' => $contact->getGroupScore($pointGroup)], Response::HTTP_OK);
+        $view    = $this->view([
+            'groupScore' => $contact->getGroupScore($pointGroup),
+        ], Response::HTTP_OK);
         $context = $view->getContext()->setGroups(['groupContactScoreDetails', 'pointGroupDetails']);
         $view->setContext($context);
 

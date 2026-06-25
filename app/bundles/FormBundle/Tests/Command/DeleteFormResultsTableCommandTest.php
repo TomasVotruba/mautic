@@ -40,14 +40,20 @@ class DeleteFormResultsTableCommandTest extends MauticMysqlTestCase
 
             $this->submitForm($form);
 
-            $deleteForm = $formRepository->findOneBy(['id' => $form['id']]);
+            $deleteForm = $formRepository->findOneBy([
+                'id' => $form['id'],
+            ]);
             $formRepository->deleteEntity($deleteForm);
 
-            $deletedForm = $formRepository->findBy(['id' => $form['id']]);
+            $deletedForm = $formRepository->findBy([
+                'id' => $form['id'],
+            ]);
 
             Assert::assertCount(0, $deletedForm);
 
-            $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+            $submissions = $submissionRepository->findBy([
+                'form' => $form['id'],
+            ]);
 
             Assert::assertCount(0, $submissions);
         }

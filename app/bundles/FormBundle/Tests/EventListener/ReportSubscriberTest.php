@@ -202,7 +202,9 @@ class ReportSubscriberTest extends AbstractMauticTestCase
 
         $this->formModel->expects($this->once())
             ->method('getCustomComponents')
-            ->willReturn(['viewOnlyFields' => ['button', 'captcha', 'freetext', 'freehtml', 'pagebreak', 'plugin.loginSocial']]);
+            ->willReturn([
+                'viewOnlyFields' => ['button', 'captcha', 'freetext', 'freehtml', 'pagebreak', 'plugin.loginSocial'],
+            ]);
 
         $this->formRepository->expects($this->once())
             ->method('getEntities')

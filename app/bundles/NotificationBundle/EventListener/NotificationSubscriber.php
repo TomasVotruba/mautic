@@ -62,7 +62,9 @@ class NotificationSubscriber implements EventSubscriberInterface
             'object'   => 'notification',
             'objectId' => $entity->deletedId,
             'action'   => 'delete',
-            'details'  => ['name' => $entity->getName()],
+            'details'  => [
+                'name' => $entity->getName(),
+            ],
         ];
         $this->auditLogModel->writeToLog($log);
     }

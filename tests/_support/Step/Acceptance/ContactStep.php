@@ -181,7 +181,9 @@ class ContactStep extends \AcceptanceTester
         $I->amOnPage(ContactPage::$URL);
         // Grab the contact's name and navigate to their details page
         $contactName = $I->grabTextFrom("//*[@id='leadTable']/tbody/tr[$place]/td[2]/a/div[1]");
-        $I->click(['link' => $contactName]);
+        $I->click([
+            'link' => $contactName,
+        ]);
         // Wait for the contact's name to appear on the details page
         $I->waitForText($contactName, 10, '#app-content');
         // Verify the owner is "Sales User"
@@ -201,7 +203,9 @@ class ContactStep extends \AcceptanceTester
         $I->amOnPage('/s/contacts');
         // Grab the contact's name and navigate to their details page
         $contactName = $I->grabTextFrom("//*[@id='leadTable']/tbody/tr[$place]/td[2]/a/div[1]");
-        $I->click(['link' => $contactName]);
+        $I->click([
+            'link' => $contactName,
+        ]);
         // Wait for the contact's name to appear on the details page
         $I->waitForText($contactName, 10, '#app-content');
         // Verify the owner is "Admin User"

@@ -25,9 +25,13 @@ class PublicController extends FormController
         /** @var UserModel $model */
         $model = $this->getModel('user');
 
-        $data   = ['identifier' => ''];
+        $data   = [
+            'identifier' => '',
+        ];
         $action = $this->generateUrl('mautic_user_passwordreset');
-        $form   = $this->formFactory->create(PasswordResetType::class, $data, ['action' => $action]);
+        $form   = $this->formFactory->create(PasswordResetType::class, $data, [
+            'action' => $action,
+        ]);
 
         // /Check for a submitted form and process it
         if ('POST' === $request->getMethod()) {
@@ -81,7 +85,9 @@ class PublicController extends FormController
         $model = $this->getModel('user');
 
         $action   = $this->generateUrl('mautic_user_passwordresetconfirm');
-        $form     = $this->formFactory->create(PasswordResetConfirmType::class, [], ['action' => $action]);
+        $form     = $this->formFactory->create(PasswordResetConfirmType::class, [], [
+            'action' => $action,
+        ]);
         $token    = $request->query->get('token');
         $response = null;
 
@@ -154,7 +160,9 @@ class PublicController extends FormController
 
             $response = $this->redirectToRoute('login');
         } else {
-            $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
+            $action = $this->generateUrl('mautic_user_invite_register', [
+                'token' => $token,
+            ]);
             $user   = User::createFromInvite($invite);
             $form   = $this->formFactory->create(UserInviteRegistrationType::class, $user, [
                 'action' => $action,

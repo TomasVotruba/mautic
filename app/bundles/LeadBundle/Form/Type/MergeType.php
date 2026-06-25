@@ -22,7 +22,9 @@ class MergeType extends AbstractType
             [
                 'choices'           => $options['leads'],
                 'label'             => 'mautic.lead.merge.select',
-                'label_attr'        => ['class' => 'control-label'],
+                'label_attr'        => [
+                    'class' => 'control-label',
+                ],
                 'multiple'          => false,
                 'placeholder'       => '',
                 'attr'              => [

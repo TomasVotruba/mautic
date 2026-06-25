@@ -47,7 +47,9 @@ final class FileManagerControllerFunctionalTest extends MauticMysqlTestCase
     public function testUploadedSvgIsReturnedInMediaList(): void
     {
         $svgFile  = $this->createTempSvgFile();
-        $response = $this->makeRequest('POST', self::UPLOAD_ENDPOINT, [], ['files' => [$svgFile]]);
+        $response = $this->makeRequest('POST', self::UPLOAD_ENDPOINT, [], [
+            'files' => [$svgFile],
+        ]);
         $content  = $this->getJsonResponse($response);
 
         $this->assertArrayHasKey('data', $content);
@@ -165,7 +167,9 @@ final class FileManagerControllerFunctionalTest extends MauticMysqlTestCase
     private function uploadImages(): array
     {
         $imageFiles = $this->createTempImageFiles();
-        $response   = $this->makeRequest('POST', self::UPLOAD_ENDPOINT, [], ['files' => $imageFiles]);
+        $response   = $this->makeRequest('POST', self::UPLOAD_ENDPOINT, [], [
+            'files' => $imageFiles,
+        ]);
 
         return $this->getJsonResponse($response)['data'];
     }

@@ -26,7 +26,9 @@ class NotificationSendType extends AbstractType
             NotificationListType::class,
             [
                 'label'      => 'mautic.notification.send.selectnotifications',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.notification.choose.notifications',
@@ -35,7 +37,9 @@ class NotificationSendType extends AbstractType
                 'multiple'    => false,
                 'constraints' => [
                     new NotBlank(
-                        ['message' => 'mautic.notification.choosenotification.notblank']
+                        [
+                            'message' => 'mautic.notification.choosenotification.notblank',
+                        ]
                     ),
                 ],
             ]

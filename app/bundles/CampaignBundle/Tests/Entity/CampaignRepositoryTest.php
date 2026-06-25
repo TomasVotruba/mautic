@@ -37,7 +37,12 @@ class CampaignRepositoryTest extends TestCase
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
-        $filter = (object) ['command' => 'is:expired', 'string' => '', 'not' => false, 'strict' => false];
+        $filter = (object) [
+            'command' => 'is:expired',
+            'string' => '',
+            'not' => false,
+            'strict' => false,
+        ];
 
         $method = new \ReflectionMethod(CampaignRepository::class, 'addSearchCommandWhereClause');
 
@@ -47,13 +52,20 @@ class CampaignRepositoryTest extends TestCase
             '(c.isPublished = :par1) AND (c.publishDown IS NOT NULL) AND (c.publishDown <> \'\') AND (c.publishDown < CURRENT_TIMESTAMP())',
             (string) $expr
         );
-        self::assertSame(['par1' => true], $params);
+        self::assertSame([
+            'par1' => true,
+        ], $params);
     }
 
     public function testAddSearchCommandWhereClauseHandlesPendingFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
-        $filter = (object) ['command' => 'is:pending', 'string' => '', 'not' => false, 'strict' => false];
+        $filter = (object) [
+            'command' => 'is:pending',
+            'string' => '',
+            'not' => false,
+            'strict' => false,
+        ];
 
         $method = new \ReflectionMethod(CampaignRepository::class, 'addSearchCommandWhereClause');
 
@@ -63,7 +75,9 @@ class CampaignRepositoryTest extends TestCase
             '(c.isPublished = :par1) AND (c.publishUp IS NOT NULL) AND (c.publishUp <> \'\') AND (c.publishUp > CURRENT_TIMESTAMP())',
             (string) $expr
         );
-        self::assertSame(['par1' => true], $params);
+        self::assertSame([
+            'par1' => true,
+        ], $params);
     }
 
     public function testGetSearchCommandsContainsExpirationFilters(): void

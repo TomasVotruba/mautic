@@ -42,8 +42,12 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
      */
     public static function certificateTypeProvider(): iterable
     {
-        yield 'unencrypted certificate' => ['encrypted' => false];
-        yield 'encrypted certificate' => ['encrypted' => true];
+        yield 'unencrypted certificate' => [
+            'encrypted' => false,
+        ];
+        yield 'encrypted certificate' => [
+            'encrypted' => true,
+        ];
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('certificateTypeProvider')]
@@ -69,7 +73,9 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
             'list',
             'blank',
             '<h1>Hey {contactfield=email}</h1>',
-            [$segment->getId() => $segment]
+            [
+                $segment->getId() => $segment,
+            ]
         );
 
         $this->em->flush();
@@ -89,7 +95,10 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $this->client->request(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => $expectedCount],
+            [
+                'id' => $email->getId(),
+                'pending' => $expectedCount,
+            ],
             [],
             $this->createAjaxHeaders()
         );

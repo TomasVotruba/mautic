@@ -109,7 +109,9 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
-        $report = $this->em->getRepository(Report::class)->findOneBy(['name' => 'Report ABC']);
+        $report = $this->em->getRepository(Report::class)->findOneBy([
+            'name' => 'Report ABC',
+        ]);
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/reports/clone/{$report->getId()}");
         self::assertResponseIsSuccessful();
@@ -120,7 +122,9 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
-        $reportClone = $this->em->getRepository(Report::class)->findOneBy(['name' => 'Report ABC - cloned']);
+        $reportClone = $this->em->getRepository(Report::class)->findOneBy([
+            'name' => 'Report ABC - cloned',
+        ]);
 
         Assert::assertSame($report->getId() + 1, $reportClone->getId());
     }
@@ -387,7 +391,11 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayHasKey('schedule_unit', $schedule);
         $this->assertArrayHasKey('schedule_day', $schedule);
         $this->assertArrayHasKey('schedule_month_frequency', $schedule);
-        $this->assertEquals(['schedule_unit' => $oldScheduleUnit, 'schedule_day' => $oldScheduleDay, 'schedule_month_frequency' => $oldScheduleMonthFrequency], $schedule, 'Old schedule should be set correctly');
+        $this->assertEquals([
+            'schedule_unit' => $oldScheduleUnit,
+            'schedule_day' => $oldScheduleDay,
+            'schedule_month_frequency' => $oldScheduleMonthFrequency,
+        ], $schedule, 'Old schedule should be set correctly');
 
         $crawler        = $this->client->request(Request::METHOD_GET, 's/reports/edit/'.$report->getId());
         $buttonCrawler  =  $crawler->selectButton('Save & Close');
@@ -409,7 +417,11 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->em->clear();
 
-        $this->assertEquals(['schedule_unit' => $newScheduleUnit, 'schedule_day' => $newScheduleDay, 'schedule_month_frequency' => $newScheduleMonthFrequency], $schedule, 'Schedule should be edited correctly');
+        $this->assertEquals([
+            'schedule_unit' => $newScheduleUnit,
+            'schedule_day' => $newScheduleDay,
+            'schedule_month_frequency' => $newScheduleMonthFrequency,
+        ], $schedule, 'Schedule should be edited correctly');
     }
 
     /**

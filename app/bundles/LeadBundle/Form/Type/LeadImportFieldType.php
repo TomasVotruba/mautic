@@ -40,8 +40,12 @@ class LeadImportFieldType extends AbstractType
                     'choices'    => $choices,
                     'label'      => $label,
                     'required'   => false,
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control',
+                    ],
                     'data'       => $this->getDefaultValue($field, $options['import_fields']),
                 ]
             );
@@ -55,7 +59,9 @@ class LeadImportFieldType extends AbstractType
                 UserListType::class,
                 [
                     'label'      => 'mautic.lead.lead.field.owner',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class' => 'form-control',
                     ],
@@ -73,7 +79,9 @@ class LeadImportFieldType extends AbstractType
                     LeadListType::class,
                     [
                         'label'      => 'mautic.lead.lead.field.list',
-                        'label_attr' => ['class' => 'control-label'],
+                        'label_attr' => [
+                            'class' => 'control-label',
+                        ],
                         'attr'       => [
                             'class' => 'form-control',
                         ],
@@ -89,7 +97,9 @@ class LeadImportFieldType extends AbstractType
                 [
                     'label'      => 'mautic.lead.tags',
                     'required'   => false,
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'                => 'form-control',
                         'data-placeholder'     => $this->translator->trans('mautic.lead.tags.select_or_create'),
@@ -107,15 +117,21 @@ class LeadImportFieldType extends AbstractType
                 YesNoButtonGroupType::class,
                 [
                     'label'      => 'mautic.lead.import.skip_if_exists',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
+                    'attr'       => [
+                        'class' => 'form-control',
+                    ],
                     'required'   => false,
                     'data'       => false,
                 ]
             );
         }
 
-        $buttons = ['cancel_icon' => 'ri-close-line'];
+        $buttons = [
+            'cancel_icon' => 'ri-close-line',
+        ];
 
         if (empty($options['line_count_limit'])) {
             $buttons = array_merge(

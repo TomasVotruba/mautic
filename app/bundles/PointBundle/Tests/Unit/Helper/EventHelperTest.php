@@ -15,7 +15,13 @@ class EventHelperTest extends TestCase
         $lead = new Lead();
 
         // Define the action array
-        $action = ['id' => 1, 'type' => 'helloworld.action.custom_action', 'name' => 'My custom point action', 'properties' => [], 'points' => 50];
+        $action = [
+            'id' => 1,
+            'type' => 'helloworld.action.custom_action',
+            'name' => 'My custom point action',
+            'properties' => [],
+            'points' => 50,
+        ];
 
         $points = EventHelper::engagePointAction($lead, $action);
         $this->assertEquals(50, $points);

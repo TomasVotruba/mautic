@@ -32,7 +32,9 @@ trait TranslationModelTrait
             }
 
             // Generate a list of translations
-            $translations = [$translationParent->getId() => $translationParent->getLanguage()];
+            $translations = [
+                $translationParent->getId() => $translationParent->getLanguage(),
+            ];
             foreach ($translationChildren as $c) {
                 $translations[$c->getId()] = $c->getLanguage();
             }

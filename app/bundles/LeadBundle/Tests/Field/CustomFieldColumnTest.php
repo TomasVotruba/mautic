@@ -182,7 +182,9 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $this->schemaDefinition->expects($this->once())
             ->method('getSchemaDefinitionNonStatic')
-            ->willReturn(['type' => 'string']);
+            ->willReturn([
+                'type' => 'string',
+            ]);
 
         $this->columnSchemaHelper->expects($this->once())
             ->method('addColumn');
@@ -227,7 +229,9 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $schemaDefinition->expects($this->once())
             ->method('getSchemaDefinitionNonStatic')
-            ->willReturn(['type' => 'string']);
+            ->willReturn([
+                'type' => 'string',
+            ]);
 
         $columnSchemaHelper->expects($this->once())
             ->method('addColumn');
@@ -271,7 +275,9 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $schemaDefinition->expects($this->once())
             ->method('getSchemaDefinitionNonStatic')
-            ->willReturn(['type' => 'string']);
+            ->willReturn([
+                'type' => 'string',
+            ]);
 
         $columnSchemaHelper->expects($this->once())
             ->method('addColumn');
@@ -359,7 +365,9 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $this->schemaDefinition->expects($this->once())
             ->method('getSchemaDefinitionNonStatic')
-            ->willReturn(['type' => 'date']);
+            ->willReturn([
+                'type' => 'date',
+            ]);
 
         $this->columnSchemaHelper->expects($this->once())
             ->method('addColumn');
@@ -396,7 +404,9 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $this->schemaDefinition->expects($this->once())
             ->method('getSchemaDefinitionNonStatic')
-            ->willReturn(['type' => 'string']);
+            ->willReturn([
+                'type' => 'string',
+            ]);
 
         $this->columnSchemaHelper->expects($this->once())
             ->method('addColumn');

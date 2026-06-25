@@ -121,7 +121,9 @@ class UserModelTest extends TestCase
 
         $this->router->expects($this->once())
             ->method('generate')
-            ->with('mautic_user_passwordresetconfirm', ['token' => null], UrlGeneratorInterface::ABSOLUTE_URL);
+            ->with('mautic_user_passwordresetconfirm', [
+                'token' => null,
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->translator
             ->expects($this->any())
@@ -159,7 +161,9 @@ class UserModelTest extends TestCase
     {
         $email   = 'a@test.com';
         $name    = 'name';
-        $toMail  = [$email => $name];
+        $toMail  = [
+            $email => $name,
+        ];
         $subject = 'subject';
         $content = 'content';
 
@@ -247,12 +251,16 @@ class UserModelTest extends TestCase
             ->method('trans')
             ->willReturnMap([
                 ['mautic.user.invite.subject', [], null, null, 'Invite subject'],
-                ['mautic.user.invite.email.body', ['%invite_link%' => $link], null, null, 'Invite body '.$link],
+                ['mautic.user.invite.email.body', [
+                    '%invite_link%' => $link,
+                ], null, null, 'Invite body '.$link],
             ]);
 
         $this->twig->expects($this->once())
             ->method('render')
-            ->with('@MauticUser/Email/invite.html.twig', ['inviteLink' => $link])
+            ->with('@MauticUser/Email/invite.html.twig', [
+                'inviteLink' => $link,
+            ])
             ->willReturn('<p>Invite html</p>');
 
         $this->mailHelper->expects($this->once())
@@ -261,7 +269,9 @@ class UserModelTest extends TestCase
 
         $this->mailHelper->expects($this->once())
             ->method('setTo')
-            ->with([$email => $email]);
+            ->with([
+                $email => $email,
+            ]);
 
         $this->mailHelper->expects($this->once())
             ->method('setSubject')
@@ -291,7 +301,9 @@ class UserModelTest extends TestCase
 
         $repository->expects($this->once())
             ->method('findOneBy')
-            ->with(['email' => $email])
+            ->with([
+                'email' => $email,
+            ])
             ->willReturn(new User());
 
         $this->entityManager->expects($this->once())
@@ -317,7 +329,9 @@ class UserModelTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('warning')
-            ->with('User invite link rejected: token selector was not found', ['selector' => 'missing-selector']);
+            ->with('User invite link rejected: token selector was not found', [
+                'selector' => 'missing-selector',
+            ]);
 
         $this->assertNull($this->userModel->getInvite('missing-selector.verifier'));
     }
@@ -340,7 +354,10 @@ class UserModelTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('warning')
-            ->with('User invite link rejected: invite has expired', ['invite_id' => null, 'email' => null]);
+            ->with('User invite link rejected: invite has expired', [
+                'invite_id' => null,
+                'email' => null,
+            ]);
 
         $this->assertNull($this->userModel->getInvite('expired-selector.verifier'));
     }
@@ -364,7 +381,10 @@ class UserModelTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('warning')
-            ->with('User invite link rejected: token verifier did not match', ['invite_id' => null, 'email' => null]);
+            ->with('User invite link rejected: token verifier did not match', [
+                'invite_id' => null,
+                'email' => null,
+            ]);
 
         $this->assertNull($this->userModel->getInvite('active-selector.wrong-verifier'));
     }
@@ -389,7 +409,10 @@ class UserModelTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('warning')
-            ->with('User invite link rejected: invite has already been used', ['invite_id' => null, 'email' => null]);
+            ->with('User invite link rejected: invite has already been used', [
+                'invite_id' => null,
+                'email' => null,
+            ]);
 
         $this->assertNull($this->userModel->getInvite('used-selector.verifier'));
     }

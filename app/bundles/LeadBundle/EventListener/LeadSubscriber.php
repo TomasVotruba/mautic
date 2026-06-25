@@ -172,7 +172,9 @@ class LeadSubscriber implements EventSubscriberInterface
             'object'    => 'lead',
             'objectId'  => $lead->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $lead->getPrimaryIdentifier()],
+            'details'   => [
+                'name' => $lead->getPrimaryIdentifier(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);
@@ -301,7 +303,9 @@ class LeadSubscriber implements EventSubscriberInterface
             'object'    => 'lead',
             'objectId'  => $event->getLoser()->getId(),
             'action'    => 'merge',
-            'details'   => ['merged_into' => $event->getVictor()->getId()],
+            'details'   => [
+                'merged_into' => $event->getVictor()->getId(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);
@@ -633,7 +637,9 @@ class LeadSubscriber implements EventSubscriberInterface
                 } elseif ($import['object_id']) {
                     $eventLabel = $import['object_id'];
                 }
-                $eventLabel = $this->translator->trans('mautic.lead.import.contact.action.'.$import['action'], ['%name%' => $eventLabel]);
+                $eventLabel = $this->translator->trans('mautic.lead.import.contact.action.'.$import['action'], [
+                    '%name%' => $eventLabel,
+                ]);
                 $event->addEvent(
                     [
                         'event'      => $eventTypeKey,

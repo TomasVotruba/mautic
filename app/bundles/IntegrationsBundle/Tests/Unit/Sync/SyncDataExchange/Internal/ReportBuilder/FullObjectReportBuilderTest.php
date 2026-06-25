@@ -64,7 +64,9 @@ class FullObjectReportBuilderTest extends TestCase
 
     public function testBuildingContactReport(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(Contact::NAME, $fromDateTime, $toDateTime);
@@ -118,7 +120,9 @@ class FullObjectReportBuilderTest extends TestCase
 
     public function testBuildingCompanyReport(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(MauticSyncDataExchange::OBJECT_COMPANY, $fromDateTime, $toDateTime);
@@ -176,7 +180,9 @@ class FullObjectReportBuilderTest extends TestCase
      */
     public function testBuildingContactReportWithFindInternalRecordEvent(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(Contact::NAME, $fromDateTime, $toDateTime);
@@ -279,7 +285,9 @@ class FullObjectReportBuilderTest extends TestCase
      */
     public function testBuildingCompanyReportWithFindInternalRecordEvent(): void
     {
-        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]));
+        $requestDAO    = new RequestDAO(self::INTEGRATION_NAME, 1, new InputOptionsDAO([
+            'integration' => self::INTEGRATION_NAME,
+        ]));
         $fromDateTime  = new \DateTimeImmutable('2018-10-08 00:00:00');
         $toDateTime    = new \DateTimeImmutable('2018-10-08 00:01:00');
         $requestObject = new ObjectDAO(MauticSyncDataExchange::OBJECT_COMPANY, $fromDateTime, $toDateTime);

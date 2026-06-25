@@ -137,7 +137,9 @@ class CampaignApiController extends CommonApiController
 
             $this->membershipManager->addContact($lead, $entity);
 
-            $view = $this->view(['success' => 1], Response::HTTP_OK);
+            $view = $this->view([
+                'success' => 1,
+            ], Response::HTTP_OK);
 
             return $this->handleView($view);
         }
@@ -166,7 +168,9 @@ class CampaignApiController extends CommonApiController
 
             $this->membershipManager->removeContact($lead, $entity);
 
-            $view = $this->view(['success' => 1], Response::HTTP_OK);
+            $view = $this->view([
+                'success' => 1,
+            ], Response::HTTP_OK);
 
             return $this->handleView($view);
         }
@@ -196,7 +200,10 @@ class CampaignApiController extends CommonApiController
             }
         }
 
-        $deletedSources = ['lists' => [], 'forms' => []];
+        $deletedSources = [
+            'lists' => [],
+            'forms' => [],
+        ];
         $deletedEvents  = [];
         $currentSources = [
             'lists' => isset($parameters['lists']) ? $this->modifyCampaignEventArray($parameters['lists']) : [],
@@ -218,7 +225,9 @@ class CampaignApiController extends CommonApiController
 
             foreach ($entity->getEvents() as $currentEvent) {
                 if (!in_array($currentEvent->getId(), $requestEventIds)) {
-                    $deletedEvents[] = ['id' => $currentEvent->getId()];
+                    $deletedEvents[] = [
+                        'id' => $currentEvent->getId(),
+                    ];
                 }
             }
 
@@ -284,7 +293,9 @@ class CampaignApiController extends CommonApiController
                 }
             }
 
-            $view = $this->view(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
+            $view = $this->view([
+                'errors' => $errors,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
 
             return $this->handleView($view);
         }
@@ -393,11 +404,15 @@ class CampaignApiController extends CommonApiController
         $route               = 'mautic_api_campaigns_getone';
         $headers['Location'] = $this->generateUrl(
             $route,
-            array_merge(['id' => $entity->getId()], $this->routeParams),
+            array_merge([
+                'id' => $entity->getId(),
+            ], $this->routeParams),
             true
         );
 
-        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK, $headers);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ], Response::HTTP_OK, $headers);
 
         $this->setSerializationContext($view);
 
@@ -447,7 +462,9 @@ class CampaignApiController extends CommonApiController
 
             if (1 !== count($files)) {
                 return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_zip_file', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                    $this->view([
+                        'error' => $this->translator->trans('mautic.campaign.api.import.incorrect_zip_file', [], 'messages'),
+                    ], Response::HTTP_BAD_REQUEST)
                 );
             }
 
@@ -455,13 +472,17 @@ class CampaignApiController extends CommonApiController
 
             if (!$uploadedFile->isValid()) {
                 return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.upload_failed', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                    $this->view([
+                        'error' => $this->translator->trans('mautic.campaign.api.import.upload_failed', [], 'messages'),
+                    ], Response::HTTP_BAD_REQUEST)
                 );
             }
 
             if ('zip' !== strtolower($uploadedFile->getClientOriginalExtension())) {
                 return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                    $this->view([
+                        'error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages'),
+                    ], Response::HTTP_BAD_REQUEST)
                 );
             }
 
@@ -469,7 +490,9 @@ class CampaignApiController extends CommonApiController
 
             if (!file_exists($zipPath)) {
                 return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.uploaded_file_no_exist', [], 'messages')], Response::HTTP_INTERNAL_SERVER_ERROR)
+                    $this->view([
+                        'error' => $this->translator->trans('mautic.campaign.api.import.uploaded_file_no_exist', [], 'messages'),
+                    ], Response::HTTP_INTERNAL_SERVER_ERROR)
                 );
             }
 
@@ -479,7 +502,9 @@ class CampaignApiController extends CommonApiController
                 unlink($zipPath);
 
                 return $this->handleView(
-                    $this->view(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST)
+                    $this->view([
+                        'error' => $e->getMessage(),
+                    ], Response::HTTP_BAD_REQUEST)
                 );
             }
         }

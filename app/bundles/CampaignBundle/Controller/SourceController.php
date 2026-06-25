@@ -67,7 +67,10 @@ class SourceController extends CommonFormController
             CampaignLeadSourceType::class,
             $source,
             [
-                'action'         => $this->generateUrl('mautic_campaignsource_action', ['objectAction' => 'new', 'objectId' => $objectId]),
+                'action'         => $this->generateUrl('mautic_campaignsource_action', [
+                    'objectAction' => 'new',
+                    'objectId' => $objectId,
+                ]),
                 'source_choices' => $sourceList,
             ]
         );
@@ -174,7 +177,10 @@ class SourceController extends CommonFormController
             CampaignLeadSourceType::class,
             $source,
             [
-                'action'         => $this->generateUrl('mautic_campaignsource_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
+                'action'         => $this->generateUrl('mautic_campaignsource_action', [
+                    'objectAction' => 'edit',
+                    'objectId' => $objectId,
+                ]),
                 'source_choices' => $sourceList,
             ]
         );
@@ -276,7 +282,9 @@ class SourceController extends CommonFormController
                 'modifiedSources'   => $modifiedSources,
             ];
         } else {
-            $dataArray = ['success' => 0];
+            $dataArray = [
+                'success' => 0,
+            ];
         }
 
         return new JsonResponse($dataArray);

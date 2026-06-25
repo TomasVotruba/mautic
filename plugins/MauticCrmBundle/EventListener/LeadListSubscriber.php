@@ -67,7 +67,10 @@ class LeadListSubscriber implements EventSubscriberInterface
         if (!empty($choices)) {
             $config = [
                 'label'      => $this->translator->trans('mautic.plugin.integration.campaign_members'),
-                'properties' => ['type' => 'select', 'list' => $choices],
+                'properties' => [
+                    'type' => 'select',
+                    'list' => $choices,
+                ],
                 'operators'  => $this->listModel->getOperatorsForFieldType(
                     [
                         'include' => [

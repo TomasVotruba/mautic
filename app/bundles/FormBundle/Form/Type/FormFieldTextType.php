@@ -18,8 +18,12 @@ class FormFieldTextType extends AbstractType
 
         $builder->add('text', TextareaType::class, [
             'label'      => 'mautic.form.field.type.freetext',
-            'label_attr' => ['class' => 'control-label'],
-            'attr'       => ['class' => 'form-control'.$editor],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
+            'attr'       => [
+                'class' => 'form-control'.$editor,
+            ],
             'required'   => true,
         ]);
     }

@@ -94,7 +94,9 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 
         sleep(1); // wait 1 second so that compare timestamp
 
-        $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
+        $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
 
         $conditionEvent = $this->createEvent('Check Contact Field Value Condition', $campaign, 'lead.field_value', 'condition', [
             'field'    => 'points',
@@ -122,11 +124,15 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $noPathAction->setDecisionPath('no');
 
         // Fourth level events from YES path
-        $yesFollowupEmail = $this->createEvent('Yes Path Followup', $campaign, 'email.send', 'action', ['email' => '1']);
+        $yesFollowupEmail = $this->createEvent('Yes Path Followup', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
         $yesFollowupEmail->setParent($yesPathAction);
 
         // Fourth level events from NO path
-        $noFollowupEmail = $this->createEvent('No Path Followup', $campaign, 'email.send', 'action', ['email' => '1']);
+        $noFollowupEmail = $this->createEvent('No Path Followup', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
         $noFollowupEmail->setParent($noPathAction);
 
         $this->em->persist($conditionEvent);
@@ -253,10 +259,16 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->createCampaignLead($campaign, $contact4);
         $this->createCampaignLead($campaign, $contact5, true); // Manually removed
 
-        $welcomeEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
-        $addPoints    = $this->createEvent('Add Points', $campaign, 'lead.changepoints', 'action', ['points' => 10]);
+        $welcomeEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
+        $addPoints    = $this->createEvent('Add Points', $campaign, 'lead.changepoints', 'action', [
+            'points' => 10,
+        ]);
         $addPoints->setParent($welcomeEmail);
-        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', ['email' => '1']);
+        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
         $finalEmail->setParent($addPoints);
 
         $this->em->persist($addPoints);
@@ -347,15 +359,22 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 
         // Create a simple linear campaign with 3 events
         $welcomeEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action');
-        $addPoints    = $this->createEvent('Add Points', $campaign, 'lead.changepoints', 'action', ['points' => 10, 'eventType' => 'action']);
+        $addPoints    = $this->createEvent('Add Points', $campaign, 'lead.changepoints', 'action', [
+            'points' => 10,
+            'eventType' => 'action',
+        ]);
         $addPoints->setParent($welcomeEmail);
         $welcomeEmail->addChild($addPoints);
 
-        $deletedEmail = $this->createEvent('Deleted Event', $campaign, 'email.send', 'action', ['email' => '1']);
+        $deletedEmail = $this->createEvent('Deleted Event', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
         $deletedEmail->setParent($addPoints);
         $deletedEmail->setDeleted(null);
 
-        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', ['email' => '1']);
+        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', [
+            'email' => '1',
+        ]);
         $finalEmail->setParent($addPoints);
         $addPoints->addChild($finalEmail);
 
@@ -554,7 +573,9 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
             ],
         ]);
         $childEvent1->setParent($parentEvent1);
-        $childEvent2 = $this->createEvent('Child Event 2', $campaign, 'lead.changepoints', 'action', ['points' => 5]);
+        $childEvent2 = $this->createEvent('Child Event 2', $campaign, 'lead.changepoints', 'action', [
+            'points' => 5,
+        ]);
         $childEvent2->setParent($parentEvent2);
 
         $this->em->persist($childEvent1);

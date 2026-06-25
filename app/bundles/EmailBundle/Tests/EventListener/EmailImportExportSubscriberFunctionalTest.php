@@ -96,7 +96,9 @@ final class EmailImportExportSubscriberFunctionalTest extends MauticMysqlTestCas
         $variantEmail->setSubject('Variant Subject');
         $variantEmail->setIsPublished(true);
         $variantEmail->setVariantParent($parentEmail);
-        $variantEmail->setVariantSettings(['weight' => 50]);
+        $variantEmail->setVariantSettings([
+            'weight' => 50,
+        ]);
         $parentEmail->addVariantChild($variantEmail);
 
         $this->em->persist($variantEmail);

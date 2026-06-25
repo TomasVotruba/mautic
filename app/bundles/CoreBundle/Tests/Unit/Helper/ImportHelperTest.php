@@ -77,7 +77,9 @@ class ImportHelperTest extends TestCase
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE);
-        $zip->addFromString('campaign.json', json_encode(['key' => 'value']));
+        $zip->addFromString('campaign.json', json_encode([
+            'key' => 'value',
+        ]));
         $zip->addFromString('../escape.php', '<?php system($_GET["cmd"]);');
         $zip->close();
 
@@ -100,7 +102,9 @@ class ImportHelperTest extends TestCase
 
         $zip = new \ZipArchive();
         $zip->open($zipPath, \ZipArchive::CREATE);
-        $zip->addFromString('campaign.json', json_encode(['key' => 'value']));
+        $zip->addFromString('campaign.json', json_encode([
+            'key' => 'value',
+        ]));
         $zip->addFromString('assets/../../escape.php', '<?php echo "pwned";');
         $zip->close();
 
@@ -112,7 +116,9 @@ class ImportHelperTest extends TestCase
 
     public function testReadFromZipWithAssets(): void
     {
-        $jsonData = ['key' => 'value'];
+        $jsonData = [
+            'key' => 'value',
+        ];
         $tempDir  = sys_get_temp_dir();
 
         // Create temporary asset files.

@@ -91,7 +91,9 @@ class InstallSchemaTest extends TestCase
         $property->setValue($schemaHelper, $connection->getDatabasePlatform());
 
         $tables       = [$this->indexTableName];
-        $mauticTables = [$this->indexTableName => $this->dbParams['backup_prefix'].$this->indexTableName];
+        $mauticTables = [
+            $this->indexTableName => $this->dbParams['backup_prefix'].$this->indexTableName,
+        ];
 
         $sql = $method->invokeArgs($schemaHelper, [$tables, $mauticTables, $this->dbParams['backup_prefix']]);
 

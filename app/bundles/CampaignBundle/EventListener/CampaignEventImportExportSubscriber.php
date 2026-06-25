@@ -79,7 +79,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         /** @var array<string, array<int, array<string, mixed>>> $data */
         foreach ($data as $entityName => $entities) {
             /** @var array<string, mixed> $entities */
-            $event->addEntities([$entityName => $entities]);
+            $event->addEntities([
+                $entityName => $entities,
+            ]);
         }
     }
 
@@ -223,8 +225,16 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
@@ -232,7 +242,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                 continue;
             }
 
-            $campaignEvent = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
+            $campaignEvent = $this->entityManager->getRepository(Event::class)->findOneBy([
+                'uuid' => $element['uuid'] ?? null,
+            ]);
             $isNew         = !$campaignEvent;
 
             $campaignEvent ??= new Event();
@@ -276,7 +288,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [Event::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    Event::ENTITY_NAME => $info,
+                ]);
             }
         }
 
@@ -290,8 +304,13 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         }
 
         $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'uuids' => [],
+            ],
             'errors'                  => [],
         ];
 
@@ -301,7 +320,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                 break;
             }
 
-            $existing = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
+            $existing = $this->entityManager->getRepository(Event::class)->findOneBy([
+                'uuid' => $element['uuid'] ?? null,
+            ]);
 
             if ($existing) {
                 $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
@@ -314,13 +335,17 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         foreach ($summary as $type => $data) {
             if ('errors' === $type) {
                 if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
+                    $event->setSummary('errors', [
+                        'messages' => $data,
+                    ]);
                 }
                 break;
             }
 
             if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Event::ENTITY_NAME => $data]);
+                $event->setSummary($type, [
+                    Event::ENTITY_NAME => $data,
+                ]);
             }
         }
     }
@@ -380,7 +405,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
             $entity = $this->entityManager->getRepository(Event::class)->find($id);
 
             if ($entity) {
-                $dependentEvents = $this->entityManager->getRepository(Event::class)->findBy(['parent' => $id]);
+                $dependentEvents = $this->entityManager->getRepository(Event::class)->findBy([
+                    'parent' => $id,
+                ]);
 
                 foreach ($dependentEvents as $dependentEvent) {
                     // Set parent_id to null
@@ -392,7 +419,9 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                 $this->entityManager->flush();
 
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Event::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => Event::class,
+                ]);
             }
         }
 

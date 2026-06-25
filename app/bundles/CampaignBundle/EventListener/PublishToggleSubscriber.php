@@ -44,7 +44,9 @@ final class PublishToggleSubscriber implements EventSubscriberInterface
             'data-cancel-callback'  => 'dismissConfirmation',
         ];
         $vars['transKeys'] = [
-            'data-message-publish'   => $this->translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+            'data-message-publish'   => $this->translator->trans('mautic.campaign.form.confirmation.message.publish', [
+                '%republishBehavior%' => $republishBehavior,
+            ]),
             'data-message-unpublish' => $this->translator->trans('mautic.campaign.form.confirmation.message'),
             'data-confirm-text'      => 'mautic.campaign.form.confirmation.confirm_text',
             'data-cancel-text'       => 'mautic.campaign.form.confirmation.cancel_text',

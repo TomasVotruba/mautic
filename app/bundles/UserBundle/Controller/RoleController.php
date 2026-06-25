@@ -66,7 +66,9 @@ class RoleController extends FormController
         $count = count($items);
         if ($count && $count < ($start + 1)) {
             $lastPage  = $pageHelper->countPage($count);
-            $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $lastPage]);
+            $returnUrl = $this->generateUrl('mautic_role_index', [
+                'page' => $lastPage,
+            ]);
             $pageHelper->rememberPage($lastPage);
 
             return $this->postActionRedirect([
@@ -100,7 +102,9 @@ class RoleController extends FormController
             ],
             'contentTemplate' => '@MauticUser/Role/list.html.twig',
             'passthroughVars' => [
-                'route'         => $this->generateUrl('mautic_role_index', ['page' => $page]),
+                'route'         => $this->generateUrl('mautic_role_index', [
+                    'page' => $page,
+                ]),
                 'mauticContent' => 'role',
             ],
         ]);
@@ -127,11 +131,15 @@ class RoleController extends FormController
 
         // set the page we came from
         $page   = $request->getSession()->get('mautic.role.page', 1);
-        $action = $this->generateUrl('mautic_role_action', ['objectAction' => 'new']);
+        $action = $this->generateUrl('mautic_role_action', [
+            'objectAction' => 'new',
+        ]);
 
         // get the user form factory
         $permissionsConfig = $this->getPermissionsConfig($entity);
-        $form              = $model->createForm($entity, $this->formFactory, $action, ['permissionsConfig' => $permissionsConfig['config']]);
+        $form              = $model->createForm($entity, $this->formFactory, $action, [
+            'permissionsConfig' => $permissionsConfig['config'],
+        ]);
 
         // /Check for a submitted form and process it
         if ('POST' === $request->getMethod()) {
@@ -160,7 +168,9 @@ class RoleController extends FormController
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => [
+                        'page' => $page,
+                    ],
                     'contentTemplate' => 'Mautic\UserBundle\Controller\RoleController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_role_index',
@@ -180,7 +190,9 @@ class RoleController extends FormController
             'contentTemplate' => '@MauticUser/Role/form.html.twig',
             'passthroughVars' => [
                 'activeLink'     => '#mautic_role_new',
-                'route'          => $this->generateUrl('mautic_role_action', ['objectAction' => 'new']),
+                'route'          => $this->generateUrl('mautic_role_action', [
+                    'objectAction' => 'new',
+                ]),
                 'mauticContent'  => 'role',
                 'permissionList' => $permissionsConfig['list'],
             ],
@@ -209,11 +221,15 @@ class RoleController extends FormController
         $page = $request->getSession()->get('mautic.role.page', 1);
 
         // set the return URL
-        $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_role_index', [
+            'page' => $page,
+        ]);
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\RoleController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_role_index',
@@ -229,7 +245,9 @@ class RoleController extends FormController
                         [
                             'type'    => 'error',
                             'msg'     => 'mautic.user.role.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
+                            'msgVars' => [
+                                '%id%' => $objectId,
+                            ],
                         ],
                     ],
                 ])
@@ -240,8 +258,13 @@ class RoleController extends FormController
         }
 
         $permissionsConfig = $this->getPermissionsConfig($entity);
-        $action            = $this->generateUrl('mautic_role_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
-        $form              = $model->createForm($entity, $this->formFactory, $action, ['permissionsConfig' => $permissionsConfig['config']]);
+        $action            = $this->generateUrl('mautic_role_action', [
+            'objectAction' => 'edit',
+            'objectId' => $objectId,
+        ]);
+        $form              = $model->createForm($entity, $this->formFactory, $action, [
+            'permissionsConfig' => $permissionsConfig['config'],
+        ]);
 
         // /Check for a submitted form and process it
         if (!$ignorePost && 'POST' === $request->getMethod()) {
@@ -276,7 +299,9 @@ class RoleController extends FormController
             }
             // the form has to be rebuilt because the permissions were updated
             $permissionsConfig = $this->getPermissionsConfig($entity);
-            $form              = $model->createForm($entity, $this->formFactory, $action, ['permissionsConfig' => $permissionsConfig['config']]);
+            $form              = $model->createForm($entity, $this->formFactory, $action, [
+                'permissionsConfig' => $permissionsConfig['config'],
+            ]);
         } else {
             // lock the entity
             $model->lockEntity($entity);
@@ -343,7 +368,10 @@ class RoleController extends FormController
         // order permissions by label
         uasort($permissions, fn ($a, $b): int => strnatcmp($a['label'], $b['label']));
 
-        return ['config' => $permissions, 'list' => $permissionsList];
+        return [
+            'config' => $permissions,
+            'list' => $permissionsList,
+        ];
     }
 
     /**
@@ -360,12 +388,16 @@ class RoleController extends FormController
         }
 
         $page           = $request->getSession()->get('mautic.role.page', 1);
-        $returnUrl      = $this->generateUrl('mautic_role_index', ['page' => $page]);
+        $returnUrl      = $this->generateUrl('mautic_role_index', [
+            'page' => $page,
+        ]);
         $success        = 0;
         $flashes        = [];
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\RoleController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_role_index',
@@ -384,7 +416,9 @@ class RoleController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif ($model->isLocked($entity)) {
                     return $this->isLocked($postActionVars, $entity, 'user.role');
@@ -421,12 +455,16 @@ class RoleController extends FormController
     public function batchDeleteAction(Request $request, RoleModel $model): Response
     {
         $page      = $request->getSession()->get('mautic.role.page', 1);
-        $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $page]);
+        $returnUrl = $this->generateUrl('mautic_role_index', [
+            'page' => $page,
+        ]);
         $flashes   = [];
 
         $postActionVars = [
             'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
+            'viewParameters'  => [
+                'page' => $page,
+            ],
             'contentTemplate' => 'Mautic\UserBundle\Controller\RoleController::indexAction',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_role_index',
@@ -449,13 +487,17 @@ class RoleController extends FormController
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
+                        'msgVars' => [
+                            '%id%' => $objectId,
+                        ],
                     ];
                 } elseif (count($users)) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.deletenotallowed',
-                        'msgVars' => ['%name%' => $entity->getName()],
+                        'msgVars' => [
+                            '%name%' => $entity->getName(),
+                        ],
                     ];
                 } elseif (!$this->security->isGranted('user:roles:delete')) {
                     $flashes[] = $this->getAccessDeniedFlash();

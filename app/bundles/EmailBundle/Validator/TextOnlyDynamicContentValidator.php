@@ -41,7 +41,9 @@ final class TextOnlyDynamicContentValidator extends ConstraintValidator
             // Perform the validation against the type
             if ($dwcItem) {
                 $this->context->buildViolation(
-                    $constraint->message, ['%slotName%' => $slotName])
+                    $constraint->message, [
+                        '%slotName%' => $slotName,
+                    ])
                     ->addViolation();
             }
         }

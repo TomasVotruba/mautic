@@ -101,7 +101,10 @@ class ReportApiController extends CommonApiController
      */
     private function getOptionsFromRequest(Request $request): array
     {
-        $options = ['paginate'=> false, 'ignoreGraphData' => true];
+        $options = [
+            'paginate'=> false,
+            'ignoreGraphData' => true,
+        ];
 
         if ($request->query->has('dateFrom')) {
             $options['dateFrom'] = DateTimeHelper::setTimeIfMissing($request->query->get('dateFrom'), '00:00:00');

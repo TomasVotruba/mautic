@@ -62,7 +62,10 @@ class SearchSubscriber implements EventSubscriberInterface
 
         $anonymous = $this->translator->trans('mautic.lead.lead.searchcommand.isanonymous');
         $mine      = $this->translator->trans('mautic.core.searchcommand.ismine');
-        $filter    = ['string' => $str, 'force' => ''];
+        $filter    = [
+            'string' => $str,
+            'force' => '',
+        ];
 
         // only show results that are not anonymous so as to not clutter up things
         if (!str_contains($str, "$anonymous")) {
@@ -117,7 +120,10 @@ class SearchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $filter = ['string' => $str, 'force' => ''];
+        $filter = [
+            'string' => $str,
+            'force' => '',
+        ];
 
         $permissions = $this->security->isGranted(
             ['lead:leads:viewown', 'lead:leads:viewother'],
@@ -544,7 +550,9 @@ class SearchSubscriber implements EventSubscriberInterface
         }
 
         $renderedResults = array_map(
-            fn ($item): string => $twig->render($template, array_merge(['item' => $item], $templateParameters)),
+            fn ($item): string => $twig->render($template, array_merge([
+                'item' => $item,
+            ], $templateParameters)),
             $results['results']
         );
 

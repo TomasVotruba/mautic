@@ -13,7 +13,9 @@ class AbTestPropertiesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $options = ['label' => false];
+        $options = [
+            'label' => false,
+        ];
         if (isset($options['formTypeOptions'])) {
             $options = array_merge($options, $options['formTypeOptions']);
         }

@@ -89,7 +89,9 @@ class CommonApiController extends FetchCommonApiController
         $this->inBatchMode = true;
 
         // Generate the view before deleting so that the IDs are still populated before Doctrine removes them
-        $payload = [$this->entityNameMulti => $entities];
+        $payload = [
+            $this->entityNameMulti => $entities,
+        ];
         $view    = $this->view($payload, Response::HTTP_OK);
         $this->setSerializationContext($view);
         $response = $this->handleView($view);
@@ -109,7 +111,9 @@ class CommonApiController extends FetchCommonApiController
                 $this->model->deleteEntity($entity);
             } catch (DeleteEntityDependencyException $e) {
                 $msg = $this->translator->trans('mautic.api.dependent.entity.delete.error',
-                    ['%id%'   => $entity->getId()], 'validators');
+                    [
+                        '%id%'   => $entity->getId(),
+                    ], 'validators');
                 $this->setBatchError($key, $msg, $e->getCode(), $errors, $entities, $entity);
                 $errors[$key]['details'] = $e->getErrors();
                 continue;
@@ -150,12 +154,16 @@ class CommonApiController extends FetchCommonApiController
             $this->model->deleteEntity($entity);
         } catch (DeleteEntityDependencyException $e) {
             $msg = $this->translator->trans('mautic.api.dependent.entity.delete.error',
-                ['%id%'   => $entity->getId()], 'validators');
+                [
+                    '%id%'   => $entity->getId(),
+                ], 'validators');
 
             return $this->returnError($msg, $e->getCode(), $e->getErrors());
         }
         $this->preSerializeEntity($entity);
-        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ], Response::HTTP_OK);
         $this->setSerializationContext($view);
 
         return $this->handleView($view);
@@ -577,7 +585,9 @@ class CommonApiController extends FetchCommonApiController
                     ? 'mautic_api_'.$this->entityNameMulti.'_getone' : 'mautic_api_get'.$this->entityNameOne;
                 $headers['Location'] = $this->generateUrl(
                     $route,
-                    array_merge(['id' => $entity->getId()], $this->routeParams),
+                    array_merge([
+                        'id' => $entity->getId(),
+                    ], $this->routeParams),
                     true
                 );
             }
@@ -595,7 +605,9 @@ class CommonApiController extends FetchCommonApiController
             if ($this->inBatchMode) {
                 return $entity;
             }
-            $view = $this->view([$this->entityNameOne => $entity], $statusCode, $headers);
+            $view = $this->view([
+                $this->entityNameOne => $entity,
+            ], $statusCode, $headers);
 
             $this->setSerializationContext($view);
         } else {

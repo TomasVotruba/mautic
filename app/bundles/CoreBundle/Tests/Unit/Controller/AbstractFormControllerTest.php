@@ -52,7 +52,9 @@ class AbstractFormControllerTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsFormCancelledWhenFormArrayNull(): void
     {
-        $this->prepareRequestStack(['company' => null]);
+        $this->prepareRequestStack([
+            'company' => null,
+        ]);
 
         $this->formMock->method('getName')
             ->willReturn('company');
@@ -65,7 +67,13 @@ class AbstractFormControllerTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsFormCancelledWhenCancelled(): void
     {
-        $this->prepareRequestStack(['company_merge' => ['buttons' => ['cancel' => null]]]);
+        $this->prepareRequestStack([
+            'company_merge' => [
+                'buttons' => [
+                    'cancel' => null,
+                ],
+            ],
+        ]);
 
         $this->formMock->method('getName')
             ->willReturn('company_merge');
@@ -78,7 +86,13 @@ class AbstractFormControllerTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsFormCancelledWhenNotCancelled(): void
     {
-        $this->prepareRequestStack(['company_merge' => ['buttons' => ['submit' => null]]]);
+        $this->prepareRequestStack([
+            'company_merge' => [
+                'buttons' => [
+                    'submit' => null,
+                ],
+            ],
+        ]);
 
         $this->formMock->method('getName')
             ->willReturn('company_merge');

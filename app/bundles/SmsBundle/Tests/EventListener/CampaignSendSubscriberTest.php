@@ -58,11 +58,15 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $contact->setId(1);
         $leadLog->setLead($contact);
-        $event->setProperties(['sms' => 1]);
+        $event->setProperties([
+            'sms' => 1,
+        ]);
         $event->setCampaign($campaign);
         $event->setType('sms.send_text_sms');
 
-        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
+        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([
+            $leadLog->getId() => $leadLog,
+        ]));
 
         $this->subscriber->onCampaignTriggerBatchAction($pendingEvent);
         self::assertCount(0, $pendingEvent->getFailures());
@@ -92,14 +96,18 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $contact->setId(1);
         $leadLog->setLead($contact);
         $sms->setIsPublished(false);
-        $event->setProperties(['sms' => 1]);
+        $event->setProperties([
+            'sms' => 1,
+        ]);
         $event->setCampaign($campaign);
         $event->setType('sms.send_text_sms');
 
         $this->smsModel->expects(self::once())->method('getEntity')->willReturn($sms);
         $this->translator->method('trans')->willReturn('mautic.sms.campaign.failed.unpublished');
 
-        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
+        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([
+            $leadLog->getId() => $leadLog,
+        ]));
 
         $this->subscriber->onCampaignTriggerBatchAction($pendingEvent);
 
@@ -125,7 +133,11 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['sendSms', 'getEntity'])
             ->getMock();
 
-        $smsModel->method('sendSms')->willReturn([456 => ['status' => true]]);
+        $smsModel->method('sendSms')->willReturn([
+            456 => [
+                'status' => true,
+            ],
+        ]);
         $smsModel->method('getEntity')->willReturn($sms);
 
         $event     = new Event();
@@ -155,10 +167,14 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
             $this->translator
         );
 
-        $event->setProperties(['sms' => 1]);
+        $event->setProperties([
+            'sms' => 1,
+        ]);
         $event->setCampaign($campaign);
 
-        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
+        $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([
+            $leadLog->getId() => $leadLog,
+        ]));
 
         $this->assertCount(1, $pendingEvent->getContacts());
         $subscriber->onCampaignTriggerBatchAction($pendingEvent);

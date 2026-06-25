@@ -121,12 +121,16 @@ class CompanyObjectSubscriberTest extends TestCase
 
     public function testCreateCompaniesWithRightObject(): void
     {
-        $event = new InternalObjectCreateEvent(new Company(), [['somefield' => 'somevalue']]);
+        $event = new InternalObjectCreateEvent(new Company(), [[
+            'somefield' => 'somevalue',
+        ]]);
 
         $objectMapping = $this->createMock(ObjectMapping::class);
         $this->companyObjectHelper->expects($this->once())
             ->method('create')
-            ->with([['somefield' => 'somevalue']])
+            ->with([[
+                'somefield' => 'somevalue',
+            ]])
             ->willReturn([$objectMapping]);
 
         $this->subscriber->createCompanies($event);
@@ -254,11 +258,15 @@ class CompanyObjectSubscriberTest extends TestCase
     {
         $event = new InternalObjectFindEvent(new Company());
 
-        $event->setFieldValues(['field_a' => 123]);
+        $event->setFieldValues([
+            'field_a' => 123,
+        ]);
 
         $this->companyObjectHelper->expects($this->once())
             ->method('findObjectsByFieldValues')
-            ->with(['field_a' => 123])
+            ->with([
+                'field_a' => 123,
+            ])
             ->willReturn([['object_1']]);
 
         $this->subscriber->findCompaniesByFieldValues($event);

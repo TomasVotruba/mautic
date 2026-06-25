@@ -40,7 +40,9 @@ final class RemoveCommandTest extends AbstractMauticTestCase
 
         $result = $this->testSymfonyCommand(
             'mautic:marketplace:remove',
-            ['package' => $this->packageName],
+            [
+                'package' => $this->packageName,
+            ],
             $command
         );
 
@@ -59,7 +61,9 @@ final class RemoveCommandTest extends AbstractMauticTestCase
 
         $result = $this->testSymfonyCommand(
             'mautic:marketplace:remove',
-            ['package' => $this->packageName],
+            [
+                'package' => $this->packageName,
+            ],
             $command
         );
 
@@ -78,7 +82,9 @@ final class RemoveCommandTest extends AbstractMauticTestCase
 
         $result = $this->testSymfonyCommand(
             'mautic:marketplace:remove',
-            ['package' => $this->packageName],
+            [
+                'package' => $this->packageName,
+            ],
             $command
         );
 

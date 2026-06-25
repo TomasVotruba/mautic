@@ -76,7 +76,9 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
 
     public function testSegmentCountIsCorrect(): void
     {
-        $this->testSymfonyCommand('mautic:segments:update', ['--env' => 'test']);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '--env' => 'test',
+        ]);
 
         // purposively not using dataProvider here to avoid loading fixtures with each segment
         foreach ($this->provideSegments() as $segmentAlias => $expectedCount) {
@@ -261,14 +263,18 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
         $segment = $this->fixtures->getReference('segment-having-company');
         \assert($segment instanceof LeadList);
 
-        $this->connection->delete(MAUTIC_TABLE_PREFIX.'lead_lists_leads', ['leadlist_id' => $segment->getId()]);
+        $this->connection->delete(MAUTIC_TABLE_PREFIX.'lead_lists_leads', [
+            'leadlist_id' => $segment->getId(),
+        ]);
 
         $leads = $this->contactSegmentService->getNewLeadListLeads($segment, []);
         Assert::assertArrayHasKey($segment->getId(), $leads);
         Assert::assertCount(50, $leads[$segment->getId()]);
 
         $leadsSubset = array_column(array_slice($leads[$segment->getId()], 0, 15), 'id');
-        $leads       = $this->contactSegmentService->getNewLeadListLeads($segment, ['ids' => $leadsSubset]);
+        $leads       = $this->contactSegmentService->getNewLeadListLeads($segment, [
+            'ids' => $leadsSubset,
+        ]);
         Assert::assertArrayHasKey($segment->getId(), $leads);
         Assert::assertEqualsCanonicalizing($leadsSubset, array_column($leads[$segment->getId()], 'id'));
     }

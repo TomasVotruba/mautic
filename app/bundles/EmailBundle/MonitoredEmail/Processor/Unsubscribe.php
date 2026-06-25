@@ -64,7 +64,9 @@ class Unsubscribe implements ProcessorInterface
         $channel = 'email';
         if ($stat && $email = $stat->getEmail()) {
             // We know the email ID so set it to append to the the DNC record
-            $channel = ['email' => $email->getId()];
+            $channel = [
+                'email' => $email->getId(),
+            ];
         }
 
         $comments = $this->translator->trans('mautic.email.bounce.reason.unsubscribed');

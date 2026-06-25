@@ -36,7 +36,9 @@ class FieldControllerTest extends MauticMysqlTestCase
         $form['leadfield[label]']->setValue($label);
         $this->client->submit($form);
 
-        $field = $this->em->getRepository(LeadField::class)->findOneBy(['label' => $label]);
+        $field = $this->em->getRepository(LeadField::class)->findOneBy([
+            'label' => $label,
+        ]);
         $this->assertNotNull($field);
     }
 
@@ -50,7 +52,9 @@ class FieldControllerTest extends MauticMysqlTestCase
         $this->em->getRepository(LeadField::class)->saveEntity($field);
         $this->em->clear();
 
-        $field = $this->em->getRepository(LeadField::class)->findOneBy(['alias' => 'field_to_be_cloned']);
+        $field = $this->em->getRepository(LeadField::class)->findOneBy([
+            'alias' => 'field_to_be_cloned',
+        ]);
         $this->assertNotNull($field);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/fields/clone/'.$field->getId());
@@ -64,7 +68,9 @@ class FieldControllerTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertResponseStatusCodeSame(200);
 
-        $clonedField = $this->em->getRepository(LeadField::class)->findOneBy(['label' => 'Cloned Field']);
+        $clonedField = $this->em->getRepository(LeadField::class)->findOneBy([
+            'label' => 'Cloned Field',
+        ]);
         $this->assertNotNull($clonedField);
         $this->assertNotEquals($field->getId(), $clonedField->getId());
     }
@@ -105,7 +111,9 @@ class FieldControllerTest extends MauticMysqlTestCase
         $form['leadfield[charLengthLimit]']->setValue('191');
         $this->client->submit($form);
 
-        $field = $this->em->getRepository(LeadField::class)->findOneBy(['label' => $label]);
+        $field = $this->em->getRepository(LeadField::class)->findOneBy([
+            'label' => $label,
+        ]);
         $this->assertNotNull($field);
     }
 
@@ -129,7 +137,9 @@ class FieldControllerTest extends MauticMysqlTestCase
         $form['leadfield[type]']->setValue($type);
         $this->client->submit($form);
 
-        $field = $this->em->getRepository(LeadField::class)->findOneBy(['label' => $label]);
+        $field = $this->em->getRepository(LeadField::class)->findOneBy([
+            'label' => $label,
+        ]);
         $this->assertNotNull($field);
 
         /** @var ColumnSchemaHelper $helper */

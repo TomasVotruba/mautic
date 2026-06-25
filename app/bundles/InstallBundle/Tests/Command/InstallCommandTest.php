@@ -55,7 +55,9 @@ class InstallCommandTest extends TestCase
     {
         $this->installer->method('checkIfInstalled')->willReturnOnConsecutiveCalls(true);
 
-        $input  = new ArrayInput(['site_url' => 'localhost']);
+        $input  = new ArrayInput([
+            'site_url' => 'localhost',
+        ]);
         $output = new BufferedOutput();
         $this->command->run($input, $output);
 

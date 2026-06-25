@@ -80,7 +80,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'ASC']],
+            [
+                'order' => ['timestamp', 'ASC'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );
@@ -95,7 +97,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'DESC']],
+            [
+                'order' => ['timestamp', 'DESC'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );
@@ -110,7 +114,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'asc']],
+            [
+                'order' => ['timestamp', 'asc'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );
@@ -129,7 +135,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'ASC,(SELECT SLEEP(5))--']],
+            [
+                'order' => ['timestamp', 'ASC,(SELECT SLEEP(5))--'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );
@@ -144,7 +152,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'DESC UNION SELECT password FROM users--']],
+            [
+                'order' => ['timestamp', 'DESC UNION SELECT password FROM users--'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );
@@ -159,7 +169,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['timestamp', 'ASC,(SELECT 1)']],
+            [
+                'order' => ['timestamp', 'ASC,(SELECT 1)'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
             [],
@@ -178,7 +190,9 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults->invoke(
             $this->repository,
             $qb,
-            ['order' => ['eventLabel', 'ASC']],
+            [
+                'order' => ['eventLabel', 'ASC'],
+            ],
             'ut.utm_campaign',
             'ut.date_added',
         );

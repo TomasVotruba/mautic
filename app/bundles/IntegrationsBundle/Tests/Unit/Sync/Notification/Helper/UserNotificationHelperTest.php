@@ -65,7 +65,10 @@ class UserNotificationHelperTest extends TestCase
         $this->ownerProvider->expects($this->once())
             ->method('getOwnersForObjectIds')
             ->with(Contact::NAME, [1])
-            ->willReturn([['owner_id' => 1, 'id' => 1]]);
+            ->willReturn([[
+                'owner_id' => 1,
+                'id' => 1,
+            ]]);
 
         $this->userHelper->expects($this->never())
             ->method('getAdminUsers');

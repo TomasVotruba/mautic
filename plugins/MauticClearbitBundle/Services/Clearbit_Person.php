@@ -13,7 +13,9 @@ class Clearbit_Person extends Clearbit_Base
 
     public function lookupByEmail($search)
     {
-        $this->_execute(['email' => $search]);
+        $this->_execute([
+            'email' => $search,
+        ]);
 
         return $this->response_obj;
     }

@@ -210,7 +210,9 @@ class CommonController extends AbstractController implements MauticController
         $request = $this->getCurrentRequest();
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['redirect' => $url]);
+            return new JsonResponse([
+                'redirect' => $url,
+            ]);
         }
 
         return $this->redirect($url);
@@ -337,7 +339,10 @@ class CommonController extends AbstractController implements MauticController
             if ($forward) {
                 // the content is from another controller action so we must retrieve the response from it instead of
                 // directly parsing the template
-                $query                 = ['ignoreAjax' => true, 'subrequest' => true];
+                $query                 = [
+                    'ignoreAjax' => true,
+                    'subrequest' => true,
+                ];
                 $parameters['request'] = $request;
                 $newContentResponse    = $this->forward($contentTemplate, $parameters, $query);
                 if ($newContentResponse instanceof RedirectResponse) {
@@ -386,7 +391,9 @@ class CommonController extends AbstractController implements MauticController
             // just retrieve the content
             $dataArray = array_merge(
                 $passthrough,
-                ['newContent' => $newContent]
+                [
+                    'newContent' => $newContent,
+                ]
             );
         }
 
@@ -402,8 +409,13 @@ class CommonController extends AbstractController implements MauticController
     {
         $request = $this->getCurrentRequest();
 
-        $parameters = ['exception' => $e];
-        $query      = ['ignoreAjax' => true, 'subrequest' => true];
+        $parameters = [
+            'exception' => $e,
+        ];
+        $query      = [
+            'ignoreAjax' => true,
+            'subrequest' => true,
+        ];
 
         return $this->forwardWithPost(
             'Mautic\CoreBundle\Controller\ExceptionController::showAction',
@@ -447,7 +459,9 @@ class CommonController extends AbstractController implements MauticController
      */
     public function throwAccessDenied(string $msg = 'mautic.core.url.error.401'): void
     {
-        throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $this->getCurrentRequest()->getRequestUri()]));
+        throw new AccessDeniedHttpException($this->translator->trans($msg, [
+            '%url%' => $this->getCurrentRequest()->getRequestUri(),
+        ]));
     }
 
     /**
@@ -644,7 +658,9 @@ class CommonController extends AbstractController implements MauticController
     public function exportResultsAs($toExport, $type, $filename, ExportHelper $exportHelper): StreamedResponse
     {
         if (!in_array($type, $exportHelper->getSupportedExportTypes())) {
-            throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type]));
+            throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', [
+                '%type%' => $type,
+            ]));
         }
 
         $dateFormat = $this->coreParametersHelper->get('date_format_dateonly');

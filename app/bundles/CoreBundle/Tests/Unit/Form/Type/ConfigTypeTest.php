@@ -124,7 +124,11 @@ class ConfigTypeTest extends TypeTestCase
 
         $languageHelper->expects($this->any())
                        ->method('fetchLanguages')
-                       ->willReturn(['en' => ['name'=>'English']]);
+                       ->willReturn([
+                           'en' => [
+                               'name'=>'English',
+                           ],
+                       ]);
 
         return new ConfigType($translator, $languageHelper, $ipLookupFactory, null, $shortener, $coreParametersHelper);
     }

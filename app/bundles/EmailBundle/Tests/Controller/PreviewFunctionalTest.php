@@ -281,7 +281,9 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->loginUser($user);
 
         $url                    = "/email/preview/{$email->getId()}";

@@ -58,7 +58,9 @@ class WebhookSubscriber implements EventSubscriberInterface
             'object'    => 'webhook',
             'objectId'  => $event->getWebhook()->deletedId,
             'action'    => 'delete',
-            'details'   => ['name' => $webhook->getName()],
+            'details'   => [
+                'name' => $webhook->getName(),
+            ],
             'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
         ];
         $this->auditLogModel->writeToLog($log);

@@ -31,8 +31,12 @@ class FullContact_Location extends FullContact_Base
         $includeZeroPopulation = ($includeZeroPopulation) ? 'true' : 'false';
 
         $this->_resourceUri = '/address/locationNormalizer.json';
-        $this->_execute(['place' => $place, 'includeZeroPopulation' => $includeZeroPopulation,
-            'method'             => 'normalizer', 'casing' => $casing, ]);
+        $this->_execute([
+            'place' => $place,
+            'includeZeroPopulation' => $includeZeroPopulation,
+            'method'             => 'normalizer',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }
@@ -42,8 +46,12 @@ class FullContact_Location extends FullContact_Base
         $includeZeroPopulation = ($includeZeroPopulation) ? 'true' : 'false';
 
         $this->_resourceUri = '/address/locationEnrichment.json';
-        $this->_execute(['place' => $place, 'includeZeroPopulation' => $includeZeroPopulation,
-            'method'             => 'enrichment', 'casing' => $casing, ]);
+        $this->_execute([
+            'place' => $place,
+            'includeZeroPopulation' => $includeZeroPopulation,
+            'method'             => 'enrichment',
+            'casing' => $casing,
+        ]);
 
         return $this->response_obj;
     }

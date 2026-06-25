@@ -88,7 +88,9 @@ class HttpFactory implements AuthProviderInterface
     {
         return new Client(
             [
-                'headers' => [$this->credentials->getKeyName() => $this->credentials->getApiKey()],
+                'headers' => [
+                    $this->credentials->getKeyName() => $this->credentials->getApiKey(),
+                ],
             ]
         );
     }

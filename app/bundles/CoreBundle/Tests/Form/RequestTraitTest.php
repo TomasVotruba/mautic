@@ -77,14 +77,18 @@ class RequestTraitTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('boolProvider')]
     public function testCleanFieldsBoolean(?bool $expected, $value): void
     {
-        $fieldData = ['boolVal' => $value];
+        $fieldData = [
+            'boolVal' => $value,
+        ];
         $leadField = [
             'alias' => 'boolVal',
             'type'  => 'boolean',
         ];
 
         $this->cleanFields($fieldData, $leadField);
-        $this->assertSame(['boolVal' => $expected], $fieldData);
+        $this->assertSame([
+            'boolVal' => $expected,
+        ], $fieldData);
     }
 
     /**
@@ -115,43 +119,57 @@ class RequestTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanFieldsDateTime(): void
     {
-        $fieldData = ['fieldDateTime' => '10/10/2022 05:10:25'];
+        $fieldData = [
+            'fieldDateTime' => '10/10/2022 05:10:25',
+        ];
         $leadField = [
             'alias' => 'fieldDateTime',
             'type'  => 'datetime',
         ];
-        $expectedValues = ['fieldDateTime' => '2022-10-10 05:10:25'];
+        $expectedValues = [
+            'fieldDateTime' => '2022-10-10 05:10:25',
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsDate(): void
     {
-        $fieldData = ['fieldDate' => '10/10/2022'];
+        $fieldData = [
+            'fieldDate' => '10/10/2022',
+        ];
         $leadField = [
             'alias' => 'fieldDate',
             'type'  => 'date',
         ];
-        $expectedValues = ['fieldDate' => '2022-10-10'];
+        $expectedValues = [
+            'fieldDate' => '2022-10-10',
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsTime(): void
     {
-        $fieldData = ['fieldTime' => '05:20:10'];
+        $fieldData = [
+            'fieldTime' => '05:20:10',
+        ];
         $leadField = [
             'alias' => 'fieldTime',
             'type'  => 'time',
         ];
-        $expectedValues = ['fieldTime' => '05:20:10'];
+        $expectedValues = [
+            'fieldTime' => '05:20:10',
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsWrongDateTime(): void
     {
-        $fieldData = ['fieldTime' => 'string'];
+        $fieldData = [
+            'fieldTime' => 'string',
+        ];
         $leadField = [
             'alias' => 'fieldTime',
             'type'  => 'time',
@@ -163,48 +181,64 @@ class RequestTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testCleanFieldsMultiSelectArray(): void
     {
-        $fieldData = ['fieldMultiSelect' => ['o1', 'o2', 'o3']];
+        $fieldData = [
+            'fieldMultiSelect' => ['o1', 'o2', 'o3'],
+        ];
         $leadField = [
             'alias' => 'fieldMultiSelect',
             'type'  => 'multiselect',
         ];
-        $expectedValues = ['fieldMultiSelect' => ['o1', 'o2', 'o3']];
+        $expectedValues = [
+            'fieldMultiSelect' => ['o1', 'o2', 'o3'],
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsMultiSelectString(): void
     {
-        $fieldData = ['fieldMultiSelect' => 'o1|o2|o3'];
+        $fieldData = [
+            'fieldMultiSelect' => 'o1|o2|o3',
+        ];
         $leadField = [
             'alias' => 'fieldMultiSelect',
             'type'  => 'multiselect',
         ];
-        $expectedValues = ['fieldMultiSelect' => ['o1', 'o2', 'o3']];
+        $expectedValues = [
+            'fieldMultiSelect' => ['o1', 'o2', 'o3'],
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsNumber(): void
     {
-        $fieldData = ['fieldFloat' => '3.2'];
+        $fieldData = [
+            'fieldFloat' => '3.2',
+        ];
         $leadField = [
             'alias' => 'fieldFloat',
             'type'  => 'number',
         ];
-        $expectedValues = ['fieldFloat' => 3.2];
+        $expectedValues = [
+            'fieldFloat' => 3.2,
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }
 
     public function testCleanFieldsEmail(): void
     {
-        $fieldData = ['fieldEmail' => 'email@domain.com'];
+        $fieldData = [
+            'fieldEmail' => 'email@domain.com',
+        ];
         $leadField = [
             'alias' => 'fieldEmail',
             'type'  => 'email',
         ];
-        $expectedValues = ['fieldEmail' => 'email@domain.com'];
+        $expectedValues = [
+            'fieldEmail' => 'email@domain.com',
+        ];
         $this->cleanFields($fieldData, $leadField);
         $this->assertSame($expectedValues, $fieldData);
     }

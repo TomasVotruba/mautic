@@ -16,7 +16,9 @@ class Clearbit_Company extends Clearbit_Base
 
     public function lookupByDomain($search)
     {
-        $this->_execute(['domain' => $search]);
+        $this->_execute([
+            'domain' => $search,
+        ]);
 
         return $this->response_obj;
     }

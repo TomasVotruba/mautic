@@ -60,7 +60,9 @@ final class DeleteCompanyLeadsFunctionalTest extends MauticMysqlTestCase
 
         $this->softDeleteCompany($company1);
 
-        $this->testSymfonyCommand(DeleteCompanyLeads::COMMAND_NAME, ['--company-id' => $company1->getId()]);
+        $this->testSymfonyCommand(DeleteCompanyLeads::COMMAND_NAME, [
+            '--company-id' => $company1->getId(),
+        ]);
 
         Assert::assertSame(4, $companyLeadRepository->count([]), 'Company lead mapping is deleted for deleted company.');
         Assert::assertNull($companyRepository->getEntity($company1->getId()), 'Company is deleted from companies permanently.');

@@ -16,7 +16,9 @@ class StageActionChangeType extends AbstractType
     {
         $builder->add('stage', StageActionListType::class, [
             'label'      => 'mautic.stage.selectstage',
-            'label_attr' => ['class' => 'control-label'],
+            'label_attr' => [
+                'class' => 'control-label',
+            ],
             'attr'       => [
                 'class'   => 'form-control',
                 'tooltip' => 'mautic.stage.choose.stage_descr',
@@ -25,7 +27,9 @@ class StageActionChangeType extends AbstractType
             'required'    => true,
             'constraints' => [
                 new NotBlank(
-                    ['message' => 'mautic.core.value.required']
+                    [
+                        'message' => 'mautic.core.value.required',
+                    ]
                 ),
             ],
         ]);

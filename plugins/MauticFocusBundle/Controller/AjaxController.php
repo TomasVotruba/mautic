@@ -13,7 +13,10 @@ class AjaxController extends CommonAjaxController
 {
     public function generatePreviewAction(Request $request): JsonResponse
     {
-        $responseContent  = ['html' => '', 'style' => ''];
+        $responseContent  = [
+            'html' => '',
+            'style' => '',
+        ];
         $focus            = $request->request->all();
 
         if (isset($focus['focus'])) {

@@ -85,7 +85,9 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
         $filesToUpload->addFile($file2Mock, $field2Mock);
 
         $submission = new Submission();
-        $submission->setResults(['key' => 'value']);
+        $submission->setResults([
+            'key' => 'value',
+        ]);
 
         $path1   = $this->uploadDir.'/1/fieldId1';
         $path2   = $this->uploadDir.'/2/fieldId2';
@@ -173,7 +175,9 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
         $filesToUpload->addFile($file2Mock, $field2Mock);
 
         $submission = new Submission();
-        $submission->setResults(['key' => 'value']);
+        $submission->setResults([
+            'key' => 'value',
+        ]);
 
         $path1   = $this->uploadDir.'/1/fieldId1';
         $path2   = $this->uploadDir.'/2/fieldId2';

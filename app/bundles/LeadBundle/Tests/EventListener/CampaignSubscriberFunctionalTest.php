@@ -142,12 +142,16 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Execute the campaign.
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         $prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
 
         foreach ($listLeads as $contactId) {
-            $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", ['id' => $contactId]);
+            $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", [
+                'id' => $contactId,
+            ]);
             Assert::assertEquals($expectedPoints, $points);
         }
     }
@@ -200,14 +204,18 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Execute the campaign.
-        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         $this->em->clear();
 
         $prefix = self::getContainer()->getParameter('mautic.db_table_prefix');
 
         foreach ($contacts as $contact) {
-            $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", ['id' => $contact->getId()]);
+            $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", [
+                'id' => $contact->getId(),
+            ]);
             Assert::assertEquals($expectedPoints, $points);
         }
     }
@@ -248,7 +256,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                 'type'       => 'lead.stages',
                 'properties' => [
                     'type'   => 'lead.stages',
-                    'stages' => [0 => '1'],
+                    'stages' => [
+                        0 => '1',
+                    ],
                 ],
             ],
             'eventDetails'    => [],
@@ -382,7 +392,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 
         $this->em->clear();
 
-        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
 
         Assert::assertSame(0, $exitCode->getStatusCode());
 
@@ -484,7 +496,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 
         $this->em->clear();
 
-        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id' => $campaign->getId(),
+        ]);
         $this->assertSame(0, $exitCode->getStatusCode());
 
         $lead1 = $this->contactRepository->getEntity($contactId1);
@@ -725,14 +739,22 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                 'triggerRestrictedStopHour'  => '',
                 'order'                      => 1,
                 'anchor'                     => 'leadsource',
-                'properties'                 => ['stages' => [0 => '1']],
+                'properties'                 => [
+                    'stages' => [
+                        0 => '1',
+                    ],
+                ],
                 'type'                       => 'lead.stages',
                 'eventType'                  => 'condition',
                 'anchorEventType'            => 'source',
                 'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
-                'stages'                     => [0 => '1'],
+                'buttons'                    => [
+                    'save' => '',
+                ],
+                'stages'                     => [
+                    0 => '1',
+                ],
             ]
         );
 
@@ -761,13 +783,17 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                 'triggerRestrictedStopHour'  => '',
                 'order'                      => 2,
                 'anchor'                     => 'bottom',
-                'properties'                 => ['stage' => '2'],
+                'properties'                 => [
+                    'stage' => '2',
+                ],
                 'type'                       => 'stage.change',
                 'eventType'                  => 'action',
                 'anchorEventType'            => 'action',
                 'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'stage'                      => 2,
             ]
         );
@@ -891,7 +917,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                 'anchorEventType'            => 'source',
                 'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'operator'                   => 'gte',
                 'score'                      => 1,
                 'group'                      => $pointGroup,
@@ -934,7 +962,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                 'anchorEventType'            => 'condition',
                 'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'points'                     => 1,
                 'group'                      => $pointGroup,
             ]
@@ -1088,7 +1118,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         // Create a contact and set the custom field value
         $contact   = $this->createContact('john.doe@example.com');
         $leadModel = static::getContainer()->get('mautic.lead.model.lead');
-        $leadModel->setFieldValues($contact, ['test_date' => $fieldValue]);
+        $leadModel->setFieldValues($contact, [
+            'test_date' => $fieldValue,
+        ]);
         $leadModel->saveEntity($contact);
 
         $this->em->flush();

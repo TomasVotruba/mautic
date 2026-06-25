@@ -38,8 +38,13 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $parentMock       = $this->createMock(Page::class);
         $childMock        = $this->createMock(Page::class);
-        $children         = [2 => $childMock];
-        $parameters       = ['parent' => $parentMock, 'children' => $children];
+        $children         = [
+            2 => $childMock,
+        ];
+        $parameters       = [
+            'parent' => $parentMock,
+            'children' => $children,
+        ];
         $event            = new DetermineWinnerEvent($parameters);
         $startDate        = new \DateTime();
         $transSubmissions = 'submissions';

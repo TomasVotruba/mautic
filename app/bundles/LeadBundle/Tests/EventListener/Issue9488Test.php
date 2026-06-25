@@ -154,7 +154,9 @@ class Issue9488Test extends MauticMysqlTestCase
                 'anchorEventType'            => 'source',
                 'campaignId'                 => $campaign->getId(),
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'field'                      => 'preferred_locale',
                 'operator'                   => '=',
                 'value'                      => 'af',
@@ -190,7 +192,9 @@ class Issue9488Test extends MauticMysqlTestCase
                 'anchorEventType'            => 'condition',
                 'campaignId'                 => $campaign->getId(),
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'points'                     => '2',
             ]
         );
@@ -225,7 +229,9 @@ class Issue9488Test extends MauticMysqlTestCase
                 'anchorEventType'            => 'condition',
                 'campaignId'                 => $campaign->getId(),
                 '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
+                'buttons'                    => [
+                    'save' => '',
+                ],
                 'points'                     => '1',
             ]
         );

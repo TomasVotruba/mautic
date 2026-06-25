@@ -17,7 +17,9 @@ class EmailToUserSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [EmailEvents::ON_SENT_EMAIL_TO_USER => ['onEmailToUser', 0]];
+        return [
+            EmailEvents::ON_SENT_EMAIL_TO_USER => ['onEmailToUser', 0],
+        ];
     }
 
     public function onEmailToUser(TriggerExecutedEvent $event): TriggerExecutedEvent

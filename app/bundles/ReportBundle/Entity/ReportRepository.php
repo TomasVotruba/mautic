@@ -47,13 +47,17 @@ class ReportRepository extends CommonRepository
             case $this->translator->trans('mautic.core.searchcommand.ispublished'):
             case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('r.isPublished', ":$unique");
-                $forceParameters = [$unique => true];
+                $forceParameters = [
+                    $unique => true,
+                ];
 
                 break;
             case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
             case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
                 $expr            = $q->expr()->eq('r.isPublished', ":$unique");
-                $forceParameters = [$unique => false];
+                $forceParameters = [
+                    $unique => false,
+                ];
 
                 break;
             case $this->translator->trans('mautic.core.searchcommand.ismine'):

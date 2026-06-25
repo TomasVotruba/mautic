@@ -24,7 +24,9 @@ class MauticSyncFieldsLoadEventTest extends TestCase
         $this->assertSame($fields, $event->getFields());
         $event->addField($newFieldKey, $newFieldValue);
         $this->assertSame(
-            array_merge($fields, [$newFieldKey => $newFieldValue]),
+            array_merge($fields, [
+                $newFieldKey => $newFieldValue,
+            ]),
             $event->getFields()
         );
     }

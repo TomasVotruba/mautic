@@ -315,7 +315,9 @@ class SubmissionModel extends CommonFormModel
 
         // return errors if there any
         if (!empty($validationErrors)) {
-            return ['errors' => $validationErrors];
+            return [
+                'errors' => $validationErrors,
+            ];
         }
 
         // Create/update lead
@@ -343,7 +345,9 @@ class SubmissionModel extends CommonFormModel
             $msg                                = $this->translator->trans('mautic.form.submission.error.file.uploadFailed', [], 'validators');
             $validationErrors[$e->getMessage()] = $msg;
 
-            return ['errors' => $validationErrors];
+            return [
+                'errors' => $validationErrors,
+            ];
         }
 
         // set results after uploader what can change file name if file name exists
@@ -360,10 +364,14 @@ class SubmissionModel extends CommonFormModel
             $this->deleteEntity($submission);
 
             if ($validationErrors = $exception->getViolations()) {
-                return ['errors' => $validationErrors];
+                return [
+                    'errors' => $validationErrors,
+                ];
             }
 
-            return ['errors' => [$exception->getMessage()]];
+            return [
+                'errors' => [$exception->getMessage()],
+            ];
         }
 
         // update contact fields with transform values
@@ -391,12 +399,16 @@ class SubmissionModel extends CommonFormModel
 
         // get callback commands from the submit action
         if ($submissionEvent->hasPostSubmitCallbacks()) {
-            return ['callback' => $submissionEvent];
+            return [
+                'callback' => $submissionEvent,
+            ];
         }
 
         // made it to the end so return the submission event to give the calling method access to tokens, results, etc
         // otherwise return false that no errors were encountered (to keep BC really)
-        return ($returnEvent) ? ['submission' => $submissionEvent] : false;
+        return ($returnEvent) ? [
+            'submission' => $submissionEvent,
+        ] : false;
     }
 
     /**
@@ -953,7 +965,9 @@ class SubmissionModel extends CommonFormModel
         $getCompanyData = function ($currentFields) use ($companyFields): array {
             $companyData = [];
             // force add company contact field to company fields check
-            $companyFields = array_merge($companyFields, ['company' => 'company']);
+            $companyFields = array_merge($companyFields, [
+                'company' => 'company',
+            ]);
             foreach ($companyFields as $alias => $properties) {
                 if (isset($currentFields[$alias])) {
                     $value               = $currentFields[$alias];
@@ -1087,7 +1101,9 @@ class SubmissionModel extends CommonFormModel
 
         // Set stage.
         if (!empty($data['stagebyname'])) {
-            $stage = $this->em->getRepository(Stage::class)->findOneBy(['name' => $data['stagebyname']]);
+            $stage = $this->em->getRepository(Stage::class)->findOneBy([
+                'name' => $data['stagebyname'],
+            ]);
 
             if ($stage instanceof Stage) {
                 $lead->setStage($stage);
@@ -1098,7 +1114,9 @@ class SubmissionModel extends CommonFormModel
                     sprintf('%d:%s', $stage->getId(), $stage->getName()),
                     $this->translator->trans(
                         'mautic.stage.import.action.name',
-                        ['%name%' => $this->userHelper->getUser()->getUsername()]
+                        [
+                            '%name%' => $this->userHelper->getUser()->getUsername(),
+                        ]
                     )
                 );
             } else {
@@ -1106,7 +1124,9 @@ class SubmissionModel extends CommonFormModel
                     'Form: Associating stage failed as %s',
                     $this->translator->trans(
                         'mautic.lead.import.stage.not.exists',
-                        ['%id%' => $data['stagebyname']]
+                        [
+                            '%id%' => $data['stagebyname'],
+                        ]
                     )
                 ));
             }
@@ -1118,7 +1138,9 @@ class SubmissionModel extends CommonFormModel
 
         $user = null;
         if (!empty($data['ownerbyemail'])) {
-            $user = $userRepo->findOneBy(['email' => $data['ownerbyemail']]);
+            $user = $userRepo->findOneBy([
+                'email' => $data['ownerbyemail'],
+            ]);
         } elseif (!empty($data['ownerbyid'])) {
             $user = $userRepo->find($data['ownerbyid']);
         }
@@ -1196,7 +1218,9 @@ class SubmissionModel extends CommonFormModel
                 }
                 foreach ($components['validators'][$type] as $validator) {
                     if (!is_array($validator)) {
-                        $validator = ['eventName' => $validator];
+                        $validator = [
+                            'eventName' => $validator,
+                        ];
                     }
                     $event = $this->dispatcher->dispatch(new ValidationEvent($field, $value), $validator['eventName']);
                     if (!$event->isValid()) {

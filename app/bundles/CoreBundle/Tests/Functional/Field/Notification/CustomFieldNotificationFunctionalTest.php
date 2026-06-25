@@ -49,7 +49,9 @@ class CustomFieldNotificationFunctionalTest extends MauticMysqlTestCase
 
         $notification = array_shift($notifications);
         $this->assertEquals($notification['header'], $this->translator->trans('mautic.lead.field.notification.cannot_be_updated_header'));
-        $this->assertEquals($notification['message'], $this->translator->trans('mautic.lead.field.notification.cannot_be_updated_message', ['%label%' => $this->leadField->getLabel()]));
+        $this->assertEquals($notification['message'], $this->translator->trans('mautic.lead.field.notification.cannot_be_updated_message', [
+            '%label%' => $this->leadField->getLabel(),
+        ]));
     }
 
     private function createCustomField(): LeadField

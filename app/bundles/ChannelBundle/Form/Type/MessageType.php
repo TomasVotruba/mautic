@@ -25,7 +25,10 @@ class MessageType extends AbstractFormStandardType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Add standard fields
-        $options = array_merge($options, ['model_name' => 'channel.message', 'permission_base' => 'channel:messages']);
+        $options = array_merge($options, [
+            'model_name' => 'channel.message',
+            'permission_base' => 'channel:messages',
+        ]);
         parent::buildForm($builder, $options);
 
         // Ensure that all channels exist

@@ -210,7 +210,13 @@ class MessageModel extends FormModel implements AjaxLookupModelInterface, Global
     {
         $eventLog = $this->campaignModel->getCampaignLeadEventLogRepository();
 
-        return $eventLog->getEventLogs(['type' => 'message.send', 'dateFrom' => $dateFrom, 'dateTo' => $dateTo, 'channel' => 'message', 'channelId' => $messageId]);
+        return $eventLog->getEventLogs([
+            'type' => 'message.send',
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
+            'channel' => 'message',
+            'channelId' => $messageId,
+        ]);
     }
 
     /**

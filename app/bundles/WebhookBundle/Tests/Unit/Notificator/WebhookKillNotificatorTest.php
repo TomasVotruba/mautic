@@ -245,7 +245,10 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
                 }
                 if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.webhook.stopped.details', $parameters[0]);
-                    $this->assertSame(['%reason%'  => $this->reason, '%webhook%' => $htmlUrl], $parameters[1]);
+                    $this->assertSame([
+                        '%reason%'  => $this->reason,
+                        '%webhook%' => $htmlUrl,
+                    ], $parameters[1]);
 
                     return $this->details;
                 }

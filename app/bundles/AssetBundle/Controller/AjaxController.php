@@ -40,7 +40,9 @@ class AjaxController extends CommonAjaxController
         $dispatcher = $this->dispatcher;
         $name       = AssetEvents::ASSET_ON_REMOTE_BROWSE;
         if (!$dispatcher->hasListeners($name)) {
-            return $this->sendJsonResponse(['success' => 0]);
+            return $this->sendJsonResponse([
+                'success' => 0,
+            ]);
         }
 
         /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $integration */
@@ -67,6 +69,9 @@ class AjaxController extends CommonAjaxController
             ]
         );
 
-        return $this->sendJsonResponse(['success' => 1, 'output' => $output]);
+        return $this->sendJsonResponse([
+            'success' => 1,
+            'output' => $output,
+        ]);
     }
 }

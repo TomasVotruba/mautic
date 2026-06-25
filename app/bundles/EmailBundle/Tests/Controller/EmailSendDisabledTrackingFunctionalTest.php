@@ -49,7 +49,9 @@ final class EmailSendDisabledTrackingFunctionalTest extends MauticMysqlTestCase
                         </body></html>';
         $email = $this->createSegmentEmail(
             'test subject',
-            ['segment-a' => $segment],
+            [
+                'segment-a' => $segment,
+            ],
             $content
         );
 
@@ -62,7 +64,10 @@ final class EmailSendDisabledTrackingFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => 2]
+            [
+                'id' => $email->getId(),
+                'pending' => 2,
+            ]
         );
 
         $response = $this->client->getResponse();

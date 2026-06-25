@@ -67,7 +67,10 @@ final class ImportCompanySubscriber implements EventSubscriberInterface
             ];
 
             $event->fields = [
-                'mautic.lead.company'        => $this->fieldList->getFieldList(false, false, ['isPublished' => true, 'object' => 'company']),
+                'mautic.lead.company'        => $this->fieldList->getFieldList(false, false, [
+                    'isPublished' => true,
+                    'object' => 'company',
+                ]),
                 'mautic.lead.special_fields' => $specialFields,
             ];
         }

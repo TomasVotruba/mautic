@@ -92,10 +92,16 @@ final class EntityImportCommand extends ModeratedCommand
     {
         foreach ($data as $entity) {
             if (!isset($entity[$entityName]) || !isset($entity['dependencies'])) {
-                return ['isValid' => false, 'message' => 'Missing required keys.'];
+                return [
+                    'isValid' => false,
+                    'message' => 'Missing required keys.',
+                ];
             }
         }
 
-        return ['isValid' => true, 'message' => ''];
+        return [
+            'isValid' => true,
+            'message' => '',
+        ];
     }
 }

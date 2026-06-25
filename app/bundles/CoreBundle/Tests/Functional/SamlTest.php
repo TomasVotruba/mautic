@@ -22,7 +22,9 @@ class SamlTest extends MauticMysqlTestCase
     public function testDiscoveryTemplateIsOverridden(): void
     {
         $twig    = static::getContainer()->get('twig');
-        $content = $twig->render('@LightSamlSp/discovery.html.twig', ['parties' => []]);
+        $content = $twig->render('@LightSamlSp/discovery.html.twig', [
+            'parties' => [],
+        ]);
 
         Assert::assertStringContainsString('SAML not configured or configured incorrectly.', $content);
     }

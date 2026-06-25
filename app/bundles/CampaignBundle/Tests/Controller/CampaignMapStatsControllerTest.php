@@ -222,7 +222,9 @@ class CampaignMapStatsControllerTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $result = $this->mapController->getMapOptions($campaign);
-        $this->assertSame(['contacts' => CampaignMapStatsController::MAP_OPTIONS['contacts']], $result);
+        $this->assertSame([
+            'contacts' => CampaignMapStatsController::MAP_OPTIONS['contacts'],
+        ], $result);
     }
 
     /**

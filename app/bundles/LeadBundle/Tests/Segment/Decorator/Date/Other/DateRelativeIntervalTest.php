@@ -179,7 +179,9 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);
         $timezoneResolver     = $this->createMock(TimezoneResolver::class);
-        $filterCrate          = new ContactSegmentFilterCrate(['operator' => '=']);
+        $filterCrate          = new ContactSegmentFilterCrate([
+            'operator' => '=',
+        ]);
         $dateOptionParameters = new DateOptionParameters($filterCrate, [], $timezoneResolver);
 
         // Mock CompositeExpression return
@@ -200,7 +202,9 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);
         $timezoneResolver     = $this->createMock(TimezoneResolver::class);
-        $filterCrate          = new ContactSegmentFilterCrate(['operator' => '=']);
+        $filterCrate          = new ContactSegmentFilterCrate([
+            'operator' => '=',
+        ]);
         $dateOptionParameters = new DateOptionParameters($filterCrate, [], $timezoneResolver);
 
         // Mock string return
@@ -217,7 +221,9 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);
         $timezoneResolver     = $this->createMock(TimezoneResolver::class);
-        $filterCrate          = new ContactSegmentFilterCrate(['operator' => '=']);
+        $filterCrate          = new ContactSegmentFilterCrate([
+            'operator' => '=',
+        ]);
         $dateOptionParameters = new DateOptionParameters($filterCrate, [], $timezoneResolver);
 
         // Mock null return

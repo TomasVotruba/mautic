@@ -32,12 +32,16 @@ final class TypeOperatorProvider implements TypeOperatorProviderInterface
 
     public function getOperatorsIncluding(array $operators): array
     {
-        return $this->getOperatorChoiceList(['include' => $operators]);
+        return $this->getOperatorChoiceList([
+            'include' => $operators,
+        ]);
     }
 
     public function getOperatorsExcluding(array $operators): array
     {
-        return $this->getOperatorChoiceList(['exclude' => $operators]);
+        return $this->getOperatorChoiceList([
+            'exclude' => $operators,
+        ]);
     }
 
     public function getOperatorsForFieldType(string $fieldType): array

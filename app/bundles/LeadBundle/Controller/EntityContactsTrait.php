@@ -88,7 +88,10 @@ trait EntityContactsTrait
 
         $pageHelper = $pageHelperFactory->make("mautic.{$sessionVar}", $page);
 
-        $filter     = ['string' => $search, 'force' => []];
+        $filter     = [
+            'string' => $search,
+            'force' => [],
+        ];
         $orderBy    = $orderBy ?: $request->getSession()->get('mautic.'.$sessionVar.'.contact.orderby', 'l.id');
         $orderByDir = $orderByDir ?: $request->getSession()->get('mautic.'.$sessionVar.'.contact.orderbydir', 'DESC');
 
@@ -139,12 +142,18 @@ trait EntityContactsTrait
             // the number of entities are now less then the current page so redirect to the last page
             $lastPage = $pageHelper->countPage($count);
             $pageHelper->rememberPage($lastPage);
-            $returnUrl = $this->generateUrl($route, array_merge(['objectId' => $entityId, 'page' => $lastPage], $routeParameters));
+            $returnUrl = $this->generateUrl($route, array_merge([
+                'objectId' => $entityId,
+                'page' => $lastPage,
+            ], $routeParameters));
 
             return $this->postActionRedirect(
                 [
                     'returnUrl'         => $returnUrl,
-                    'viewParameters'    => ['page' => $lastPage, 'objectId' => $entityId],
+                    'viewParameters'    => [
+                        'page' => $lastPage,
+                        'objectId' => $entityId,
+                    ],
                     'contentTemplate'   => '@MauticLead/Lead/grid.html.twig',
                     'forwardController' => false,
                     'passthroughVars'   => [

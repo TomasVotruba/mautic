@@ -376,7 +376,9 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $event->setName($name);
         $event->setType('lead.changepoints');
         $event->setEventType('action');
-        $event->setProperties(['points' => 10]);
+        $event->setProperties([
+            'points' => 10,
+        ]);
 
         return $event;
     }

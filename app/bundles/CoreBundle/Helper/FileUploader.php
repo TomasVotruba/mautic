@@ -70,12 +70,16 @@ class FileUploader
     {
         // Check if the file is an image
         if (!in_array($file->getMimeType(), $this->getAllowedImageMimeTypes())) {
-            throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', ['%types%' => implode(', ', $this->getAllowedImageExtensions())]));
+            throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', [
+                '%types%' => implode(', ', $this->getAllowedImageExtensions()),
+            ]));
         }
         // Also check the file extension
         $extension = strtolower(pathinfo($file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getFilename(), PATHINFO_EXTENSION));
         if (!in_array($extension, $this->getAllowedImageExtensions())) {
-            throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', ['%types%' => implode(', ', $this->getAllowedImageExtensions())]));
+            throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', [
+                '%types%' => implode(', ', $this->getAllowedImageExtensions()),
+            ]));
         }
     }
 

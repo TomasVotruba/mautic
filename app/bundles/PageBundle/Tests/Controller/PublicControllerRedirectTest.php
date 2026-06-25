@@ -125,7 +125,9 @@ class PublicControllerRedirectTest extends MauticMysqlTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_FOUND);
         Assert::assertSame($url, $response->getTargetUrl(), 'The dots in the query part must be preserved.');
 
-        $hit = $this->em->getRepository(Hit::class)->findOneBy(['url' => $url]);
+        $hit = $this->em->getRepository(Hit::class)->findOneBy([
+            'url' => $url,
+        ]);
         Assert::assertNotNull($hit);
     }
 

@@ -36,7 +36,9 @@ class ChannelBroadcastEventTest extends TestCase
         $event                  = new ChannelBroadcastEvent($this->channel, $this->channelId, $this->output);
         $successCount           = 10;
         $failedCount            = 2;
-        $failedRecipientsByList = ['list1' => ['user1@example.com', 'user2@example.com']];
+        $failedRecipientsByList = [
+            'list1' => ['user1@example.com', 'user2@example.com'],
+        ];
 
         $event->setResults($this->channel, $successCount, $failedCount, $failedRecipientsByList);
 

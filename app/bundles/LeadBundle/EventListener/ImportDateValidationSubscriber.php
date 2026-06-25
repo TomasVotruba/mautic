@@ -97,8 +97,16 @@ final class ImportDateValidationSubscriber implements EventSubscriberInterface
         $fields           = $this->fieldModel->getEntities([
             'filter' => [
                 'force' => [
-                    ['column' => 'f.isPublished', 'expr' => 'eq', 'value' => true],
-                    ['column' => 'f.type', 'expr' => 'in', 'value' => ['date', 'datetime']],
+                    [
+                        'column' => 'f.isPublished',
+                        'expr' => 'eq',
+                        'value' => true,
+                    ],
+                    [
+                        'column' => 'f.type',
+                        'expr' => 'in',
+                        'value' => ['date', 'datetime'],
+                    ],
                 ],
             ],
             'hydration_mode' => 'HYDRATE_ARRAY',

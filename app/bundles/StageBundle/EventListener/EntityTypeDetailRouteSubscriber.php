@@ -22,7 +22,9 @@ final class EntityTypeDetailRouteSubscriber implements EventSubscriberInterface
         $event->addRoute('stage', new DetailRoute(
             'mautic_stage_action',
             'objectId',
-            ['objectAction' => 'edit']
+            [
+                'objectAction' => 'edit',
+            ]
         ));
     }
 }

@@ -119,7 +119,11 @@ class SugarcrmApi extends CrmApi
         if ('6' == $tokenData['version']) {
             // if not found then go ahead and make an API call to find all the records with that email
             if (isset($fields['email1']) && empty($sugarLeadRecords)) {
-                $sLeads           = $this->getLeads(['email' => $fields['email1'], 'offset' => 0, 'max_results' => 1000], 'Leads');
+                $sLeads           = $this->getLeads([
+                    'email' => $fields['email1'],
+                    'offset' => 0,
+                    'max_results' => 1000,
+                ], 'Leads');
                 $sugarLeadRecords = $sLeads['entry_list'] ?? [];
             }
             $leadFields = [];
@@ -143,10 +147,16 @@ class SugarcrmApi extends CrmApi
                     // update the converted contact if found and not the Lead
                     if (isset($sLeadRecord['contact_id']) && null != $sLeadRecord['contact_id'] && '' != $sLeadRecord['contact_id']) {
                         unset($fields['Company']); // because this record is not in the Contact object.
-                        $localParams['name_value_list'][] = ['name' => 'id', 'value' => $sLeadRecord['contact_id']];
+                        $localParams['name_value_list'][] = [
+                            'name' => 'id',
+                            'value' => $sLeadRecord['contact_id'],
+                        ];
                         $createdLeadData[]                = $this->request('set_entry', $localParams, 'POST', 'Contacts');
                     } else {
-                        $localParams['name_value_list'][] = ['name' => 'id', 'value' => $sugarLeadId];
+                        $localParams['name_value_list'][] = [
+                            'name' => 'id',
+                            'value' => $sugarLeadId,
+                        ];
                         $createdLeadData[]                = $this->request('set_entry', $localParams, 'POST', $sugarObject);
                     }
                 }
@@ -158,7 +168,11 @@ class SugarcrmApi extends CrmApi
         } else {
             // if not found then go ahead and make an API call to find all the records with that email
             if (isset($fields['email1']) && empty($sugarLeadRecords)) {
-                $sLeads           = $this->getLeads(['email' => $fields['email1'], 'offset' => 0, 'max_results' => 1000], 'Leads');
+                $sLeads           = $this->getLeads([
+                    'email' => $fields['email1'],
+                    'offset' => 0,
+                    'max_results' => 1000,
+                ], 'Leads');
                 $sugarLeadRecords = $sLeads['records'];
             }
             unset($fields['id']);
@@ -215,10 +229,12 @@ class SugarcrmApi extends CrmApi
                             $fields[$item['name']] = $item['value'];
                         }
                         if (isset($resp['ids'])) {
-                            $result = ['reference_id' => $fields['reference_id'],
+                            $result = [
+                                'reference_id' => $fields['reference_id'],
                                 'id'                  => $resp['ids'][$k],
                                 'new'                 => !isset($fields['id']),
-                                'ko'                  => false, ];
+                                'ko'                  => false,
+                            ];
                         }
                         if (isset($resp['error'])) {
                             $result['ko']    = true;
@@ -275,13 +291,17 @@ class SugarcrmApi extends CrmApi
                 foreach ($resp as $k => $leadFields) {
                     $fields = $leadFields['contents'];
                     if (200 != $leadFields['status']) {
-                        $result = ['ko' => true,
-                            'error'     => $leadFields['error'].' '.$leadFields['error_message'], ];
+                        $result = [
+                            'ko' => true,
+                            'error'     => $leadFields['error'].' '.$leadFields['error_message'],
+                        ];
                     } else {
-                        $result = ['reference_id' => $all_ids[$k]['reference_id'],
+                        $result = [
+                            'reference_id' => $all_ids[$k]['reference_id'],
                             'id'                  => $fields['id'],
                             'new'                 => !isset($all_ids[$k]['id']),
-                            'ko'                  => false, ];
+                            'ko'                  => false,
+                        ];
                         if (isset($all_ids[$k]['id']) && $fields['id'] != $all_ids[$k]['id']) {
                             $result['ko']    = true;
                             $result['error'] = 'Returned ID does not correspond to input id';
@@ -322,15 +342,36 @@ class SugarcrmApi extends CrmApi
             foreach ($activity as $sugarId => $records) {
                 foreach ($records['records'] as $record) {
                     $rec   = [];
-                    $rec[] = ['name' => 'name', 'value' => $record['name']];
-                    $rec[] = ['name' => 'description', 'value' => $record['description']];
-                    $rec[] = ['name' => 'url', 'value' => $records['leadUrl']];
-                    $rec[] = ['name' => 'date_entered', 'value' => $record['dateAdded']->format('c')];
-                    $rec[] = ['name' => 'reference_id', 'value' => $record['id'].'-'.$sugarId];
+                    $rec[] = [
+                        'name' => 'name',
+                        'value' => $record['name'],
+                    ];
+                    $rec[] = [
+                        'name' => 'description',
+                        'value' => $record['description'],
+                    ];
+                    $rec[] = [
+                        'name' => 'url',
+                        'value' => $records['leadUrl'],
+                    ];
+                    $rec[] = [
+                        'name' => 'date_entered',
+                        'value' => $record['dateAdded']->format('c'),
+                    ];
+                    $rec[] = [
+                        'name' => 'reference_id',
+                        'value' => $record['id'].'-'.$sugarId,
+                    ];
                     if ('Contacts' == $object) {
-                        $rec[] = ['name' => 'contact_id_c', 'value' => $sugarId];
+                        $rec[] = [
+                            'name' => 'contact_id_c',
+                            'value' => $sugarId,
+                        ];
                     } else {
-                        $rec[] = ['name' => 'lead_id_c', 'value' => $sugarId];
+                        $rec[] = [
+                            'name' => 'lead_id_c',
+                            'value' => $sugarId,
+                        ];
                     }
                     $set_name_value_lists[] = $rec; // Sugar 6
                     $s7_record              = [];
@@ -438,7 +479,9 @@ class SugarcrmApi extends CrmApi
                 $q = " users.id IN ('".implode("','", $query['ids'])."') ";
             }
 
-            $data   = ['filter' => 'all'];
+            $data   = [
+                'filter' => 'all',
+            ];
             $fields = ['id', 'email1'];
 
             $parameters = [
@@ -483,18 +526,32 @@ class SugarcrmApi extends CrmApi
         // TODO
 
         if (isset($query['emails'])) {
-            $filter[] = ['email_addresses.email_address' => ['$in' => $query['emails']]];
-            $filter[] = ['deleted' => '0'];
+            $filter[] = [
+                'email_addresses.email_address' => [
+                    '$in' => $query['emails'],
+                ],
+            ];
+            $filter[] = [
+                'deleted' => '0',
+            ];
         }
         if (isset($query['ids'])) {
-            $filter[] = ['id' => ['$in' => $query['ids']]];
+            $filter[] = [
+                'id' => [
+                    '$in' => $query['ids'],
+                ],
+            ];
         }
 
-        $data   = ['filter' => 'all'];
+        $data   = [
+            'filter' => 'all',
+        ];
         $fields = ['id', 'email1', 'email'];
 
         $parameters = [
-            'filter'     => [['$and' => $filter]],
+            'filter'     => [[
+                '$and' => $filter,
+            ]],
             'offset'     => 0,
             'fields'     => implode(',', $fields),
             'max_num'    => 1000,
@@ -539,7 +596,9 @@ class SugarcrmApi extends CrmApi
     public function getIdBySugarEmail($query = null): array
     {
         if (null == $query) {
-            $query = ['type' => 'BYEMAIL'];
+            $query = [
+                'type' => 'BYEMAIL',
+            ];
         } else {
             $query['type'] = 'BYEMAIL';
         }
@@ -645,28 +704,52 @@ class SugarcrmApi extends CrmApi
                 $qry    = [];
                 $filter = [];
                 if (isset($query['start'])) {
-                    $filter[] = ['date_modified' => ['$gte' => $query['start']]];
+                    $filter[] = [
+                        'date_modified' => [
+                            '$gte' => $query['start'],
+                        ],
+                    ];
                     // $qry[] = ' '.strtolower($object).".date_modified >= '".$query['start']."' ";
                 }
                 if (isset($query['end'])) {
-                    $filter[] = ['date_modified' => ['$lte' => $query['end']]];
+                    $filter[] = [
+                        'date_modified' => [
+                            '$lte' => $query['end'],
+                        ],
+                    ];
                     // $qry[] = ' '.strtolower($object).".date_modified <= '".$query['end']."' ";
                 }
                 if (isset($query['email'])) {
-                    $filter[] = ['email' => ['$equals' => $query['email']]];
+                    $filter[] = [
+                        'email' => [
+                            '$equals' => $query['email'],
+                        ],
+                    ];
                     // $qry[]    = " leads.id IN (SELECT bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (eabr.email_address_id = ea.id) WHERE bean_module = 'Leads' AND ea.email_address = '".$query['email']."' AND eabr.deleted=0) ";
                     $fields[] = 'contact_id';
                 }
                 if (isset($query['checkemail'])) {
-                    $filter[] = ['email' => ['$in' => $query['checkemail']]];
-                    $filter[] = ['deleted' => '0'];
+                    $filter[] = [
+                        'email' => [
+                            '$in' => $query['checkemail'],
+                        ],
+                    ];
+                    $filter[] = [
+                        'deleted' => '0',
+                    ];
                     $fields   = []; // Do not need previous fields
                     $fields[] = 'contact_id';
                     $fields[] = 'deleted';
                 }
                 if (isset($query['checkemail_contacts'])) {
-                    $filter[] = ['email' => ['$in' => $query['checkemail_contacts']]];
-                    $filter[] = ['deleted' => '0'];
+                    $filter[] = [
+                        'email' => [
+                            '$in' => $query['checkemail_contacts'],
+                        ],
+                    ];
+                    $filter[] = [
+                        'deleted' => '0',
+                    ];
                     $fields   = []; // Do not need previous fields
                     $fields[] = 'deleted';
                 }
@@ -682,7 +765,9 @@ class SugarcrmApi extends CrmApi
                 // $fields_arg  = implode(',', $fields);
                 $parameters = [
                     //                     'order_by'                 => '',
-                    'filter'  => [['$and' => $filter]],
+                    'filter'  => [[
+                        '$and' => $filter,
+                    ]],
                     'offset'  => $query['offset'],
                     'fields'  => implode(',', $fields),
                     'max_num' => $query['max_results'],

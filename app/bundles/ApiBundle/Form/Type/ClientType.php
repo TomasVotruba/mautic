@@ -58,10 +58,14 @@ class ClientType extends AbstractType
                 [
                     'mapped'     => false,
                     'label'      => 'mautic.api.client.form.auth_protocol',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'    => 'form-control',
-                        'onchange' => 'Mautic.refreshApiClientForm(\''.$this->router->generate('mautic_client_action', ['objectAction' => 'new']).'\', this)',
+                        'onchange' => 'Mautic.refreshApiClientForm(\''.$this->router->generate('mautic_client_action', [
+                            'objectAction' => 'new',
+                        ]).'\', this)',
                     ],
                     'choices' => [
                         'OAuth 2'    => 'oauth2',
@@ -78,8 +82,12 @@ class ClientType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.core.name',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
             ]
         );
 
@@ -90,7 +98,9 @@ class ClientType extends AbstractType
                 TextType::class,
                 [
                     'label'      => 'mautic.api.client.redirecturis',
-                    'label_attr' => ['class' => 'control-label'],
+                    'label_attr' => [
+                        'class' => 'control-label',
+                    ],
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.api.client.form.help.requesturis',
@@ -105,8 +115,12 @@ class ClientType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.api.client.form.clientid',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'disabled'   => true,
                 'required'   => false,
                 'mapped'     => false,
@@ -119,8 +133,12 @@ class ClientType extends AbstractType
             TextType::class,
             [
                 'label'      => 'mautic.api.client.form.clientsecret',
-                'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
                 'disabled'   => true,
                 'required'   => false,
             ]
@@ -137,7 +155,9 @@ class ClientType extends AbstractType
                         $urlConstraint          = new OAuthCallback();
                         $urlConstraint->message = $this->translator->trans(
                             'mautic.api.client.redirecturl.invalid',
-                            ['%url%' => $uri],
+                            [
+                                '%url%' => $uri,
+                            ],
                             'validators'
                         );
 

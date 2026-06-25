@@ -142,18 +142,48 @@ $container->loadFromExtension(
         'firewalls'      => $firewalls,
         'access_control' => [
             // First there should be URIs for login or definitely public ones.
-            ['path' => '^/installer', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/(_(profiler|wdt)|css|images|js)/', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/s/login$', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/s/sso_login', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/s/saml/login$', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/saml/discovery$', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
-            ['path' => '^/oauth/v2/authorize', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
+            [
+                'path' => '^/installer',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/(_(profiler|wdt)|css|images|js)/',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/s/login$',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/s/sso_login',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/s/saml/login$',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/saml/discovery$',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
+            [
+                'path' => '^/oauth/v2/authorize',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
             // Second should be URIs that are defined as non-public.
-            ['path' => '^/api', 'roles' => AuthenticatedVoter::IS_AUTHENTICATED_FULLY],
-            ['path' => '^/(s/|elfinder|efconnect)', 'roles' => AuthenticatedVoter::IS_AUTHENTICATED],
+            [
+                'path' => '^/api',
+                'roles' => AuthenticatedVoter::IS_AUTHENTICATED_FULLY,
+            ],
+            [
+                'path' => '^/(s/|elfinder|efconnect)',
+                'roles' => AuthenticatedVoter::IS_AUTHENTICATED,
+            ],
             // Last the URIs that are none of the above.
-            ['path' => '^/', 'roles' => AuthenticatedVoter::PUBLIC_ACCESS],
+            [
+                'path' => '^/',
+                'roles' => AuthenticatedVoter::PUBLIC_ACCESS,
+            ],
         ],
     ]
 );

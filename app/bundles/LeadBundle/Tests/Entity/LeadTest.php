@@ -289,14 +289,19 @@ class LeadTest extends TestCase
         /** @var mixed[] $changes */
         $changes = $contact->getChanges();
 
-        $this->assertSame(['1.2.3.4' => $ip1], $changes['ipAddressList']);
+        $this->assertSame([
+            '1.2.3.4' => $ip1,
+        ], $changes['ipAddressList']);
 
         $contact->addIpAddress($ip2);
 
         /** @var mixed[] $changes */
         $changes = $contact->getChanges();
 
-        $this->assertSame(['1.2.3.4' => $ip1, '1.2.3.5' => $ip2], $changes['ipAddressList']);
+        $this->assertSame([
+            '1.2.3.4' => $ip1,
+            '1.2.3.5' => $ip2,
+        ], $changes['ipAddressList']);
     }
 
     public function testGetLastEventLogByAction(): void

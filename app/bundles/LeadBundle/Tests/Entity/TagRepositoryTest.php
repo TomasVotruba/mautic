@@ -21,7 +21,9 @@ class TagRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $mockRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['tag' => 'sometag'])
+            ->with([
+                'tag' => 'sometag',
+            ])
             ->willReturn($fetchedEntity);
 
         $this->assertSame($fetchedEntity, $mockRepository->getTagByNameOrCreateNewOne('sometag'));
@@ -36,7 +38,9 @@ class TagRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $mockRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['tag' => 'sometag'])
+            ->with([
+                'tag' => 'sometag',
+            ])
             ->willReturn(null);
 
         $newEntity = $mockRepository->getTagByNameOrCreateNewOne('sometag');
@@ -56,7 +60,9 @@ class TagRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $mockRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['tag' => 'hello" world'])
+            ->with([
+                'tag' => 'hello" world',
+            ])
             ->willReturn($fetchedEntity);
 
         $this->assertSame($fetchedEntity, $mockRepository->getTagByNameOrCreateNewOne('hello" world'));

@@ -26,6 +26,8 @@ final class EntityTypeDetailRouteEvent extends Event
         }
 
         // Default lives here (single place), not in the service or Twig.
-        return new DetailRoute('mautic_'.$entityType.'_action', 'objectId', ['objectAction' => 'view']);
+        return new DetailRoute('mautic_'.$entityType.'_action', 'objectId', [
+            'objectAction' => 'view',
+        ]);
     }
 }

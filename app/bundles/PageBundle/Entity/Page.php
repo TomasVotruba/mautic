@@ -332,7 +332,9 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
                         $page->getRedirectUrl(),
                         [
                             new Assert\Url(),
-                            new NotBlank(['message' => 'mautic.core.value.required']),
+                            new NotBlank([
+                                'message' => 'mautic.core.value.required',
+                            ]),
                         ],
                     );
 

@@ -34,7 +34,9 @@ final class UserApiTest extends MauticMysqlTestCase
     public function testPasswordHashNotExposedInGet(): void
     {
         // Use the default admin user that exists in the database
-        $adminUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $adminUser = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'admin',
+        ]);
         $this->assertNotNull($adminUser, 'Admin user should exist');
 
         $userId = $adminUser->getId();

@@ -23,7 +23,10 @@ class LeadDetailFunctionalTest extends MauticMysqlTestCase
         $fieldRepository = $this->em->getRepository(LeadField::class);
 
         /** @var LeadField[] $fields */
-        $fields = $fieldRepository->findBy(['object' => 'lead', 'group' => 'core'], [
+        $fields = $fieldRepository->findBy([
+            'object' => 'lead',
+            'group' => 'core',
+        ], [
             'label' => 'desc',
             'id'    => 'desc',
         ]);

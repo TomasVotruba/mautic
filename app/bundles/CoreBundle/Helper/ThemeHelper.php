@@ -332,7 +332,9 @@ class ThemeHelper implements ThemeHelperInterface
         $themeName = basename($zipFile, '.zip');
 
         if (in_array($themeName, $this->getDefaultThemes())) {
-            throw new \Exception($this->translator->trans('mautic.core.theme.default.cannot.overwrite', ['%name%' => $themeName], 'validators'));
+            throw new \Exception($this->translator->trans('mautic.core.theme.default.cannot.overwrite', [
+                '%name%' => $themeName,
+            ], 'validators'));
         }
 
         $themePath = $this->pathsHelper->getSystemPath('themes', true).'/'.$themeName;
@@ -384,7 +386,9 @@ class ThemeHelper implements ThemeHelperInterface
         }
 
         if ($missingFiles = array_diff($requiredFiles, $foundRequiredFiles)) {
-            throw new FileNotFoundException($this->translator->trans('mautic.core.theme.missing.files', ['%files%' => implode(', ', $missingFiles)], 'validators'));
+            throw new FileNotFoundException($this->translator->trans('mautic.core.theme.missing.files', [
+                '%files%' => implode(', ', $missingFiles),
+            ], 'validators'));
         }
 
         // Extract the archive file now
@@ -648,7 +652,9 @@ class ThemeHelper implements ThemeHelperInterface
             return [];
         }
 
-        return ['hidden' => in_array($themeName, $this->getHiddenThemes(), true)];
+        return [
+            'hidden' => in_array($themeName, $this->getHiddenThemes(), true),
+        ];
     }
 
     /**

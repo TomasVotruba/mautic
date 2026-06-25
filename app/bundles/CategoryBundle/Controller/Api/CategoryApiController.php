@@ -72,6 +72,8 @@ class CategoryApiController extends CommonApiController
      */
     protected function getEntityFormOptions(): array
     {
-        return ['show_bundle_select' => true];
+        return [
+            'show_bundle_select' => true,
+        ];
     }
 }

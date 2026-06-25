@@ -95,7 +95,9 @@ class ListLeadRepository extends CommonRepository
         do {
             $deletedRows = $conn->executeStatement(
                 "DELETE FROM {$table_name} WHERE leadlist_id = :listId LIMIT ".self::DELETE_BATCH_SIZE,
-                ['listId' => $listId]
+                [
+                    'listId' => $listId,
+                ]
             );
         } while ($deletedRows > 0);
     }

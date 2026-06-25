@@ -14,8 +14,12 @@ class LoadAssetDataTest extends MauticMysqlTestCase
     {
         $this->loadFixtures([LoadAssetData::class]);
         $asset = $this->em->getRepository(Asset::class)->findOneBy(
-            ['title' => '@TOCHANGE: Asset1 Title'],
-            ['id' => 'DESC']
+            [
+                'title' => '@TOCHANGE: Asset1 Title',
+            ],
+            [
+                'id' => 'DESC',
+            ]
         );
         self::assertInstanceOf(Asset::class, $asset);
         self::assertEquals('asset1', $asset->getAlias());

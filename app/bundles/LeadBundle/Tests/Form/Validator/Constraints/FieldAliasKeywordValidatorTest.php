@@ -59,13 +59,17 @@ class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
                     'lead' => [
                         'date_added' => [
                             'label'      => 'mautic.core.date.added',
-                            'properties' => ['type' => 'date'],
+                            'properties' => [
+                                'type' => 'date',
+                            ],
                             'operators'  => 'default',
                             'object'     => 'lead',
                         ],
                         'date_identified' => [
                             'label'      => 'mautic.lead.list.filter.date_identified',
-                            'properties' => ['type' => 'date'],
+                            'properties' => [
+                                'type' => 'date',
+                            ],
                             'operators'  => 'default',
                             'object'     => 'lead',
                         ],

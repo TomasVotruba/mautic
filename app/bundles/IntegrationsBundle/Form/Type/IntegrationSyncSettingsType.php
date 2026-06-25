@@ -38,7 +38,9 @@ class IntegrationSyncSettingsType extends AbstractType
                 'expanded'    => true,
                 'multiple'    => true,
                 'label'       => 'mautic.integration.sync_objects',
-                'label_attr'  => ['class' => 'control-label'],
+                'label_attr'  => [
+                    'class' => 'control-label',
+                ],
                 'placeholder' => [],
                 'required'    => false,
             ]

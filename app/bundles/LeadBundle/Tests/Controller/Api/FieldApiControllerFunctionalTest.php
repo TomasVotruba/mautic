@@ -37,8 +37,14 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
             'isUniqueIdentifier'  => false,
             'properties'          => [
                 'list' => [
-                    ['label' => 'label1', 'value' => 'value1'],
-                    ['label' => 'label2', 'value' => 'value2'],
+                    [
+                        'label' => 'label1',
+                        'value' => 'value1',
+                    ],
+                    [
+                        'label' => 'label2',
+                        'value' => 'value2',
+                    ],
                 ],
             ],
         ];
@@ -71,7 +77,9 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         $id      = $this->assertCreateResponse($payload, Response::HTTP_ACCEPTED);
 
         // Test that the command will create the field
-        $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', ['--id' => $id]);
+        $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', [
+            '--id' => $id,
+        ]);
 
         $this->assertEquals(0, $commandTester->getStatusCode());
 
@@ -533,7 +541,9 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
             $id = $this->assertCreateResponse($payload, Response::HTTP_CREATED);
         }
         // Execute the command to create the field
-        $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', ['--id' => $id]);
+        $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', [
+            '--id' => $id,
+        ]);
 
         $this->assertEquals(0, $commandTester->getStatusCode());
 
@@ -548,7 +558,9 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
                 'field'      => $alias,
                 'object'     => 'lead',
                 'type'       => 'text',
-                'properties' => ['filter' => 'John'],
+                'properties' => [
+                    'filter' => 'John',
+                ],
                 'display'    => null,
                 'operator'   => '=',
             ],

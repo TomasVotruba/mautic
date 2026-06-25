@@ -24,7 +24,9 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', [
+            '-i' => $segmentId,
+        ]);
 
         // Run segment count cache command.
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
@@ -82,7 +84,9 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
                 'object'     => 'lead',
                 'type'       => 'text',
                 'operator'   => 'like',
-                'properties' => ['filter' => 'Contact'],
+                'properties' => [
+                    'filter' => 'Contact',
+                ],
             ],
         ];
         $segment->setName('Segment A')

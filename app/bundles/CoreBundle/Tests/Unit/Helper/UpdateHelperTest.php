@@ -313,7 +313,9 @@ class UpdateHelperTest extends TestCase
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::CONNECT_TIMEOUT, $options);
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::HEADERS, $options);
                         // We need to send an Accept header to the stats server or we'll get 500 errors
-                        $this->assertEquals(['Accept' => '*/*'], $options[\GuzzleHttp\RequestOptions::HEADERS]);
+                        $this->assertEquals([
+                            'Accept' => '*/*',
+                        ], $options[\GuzzleHttp\RequestOptions::HEADERS]);
 
                         return true;
                     }

@@ -84,7 +84,9 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         // At this point there should be 3 events waiting to be processed.
         Assert::assertSame(3, $this->getQueueCountByWebhookId($webhook->getId()));
 
-        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, ['--webhook-id' => $webhook->getId()]);
+        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, [
+            '--webhook-id' => $webhook->getId(),
+        ]);
 
         // The queue should be processed now.
         Assert::assertSame(0, $this->getQueueCountByWebhookId($webhook->getId()));
@@ -138,7 +140,9 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->createContacts();
 
-        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, ['--webhook-id' => $webhook->getId()]);
+        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, [
+            '--webhook-id' => $webhook->getId(),
+        ]);
 
         Assert::assertSame(3, $this->getQueueCountByWebhookId($webhook->getId()));
 
@@ -155,7 +159,9 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         $webhook->setUnHealthySince((new \DateTimeImmutable())->modify('-3601 seconds'));
         $webhook->setMarkedUnhealthyAt((new \DateTimeImmutable())->modify('-3601 seconds'));
 
-        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, ['--webhook-id' => $webhook->getId()]);
+        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, [
+            '--webhook-id' => $webhook->getId(),
+        ]);
 
         Assert::assertCount(1, $this->notificationRepository->getNotifications($expectedUserId));
         Assert::assertSame(3, $this->getQueueCountByWebhookId($webhook->getId()));

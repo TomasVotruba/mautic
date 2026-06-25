@@ -44,7 +44,9 @@ class ScheduleController extends CommonAjaxController
         $security = $this->security;
 
         if (empty($report)) {
-            $this->addFlashMessage('mautic.report.notfound', ['%id%' => $reportId], FlashBag::LEVEL_ERROR, 'messages');
+            $this->addFlashMessage('mautic.report.notfound', [
+                '%id%' => $reportId,
+            ], FlashBag::LEVEL_ERROR, 'messages');
 
             return $this->flushFlash();
         }
@@ -56,7 +58,9 @@ class ScheduleController extends CommonAjaxController
         }
 
         if ($report->isScheduled()) {
-            $this->addFlashMessage('mautic.report.scheduled.already', ['%id%' => $reportId], FlashBag::LEVEL_ERROR);
+            $this->addFlashMessage('mautic.report.scheduled.already', [
+                '%id%' => $reportId,
+            ], FlashBag::LEVEL_ERROR);
 
             return $this->flushFlash();
         }
@@ -66,7 +70,10 @@ class ScheduleController extends CommonAjaxController
 
         $this->addFlashMessage(
             'mautic.report.scheduled.to.now',
-            ['%id%' => $reportId, '%email%' => $this->user->getEmail()]
+            [
+                '%id%' => $reportId,
+                '%email%' => $this->user->getEmail(),
+            ]
         );
 
         return $this->flushFlash();
@@ -74,6 +81,8 @@ class ScheduleController extends CommonAjaxController
 
     private function flushFlash(): JsonResponse
     {
-        return new JsonResponse(['flashes' => $this->getFlashContent()]);
+        return new JsonResponse([
+            'flashes' => $this->getFlashContent(),
+        ]);
     }
 }

@@ -79,7 +79,9 @@ class DynamicContentTypeTest extends TestCase
                     $this->assertSame(DynamicContentListType::class, $parameters[1]);
                     $this->assertSame([
                         'label'       => 'mautic.core.form.translation_parent',
-                        'label_attr'  => ['class' => 'control-label'],
+                        'label_attr'  => [
+                            'class' => 'control-label',
+                        ],
                         'attr'        => [
                             'class'   => 'form-control',
                             'tooltip' => 'mautic.core.form.translation_parent.help',
@@ -88,7 +90,9 @@ class DynamicContentTypeTest extends TestCase
                         'multiple'    => false,
                         'placeholder' => 'mautic.core.form.translation_parent.empty',
                         'top_level'   => 'translation',
-                        'ignore_ids'  => [0 => 0],
+                        'ignore_ids'  => [
+                            0 => 0,
+                        ],
                     ], $parameters[2]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
@@ -177,7 +181,9 @@ class DynamicContentTypeTest extends TestCase
             'lead' => [
                 'email' => [
                     'label'      => 'Email',
-                    'properties' => ['type' => 'email'],
+                    'properties' => [
+                        'type' => 'email',
+                    ],
                     'object'     => 'lead',
                     'operators'  => [
                         'equals'      => '=',
@@ -195,7 +201,9 @@ class DynamicContentTypeTest extends TestCase
                 ],
                 'firstname' => [
                     'label'      => 'First Name',
-                    'properties' => ['type' => 'text'],
+                    'properties' => [
+                        'type' => 'text',
+                    ],
                     'object'     => 'lead',
                     'operators'  => [
                         'equals'      => '=',
@@ -213,7 +221,9 @@ class DynamicContentTypeTest extends TestCase
                 ],
                 'lastname'  => [
                     'label'      => 'Last Name',
-                    'properties' => ['type' => 'text'],
+                    'properties' => [
+                        'type' => 'text',
+                    ],
                     'object'     => 'lead',
                     'operators'  => [
                         'equals'      => '=',

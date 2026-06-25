@@ -30,11 +30,16 @@ class AjaxController extends CommonAjaxController
             $formType = $monitoringModel->getFormByType($type);
 
             // get the network type form
-            $form = $formFactory->create($formType, [], ['label' => false, 'csrf_protection' => false]);
+            $form = $formFactory->create($formType, [], [
+                'label' => false,
+                'csrf_protection' => false,
+            ]);
 
             $html = $this->renderView(
                 '@MauticSocial/FormTheme/'.$type.'_widget.html.twig',
-                ['form' => $form->createView()]
+                [
+                    'form' => $form->createView(),
+                ]
             );
 
             $html = str_replace(

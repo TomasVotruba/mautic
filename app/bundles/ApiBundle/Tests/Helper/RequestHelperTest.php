@@ -21,14 +21,18 @@ class RequestHelperTest extends TestCase
 
     public function testIsBasicAuthWithValidBasicAuth(): void
     {
-        $this->request->headers = new HeaderBag(['Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=']);
+        $this->request->headers = new HeaderBag([
+            'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=',
+        ]);
 
         $this->assertTrue(RequestHelper::hasBasicAuth($this->request));
     }
 
     public function testIsBasicAuthWithInvalidBasicAuth(): void
     {
-        $this->request->headers = new HeaderBag(['Authorization' => 'Invalid Basic Auth value']);
+        $this->request->headers = new HeaderBag([
+            'Authorization' => 'Invalid Basic Auth value',
+        ]);
 
         $this->assertFalse(RequestHelper::hasBasicAuth($this->request));
     }

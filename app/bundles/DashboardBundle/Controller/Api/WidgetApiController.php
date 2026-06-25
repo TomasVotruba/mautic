@@ -58,7 +58,10 @@ class WidgetApiController extends CommonApiController
         $event      = new WidgetTypeListEvent();
         $event->setTranslator($this->translator);
         $dispatcher->dispatch($event, DashboardEvents::DASHBOARD_ON_MODULE_LIST_GENERATE);
-        $view = $this->view(['success' => 1, 'types' => $event->getTypes()], Response::HTTP_OK);
+        $view = $this->view([
+            'success' => 1,
+            'types' => $event->getTypes(),
+        ], Response::HTTP_OK);
 
         return $this->handleView($view);
     }
@@ -79,7 +82,9 @@ class WidgetApiController extends CommonApiController
         $dataFormat = InputHelper::clean($request->get('dataFormat'));
         $unit       = InputHelper::clean($request->get('timeUnit', 'Y'));
         $dataset    = InputHelper::clean($request->query->all()['dataset'] ?? $request->request->all()['dataset'] ?? []);
-        $response   = ['success' => 0];
+        $response   = [
+            'success' => 0,
+        ];
 
         try {
             DateTimeHelper::validateMysqlDateTimeUnit($unit);

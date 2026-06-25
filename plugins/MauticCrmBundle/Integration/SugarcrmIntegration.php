@@ -155,7 +155,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
 
     public function getAuthLoginUrl(): string
     {
-        return $this->router->generate('mautic_integration_auth_callback', ['integration' => $this->getName()]);
+        return $this->router->generate('mautic_integration_auth_callback', [
+            'integration' => $this->getName(),
+        ]);
     }
 
     /**
@@ -517,7 +519,10 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                                 $sugarLeadData[$sugarId]['leadId']  = $ids['internal_entity_id'];
                                 $sugarLeadData[$sugarId]['leadUrl'] = $this->router->generate(
                                     'mautic_plugin_timeline_view',
-                                    ['integration' => 'Sugarcrm', 'leadId' => $leadId],
+                                    [
+                                        'integration' => 'Sugarcrm',
+                                        'leadId' => $leadId,
+                                    ],
                                     UrlGeneratorInterface::ABSOLUTE_URL
                                 );
                             }
@@ -745,7 +750,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
             }
             if (!empty($assignedUserIds)) {
                 $assignedUserIds            = array_unique($assignedUserIds);
-                $onwerEmailByAssignedUserId = $this->getApiHelper()->getEmailBySugarUserId(['ids' => $assignedUserIds]);
+                $onwerEmailByAssignedUserId = $this->getApiHelper()->getEmailBySugarUserId([
+                    'ids' => $assignedUserIds,
+                ]);
             }
 
             // Get all leads emails
@@ -766,7 +773,11 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                 }
             }
             if (!empty($checkEmailsInSugar)) {
-                $sugarLeads = $this->getApiHelper()->getLeads(['checkemail_contacts' => $checkEmailsInSugar, 'offset' => 0, 'max_results' => 1000], 'Contacts');
+                $sugarLeads = $this->getApiHelper()->getLeads([
+                    'checkemail_contacts' => $checkEmailsInSugar,
+                    'offset' => 0,
+                    'max_results' => 1000,
+                ], 'Contacts');
                 if (isset($sugarLeads[$RECORDS_LIST_NAME])) {
                     foreach ($sugarLeads[$RECORDS_LIST_NAME] as $record) {
                         $sugarLeadRecord = [];
@@ -946,7 +957,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.sugarcrm.form.updateOwner',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                     'attr'              => [
@@ -965,7 +978,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.sugarcrm.form.updateDnc',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                     'attr'              => [
@@ -984,7 +999,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.integrations.form.blanks',
-                    'label_attr'        => ['class' => 'control-label'],
+                    'label_attr'        => [
+                        'class' => 'control-label',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -1002,7 +1019,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                     'expanded'          => true,
                     'multiple'          => true,
                     'label'             => 'mautic.sugarcrm.form.objects_to_pull_from',
-                    'label_attr'        => ['class' => ''],
+                    'label_attr'        => [
+                        'class' => '',
+                    ],
                     'placeholder'       => false,
                     'required'          => false,
                 ]
@@ -1080,7 +1099,10 @@ class SugarcrmIntegration extends CrmAbstractIntegration
         $fieldsToUpdateInLeadsSugar = $this->cleanSugarData($config, $fieldsToUpdateInSugar, $object);
         $leadFields                 = array_intersect_key($leadSugarFieldsToCreate, $fieldsToUpdateInLeadsSugar);
 
-        $mappedData[$object] = $this->populateLeadData($lead, ['leadFields' => $leadFields, 'object' => $object]);
+        $mappedData[$object] = $this->populateLeadData($lead, [
+            'leadFields' => $leadFields,
+            'object' => $object,
+        ]);
 
         $this->amendLeadDataBeforePush($mappedData[$object]);
 
@@ -1103,7 +1125,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
         try {
             if ($this->isAuthorized()) {
                 if (!is_null($lead->getOwner())) {
-                    $sugarOwnerId = $this->getApiHelper()->getIdBySugarEmail(['emails' => [$lead->getOwner()->getEmail()]]);
+                    $sugarOwnerId = $this->getApiHelper()->getIdBySugarEmail([
+                        'emails' => [$lead->getOwner()->getEmail()],
+                    ]);
                     if (!empty($sugarOwnerId)) {
                         $mappedData[$object]['assigned_user_id'] = array_values($sugarOwnerId)[0];
                     }
@@ -1210,7 +1234,11 @@ class SugarcrmIntegration extends CrmAbstractIntegration
             $fieldsToUpdateInContactsSugar = $this->cleanSugarData($config, $fieldsToUpdateInSugar, 'Contacts');
             $contactSugarFields            = array_intersect_key($contactSugarFields, $fieldsToUpdateInContactsSugar);
 
-            $availableFields = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
+            $availableFields = $this->getAvailableLeadFields([
+                'feature_settings' => [
+                    'objects' => ['Leads', 'Contacts'],
+                ],
+            ]);
 
             // update lead/contact records
             $leadsToUpdate = $integrationEntityRepo->findLeadsToUpdate($this->getName(), 'lead', $fields, $limit, $fromDate, $toDate, ['Contacts', 'Leads']);
@@ -1268,7 +1296,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                 if (isset($lead['email'])) {
                     $lead['owner_email'] = $this->getOwnerEmail($lead);
                     if ($lead['owner_email']) {
-                        $ownerAssignedUserIdByEmail = $this->getApiHelper()->getIdBySugarEmail(['emails' => [$lead['owner_email']]]);
+                        $ownerAssignedUserIdByEmail = $this->getApiHelper()->getIdBySugarEmail([
+                            'emails' => [$lead['owner_email']],
+                        ]);
                     }
                     $this->buildCompositeBody(
                         $mauticData,
@@ -1312,11 +1342,17 @@ class SugarcrmIntegration extends CrmAbstractIntegration
             switch ($dncEntry->getReason()) {
                 case 1:
                 case 3:
-                    $body[] = ['name' => 'email_opt_out', 'value' => 1];
+                    $body[] = [
+                        'name' => 'email_opt_out',
+                        'value' => 1,
+                    ];
                     unset($sugarDncKeys['email_opt_out']);
                     break;
                 case 2:
-                    $body[] = ['name' => 'invalid_email', 'value' => 1];
+                    $body[] = [
+                        'name' => 'invalid_email',
+                        'value' => 1,
+                    ];
                     unset($sugarDncKeys['invalid_email']);
                     break;
             }
@@ -1325,7 +1361,10 @@ class SugarcrmIntegration extends CrmAbstractIntegration
         // uncheck
         // If DNC doesn't exist set to 1
         foreach ($sugarDncKeys as $sugarDncKey) {
-            $body[] = ['name' => $sugarDncKey, 'value' => 0];
+            $body[] = [
+                'name' => $sugarDncKey,
+                'value' => 0,
+            ];
         }
     }
 
@@ -1375,7 +1414,11 @@ class SugarcrmIntegration extends CrmAbstractIntegration
         $config     = $this->mergeConfigToFeatureSettings([]);
         $queryParam = ('Leads' == $object) ? 'checkemail' : 'checkemail_contacts';
 
-        $sugarLead         = $this->getApiHelper()->getLeads([$queryParam => array_keys($checkEmailsInSugar), 'offset' => 0, 'max_results' => 1000], $object);
+        $sugarLead         = $this->getApiHelper()->getLeads([
+            $queryParam => array_keys($checkEmailsInSugar),
+            'offset' => 0,
+            'max_results' => 1000,
+        ], $object);
         $deletedSugarLeads = $sugarLeadRecords = [];
 
         if (isset($sugarLead['entry_list'])) {
@@ -1427,7 +1470,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                             if ($lead['owner_email']) {
                                 $leadOwnerEmails[] = $lead['owner_email'];
                             }
-                            $ownerAssignedUserIdByEmail = $this->getApiHelper()->getIdBySugarEmail(['emails' => array_unique($leadOwnerEmails)]);
+                            $ownerAssignedUserIdByEmail = $this->getApiHelper()->getIdBySugarEmail([
+                                'emails' => array_unique($leadOwnerEmails),
+                            ]);
                             if (empty($sugarLeadRecord['deleted']) || 0 == $sugarLeadRecord['deleted']) {
                                 $sugarFieldMappings = $this->prepareFieldsForPush($availableFields);
 
@@ -1506,23 +1551,38 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                     } else {
                         $value = $lead[$mauticField];
                     }
-                    $body[] = ['name' => $sugarField, 'value' =>  $value];
+                    $body[] = [
+                        'name' => $sugarField,
+                        'value' =>  $value,
+                    ];
                 } elseif ($required) {
                     $value  = $this->translator->trans('mautic.integration.form.lead.unknown');
-                    $body[] = ['name' => $sugarField, 'value' => $value];
+                    $body[] = [
+                        'name' => $sugarField,
+                        'value' => $value,
+                    ];
                 }
             }
 
             if (!empty($body)) {
                 $id = $lead['internal_entity_id'].'-'.$object.(!empty($lead['id']) ? '-'.$lead['id'] : '');
 
-                $body[] = ['name' => 'reference_id', 'value' => $id];
+                $body[] = [
+                    'name' => 'reference_id',
+                    'value' => $id,
+                ];
 
                 if ($objectId) {
-                    $body[] = ['name' => 'id', 'value' => $objectId];
+                    $body[] = [
+                        'name' => 'id',
+                        'value' => $objectId,
+                    ];
                 }
                 if (isset($onwerAssignedUserIdByEmail) && isset($lead['owner_email']) && isset($onwerAssignedUserIdByEmail[$lead['owner_email']])) {
-                    $body[] = ['name' => 'assigned_user_id', 'value' => $onwerAssignedUserIdByEmail[$lead['owner_email']]];
+                    $body[] = [
+                        'name' => 'assigned_user_id',
+                        'value' => $onwerAssignedUserIdByEmail[$lead['owner_email']],
+                    ];
                 }
 
                 // pushd DNC to Sugar CRM
@@ -1570,7 +1630,9 @@ class SugarcrmIntegration extends CrmAbstractIntegration
                         $integrationEntity->setIntegration($this->getName());
                         $integrationEntity->setIntegrationEntity($object);
                         $integrationEntity->setInternalEntity('lead-error');
-                        $integrationEntity->setInternal(['error' => $item['error']]);
+                        $integrationEntity->setInternal([
+                            'error' => $item['error'],
+                        ]);
                         $integrationEntity->setInternalEntityId($contactId);
 
                         $persistEntities[] = $integrationEntity;

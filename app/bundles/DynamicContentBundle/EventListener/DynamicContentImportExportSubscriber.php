@@ -82,12 +82,22 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
         }
 
         $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::NEW    => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
+            EntityImportEvent::UPDATE => [
+                'names' => [],
+                'ids' => [],
+                'count' => 0,
+            ],
         ];
 
         foreach ($event->getEntityData() as $element) {
-            $object = $this->entityManager->getRepository(DynamicContent::class)->findOneBy(['uuid' => $element['uuid']]);
+            $object = $this->entityManager->getRepository(DynamicContent::class)->findOneBy([
+                'uuid' => $element['uuid'],
+            ]);
             $isNew  = !$object;
 
             $object ??= new DynamicContent();
@@ -95,7 +105,9 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
                 $element,
                 DynamicContent::class,
                 null,
-                ['object_to_populate' => $object]
+                [
+                    'object_to_populate' => $object,
+                ]
             );
 
             $this->dynamicContentModel->saveEntity($object);
@@ -112,7 +124,9 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
 
         foreach ($stats as $status => $info) {
             if ($info['count'] > 0) {
-                $event->setStatus($status, [DynamicContent::ENTITY_NAME => $info]);
+                $event->setStatus($status, [
+                    DynamicContent::ENTITY_NAME => $info,
+                ]);
             }
         }
     }
@@ -133,7 +147,9 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
 
             if ($entity) {
                 $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => DynamicContent::class]);
+                $this->logAction('undo_import', $id, [
+                    'deletedEntity' => DynamicContent::class,
+                ]);
             }
         }
 

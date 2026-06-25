@@ -53,7 +53,11 @@ class PullTransifexCommandFunctionalTest extends MauticMysqlTestCase
             new Response(SymfonyResponse::HTTP_OK, [], $someTranslation),
         );
 
-        $commandTester = $this->testSymfonyCommand(PullTransifexCommand::NAME, ['--bundle' => 'WebhookBundle', '--language' => 'cs', '--path' => realpath(self::FAKE_TRANSLATION_DIR)]);
+        $commandTester = $this->testSymfonyCommand(PullTransifexCommand::NAME, [
+            '--bundle' => 'WebhookBundle',
+            '--language' => 'cs',
+            '--path' => realpath(self::FAKE_TRANSLATION_DIR),
+        ]);
 
         Assert::assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
         Assert::assertTrue($this->filesystem->exists(self::FAKE_TRANSLATION_DIR.'/cs'));

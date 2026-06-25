@@ -48,7 +48,9 @@ class EmailSubscriber implements EventSubscriberInterface
 
         $this->existingHtml = $email->getCustomHtml() ?? '';
 
-        if ($grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy(['email' => $email])) {
+        if ($grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy([
+            'email' => $email,
+        ])) {
             $this->existingMjml = $grapesJsBuilder->getCustomMjml();
         }
     }
@@ -75,7 +77,9 @@ class EmailSubscriber implements EventSubscriberInterface
         }
 
         $email           = $event->getEmail();
-        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy(['email' => $email]);
+        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
 
         if ($grapesJsBuilder) {
             $this->grapesJsBuilderModel->getRepository()->deleteEntity($grapesJsBuilder);
@@ -89,7 +93,9 @@ class EmailSubscriber implements EventSubscriberInterface
         }
 
         $email           = $event->getCurrentEmail();
-        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy(['email' => $email]);
+        $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
 
         if ($event->isSaveAsDraft()) {
             // Set draft MJML and restore previous version when saving a draft

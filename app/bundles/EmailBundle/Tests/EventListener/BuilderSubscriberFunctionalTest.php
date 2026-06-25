@@ -121,7 +121,10 @@ class BuilderSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => $pending],
+            [
+                'id' => $email->getId(),
+                'pending' => $pending,
+            ],
         );
 
         $response = $this->client->getResponse();

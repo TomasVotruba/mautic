@@ -60,7 +60,9 @@ class CustomFieldColumn
             }
         } catch (SchemaException) {
             // We use slightly different error message if the column already exists in this case.
-            throw new SchemaException($this->translator->trans('mautic.lead.field.column.already.exists', ['%field%' => $leadField->getName()], 'validators'));
+            throw new SchemaException($this->translator->trans('mautic.lead.field.column.already.exists', [
+                '%field%' => $leadField->getName(),
+            ], 'validators'));
         }
 
         try {

@@ -59,7 +59,11 @@ class PreferenceBuilderTest extends \PHPUnit\Framework\TestCase
 
         $event = new Event();
 
-        $builder = new PreferenceBuilder($logs, $event, ['email' => [], 'sms' => [], 'push' => []], new NullLogger());
+        $builder = new PreferenceBuilder($logs, $event, [
+            'email' => [],
+            'sms' => [],
+            'push' => [],
+        ], new NullLogger());
 
         $preferences = $builder->getChannelPreferences();
 
@@ -123,7 +127,11 @@ class PreferenceBuilderTest extends \PHPUnit\Framework\TestCase
         $logs = new ArrayCollection([$log]);
 
         $event   = new Event();
-        $builder = new PreferenceBuilder($logs, $event, ['email' => [], 'sms' => [], 'push' => []], new NullLogger());
+        $builder = new PreferenceBuilder($logs, $event, [
+            'email' => [],
+            'sms' => [],
+            'push' => [],
+        ], new NullLogger());
 
         $preferences = $builder->getChannelPreferences();
         /** @var ChannelPreferences $sms */

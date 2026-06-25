@@ -53,7 +53,10 @@ class LeadSubscriber implements EventSubscriberInterface
             foreach ($logs['results'] as $log) {
                 $eventName = [
                     'label' => $label.$log['channelName'].' '.$log['channelId'],
-                    'href'  => $this->router->generate('mautic_'.$log['channelName'].'_action', ['objectAction' => 'view', 'objectId' => $log['channelId']]),
+                    'href'  => $this->router->generate('mautic_'.$log['channelName'].'_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $log['channelId'],
+                    ]),
                 ];
                 $event->addEvent(
                     [

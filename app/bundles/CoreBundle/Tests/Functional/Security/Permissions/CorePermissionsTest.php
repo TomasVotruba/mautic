@@ -25,7 +25,9 @@ class CorePermissionsTest extends MauticMysqlTestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('dataVirtualPermission')]
     public function testVirtualPermission(bool $grant): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'sales']);
+        $user = $this->em->getRepository(User::class)->findOneBy([
+            'username' => 'sales',
+        ]);
         $this->loginUser($user);
         $permissions = self::getContainer()->get('mautic.security');
         \assert($permissions instanceof CorePermissions);

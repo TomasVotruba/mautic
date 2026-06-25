@@ -61,7 +61,10 @@ class LeadSubscriber implements EventSubscriberInterface
                                 'label' => $stat['name'],
                                 'href'  => $this->router->generate(
                                     'mautic_dynamicContent_action',
-                                    ['objectId' => $stat['dynamic_content_id'], 'objectAction' => 'view']
+                                    [
+                                        'objectId' => $stat['dynamic_content_id'],
+                                        'objectAction' => 'view',
+                                    ]
                                 ),
                             ],
                             'eventType' => $eventTypeNameSent,

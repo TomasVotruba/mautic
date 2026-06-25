@@ -18,7 +18,9 @@ class EmailSubscriberTest extends TestCase
     public function testOnEmailAddressReplacement(string $value, string $expected): void
     {
         $contact = new Lead();
-        $contact->setFields(['email2' => 'contact.a@email.address']);
+        $contact->setFields([
+            'email2' => 'contact.a@email.address',
+        ]);
 
         $event           = new TokenReplacementEvent($value, $contact);
         $emailSubscriber = new EmailSubscriber(

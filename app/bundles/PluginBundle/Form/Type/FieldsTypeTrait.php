@@ -193,7 +193,9 @@ trait FieldsTypeTrait
                             'choices'    => $mauticFields,
                             'label'      => false,
                             'data'       => $matched && isset($fieldData[$fieldsName][$field]) ? $fieldData[$fieldsName][$field] : '',
-                            'label_attr' => ['class' => 'control-label'],
+                            'label_attr' => [
+                                'class' => 'control-label',
+                            ],
                             'attr'       => [
                                 'class'            => 'field-selector',
                                 'data-placeholder' => ' ',
@@ -237,12 +239,14 @@ trait FieldsTypeTrait
         $resolver->setDefaults(
             [
                 'special_instructions' => function (Options $options) {
-                    [$specialInstructions, $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
+                    [$specialInstructions,
+                        $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
 
                     return $specialInstructions;
                 },
                 'alert_type' => function (Options $options) {
-                    [$specialInstructions, $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
+                    [$specialInstructions,
+                        $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
 
                     return $alertType;
                 },

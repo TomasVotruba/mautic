@@ -165,9 +165,18 @@ final class FormApiControllerTest extends MauticMysqlTestCase
         $form = $this->createForm([
             'name'   => 'Test Form',
             'fields' => [
-                ['label' => 'Field 1', 'type' => 'text'],
-                ['label' => 'Field 2', 'type' => 'email'],
-                ['label' => 'Field 3', 'type' => 'textarea'],
+                [
+                    'label' => 'Field 1',
+                    'type' => 'text',
+                ],
+                [
+                    'label' => 'Field 2',
+                    'type' => 'email',
+                ],
+                [
+                    'label' => 'Field 3',
+                    'type' => 'textarea',
+                ],
             ],
         ]);
 
@@ -241,11 +250,17 @@ final class FormApiControllerTest extends MauticMysqlTestCase
     {
         return [
             'update name only' => [
-                ['name' => 'Original Form'],
-                ['name' => 'Updated Form Name'],
+                [
+                    'name' => 'Original Form',
+                ],
+                [
+                    'name' => 'Updated Form Name',
+                ],
             ],
             'add fields to existing form' => [
-                ['name' => 'Form without fields'],
+                [
+                    'name' => 'Form without fields',
+                ],
                 [
                     'name'   => 'Form with fields',
                     'fields' => [

@@ -45,7 +45,9 @@ class ConfigController extends FormController
         $this->mergeParamsWithLocal($formConfigs, $pathsHelper);
 
         // Create the form
-        $action = $this->generateUrl('mautic_config_action', ['objectAction' => 'edit']);
+        $action = $this->generateUrl('mautic_config_action', [
+            'objectAction' => 'edit',
+        ]);
         $form   = $this->formFactory->create(
             ConfigType::class,
             $formConfigs,
@@ -118,7 +120,9 @@ class ConfigController extends FormController
                             // Ensure the config has a secret key
                             $params = $configurator->getParameters();
                             if (empty($params['secret_key'])) {
-                                $configurator->mergeParameters(['secret_key' => EncryptionHelper::generateKey()]);
+                                $configurator->mergeParameters([
+                                    'secret_key' => EncryptionHelper::generateKey(),
+                                ]);
                             }
 
                             $configurator->write();
@@ -132,7 +136,9 @@ class ConfigController extends FormController
                                 $openTab = $formData['coreconfig']['last_shown_tab'];
                             }
                         } catch (\RuntimeException $exception) {
-                            $this->addFlashMessage('mautic.config.config.error.not.updated', ['%exception%' => $exception->getMessage()], 'error');
+                            $this->addFlashMessage('mautic.config.config.error.not.updated', [
+                                '%exception%' => $exception->getMessage(),
+                            ], 'error');
                         }
 
                         $this->setLocale($request, $tokenStorage, $params);
@@ -149,7 +155,9 @@ class ConfigController extends FormController
             // If the form is saved or cancelled, redirect back to the dashboard
             if ($cancelled || $isValid) {
                 if (!$cancelled && $this->isFormApplied($form)) {
-                    $redirectParameters = ['objectAction' => 'edit'];
+                    $redirectParameters = [
+                        'objectAction' => 'edit',
+                    ];
                     if ($openTab) {
                         $redirectParameters['tab'] = $openTab;
                     }
@@ -177,7 +185,9 @@ class ConfigController extends FormController
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_config_index',
                     'mauticContent' => 'config',
-                    'route'         => $this->generateUrl('mautic_config_action', ['objectAction' => 'edit']),
+                    'route'         => $this->generateUrl('mautic_config_action', [
+                        'objectAction' => 'edit',
+                    ]),
                 ],
             ]
         );
@@ -241,7 +251,9 @@ class ConfigController extends FormController
         $fileFields = $event->getFileFields();
 
         if (in_array($objectId, $fileFields)) {
-            $configurator->mergeParameters([$objectId => null]);
+            $configurator->mergeParameters([
+                $objectId => null,
+            ]);
             try {
                 $configurator->write();
 
@@ -251,7 +263,9 @@ class ConfigController extends FormController
             }
         }
 
-        return new JsonResponse(['success' => $success]);
+        return new JsonResponse([
+            'success' => $success,
+        ]);
     }
 
     /**

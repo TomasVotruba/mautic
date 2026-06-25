@@ -45,7 +45,9 @@ class PointEventHelper
                 $leadCredentials       = $lead->getProfileFields();
                 $leadCredentials['id'] = $lead->getId();
 
-                $options   = ['source' => ['trigger', $event['id']]];
+                $options   = [
+                    'source' => ['trigger', $event['id']],
+                ];
                 $emailSent = $this->emailModel->sendEmail($email, $leadCredentials, $options);
 
                 return is_array($emailSent) ? false : true;

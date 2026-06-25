@@ -59,7 +59,9 @@ class ContactScheduledExportCommand extends Command
         $ids = $this->formatterHelper->simpleCsvToArray($input->getOption('ids'), 'int');
 
         if ($ids) {
-            $contactExportSchedulers = $this->contactExportSchedulerModel->getRepository()->findBy(['id' => $ids]);
+            $contactExportSchedulers = $this->contactExportSchedulerModel->getRepository()->findBy([
+                'id' => $ids,
+            ]);
         } else {
             $contactExportSchedulers = $this->contactExportSchedulerModel->getRepository()
                 ->findBy([], [], self::PICK_SCHEDULED_EXPORTS_LIMIT);

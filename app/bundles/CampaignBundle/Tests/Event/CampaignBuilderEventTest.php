@@ -32,7 +32,9 @@ class CampaignBuilderEventTest extends CampaignTestAbstract
         );
 
         $decisions = $event->getDecisions();
-        $this->assertSame([$decisionKey => $decision], $decisions);
+        $this->assertSame([
+            $decisionKey => $decision,
+        ], $decisions);
     }
 
     public function testEventDecisionSort(): void

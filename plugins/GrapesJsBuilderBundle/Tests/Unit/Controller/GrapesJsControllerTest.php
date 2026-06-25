@@ -44,7 +44,11 @@ final class GrapesJsControllerTest extends TestCase
         $entity->method('getCreatedBy')->willReturn(1);
         $entity->method('getContent')->willReturn(json_encode([
             'grapesjsbuilder' => [
-                'editorState' => json_encode(['components' => [['type' => 'text']]]),
+                'editorState' => json_encode([
+                    'components' => [[
+                        'type' => 'text',
+                    ]],
+                ]),
             ],
         ]));
 

@@ -26,7 +26,9 @@ class DynamicContentSendType extends AbstractType
             DynamicContentListType::class,
             [
                 'label'      => 'mautic.dynamicContent.send.selectDynamicContents',
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.dynamicContent.choose.dynamicContents',
@@ -36,7 +38,9 @@ class DynamicContentSendType extends AbstractType
                 'multiple'    => false,
                 'required'    => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'mautic.core.value.required']),
+                    new NotBlank([
+                        'message' => 'mautic.core.value.required',
+                    ]),
                 ],
             ]
         );

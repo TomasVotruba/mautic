@@ -45,7 +45,9 @@ return function (ContainerConfigurator $configurator): void {
     // Explicitly register our Twig extension with high priority
     $services->set(Mautic\CoreBundle\Twig\Extension\OverrideIncludeExtension::class)
         ->autowire()
-        ->tag('twig.extension', ['priority' => 100]);
+        ->tag('twig.extension', [
+            'priority' => 100,
+        ]);
 
     $services->set('mautic.http.client', GuzzleHttp\Client::class)->autowire();
     $services->set(Mautic\CoreBundle\Doctrine\MigrationFactoryDecorator::class)->autowire();
@@ -66,7 +68,9 @@ return function (ContainerConfigurator $configurator): void {
     $services->alias('mautic.helper.email.address', Mautic\CoreBundle\Helper\EmailAddressHelper::class);
     $services->alias('mautic.helper.assetgeneration', Mautic\CoreBundle\Helper\AssetGenerationHelper::class);
 
-    $services->get(Mautic\CoreBundle\Twig\Helper\AssetsHelper::class)->tag('twig.helper', ['alias' => 'assets']);
+    $services->get(Mautic\CoreBundle\Twig\Helper\AssetsHelper::class)->tag('twig.helper', [
+        'alias' => 'assets',
+    ]);
 
     $services->get(Mautic\CoreBundle\Model\NotificationModel::class)->call('setDisableUpdates', ['%mautic.security.disableUpdates%']);
     $services->alias('mautic.core.model.auditlog', Mautic\CoreBundle\Model\AuditLogModel::class);

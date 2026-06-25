@@ -147,7 +147,9 @@ BODY;
 
         $this->statRepo->expects($this->once())
             ->method('findOneBy')
-            ->with(['trackingHash' => $trackingHash])
+            ->with([
+                'trackingHash' => $trackingHash,
+            ])
             ->willReturn(null);
 
         $this->expectException(EntityNotFoundException::class);
@@ -163,7 +165,9 @@ BODY;
 
         $this->statRepo->expects($this->once())
             ->method('findOneBy')
-            ->with(['trackingHash' => $trackingHash])
+            ->with([
+                'trackingHash' => $trackingHash,
+            ])
             ->willReturn($stat);
 
         $stat->expects($this->once())

@@ -71,7 +71,9 @@ class MobileNotificationDetailsTypeTest extends TypeTestCase
     public function testPlatformSelected(array $platforms, array $settings): void
     {
         $this->integrationSettings->method('getFeatureSettings')
-            ->willReturn(['platforms' => $platforms]);
+            ->willReturn([
+                'platforms' => $platforms,
+            ]);
 
         $form = $this->factory->create(MobileNotificationDetailsType::class);
 

@@ -136,7 +136,9 @@ class WebhookControllerTest extends TestCase
         // or inside the Client mock.
         Assert::assertSame(Response::HTTP_OK, $testResponse->getStatusCode());
 
-        $changes = ['dateIdentified' => $isNew];
+        $changes = [
+            'dateIdentified' => $isNew,
+        ];
 
         // Now send the lead update event.
         $lead = $this->createMock(Lead::class);
@@ -221,7 +223,9 @@ class WebhookControllerTest extends TestCase
                 Assert::assertArrayHasKey('contact', $data);
                 Assert::assertSame('json', $type);
 
-                return json_encode(['contact' => $contactPayload], JSON_THROW_ON_ERROR);
+                return json_encode([
+                    'contact' => $contactPayload,
+                ], JSON_THROW_ON_ERROR);
             });
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);

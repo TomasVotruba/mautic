@@ -54,7 +54,9 @@ class ContactExportScheduler
         $metadata->addPropertyConstraint(
             'scheduledDate',
             new Assert\NotBlank(
-                ['message' => 'mautic.lead.import.dir.notblank']
+                [
+                    'message' => 'mautic.lead.import.dir.notblank',
+                ]
             )
         );
     }

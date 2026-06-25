@@ -27,7 +27,10 @@ final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 
     public function testCampaignTriggerConditionLeadIsInCampaign(): void
     {
-        $field = ['type' => 'text', 'alias' => 'test_text_field'];
+        $field = [
+            'type' => 'text',
+            'alias' => 'test_text_field',
+        ];
         $this->makeField($field);
         $lead = $this->createTestLead($field);
 

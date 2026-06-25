@@ -148,8 +148,13 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                 // Build table rows with links
                 foreach ($lists as &$list) {
-                    $listUrl    = $this->router->generate('mautic_segment_action', ['objectAction' => 'edit', 'objectId' => $list['id']]);
-                    $contactUrl = $this->router->generate('mautic_contact_index', ['search' => 'segment:'.$list['alias']]);
+                    $listUrl    = $this->router->generate('mautic_segment_action', [
+                        'objectAction' => 'edit',
+                        'objectId' => $list['id'],
+                    ]);
+                    $contactUrl = $this->router->generate('mautic_contact_index', [
+                        'search' => 'segment:'.$list['alias'],
+                    ]);
                     $row        = [
                         [
                             'value' => $list['name'],
@@ -217,7 +222,9 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
             foreach ($lists as &$list) {
                 if ('' != $list['alias']) {
-                    $listUrl = $this->router->generate('mautic_contact_index', ['search' => 'segment:'.$list['alias']]);
+                    $listUrl = $this->router->generate('mautic_contact_index', [
+                        'search' => 'segment:'.$list['alias'],
+                    ]);
                 } else {
                     $listUrl = $this->router->generate('mautic_contact_index', []);
                 }
@@ -283,7 +290,9 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
         if ('top.owners' == $event->getType()) {
             if (!$canViewOthers) {
-                $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
+                $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', [
+                    '%section%' => $this->bundle,
+                ]));
                 $event->stopPropagation();
 
                 return;
@@ -304,7 +313,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                 // Build table rows with links
                 foreach ($owners as &$owner) {
-                    $ownerUrl = $this->router->generate('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $owner['owner_id']]);
+                    $ownerUrl = $this->router->generate('mautic_user_action', [
+                        'objectAction' => 'edit',
+                        'objectId' => $owner['owner_id'],
+                    ]);
                     $row      = [
                         [
                             'value' => $owner['first_name'].' '.$owner['last_name'],
@@ -336,7 +348,9 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
         if ('top.creators' == $event->getType()) {
             if (!$canViewOthers) {
-                $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
+                $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', [
+                    '%section%' => $this->bundle,
+                ]));
                 $event->stopPropagation();
 
                 return;
@@ -357,7 +371,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                 // Build table rows with links
                 foreach ($creators as &$creator) {
-                    $creatorUrl = $this->router->generate('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $creator['created_by']]);
+                    $creatorUrl = $this->router->generate('mautic_user_action', [
+                        'objectAction' => 'edit',
+                        'objectId' => $creator['created_by'],
+                    ]);
                     $row        = [
                         [
                             'value' => $creator['created_by_user'],
@@ -409,7 +426,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                 // Build table rows with links
                 foreach ($leads as &$lead) {
-                    $leadUrl = isset($lead['id']) ? $this->router->generate('mautic_contact_action', ['objectAction' => 'view', 'objectId' => $lead['id']]) : '';
+                    $leadUrl = isset($lead['id']) ? $this->router->generate('mautic_contact_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $lead['id'],
+                    ]) : '';
                     $type    = isset($lead['id']) ? 'link' : 'text';
                     $row     = [
                         [
@@ -452,7 +472,10 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                 // Build table rows with links
                 foreach ($segments as $segment) {
-                    $listUrl    = $this->router->generate('mautic_segment_action', ['objectAction' => 'view', 'objectId' => $segment->getId()]);
+                    $listUrl    = $this->router->generate('mautic_segment_action', [
+                        'objectAction' => 'view',
+                        'objectId' => $segment->getId(),
+                    ]);
                     $buildTime  = explode(':', gmdate('H:i:s', (int) $segment->getLastBuiltTime()));
                     $timeString = $this->dateHelper->formatRange(
                         new \DateInterval("PT{$buildTime[0]}H{$buildTime[1]}M{$buildTime[2]}S")

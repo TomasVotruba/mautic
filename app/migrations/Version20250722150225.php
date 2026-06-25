@@ -22,7 +22,10 @@ final class Version20250722150225 extends PreUpAssertionMigration
     public function up(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName(Campaign::TABLE_NAME));
-        $table->addColumn('republish_behavior', Types::STRING, ['length' => 32, 'notnull' => false]);
+        $table->addColumn('republish_behavior', Types::STRING, [
+            'length' => 32,
+            'notnull' => false,
+        ]);
     }
 
     public function down(Schema $schema): void

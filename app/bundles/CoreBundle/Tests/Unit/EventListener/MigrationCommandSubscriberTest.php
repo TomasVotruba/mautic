@@ -97,7 +97,9 @@ class MigrationCommandSubscriberTest extends TestCase
 
         $this->schemaManager->expects($this->once())
             ->method('listTableColumns')
-            ->willReturn(['generated_hit_date' => new \stdClass()]);
+            ->willReturn([
+                'generated_hit_date' => new \stdClass(),
+            ]);
 
         $this->connection->expects($this->never())
             ->method('executeQuery');
@@ -121,7 +123,9 @@ class MigrationCommandSubscriberTest extends TestCase
 
         $this->schemaManager->expects($this->once())
             ->method('listTableColumns')
-            ->willReturn(['id' => new \stdClass()]);
+            ->willReturn([
+                'id' => new \stdClass(),
+            ]);
 
         $this->connection->expects($this->atLeastOnce())
             ->method('executeStatement');

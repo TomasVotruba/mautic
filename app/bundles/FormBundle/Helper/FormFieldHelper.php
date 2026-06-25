@@ -23,11 +23,17 @@ class FormFieldHelper extends AbstractFormFieldHelper
     private array $types = [
         'captcha' => [
             'constraints' => [
-                NotBlank::class => ['message' => 'mautic.form.submission.captcha.invalid'],
+                NotBlank::class => [
+                    'message' => 'mautic.form.submission.captcha.invalid',
+                ],
 
-                EqualTo::class => ['message' => 'mautic.form.submission.captcha.invalid'],
+                EqualTo::class => [
+                    'message' => 'mautic.form.submission.captcha.invalid',
+                ],
 
-                Blank::class => ['message' => 'mautic.form.submission.captcha.invalid'],
+                Blank::class => [
+                    'message' => 'mautic.form.submission.captcha.invalid',
+                ],
             ],
         ],
         'checkboxgrp' => [
@@ -39,7 +45,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
         'email'       => [
             'filter'      => 'email',
             'constraints' => [
-                Email::class => ['message' => 'mautic.form.submission.email.invalid'],
+                Email::class => [
+                    'message' => 'mautic.form.submission.email.invalid',
+                ],
             ],
         ],
         'freetext'      => [],
@@ -67,7 +75,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
         'url'       => [
             'filter'      => 'url',
             'constraints' => [
-                Url::class => ['message' => 'mautic.form.submission.url.invalid'],
+                Url::class => [
+                    'message' => 'mautic.form.submission.url.invalid',
+                ],
             ],
         ],
         'file' => [],

@@ -58,7 +58,9 @@ class AnalyseCustomFieldCommand extends Command
 
         $fieldLengths = [];
         foreach ($results as $key => $detail) {
-            $fieldLengths[$key] = ['max_length' => $detail];
+            $fieldLengths[$key] = [
+                'max_length' => $detail,
+            ];
         }
 
         $analysisDetails = array_merge_recursive($fieldDetails, $fieldLengths);

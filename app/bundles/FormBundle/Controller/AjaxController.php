@@ -42,7 +42,9 @@ class AjaxController extends CommonAjaxController
         if ('form' === $name) {
             $name = 'fields';
         }
-        $dataArray   = ['success' => 0];
+        $dataArray   = [
+            'success' => 0,
+        ];
         $sessionId   = InputHelper::clean($request->request->get('formId'));
         $sessionName = 'mautic.form.'.$sessionId.'.'.$name.'.modified';
         $session     = $request->getSession();
@@ -90,7 +92,9 @@ class AjaxController extends CommonAjaxController
     public function updateFormFieldsAction(Request $request): JsonResponse
     {
         $formId     = (int) $request->request->get('formId');
-        $dataArray  = ['success' => 0];
+        $dataArray  = [
+            'success' => 0,
+        ];
         $model      = $this->getModel('form');
         $entity     = $model->getEntity($formId);
         $formFields = empty($entity) ? [] : $entity->getFields();
@@ -144,7 +148,9 @@ class AjaxController extends CommonAjaxController
      */
     public function submitAction(Request $request): JsonResponse
     {
-        $response     = $this->forwardWithPost('Mautic\FormBundle\Controller\PublicController::submitAction', $request->request->all(), [], ['ajax' => true]);
+        $response     = $this->forwardWithPost('Mautic\FormBundle\Controller\PublicController::submitAction', $request->request->all(), [], [
+            'ajax' => true,
+        ]);
         $responseData = json_decode($response->getContent(), true);
         $success      = (!in_array($response->getStatusCode(), [404, 500]) && empty($responseData['errorMessage'])
             && empty($responseData['validationErrors']));
@@ -160,7 +166,11 @@ class AjaxController extends CommonAjaxController
         }
 
         $data = is_array($responseData)
-            ? array_merge($responseData, ['message' => $message, 'type' => $type, 'success' => $success])
+            ? array_merge($responseData, [
+                'message' => $message,
+                'type' => $type,
+                'success' => $success,
+            ])
             : [];
 
         return $this->sendJsonResponse($data);

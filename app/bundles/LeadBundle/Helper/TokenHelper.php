@@ -190,7 +190,9 @@ class TokenHelper
      */
     private static function getNormalizeValue(string $alias, $value)
     {
-        $field = array_merge(LeadRepository::getLeadFieldRepository()->getFields()[$alias], ['value' => $value]);
+        $field = array_merge(LeadRepository::getLeadFieldRepository()->getFields()[$alias], [
+            'value' => $value,
+        ]);
 
         return CustomFieldValueHelper::normalizeValue($field);
     }

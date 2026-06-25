@@ -330,7 +330,9 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
         }
 
         $this->preSerializeEntity($entity);
-        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK);
+        $view = $this->view([
+            $this->entityNameOne => $entity,
+        ], Response::HTTP_OK);
         $this->setSerializationContext($view);
 
         return $this->handleView($view);
@@ -508,7 +510,9 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     protected function getEntityDefaultProperties(object $entity): array
     {
         $class         = $entity::class;
-        $chain         = array_reverse(class_parents($entity), true) + [$class => $class];
+        $chain         = array_reverse(class_parents($entity), true) + [
+            $class => $class,
+        ];
         $defaultValues = [];
 
         $classMetdata = new ClassMetadata($class);
@@ -737,7 +741,9 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     {
         $batchLimit = (int) $this->coreParametersHelper->get('api_batch_max_limit', 200);
         if (count($parameters) > $batchLimit) {
-            return $this->returnError($this->translator->trans('mautic.api.call.batch_exception', ['%limit%' => $batchLimit]));
+            return $this->returnError($this->translator->trans('mautic.api.call.batch_exception', [
+                '%limit%' => $batchLimit,
+            ]));
         }
 
         return true;

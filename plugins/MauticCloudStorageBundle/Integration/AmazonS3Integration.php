@@ -68,7 +68,9 @@ class AmazonS3Integration extends CloudStorageIntegration
                 TextType::class,
                 [
                     'label'    => 'mautic.integration.Amazon.region',
-                    'attr'     => ['class'   => 'form-control'],
+                    'attr'     => [
+                        'class'   => 'form-control',
+                    ],
                     'data'     => empty($data['region']) ? 'us-east-1' : $data['region'],
                     'required' => false,
                 ]
@@ -79,7 +81,9 @@ class AmazonS3Integration extends CloudStorageIntegration
                 TextType::class,
                 [
                     'label'    => 'mautic.integration.Amazon.endpoint',
-                    'attr'     => ['class'   => 'form-control'],
+                    'attr'     => [
+                        'class'   => 'form-control',
+                    ],
                     'data'     => empty($data['endpoint']) ? null : $data['endpoint'],
                     'required' => false,
                 ]

@@ -101,7 +101,9 @@ class CustomFieldValueHelperTest extends \PHPUnit\Framework\TestCase
     {
         Assert::assertSame(
             'value_1',
-            CustomFieldValueHelper::setValueFromPropertiesList(['list' => 'some|string'], 'value_1')
+            CustomFieldValueHelper::setValueFromPropertiesList([
+                'list' => 'some|string',
+            ], 'value_1')
         );
     }
 
@@ -110,7 +112,11 @@ class CustomFieldValueHelperTest extends \PHPUnit\Framework\TestCase
         Assert::assertSame(
             'value_1',
             CustomFieldValueHelper::setValueFromPropertiesList(
-                ['list' => ['value_1' => 'Label 1']],
+                [
+                    'list' => [
+                        'value_1' => 'Label 1',
+                    ],
+                ],
                 'value_1'
             )
         );
@@ -123,7 +129,10 @@ class CustomFieldValueHelperTest extends \PHPUnit\Framework\TestCase
             CustomFieldValueHelper::setValueFromPropertiesList(
                 [
                     'list' => [
-                        ['value' => 'value_1', 'label' => 'Label 1'],
+                        [
+                            'value' => 'value_1',
+                            'label' => 'Label 1',
+                        ],
                     ],
                 ],
                 'value_1'

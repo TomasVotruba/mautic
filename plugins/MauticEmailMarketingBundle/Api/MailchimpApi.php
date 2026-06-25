@@ -34,7 +34,9 @@ class MailchimpApi extends EmailMarketingApi
         }
         $url = sprintf('%s/%s/%s', $apiUrl, $this->version, $endpoint);
 
-        $response = $this->integration->makeRequest($url, $parameters, $method, ['encode_parameters' => 'json']);
+        $response = $this->integration->makeRequest($url, $parameters, $method, [
+            'encode_parameters' => 'json',
+        ]);
 
         if (is_array($response) && !empty($response['status']) && 'error' == $response['status']) {
             throw new ApiErrorException($response['error']);
@@ -51,7 +53,9 @@ class MailchimpApi extends EmailMarketingApi
 
     public function getLists()
     {
-        return $this->request('lists', ['limit' => 100]);
+        return $this->request('lists', [
+            'limit' => 100,
+        ]);
     }
 
     /**
@@ -81,7 +85,9 @@ class MailchimpApi extends EmailMarketingApi
             'id' => $listId,
         ]);
         if (!empty($fields)) {
-            $parameters = array_merge($parameters, ['merge_fields' => $fields]);
+            $parameters = array_merge($parameters, [
+                'merge_fields' => $fields,
+            ]);
         }
         $parameters['email_address'] = $email;
 

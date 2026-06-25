@@ -66,7 +66,9 @@ final class EmailExampleFunctionalTest extends MauticMysqlTestCase
         $formCrawler = $crawler->filter('form[name=example_send]');
         self::assertCount(1, $formCrawler);
         $form = $formCrawler->form();
-        $form->setValues(['example_send[emails][list][0]' => 'admin@yoursite.com']);
+        $form->setValues([
+            'example_send[emails][list][0]' => 'admin@yoursite.com',
+        ]);
         $this->client->submit($form);
 
         $message = $this->getMailerMessagesByToAddress('admin@yoursite.com')[0];
@@ -138,7 +140,9 @@ final class EmailExampleFunctionalTest extends MauticMysqlTestCase
         $formCrawler = $crawler->filter('form[name=example_send]');
         Assert::assertCount(1, $formCrawler);
         $form = $formCrawler->form();
-        $form->setValues(['example_send[emails][list][0]' => 'admin@yoursite.com']);
+        $form->setValues([
+            'example_send[emails][list][0]' => 'admin@yoursite.com',
+        ]);
         $this->client->submit($form);
 
         $message = $this->getMailerMessagesByToAddress('admin@yoursite.com')[0];

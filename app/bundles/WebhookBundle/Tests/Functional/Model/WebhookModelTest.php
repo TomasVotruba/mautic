@@ -82,7 +82,9 @@ final class WebhookModelTest extends MauticMysqlTestCase
 
         $counter = 1;
         while ($counter <= 10) {
-            $this->createWebhookQueue($webhook, $event, ['spoof' => $counter]);
+            $this->createWebhookQueue($webhook, $event, [
+                'spoof' => $counter,
+            ]);
 
             ++$counter;
         }

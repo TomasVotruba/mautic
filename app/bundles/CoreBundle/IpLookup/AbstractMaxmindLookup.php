@@ -25,7 +25,9 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
             throw new \InvalidArgumentException('Maxmind Authentication key canot be empty.');
         }
 
-        return ['Authorization' => 'Basic '.base64_encode($this->auth)];
+        return [
+            'Authorization' => 'Basic '.base64_encode($this->auth),
+        ];
     }
 
     /**

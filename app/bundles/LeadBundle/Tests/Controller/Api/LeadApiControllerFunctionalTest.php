@@ -50,7 +50,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testDisabledApi(): void
     {
-        $this->client->request('POST', '/api/contacts/new', ['email' => 'apiemail1@email.com']);
+        $this->client->request('POST', '/api/contacts/new', [
+            'email' => 'apiemail1@email.com',
+        ]);
         $clientResponse = $this->client->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $clientResponse->getStatusCode(), $clientResponse->getContent());
         $this->assertEquals(
@@ -519,7 +521,10 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $payload = [
-            ['email' => 'batcheditcontact1-updated@gmail.com', 'id' => $contact->getId()],
+            [
+                'email' => 'batcheditcontact1-updated@gmail.com',
+                'id' => $contact->getId(),
+            ],
         ];
 
         $this->client->request('PUT', '/api/contacts/batch/edit', $payload);
@@ -537,7 +542,10 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testBatchEditEndpointWithRubbishId(): void
     {
         $payload = [
-            ['email' => 'batchemail1@email.com', 'id' => 'rubbish'],
+            [
+                'email' => 'batchemail1@email.com',
+                'id' => 'rubbish',
+            ],
         ];
 
         $this->client->request('PUT', '/api/contacts/batch/edit', $payload);
@@ -1107,9 +1115,18 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $payload = [
-            ['points' => 1, 'id' => $contact1->getId()],
-            ['points' => 1, 'id' => $contact2->getId()],
-            ['points' => 2, 'id' => $contact1->getId()],
+            [
+                'points' => 1,
+                'id' => $contact1->getId(),
+            ],
+            [
+                'points' => 1,
+                'id' => $contact2->getId(),
+            ],
+            [
+                'points' => 2,
+                'id' => $contact1->getId(),
+            ],
         ];
 
         $this->client->request(Request::METHOD_PATCH, '/api/contacts/batch/edit', $payload);
@@ -1137,7 +1154,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testAddAndRemoveDncToExistingContact(): void
     {
         // Create contact
-        $payload = ['email' => 'addDncDemo@mautic.org'];
+        $payload = [
+            'email' => 'addDncDemo@mautic.org',
+        ];
 
         $this->client->request(Request::METHOD_POST, '/api/contacts/new', $payload);
         $clientResponse = $this->client->getResponse();
@@ -1148,7 +1167,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertSame([], $response['contact']['doNotContact']);
 
         // Check with a DNC payload that has an empty reasoncode in it, this should throw a 400 Bad Request error
-        $dncPayload = ['reason' => 0];
+        $dncPayload = [
+            'reason' => 0,
+        ];
         $dncChannel = 'email';
 
         $this->client->request(Request::METHOD_POST, "/api/contacts/$contactId/dnc/$dncChannel/add", $dncPayload);
@@ -1349,7 +1370,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Test API endpoint for campaign 1
-        $this->client->request('GET', '/api/contacts', ['search' => 'campaign:'.$campaign1->getId()]);
+        $this->client->request('GET', '/api/contacts', [
+            'search' => 'campaign:'.$campaign1->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
         $response = json_decode($clientResponse->getContent(), true);
@@ -1361,7 +1384,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayNotHasKey($contact4->getId(), $response['contacts']);
 
         // Test API endpoint for campaign 2
-        $this->client->request('GET', '/api/contacts', ['search' => 'campaign:'.$campaign2->getId()]);
+        $this->client->request('GET', '/api/contacts', [
+            'search' => 'campaign:'.$campaign2->getId(),
+        ]);
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
         $response = json_decode($clientResponse->getContent(), true);

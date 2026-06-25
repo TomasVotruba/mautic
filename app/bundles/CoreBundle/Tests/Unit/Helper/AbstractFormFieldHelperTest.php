@@ -56,7 +56,9 @@ class AbstractFormFieldHelperTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('The string is parsed correctly into a choice array')]
     public function testSingleSelectedValueDoesNotGoIntoJson(): void
     {
-        $this->assertEquals(['1' => '1'], AbstractFormFieldHelper::parseList('1'));
+        $this->assertEquals([
+            '1' => '1',
+        ], AbstractFormFieldHelper::parseList('1'));
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('The string is parsed correctly into a choice array')]
@@ -104,57 +106,87 @@ class AbstractFormFieldHelperTest extends \PHPUnit\Framework\TestCase
     {
         yield [
             [
-                ['value' => null, 'label' => null],
+                [
+                    'value' => null,
+                    'label' => null,
+                ],
             ],
             [],
         ];
 
         yield [
             [
-                ['value' => 0, 'label' => 0],
+                [
+                    'value' => 0,
+                    'label' => 0,
+                ],
             ],
-            [0 => '0'],
+            [
+                0 => '0',
+            ],
         ];
 
         yield [
             [
-                ['value' => '', 'label' => ''],
+                [
+                    'value' => '',
+                    'label' => '',
+                ],
             ],
             [],
         ];
 
         yield [
             [
-                ['value' => 'one', 'label' => 'One'],
+                [
+                    'value' => 'one',
+                    'label' => 'One',
+                ],
             ],
-            ['one' => 'One'],
+            [
+                'one' => 'One',
+            ],
         ];
 
         yield [
-            ['one' => 'One'],
-            ['one' => 'One'],
+            [
+                'one' => 'One',
+            ],
+            [
+                'one' => 'One',
+            ],
         ];
 
         yield [
-            ['' => ''],
+            [
+                '' => '',
+            ],
             [],
         ];
 
         yield [
-            ['' => null],
+            [
+                '' => null,
+            ],
             [],
         ];
 
         yield [
-            [0 => 0],
-            [0 => '0'],
+            [
+                0 => 0,
+            ],
+            [
+                0 => '0',
+            ],
         ];
     }
 
     public function testparseChoiceListWithNullValue(): void
     {
         Assert::assertEquals(
-            [0 => 'label4'],
+            [
+                0 => 'label4',
+            ],
             AbstractFormFieldHelper::parseList(
                 [
                     [

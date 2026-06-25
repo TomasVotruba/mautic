@@ -24,7 +24,9 @@ class HttpFactory extends OriginalHttpFactory implements AuthProviderInterface
 
     public static function factory(MockHandler $handler): HttpFactory
     {
-        $client              = new Client(['handler' => HandlerStack::create($handler)]);
+        $client              = new Client([
+            'handler' => HandlerStack::create($handler),
+        ]);
         $httpFactory         = new self();
         $httpFactory->client = $client;
 

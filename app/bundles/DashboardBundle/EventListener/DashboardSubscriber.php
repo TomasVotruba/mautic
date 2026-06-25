@@ -94,7 +94,9 @@ class DashboardSubscriber implements EventSubscriberInterface
         $widgetTypes = array_keys($this->types);
         if ($this->permissions && !$event->hasPermissions($this->permissions) && in_array($event->getType(), $widgetTypes)) {
             $translator = $event->getTranslator();
-            $event->setErrorMessage($translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
+            $event->setErrorMessage($translator->trans('mautic.dashboard.missing.permission', [
+                '%section%' => $this->bundle,
+            ]));
             $event->stopPropagation();
 
             return;

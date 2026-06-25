@@ -42,7 +42,9 @@ class ProfileController extends FormController
         ];
 
         $action = $this->generateUrl('mautic_user_account');
-        $form   = $model->createForm($me, $this->formFactory, $action, ['in_profile' => true]);
+        $form   = $model->createForm($me, $this->formFactory, $action, [
+            'in_profile' => true,
+        ]);
 
         $overrides = [];
 
@@ -64,8 +66,12 @@ class ProfileController extends FormController
                             TextType::class,
                             [
                                 'label'      => 'mautic.core.firstname',
-                                'label_attr' => ['class' => 'control-label'],
-                                'attr'       => ['class' => 'form-control'],
+                                'label_attr' => [
+                                    'class' => 'control-label',
+                                ],
+                                'attr'       => [
+                                    'class' => 'form-control',
+                                ],
                                 'mapped'     => false,
                                 'disabled'   => true,
                                 'data'       => $me->getFirstName(),
@@ -79,8 +85,12 @@ class ProfileController extends FormController
                             TextType::class,
                             [
                                 'label'      => 'mautic.core.lastname',
-                                'label_attr' => ['class' => 'control-label'],
-                                'attr'       => ['class' => 'form-control'],
+                                'label_attr' => [
+                                    'class' => 'control-label',
+                                ],
+                                'attr'       => [
+                                    'class' => 'form-control',
+                                ],
                                 'mapped'     => false,
                                 'disabled'   => true,
                                 'data'       => $me->getLastName(),
@@ -97,8 +107,12 @@ class ProfileController extends FormController
                             TextType::class,
                             [
                                 'label'      => 'mautic.core.username',
-                                'label_attr' => ['class' => 'control-label'],
-                                'attr'       => ['class' => 'form-control'],
+                                'label_attr' => [
+                                    'class' => 'control-label',
+                                ],
+                                'attr'       => [
+                                    'class' => 'form-control',
+                                ],
                                 'mapped'     => false,
                                 'disabled'   => true,
                                 'data'       => $me->getUserIdentifier(),
@@ -114,8 +128,12 @@ class ProfileController extends FormController
                             TextType::class,
                             [
                                 'label'      => 'mautic.core.position',
-                                'label_attr' => ['class' => 'control-label'],
-                                'attr'       => ['class' => 'form-control'],
+                                'label_attr' => [
+                                    'class' => 'control-label',
+                                ],
+                                'attr'       => [
+                                    'class' => 'form-control',
+                                ],
                                 'mapped'     => false,
                                 'disabled'   => true,
                                 'data'       => $me->getPosition(),
@@ -131,8 +149,12 @@ class ProfileController extends FormController
                             TextType::class,
                             [
                                 'label'      => 'mautic.core.type.email',
-                                'label_attr' => ['class' => 'control-label'],
-                                'attr'       => ['class' => 'form-control'],
+                                'label_attr' => [
+                                    'class' => 'control-label',
+                                ],
+                                'attr'       => [
+                                    'class' => 'form-control',
+                                ],
                                 'mapped'     => false,
                                 'disabled'   => true,
                                 'data'       => $me->getEmail(),

@@ -16,7 +16,9 @@ class ReportSchedulerSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [ReportEvents::REPORT_POST_SAVE => ['onReportSave', 0]];
+        return [
+            ReportEvents::REPORT_POST_SAVE => ['onReportSave', 0],
+        ];
     }
 
     public function onReportSave(ReportEvent $event): ReportEvent
