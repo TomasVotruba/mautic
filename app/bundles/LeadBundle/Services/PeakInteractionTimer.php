@@ -33,9 +33,13 @@ class PeakInteractionTimer
     private int $bestDefaultHourStart;
     private int $bestHourEnd;
     private int $bestDefaultHourEnd;
-    /** @var int[] */
+    /**
+     * @var int[]
+     */
     private array $bestDays;
-    /** @var int[] */
+    /**
+     * @var int[]
+     */
     private array $bestDefaultDays;
     private string $fetchInteractionsFrom;
     private int $fetchLimit;

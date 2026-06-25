@@ -16,7 +16,9 @@ class FileHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($megabyte, $fileHelper::convertBytesToMegabytes($byte));
     }
 
-    /** @return array<int, array{0: int, 1: float}> */
+    /**
+     * @return array<int, array{0: int, 1: float}>
+     */
     public static function bytesToMegabytesProvider(): array
     {
         return [
@@ -36,7 +38,9 @@ class FileHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($byte, $fileHelper::convertMegabytesToBytes($megabyte));
     }
 
-    /** @return array<int, array{0: int, 1: int}> */
+    /**
+     * @return array<int, array{0: int, 1: int}>
+     */
     public static function megabytesToBytesProvider(): array
     {
         return [
@@ -55,7 +59,9 @@ class FileHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($bytes, $fileHelper::convertPHPSizeToBytes($phpSize));
     }
 
-    /** @return array<int, array{0: string, 1: int}> */
+    /**
+     * @return array<int, array{0: string, 1: int}>
+     */
     public static function phpSizeToBytesProvider(): array
     {
         return [

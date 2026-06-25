@@ -17,7 +17,9 @@ final class FileManagerControllerFunctionalTest extends MauticMysqlTestCase
     private const SVG_WIDTH       = 120;
     private const SVG_HEIGHT      = 80;
 
-    /** @var array<string> */
+    /**
+     * @var array<string>
+     */
     private array $tempFilePaths = [];
 
     protected function beforeTearDown(): void

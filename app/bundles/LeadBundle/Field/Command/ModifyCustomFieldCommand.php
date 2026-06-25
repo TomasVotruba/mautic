@@ -19,9 +19,7 @@ final class ModifyCustomFieldCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function configure(): void
     {
         $this
@@ -34,9 +32,7 @@ final class ModifyCustomFieldCommand extends Command
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $csvPath = $input->getArgument('csv-path');

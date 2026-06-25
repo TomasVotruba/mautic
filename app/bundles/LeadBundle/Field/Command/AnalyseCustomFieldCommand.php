@@ -26,9 +26,7 @@ class AnalyseCustomFieldCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function configure(): void
     {
         $this
@@ -40,9 +38,7 @@ class AnalyseCustomFieldCommand extends Command
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $displayAsTable = $input->getOption('display-table');

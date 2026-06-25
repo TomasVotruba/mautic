@@ -295,7 +295,9 @@ class ThemeHelperTest extends TestCase
                 }
             },
             new class extends Finder {
-                /** @var SplFileInfo[] */
+                /**
+                 * @var SplFileInfo[]
+                 */
                 private array $dirs = [];
 
                 public function __construct()

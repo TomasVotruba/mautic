@@ -16,13 +16,19 @@ class ReloadHelperTest extends \PHPUnit\Framework\TestCase
 {
     private ReloadHelper $helper;
 
-    /** @var array<string, array<string, mixed>> */
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private array $sampleAllPlugins = [];
 
-    /** @var array<string, array<string, ClassMetadata>> */
+    /**
+     * @var array<string, array<string, ClassMetadata>>
+     */
     private array $sampleMetaData = [];
 
-    /** @var array<string, Schema> */
+    /**
+     * @var array<string, Schema>
+     */
     private array $sampleSchemas = [];
 
     /**

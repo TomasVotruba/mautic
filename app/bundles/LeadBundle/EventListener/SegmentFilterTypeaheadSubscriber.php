@@ -16,9 +16,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    
     public static function getSubscribedEvents(): array
     {
         return [

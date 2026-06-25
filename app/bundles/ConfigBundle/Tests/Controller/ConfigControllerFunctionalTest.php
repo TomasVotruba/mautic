@@ -94,7 +94,9 @@ class ConfigControllerFunctionalTest extends MauticMysqlTestCase
         return static::getContainer()->get('kernel')->getLocalConfigFile();
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getConfigParameters(): array
     {
         $parameters = [];

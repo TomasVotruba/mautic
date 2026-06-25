@@ -28,7 +28,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SmsModelTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject&CacheStorageHelper */
+    /**
+     * @var MockObject&CacheStorageHelper
+     */
     private MockObject $cacheStorageHelper;
 
     private MockObject&EntityManagerInterface $entityManger;

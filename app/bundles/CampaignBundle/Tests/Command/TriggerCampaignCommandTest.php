@@ -774,7 +774,9 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         self::assertEquals(50, $count);
     }
 
-    /** @return array<string, int> */
+    /**
+     * @return array<string, int>
+     */
     private function getTagCounts(): array
     {
         $tags = $this->db->createQueryBuilder()
@@ -793,7 +795,9 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         return $tagCounts;
     }
 
-    /** @param array<int, array<string, mixed>> $logs */
+    /**
+     * @param array<int, array<string, mixed>> $logs
+     */
     private function getNonActionPathTakenCount(array $logs): int
     {
         $nonActionCount = 0;

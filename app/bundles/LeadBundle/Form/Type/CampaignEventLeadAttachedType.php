@@ -96,9 +96,7 @@ final class CampaignEventLeadAttachedType extends AbstractType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function getBlockPrefix(): string
     {
         return 'campaignevent_lead_contact_added';

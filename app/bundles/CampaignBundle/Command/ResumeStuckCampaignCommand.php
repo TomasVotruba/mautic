@@ -53,9 +53,7 @@ final class ResumeStuckCampaignCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function configure(): void
     {
         $this->addArgument(
@@ -92,9 +90,7 @@ final class ResumeStuckCampaignCommand extends Command
         parent::configure();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $campaignId     = (int) $input->getArgument('campaign-id');

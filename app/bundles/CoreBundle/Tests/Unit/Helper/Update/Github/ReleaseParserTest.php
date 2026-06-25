@@ -137,7 +137,9 @@ class ReleaseParserTest extends TestCase
         (new ReleaseParser($client))->getLatestSupportedRelease([['html_url' => 'foo://bar']], $mauticVersion, $stability);
     }
 
-    /** @return array<int, array<string, mixed>> */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getReleases(): array
     {
         return json_decode(file_get_contents(__DIR__.'/json/releases.json'), true);

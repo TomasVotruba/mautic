@@ -8,7 +8,9 @@ use Mautic\LeadBundle\Helper\TokenHelper;
 
 class TokenHelperTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var array<string, mixed> */
+    /**
+     * @var array<string, mixed>
+     */
     private array $lead = [
         'firstname' => 'Bob',
         'lastname'  => 'Smith',

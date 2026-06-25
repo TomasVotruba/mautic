@@ -27,9 +27,7 @@ class DeleteContactSecondaryCompaniesCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function configure(): void
     {
         $this
@@ -42,9 +40,7 @@ EOT
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $allowMultiple = $this->coreParametersHelper->get('contact_allow_multiple_companies');

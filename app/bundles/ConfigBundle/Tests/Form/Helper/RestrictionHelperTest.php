@@ -47,7 +47,9 @@ class RestrictionHelperTest extends TypeTestCase
 {
     private string $displayMode = RestrictionHelper::MODE_REMOVE;
 
-    /** @var array<string, mixed> */
+    /**
+     * @var array<string, mixed>
+     */
     private array $restrictedFields = [
         'monitored_email' => [
             'EmailBundle_bounces',
@@ -57,7 +59,9 @@ class RestrictionHelperTest extends TypeTestCase
         ],
     ];
 
-    /** @var array<string, array<string, mixed>> */
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private array $forms = [
         'emailconfig' => [
             'bundle'     => 'EmailBundle',
@@ -195,7 +199,9 @@ class RestrictionHelperTest extends TypeTestCase
         );
     }
 
-    /** @return array<int, PreloadedExtension|ValidatorExtension> */
+    /**
+     * @return array<int, PreloadedExtension|ValidatorExtension>
+     */
     protected function getExtensions(): array
     {
         $translator = $this->createMock(Translator::class);

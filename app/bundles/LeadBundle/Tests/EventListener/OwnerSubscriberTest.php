@@ -37,7 +37,9 @@ use Twig\Environment;
 
 class OwnerSubscriberTest extends TestCase
 {
-    /** @var array<int, array<string, int|string|null>> */
+    /**
+     * @var array<int, array<string, int|string|null>>
+     */
     protected array $contacts = [
         [
             'id'        => 1,
@@ -76,7 +78,9 @@ class OwnerSubscriberTest extends TestCase
         ],
     ];
 
-    /** @var MockObject&CoreParametersHelper */
+    /**
+     * @var MockObject&CoreParametersHelper
+     */
     private $coreParametersHelper;
 
     private MailHashHelper $mailHashHelper;

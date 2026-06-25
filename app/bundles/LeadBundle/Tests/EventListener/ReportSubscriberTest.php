@@ -132,7 +132,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
     private MockObject&DncReportService $dncReportService;
 
-    /** @var array<string, array<string, string>> */
+    /**
+     * @var array<string, array<string, string>>
+     */
     private array $leadColumns = [
         'xx.yy' => [
             'label' => '',
@@ -141,7 +143,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         ],
     ];
 
-    /** @var array<string, array<string, string>> */
+    /**
+     * @var array<string, array<string, string>>
+     */
     private array $leadFilters = [
         'filter' => [
             'label' => 'second',
@@ -149,7 +153,9 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         ],
     ];
 
-    /** @var array<string, array<string, string>> */
+    /**
+     * @var array<string, array<string, string>>
+     */
     private array $companyColumns = [
         'comp.name' => [
             'label' => 'company_name',

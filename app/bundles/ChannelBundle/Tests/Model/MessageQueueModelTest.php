@@ -36,16 +36,24 @@ class MessageQueueModelTest extends \PHPUnit\Framework\TestCase
      */
     protected $message;
 
-    /** @var MockObject|LeadModel */
+    /**
+     * @var MockObject|LeadModel
+     */
     protected $leadModel;
 
-    /** @var MockObject|CompanyModel */
+    /**
+     * @var MockObject|CompanyModel
+     */
     protected $companyModel;
 
-    /** @var MockObject|EntityManagerInterface */
+    /**
+     * @var MockObject|EntityManagerInterface
+     */
     protected $entityManager;
 
-    /** @var MockObject|MessageQueueRepository */
+    /**
+     * @var MockObject|MessageQueueRepository
+     */
     protected $messageQueueRepository;
 
     protected function setUp(): void

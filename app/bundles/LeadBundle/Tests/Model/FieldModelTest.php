@@ -256,7 +256,9 @@ class FieldModelTest extends MauticMysqlTestCase
         // Log queries so we can detect if alter queries were executed
         /**  $stack */
         $stack                    = new class implements SQLLogger { /** @phpstan-ignore-line SQLLogger is deprecated */
-            /** @var array<mixed> */
+            /**
+             * @var array<mixed>
+             */
             private array $indexQueries = [];
 
             public function startQuery($sql, ?array $params = null, ?array $types = null)
