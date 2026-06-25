@@ -1105,7 +1105,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      *
      * @throws \MauticPlugin\MauticCrmBundle\Api\Zoho\Exception\MatchingKeyNotFoundException
      */
-    private function consumeResponse($response, $zObject, $createIntegrationEntity = false, ?Mapper $mapper = null): int
+    private function consumeResponse($response, $zObject, bool $createIntegrationEntity = false, ?Mapper $mapper = null): int
     {
         $rows = $response;
         if (isset($rows['data'][0])) {
@@ -1151,7 +1151,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      * @param string $searchValue
      * @param string $object
      */
-    private function getExistingRecord($seachColumn, $searchValue, $object = 'Leads'): array
+    private function getExistingRecord(string $seachColumn, $searchValue, string $object = 'Leads'): array
     {
         $availableFields = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
         $records         = $this->getApiHelper()->getSearchRecords($seachColumn, $searchValue, $object);
@@ -1167,7 +1167,7 @@ class ZohoIntegration extends CrmAbstractIntegration
         return $this->parseZohoRecord($records, array_merge($availableFields[$object], $idField));
     }
 
-    private function parseZohoRecord($data, $fields): array
+    private function parseZohoRecord($data, array $fields): array
     {
         $parsedData = [];
         if (empty($data['data'])) {
@@ -1192,7 +1192,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      * @param int    $counter
      * @param int    $errorCounter
      */
-    private function updateContactInZoho(Mapper $mapper, $object, &$counter, &$errorCounter): void
+    private function updateContactInZoho(Mapper $mapper, string $object, int|float &$counter, int &$errorCounter): void
     {
         $response     = $this->getApiHelper()->updateLead($mapper->getArray(), $object);
         $failed       = $this->consumeResponse($response, $object, false, $mapper);
@@ -1205,7 +1205,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      * @param int    $counter
      * @param int    $errorCounter
      */
-    private function createContactInZoho(Mapper $mapper, $object, &$counter, &$errorCounter): void
+    private function createContactInZoho(Mapper $mapper, string $object, int|float &$counter, int &$errorCounter): void
     {
         $response     = $this->getApiHelper()->createLead($mapper->getArray(), $object);
         $failed       = $this->consumeResponse($response, $object, true, $mapper);

@@ -128,7 +128,7 @@ class EntityLookupType extends AbstractType
     /**
      * @param Options<mixed[]>|array<mixed> $options
      */
-    private function getModelName($options): string
+    private function getModelName(array|\Symfony\Component\OptionsResolver\Options $options): string
     {
         $key = $options['model_key'] ?? null;
         if (!$key) {

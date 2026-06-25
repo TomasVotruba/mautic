@@ -38,7 +38,7 @@ class MaintenanceSubscriber implements EventSubscriberInterface
     /**
      * @param string $table
      */
-    private function cleanupData(MaintenanceEvent $event, $table): void
+    private function cleanupData(MaintenanceEvent $event, string $table): void
     {
         $qb = $this->db->createQueryBuilder()
             ->setParameter('date', $event->getDate()->format('Y-m-d H:i:s'));

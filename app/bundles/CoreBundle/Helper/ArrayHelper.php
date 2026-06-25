@@ -125,7 +125,7 @@ class ArrayHelper
      *
      * @param bool $subtracted
      */
-    private static function sumOrSub(array $a1, array $b2, $subtracted = false): array
+    private static function sumOrSub(array $a1, array $b2, bool $subtracted = false): array
     {
         return array_map(function ($x, $y) use ($subtracted) {
             if ($subtracted) {

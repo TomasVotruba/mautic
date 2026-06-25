@@ -108,7 +108,7 @@ class MaxMindDoNotSellDownloadHelper
     /**
      * @param int $position
      */
-    private function getAuthPart($position): string
+    private function getAuthPart(int $position): string
     {
         if (array_key_exists($position, $this->auth)) {
             return $this->auth[$position];

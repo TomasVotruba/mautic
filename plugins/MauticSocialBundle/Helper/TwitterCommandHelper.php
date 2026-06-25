@@ -69,7 +69,7 @@ class TwitterCommandHelper
      * @param string $message
      * @param bool   $newLine
      */
-    private function output($message, $newLine = true): void
+    private function output(string $message, $newLine = true): void
     {
         if ($newLine) {
             $this->output->writeln($message);

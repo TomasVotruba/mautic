@@ -455,7 +455,7 @@ class SearchSubscriber implements EventSubscriberInterface
     /**
      * @param bool $isMobile
      */
-    private function buildNotificationSentQuery(LeadBuildSearchEvent $event, $isMobile = false): void
+    private function buildNotificationSentQuery(LeadBuildSearchEvent $event, bool $isMobile = false): void
     {
         $tables = [
             [

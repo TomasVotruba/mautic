@@ -47,7 +47,7 @@ final class DateHelper
      *
      * @return string
      */
-    private function format($type, $datetime, $timezone, $fromFormat)
+    private function format(string $type, $datetime, $timezone, $fromFormat)
     {
         if (empty($datetime)) {
             return '';

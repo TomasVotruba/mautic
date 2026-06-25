@@ -86,7 +86,7 @@ class FileManager
      * @param bool   $fullPath
      * @param string $separator
      */
-    private function getGrapesJsImagesPath($fullPath = false, $separator = '/'): string
+    private function getGrapesJsImagesPath(bool $fullPath = false, $separator = '/'): string
     {
         return $this->pathsHelper->getSystemPath('images', $fullPath)
             .$separator

@@ -195,7 +195,7 @@ abstract class AbstractLocalDataLookup extends AbstractLookup implements IpLooku
      * @param string $haystack
      * @param string $needle
      */
-    private function endsWith($haystack, $needle): bool
+    private function endsWith($haystack, string $needle): bool
     {
         return str_ends_with($haystack, $needle);
     }

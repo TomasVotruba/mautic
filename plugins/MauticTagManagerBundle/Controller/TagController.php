@@ -405,7 +405,7 @@ class TagController extends FormController
      * @throws EntityNotFoundException
      * @throws AccessDeniedException
      */
-    private function getTag($tagId)
+    private function getTag(int $tagId)
     {
         /** @var Tag|null $tag */
         $tag = $this->getModel('lead.tag')->getEntity($tagId);

@@ -87,7 +87,7 @@ class BuilderSubscriber implements EventSubscriberInterface
      *
      * @return mixed[]
      */
-    private function generateTokensFromContent($event, ?int $leadId, $source = [], $emailId = null): array
+    private function generateTokensFromContent(\Mautic\EmailBundle\Event\EmailSendEvent|\Mautic\PageBundle\Event\PageDisplayEvent $event, ?int $leadId, $source = [], $emailId = null): array
     {
         if ($event instanceof PageDisplayEvent || ($event instanceof EmailSendEvent && $event->shouldAppendClickthrough())) {
             $clickthrough = [

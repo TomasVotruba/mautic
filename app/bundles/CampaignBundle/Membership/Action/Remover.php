@@ -56,7 +56,7 @@ class Remover
         $this->saveCampaignMember($campaignMember);
     }
 
-    private function saveCampaignMember($campaignMember): void
+    private function saveCampaignMember(\Mautic\CampaignBundle\Entity\Lead $campaignMember): void
     {
         $this->leadRepository->saveEntity($campaignMember);
         $this->leadRepository->detachEntity($campaignMember);
