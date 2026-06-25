@@ -110,7 +110,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?Form
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Form();
         }
 
@@ -123,46 +123,6 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         return $entity;
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Form) {
-            throw new MethodNotAllowedHttpException(['Form']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = FormEvents::FORM_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = FormEvents::FORM_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = FormEvents::FORM_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = FormEvents::FORM_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new FormEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     public function setFields(Form $entity, $sessionFields): void
@@ -195,7 +155,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
 
                 $func = 'set'.ucfirst($f);
                 if (method_exists($field, $func)) {
-                    $field->$func($v);
+                    $field->{$func}($v);
                 }
             }
             $field->setForm($entity);
@@ -234,15 +194,6 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         }
     }
 
-    private function handleFilesDelete(Field $field): void
-    {
-        if (!$field->isFileType()) {
-            return;
-        }
-
-        $this->formUploader->deleteAllFilesOfFormField($field);
-    }
-
     public function setActions(Form $entity, $sessionActions): void
     {
         $order           = 1;
@@ -266,7 +217,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
 
                 $func = 'set'.ucfirst($f);
 
-                if ('properties' == $f) {
+                if ($f == 'properties') {
                     if (isset($v['mappedFields'])) {
                         foreach ($v['mappedFields'] as $pk => $pv) {
                             if (str_contains($pv, 'new')) {
@@ -277,7 +228,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
                 }
 
                 if (method_exists($action, $func)) {
-                    $action->$func($v);
+                    $action->{$func}($v);
                 }
             }
             $action->setForm($entity);
@@ -491,7 +442,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $pageCount    = 1;
 
         foreach ($fields as $fieldId => $field) {
-            if ('pagebreak' == $field->getType() && $openFieldId) {
+            if ($field->getType() == 'pagebreak' && $openFieldId) {
                 // Open the page
                 $pages['open'][$openFieldId] = $pageCount;
                 $openFieldId                 = false;
@@ -587,11 +538,6 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         return $entities;
     }
 
-    private function deleteFormFiles(Form $form): void
-    {
-        $this->formUploader->deleteFilesOfForm($form);
-    }
-
     /**
      * Generate an array of columns from fields.
      */
@@ -646,7 +592,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             // Generate a list of fields that are not persisted to the database by default
             $notPersist = ['button', 'captcha', 'freetext', 'freehtml', 'pagebreak'];
             foreach ($customComponents['fields'] as $type => $field) {
-                if (isset($field['builderOptions']) && isset($field['builderOptions']['addSaveResult']) && false === $field['builderOptions']['addSaveResult']) {
+                if (isset($field['builderOptions']) && isset($field['builderOptions']['addSaveResult']) && $field['builderOptions']['addSaveResult'] === false) {
                     $notPersist[] = $type;
                 }
             }
@@ -777,10 +723,10 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         foreach ($autoFillFields as $field) {
             $value = $leadArray[$field->getMappedField()] ?? '';
             // just skip string empty field
-            if ('' !== $value) {
+            if ($value !== '') {
                 $mappedFieldAlias = $field->getMappedField();
                 $mappedField      = $this->leadFieldModel->getEntityByAlias($mappedFieldAlias);
-                if ($mappedField && 'boolean' === $mappedField->getType()) {
+                if ($mappedField && $mappedField->getType() === 'boolean') {
                     $properties = $mappedField->getProperties();
                     $value      = CustomFieldValueHelper::normalize($value, 'boolean', $properties);
                 }
@@ -849,7 +795,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             ],
         ];
 
-        return (null === $operator) ? $operatorOptions : $operatorOptions[$operator];
+        return ($operator === null) ? $operatorOptions : $operatorOptions[$operator];
     }
 
     /**
@@ -876,6 +822,135 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $chartQuery->applyDateFilters($q, 'date_added');
 
         return $q->executeQuery()->fetchAllAssociative();
+    }
+
+    /**
+     * @return mixed[]|null
+     */
+    public function getContactFieldPropertiesList(string $contactFieldAlias): ?array
+    {
+        $contactField = $this->leadFieldModel->getEntityByAlias($contactFieldAlias); // @todo this must use all objects as well. Not just contact.
+
+        if (empty($contactField) || !in_array($contactField->getType(), ContactFieldHelper::getListTypes())) {
+            return null;
+        }
+
+        $contactFieldProps = $contactField->getProperties();
+
+        switch ($contactField->getType()) {
+            case 'select':
+            case 'multiselect':
+                $list = $contactFieldProps['list'] ?? [];
+                break;
+            case 'lookup':
+                $list = $contactFieldProps['list'] ?? [];
+                $list = array_combine(array_column($list, 'value'), array_column($list, 'label'));
+                break;
+            case 'boolean':
+                $list = [$contactFieldProps['no'], $contactFieldProps['yes']];
+                break;
+            case 'country':
+                $list = ContactFieldHelper::getCountryChoices();
+                break;
+            case 'region':
+                $list = ContactFieldHelper::getRegionChoices();
+                break;
+            case 'timezone':
+                $list = ContactFieldHelper::getTimezonesChoices();
+                break;
+            case 'locale':
+                $list = ContactFieldHelper::getLocaleChoices();
+                break;
+            default:
+                return null;
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param string $fieldAlias
+     *
+     * @return Field|null
+     */
+    public function findFormFieldByAlias(Form $form, $fieldAlias)
+    {
+        foreach ($form->getFields() as $field) {
+            if ($field->getAlias() === $fieldAlias) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    public function getEntitiesForGlobalSearch(GlobalSearchFilterDTO $filterDTO): ?Paginator
+    {
+        $filter = $filterDTO->getFilters();
+
+        if (!$this->canViewOthersEntity()) {
+            $filter['force'][] = [
+                'column' => $this->getRepository()->getTableAlias().'.createdBy',
+                'expr'   => 'eq',
+                'value'  => $this->userHelper->getUser()->getId(),
+            ];
+        }
+
+        return $this->getRepository()->getEntitiesForGlobalSearch($filter);
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Form) {
+            throw new MethodNotAllowedHttpException(['Form']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = FormEvents::FORM_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = FormEvents::FORM_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = FormEvents::FORM_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = FormEvents::FORM_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new FormEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    private function handleFilesDelete(Field $field): void
+    {
+        if (!$field->isFileType()) {
+            return;
+        }
+
+        $this->formUploader->deleteAllFilesOfFormField($field);
+    }
+
+    private function deleteFormFiles(Form $form): void
+    {
+        $this->formUploader->deleteFilesOfForm($form);
     }
 
     /**
@@ -965,18 +1040,18 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         foreach ($items as $key => $script) {
             if ($script->hasAttribute('src')) {
                 $javascript .= "
-                var script$key = document.createElement('script');
-                script$key.src = '".$script->getAttribute('src')."';
-                document.getElementsByTagName('head')[0].appendChild(script$key);";
+                var script{$key} = document.createElement('script');
+                script{$key}.src = '".$script->getAttribute('src')."';
+                document.getElementsByTagName('head')[0].appendChild(script{$key});";
             } else {
                 $scriptContent = $script->nodeValue;
                 $scriptContent = str_replace(["\r\n", "\n", '"'], ['', '', '\"'], $scriptContent);
 
                 $javascript .= "
-                var inlineScript$key = document.createTextNode(\"$scriptContent\");
-                var script$key       = document.createElement('script');
-                script$key.appendChild(inlineScript$key);
-                document.getElementsByTagName('head')[0].appendChild(script$key);";
+                var inlineScript{$key} = document.createTextNode(\"{$scriptContent}\");
+                var script{$key}       = document.createElement('script');
+                script{$key}.appendChild(inlineScript{$key});
+                document.getElementsByTagName('head')[0].appendChild(script{$key});";
             }
         }
 
@@ -991,7 +1066,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $formFieldProps   = $formField->getProperties();
         $mappedFieldAlias = $formField->getMappedField();
 
-        if (empty($formFieldProps['syncList']) || empty($mappedFieldAlias) || 'contact' !== $formField->getMappedObject()) {
+        if (empty($formFieldProps['syncList']) || empty($mappedFieldAlias) || $formField->getMappedObject() !== 'contact') {
             return;
         }
 
@@ -1006,66 +1081,6 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         }
     }
 
-    /**
-     * @return mixed[]|null
-     */
-    public function getContactFieldPropertiesList(string $contactFieldAlias): ?array
-    {
-        $contactField = $this->leadFieldModel->getEntityByAlias($contactFieldAlias); // @todo this must use all objects as well. Not just contact.
-
-        if (empty($contactField) || !in_array($contactField->getType(), ContactFieldHelper::getListTypes())) {
-            return null;
-        }
-
-        $contactFieldProps = $contactField->getProperties();
-
-        switch ($contactField->getType()) {
-            case 'select':
-            case 'multiselect':
-                $list = $contactFieldProps['list'] ?? [];
-                break;
-            case 'lookup':
-                $list = $contactFieldProps['list'] ?? [];
-                $list = array_combine(array_column($list, 'value'), array_column($list, 'label'));
-                break;
-            case 'boolean':
-                $list = [$contactFieldProps['no'], $contactFieldProps['yes']];
-                break;
-            case 'country':
-                $list = ContactFieldHelper::getCountryChoices();
-                break;
-            case 'region':
-                $list = ContactFieldHelper::getRegionChoices();
-                break;
-            case 'timezone':
-                $list = ContactFieldHelper::getTimezonesChoices();
-                break;
-            case 'locale':
-                $list = ContactFieldHelper::getLocaleChoices();
-                break;
-            default:
-                return null;
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param string $fieldAlias
-     *
-     * @return Field|null
-     */
-    public function findFormFieldByAlias(Form $form, $fieldAlias)
-    {
-        foreach ($form->getFields() as $field) {
-            if ($field->getAlias() === $fieldAlias) {
-                return $field;
-            }
-        }
-
-        return null;
-    }
-
     private function backfillReplacedPropertiesForBc(Form $entity): void
     {
         /** @var Field $field */
@@ -1075,32 +1090,17 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             } elseif ($field->getLeadField() && !$field->getMappedField()) {
                 $field->setMappedField($field->getLeadField());
                 $field->setMappedObject(
-                    str_starts_with($field->getLeadField(), 'company') && 'company' !== $field->getLeadField() ? 'company' : 'contact'
+                    str_starts_with($field->getLeadField(), 'company') && $field->getLeadField() !== 'company' ? 'company' : 'contact'
                 );
             }
         }
-    }
-
-    public function getEntitiesForGlobalSearch(GlobalSearchFilterDTO $filterDTO): ?Paginator
-    {
-        $filter = $filterDTO->getFilters();
-
-        if (!$this->canViewOthersEntity()) {
-            $filter['force'][] = [
-                'column' => $this->getRepository()->getTableAlias().'.createdBy',
-                'expr'   => 'eq',
-                'value'  => $this->userHelper->getUser()->getId(),
-            ];
-        }
-
-        return $this->getRepository()->getEntitiesForGlobalSearch($filter);
     }
 
     private function compareFieldOrder(Field $a, Field $b): int
     {
         $order = $a->getOrder() <=> $b->getOrder();
 
-        if (0 !== $order) {
+        if ($order !== 0) {
             return $order;
         }
 

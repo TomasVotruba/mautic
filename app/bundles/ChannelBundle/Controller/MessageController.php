@@ -94,6 +94,78 @@ class MessageController extends AbstractStandardFormController
     }
 
     /**
+     * @return JsonResponse|RedirectResponse
+     */
+    public function deleteAction(Request $request, $objectId)
+    {
+        return $this->deleteStandard($request, $objectId);
+    }
+
+    /**
+     * @param int $page
+     *
+     * @return JsonResponse|RedirectResponse|Response
+     */
+    public function contactsAction(
+        Request $request,
+        PageHelperFactoryInterface $pageHelperFactory,
+        $objectId,
+        $channel,
+        $page = 1,
+    ) {
+        $filter = [];
+        if ($channel !== 'all') {
+            $returnUrl = $this->generateUrl(
+                'mautic_message_action',
+                [
+                    'objectAction' => 'view',
+                    'objectId'     => $objectId,
+                ]
+            );
+            [$dateFrom, $dateTo] = $this->getViewDateRange($request, $objectId, $returnUrl, 'UTC');
+
+            $filter = [
+                'channel' => $channel,
+                [
+                    'col'  => 'entity.date_triggered',
+                    'expr' => 'between',
+                    'val'  => [
+                        $dateFrom->format('Y-m-d H:i:s'),
+                        $dateTo->format('Y-m-d H:i:s'),
+                    ],
+                ],
+            ];
+        }
+
+        return $this->generateContactsGrid(
+            $request,
+            $pageHelperFactory,
+            $objectId,
+            $page,
+            'channel:messages:view',
+            'message.'.$channel,
+            'campaign_lead_event_log',
+            $channel,
+            null,
+            $filter,
+            [
+                [
+                    'type'       => 'join',
+                    'from_alias' => 'entity',
+                    'table'      => 'campaign_events',
+                    'alias'      => 'event',
+                    'condition'  => "entity.event_id = event.id and event.channel = 'channel.message' and event.channel_id = ".(int) $objectId,
+                ],
+            ],
+            null,
+            [
+                'channel' => $channel ?: 'all',
+            ],
+            '.message-'.$channel
+        );
+    }
+
+    /**
      * @return mixed[]
      */
     protected function getViewArguments(array $args, $action): array
@@ -195,14 +267,6 @@ class MessageController extends AbstractStandardFormController
         return $args;
     }
 
-    /**
-     * @return JsonResponse|RedirectResponse
-     */
-    public function deleteAction(Request $request, $objectId)
-    {
-        return $this->deleteStandard($request, $objectId);
-    }
-
     protected function getTemplateBase(): string
     {
         return '@MauticChannel/Message';
@@ -241,69 +305,5 @@ class MessageController extends AbstractStandardFormController
     protected function getTranslationBase(): string
     {
         return 'mautic.channel.message';
-    }
-
-    /**
-     * @param int $page
-     *
-     * @return JsonResponse|RedirectResponse|Response
-     */
-    public function contactsAction(
-        Request $request,
-        PageHelperFactoryInterface $pageHelperFactory,
-        $objectId,
-        $channel,
-        $page = 1,
-    ) {
-        $filter = [];
-        if ('all' !== $channel) {
-            $returnUrl = $this->generateUrl(
-                'mautic_message_action',
-                [
-                    'objectAction' => 'view',
-                    'objectId'     => $objectId,
-                ]
-            );
-            [$dateFrom, $dateTo] = $this->getViewDateRange($request, $objectId, $returnUrl, 'UTC');
-
-            $filter = [
-                'channel' => $channel,
-                [
-                    'col'  => 'entity.date_triggered',
-                    'expr' => 'between',
-                    'val'  => [
-                        $dateFrom->format('Y-m-d H:i:s'),
-                        $dateTo->format('Y-m-d H:i:s'),
-                    ],
-                ],
-            ];
-        }
-
-        return $this->generateContactsGrid(
-            $request,
-            $pageHelperFactory,
-            $objectId,
-            $page,
-            'channel:messages:view',
-            'message.'.$channel,
-            'campaign_lead_event_log',
-            $channel,
-            null,
-            $filter,
-            [
-                [
-                    'type'       => 'join',
-                    'from_alias' => 'entity',
-                    'table'      => 'campaign_events',
-                    'alias'      => 'event',
-                    'condition'  => "entity.event_id = event.id and event.channel = 'channel.message' and event.channel_id = ".(int) $objectId,
-                ],
-            ],
-            null,
-            [
-                'channel' => $channel ?: 'all',
-            ],
-            '.message-'.$channel
-        );
     }
 }

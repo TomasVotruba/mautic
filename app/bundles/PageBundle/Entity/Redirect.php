@@ -110,7 +110,7 @@ class Redirect extends FormEntity
      */
     public function setRedirectId($redirectId = null): void
     {
-        if (null === $redirectId) {
+        if ($redirectId === null) {
             $redirectId = substr(hash('sha1', uniqid(mt_rand())), 0, 25);
         }
         $this->redirectId = $redirectId;
@@ -134,7 +134,7 @@ class Redirect extends FormEntity
      *
      * @param int $hits
      */
-    public function setHits($hits): Redirect
+    public function setHits($hits): self
     {
         $this->hits = $hits;
 
@@ -156,7 +156,7 @@ class Redirect extends FormEntity
      *
      * @param int $uniqueHits
      */
-    public function setUniqueHits($uniqueHits): Redirect
+    public function setUniqueHits($uniqueHits): self
     {
         $this->uniqueHits = $uniqueHits;
 

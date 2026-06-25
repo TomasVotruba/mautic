@@ -13,12 +13,12 @@ use Mautic\LeadBundle\Segment\ContactSegmentService;
 
 class SegmentFilterFunctionalTest extends MauticMysqlTestCase
 {
+
+    protected $useCleanupRollback = false;
     /**
      * @var Lead[]
      */
     private $leads = [];
-
-    protected $useCleanupRollback = false;
 
     /**
      * Test creates: contacts, segment
@@ -32,6 +32,19 @@ class SegmentFilterFunctionalTest extends MauticMysqlTestCase
         foreach ($this->getSegmentsProvider() as $scenario) {
             $this->runTestSegments($scenario['contacts'], $scenario['segment']);
         }
+    }
+
+    protected function createCustomMultiselectField(): void
+    {
+        $field = new LeadField();
+        $field->setType('multiselect');
+        $field->setObject('lead');
+        $field->setAlias('multiselect');
+        $field->setName('Multiselect');
+        $properties = unserialize('a:1:{s:4:"list";a:3:{i:0;a:2:{s:5:"label";s:1:"f";s:5:"value";s:1:"f";}i:1;a:2:{s:5:"label";s:1:"s";s:5:"value";s:1:"s";}i:2;a:2:{s:5:"label";s:1:"t";s:5:"value";s:1:"t";}}}');
+        $field->setProperties($properties);
+        $fieldModel = self::getContainer()->get(FieldModel::class);
+        $fieldModel->saveEntity($field);
     }
 
     /**
@@ -72,7 +85,7 @@ class SegmentFilterFunctionalTest extends MauticMysqlTestCase
     {
         $lead = new Lead();
         foreach ($values as $field => $value) {
-            if ('in_segment' === $field) {
+            if ($field === 'in_segment') {
                 continue;
             }
             call_user_func_array([$lead, 'set'.$field], [$value]);
@@ -186,18 +199,5 @@ class SegmentFilterFunctionalTest extends MauticMysqlTestCase
                 ['field' => 'multiselect', 'object' => 'lead',  'operator' => '!in', 'value' => ['s'], 'glue' => 'and', 'type' => 'multiselect'],
             ],
         ];
-    }
-
-    protected function createCustomMultiselectField(): void
-    {
-        $field = new LeadField();
-        $field->setType('multiselect');
-        $field->setObject('lead');
-        $field->setAlias('multiselect');
-        $field->setName('Multiselect');
-        $properties = unserialize('a:1:{s:4:"list";a:3:{i:0;a:2:{s:5:"label";s:1:"f";s:5:"value";s:1:"f";}i:1;a:2:{s:5:"label";s:1:"s";s:5:"value";s:1:"s";}i:2;a:2:{s:5:"label";s:1:"t";s:5:"value";s:1:"t";}}}');
-        $field->setProperties($properties);
-        $fieldModel = self::getContainer()->get(FieldModel::class);
-        $fieldModel->saveEntity($field);
     }
 }

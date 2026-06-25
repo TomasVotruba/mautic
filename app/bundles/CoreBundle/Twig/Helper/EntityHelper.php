@@ -35,7 +35,7 @@ class EntityHelper extends AbstractExtension
      */
     public function getEntity(string $entityName, int|string|null $id): ?object
     {
-        return null !== $id ? $this->entityManager->getRepository($entityName)->find($id) : null;
+        return $id !== null ? $this->entityManager->getRepository($entityName)->find($id) : null;
     }
 
     /**

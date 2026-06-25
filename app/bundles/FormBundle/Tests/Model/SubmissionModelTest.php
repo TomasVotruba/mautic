@@ -370,7 +370,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $server    = $request->server->all();
         $form      = new Form();
         $fields    = $this->getTestFormFields();
-        $formModel = new class extends FormModel {
+        $formModel = new class() extends FormModel {
             public function __construct()
             {
             }
@@ -430,54 +430,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('First, Second', $method->invokeArgs($this->submissionModel, [[1, 2], $field]));
     }
 
-    /**
-     * @return mixed[]
-     */
-    private function getTestFormFields(): array
-    {
-        $fieldSession          = 'mautic_'.sha1(uniqid((string) mt_rand(), true));
-        $fields[$fieldSession] = [
-            'label'        => 'Email',
-            'showLabel'    => 1,
-            'saveResult'   => 1,
-            'defaultValue' => false,
-            'alias'        => 'email',
-            'type'         => 'email',
-            'mappedField'  => 'email',
-            'mappedObject' => 'contact',
-            'id'           => $fieldSession,
-        ];
-
-        $fields['file'] = [
-            'label'                   => 'File',
-            'showLabel'               => 1,
-            'saveResult'              => 1,
-            'defaultValue'            => false,
-            'alias'                   => 'file',
-            'type'                    => 'file',
-            'id'                      => 'file',
-            'allowed_file_size'       => 1,
-            'allowed_file_extensions' => ['jpg', 'gif'],
-        ];
-
-        return $fields;
-    }
-
-    private function setUpExport(): void
-    {
-        $this->formModel->expects($this->any())
-            ->method('getCustomComponents')
-            ->willReturn(['viewOnlyFields' => ['button', 'captcha', 'freetext']]);
-
-        $this->submissioRepository->expects($this->any())
-            ->method('getEntities')
-            ->willReturn([]);
-
-        $this->entityManager->expects($this->any())
-            ->method('getRepository')
-            ->willReturn($this->submissioRepository);
-    }
-
     public function testExportResultsCsv(): void
     {
         $this->setUpExport();
@@ -496,24 +448,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($response::class, \Symfony\Component\HttpFoundation\StreamedResponse::class);
         $this->assertStringContainsString('.xlsx', $response->headers->get('Content-Disposition'));
         $this->assertSame('0', $response->headers->get('Expires'));
-    }
-
-    private function mockTranslation(): void
-    {
-        $values = ['Submission ID', 'Contact ID', 'Date Submitted', 'IP address', 'Referrer', 'Form ID'];
-
-        $this->translator->expects($this->any())
-            ->method('trans')
-            ->with($this->anything())
-            ->willReturnCallback(fn ($text) => match ($text) {
-                'mautic.form.report.submission.id'  => $values[0],
-                'mautic.lead.report.contact_id'     => $values[1],
-                'mautic.form.result.thead.date'     => $values[2],
-                'mautic.core.ipaddress'             => $values[3],
-                'mautic.form.result.thead.referrer' => $values[4],
-                'mautic.form.report.form_id'        => $values[5],
-                default                             => null,
-            });
     }
 
     /**
@@ -669,5 +603,71 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([1, 123, $this->dateHelper->toFull($dateSubmitted, 'UTC'), '127.0.0.1', 'https://test.com'], $row2);
         $this->assertNotContains($formId, $row2);
         $this->assertNotContains($email, $row1);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    private function getTestFormFields(): array
+    {
+        $fieldSession          = 'mautic_'.sha1(uniqid((string) mt_rand(), true));
+        $fields[$fieldSession] = [
+            'label'        => 'Email',
+            'showLabel'    => 1,
+            'saveResult'   => 1,
+            'defaultValue' => false,
+            'alias'        => 'email',
+            'type'         => 'email',
+            'mappedField'  => 'email',
+            'mappedObject' => 'contact',
+            'id'           => $fieldSession,
+        ];
+
+        $fields['file'] = [
+            'label'                   => 'File',
+            'showLabel'               => 1,
+            'saveResult'              => 1,
+            'defaultValue'            => false,
+            'alias'                   => 'file',
+            'type'                    => 'file',
+            'id'                      => 'file',
+            'allowed_file_size'       => 1,
+            'allowed_file_extensions' => ['jpg', 'gif'],
+        ];
+
+        return $fields;
+    }
+
+    private function setUpExport(): void
+    {
+        $this->formModel->expects($this->any())
+            ->method('getCustomComponents')
+            ->willReturn(['viewOnlyFields' => ['button', 'captcha', 'freetext']]);
+
+        $this->submissioRepository->expects($this->any())
+            ->method('getEntities')
+            ->willReturn([]);
+
+        $this->entityManager->expects($this->any())
+            ->method('getRepository')
+            ->willReturn($this->submissioRepository);
+    }
+
+    private function mockTranslation(): void
+    {
+        $values = ['Submission ID', 'Contact ID', 'Date Submitted', 'IP address', 'Referrer', 'Form ID'];
+
+        $this->translator->expects($this->any())
+            ->method('trans')
+            ->with($this->anything())
+            ->willReturnCallback(fn ($text) => match ($text) {
+                'mautic.form.report.submission.id'  => $values[0],
+                'mautic.lead.report.contact_id'     => $values[1],
+                'mautic.form.result.thead.date'     => $values[2],
+                'mautic.core.ipaddress'             => $values[3],
+                'mautic.form.result.thead.referrer' => $values[4],
+                'mautic.form.report.form_id'        => $values[5],
+                default                             => null,
+            });
     }
 }

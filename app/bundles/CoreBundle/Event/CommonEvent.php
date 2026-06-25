@@ -65,7 +65,7 @@ class CommonEvent extends Event
      */
     public function getChanges()
     {
-        if (null === $this->changes) {
+        if ($this->changes === null) {
             $this->changes = false;
             if ($this->entity && method_exists($this->entity, 'getChanges')) {
                 $this->changes = $this->entity->getChanges();

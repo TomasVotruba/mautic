@@ -169,39 +169,6 @@ class ReportDataResult
     }
 
     /**
-     * @param array $data
-     */
-    private function buildHeader($data): void
-    {
-        foreach ($this->columnKeys as $k) {
-            $dataColumn      = $data['dataColumns'][$k];
-            $label           = $data['columns'][$dataColumn]['label'];
-
-            // Aggregated column
-            if (isset($data['aggregatorColumns'][$k])) {
-                $this->headers[] = str_replace($dataColumn, $label, $k);
-            } else {
-                $this->headers[] = $data['columns'][$dataColumn]['label'];
-            }
-        }
-    }
-
-    /**
-     * @param array $data
-     */
-    private function buildTypes($data): void
-    {
-        foreach ($this->columnKeys as $k) {
-            if (isset($data['aggregatorColumns']) && array_key_exists($k, $data['aggregatorColumns'])) {
-                $this->types[$k] = (str_starts_with($k, 'AVG')) ? 'float' : 'int';
-            } else {
-                $dataColumn      = $data['dataColumns'][$k];
-                $this->types[$k] = $data['columns'][$dataColumn]['type'];
-            }
-        }
-    }
-
-    /**
      * @param array<mixed> $aggregatorVal
      */
     public function calcTotal(string $calcFunction, int $rowsCount, array &$aggregatorVal, ?float $previousVal = null): float|int|null
@@ -231,6 +198,39 @@ class ReportDataResult
                 return min($aggregatorVal);
             default:
                 return $previousVal;
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    private function buildHeader($data): void
+    {
+        foreach ($this->columnKeys as $k) {
+            $dataColumn      = $data['dataColumns'][$k];
+            $label           = $data['columns'][$dataColumn]['label'];
+
+            // Aggregated column
+            if (isset($data['aggregatorColumns'][$k])) {
+                $this->headers[] = str_replace($dataColumn, $label, $k);
+            } else {
+                $this->headers[] = $data['columns'][$dataColumn]['label'];
+            }
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    private function buildTypes($data): void
+    {
+        foreach ($this->columnKeys as $k) {
+            if (isset($data['aggregatorColumns']) && array_key_exists($k, $data['aggregatorColumns'])) {
+                $this->types[$k] = (str_starts_with($k, 'AVG')) ? 'float' : 'int';
+            } else {
+                $dataColumn      = $data['dataColumns'][$k];
+                $this->types[$k] = $data['columns'][$dataColumn]['type'];
+            }
         }
     }
 

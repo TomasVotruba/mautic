@@ -14,19 +14,6 @@ use Symfony\Component\HttpKernel\Exception\PreconditionRequiredHttpException;
 
 class RoleController extends FormController
 {
-    /**
-     * @param int|string|null $objectId
-     */
-    protected function getSessionBase($objectId = null): string
-    {
-        $base = 'role';
-
-        if (null !== $objectId) {
-            $base .= '.'.$objectId;
-        }
-
-        return $base;
-    }
 
     /**
      * Generate's default role list view.
@@ -134,7 +121,7 @@ class RoleController extends FormController
         $form              = $model->createForm($entity, $this->formFactory, $action, ['permissionsConfig' => $permissionsConfig['config']]);
 
         // /Check for a submitted form and process it
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -222,7 +209,7 @@ class RoleController extends FormController
         ];
 
         // user not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -244,7 +231,7 @@ class RoleController extends FormController
         $form              = $model->createForm($entity, $this->formFactory, $action, ['permissionsConfig' => $permissionsConfig['config']]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() === 'POST') {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -297,55 +284,6 @@ class RoleController extends FormController
         ]);
     }
 
-    private function getPermissionsConfig(Entity\Role $role): array
-    {
-        $permissionObjects = $this->security->getPermissionObjects();
-        $translator        = $this->translator;
-        $permissionRepo    = $this->doctrine->getRepository(Entity\Permission::class);
-        \assert($permissionRepo instanceof PermissionRepository);
-
-        $permissionsArray = ($role->getId()) ? $permissionRepo->getPermissionsByRole($role, true) : [];
-
-        $permissions     = [];
-        $permissionsList = [];
-        /** @var \Mautic\CoreBundle\Security\Permissions\AbstractPermissions $object */
-        foreach ($permissionObjects as $object) {
-            if (!is_object($object)) {
-                continue;
-            }
-
-            if ($object->isEnabled()) {
-                $bundle = $object->getName();
-                $label  = $translator->trans("mautic.{$bundle}.permissions.header");
-
-                // convert the permission bits from the db into readable names
-                $data = $object->convertBitsToPermissionNames($permissionsArray);
-
-                // get the ratio of granted/total
-                [$granted, $total] = $object->getPermissionRatio($data);
-
-                $permissions[$bundle] = [
-                    'label'            => $label,
-                    'permissionObject' => $object,
-                    'ratio'            => [$granted, $total],
-                    'data'             => $data,
-                ];
-
-                $perms = $object->getPermissions();
-                foreach ($perms as $level => $perm) {
-                    $levelPerms = array_keys($perm);
-                    $object->parseForJavascript($levelPerms);
-                    $permissionsList[$bundle][$level] = $levelPerms;
-                }
-            }
-        }
-
-        // order permissions by label
-        uasort($permissions, fn ($a, $b): int => strnatcmp($a['label'], $b['label']));
-
-        return ['config' => $permissions, 'list' => $permissionsList];
-    }
-
     /**
      * Delete's a role.
      *
@@ -374,13 +312,13 @@ class RoleController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             try {
                 $model = $this->getModel('user.role');
                 \assert($model instanceof RoleModel);
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.notfound',
@@ -434,7 +372,7 @@ class RoleController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $ids       = json_decode($request->query->get('ids', ''));
             $deleteIds = [];
             $userRepo  = $this->doctrine->getRepository(Entity\User::class);
@@ -445,7 +383,7 @@ class RoleController extends FormController
                 $entity = $model->getEntity($objectId);
                 $users  = $userRepo->findByRole($entity);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.notfound',
@@ -485,5 +423,67 @@ class RoleController extends FormController
                 'flashes' => $flashes,
             ])
         );
+    }
+    /**
+     * @param int|string|null $objectId
+     */
+    protected function getSessionBase($objectId = null): string
+    {
+        $base = 'role';
+
+        if ($objectId !== null) {
+            $base .= '.'.$objectId;
+        }
+
+        return $base;
+    }
+
+    private function getPermissionsConfig(Entity\Role $role): array
+    {
+        $permissionObjects = $this->security->getPermissionObjects();
+        $translator        = $this->translator;
+        $permissionRepo    = $this->doctrine->getRepository(Entity\Permission::class);
+        \assert($permissionRepo instanceof PermissionRepository);
+
+        $permissionsArray = ($role->getId()) ? $permissionRepo->getPermissionsByRole($role, true) : [];
+
+        $permissions     = [];
+        $permissionsList = [];
+        /** @var \Mautic\CoreBundle\Security\Permissions\AbstractPermissions $object */
+        foreach ($permissionObjects as $object) {
+            if (!is_object($object)) {
+                continue;
+            }
+
+            if ($object->isEnabled()) {
+                $bundle = $object->getName();
+                $label  = $translator->trans("mautic.{$bundle}.permissions.header");
+
+                // convert the permission bits from the db into readable names
+                $data = $object->convertBitsToPermissionNames($permissionsArray);
+
+                // get the ratio of granted/total
+                [$granted, $total] = $object->getPermissionRatio($data);
+
+                $permissions[$bundle] = [
+                    'label'            => $label,
+                    'permissionObject' => $object,
+                    'ratio'            => [$granted, $total],
+                    'data'             => $data,
+                ];
+
+                $perms = $object->getPermissions();
+                foreach ($perms as $level => $perm) {
+                    $levelPerms = array_keys($perm);
+                    $object->parseForJavascript($levelPerms);
+                    $permissionsList[$bundle][$level] = $levelPerms;
+                }
+            }
+        }
+
+        // order permissions by label
+        uasort($permissions, fn ($a, $b): int => strnatcmp($a['label'], $b['label']));
+
+        return ['config' => $permissions, 'list' => $permissionsList];
     }
 }

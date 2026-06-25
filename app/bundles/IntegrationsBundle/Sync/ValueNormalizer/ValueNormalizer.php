@@ -39,8 +39,8 @@ final class ValueNormalizer implements ValueNormalizerInterface
                 // Other value types we normalize to null.
                 return new NormalizedValueDAO($type, $value);
             case NormalizedValueDAO::BOOLEAN_TYPE:
-                $value = 'false' === $value ? false : $value;
-                $value = 'true' === $value ? true : $value;
+                $value = $value === 'false' ? false : $value;
+                $value = $value === 'true' ? true : $value;
 
                 return new NormalizedValueDAO($type, $value, (bool) $value);
             default:

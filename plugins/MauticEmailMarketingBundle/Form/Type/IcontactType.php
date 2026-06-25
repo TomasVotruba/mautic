@@ -79,7 +79,7 @@ class IcontactType extends AbstractType
             });
         }
 
-        if (isset($options['form_area']) && 'integration' == $options['form_area']) {
+        if (isset($options['form_area']) && $options['form_area'] == 'integration') {
             $leadFields = $this->pluginModel->getLeadFields();
 
             $fields = $object->getFormLeadFields();

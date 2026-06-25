@@ -8,6 +8,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class EntityImportEvent extends Event
 {
+
+    public const UPDATE = 'update';
+    public const NEW    = 'new';
+    public const ERRORS = 'errors';
     /**
      * @var array<int, int>
      */
@@ -17,10 +21,6 @@ final class EntityImportEvent extends Event
      * @var array<string, array<string, mixed>>
      */
     private array $dependencies = [];
-
-    public const UPDATE = 'update';
-    public const NEW    = 'new';
-    public const ERRORS = 'errors';
 
     /**
      * @var array<string, array<string, mixed>>

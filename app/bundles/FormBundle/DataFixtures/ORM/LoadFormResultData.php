@@ -26,19 +26,19 @@ class LoadFormResultData extends AbstractFixture implements OrderedFixtureInterf
                 $submission->setDateSubmitted(new \DateTime());
 
                 foreach ($rows as $col => $val) {
-                    if ('NULL' != $val) {
+                    if ($val != 'NULL') {
                         $setter = 'set'.\ucfirst($col);
                         if (\in_array($col, ['form', 'page', 'ipAddress', 'lead'])) {
-                            if ('lead' === $col) {
+                            if ($col === 'lead') {
                                 // For some reason the lead must be linked with id - 1
                                 $entity = $this->getReference($col.'-'.($val - 1));
                             } else {
                                 $entity = $this->getReference($col.'-'.$val);
                             }
-                            if ('page' == $col) {
+                            if ($col == 'page') {
                                 $submission->setReferer($this->pageModel->generateUrl($entity));
                             }
-                            $submission->$setter($entity);
+                            $submission->{$setter}($entity);
                             unset($rows[$col]);
                         } else {
                             // the rest are custom field values

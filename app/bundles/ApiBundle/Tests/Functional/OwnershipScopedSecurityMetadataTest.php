@@ -55,7 +55,7 @@ final class OwnershipScopedSecurityMetadataTest extends MauticMysqlTestCase
 
                     $security = $operation->getSecurity();
 
-                    if (null === $security) {
+                    if ($security === null) {
                         continue;
                     }
 

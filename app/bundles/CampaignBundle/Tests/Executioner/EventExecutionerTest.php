@@ -153,7 +153,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->eventCollector->method('getEventConfig')
             ->willReturnCallback(
                 function (Event $event) use ($jumpConfig, $otherConfig) {
-                    if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType()) {
+                    if ($event->getType() === CampaignActionJumpToEventSubscriber::EVENT_NAME) {
                         return $jumpConfig;
                     }
 
@@ -186,10 +186,10 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->actionExecutioner->expects($matcher)
             ->method('execute')->willReturnCallback(function (...$parameters) use ($matcher, $otherConfig, $jumpConfig) {
                 $this->assertInstanceOf(ArrayCollection::class, $parameters[1]);
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertEquals($otherConfig, $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertEquals($jumpConfig, $parameters[0]);
                 }
 
@@ -201,20 +201,6 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
             ->method('incrementCampaignRotationForContacts');
 
         $this->getEventExecutioner()->executeEventsForContacts($events, $contacts);
-    }
-
-    private function getEventExecutioner(): EventExecutioner
-    {
-        return new EventExecutioner(
-            $this->eventCollector,
-            $this->eventLogger,
-            $this->actionExecutioner,
-            $this->conditionExecutioner,
-            $this->decisionExecutioner,
-            $this->logger,
-            $this->eventScheduler,
-            $this->removedContactTracker,
-        );
     }
 
     public function testJumpToEventsExecutedWithoutTarget(): void
@@ -282,5 +268,19 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(count($pendingEvent->getSuccessful()), 1);
         $this->assertEquals(count($pendingEvent->getFailures()), 0);
+    }
+
+    private function getEventExecutioner(): EventExecutioner
+    {
+        return new EventExecutioner(
+            $this->eventCollector,
+            $this->eventLogger,
+            $this->actionExecutioner,
+            $this->conditionExecutioner,
+            $this->decisionExecutioner,
+            $this->logger,
+            $this->eventScheduler,
+            $this->removedContactTracker,
+        );
     }
 }

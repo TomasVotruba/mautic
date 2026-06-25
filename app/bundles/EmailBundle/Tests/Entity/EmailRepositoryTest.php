@@ -283,20 +283,6 @@ class EmailRepositoryTest extends TestCase
         ], $result);
     }
 
-    /**
-     * @param int[] $excludedListIds
-     */
-    private function mockExcludedListIds(array $excludedListIds): void
-    {
-        $this->result->method('fetchFirstColumn')
-            ->willReturn($excludedListIds);
-    }
-
-    private function replaceQueryPrefix(string $query): string
-    {
-        return str_replace('{prefix}', MAUTIC_TABLE_PREFIX, $query);
-    }
-
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
@@ -334,5 +320,19 @@ class EmailRepositoryTest extends TestCase
         $commands = $this->repo->getSearchCommands();
         self::assertContains('mautic.email.email.searchcommand.isexpired', $commands);
         self::assertContains('mautic.email.email.searchcommand.ispending', $commands);
+    }
+
+    /**
+     * @param int[] $excludedListIds
+     */
+    private function mockExcludedListIds(array $excludedListIds): void
+    {
+        $this->result->method('fetchFirstColumn')
+            ->willReturn($excludedListIds);
+    }
+
+    private function replaceQueryPrefix(string $query): string
+    {
+        return str_replace('{prefix}', MAUTIC_TABLE_PREFIX, $query);
     }
 }

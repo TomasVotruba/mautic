@@ -56,7 +56,7 @@ class ValueHelper
         $value = $this->normalizedValueDAO->getNormalizedValue();
 
         // If the field is not required, do not force a value
-        if (FieldDAO::FIELD_REQUIRED !== $this->fieldState) {
+        if ($this->fieldState !== FieldDAO::FIELD_REQUIRED) {
             return $value;
         }
 
@@ -66,7 +66,7 @@ class ValueHelper
         }
 
         // If the value is not empty (including 0 or false), do not force a value
-        if (null !== $value && '' !== $value) {
+        if ($value !== null && $value !== '') {
             return $value;
         }
 

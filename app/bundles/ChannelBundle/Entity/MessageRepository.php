@@ -103,6 +103,20 @@ class MessageRepository extends CommonRepository
     }
 
     /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return array_merge([
+            'mautic.core.searchcommand.ispublished',
+            'mautic.core.searchcommand.isunpublished',
+            'mautic.core.searchcommand.ismine',
+            'mautic.core.searchcommand.isuncategorized',
+            'mautic.project.searchcommand.name',
+        ], parent::getSearchCommands());
+    }
+
+    /**
      * @param object $filter
      *
      * @return mixed[]
@@ -121,19 +135,5 @@ class MessageRepository extends CommonRepository
             ),
             default => $this->addStandardSearchCommandWhereClause($q, $filter),
         };
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return array_merge([
-            'mautic.core.searchcommand.ispublished',
-            'mautic.core.searchcommand.isunpublished',
-            'mautic.core.searchcommand.ismine',
-            'mautic.core.searchcommand.isuncategorized',
-            'mautic.project.searchcommand.name',
-        ], parent::getSearchCommands());
     }
 }

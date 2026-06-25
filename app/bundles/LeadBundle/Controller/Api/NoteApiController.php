@@ -62,7 +62,7 @@ class NoteApiController extends CommonApiController
 
             $entity->setLead($lead);
             unset($parameters['lead']);
-        } elseif ('new' === $action) {
+        } elseif ($action === 'new') {
             return $this->returnError('lead ID is mandatory', Response::HTTP_BAD_REQUEST);
         }
     }

@@ -91,44 +91,6 @@ class ImportController extends FormController
     }
 
     /**
-     * Get items for index list.
-     *
-     * @param int     $start
-     * @param int     $limit
-     * @param mixed[] $filter
-     * @param string  $orderBy
-     * @param string  $orderByDir
-     * @param mixed[] $args
-     */
-    protected function getIndexItems($start, $limit, $filter, $orderBy, $orderByDir, array $args = []): array
-    {
-        $object = $this->requestStack->getSession()->get('mautic.import.object');
-
-        $filter['force'][] = [
-            'column' => $this->importModel->getRepository()->getTableAlias().'.object',
-            'expr'   => 'eq',
-            'value'  => $object,
-        ];
-
-        $items = $this->importModel->getEntities(
-            array_merge(
-                [
-                    'start'      => $start,
-                    'limit'      => $limit,
-                    'filter'     => $filter,
-                    'orderBy'    => $orderBy,
-                    'orderByDir' => $orderByDir,
-                ],
-                $args
-            )
-        );
-
-        $count = count($items);
-
-        return [$count, $items];
-    }
-
-    /**
      * @param int $objectId
      *
      * @return array|JsonResponse|RedirectResponse|Response
@@ -221,7 +183,7 @@ class ImportController extends FormController
         $fs        = new Filesystem();
         $complete  = false;
 
-        if (!file_exists($fullPath) && self::STEP_UPLOAD_CSV !== $step) {
+        if (!file_exists($fullPath) && $step !== self::STEP_UPLOAD_CSV) {
             // Force step one if the file doesn't exist
             $this->logger->log(LogLevel::WARNING, "File {$fullPath} does not exist anymore. Reseting import to step STEP_UPLOAD_CSV.");
             $this->addFlashMessage('mautic.import.file.missing', ['%file%' => $this->getImportFileName($object)], FlashBag::LEVEL_ERROR);
@@ -314,7 +276,7 @@ class ImportController extends FormController
         }
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() === 'POST') {
             if (!isset($form) || $this->isFormCancelled($form)) {
                 $this->resetImport($object);
                 $this->removeImportFile($fullPath);
@@ -351,7 +313,7 @@ class ImportController extends FormController
                                 foreach ($config as $key => &$c) {
                                     $c = htmlspecialchars_decode($c);
 
-                                    if ('batchlimit' == $key) {
+                                    if ($key == 'batchlimit') {
                                         $c = (int) $c;
                                     }
                                 }
@@ -467,7 +429,7 @@ class ImportController extends FormController
             }
         }
 
-        if (self::STEP_UPLOAD_CSV === $step || self::STEP_MATCH_FIELDS === $step) {
+        if ($step === self::STEP_UPLOAD_CSV || $step === self::STEP_MATCH_FIELDS) {
             $contentTemplate = '@MauticLead/Import/new.html.twig';
             $viewParameters  = [
                 'form'       => $form->createView(),
@@ -517,6 +479,76 @@ class ImportController extends FormController
         $response->headers->set('Connection', 'close');
 
         return $response;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getViewArguments(array $args, $action): array
+    {
+        switch ($action) {
+            case 'view':
+                /** @var Import $entity */
+                $entity = $args['entity'];
+
+                $args['viewParameters'] = array_merge(
+                    $args['viewParameters'],
+                    [
+                        'failedRows'        => $this->importModel->getFailedRows($entity->getId(), $entity->getObject()),
+                        'importedRowsChart' => $entity->getDateStarted() ? $this->importModel->getImportedRowsLineChartData(
+                            'i',
+                            $entity->getDateStarted(),
+                            $entity->getDateEnded() ?: $entity->getDateModified(),
+                            null,
+                            [
+                                'object_id' => $entity->getId(),
+                            ]
+                        ) : [],
+                    ]
+                );
+
+                break;
+        }
+
+        return $args;
+    }
+
+    /**
+     * Get items for index list.
+     *
+     * @param int     $start
+     * @param int     $limit
+     * @param mixed[] $filter
+     * @param string  $orderBy
+     * @param string  $orderByDir
+     * @param mixed[] $args
+     */
+    protected function getIndexItems($start, $limit, $filter, $orderBy, $orderByDir, array $args = []): array
+    {
+        $object = $this->requestStack->getSession()->get('mautic.import.object');
+
+        $filter['force'][] = [
+            'column' => $this->importModel->getRepository()->getTableAlias().'.object',
+            'expr'   => 'eq',
+            'value'  => $object,
+        ];
+
+        $items = $this->importModel->getEntities(
+            array_merge(
+                [
+                    'start'      => $start,
+                    'limit'      => $limit,
+                    'filter'     => $filter,
+                    'orderBy'    => $orderBy,
+                    'orderByDir' => $orderByDir,
+                ],
+                $args
+            )
+        );
+
+        $count = count($items);
+
+        return [$count, $items];
     }
 
     /**
@@ -617,87 +649,6 @@ class ImportController extends FormController
         return $this->getImportDirName().'/'.$this->getImportFileName($object);
     }
 
-    private function resetImport(string $object): void
-    {
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.headers', []);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.file', null);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.step', self::STEP_UPLOAD_CSV);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.progress', [0, 0]);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.inprogress', false);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.importfields', []);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.original.file', null);
-        $this->requestStack->getSession()->set('mautic.'.$object.'.import.id', null);
-    }
-
-    private function removeImportFile(string $filepath): void
-    {
-        if (file_exists($filepath) && is_readable($filepath)) {
-            unlink($filepath);
-
-            $this->logger->log(LogLevel::WARNING, "File {$filepath} was removed.");
-        }
-    }
-
-    private function getImportNotificationUser(?Import $import, UserRepository $userRepository): ?User
-    {
-        if (!$import || !$import->getCreatedBy()) {
-            return null;
-        }
-
-        $user = $userRepository->find($import->getCreatedBy());
-
-        return $user instanceof User ? $user : null;
-    }
-
-    private function getImportCancellationMessage(string $fileName, ?Import $import, ?User $notificationUser): string
-    {
-        if (!$import || !$import->getId()) {
-            return $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
-        }
-
-        if ($notificationUser && $this->user && $notificationUser->getId() !== $this->user->getId()) {
-            return $this->translator->trans('mautic.lead.import.canceled.with_id_and_user', [
-                '%file%' => $fileName,
-                '%id%'   => $import->getId(),
-                '%user%' => $this->user->getName(),
-            ]);
-        }
-
-        return $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()]);
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getViewArguments(array $args, $action): array
-    {
-        switch ($action) {
-            case 'view':
-                /** @var Import $entity */
-                $entity = $args['entity'];
-
-                $args['viewParameters'] = array_merge(
-                    $args['viewParameters'],
-                    [
-                        'failedRows'        => $this->importModel->getFailedRows($entity->getId(), $entity->getObject()),
-                        'importedRowsChart' => $entity->getDateStarted() ? $this->importModel->getImportedRowsLineChartData(
-                            'i',
-                            $entity->getDateStarted(),
-                            $entity->getDateEnded() ?: $entity->getDateModified(),
-                            null,
-                            [
-                                'object_id' => $entity->getId(),
-                            ]
-                        ) : [],
-                    ]
-                );
-
-                break;
-        }
-
-        return $args;
-    }
-
     /**
      * Support non-index pages such as modal forms.
      */
@@ -753,6 +704,55 @@ class ImportController extends FormController
     protected function getDefaultOrderDirection(): string
     {
         return 'DESC';
+    }
+
+    private function resetImport(string $object): void
+    {
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.headers', []);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.file', null);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.step', self::STEP_UPLOAD_CSV);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.progress', [0, 0]);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.inprogress', false);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.importfields', []);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.original.file', null);
+        $this->requestStack->getSession()->set('mautic.'.$object.'.import.id', null);
+    }
+
+    private function removeImportFile(string $filepath): void
+    {
+        if (file_exists($filepath) && is_readable($filepath)) {
+            unlink($filepath);
+
+            $this->logger->log(LogLevel::WARNING, "File {$filepath} was removed.");
+        }
+    }
+
+    private function getImportNotificationUser(?Import $import, UserRepository $userRepository): ?User
+    {
+        if (!$import || !$import->getCreatedBy()) {
+            return null;
+        }
+
+        $user = $userRepository->find($import->getCreatedBy());
+
+        return $user instanceof User ? $user : null;
+    }
+
+    private function getImportCancellationMessage(string $fileName, ?Import $import, ?User $notificationUser): string
+    {
+        if (!$import || !$import->getId()) {
+            return $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+        }
+
+        if ($notificationUser && $this->user && $notificationUser->getId() !== $this->user->getId()) {
+            return $this->translator->trans('mautic.lead.import.canceled.with_id_and_user', [
+                '%file%' => $fileName,
+                '%id%'   => $import->getId(),
+                '%user%' => $this->user->getName(),
+            ]);
+        }
+
+        return $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()]);
     }
 
     private function dispatchImportOnInit(): ImportInitEvent

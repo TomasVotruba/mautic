@@ -95,7 +95,7 @@ class CommonApiController extends FetchCommonApiController
         $response = $this->handleView($view);
 
         foreach ($entities as $key => $entity) {
-            if (null === $entity || !$entity->getId()) {
+            if ($entity === null || !$entity->getId()) {
                 $this->setBatchError($key, 'mautic.core.error.notfound', Response::HTTP_NOT_FOUND, $errors, $entities, $entity);
                 continue;
             }
@@ -138,7 +138,7 @@ class CommonApiController extends FetchCommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -184,8 +184,8 @@ class CommonApiController extends FetchCommonApiController
             $entity = $entities[$key] ?? null;
 
             $statusCode = Response::HTTP_OK;
-            if (null === $entity || !$entity->getId()) {
-                if ('PATCH' === $method) {
+            if ($entity === null || !$entity->getId()) {
+                if ($method === 'PATCH') {
                     // PATCH requires that an entity exists
                     $this->setBatchError($key, 'mautic.core.error.notfound', Response::HTTP_NOT_FOUND, $errors, $entities, $entity);
                     $statusCodes[$key] = Response::HTTP_NOT_FOUND;
@@ -246,8 +246,8 @@ class CommonApiController extends FetchCommonApiController
         $parameters = $request->request->all();
         $method     = $request->getMethod();
 
-        if (null === $entity || !$entity->getId()) {
-            if ('PATCH' === $method) {
+        if ($entity === null || !$entity->getId()) {
+            if ($method === 'PATCH') {
                 // PATCH requires that an entity exists
                 return $this->notFound();
             }
@@ -438,7 +438,7 @@ class CommonApiController extends FetchCommonApiController
             $lastEntityIndex = $index;
         }
 
-        if (-1 === $lastEntityIndex || $lastEntityIndex === $key) {
+        if ($lastEntityIndex === -1 || $lastEntityIndex === $key) {
             $this->detachEntity($entity);
         }
 
@@ -457,7 +457,7 @@ class CommonApiController extends FetchCommonApiController
     {
         $categoryId = null;
 
-        if (null === $parameters) {
+        if ($parameters === null) {
             // get from request
             $parameters = $request->request->all();
         }
@@ -525,7 +525,7 @@ class CommonApiController extends FetchCommonApiController
             && $this->security->checkPermissionExists($this->permissionBase.':publish')) {
             if ($this->security->checkPermissionExists($this->permissionBase.':publishown')) {
                 if (!$this->checkEntityAccess($entity, 'publish')) {
-                    if ('new' === $action) {
+                    if ($action === 'new') {
                         $parameters['isPublished'] = 0;
                         unset($parameters['publishUp'], $parameters['publishDown']);
                     } else {
@@ -550,7 +550,7 @@ class CommonApiController extends FetchCommonApiController
 
         $this->prepareParametersFromRequest($form, $submitParams, $entity, $this->dataInputMasks);
 
-        $form->submit($submitParams, 'PATCH' !== $method);
+        $form->submit($submitParams, $method !== 'PATCH');
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->setCategory($entity, $categoryId);
@@ -573,7 +573,7 @@ class CommonApiController extends FetchCommonApiController
             $headers = [];
             // return the newly created entities location if applicable
             if (in_array($statusCode, [Response::HTTP_CREATED, Response::HTTP_ACCEPTED])) {
-                $route = (null !== $this->router->getRouteCollection()->get('mautic_api_'.$this->entityNameMulti.'_getone'))
+                $route = ($this->router->getRouteCollection()->get('mautic_api_'.$this->entityNameMulti.'_getone') !== null)
                     ? 'mautic_api_'.$this->entityNameMulti.'_getone' : 'mautic_api_get'.$this->entityNameOne;
                 $headers['Location'] = $this->generateUrl(
                     $route,
@@ -633,8 +633,8 @@ class CommonApiController extends FetchCommonApiController
         if (!empty($categoryId) && method_exists($entity, 'setCategory')) {
             $category = $this->doctrine->getManager()->find(Category::class, $categoryId);
 
-            if (null === $category) {
-                throw new \UnexpectedValueException("Category $categoryId does not exist");
+            if ($category === null) {
+                throw new \UnexpectedValueException("Category {$categoryId} does not exist");
             }
 
             $entity->setCategory($category);

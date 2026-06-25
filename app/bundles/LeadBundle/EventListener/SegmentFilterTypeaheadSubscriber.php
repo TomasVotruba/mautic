@@ -47,7 +47,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 
     public function onSegmentFilterAliasUser(ListTypeaheadEvent $event): void
     {
-        if ('owner_id' !== $event->getFieldAlias()) {
+        if ($event->getFieldAlias() !== 'owner_id') {
             return;
         }
 
@@ -100,18 +100,18 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
         $field      = $this->fieldModel->getEntityByAlias($fieldAlias);
 
         $dataArray = [];
-        if ('lookup' === $field->getType() && !empty($field->getProperties()['list'])) {
+        if ($field->getType() === 'lookup' && !empty($field->getProperties()['list'])) {
             foreach ($field->getProperties()['list'] as $predefinedValue) {
                 $dataArray[] = ['value' => $predefinedValue];
             }
         }
 
-        if ('company' === $field->getObject()) {
+        if ($field->getObject() === 'company') {
             $results = $this->companyModel->getLookupResults('companyfield', [$fieldAlias, $filter]);
             foreach ($results as $r) {
                 $dataArray[] = ['value' => $r['label']];
             }
-        } elseif ('lead' === $field->getObject()) {
+        } elseif ($field->getObject() === 'lead') {
             $results = $this->fieldModel->getLookupResults($fieldAlias, $filter);
             foreach ($results as $r) {
                 $dataArray[] = ['value' => $r[$fieldAlias]];

@@ -28,6 +28,21 @@ trait FrequencyRuleTrait
 
     private ?RequestStack $requestStack = null;
 
+    #[\Symfony\Contracts\Service\Attribute\Required]
+    public function setDoNotContactModel(\Mautic\LeadBundle\Model\DoNotContact $doNotContactModel): void
+    {
+        $this->doNotContactModel = $doNotContactModel;
+    }
+
+    /**
+     * The name is different, so it won't collide with other setters.
+     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
+    public function setRequestStackObject(RequestStack $requestStack): void
+    {
+        $this->requestStack = $requestStack;
+    }
+
     /**
      * @param array $viewParameters
      * @param bool  $isPublic
@@ -65,7 +80,7 @@ trait FrequencyRuleTrait
             }
         }
 
-        if (null == $data) {
+        if ($data == null) {
             $data = $this->getFrequencyRuleFormData($lead, $allChannels, $leadChannels, $isPublic, null, $isPreferenceCenter);
         }
         /** @var FormInterface $form */
@@ -82,9 +97,9 @@ trait FrequencyRuleTrait
         );
 
         $request = $this->requestStack->getCurrentRequest();
-        \assert(null !== $request);
+        \assert($request !== null);
         $method = $request->getMethod();
-        if ('GET' !== $method) {
+        if ($method !== 'GET') {
             if (!$this->isFormCancelled($form)) {
                 if ($this->isFormValid($form)) {
                     $this->persistFrequencyRuleFormData($lead, $form->getData(), $allChannels, $leadChannels, $currentChannelId);
@@ -106,15 +121,15 @@ trait FrequencyRuleTrait
 
         /** @var LeadModel $model */
         $model = $this->getModel('lead');
-        if (null === $allChannels) {
+        if ($allChannels === null) {
             $allChannels = $model->getPreferenceChannels();
         }
 
-        if (null === $leadChannels) {
+        if ($leadChannels === null) {
             $leadChannels = $model->getContactChannels($lead);
         }
 
-        if (null === $frequencyRules) {
+        if ($frequencyRules === null) {
             $frequencyRules = $model->getFrequencyRules($lead);
         }
 
@@ -164,13 +179,13 @@ trait FrequencyRuleTrait
         \assert($dncModel instanceof \Mautic\LeadBundle\Model\DoNotContact);
 
         $request = $this->requestStack->getCurrentRequest();
-        \assert(null !== $request);
+        \assert($request !== null);
         // iF subscribed_channels are enabled in form, then touch DNC
         if (isset($request->request->all()['lead_contact_frequency_rules']['lead_channels'])) {
             foreach ($formData['lead_channels']['subscribed_channels'] as $contactChannel) {
                 if (!isset($leadChannels[$contactChannel])) {
                     $contactable = $dncModel->isContactable($lead, $contactChannel);
-                    if (DoNotContact::UNSUBSCRIBED == $contactable || DoNotContact::MANUAL == $contactable) {
+                    if ($contactable == DoNotContact::UNSUBSCRIBED || $contactable == DoNotContact::MANUAL) {
                         $dncModel->removeDncForContact($lead->getId(), $contactChannel);
                     }
                 }
@@ -184,20 +199,5 @@ trait FrequencyRuleTrait
             }
         }
         $leadModel->setFrequencyRules($lead, $formData, $this->leadLists);
-    }
-
-    #[\Symfony\Contracts\Service\Attribute\Required]
-    public function setDoNotContactModel(\Mautic\LeadBundle\Model\DoNotContact $doNotContactModel): void
-    {
-        $this->doNotContactModel = $doNotContactModel;
-    }
-
-    /**
-     * The name is different, so it won't collide with other setters.
-     */
-    #[\Symfony\Contracts\Service\Attribute\Required]
-    public function setRequestStackObject(RequestStack $requestStack): void
-    {
-        $this->requestStack = $requestStack;
     }
 }

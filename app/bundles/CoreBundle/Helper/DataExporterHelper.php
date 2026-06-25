@@ -31,7 +31,7 @@ class DataExporterHelper
 
         $results = $model->getEntities($args);
         $items   = $results['results'];
-        if (0 === count($items)) {
+        if (count($items) === 0) {
             return null;
         }
         unset($results);

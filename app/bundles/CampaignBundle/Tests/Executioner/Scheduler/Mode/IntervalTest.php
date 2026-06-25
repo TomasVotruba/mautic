@@ -475,15 +475,6 @@ class IntervalTest extends \PHPUnit\Framework\TestCase
         Assert::assertTrue($interval->isContactSpecificExecutionDateRequired($event));
     }
 
-    private function getInterval(): Interval
-    {
-        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->method('getDefaultTimezone')
-            ->willReturn('America/New_York');
-
-        return new Interval(new NullLogger(), $coreParametersHelper);
-    }
-
     public function testExecutionDateIsValidatedAsExpectedWithStartHourAndDaylightSavingsTimeChange(): void
     {
         $campaign = $this->createMock(Campaign::class);
@@ -592,5 +583,14 @@ class IntervalTest extends \PHPUnit\Framework\TestCase
         $interval = $this->getInterval();
 
         Assert::assertFalse($interval->isContactSpecificExecutionDateRequired($event));
+    }
+
+    private function getInterval(): Interval
+    {
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $coreParametersHelper->method('getDefaultTimezone')
+            ->willReturn('America/New_York');
+
+        return new Interval(new NullLogger(), $coreParametersHelper);
     }
 }

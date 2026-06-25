@@ -66,7 +66,7 @@ class IntegrationHelper
     public function getIntegrationObjects($specificIntegrations = null, $withFeatures = null, $alphabetical = false, $pluginFilter = null, $publishedOnly = false): array
     {
         // Build the service classes
-        if ([] === $this->available) {
+        if ($this->available === []) {
             // Get currently installed integrations
             $integrationSettings = $this->getIntegrationSettings();
 
@@ -210,11 +210,11 @@ class IntegrationHelper
         }
 
         // Ensure appropriate formats
-        if (null !== $specificIntegrations && !is_array($specificIntegrations)) {
+        if ($specificIntegrations !== null && !is_array($specificIntegrations)) {
             $specificIntegrations = [$specificIntegrations];
         }
 
-        if (null !== $withFeatures && !is_array($withFeatures)) {
+        if ($withFeatures !== null && !is_array($withFeatures)) {
             $withFeatures = [$withFeatures];
         }
 
@@ -516,7 +516,7 @@ class IntegrationHelper
 
                 // add the api keys for use within the share buttons
                 $shareSettings['keys']   = $apiKeys;
-                $shareBtns[$integration] = $this->twig->render($plugin->getBundle()."/Integration/$integration:share.html.twig", [
+                $shareBtns[$integration] = $this->twig->render($plugin->getBundle()."/Integration/{$integration}:share.html.twig", [
                     'settings' => $shareSettings,
                 ]);
             }
@@ -559,7 +559,7 @@ class IntegrationHelper
 
         $groups = ['core', 'social', 'professional', 'personal'];
         $keys   = array_keys($fields);
-        if (0 !== count(array_intersect($groups, $keys)) && count($keys) <= 4) {
+        if (count(array_intersect($groups, $keys)) !== 0 && count($keys) <= 4) {
             // fields are group
             foreach ($fields as $groupFields) {
                 $availableFields = array_keys($groupFields);

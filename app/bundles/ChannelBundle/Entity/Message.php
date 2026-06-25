@@ -88,6 +88,12 @@ class Message extends FormEntity implements UuidInterface
     #[Groups(['message:read', 'message:write'])]
     private $channels;
 
+    public function __construct()
+    {
+        $this->channels = new ArrayCollection();
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->id = null;
@@ -147,12 +153,6 @@ class Message extends FormEntity implements UuidInterface
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'message');
-    }
-
-    public function __construct()
-    {
-        $this->channels = new ArrayCollection();
-        $this->initializeProjects();
     }
 
     /**

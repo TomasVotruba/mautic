@@ -103,7 +103,7 @@ trait CustomFieldEntityTrait
     public function addUpdatedField($alias, $value, $oldValue = null)
     {
         // Don't allow overriding ID
-        if ('id' === $alias) {
+        if ($alias === 'id') {
             return $this;
         }
 
@@ -111,7 +111,7 @@ trait CustomFieldEntityTrait
         $field    = $this->getField($alias);
         $setter   = 'set'.ucfirst($property);
 
-        if (null == $oldValue) {
+        if ($oldValue == null) {
             $oldValue = $this->getFieldValue($alias);
         } elseif ($field) {
             $oldValue = CustomFieldHelper::fixValueType($field['type'], $oldValue);
@@ -120,19 +120,19 @@ trait CustomFieldEntityTrait
         if (property_exists($this, $property) && method_exists($this, $setter)) {
             // Fixed custom field so use the setter but don't get caught in a loop such as a custom field called "notes"
             // Set empty value as null
-            if ('' === $value) {
+            if ($value === '') {
                 $value = null;
             }
-            $this->$setter($value);
+            $this->{$setter}($value);
         }
 
         if (is_string($value)) {
             $value = trim($value);
-            if ('' === $value) {
+            if ($value === '') {
                 // Ensure value is null for consistency
                 $value = null;
 
-                if ('' === $oldValue) {
+                if ($oldValue === '') {
                     $oldValue = null;
                 }
             }
@@ -145,7 +145,7 @@ trait CustomFieldEntityTrait
             $value = CustomFieldHelper::fixValueType($field['type'], $value);
         }
 
-        if ($oldValue !== $value && !(('' === $oldValue && null === $value) || (null === $oldValue && '' === $value))) {
+        if ($oldValue !== $value && !(($oldValue === '' && $value === null) || ($oldValue === null && $value === ''))) {
             $this->addChange('fields', [$alias => [$oldValue, $value]]);
             $this->updatedFields[$alias] = $value;
         }
@@ -174,7 +174,7 @@ trait CustomFieldEntityTrait
         if (property_exists($this, $field)) {
             $value = $this->{'get'.ucfirst($field)}();
 
-            if (null !== $value) {
+            if ($value !== null) {
                 return $value;
             }
         }
@@ -226,7 +226,7 @@ trait CustomFieldEntityTrait
             ];
 
             foreach ($this->fields as $group => $fields) {
-                if ('all' === $group) {
+                if ($group === 'all') {
                     continue;
                 }
 

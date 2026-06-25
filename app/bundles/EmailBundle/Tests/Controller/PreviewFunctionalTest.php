@@ -43,30 +43,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
     }
 
-    private function assertPageContent(string $url, string ...$expectedContents): void
-    {
-        $crawler = $this->client->request(Request::METHOD_GET, $url);
-        self::assertResponseIsSuccessful();
-        foreach ($expectedContents as $expectedContent) {
-            self::assertStringContainsString($expectedContent, $crawler->text());
-        }
-    }
-
-    private function createEmail(bool $publicPreview = true): Email
-    {
-        $email = new Email();
-        $email->setDateAdded(new \DateTime());
-        $email->setName('Email name');
-        $email->setSubject('Email subject');
-        $email->setTemplate('Blank');
-        $email->setPublicPreview($publicPreview);
-        $email->setCustomHtml('<html><body>Contact emails is {contactfield=email}</body></html>');
-        $email->setPreheaderText(self::PREHEADER_TEXT);
-        $this->em->persist($email);
-
-        return $email;
-    }
-
     public function testPreviewEmailWithCorrectDCVariationFilterSegmentMembership(): void
     {
         $segment1 = $this->createSegment('Segment 1');
@@ -237,31 +213,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertStringContainsString('404 Not Found - Requested URL not found: /email/preview/5009', $crawler->text());
     }
 
-    private function createSegment(string $name = 'Segment 1'): LeadList
-    {
-        $segment = new LeadList();
-        $segment->setName($name);
-        $segment->setPublicName($name);
-        $segment->setAlias(strtolower($name));
-        $segment->isPublished(true);
-        $this->em->persist($segment);
-        $this->em->flush();
-
-        return $segment;
-    }
-
-    private function addLeadToSegment(Lead $lead, LeadList $segment): ListLead
-    {
-        $listLead = new ListLead();
-        $listLead->setLead($lead);
-        $listLead->setList($segment);
-        $listLead->setDateAdded(new \DateTime());
-        $this->em->persist($listLead);
-        $this->em->flush();
-
-        return $listLead;
-    }
-
     public function testPreviewEmailForContactWithPrimaryCompany(): void
     {
         $company = $this->createCompany('Mautic', 'hello@mautic.org');
@@ -298,5 +249,54 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         // Anonymous visitor
         $this->assertPageContent($url, $contentNoContactInfo);
         $this->assertPageContent($urlWithContact, $contentNoContactInfo);
+    }
+
+    private function assertPageContent(string $url, string ...$expectedContents): void
+    {
+        $crawler = $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+        foreach ($expectedContents as $expectedContent) {
+            self::assertStringContainsString($expectedContent, $crawler->text());
+        }
+    }
+
+    private function createEmail(bool $publicPreview = true): Email
+    {
+        $email = new Email();
+        $email->setDateAdded(new \DateTime());
+        $email->setName('Email name');
+        $email->setSubject('Email subject');
+        $email->setTemplate('Blank');
+        $email->setPublicPreview($publicPreview);
+        $email->setCustomHtml('<html><body>Contact emails is {contactfield=email}</body></html>');
+        $email->setPreheaderText(self::PREHEADER_TEXT);
+        $this->em->persist($email);
+
+        return $email;
+    }
+
+    private function createSegment(string $name = 'Segment 1'): LeadList
+    {
+        $segment = new LeadList();
+        $segment->setName($name);
+        $segment->setPublicName($name);
+        $segment->setAlias(strtolower($name));
+        $segment->isPublished(true);
+        $this->em->persist($segment);
+        $this->em->flush();
+
+        return $segment;
+    }
+
+    private function addLeadToSegment(Lead $lead, LeadList $segment): ListLead
+    {
+        $listLead = new ListLead();
+        $listLead->setLead($lead);
+        $listLead->setList($segment);
+        $listLead->setDateAdded(new \DateTime());
+        $this->em->persist($listLead);
+        $this->em->flush();
+
+        return $listLead;
     }
 }

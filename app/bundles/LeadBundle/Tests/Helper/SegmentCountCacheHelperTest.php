@@ -30,25 +30,6 @@ class SegmentCountCacheHelperTest extends TestCase
         );
     }
 
-    /**
-     * Create a CacheItem instance using reflection since the constructor is private.
-     */
-    private function createCacheItem(string $key, mixed $value = null, bool $isHit = false): CacheItem
-    {
-        $item = (new \ReflectionClass(CacheItem::class))->newInstanceWithoutConstructor();
-
-        $keyProperty = new \ReflectionProperty(CacheItem::class, 'key');
-        $keyProperty->setValue($item, $key);
-
-        $valueProperty = new \ReflectionProperty(CacheItem::class, 'value');
-        $valueProperty->setValue($item, $value);
-
-        $isHitProperty = new \ReflectionProperty(CacheItem::class, 'isHit');
-        $isHitProperty->setValue($item, $isHit);
-
-        return $item;
-    }
-
     public function testGetSegmentContactCount(): void
     {
         $segmentId = 1;
@@ -254,5 +235,24 @@ class SegmentCountCacheHelperTest extends TestCase
 
         // Assert that the cache item value is still 0 (not negative)
         Assert::assertSame(0, $cacheItem->get());
+    }
+
+    /**
+     * Create a CacheItem instance using reflection since the constructor is private.
+     */
+    private function createCacheItem(string $key, mixed $value = null, bool $isHit = false): CacheItem
+    {
+        $item = (new \ReflectionClass(CacheItem::class))->newInstanceWithoutConstructor();
+
+        $keyProperty = new \ReflectionProperty(CacheItem::class, 'key');
+        $keyProperty->setValue($item, $key);
+
+        $valueProperty = new \ReflectionProperty(CacheItem::class, 'value');
+        $valueProperty->setValue($item, $value);
+
+        $isHitProperty = new \ReflectionProperty(CacheItem::class, 'isHit');
+        $isHitProperty->setValue($item, $isHit);
+
+        return $item;
     }
 }

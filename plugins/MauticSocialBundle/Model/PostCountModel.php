@@ -15,7 +15,7 @@ class PostCountModel extends AbstractCommonModel
      */
     public function getEntity($id = null): ?PostCount
     {
-        if (null !== $id) {
+        if ($id !== null) {
             $repo = $this->getRepository();
             if (method_exists($repo, 'getEntity')) {
                 return $repo->getEntity($id);

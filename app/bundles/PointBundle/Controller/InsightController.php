@@ -12,15 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InsightController extends AbstractStandardFormController
 {
-    protected function getTemplateBase(): string
-    {
-        return '@MauticPoint/Insight';
-    }
-
-    protected function getModelName(): string
-    {
-        return 'point.insight';
-    }
 
     /**
      * @param int $page
@@ -85,5 +76,14 @@ class InsightController extends AbstractStandardFormController
     public function batchDeleteAction(Request $request)
     {
         return parent::batchDeleteStandard($request);
+    }
+    protected function getTemplateBase(): string
+    {
+        return '@MauticPoint/Insight';
+    }
+
+    protected function getModelName(): string
+    {
+        return 'point.insight';
     }
 }

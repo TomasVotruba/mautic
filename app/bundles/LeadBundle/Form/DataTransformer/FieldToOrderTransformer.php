@@ -41,7 +41,7 @@ class FieldToOrderTransformer implements DataTransformerInterface
      */
     public function reverseTransform(mixed $field): mixed
     {
-        if (null === $field) {
+        if ($field === null) {
             return null;
         }
 

@@ -88,7 +88,7 @@ class ContactExportSchedulerModel extends AbstractCommonModel
                 ],
             ];
         } else {
-            if ('list' !== $indexMode || (!str_contains($search, $anonymous))) {
+            if ($indexMode !== 'list' || (!str_contains($search, $anonymous))) {
                 // Remove anonymous leads unless requested to prevent clutter.
                 $filter['force'] = [
                     [
@@ -229,7 +229,7 @@ class ContactExportSchedulerModel extends AbstractCommonModel
     {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
 
-        if ('zip' === $ext) {
+        if ($ext === 'zip') {
             return 'application/zip';
         }
 

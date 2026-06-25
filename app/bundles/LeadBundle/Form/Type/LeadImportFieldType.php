@@ -66,7 +66,7 @@ class LeadImportFieldType extends AbstractType
                 ->addModelTransformer($transformer)
         );
 
-        if ('lead' === $options['object']) {
+        if ($options['object'] === 'lead') {
             $builder->add(
                 $builder->create(
                     'list',

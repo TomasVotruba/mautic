@@ -82,17 +82,17 @@ class ContactSegmentFilterCrate
 
     public function isContactType(): bool
     {
-        return self::CONTACT_OBJECT === $this->object;
+        return $this->object === self::CONTACT_OBJECT;
     }
 
     public function isCompanyType(): bool
     {
-        return self::COMPANY_OBJECT === $this->object;
+        return $this->object === self::COMPANY_OBJECT;
     }
 
     public function isBehaviorsType(): bool
     {
-        return self::BEHAVIORS_OBJECT === $this->object;
+        return $this->object === self::BEHAVIORS_OBJECT;
     }
 
     /**
@@ -131,22 +131,22 @@ class ContactSegmentFilterCrate
 
     public function isBooleanType(): bool
     {
-        return 'boolean' === $this->getType();
+        return $this->getType() === 'boolean';
     }
 
     public function isNumberType(): bool
     {
-        return 'number' === $this->getType();
+        return $this->getType() === 'number';
     }
 
     public function isDateType(): bool
     {
-        return 'date' === $this->getType() || $this->hasTimeParts();
+        return $this->getType() === 'date' || $this->hasTimeParts();
     }
 
     public function hasTimeParts(): bool
     {
-        return 'datetime' === $this->getType();
+        return $this->getType() === 'datetime';
     }
 
     /**
@@ -171,27 +171,6 @@ class ContactSegmentFilterCrate
     public function getArray()
     {
         return $this->sourceArray;
-    }
-
-    private function setOperator(array $filter): void
-    {
-        $operator = $filter['operator'] ?? null;
-
-        if ('multiselect' === $this->getType() && in_array($operator, [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY, OperatorOptions::INCLUDING_ALL, OperatorOptions::EXCLUDING_ALL])) {
-            $neg            = !str_contains($operator, '!') ? '' : '!';
-            $this->operator = $neg.$this->getType();
-
-            return;
-        }
-        if ('page_id' === $this->getField() || 'email_id' === $this->getField() || 'redirect_id' === $this->getField() || 'notification' === $this->getField()) {
-            $operator = ('=' === $operator) === $this->getFilter() ? 'notEmpty' : 'empty';
-        }
-
-        if ('=' === $operator && is_array($this->getFilter())) { // Fix for old segments which can have stored = instead on in operator
-            $operator = 'in';
-        }
-
-        $this->operator = $operator;
     }
 
     /**
@@ -221,5 +200,26 @@ class ContactSegmentFilterCrate
     public function setMergedProperty(array $mergedProperty): void
     {
         $this->mergedProperty = $mergedProperty;
+    }
+
+    private function setOperator(array $filter): void
+    {
+        $operator = $filter['operator'] ?? null;
+
+        if ($this->getType() === 'multiselect' && in_array($operator, [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY, OperatorOptions::INCLUDING_ALL, OperatorOptions::EXCLUDING_ALL])) {
+            $neg            = !str_contains($operator, '!') ? '' : '!';
+            $this->operator = $neg.$this->getType();
+
+            return;
+        }
+        if ($this->getField() === 'page_id' || $this->getField() === 'email_id' || $this->getField() === 'redirect_id' || $this->getField() === 'notification') {
+            $operator = ($operator === '=') === $this->getFilter() ? 'notEmpty' : 'empty';
+        }
+
+        if ($operator === '=' && is_array($this->getFilter())) { // Fix for old segments which can have stored = instead on in operator
+            $operator = 'in';
+        }
+
+        $this->operator = $operator;
     }
 }

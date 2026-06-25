@@ -11,6 +11,21 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 class FormEntity extends CommonEntity
 {
+
+    /**
+     * @var int|null
+     */
+    public $deletedId;
+
+    /**
+     * @var array
+     */
+    protected $changes = [];
+
+    /**
+     * @var bool
+     */
+    protected $new = false;
     /**
      * @var bool
      */
@@ -117,19 +132,17 @@ class FormEntity extends CommonEntity
     private $checkedOutByUser;
 
     /**
-     * @var array
+     * Clear dates on clone.
      */
-    protected $changes = [];
-
-    /**
-     * @var bool
-     */
-    protected $new = false;
-
-    /**
-     * @var int|null
-     */
-    public $deletedId;
+    public function __clone()
+    {
+        $this->dateAdded    = null;
+        $this->dateModified = new \DateTime();
+        $this->checkedOut   = null;
+        $this->isPublished  = false;
+        $this->createdBy    = null;
+        $this->changes      = [];
+    }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -210,19 +223,6 @@ class FormEntity extends CommonEntity
     }
 
     /**
-     * Clear dates on clone.
-     */
-    public function __clone()
-    {
-        $this->dateAdded    = null;
-        $this->dateModified = new \DateTime();
-        $this->checkedOut   = null;
-        $this->isPublished  = false;
-        $this->createdBy    = null;
-        $this->changes      = [];
-    }
-
-    /**
      * Check publish status with option to check against category, publish up and down dates.
      *
      * @param bool $checkPublishStatus
@@ -234,17 +234,17 @@ class FormEntity extends CommonEntity
     {
         if ($checkPublishStatus && method_exists($this, 'getPublishUp')) {
             $status = $this->getPublishStatus();
-            if ('published' == $status) {
+            if ($status == 'published') {
                 // check to see if there is a category to check
                 if ($checkCategoryStatus && method_exists($this, 'getCategory')) {
                     $category = $this->getCategory();
-                    if (null !== $category && !$category->isPublished()) {
+                    if ($category !== null && !$category->isPublished()) {
                         return false;
                     }
                 }
             }
 
-            return 'published' === $status;
+            return $status === 'published';
         }
 
         return $this->getIsPublished();
@@ -330,11 +330,11 @@ class FormEntity extends CommonEntity
      */
     public function setCreatedBy($createdBy = null)
     {
-        if (null != $createdBy && !$createdBy instanceof User) {
+        if ($createdBy != null && !$createdBy instanceof User) {
             $this->createdBy = $createdBy;
         } else {
-            $this->createdBy = (null != $createdBy) ? $createdBy->getId() : null;
-            if (null != $createdBy) {
+            $this->createdBy = ($createdBy != null) ? $createdBy->getId() : null;
+            if ($createdBy != null) {
                 $this->createdByUser = $createdBy->getName();
             }
         }
@@ -361,12 +361,12 @@ class FormEntity extends CommonEntity
      */
     public function setModifiedBy($modifiedBy = null)
     {
-        if (null != $modifiedBy && !$modifiedBy instanceof User) {
+        if ($modifiedBy != null && !$modifiedBy instanceof User) {
             $this->modifiedBy = $modifiedBy;
         } else {
-            $this->modifiedBy = (null != $modifiedBy) ? $modifiedBy->getId() : null;
+            $this->modifiedBy = ($modifiedBy != null) ? $modifiedBy->getId() : null;
 
-            if (null != $modifiedBy) {
+            if ($modifiedBy != null) {
                 $this->modifiedByUser = $modifiedBy->getName();
             }
         }
@@ -393,12 +393,12 @@ class FormEntity extends CommonEntity
      */
     public function setCheckedOutBy($checkedOutBy = null)
     {
-        if (null != $checkedOutBy && !$checkedOutBy instanceof User) {
+        if ($checkedOutBy != null && !$checkedOutBy instanceof User) {
             $this->checkedOutBy = $checkedOutBy;
         } else {
-            $this->checkedOutBy = (null != $checkedOutBy) ? $checkedOutBy->getId() : null;
+            $this->checkedOutBy = ($checkedOutBy != null) ? $checkedOutBy->getId() : null;
 
-            if (null != $checkedOutBy) {
+            if ($checkedOutBy != null) {
                 $this->checkedOutByUser = $checkedOutBy->getName();
             }
         }

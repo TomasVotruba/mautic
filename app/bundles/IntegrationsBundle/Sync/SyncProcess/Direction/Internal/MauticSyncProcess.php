@@ -47,7 +47,7 @@ class MauticSyncProcess
         $internalRequestDAO     = new RequestDAO($this->mappingManualDAO->getIntegration(), $syncIteration, $this->inputOptionsDAO);
         $mauticObjectTypes      = $internalRequestDAO->getInputOptionsDAO()->getMauticObjectIds() ?
             $internalRequestDAO->getInputOptionsDAO()->getMauticObjectIds()->getObjectTypes() : [];
-        $hasMauticObjectIDs = 0 < count($mauticObjectTypes);
+        $hasMauticObjectIDs = count($mauticObjectTypes) > 0;
 
         $internalObjectsNames = $this->mappingManualDAO->getInternalObjectNames();
         foreach ($internalObjectsNames as $internalObjectName) {
@@ -68,7 +68,7 @@ class MauticSyncProcess
             }
 
             $internalObjectFields = $this->mappingManualDAO->getInternalObjectFieldsToSyncToIntegration($internalObjectName);
-            if (0 === count($internalObjectFields)) {
+            if (count($internalObjectFields) === 0) {
                 // No fields configured for a sync
                 DebugLogger::log(
                     $this->mappingManualDAO->getIntegration(),

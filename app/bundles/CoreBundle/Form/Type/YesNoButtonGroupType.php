@@ -30,7 +30,7 @@ class YesNoButtonGroupType extends AbstractType
                     $options['yes_label'] => $options['yes_value'],
                 ],
                 'choice_value'      => function ($choiceKey) {
-                    if (null === $choiceKey || '' === $choiceKey) {
+                    if ($choiceKey === null || $choiceKey === '') {
                         return null;
                     }
 

@@ -22,11 +22,6 @@ final class Version20230131133732 extends AbstractMauticMigration
         }
     }
 
-    private function getTable(): string
-    {
-        return $this->prefix.'lead_lists';
-    }
-
     public function up(Schema $schema): void
     {
         $table = $this->getTable();
@@ -36,5 +31,10 @@ final class Version20230131133732 extends AbstractMauticMigration
     public function down(Schema $schema): void
     {
         $this->addSql(sprintf('ALTER TABLE `%s` DROP COLUMN `last_built_time`', $this->getTable()));
+    }
+
+    private function getTable(): string
+    {
+        return $this->prefix.'lead_lists';
     }
 }

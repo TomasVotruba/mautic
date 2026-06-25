@@ -76,7 +76,7 @@ trait ChannelTrait
                 }
                 $routeSourceName = 'mautic_'.$baseRouteName.'_action';
 
-                if (null !== $this->router->getRouteCollection()->get($routeSourceName)) {
+                if ($this->router->getRouteCollection()->get($routeSourceName) !== null) {
                     $url = $this->router->generate(
                         $routeSourceName,
                         [

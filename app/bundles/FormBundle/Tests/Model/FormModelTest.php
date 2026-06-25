@@ -497,7 +497,7 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
 
         $this->formModel->getEntity(5);
 
-        if ('lookup' === $type) {
+        if ($type === 'lookup') {
             $expectedList = [];
             foreach ($options as $option) {
                 $expectedList[$option['value']] = $option['label'];
@@ -506,39 +506,6 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         } else {
             $this->assertSame($options, $formField->getProperties()['list']['list']);
         }
-    }
-
-    private function standardSyncListStaticFieldTest(string $type): Field
-    {
-        $formEntity = $this->createMock(Form::class);
-        $fields     = new ArrayCollection();
-        $formField  = new Field();
-        $formField->setMappedField('contactfield');
-        $formField->setMappedObject('contact');
-        $formField->setProperties(['syncList' => true]);
-
-        $fields->add($formField);
-
-        $contactField = new LeadField();
-        $contactField->setType($type);
-
-        $formEntity->expects($this->exactly(2))
-            ->method('getFields')
-            ->willReturn($fields);
-
-        $this->formRepository->expects($this->once())
-            ->method('getEntity')
-            ->with(5)
-            ->willReturn($formEntity);
-
-        $this->leadFieldModel->expects($this->once())
-            ->method('getEntityByAlias')
-            ->with('contactfield')
-            ->willReturn($contactField);
-
-        $this->formModel->getEntity(5);
-
-        return $formField;
     }
 
     public function testGetContactFieldPropertiesListWhenFieldNotFound(): void
@@ -786,6 +753,39 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
             ->with($field, 'Yes', 'form-', $formHtml);
 
         $this->formModel->populateValuesWithLead($form, $formHtml);
+    }
+
+    private function standardSyncListStaticFieldTest(string $type): Field
+    {
+        $formEntity = $this->createMock(Form::class);
+        $fields     = new ArrayCollection();
+        $formField  = new Field();
+        $formField->setMappedField('contactfield');
+        $formField->setMappedObject('contact');
+        $formField->setProperties(['syncList' => true]);
+
+        $fields->add($formField);
+
+        $contactField = new LeadField();
+        $contactField->setType($type);
+
+        $formEntity->expects($this->exactly(2))
+            ->method('getFields')
+            ->willReturn($fields);
+
+        $this->formRepository->expects($this->once())
+            ->method('getEntity')
+            ->with(5)
+            ->willReturn($formEntity);
+
+        $this->leadFieldModel->expects($this->once())
+            ->method('getEntityByAlias')
+            ->with('contactfield')
+            ->willReturn($contactField);
+
+        $this->formModel->getEntity(5);
+
+        return $formField;
     }
 
     /**

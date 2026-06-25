@@ -23,7 +23,7 @@ class ExecuteEventCommandTest extends AbstractCampaignCommand
 
         $logIds = [];
         foreach ($byEvent[2] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Event is not scheduled for lead ID '.$log['lead_id']);
             }
 
@@ -37,7 +37,7 @@ class ExecuteEventCommandTest extends AbstractCampaignCommand
         $this->assertCount(3, $byEvent[2]);
 
         foreach ($byEvent[2] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Event is not scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -57,14 +57,14 @@ class ExecuteEventCommandTest extends AbstractCampaignCommand
         foreach ($byEvent[2] as $log) {
             // Lasta
             if ($log['id'] === $lastId) {
-                if (0 === (int) $log['is_scheduled']) {
+                if ((int) $log['is_scheduled'] === 0) {
                     $this->fail('Event is not scheduled when it should be for lead ID '.$log['lead_id']);
                 }
 
                 continue;
             }
 
-            if (1 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 1) {
                 $this->fail('Event is still scheduled for lead ID '.$log['lead_id']);
             }
         }

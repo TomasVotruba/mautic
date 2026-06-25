@@ -32,7 +32,7 @@ class PrivateAddressChecker
     /**
      * @param array<string> $allowedPrivateAddresses
      */
-    public function setAllowedPrivateAddresses(array $allowedPrivateAddresses): PrivateAddressChecker
+    public function setAllowedPrivateAddresses(array $allowedPrivateAddresses): self
     {
         $this->allowedPrivateAddresses = $allowedPrivateAddresses;
 
@@ -43,13 +43,13 @@ class PrivateAddressChecker
     {
         $parsedUrl = parse_url($url);
 
-        if (false === $parsedUrl || !isset($parsedUrl['host'])) {
+        if ($parsedUrl === false || !isset($parsedUrl['host'])) {
             throw new \InvalidArgumentException('Invalid URL format');
         }
 
         $host = strtolower($parsedUrl['host']);
 
-        if ('localhost' === $host) {
+        if ($host === 'localhost') {
             return true;
         }
 
@@ -82,7 +82,7 @@ class PrivateAddressChecker
         }
 
         $binaryIp = @inet_pton($ip);
-        if (false === $binaryIp) {
+        if ($binaryIp === false) {
             return false;
         }
 
@@ -90,7 +90,7 @@ class PrivateAddressChecker
             [$networkIp, $netmask] = explode('/', $range);
 
             $binaryNetwork = @inet_pton($networkIp);
-            if (false === $binaryNetwork) {
+            if ($binaryNetwork === false) {
                 continue;
             }
 
@@ -176,7 +176,7 @@ class PrivateAddressChecker
     private function resolveHostName(string $host): array
     {
         $ips = ($this->dnsResolver)($host);
-        if (false === $ips) {
+        if ($ips === false) {
             throw new \InvalidArgumentException("Could not resolve hostname {$host}");
         }
 

@@ -73,51 +73,11 @@ class StageModel extends CommonFormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Stage
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Stage();
         }
 
         return parent::getEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Stage) {
-            throw new MethodNotAllowedHttpException(['Stage']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = StageEvents::STAGE_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = StageEvents::STAGE_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = StageEvents::STAGE_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = StageEvents::STAGE_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new StageEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -177,5 +137,45 @@ class StageModel extends CommonFormModel implements GlobalSearchInterface
             $this->userHelper->getUser() : false;
 
         return $this->getRepository()->getStages($user);
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Stage) {
+            throw new MethodNotAllowedHttpException(['Stage']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = StageEvents::STAGE_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = StageEvents::STAGE_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = StageEvents::STAGE_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = StageEvents::STAGE_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new StageEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

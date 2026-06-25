@@ -63,7 +63,7 @@ class UploadSubscriber implements EventSubscriberInterface
         $extensions = $this->coreParametersHelper->get('allowed_extensions');
         $maxSize    = $this->assetModel->getMaxUploadSize('B');
 
-        if (null === $file) {
+        if ($file === null) {
             return;
         }
 

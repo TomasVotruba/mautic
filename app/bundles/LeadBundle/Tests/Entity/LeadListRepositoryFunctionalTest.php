@@ -35,6 +35,17 @@ class LeadListRepositoryFunctionalTest extends AbstractMauticTestCase
         $this->assertTrue($result);
     }
 
+    protected function createSegmentMember(LeadList $segment, Lead $lead, bool $isManuallyRemoved = false): void
+    {
+        $segmentMember = new ListLead();
+        $segmentMember->setLead($lead);
+        $segmentMember->setList($segment);
+        $segmentMember->setManuallyRemoved($isManuallyRemoved);
+        $segmentMember->setDateAdded(new \DateTime());
+        $this->em->persist($segmentMember);
+        $this->em->flush();
+    }
+
     private function createLead(): Lead
     {
         $lead = new Lead();
@@ -49,24 +60,13 @@ class LeadListRepositoryFunctionalTest extends AbstractMauticTestCase
     private function createSegment(string $suffix = 'A'): LeadList
     {
         $segment = new LeadList();
-        $segment->setName("Segment $suffix");
-        $segment->setPublicName("Segment $suffix");
-        $segment->setAlias("segment-$suffix");
+        $segment->setName("Segment {$suffix}");
+        $segment->setPublicName("Segment {$suffix}");
+        $segment->setAlias("segment-{$suffix}");
 
         $this->em->persist($segment);
         $this->em->flush();
 
         return $segment;
-    }
-
-    protected function createSegmentMember(LeadList $segment, Lead $lead, bool $isManuallyRemoved = false): void
-    {
-        $segmentMember = new ListLead();
-        $segmentMember->setLead($lead);
-        $segmentMember->setList($segment);
-        $segmentMember->setManuallyRemoved($isManuallyRemoved);
-        $segmentMember->setDateAdded(new \DateTime());
-        $this->em->persist($segmentMember);
-        $this->em->flush();
     }
 }

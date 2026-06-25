@@ -67,7 +67,7 @@ class SchemaDefinition
                 $schemaType = 'text';
         }
 
-        if ('string' === $schemaType && empty($options['length'])) {
+        if ($schemaType === 'string' && empty($options['length'])) {
             $options['length'] = self::MAX_VARCHAR_LENGTH;
         }
 

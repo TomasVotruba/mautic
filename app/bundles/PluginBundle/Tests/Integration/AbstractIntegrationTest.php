@@ -137,7 +137,7 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
                 'ignore_event_dispatch' => true,
                 'encode_parameters'     => 'json',
             ],
-            new class {
+            new class() {
                 /**
                  * @param mixed[] $options
                  */
@@ -163,7 +163,7 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
             ['this will be' => 'encoded to form array'],
             'POST',
             ['ignore_event_dispatch' => true],
-            new class {
+            new class() {
                 /**
                  * @param mixed[] $options
                  */

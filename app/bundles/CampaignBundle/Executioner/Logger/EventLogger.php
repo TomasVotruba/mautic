@@ -68,7 +68,7 @@ class EventLogger
         $log->setEvent($event);
         $log->setCampaign($campaign = $event->getCampaign());
 
-        if (null === $contact) {
+        if ($contact === null) {
             $contact = $this->contactTracker->getContact();
         }
         $log->setLead($contact);
@@ -160,7 +160,7 @@ class EventLogger
      */
     public function generateLogsFromContacts(Event $event, AbstractEventAccessor $config, ArrayCollection $contacts, $isInactiveEntry)
     {
-        $isDecision = Event::TYPE_DECISION === $event->getEventType();
+        $isDecision = $event->getEventType() === Event::TYPE_DECISION;
         $campaign   = $event->getCampaign();
 
         // Ensure each contact has a log entry to prevent them from being picked up again prematurely
@@ -193,6 +193,11 @@ class EventLogger
         $this->lastUsedCampaignIdToFetchRotation = $campaignId;
     }
 
+    public function getSummaryModel(): SummaryModel
+    {
+        return $this->summaryModel;
+    }
+
     private function persistPendingAndInsertIntoLogStack(): void
     {
         if (!$this->persistQueue->count()) {
@@ -208,10 +213,5 @@ class EventLogger
         }
 
         $this->persistQueue->clear();
-    }
-
-    public function getSummaryModel(): SummaryModel
-    {
-        return $this->summaryModel;
     }
 }

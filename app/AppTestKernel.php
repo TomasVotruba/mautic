@@ -8,14 +8,6 @@ class AppTestKernel extends AppKernel
 {
     private bool $isTestContainerSet = false;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function isInstalled(): bool
-    {
-        return true;
-    }
-
     public function getCacheDir(): string
     {
         if ($dir = getenv('TEST_CACHE_DIR')) {
@@ -53,5 +45,13 @@ class AppTestKernel extends AppKernel
         $testContainer->setPublicContainer($this->container);
 
         return $this->container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isInstalled(): bool
+    {
+        return true;
     }
 }

@@ -49,7 +49,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $asset = $event->getRecord()->getAsset();
 
-        if (null !== $asset) {
+        if ($asset !== null) {
             $this->realTimeExecutioner->execute('asset.download', $asset, 'asset', $asset->getId());
         }
     }
@@ -58,7 +58,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $eventDetails = $event->getEventDetails();
 
-        if (null == $eventDetails) {
+        if ($eventDetails == null) {
             return $event->setResult(true);
         }
 

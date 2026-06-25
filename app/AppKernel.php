@@ -59,22 +59,22 @@ class AppKernel extends Kernel
 
     public function handle(Request $request, $type = HttpKernelInterface::MAIN_REQUEST, $catch = true): Response
     {
-        if (false !== strpos($request->getRequestUri(), 'installer') || !$this->isInstalled()) {
+        if (strpos($request->getRequestUri(), 'installer') !== false || !$this->isInstalled()) {
             defined('MAUTIC_INSTALLER') or define('MAUTIC_INSTALLER', 1);
         }
 
         if (defined('MAUTIC_INSTALLER')) {
             $uri = $request->getRequestUri();
-            if (false === strpos($uri, 'installer')) {
+            if (strpos($uri, 'installer') === false) {
                 $base   = $request->getBaseUrl();
                 $prefix = '';
                 // check to see if the .htaccess file exists or if not running under apache
-                if (false === stripos($request->server->get('SERVER_SOFTWARE', ''), 'apache')
+                if (stripos($request->server->get('SERVER_SOFTWARE', ''), 'apache') === false
                     || !file_exists($this->getProjectDir().'/.htaccess')
-                    && false === strpos(
+                    && strpos(
                         $base,
                         'index'
-                    )
+                    ) === false
                 ) {
                     $prefix .= '/index.php';
                 }
@@ -83,7 +83,7 @@ class AppKernel extends Kernel
             }
         }
 
-        if (false === $this->booted) {
+        if ($this->booted === false) {
             $this->boot();
         }
 
@@ -204,15 +204,9 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    protected function build(ContainerBuilder $container): void
-    {
-        $container->registerForAutoconfiguration(Mautic\CoreBundle\Model\MauticModelInterface::class)
-            ->addTag(Mautic\CoreBundle\DependencyInjection\Compiler\ModelPass::TAG);
-    }
-
     public function boot(): void
     {
-        if (true === $this->booted) {
+        if ($this->booted === true) {
             return;
         }
 
@@ -246,13 +240,6 @@ class AppKernel extends Kernel
         $this->booted = true;
     }
 
-    protected function prepareContainer(ContainerBuilder $container): void
-    {
-        $container->setParameter('mautic.application_dir', $this->getApplicationDir());
-
-        parent::prepareContainer($container);
-    }
-
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load($this->getApplicationDir().'/app/config/config_'.$this->getEnvironment().'.php');
@@ -266,22 +253,6 @@ class AppKernel extends Kernel
         return MAUTIC_VERSION;
     }
 
-    /**
-     * Checks if the application has been installed.
-     */
-    protected function isInstalled(): bool
-    {
-        if (null === $this->installed) {
-            $localParameters = $this->getParameterLoader()->getLocalParameterBag();
-            $dbDriver        = $localParameters->get('db_driver');
-            $siteUrl         = $localParameters->get('site_url');
-
-            $this->installed = !empty($dbDriver) && !empty($siteUrl);
-        }
-
-        return $this->installed;
-    }
-
     public function getApplicationDir(): string
     {
         return dirname(__DIR__);
@@ -289,7 +260,7 @@ class AppKernel extends Kernel
 
     public function getProjectDir(): string
     {
-        if (null === $this->projectDir) {
+        if ($this->projectDir === null) {
             $r = new ReflectionObject($this);
 
             if (!is_file($dir = $r->getFileName())) {
@@ -316,7 +287,7 @@ class AppKernel extends Kernel
     public function getCacheDir(): string
     {
         if ($cachePath = $this->getParameterLoader()->getLocalParameterBag()->get('cache_path')) {
-            $envFolder = ('/' != substr($cachePath, -1)) ? '/'.$this->environment : $this->environment;
+            $envFolder = (substr($cachePath, -1) != '/') ? '/'.$this->environment : $this->environment;
 
             return str_replace('%kernel.project_dir%', $this->getProjectDir(), $cachePath.$envFolder);
         }
@@ -339,6 +310,35 @@ class AppKernel extends Kernel
     public function getLocalConfigFile(): string
     {
         return ParameterLoader::getLocalConfigFile($this->getApplicationDir().'/app');
+    }
+
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->registerForAutoconfiguration(Mautic\CoreBundle\Model\MauticModelInterface::class)
+            ->addTag(Mautic\CoreBundle\DependencyInjection\Compiler\ModelPass::TAG);
+    }
+
+    protected function prepareContainer(ContainerBuilder $container): void
+    {
+        $container->setParameter('mautic.application_dir', $this->getApplicationDir());
+
+        parent::prepareContainer($container);
+    }
+
+    /**
+     * Checks if the application has been installed.
+     */
+    protected function isInstalled(): bool
+    {
+        if ($this->installed === null) {
+            $localParameters = $this->getParameterLoader()->getLocalParameterBag();
+            $dbDriver        = $localParameters->get('db_driver');
+            $siteUrl         = $localParameters->get('site_url');
+
+            $this->installed = !empty($dbDriver) && !empty($siteUrl);
+        }
+
+        return $this->installed;
     }
 
     private function getParameterLoader(): ParameterLoader

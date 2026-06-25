@@ -36,7 +36,7 @@ class ThemeController extends FormController
         $action = $this->generateUrl('mautic_themes_index');
         $form   = $this->formFactory->create(ThemeUploadType::class, [], ['action' => $action]);
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             if (!$this->isFormCancelled($form)) {
                 if ($this->isFormValid($form)) {
                     $fileData = $form['file']->getData();
@@ -53,7 +53,7 @@ class ThemeController extends FormController
 
                         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-                        if ('zip' === $extension) {
+                        if ($extension === 'zip') {
                             try {
                                 $fileData->move($dir, $fileName);
                                 $themeHelper->install($dir.'/'.$fileName);
@@ -170,7 +170,7 @@ class ThemeController extends FormController
         $flashes = [];
 
         $themeName = $objectId;
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $flashes = $this->deleteTheme($themeHelper, $themeName);
         }
 
@@ -189,13 +189,13 @@ class ThemeController extends FormController
         $flashes = [];
         $error   = [];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $themeNames = json_decode($request->query->get('ids', '{}'));
 
             foreach ($themeNames as $themeName) {
                 $flash = $this->deleteTheme($themeHelper, $themeName)[0];
 
-                if ('error' === $flash['type']) {
+                if ($flash['type'] === 'error') {
                     $error[] = $flash;
                 } else {
                     $flashes[] = $flash;
@@ -299,7 +299,7 @@ class ThemeController extends FormController
 
         $flashes = [];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $flashes = $this->visibility($objectId, $themeHelper);
         }
 

@@ -27,7 +27,7 @@ class UIContactIntegrationsTabSubscriber implements EventSubscriberInterface
 
     public function onTemplateRender(CustomTemplateEvent $event): void
     {
-        if ('@MauticLead/Lead/lead.html.twig' === $event->getTemplate()) {
+        if ($event->getTemplate() === '@MauticLead/Lead/lead.html.twig') {
             $vars         = $event->getVars();
             $integrations = $vars['integrations'];
 

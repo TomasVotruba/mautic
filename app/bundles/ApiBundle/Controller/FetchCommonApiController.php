@@ -139,7 +139,7 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
         protected EventDispatcherInterface $dispatcher,
         protected CoreParametersHelper $coreParametersHelper,
     ) {
-        if (null !== $this->model && !$this->permissionBase && method_exists($this->model, 'getPermissionBase')) {
+        if ($this->model !== null && !$this->permissionBase && method_exists($this->model, 'getPermissionBase')) {
             $this->permissionBase = $this->model->getPermissionBase();
         }
 
@@ -248,58 +248,6 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     }
 
     /**
-     * Sanitizes and returns an array of where statements from the request.
-     *
-     * @return array<mixed>
-     */
-    protected function getWhereFromRequest(Request $request)
-    {
-        $where = $request->query->all()['where'] ?? [];
-
-        $this->sanitizeWhereClauseArrayFromRequest($where);
-
-        return $where;
-    }
-
-    /**
-     * Sanitizes and returns an array of ORDER statements from the request.
-     *
-     * @return array<mixed>
-     */
-    protected function getOrderFromRequest(Request $request): array
-    {
-        return InputHelper::cleanArray($request->query->all()['order'] ?? []);
-    }
-
-    /**
-     * Adds the repository alias to the column name if it doesn't exist.
-     *
-     * @return string $column name with alias prefix
-     */
-    protected function addAliasIfNotPresent(string $columns, string $alias): string
-    {
-        if (!$columns) {
-            return $columns;
-        }
-
-        $columns = explode(',', trim($columns));
-        $prefix  = $alias.'.';
-
-        array_walk(
-            $columns,
-            function (&$column, $key, $prefix): void {
-                $column = trim($column);
-                if (1 === count(explode('.', $column))) {
-                    $column = $prefix.$column;
-                }
-            },
-            $prefix
-        );
-
-        return implode(',', $columns);
-    }
-
-    /**
      * Obtains a specific entity as defined by the API URL.
      *
      * @param int $id Entity ID
@@ -352,7 +300,7 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if ($request === null) {
             throw new \RuntimeException('Request is not set.');
         }
 
@@ -369,6 +317,58 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     public function postActionRedirect(array $args = [])
     {
         return $this->notFound('mautic.contact.error.notfound');
+    }
+
+    /**
+     * Sanitizes and returns an array of where statements from the request.
+     *
+     * @return array<mixed>
+     */
+    protected function getWhereFromRequest(Request $request)
+    {
+        $where = $request->query->all()['where'] ?? [];
+
+        $this->sanitizeWhereClauseArrayFromRequest($where);
+
+        return $where;
+    }
+
+    /**
+     * Sanitizes and returns an array of ORDER statements from the request.
+     *
+     * @return array<mixed>
+     */
+    protected function getOrderFromRequest(Request $request): array
+    {
+        return InputHelper::cleanArray($request->query->all()['order'] ?? []);
+    }
+
+    /**
+     * Adds the repository alias to the column name if it doesn't exist.
+     *
+     * @return string $column name with alias prefix
+     */
+    protected function addAliasIfNotPresent(string $columns, string $alias): string
+    {
+        if (!$columns) {
+            return $columns;
+        }
+
+        $columns = explode(',', trim($columns));
+        $prefix  = $alias.'.';
+
+        array_walk(
+            $columns,
+            function (&$column, $key, $prefix): void {
+                $column = trim($column);
+                if (count(explode('.', $column)) === 1) {
+                    $column = $prefix.$column;
+                }
+            },
+            $prefix
+        );
+
+        return implode(',', $columns);
     }
 
     /**
@@ -413,11 +413,11 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
         $ownPerm   = "{$this->permissionBase}:{$action}own";
         $otherPerm = "{$this->permissionBase}:{$action}other";
 
-        if ('publish' === $action) {
+        if ($action === 'publish') {
             return $this->security->hasPublishAccessForEntity($entity, $ownPerm, $otherPerm);
         }
 
-        if ('create' !== $action && is_object($entity) && method_exists($entity, 'getCreatedBy')) {
+        if ($action !== 'create' && is_object($entity) && method_exists($entity, 'getCreatedBy')) {
             $owner = (method_exists($entity, 'getPermissionUser')) ? $entity->getPermissionUser() : $entity->getCreatedBy();
 
             return $this->security->hasEntityAccess($ownPerm, $otherPerm, $owner);

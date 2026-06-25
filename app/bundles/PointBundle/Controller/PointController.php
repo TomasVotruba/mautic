@@ -119,7 +119,7 @@ class PointController extends AbstractFormController
         $page       = $request->getSession()->get('mautic.point.page', 1);
         $method     = $request->getMethod();
         $point      = $request->request->all()['point'] ?? [];
-        $actionType = 'POST' === $method ? ($point['type'] ?? '') : '';
+        $actionType = $method === 'POST' ? ($point['type'] ?? '') : '';
         $action     = $this->generateUrl('mautic_point_action', ['objectAction' => 'new']);
         $actions    = $model->getPointActions();
         $form       = $model->createForm($entity, $formFactory, $action, [
@@ -129,7 +129,7 @@ class PointController extends AbstractFormController
         $viewParameters = ['page' => $page];
 
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $method) {
+        if ($method === Request::METHOD_POST) {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -231,7 +231,7 @@ class PointController extends AbstractFormController
         ];
 
         // form not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -252,7 +252,7 @@ class PointController extends AbstractFormController
 
         $method     = $request->getMethod();
         $point      = $request->request->all()['point'] ?? [];
-        $actionType = 'POST' === $method ? ($point['type'] ?? '') : $entity->getType();
+        $actionType = $method === 'POST' ? ($point['type'] ?? '') : $entity->getType();
 
         $action  = $this->generateUrl('mautic_point_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $actions = $model->getPointActions();
@@ -262,7 +262,7 @@ class PointController extends AbstractFormController
         ]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $method) {
+        if (!$ignorePost && $method === 'POST') {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -344,7 +344,7 @@ class PointController extends AbstractFormController
         $model  = $this->getModel('point');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('point:points:create')) {
                 $this->throwAccessDenied();
             }
@@ -379,12 +379,12 @@ class PointController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('point');
             \assert($model instanceof PointModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.point.error.notfound',
@@ -435,7 +435,7 @@ class PointController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('point');
             \assert($model instanceof PointModel);
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -445,7 +445,7 @@ class PointController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.point.error.notfound',

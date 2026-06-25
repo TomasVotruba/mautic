@@ -235,14 +235,6 @@ class ModeratedCommandTest extends TestCase
         $this->fakeModeratedCommand->run($this->input, $this->output);
     }
 
-    private function getFirstFile(Finder $finder): SplFileInfo
-    {
-        $iterator = $finder->getIterator();
-        $iterator->rewind();
-
-        return $iterator->current();
-    }
-
     public function testCompleteRunRemovesLockFileWhenItExists(): void
     {
         // Create a dummy lock file
@@ -295,5 +287,13 @@ class ModeratedCommandTest extends TestCase
 
         // Assert that the lock file is removed
         $this->assertFileDoesNotExist($this->lockFilePath);
+    }
+
+    private function getFirstFile(Finder $finder): SplFileInfo
+    {
+        $iterator = $finder->getIterator();
+        $iterator->rewind();
+
+        return $iterator->current();
     }
 }

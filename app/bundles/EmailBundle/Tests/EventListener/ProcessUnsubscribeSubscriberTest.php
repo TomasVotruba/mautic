@@ -48,7 +48,7 @@ final class ProcessUnsubscribeSubscriberTest extends \PHPUnit\Framework\TestCase
         $helper->expects($this->exactly(2))
             ->method('addCustomHeader')
             ->willReturnCallback(function ($headerName, $headerValue) use (&$callCount) {
-                if (0 === $callCount++) {
+                if ($callCount++ === 0) {
                     $this->assertSame('List-Unsubscribe', $headerName);
                     $this->assertSame('<https://example.com/email/unsubscribe/65cf64d8cb367903848157>, <mailto:unsubscribe@example.com>', $headerValue);
                 } else {

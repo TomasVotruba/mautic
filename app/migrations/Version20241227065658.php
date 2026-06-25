@@ -12,17 +12,17 @@ final class Version20241227065658 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = 'form_fields';
 
+    public function up(Schema $schema): void
+    {
+        $table = $schema->getTable($this->getPrefixedTableName());
+        $table->addColumn('is_read_only', Types::BOOLEAN)->setDefault(false);
+    }
+
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(
             fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('is_read_only'),
             sprintf('Column %s already exists', 'is_read_only')
         );
-    }
-
-    public function up(Schema $schema): void
-    {
-        $table = $schema->getTable($this->getPrefixedTableName());
-        $table->addColumn('is_read_only', Types::BOOLEAN)->setDefault(false);
     }
 }

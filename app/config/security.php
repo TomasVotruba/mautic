@@ -192,7 +192,7 @@ $restrictedConfigFields = [
 ];
 
 // List config keys that are dev mode only
-if ('prod' == $container->getParameter('kernel.environment')) {
+if ($container->getParameter('kernel.environment') == 'prod') {
     $restrictedConfigFields = array_merge($restrictedConfigFields, ['transifex_username', 'transifex_password']);
 }
 

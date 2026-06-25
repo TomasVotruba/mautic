@@ -186,7 +186,7 @@ class UpdateLeadListsCommand extends ModeratedCommand
         $dependencyChain[] = $currentId;
 
         foreach ($leadList->getFilters() as $filter) {
-            if ('leadlist' === $filter['type']) {
+            if ($filter['type'] === 'leadlist') {
                 foreach ($filter['filter'] ?? [] as $dependentListId) {
                     $dependentListId = (int) $dependentListId;
 
@@ -245,7 +245,7 @@ class UpdateLeadListsCommand extends ModeratedCommand
         $processed   = $this->listModel->rebuildListLeads($segment, $batch, $max, $output);
         $rebuildTime = round(microtime(true) - $startTime, 2);
 
-        if (0 >= (int) $max) {
+        if ((int) $max <= 0) {
             // Only full segment rebuilds count
             $segment->setLastBuiltDateToCurrentDatetime();
             $segment->setLastBuiltTime($rebuildTime);

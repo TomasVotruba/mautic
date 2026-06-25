@@ -41,16 +41,6 @@ class TrackingHelper
     }
 
     /**
-     * @return string|null
-     */
-    private function getCacheKey()
-    {
-        $lead = $this->contactTracker->getContact();
-
-        return $lead instanceof Lead ? 'mtc-tracking-pixel-events-'.$lead->getId() : null;
-    }
-
-    /**
      * @param mixed[] $values
      *
      * @throws InvalidArgumentException
@@ -58,7 +48,7 @@ class TrackingHelper
     public function updateCacheItem(array $values): void
     {
         $cacheKey = $this->getCacheKey();
-        if (null !== $cacheKey) {
+        if ($cacheKey !== null) {
             $item = $this->cache->getItem($cacheKey);
             $item->set(serialize(array_merge($values, $this->getCacheItem())));
             $item->expiresAfter(86400); // one day in seconds
@@ -78,7 +68,7 @@ class TrackingHelper
         $cacheValue = [];
 
         /* @var CacheItemInterface $item */
-        if (null !== $cacheKey) {
+        if ($cacheKey !== null) {
             $item = $this->cache->getItem($cacheKey);
             if ($item->isHit()) {
                 $cacheValue = Serializer::decode($item->get(), ['allowed_classes' => false]);
@@ -129,5 +119,15 @@ class TrackingHelper
         }
 
         return true;
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getCacheKey()
+    {
+        $lead = $this->contactTracker->getContact();
+
+        return $lead instanceof Lead ? 'mtc-tracking-pixel-events-'.$lead->getId() : null;
     }
 }

@@ -8,6 +8,40 @@ class VtigerApi extends CrmApi
 {
     protected $element = 'Leads';
 
+    /**
+     * List types.
+     *
+     * @return mixed
+     */
+    public function listTypes()
+    {
+        return $this->request('listtypes', $this->element);
+    }
+
+    /**
+     * List leads.
+     *
+     * @return mixed
+     */
+    public function getLeadFields($object)
+    {
+        if ($object === 'company') {
+            $object = 'Accounts';
+        } else {
+            $object = $this->element;
+        }
+
+        return $this->request('describe', $object);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function createLead(array $data)
+    {
+        return $this->request('create', $this->element, $data, 'POST');
+    }
+
     protected function request($operation, $element, $elementData = [], $method = 'GET')
     {
         $tokenData = $this->integration->getKeys();
@@ -31,39 +65,5 @@ class VtigerApi extends CrmApi
         }
 
         return $response['result'];
-    }
-
-    /**
-     * List types.
-     *
-     * @return mixed
-     */
-    public function listTypes()
-    {
-        return $this->request('listtypes', $this->element);
-    }
-
-    /**
-     * List leads.
-     *
-     * @return mixed
-     */
-    public function getLeadFields($object)
-    {
-        if ('company' === $object) {
-            $object = 'Accounts';
-        } else {
-            $object = $this->element;
-        }
-
-        return $this->request('describe', $object);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function createLead(array $data)
-    {
-        return $this->request('create', $this->element, $data, 'POST');
     }
 }

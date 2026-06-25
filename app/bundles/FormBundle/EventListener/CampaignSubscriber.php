@@ -73,7 +73,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $eventDetails = $event->getEventDetails();
 
-        if (null === $eventDetails) {
+        if ($eventDetails === null) {
             return $event->setResult(true);
         }
 

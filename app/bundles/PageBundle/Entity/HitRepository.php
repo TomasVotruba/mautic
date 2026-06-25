@@ -31,7 +31,7 @@ class HitRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'page_hits', 'h');
 
         // If we know the lead, use that to determine uniqueness
-        if (null !== $lead && $lead->getId()) {
+        if ($lead !== null && $lead->getId()) {
             $expr = CompositeExpression::and($q2->expr()->eq('h.lead_id', $lead->getId()));
         } else {
             $expr = CompositeExpression::and($q2->expr()->eq('h.tracking_id', ':id'));
@@ -100,7 +100,7 @@ class HitRepository extends CommonRepository
         $query->select('count(distinct(h.trackingId)) as hitCount');
         $query->andWhere($query->expr()->eq('h.source', $query->expr()->literal($source)));
 
-        if (null != $sourceId) {
+        if ($sourceId != null) {
             if (is_array($sourceId)) {
                 $query->andWhere($query->expr()->in('h.sourceId', ':sourceIds'))
                     ->setParameter('sourceIds', $sourceId);
@@ -110,7 +110,7 @@ class HitRepository extends CommonRepository
             }
         }
 
-        if (null != $fromDate) {
+        if ($fromDate != null) {
             $query->andwhere($query->expr()->gte('h.dateHit', ':date'))
                 ->setParameter('date', $fromDate);
         }
@@ -140,7 +140,7 @@ class HitRepository extends CommonRepository
             ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER)
             ->groupBy('h.email_id');
 
-        if (null != $fromDate) {
+        if ($fromDate != null) {
             $dateHelper = new DateTimeHelper($fromDate);
             $q->andwhere($q->expr()->gte('h.date_hit', ':date'))
                 ->setParameter('date', $dateHelper->toUtcString());
@@ -275,9 +275,9 @@ class HitRepository extends CommonRepository
 
         $hitsColumn = ($isVariantCheck) ? 'variant_hits' : 'unique_hits';
         $q          = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $pages      = $q->select("p.id, p.$hitsColumn as totalHits, p.title")
+        $pages      = $q->select("p.id, p.{$hitsColumn} as totalHits, p.title")
             ->from(MAUTIC_TABLE_PREFIX.'pages', 'p')
-            ->where($q->expr()->$inOrEq('p.id', $pageIds))
+            ->where($q->expr()->{$inOrEq}('p.id', $pageIds))
             ->executeQuery()
             ->fetchAllAssociative();
 
@@ -295,12 +295,12 @@ class HitRepository extends CommonRepository
         // else we would have recorded the date_left on a subsequent page hit
         $q    = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $expr = $q->expr()->and(
-            $q->expr()->$inOrEq('h.page_id', $pageIds),
+            $q->expr()->{$inOrEq}('h.page_id', $pageIds),
             $q->expr()->eq('h.code', 200),
             $q->expr()->isNull('h.date_left')
         );
 
-        if (null !== $fromDate) {
+        if ($fromDate !== null) {
             // make sure the date is UTC
             $dt   = new DateTimeHelper($fromDate, 'Y-m-d H:i:s', 'local');
             $expr = $expr->with(
@@ -557,7 +557,7 @@ class HitRepository extends CommonRepository
             ->where('lead_id = :leadId')
             ->setParameter('leadId', $leadId);
 
-        if (null != $trackingId) {
+        if ($trackingId != null) {
             $q->andWhere('tracking_id = :trackingId')
                 ->setParameter('trackingId', $trackingId);
         }

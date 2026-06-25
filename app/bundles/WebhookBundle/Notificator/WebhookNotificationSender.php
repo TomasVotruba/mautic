@@ -60,6 +60,11 @@ class WebhookNotificationSender
         $this->sendEmail($toUsers, $ccToUser, $subject, $details);
     }
 
+    public function getFromNameForSignature(): string
+    {
+        return $this->coreParametersHelper->get('mailer_from_name');
+    }
+
     /**
      * @return array<string,mixed>
      *
@@ -75,7 +80,7 @@ class WebhookNotificationSender
 
         $ccToUser = null;
 
-        if (null !== $webhook->getModifiedBy() && $webhook->getCreatedBy() !== $webhook->getModifiedBy()) {
+        if ($webhook->getModifiedBy() !== null && $webhook->getCreatedBy() !== $webhook->getModifiedBy()) {
             $modifiedBy = $this->entityManager->getReference(User::class, $webhook->getModifiedBy());
 
             $toUser   = $modifiedBy; // Send notification to modifier
@@ -117,10 +122,5 @@ class WebhookNotificationSender
         $this->mailer->setSubject($subject);
         $this->mailer->setBody($details);
         $this->mailer->send(true);
-    }
-
-    public function getFromNameForSignature(): string
-    {
-        return $this->coreParametersHelper->get('mailer_from_name');
     }
 }

@@ -8,15 +8,6 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class CommonRepositoryUpsertTest extends MauticMysqlTestCase
 {
-    protected function beforeBeginTransaction(): void
-    {
-        $this->connection->executeStatement('ALTER TABLE '.MAUTIC_TABLE_PREFIX.'ip_addresses ADD UNIQUE INDEX idx_ip_address (ip_address)');
-    }
-
-    protected function afterRollback(): void
-    {
-        $this->connection->executeStatement('ALTER TABLE '.MAUTIC_TABLE_PREFIX.'ip_addresses DROP INDEX idx_ip_address');
-    }
 
     public function testUpsert(): void
     {
@@ -32,5 +23,14 @@ class CommonRepositoryUpsertTest extends MauticMysqlTestCase
         $ipAddress3 = new IpAddress('10.10.10.10');
         $ipAddressRepository->upsert($ipAddress3);
         $this->assertEquals($ipAddress1->getId(), $ipAddress3->getId());
+    }
+    protected function beforeBeginTransaction(): void
+    {
+        $this->connection->executeStatement('ALTER TABLE '.MAUTIC_TABLE_PREFIX.'ip_addresses ADD UNIQUE INDEX idx_ip_address (ip_address)');
+    }
+
+    protected function afterRollback(): void
+    {
+        $this->connection->executeStatement('ALTER TABLE '.MAUTIC_TABLE_PREFIX.'ip_addresses DROP INDEX idx_ip_address');
     }
 }

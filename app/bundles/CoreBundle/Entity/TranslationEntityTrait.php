@@ -39,24 +39,6 @@ trait TranslationEntityTrait
     #[Groups(['page:read', 'page:write', 'download:read', 'download:write', 'email:read', 'email:write', 'dynamicContent:read', 'dynamicContent:write'])]
     private string $language = 'en';
 
-    protected static function addTranslationMetadata(ClassMetadataBuilder $builder, string $entityClass, string $languageColumnName = 'lang'): void
-    {
-        $builder->createOneToMany('translationChildren', $entityClass)
-            ->setIndexBy('id')
-            ->setOrderBy(['isPublished' => 'DESC'])
-            ->mappedBy('translationParent')
-            ->build();
-
-        $builder->createManyToOne('translationParent', $entityClass)
-            ->inversedBy('translationChildren')
-            ->addJoinColumn('translation_parent_id', 'id', true, false, 'CASCADE')
-            ->build();
-
-        $builder->createField('language', 'string')
-            ->columnName($languageColumnName)
-            ->build();
-    }
-
     public function addTranslationChild(TranslationEntityInterface $child): static
     {
         if (!$this->translationChildren->contains($child)) {
@@ -129,7 +111,7 @@ trait TranslationEntityTrait
         $children = $this->getTranslationChildren();
 
         if ($isChild) {
-            return null !== $parent;
+            return $parent !== null;
         }
 
         return !empty($parent) || ($children && count($children));
@@ -181,6 +163,24 @@ trait TranslationEntityTrait
         return [$parent, $children];
     }
 
+    protected static function addTranslationMetadata(ClassMetadataBuilder $builder, string $entityClass, string $languageColumnName = 'lang'): void
+    {
+        $builder->createOneToMany('translationChildren', $entityClass)
+            ->setIndexBy('id')
+            ->setOrderBy(['isPublished' => 'DESC'])
+            ->mappedBy('translationParent')
+            ->build();
+
+        $builder->createManyToOne('translationParent', $entityClass)
+            ->inversedBy('translationChildren')
+            ->addJoinColumn('translation_parent_id', 'id', true, false, 'CASCADE')
+            ->build();
+
+        $builder->createField('language', 'string')
+            ->columnName($languageColumnName)
+            ->build();
+    }
+
     /**
      * @param string                      $getter
      * @param ?TranslationEntityInterface $variantParent
@@ -193,12 +193,12 @@ trait TranslationEntityTrait
 
         [$parent, $children] = $this->getTranslations();
         if ($variantParent != $parent) {
-            $count = $parent->$getter();
+            $count = $parent->{$getter}();
         }
 
         foreach ($children as $translation) {
             if ($variantParent != $translation) {
-                $count += $translation->$getter();
+                $count += $translation->{$getter}();
             }
         }
 

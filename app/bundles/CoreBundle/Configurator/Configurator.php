@@ -98,29 +98,11 @@ class Configurator
      */
     public function getSteps()
     {
-        if ([] === $this->sortedSteps) {
+        if ($this->sortedSteps === []) {
             $this->sortedSteps = $this->getSortedSteps();
         }
 
         return $this->sortedSteps;
-    }
-
-    /**
-     * Sort routers by priority.
-     * The highest priority number is the highest priority (reverse sorting).
-     *
-     * @return StepInterface[]
-     */
-    private function getSortedSteps(): array
-    {
-        $sortedSteps = [];
-        krsort($this->steps);
-
-        foreach ($this->steps as $steps) {
-            $sortedSteps = array_merge($sortedSteps, $steps);
-        }
-
-        return $sortedSteps;
     }
 
     /**
@@ -196,7 +178,7 @@ class Configurator
         $string .= "\$parameters = array(\n";
 
         foreach ($this->parameters as $key => $value) {
-            if ('' !== $value) {
+            if ($value !== '') {
                 if (is_string($value)) {
                     $value = "'".addcslashes($value, '\\\'')."'";
                 } elseif (is_bool($value)) {
@@ -207,11 +189,31 @@ class Configurator
                     $value = $this->renderArray($value);
                 }
 
-                $string .= "\t'$key' => $value,\n";
+                $string .= "\t'{$key}' => {$value},\n";
             }
         }
 
         return $string.");\n";
+    }
+
+    /**
+     * Writes parameters to file.
+     *
+     * @throws RuntimeException
+     */
+    public function write(): int
+    {
+        if (!$this->isFileWritable()) {
+            throw new RuntimeException('Cannot write the config file, the destination is unwritable.');
+        }
+
+        $return = file_put_contents($this->filename, $this->render());
+
+        if ($return === false) {
+            throw new RuntimeException('An error occurred while attempting to write the config file to the filesystem.');
+        }
+
+        return $return;
     }
 
     /**
@@ -245,26 +247,6 @@ class Configurator
     }
 
     /**
-     * Writes parameters to file.
-     *
-     * @throws RuntimeException
-     */
-    public function write(): int
-    {
-        if (!$this->isFileWritable()) {
-            throw new RuntimeException('Cannot write the config file, the destination is unwritable.');
-        }
-
-        $return = file_put_contents($this->filename, $this->render());
-
-        if (false === $return) {
-            throw new RuntimeException('An error occurred while attempting to write the config file to the filesystem.');
-        }
-
-        return $return;
-    }
-
-    /**
      * Reads parameters from file.
      *
      * @return array<string, mixed>
@@ -280,5 +262,23 @@ class Configurator
 
         // Return the $parameters array defined in the file
         return $parameters;
+    }
+
+    /**
+     * Sort routers by priority.
+     * The highest priority number is the highest priority (reverse sorting).
+     *
+     * @return StepInterface[]
+     */
+    private function getSortedSteps(): array
+    {
+        $sortedSteps = [];
+        krsort($this->steps);
+
+        foreach ($this->steps as $steps) {
+            $sortedSteps = array_merge($sortedSteps, $steps);
+        }
+
+        return $sortedSteps;
     }
 }

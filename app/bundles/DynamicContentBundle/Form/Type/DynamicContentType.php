@@ -339,6 +339,11 @@ class DynamicContentType extends AbstractType
         $view->vars['locales']      = $this->localeChoices;
     }
 
+    public function getBlockPrefix(): string
+    {
+        return 'dwc';
+    }
+
     private function filterFieldChoices(): void
     {
         unset($this->fieldChoices['company']);
@@ -364,7 +369,7 @@ class DynamicContentType extends AbstractType
      */
     private function addContentField(FormInterface $form, ?string $type): void
     {
-        $enableEditor = TypeList::HTML === $type;
+        $enableEditor = $type === TypeList::HTML;
         $editorClass  = 'editor editor-advanced editor-builder-tokens';
 
         $form->add('content', TextareaType::class, [
@@ -382,10 +387,5 @@ class DynamicContentType extends AbstractType
             ],
             'required' => false,
         ]);
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'dwc';
     }
 }

@@ -41,7 +41,7 @@ final class AlreadyMappedFieldCollector implements AlreadyMappedFieldCollectorIn
         $this->fetchAndSave($formId, $object, function (array $fields) use ($fieldKey) {
             $cacheKey = array_search($fieldKey, $fields, true);
 
-            if (false !== $cacheKey) {
+            if ($cacheKey !== false) {
                 unset($fields[$cacheKey]);
 
                 // Reset indexes.

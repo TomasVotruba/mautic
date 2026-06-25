@@ -125,7 +125,7 @@ class UserController extends FormController
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
         $form   = $this->createForm(UserInviteType::class, [], ['action' => $action]);
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $form->handleRequest($request);
             $response = null;
 
@@ -195,94 +195,11 @@ class UserController extends FormController
         $response = null;
 
         // Check for a submitted form and process it
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $response = $this->handleNewUserPost($request, $languageHelper, $hasher, $samlHelper, $model, $user, $form);
         }
 
         return $response ?? $this->renderNewUserForm($form, $action);
-    }
-
-    private function handleNewUserPost(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, UserModel $model, User $user, FormInterface $form): JsonResponse|Response|null
-    {
-        $response  = null;
-        $cancelled = $this->isFormCancelled($form);
-        $valid     = false;
-
-        if (!$cancelled) {
-            $valid = $this->saveNewUserIfValid($request, $languageHelper, $hasher, $model, $user, $form);
-        }
-
-        if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
-            $response = $this->postActionRedirect([
-                'returnUrl'       => $this->generateUrl('mautic_user_index'),
-                'viewParameters'  => ['page' => $request->getSession()->get('mautic.user.page', 1), 'isSamlUser' => false],
-                'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
-                'passthroughVars' => [
-                    'activeLink'    => '#mautic_user_index',
-                    'mauticContent' => 'user',
-                ],
-            ]);
-        } elseif ($valid) {
-            $response = $this->editAction($request, $languageHelper, $hasher, $samlHelper, $user->getId(), true);
-        }
-
-        return $response;
-    }
-
-    private function saveNewUserIfValid(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, UserModel $model, User $user, FormInterface $form): bool
-    {
-        $formUser          = $request->request->all()['user'] ?? [];
-        $submittedPassword = $formUser['plainPassword']['password'] ?? null;
-        $password          = $model->checkNewPassword($user, $hasher, $submittedPassword);
-        $valid             = $this->isFormValid($form);
-
-        if ($valid) {
-            $user->setPassword($password);
-            $model->saveEntity($user);
-            $this->loadNewUserLocale($languageHelper, $model, $user);
-
-            $this->addFlashMessage('mautic.core.notice.created', [
-                '%name%'      => $user->getName(),
-                '%menu_link%' => 'mautic_user_index',
-                '%url%'       => $this->generateUrl('mautic_user_action', [
-                    'objectAction' => 'edit',
-                    'objectId'     => $user->getId(),
-                ]),
-            ]);
-        }
-
-        return $valid;
-    }
-
-    private function loadNewUserLocale(LanguageHelper $languageHelper, UserModel $model, User $user): void
-    {
-        $installedLanguages = $languageHelper->getSupportedLanguages();
-
-        if ($user->getLocale() && !array_key_exists($user->getLocale(), $installedLanguages)) {
-            $fetchLanguage = $languageHelper->extractLanguagePackage($user->getLocale());
-
-            if ($fetchLanguage['error']) {
-                $user->setLocale(null);
-                $model->saveEntity($user);
-                $this->addFlashMessage(
-                    $fetchLanguage['message'] ?? 'mautic.core.could.not.set.language',
-                    $fetchLanguage['vars'] ?? []
-                );
-            }
-        }
-    }
-
-    private function renderNewUserForm(FormInterface $form, string $action): JsonResponse|Response
-    {
-        return $this->delegateView([
-            'viewParameters'  => ['form' => $form->createView(), 'isSamlUser' => false],
-            'contentTemplate' => '@MauticUser/User/form.html.twig',
-            'passthroughVars' => [
-                'activeLink'    => '#mautic_user_new',
-                'route'         => $action,
-                'mauticContent' => 'user',
-            ],
-        ]);
     }
 
     /**
@@ -301,7 +218,7 @@ class UserController extends FormController
         $model = $this->getModel('user.user');
         \assert($model instanceof UserModel);
         $user = $model->getEntity($objectId);
-        if (null === $user) {
+        if ($user === null) {
             return $this->postActionRedirect([
                 'returnUrl'       => $this->generateUrl('mautic_user_index'),
                 'flashes'         => [
@@ -356,7 +273,7 @@ class UserController extends FormController
         }
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() === 'POST') {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -472,14 +389,14 @@ class UserController extends FormController
                 'mauticContent' => 'user',
             ],
         ];
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             // ensure the user logged in is not getting deleted
             if ((int) $currentUser->getId() !== (int) $objectId) {
                 $model = $this->getModel('user.user');
                 \assert($model instanceof UserModel);
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
@@ -525,7 +442,7 @@ class UserController extends FormController
         $user  = $model->getEntity($objectId);
 
         // user not found
-        if (null === $user) {
+        if ($user === null) {
             return $this->postActionRedirect([
                 'returnUrl'       => $this->generateUrl('mautic_dashboard_index'),
                 'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::contactAction',
@@ -544,7 +461,7 @@ class UserController extends FormController
 
         $currentUser = $this->user;
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $contact   = $request->request->all()['contact'] ?? [];
             $formUrl   = $contact['returnUrl'] ?? '';
             $returnUrl = $formUrl ? urldecode($formUrl) : $this->generateUrl('mautic_dashboard_index');
@@ -613,7 +530,7 @@ class UserController extends FormController
                 $model  = $this->getModel($reEntity);
                 $entity = $model->getEntity($reEntityId);
 
-                if (null !== $entity) {
+                if ($entity !== null) {
                     $subject = $model->getUserContactSubject($reSubject, $entity);
                     $form->get('msg_subject')->setData($subject);
                 }
@@ -652,7 +569,7 @@ class UserController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('user');
             \assert($model instanceof UserModel);
             $ids         = json_decode($request->query->get('ids', ''));
@@ -668,7 +585,7 @@ class UserController extends FormController
                         'type' => 'error',
                         'msg'  => 'mautic.user.user.error.cannotdeleteself',
                     ];
-                } elseif (null === $entity) {
+                } elseif ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.user.error.notfound',
@@ -702,5 +619,88 @@ class UserController extends FormController
                 'flashes' => $flashes,
             ])
         );
+    }
+
+    private function handleNewUserPost(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, UserModel $model, User $user, FormInterface $form): JsonResponse|Response|null
+    {
+        $response  = null;
+        $cancelled = $this->isFormCancelled($form);
+        $valid     = false;
+
+        if (!$cancelled) {
+            $valid = $this->saveNewUserIfValid($request, $languageHelper, $hasher, $model, $user, $form);
+        }
+
+        if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
+            $response = $this->postActionRedirect([
+                'returnUrl'       => $this->generateUrl('mautic_user_index'),
+                'viewParameters'  => ['page' => $request->getSession()->get('mautic.user.page', 1), 'isSamlUser' => false],
+                'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
+                'passthroughVars' => [
+                    'activeLink'    => '#mautic_user_index',
+                    'mauticContent' => 'user',
+                ],
+            ]);
+        } elseif ($valid) {
+            $response = $this->editAction($request, $languageHelper, $hasher, $samlHelper, $user->getId(), true);
+        }
+
+        return $response;
+    }
+
+    private function saveNewUserIfValid(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, UserModel $model, User $user, FormInterface $form): bool
+    {
+        $formUser          = $request->request->all()['user'] ?? [];
+        $submittedPassword = $formUser['plainPassword']['password'] ?? null;
+        $password          = $model->checkNewPassword($user, $hasher, $submittedPassword);
+        $valid             = $this->isFormValid($form);
+
+        if ($valid) {
+            $user->setPassword($password);
+            $model->saveEntity($user);
+            $this->loadNewUserLocale($languageHelper, $model, $user);
+
+            $this->addFlashMessage('mautic.core.notice.created', [
+                '%name%'      => $user->getName(),
+                '%menu_link%' => 'mautic_user_index',
+                '%url%'       => $this->generateUrl('mautic_user_action', [
+                    'objectAction' => 'edit',
+                    'objectId'     => $user->getId(),
+                ]),
+            ]);
+        }
+
+        return $valid;
+    }
+
+    private function loadNewUserLocale(LanguageHelper $languageHelper, UserModel $model, User $user): void
+    {
+        $installedLanguages = $languageHelper->getSupportedLanguages();
+
+        if ($user->getLocale() && !array_key_exists($user->getLocale(), $installedLanguages)) {
+            $fetchLanguage = $languageHelper->extractLanguagePackage($user->getLocale());
+
+            if ($fetchLanguage['error']) {
+                $user->setLocale(null);
+                $model->saveEntity($user);
+                $this->addFlashMessage(
+                    $fetchLanguage['message'] ?? 'mautic.core.could.not.set.language',
+                    $fetchLanguage['vars'] ?? []
+                );
+            }
+        }
+    }
+
+    private function renderNewUserForm(FormInterface $form, string $action): JsonResponse|Response
+    {
+        return $this->delegateView([
+            'viewParameters'  => ['form' => $form->createView(), 'isSamlUser' => false],
+            'contentTemplate' => '@MauticUser/User/form.html.twig',
+            'passthroughVars' => [
+                'activeLink'    => '#mautic_user_new',
+                'route'         => $action,
+                'mauticContent' => 'user',
+            ],
+        ]);
     }
 }

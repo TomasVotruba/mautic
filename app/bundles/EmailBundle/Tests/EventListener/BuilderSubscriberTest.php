@@ -102,7 +102,7 @@ class BuilderSubscriberTest extends TestCase
         $this->emailModel->method('buildUrl')->willReturn('https://some.url');
         $this->translator->method('trans')->willReturn('some translation');
         $this->coreParametersHelper->method('get')->willReturnCallback(function ($key) {
-            if ('locale' === $key) {
+            if ($key === 'locale') {
                 return 'default_locale';
             }
 
@@ -201,27 +201,27 @@ class BuilderSubscriberTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('unsubscribe_text', $parameters[0]);
 
                     return $unsubscribeTokenizedText;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('webview_text', $parameters[0]);
 
                     return 'Just a text';
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('default_signature_text', $parameters[0]);
 
                     return 'Signature';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('mailer_from_name', $parameters[0]);
 
                     return 'jan.kozak@acquia.com';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertSame('brand_name', $parameters[0]);
 
                     return 'ACME';

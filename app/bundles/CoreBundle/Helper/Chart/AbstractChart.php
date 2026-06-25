@@ -9,6 +9,13 @@ abstract class AbstractChart
     use DateRangeUnitTrait;
 
     /**
+     * Default Mautic colors.
+     *
+     * @var array
+     */
+    public $colors = ['#4E5D9D', '#00B49C', '#FD9572', '#FDB933', '#757575', '#9C4E5C', '#694535', '#596935'];
+
+    /**
      * Datasets of the chart.
      *
      * @var array
@@ -65,13 +72,6 @@ abstract class AbstractChart
     protected $amount;
 
     /**
-     * Default Mautic colors.
-     *
-     * @var array
-     */
-    public $colors = ['#4E5D9D', '#00B49C', '#FD9572', '#FDB933', '#757575', '#9C4E5C', '#694535', '#596935'];
-
-    /**
      * Get chart time unit.
      *
      * @return string
@@ -96,7 +96,7 @@ abstract class AbstractChart
 
         $isTime = in_array($unit, ['H', 'i', 's']) ? 'T' : '';
 
-        if ('i' == $unit) {
+        if ($unit == 'i') {
             $unit = 'M';
         }
 

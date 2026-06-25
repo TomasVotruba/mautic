@@ -51,7 +51,7 @@ class FieldFilterTransformer implements DataTransformerInterface
                 $rawFilters[$key] = array_merge($this->default, $rawFilters[$key]);
             }
             $filterType = $filter['type'];
-            if ('datetime' === $filterType || 'date' === $filterType) {
+            if ($filterType === 'datetime' || $filterType === 'date') {
                 $bcFilter = $filter['filter'] ?? '';
                 $filter   = $filter['properties']['filter'] ?? $bcFilter;
                 if (empty($filter) || in_array($filter, $this->relativeDateStrings) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
@@ -68,7 +68,7 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                $dateFormat = 'datetime' === $filterType ? 'Y-m-d H:i' : 'Y-m-d';
+                $dateFormat = $filterType === 'datetime' ? 'Y-m-d H:i' : 'Y-m-d';
 
                 $dt = new DateTimeHelper($filter, $dateFormat);
 
@@ -91,7 +91,7 @@ class FieldFilterTransformer implements DataTransformerInterface
         $rawFilters = array_values($rawFilters);
 
         foreach ($rawFilters as $k => $f) {
-            if ('datetime' == $f['type'] || 'date' === $f['type']) {
+            if ($f['type'] == 'datetime' || $f['type'] === 'date') {
                 $bcFilter = $f['filter'] ?? '';
                 $filter   = $f['properties']['filter'] ?? $bcFilter;
                 $filter   = strtolower($filter);
@@ -110,7 +110,7 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                $dateFormat = 'datetime' === $f['type'] ? 'Y-m-d H:i' : 'Y-m-d';
+                $dateFormat = $f['type'] === 'datetime' ? 'Y-m-d H:i' : 'Y-m-d';
 
                 $dt = new DateTimeHelper($filter, $dateFormat, 'local');
 
@@ -123,14 +123,14 @@ class FieldFilterTransformer implements DataTransformerInterface
 
     private function isValidAbsoluteDate(string $value, string $type): bool
     {
-        $formats = 'datetime' === $type
+        $formats = $type === 'datetime'
             ? ['Y-m-d H:i', 'Y-m-d H:i:s']
             : ['Y-m-d'];
 
         foreach ($formats as $format) {
             $dt = \DateTimeImmutable::createFromFormat($format, $value);
 
-            if (false !== $dt && $dt->format($format) === $value) {
+            if ($dt !== false && $dt->format($format) === $value) {
                 return true;
             }
         }

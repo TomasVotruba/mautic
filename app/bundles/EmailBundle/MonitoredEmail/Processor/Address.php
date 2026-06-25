@@ -14,8 +14,8 @@ class Address
         foreach ($parsedAddresses as $parsedAddress) {
             if (
                 isset($parsedAddress->host)
-                && '.SYNTAX-ERROR.' != $parsedAddress->host
-                && 'default.domain.name' != $parsedAddress->host
+                && $parsedAddress->host != '.SYNTAX-ERROR.'
+                && $parsedAddress->host != 'default.domain.name'
             ) {
                 $email           = $parsedAddress->mailbox.'@'.$parsedAddress->host;
                 $name            = $parsedAddress->personal ?? null;

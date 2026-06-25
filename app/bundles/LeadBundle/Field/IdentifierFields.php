@@ -33,7 +33,7 @@ class IdentifierFields
      */
     private function getDefaultFields(string $object, ?object $entityClass): array
     {
-        if (null === $entityClass) {
+        if ($entityClass === null) {
             switch ($object) {
                 case 'lead':
                     $entityClass = Lead::class;

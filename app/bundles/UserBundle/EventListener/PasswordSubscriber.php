@@ -34,7 +34,7 @@ final class PasswordSubscriber implements EventSubscriberInterface
         $badge = $passport->getBadge(PasswordStrengthBadge::class);
         \assert($badge instanceof PasswordStrengthBadge);
         $presentedPassword = $badge->getPresentedPassword();
-        if ('' === $presentedPassword) {
+        if ($presentedPassword === '') {
             throw new BadCredentialsException('The presented password cannot be empty.');
         }
 

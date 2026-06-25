@@ -57,8 +57,8 @@ class MenuExtension extends AbstractExtension
      */
     public function buildMenuClasses(ItemInterface $item, ?MatcherInterface $matcher, array $options, ?string $extraClasses): array
     {
-        $isAncestor = null !== $matcher && $matcher->isAncestor($item, (int) $options['matchingDepth']);
-        $isCurrent  = null !== $matcher && $matcher->isCurrent($item);
+        $isAncestor = $matcher !== null && $matcher->isAncestor($item, (int) $options['matchingDepth']);
+        $isCurrent  = $matcher !== null && $matcher->isCurrent($item);
 
         $class = $item->getAttribute('class');
 
@@ -73,7 +73,7 @@ class MenuExtension extends AbstractExtension
         $classes .= ($item->actsLikeFirst() && isset($options['firstClass'])) ? " {$options['firstClass']}" : '';
         $classes .= ($item->actsLikeLast() && isset($options['lastClass'])) ? " {$options['lastClass']}" : '';
 
-        if ('' !== $classes) {
+        if ($classes !== '') {
             $classesArray = ['class' => trim($classes)];
         }
 

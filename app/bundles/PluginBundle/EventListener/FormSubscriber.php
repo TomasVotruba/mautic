@@ -35,7 +35,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionTriggered(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('plugin.leadpush')) {
+        if ($event->checkContext('plugin.leadpush') === false) {
             return;
         }
 

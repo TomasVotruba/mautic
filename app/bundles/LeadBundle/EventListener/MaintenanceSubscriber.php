@@ -33,7 +33,7 @@ class MaintenanceSubscriber implements EventSubscriberInterface
               ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
               ->where($qb->expr()->lte('l.last_active', ':date'));
 
-            if (false === $event->isGdpr()) {
+            if ($event->isGdpr() === false) {
                 $qb->andWhere($qb->expr()->isNull('l.date_identified'));
             } else {
                 $qb->orWhere(
@@ -48,7 +48,7 @@ class MaintenanceSubscriber implements EventSubscriberInterface
             $qb->select('l.id')->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
               ->where($qb->expr()->lte('l.last_active', ':date'));
 
-            if (false === $event->isGdpr()) {
+            if ($event->isGdpr() === false) {
                 $qb->andWhere($qb->expr()->isNull('l.date_identified'));
             } else {
                 $qb->orWhere(
@@ -65,7 +65,7 @@ class MaintenanceSubscriber implements EventSubscriberInterface
             $qb2 = $this->db->createQueryBuilder();
             while (true) {
                 $leadsIds = array_column($qb->executeQuery()->fetchAllAssociative(), 'id');
-                if (0 === sizeof($leadsIds)) {
+                if (sizeof($leadsIds) === 0) {
                     break;
                 }
                 foreach ($leadsIds as $leadId) {

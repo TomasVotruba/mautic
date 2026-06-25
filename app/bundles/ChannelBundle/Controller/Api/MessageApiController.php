@@ -58,7 +58,7 @@ class MessageApiController extends CommonApiController
     {
         parent::prepareParametersFromRequest($form, $params, $entity, $masks);
 
-        if ('PATCH' === $this->requestStack->getCurrentRequest()->getMethod() && !isset($params['channels'])) {
+        if ($this->requestStack->getCurrentRequest()->getMethod() === 'PATCH' && !isset($params['channels'])) {
             return;
         } elseif (!isset($params['channels'])) {
             $params['channels'] = [];

@@ -63,7 +63,7 @@ class SalesforceApi extends CrmApi
         $requestUrl = RequestUrl::get($this->integration->getApiUrl(), $queryUrl, $operation, $object);
 
         $settings   = $this->requestSettings;
-        if ('PATCH' == $method) {
+        if ($method == 'PATCH') {
             $settings['headers'] = ['Sforce-Auto-Assign' => 'FALSE'];
         }
 
@@ -90,7 +90,7 @@ class SalesforceApi extends CrmApi
      */
     public function getLeadFields($object = null)
     {
-        if ('company' == $object) {
+        if ($object == 'company') {
             $object = 'Account'; // salesforce object name
         }
 
@@ -110,7 +110,7 @@ class SalesforceApi extends CrmApi
         ];
 
         // try searching for lead as this has been changed before in updated done to the plugin
-        if (isset($config['objects']) && false !== array_search('Contact', $config['objects']) && !empty($data['Contact']['Email'])) {
+        if (isset($config['objects']) && array_search('Contact', $config['objects']) !== false && !empty($data['Contact']['Email'])) {
             $fields      = $this->integration->getFieldsForQuery('Contact');
             unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
             $fields[]    = 'Id';
@@ -153,7 +153,7 @@ class SalesforceApi extends CrmApi
         $appendToQuery = '';
 
         // try searching for lead as this has been changed before in updated done to the plugin
-        if (isset($config['objects']) && false !== array_search('company', $config['objects']) && !empty($data['company']['Name'])) {
+        if (isset($config['objects']) && array_search('company', $config['objects']) !== false && !empty($data['company']['Name'])) {
             $fields = $this->integration->getFieldsForQuery('Account');
 
             if (!empty($data['company']['BillingCountry'])) {
@@ -264,9 +264,9 @@ class SalesforceApi extends CrmApi
                         $namespace.'ReferenceId__c'  => $record['id'].'-'.$sfId,
                     ];
 
-                    if ('Lead' === $object) {
+                    if ($object === 'Lead') {
                         $body[$namespace.'WhoId__c'] = $sfId;
-                    } elseif ('Contact' === $object) {
+                    } elseif ($object === 'Contact') {
                         $body[$namespace.'contact_id__c'] = $sfId;
                     }
 
@@ -347,36 +347,6 @@ class SalesforceApi extends CrmApi
     }
 
     /**
-     * Perform queryAll request and retry if HasOptedOutOfEmail is not accessible.
-     *
-     * @param array<mixed> $fields
-     * @param array<mixed> $query
-     *
-     * @return mixed|string
-     *
-     * @throws ApiErrorException
-     */
-    private function requestQueryAllAndHandle(string $queryUrl, array $fields, string $object, array $query): mixed
-    {
-        $config = $this->integration->mergeConfigToFeatureSettings([]);
-        if (isset($config['updateOwner']) && isset($config['updateOwner'][0]) && 'updateOwner' == $config['updateOwner'][0]) {
-            $fields[] = 'Owner.Name';
-            $fields[] = 'Owner.Email';
-        }
-        $fields = array_unique($fields);
-
-        $ignoreConvertedLeads = ('Lead' == $object) ? ' and ConvertedContactId = NULL' : '';
-        if (!$this->isOptOutFieldAccessible()) { // If not opt-out is supported; unset it
-            unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
-        }
-
-        $baseQuery = 'SELECT %s from '.$object.' where SystemModStamp>='.$query['start'].' and SystemModStamp<='.$query['end'].' and isDeleted = false'
-            .$ignoreConvertedLeads;
-
-        return $this->handleQueryAll($baseQuery, $fields, $queryUrl);
-    }
-
-    /**
      * @return bool|mixed
      *
      * @throws ApiErrorException
@@ -423,7 +393,7 @@ class SalesforceApi extends CrmApi
         // Mautic IntegrationEntity objects
         $this->requestSettings['headers']['Sforce-Query-Options'] = 'batchSize=200';
 
-        if (null === $queryUrl) {
+        if ($queryUrl === null) {
             $queryUrl = $this->integration->getQueryUrl().'/query';
         }
 
@@ -447,8 +417,8 @@ class SalesforceApi extends CrmApi
         $campaignMembers = [];
         if (!empty($people)) {
             $idField = "{$object}Id";
-            $query   = "Select Id, $idField from CampaignMember where CampaignId = '".$campaignId
-                ."' and $idField in ('".implode("','", $people)."')";
+            $query   = "Select Id, {$idField} from CampaignMember where CampaignId = '".$campaignId
+                ."' and {$idField} in ('".implode("','", $people)."')";
 
             $foundCampaignMembers = $this->request('query', ['q' => $query], 'GET', false, null, $this->integration->getQueryUrl());
             if (!empty($foundCampaignMembers['records'])) {
@@ -510,6 +480,48 @@ class SalesforceApi extends CrmApi
         $queryUrl  = $this->integration->getQueryUrl();
 
         return $this->request('queryAll', ['q' => $findQuery], 'GET', false, null, $queryUrl);
+    }
+
+    public function isOptOutFieldAccessible(): bool
+    {
+        return $this->optOutFieldAccessible;
+    }
+
+    public function setOptOutFieldAccessible(bool $optOutFieldAccessible): self
+    {
+        $this->optOutFieldAccessible = $optOutFieldAccessible;
+
+        return $this;
+    }
+
+    /**
+     * Perform queryAll request and retry if HasOptedOutOfEmail is not accessible.
+     *
+     * @param array<mixed> $fields
+     * @param array<mixed> $query
+     *
+     * @return mixed|string
+     *
+     * @throws ApiErrorException
+     */
+    private function requestQueryAllAndHandle(string $queryUrl, array $fields, string $object, array $query): mixed
+    {
+        $config = $this->integration->mergeConfigToFeatureSettings([]);
+        if (isset($config['updateOwner']) && isset($config['updateOwner'][0]) && $config['updateOwner'][0] == 'updateOwner') {
+            $fields[] = 'Owner.Name';
+            $fields[] = 'Owner.Email';
+        }
+        $fields = array_unique($fields);
+
+        $ignoreConvertedLeads = ($object == 'Lead') ? ' and ConvertedContactId = NULL' : '';
+        if (!$this->isOptOutFieldAccessible()) { // If not opt-out is supported; unset it
+            unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
+        }
+
+        $baseQuery = 'SELECT %s from '.$object.' where SystemModStamp>='.$query['start'].' and SystemModStamp<='.$query['end'].' and isDeleted = false'
+            .$ignoreConvertedLeads;
+
+        return $this->handleQueryAll($baseQuery, $fields, $queryUrl);
     }
 
     /**
@@ -638,18 +650,6 @@ class SalesforceApi extends CrmApi
         return $value;
     }
 
-    public function isOptOutFieldAccessible(): bool
-    {
-        return $this->optOutFieldAccessible;
-    }
-
-    public function setOptOutFieldAccessible(bool $optOutFieldAccessible): SalesforceApi
-    {
-        $this->optOutFieldAccessible = $optOutFieldAccessible;
-
-        return $this;
-    }
-
     /**
      * @param array<string> $fields
      *
@@ -661,7 +661,7 @@ class SalesforceApi extends CrmApi
      */
     private function handleQueryAll(string $baseQuery, array $fields, string $queryUrl, int $tries = 0, bool $isRetry = false): mixed
     {
-        if (10 === $tries) {
+        if ($tries === 10) {
             $this->integration->logIntegrationError(new \Exception(
                 sprintf('Maximum tries exceeded for handling missing field scenarios')
             ));
@@ -674,7 +674,7 @@ class SalesforceApi extends CrmApi
             if (!$missingField) {
                 throw $e;
             }
-            if ('HasOptedOutOfEmail' == $missingField) {
+            if ($missingField == 'HasOptedOutOfEmail') {
                 // Unset field as it is not accessible
                 unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
 
@@ -703,7 +703,7 @@ class SalesforceApi extends CrmApi
 
                     // Remove the missing field from the request
                     $missingFieldIndex = array_search($missingField, $fields);
-                    if (false !== $missingFieldIndex) {
+                    if ($missingFieldIndex !== false) {
                         unset($fields[$missingFieldIndex]);
                     }
                 }

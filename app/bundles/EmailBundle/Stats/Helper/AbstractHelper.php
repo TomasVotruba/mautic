@@ -56,7 +56,7 @@ abstract class AbstractHelper implements StatHelperInterface
     {
         $unit = $this->getTimeUnitFromDateRange($fromDateTime, $toDateTime);
 
-        if ('W' == $unit) {   // We won't support week storage, we will store it by date
+        if ($unit == 'W') {   // We won't support week storage, we will store it by date
             $unit = 'd';
         }
         $query = new ChartQuery($this->connection, $fromDateTime, $toDateTime, $unit);
@@ -84,18 +84,18 @@ abstract class AbstractHelper implements StatHelperInterface
      */
     protected function limitQueryToEmailIds(QueryBuilder $q, array $ids, $column, $prefix)
     {
-        if (0 === count($ids)) {
+        if (count($ids) === 0) {
             return;
         }
 
-        if (1 === count($ids)) {
-            $q->andWhere("$prefix.$column = :email_id");
+        if (count($ids) === 1) {
+            $q->andWhere("{$prefix}.{$column} = :email_id");
             $q->setParameter('email_id', $ids[0]);
 
             return;
         }
 
-        $q->andWhere("$prefix.$column IN (:email_ids)");
+        $q->andWhere("{$prefix}.{$column} IN (:email_ids)");
         $q->setParameter('email_ids', $ids, ArrayParameterType::INTEGER);
     }
 

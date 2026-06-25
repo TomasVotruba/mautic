@@ -128,7 +128,7 @@ class StageController extends AbstractFormController
         $page       = $request->getSession()->get('mautic.stage.page', 1);
         $method     = $request->getMethod();
         $stage      = $request->request->all()['stage'] ?? [];
-        $actionType = 'POST' === $method ? ($stage['type'] ?? '') : '';
+        $actionType = $method === 'POST' ? ($stage['type'] ?? '') : '';
         $action     = $this->generateUrl('mautic_stage_action', ['objectAction' => 'new']);
         $actions    = $model->getStageActions();
         $form       = $model->createForm(
@@ -143,7 +143,7 @@ class StageController extends AbstractFormController
         $viewParameters = ['page' => $page];
 
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $method) {
+        if ($method === Request::METHOD_POST) {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -259,7 +259,7 @@ class StageController extends AbstractFormController
         ];
 
         // form not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -296,7 +296,7 @@ class StageController extends AbstractFormController
         );
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -392,7 +392,7 @@ class StageController extends AbstractFormController
         $model  = $this->getModel('stage');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('stage:stages:create')) {
                 $this->throwAccessDenied();
             }
@@ -427,12 +427,12 @@ class StageController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('stage');
             \assert($model instanceof StageModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.stage.error.notfound',
@@ -486,7 +486,7 @@ class StageController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('stage');
             \assert($model instanceof StageModel);
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -496,7 +496,7 @@ class StageController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.stage.error.notfound',

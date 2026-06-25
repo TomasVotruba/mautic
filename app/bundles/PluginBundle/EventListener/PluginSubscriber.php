@@ -20,7 +20,7 @@ class PluginSubscriber implements EventSubscriberInterface
     {
         $metadata = $event->getMetadata();
 
-        if (null === $metadata) {
+        if ($metadata === null) {
             return;
         }
 

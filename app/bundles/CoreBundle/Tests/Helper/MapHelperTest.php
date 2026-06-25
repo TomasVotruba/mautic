@@ -10,56 +10,6 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class MapHelperTest extends MauticMysqlTestCase
 {
-    /**
-     * @return array<string, array<int, array<string, int|string>>>
-     */
-    private function getStats(): array
-    {
-        return [
-            'contacts' => [
-                [
-                    'country'  => '',
-                    'contacts' => 4,
-                ],
-                [
-                    'country'  => 'Spain',
-                    'contacts' => 12,
-                ],
-                [
-                    'country'  => 'Finland',
-                    'contacts' => 8,
-                ],
-            ],
-            'read_count' => [
-                [
-                    'read_count'            => '4',
-                    'country'               => '',
-                ],
-                [
-                    'read_count'            => '8',
-                    'country'               => 'Spain',
-                ],
-                [
-                    'read_count'            => '8',
-                    'country'               => 'Finland',
-                ],
-            ],
-            'clicked_through_count' => [
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => '',
-                ],
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => 'Spain',
-                ],
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => 'Finland',
-                ],
-            ],
-        ];
-    }
 
     public function testGetOptionLegendText(): void
     {
@@ -112,5 +62,55 @@ class MapHelperTest extends MauticMysqlTestCase
             'legendText' => 'Total: 12 (8 with country)',
             'unit'       => 'Click',
         ], $results[2]);
+    }
+    /**
+     * @return array<string, array<int, array<string, int|string>>>
+     */
+    private function getStats(): array
+    {
+        return [
+            'contacts' => [
+                [
+                    'country'  => '',
+                    'contacts' => 4,
+                ],
+                [
+                    'country'  => 'Spain',
+                    'contacts' => 12,
+                ],
+                [
+                    'country'  => 'Finland',
+                    'contacts' => 8,
+                ],
+            ],
+            'read_count' => [
+                [
+                    'read_count'            => '4',
+                    'country'               => '',
+                ],
+                [
+                    'read_count'            => '8',
+                    'country'               => 'Spain',
+                ],
+                [
+                    'read_count'            => '8',
+                    'country'               => 'Finland',
+                ],
+            ],
+            'clicked_through_count' => [
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => '',
+                ],
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => 'Spain',
+                ],
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => 'Finland',
+                ],
+            ],
+        ];
     }
 }

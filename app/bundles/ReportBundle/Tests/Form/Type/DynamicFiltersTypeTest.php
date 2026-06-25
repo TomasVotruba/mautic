@@ -35,78 +35,6 @@ final class DynamicFiltersTypeTest extends TestCase
         $this->dynamicFiltersType = new DynamicFiltersType($this->translator);
     }
 
-    /**
-     * @param array<string, mixed> $overrides
-     *
-     * @return array<string, mixed>
-     */
-    private function createFilter(array $overrides = []): array
-    {
-        return array_merge([
-            'dynamic'   => 1,
-            'column'    => 'test_column',
-            'condition' => 'eq',
-            'value'     => 'test_value',
-        ], $overrides);
-    }
-
-    /**
-     * @param array<string, mixed> $overrides
-     *
-     * @return array<string, mixed>
-     */
-    private function createFilterDefinition(array $overrides = []): array
-    {
-        return array_merge([
-            'alias'         => 'test_alias',
-            'label'         => 'Test Label',
-            'type'          => 'text',
-            'operatorGroup' => 'text',
-            'operators'     => ['eq' => 'mautic.core.operator.equals'],
-        ], $overrides);
-    }
-
-    private function setupBasicReport(): void
-    {
-        $this->report->method('getId')->willReturn(1);
-    }
-
-    /**
-     * @param array<string, mixed> $definition
-     */
-    private function setupFilterDefinitions(array $definition): void
-    {
-        $this->filterDefinitions->definitions = [
-            'test_column' => $definition,
-        ];
-    }
-
-    private function setupTranslator(string $translation = 'Equals'): void
-    {
-        $this->translator->method('trans')->willReturn($translation);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function getBasicOptions(): array
-    {
-        return [
-            'report'            => $this->report,
-            'filterDefinitions' => $this->filterDefinitions,
-        ];
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, mixed>
-     */
-    private function getOptionsWithData(array $data): array
-    {
-        return array_merge($this->getBasicOptions(), ['data' => $data]);
-    }
-
     public function testBuildFormWithNoDynamicFilters(): void
     {
         $this->report->method('getFilters')->willReturn([]);
@@ -210,7 +138,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 ButtonGroupType::class,
                 $this->callback(function (array $args) {
-                    return 0 === $args['data'];
+                    return $args['data'] === 0;
                 })
             );
 
@@ -329,7 +257,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 ChoiceType::class,
                 $this->callback(function (array $args) {
-                    return true === $args['multiple']
+                    return $args['multiple'] === true
                            && $args['choices'] === ['Option 1' => 'option1', 'Option 2' => 'option2'];
                 })
             );
@@ -350,7 +278,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 ButtonGroupType::class,
                 $this->callback(function (array $args) {
-                    return true === $args['data'];
+                    return $args['data'] === true;
                 })
             );
 
@@ -370,7 +298,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 TextType::class,
                 $this->callback(function (array $args) {
-                    return 'Test Label (Equals)' === $args['label'];
+                    return $args['label'] === 'Test Label (Equals)';
                 })
             );
 
@@ -390,7 +318,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 TextType::class,
                 $this->callback(function (array $args) {
-                    return 'Test Label (Equals)' === $args['label'];
+                    return $args['label'] === 'Test Label (Equals)';
                 })
             );
 
@@ -410,7 +338,7 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 TextType::class,
                 $this->callback(function (array $args) {
-                    return 'Test Label' === $args['label'];
+                    return $args['label'] === 'Test Label';
                 })
             );
 
@@ -431,6 +359,78 @@ final class DynamicFiltersTypeTest extends TestCase
         $this->assertArrayHasKey('filterDefinitions', $options);
         $this->assertArrayHasKey('report', $options);
         $this->assertInstanceOf(Report::class, $options['report']);
+    }
+
+    /**
+     * @param array<string, mixed> $overrides
+     *
+     * @return array<string, mixed>
+     */
+    private function createFilter(array $overrides = []): array
+    {
+        return array_merge([
+            'dynamic'   => 1,
+            'column'    => 'test_column',
+            'condition' => 'eq',
+            'value'     => 'test_value',
+        ], $overrides);
+    }
+
+    /**
+     * @param array<string, mixed> $overrides
+     *
+     * @return array<string, mixed>
+     */
+    private function createFilterDefinition(array $overrides = []): array
+    {
+        return array_merge([
+            'alias'         => 'test_alias',
+            'label'         => 'Test Label',
+            'type'          => 'text',
+            'operatorGroup' => 'text',
+            'operators'     => ['eq' => 'mautic.core.operator.equals'],
+        ], $overrides);
+    }
+
+    private function setupBasicReport(): void
+    {
+        $this->report->method('getId')->willReturn(1);
+    }
+
+    /**
+     * @param array<string, mixed> $definition
+     */
+    private function setupFilterDefinitions(array $definition): void
+    {
+        $this->filterDefinitions->definitions = [
+            'test_column' => $definition,
+        ];
+    }
+
+    private function setupTranslator(string $translation = 'Equals'): void
+    {
+        $this->translator->method('trans')->willReturn($translation);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getBasicOptions(): array
+    {
+        return [
+            'report'            => $this->report,
+            'filterDefinitions' => $this->filterDefinitions,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    private function getOptionsWithData(array $data): array
+    {
+        return array_merge($this->getBasicOptions(), ['data' => $data]);
     }
 }
 

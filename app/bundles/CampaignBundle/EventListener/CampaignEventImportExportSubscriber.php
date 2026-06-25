@@ -48,7 +48,7 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
 
     public function onExport(EntityExportEvent $event): void
     {
-        if (Event::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Event::ENTITY_NAME) {
             return;
         }
 
@@ -81,6 +81,149 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
             /** @var array<string, mixed> $entities */
             $event->addEntities([$entityName => $entities]);
         }
+    }
+
+    public function onImport(EntityImportEvent $event): void
+    {
+        if ($event->getEntityName() !== Event::ENTITY_NAME || !$event->getEntityData()) {
+            return;
+        }
+
+        $stats = [
+            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
+            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
+        ];
+
+        foreach ($event->getEntityData() as $element) {
+            if (!is_array($element)) {
+                continue;
+            }
+
+            $campaignEvent = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
+            $isNew         = !$campaignEvent;
+
+            $campaignEvent ??= new Event();
+            $campaignEvent->setUuid($element['uuid'] ?? null);
+
+            $campaignEvent->setName($element['name'] ?? '');
+            $campaignEvent->setDescription($element['description'] ?? '');
+            $campaignEvent->setType($element['type'] ?? '');
+            $campaignEvent->setEventType($element['event_type'] ?? '');
+            $campaignEvent->setOrder($element['event_order'] ?? 0);
+            $campaignEvent->setProperties($element['properties'] ?? []);
+            $campaignEvent->setTriggerInterval($element['trigger_interval'] ?? 0);
+            $campaignEvent->setTriggerIntervalUnit($element['trigger_interval_unit'] ?? '');
+            $campaignEvent->setTriggerMode($element['trigger_mode'] ?? '');
+            $campaignEvent->setTriggerDate(isset($element['trigger_date']) ? new \DateTime($element['triggerDate']) : null);
+            $campaignEvent->setTriggerHour($element['trigger_hour'] ?? null);
+            $campaignEvent->setDecisionPath($element['decisionPath'] ?? '');
+            $campaignEvent->setTriggerWindow($element['triggerWindow'] ?? null);
+            $campaignEvent->setTriggerRestrictedDaysOfWeek($element['triggerRestrictedDaysOfWeek'] ?? null);
+            $campaignEvent->setTriggerRestrictedStopHour($element['triggerRestrictedStopHour'] ?? null);
+            $campaignEvent->setTriggerRestrictedStartHour($element['triggerRestrictedStartHour'] ?? null);
+            $campaignEvent->setChannel($element['channel'] ?? '');
+            $campaignEvent->setChannelId($element['channel_id'] ?? 0);
+
+            $campaign = $this->campaignModel->getEntity($element['campaign_id']);
+            if ($campaign instanceof Campaign) {
+                $campaignEvent->setCampaign($campaign);
+            }
+
+            $this->eventModel->saveEntity($campaignEvent);
+
+            $event->addEntityIdMap((int) $element['id'], $campaignEvent->getId());
+
+            $status                    = $isNew ? EntityImportEvent::NEW : EntityImportEvent::UPDATE;
+            $stats[$status]['names'][] = $campaignEvent->getName();
+            $stats[$status]['ids'][]   = $campaignEvent->getId();
+            ++$stats[$status]['count'];
+
+            $this->logAction('import', $campaignEvent->getId(), $element);
+        }
+
+        foreach ($stats as $status => $info) {
+            if ($info['count'] > 0) {
+                $event->setStatus($status, [Event::ENTITY_NAME => $info]);
+            }
+        }
+
+        $this->updateParentEvents($event);
+    }
+
+    public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
+    {
+        if ($event->getEntityName() !== Event::ENTITY_NAME || empty($event->getEntityData())) {
+            return;
+        }
+
+        $summary = [
+            EntityImportEvent::NEW    => ['names' => []],
+            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
+            'errors'                  => [],
+        ];
+
+        foreach ($event->getEntityData() as $element) {
+            if (!empty($element['uuid']) && !UuidHelper::isValidUuid($element['uuid'])) {
+                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
+                break;
+            }
+
+            $existing = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
+
+            if ($existing) {
+                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
+                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
+            } else {
+                $summary[EntityImportEvent::NEW]['names'][] = $element['name'] ?? '';
+            }
+        }
+
+        foreach ($summary as $type => $data) {
+            if ($type === 'errors') {
+                if (count($data) > 0) {
+                    $event->setSummary('errors', ['messages' => $data]);
+                }
+                break;
+            }
+
+            if (isset($data['names']) && count($data['names']) > 0) {
+                $event->setSummary($type, [Event::ENTITY_NAME => $data]);
+            }
+        }
+    }
+
+    public function onUndoImport(EntityImportUndoEvent $event): void
+    {
+        if ($event->getEntityName() !== Event::ENTITY_NAME) {
+            return;
+        }
+
+        $summary  = $event->getSummary();
+
+        if (!isset($summary['ids']) || empty($summary['ids'])) {
+            return;
+        }
+        foreach ($summary['ids'] as $id) {
+            $entity = $this->entityManager->getRepository(Event::class)->find($id);
+
+            if ($entity) {
+                $dependentEvents = $this->entityManager->getRepository(Event::class)->findBy(['parent' => $id]);
+
+                foreach ($dependentEvents as $dependentEvent) {
+                    // Set parent_id to null
+                    $dependentEvent->setParent();
+                    $this->entityManager->persist($dependentEvent);
+                }
+
+                // Make sure changes are saved
+                $this->entityManager->flush();
+
+                $this->entityManager->remove($entity);
+                $this->logAction('undo_import', $id, ['deletedEntity' => Event::class]);
+            }
+        }
+
+        $this->entityManager->flush();
     }
 
     /**
@@ -216,115 +359,6 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         }
     }
 
-    public function onImport(EntityImportEvent $event): void
-    {
-        if (Event::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
-            return;
-        }
-
-        $stats = [
-            EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
-            EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
-        ];
-
-        foreach ($event->getEntityData() as $element) {
-            if (!is_array($element)) {
-                continue;
-            }
-
-            $campaignEvent = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
-            $isNew         = !$campaignEvent;
-
-            $campaignEvent ??= new Event();
-            $campaignEvent->setUuid($element['uuid'] ?? null);
-
-            $campaignEvent->setName($element['name'] ?? '');
-            $campaignEvent->setDescription($element['description'] ?? '');
-            $campaignEvent->setType($element['type'] ?? '');
-            $campaignEvent->setEventType($element['event_type'] ?? '');
-            $campaignEvent->setOrder($element['event_order'] ?? 0);
-            $campaignEvent->setProperties($element['properties'] ?? []);
-            $campaignEvent->setTriggerInterval($element['trigger_interval'] ?? 0);
-            $campaignEvent->setTriggerIntervalUnit($element['trigger_interval_unit'] ?? '');
-            $campaignEvent->setTriggerMode($element['trigger_mode'] ?? '');
-            $campaignEvent->setTriggerDate(isset($element['trigger_date']) ? new \DateTime($element['triggerDate']) : null);
-            $campaignEvent->setTriggerHour($element['trigger_hour'] ?? null);
-            $campaignEvent->setDecisionPath($element['decisionPath'] ?? '');
-            $campaignEvent->setTriggerWindow($element['triggerWindow'] ?? null);
-            $campaignEvent->setTriggerRestrictedDaysOfWeek($element['triggerRestrictedDaysOfWeek'] ?? null);
-            $campaignEvent->setTriggerRestrictedStopHour($element['triggerRestrictedStopHour'] ?? null);
-            $campaignEvent->setTriggerRestrictedStartHour($element['triggerRestrictedStartHour'] ?? null);
-            $campaignEvent->setChannel($element['channel'] ?? '');
-            $campaignEvent->setChannelId($element['channel_id'] ?? 0);
-
-            $campaign = $this->campaignModel->getEntity($element['campaign_id']);
-            if ($campaign instanceof Campaign) {
-                $campaignEvent->setCampaign($campaign);
-            }
-
-            $this->eventModel->saveEntity($campaignEvent);
-
-            $event->addEntityIdMap((int) $element['id'], $campaignEvent->getId());
-
-            $status                    = $isNew ? EntityImportEvent::NEW : EntityImportEvent::UPDATE;
-            $stats[$status]['names'][] = $campaignEvent->getName();
-            $stats[$status]['ids'][]   = $campaignEvent->getId();
-            ++$stats[$status]['count'];
-
-            $this->logAction('import', $campaignEvent->getId(), $element);
-        }
-
-        foreach ($stats as $status => $info) {
-            if ($info['count'] > 0) {
-                $event->setStatus($status, [Event::ENTITY_NAME => $info]);
-            }
-        }
-
-        $this->updateParentEvents($event);
-    }
-
-    public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
-    {
-        if (Event::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
-            return;
-        }
-
-        $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
-            'errors'                  => [],
-        ];
-
-        foreach ($event->getEntityData() as $element) {
-            if (!empty($element['uuid']) && !UuidHelper::isValidUuid($element['uuid'])) {
-                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
-                break;
-            }
-
-            $existing = $this->entityManager->getRepository(Event::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
-
-            if ($existing) {
-                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
-                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
-            } else {
-                $summary[EntityImportEvent::NEW]['names'][] = $element['name'] ?? '';
-            }
-        }
-
-        foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
-                if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
-                }
-                break;
-            }
-
-            if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Event::ENTITY_NAME => $data]);
-            }
-        }
-    }
-
     private function updateParentEvents(EntityImportEvent $event): void
     {
         $idMap = $event->getEntityIdMap();
@@ -345,7 +379,7 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                     }
                 }
             }
-            if ('campaign.jump_to_event' === $element['type']) {
+            if ($element['type'] === 'campaign.jump_to_event') {
                 $originalJumpToEventId = (int) $element['properties']['jumpToEvent'];
                 $newJumpToEventId      = $idMap[$originalJumpToEventId] ?? null;
 
@@ -359,40 +393,6 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                         $this->entityManager->persist($campaignEvent);
                     }
                 }
-            }
-        }
-
-        $this->entityManager->flush();
-    }
-
-    public function onUndoImport(EntityImportUndoEvent $event): void
-    {
-        if (Event::ENTITY_NAME !== $event->getEntityName()) {
-            return;
-        }
-
-        $summary  = $event->getSummary();
-
-        if (!isset($summary['ids']) || empty($summary['ids'])) {
-            return;
-        }
-        foreach ($summary['ids'] as $id) {
-            $entity = $this->entityManager->getRepository(Event::class)->find($id);
-
-            if ($entity) {
-                $dependentEvents = $this->entityManager->getRepository(Event::class)->findBy(['parent' => $id]);
-
-                foreach ($dependentEvents as $dependentEvent) {
-                    // Set parent_id to null
-                    $dependentEvent->setParent();
-                    $this->entityManager->persist($dependentEvent);
-                }
-
-                // Make sure changes are saved
-                $this->entityManager->flush();
-
-                $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, ['deletedEntity' => Event::class]);
             }
         }
 

@@ -88,7 +88,7 @@ class EventLogModel extends AbstractCommonModel
 
         // Check that contact is part of the campaign
         $membership = $campaign->getContactMembership($contact);
-        if (0 === count($membership)) {
+        if (count($membership) === 0) {
             return $this->translator->trans(
                 'mautic.campaign.error.contact_not_in_campaign',
                 ['%campaign%' => $campaign->getId(), '%contact%' => $contact->getId()],
@@ -151,7 +151,7 @@ class EventLogModel extends AbstractCommonModel
                     );
                     break;
                 case 'triggerDate':
-                    if (Event::TYPE_DECISION === $event->getEventType()) {
+                    if ($event->getEventType() === Event::TYPE_DECISION) {
                         return $this->translator->trans(
                             'mautic.campaign.error.decision_cannot_be_scheduled',
                             [
@@ -207,7 +207,7 @@ class EventLogModel extends AbstractCommonModel
     public function saveEntity(LeadEventLog $entity): void
     {
         $triggerDate = $entity->getTriggerDate();
-        if (null === $triggerDate) {
+        if ($triggerDate === null) {
             // Reschedule for now
             $triggerDate = new \DateTime();
         }

@@ -36,18 +36,33 @@ abstract class ModeratedCommand extends Command
 
     protected $lockFile;
 
-    private ?\Symfony\Component\Lock\LockInterface $lock = null;
-
     /**
      * @var OutputInterface
      */
     protected $output;
+
+    private ?\Symfony\Component\Lock\LockInterface $lock = null;
 
     public function __construct(
         protected PathsHelper $pathsHelper,
         private CoreParametersHelper $coreParametersHelper,
     ) {
         parent::__construct();
+    }
+
+    public function isPidSupported(): bool
+    {
+        // getmypid may be disabled and posix_getpgid is not available on Windows machines
+        if (!function_exists('getmypid') || !function_exists('posix_getpgid')) {
+            return false;
+        }
+
+        $disabled = explode(',', ini_get('disable_functions'));
+        if (in_array('getmypid', $disabled) || in_array('posix_getpgid', $disabled)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -83,12 +98,12 @@ abstract class ModeratedCommand extends Command
         $this->output = $output;
 
         $this->lockExpiration = $input->getOption('timeout');
-        if (null !== $this->lockExpiration) {
+        if ($this->lockExpiration !== null) {
             $this->lockExpiration = (float) $this->lockExpiration;
         }
 
         $this->moderationMode = $input->getOption('lock_mode');
-        if (self::MODE_LOCK === $this->moderationMode) {
+        if ($this->moderationMode === self::MODE_LOCK) {
             // File lock is deprecated in favor of Symfony's Lock component's lock
             $this->moderationMode = 'flock';
         }
@@ -136,7 +151,7 @@ abstract class ModeratedCommand extends Command
 
     private function checkStatus(): bool
     {
-        if (self::MODE_PID === $this->moderationMode && $this->isPidSupported()) {
+        if ($this->moderationMode === self::MODE_PID && $this->isPidSupported()) {
             return $this->checkPid();
         }
 
@@ -201,20 +216,5 @@ abstract class ModeratedCommand extends Command
         $this->lock = $factory->createLock($this->moderationKey, $this->lockExpiration);
 
         return $this->lock->acquire();
-    }
-
-    public function isPidSupported(): bool
-    {
-        // getmypid may be disabled and posix_getpgid is not available on Windows machines
-        if (!function_exists('getmypid') || !function_exists('posix_getpgid')) {
-            return false;
-        }
-
-        $disabled = explode(',', ini_get('disable_functions'));
-        if (in_array('getmypid', $disabled) || in_array('posix_getpgid', $disabled)) {
-            return false;
-        }
-
-        return true;
     }
 }

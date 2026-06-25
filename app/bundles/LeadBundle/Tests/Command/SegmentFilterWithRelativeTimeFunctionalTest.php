@@ -24,6 +24,45 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         self::assertCount($hours, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]));
     }
 
+    public function testSegmentFilterWithRelativeTimeAndNonUtcTimezone(): void
+    {
+        /** @var LeadRepository $contactRepo */
+        $contactRepo = $this->em->getRepository(Lead::class);
+        $contact     = new Lead();
+        $contact->setFirstname('timezone');
+        $contact->setLastname('test');
+        $contact->setLastActive(new \DateTime('-30 minutes', new \DateTimeZone('UTC')));
+        $contactRepo->saveEntity($contact);
+
+        $segment = $this->saveSegment(1); // filter: last_active >= -1 hour
+
+        $tzProperty             = new \ReflectionProperty(DateTimeHelper::class, 'defaultLocalTimezone');
+        $originalCachedTimezone = $tzProperty->getValue();
+        $tzProperty->setValue(null, 'Europe/Prague');
+
+        try {
+            $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
+
+            self::assertCount(
+                1,
+                $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]),
+                'Contact last active 30 min ago must be included in the "-1 hour" segment even when the system timezone is non-UTC.'
+            );
+        } finally {
+            $tzProperty->setValue(null, $originalCachedTimezone);
+        }
+    }
+
+    /**
+     * @return iterable<int[]>
+     */
+    public static function getRelativeHours(): iterable
+    {
+        yield [1];
+        yield [3];
+        yield [5];
+    }
+
     /**
      * @return Lead[]
      */
@@ -71,44 +110,5 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         $segmentRepo->saveEntity($segment);
 
         return $segment;
-    }
-
-    public function testSegmentFilterWithRelativeTimeAndNonUtcTimezone(): void
-    {
-        /** @var LeadRepository $contactRepo */
-        $contactRepo = $this->em->getRepository(Lead::class);
-        $contact     = new Lead();
-        $contact->setFirstname('timezone');
-        $contact->setLastname('test');
-        $contact->setLastActive(new \DateTime('-30 minutes', new \DateTimeZone('UTC')));
-        $contactRepo->saveEntity($contact);
-
-        $segment = $this->saveSegment(1); // filter: last_active >= -1 hour
-
-        $tzProperty             = new \ReflectionProperty(DateTimeHelper::class, 'defaultLocalTimezone');
-        $originalCachedTimezone = $tzProperty->getValue();
-        $tzProperty->setValue(null, 'Europe/Prague');
-
-        try {
-            $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
-
-            self::assertCount(
-                1,
-                $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]),
-                'Contact last active 30 min ago must be included in the "-1 hour" segment even when the system timezone is non-UTC.'
-            );
-        } finally {
-            $tzProperty->setValue(null, $originalCachedTimezone);
-        }
-    }
-
-    /**
-     * @return iterable<int[]>
-     */
-    public static function getRelativeHours(): iterable
-    {
-        yield [1];
-        yield [3];
-        yield [5];
     }
 }

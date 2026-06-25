@@ -679,27 +679,27 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
     public function isScheduledNow(): bool
     {
-        return SchedulerEnum::UNIT_NOW === $this->getScheduleUnit();
+        return $this->getScheduleUnit() === SchedulerEnum::UNIT_NOW;
     }
 
     public function isScheduledDaily(): bool
     {
-        return SchedulerEnum::UNIT_DAILY === $this->getScheduleUnit();
+        return $this->getScheduleUnit() === SchedulerEnum::UNIT_DAILY;
     }
 
     public function isScheduledWeekly(): bool
     {
-        return SchedulerEnum::UNIT_WEEKLY === $this->getScheduleUnit();
+        return $this->getScheduleUnit() === SchedulerEnum::UNIT_WEEKLY;
     }
 
     public function isScheduledMonthly(): bool
     {
-        return SchedulerEnum::UNIT_MONTHLY === $this->getScheduleUnit();
+        return $this->getScheduleUnit() === SchedulerEnum::UNIT_MONTHLY;
     }
 
     public function isScheduledWeekDays(): bool
     {
-        return SchedulerEnum::DAY_WEEK_DAYS === $this->getScheduleDay();
+        return $this->getScheduleDay() === SchedulerEnum::DAY_WEEK_DAYS;
     }
 
     public function getHasScheduleChanged(): bool

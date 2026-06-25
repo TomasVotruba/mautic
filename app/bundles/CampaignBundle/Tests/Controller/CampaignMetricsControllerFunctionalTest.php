@@ -26,49 +26,6 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->emailFixturesHelper    = new EmailFixturesHelper($this->em);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function setupEmailCampaignTestData(): array
-    {
-        $contacts = [
-            $this->campaignFixturesHelper->createContact('john@example.com'),
-            $this->campaignFixturesHelper->createContact('paul@example.com'),
-        ];
-
-        $email = $this->emailFixturesHelper->createEmail('Test Email');
-        $this->em->flush();
-
-        $campaign      = $this->campaignFixturesHelper->createCampaignWithEmailSent($email->getId());
-        $this->campaignFixturesHelper->addContactToCampaign($contacts[0], $campaign);
-        $this->campaignFixturesHelper->addContactToCampaign($contacts[1], $campaign);
-        $eventId = $campaign->getEmailSendEvents()->first()->getId();
-
-        $emailStats = [
-            $this->emailFixturesHelper->emulateEmailSend($contacts[0], $email, '2024-12-10 12:00:00', 'campaign.event', $eventId),
-            $this->emailFixturesHelper->emulateEmailSend($contacts[1], $email, '2024-12-10 12:00:00', 'campaign.event', $eventId),
-        ];
-
-        $this->emailFixturesHelper->emulateEmailRead($emailStats[0], $email, '2024-12-10 12:09:00');
-        $this->emailFixturesHelper->emulateEmailRead($emailStats[1], $email, '2024-12-11 21:35:00');
-
-        $this->em->flush();
-        $this->em->persist($email);
-
-        $emailLinks = [
-            $this->emailFixturesHelper->createEmailLink('https://example.com/1', $email->getId()),
-            $this->emailFixturesHelper->createEmailLink('https://example.com/2', $email->getId()),
-        ];
-        $this->em->flush();
-
-        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[0], $contacts[0], '2024-12-10 12:10:00', 3);
-        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[1], $contacts[0], '2024-12-10 13:20:00');
-        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[1], $contacts[1], '2024-12-11 21:37:00');
-        $this->em->flush();
-
-        return ['campaign' => $campaign, 'email' => $email];
-    }
-
     public function testEmailWeekdaysAction(): void
     {
         $testData = $this->setupEmailCampaignTestData();
@@ -304,6 +261,49 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    private function setupEmailCampaignTestData(): array
+    {
+        $contacts = [
+            $this->campaignFixturesHelper->createContact('john@example.com'),
+            $this->campaignFixturesHelper->createContact('paul@example.com'),
+        ];
+
+        $email = $this->emailFixturesHelper->createEmail('Test Email');
+        $this->em->flush();
+
+        $campaign      = $this->campaignFixturesHelper->createCampaignWithEmailSent($email->getId());
+        $this->campaignFixturesHelper->addContactToCampaign($contacts[0], $campaign);
+        $this->campaignFixturesHelper->addContactToCampaign($contacts[1], $campaign);
+        $eventId = $campaign->getEmailSendEvents()->first()->getId();
+
+        $emailStats = [
+            $this->emailFixturesHelper->emulateEmailSend($contacts[0], $email, '2024-12-10 12:00:00', 'campaign.event', $eventId),
+            $this->emailFixturesHelper->emulateEmailSend($contacts[1], $email, '2024-12-10 12:00:00', 'campaign.event', $eventId),
+        ];
+
+        $this->emailFixturesHelper->emulateEmailRead($emailStats[0], $email, '2024-12-10 12:09:00');
+        $this->emailFixturesHelper->emulateEmailRead($emailStats[1], $email, '2024-12-11 21:35:00');
+
+        $this->em->flush();
+        $this->em->persist($email);
+
+        $emailLinks = [
+            $this->emailFixturesHelper->createEmailLink('https://example.com/1', $email->getId()),
+            $this->emailFixturesHelper->createEmailLink('https://example.com/2', $email->getId()),
+        ];
+        $this->em->flush();
+
+        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[0], $contacts[0], '2024-12-10 12:10:00', 3);
+        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[1], $contacts[0], '2024-12-10 13:20:00');
+        $this->emailFixturesHelper->emulateLinkClick($email, $emailLinks[1], $contacts[1], '2024-12-11 21:37:00');
+        $this->em->flush();
+
+        return ['campaign' => $campaign, 'email' => $email];
+    }
+
+    /**
      * @param array<string, mixed> $actual
      * @param array<string, mixed> $expected
      * @param array<int, string>   $notEmptyFields
@@ -311,8 +311,8 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
     private function assertEventDetails(array $actual, array $expected, array $notEmptyFields = []): void
     {
         foreach ($notEmptyFields as $field) {
-            $this->assertNotEmpty($actual[$field]['value'], "$field value should not be empty");
-            $this->assertNotEmpty($actual[$field]['tooltip'], "$field tooltip should not be empty");
+            $this->assertNotEmpty($actual[$field]['value'], "{$field} value should not be empty");
+            $this->assertNotEmpty($actual[$field]['tooltip'], "{$field} tooltip should not be empty");
         }
         foreach ($expected as $key => $value) {
             $this->assertEquals($value, $actual[$key]);

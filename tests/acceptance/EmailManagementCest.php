@@ -50,14 +50,6 @@ class EmailManagementCest
         $I->seeCheckboxIsChecked(EmailsPage::SELECT_ALL_CHECKBOX);
     }
 
-    private function selectChangeCategoryAction(AcceptanceTester $I): void
-    {
-        $I->waitForElementClickable(EmailsPage::SELECTED_ACTIONS_DROPDOWN);
-        $I->click(EmailsPage::SELECTED_ACTIONS_DROPDOWN);
-        $I->waitForElementClickable(EmailsPage::CHANGE_CATEGORY_ACTION);
-        $I->click(EmailsPage::CHANGE_CATEGORY_ACTION);
-    }
-
     protected function verifyAllEmailsBelongTo(AcceptanceTester $I, string $firstCategoryName): void
     {
         $I->waitForElementVisible('span.label-category');
@@ -67,5 +59,13 @@ class EmailManagementCest
             $I->waitForElementVisible($xpath);
             $I->see($firstCategoryName, $xpath);
         }
+    }
+
+    private function selectChangeCategoryAction(AcceptanceTester $I): void
+    {
+        $I->waitForElementClickable(EmailsPage::SELECTED_ACTIONS_DROPDOWN);
+        $I->click(EmailsPage::SELECTED_ACTIONS_DROPDOWN);
+        $I->waitForElementClickable(EmailsPage::CHANGE_CATEGORY_ACTION);
+        $I->click(EmailsPage::CHANGE_CATEGORY_ACTION);
     }
 }

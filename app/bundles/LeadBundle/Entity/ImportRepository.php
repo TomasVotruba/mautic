@@ -25,7 +25,7 @@ class ImportRepository extends CommonRepository
             ->andWhere($q->expr()->lt($this->getTableAlias().'.dateModified', ':delay'))
             ->setParameter('delay', (new \DateTime())->modify('-'.$ghostDelay.' hours'));
 
-        if (null !== $limit) {
+        if ($limit !== null) {
             $q->setFirstResult(0)
                 ->setMaxResults($limit);
         }
@@ -47,7 +47,7 @@ class ImportRepository extends CommonRepository
             ->orderBy($this->getTableAlias().'.priority', 'ASC')
             ->addOrderBy($this->getTableAlias().'.dateAdded', 'DESC');
 
-        if (null !== $limit) {
+        if ($limit !== null) {
             $q->setFirstResult(0)
                 ->setMaxResults($limit);
         }

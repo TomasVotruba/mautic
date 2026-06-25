@@ -45,7 +45,7 @@ class ActionExecutioner implements EventInterface
 
         $event = $firstLog->getEvent();
 
-        if (Event::TYPE_ACTION !== $event->getEventType()) {
+        if ($event->getEventType() !== Event::TYPE_ACTION) {
             throw new CannotProcessEventException('Cannot process event ID '.$event->getId().' as an action.');
         }
 

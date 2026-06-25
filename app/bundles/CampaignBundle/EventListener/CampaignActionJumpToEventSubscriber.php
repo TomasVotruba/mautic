@@ -72,7 +72,7 @@ class CampaignActionJumpToEventSubscriber implements EventSubscriberInterface
         $event      = $campaignEvent->getEvent();
         $jumpTarget = $this->getJumpTargetForEvent($event, 'e.id');
 
-        if (null === $jumpTarget) {
+        if ($jumpTarget === null) {
             // Target event has been removed.
             $pending  = $campaignEvent->getPending();
             $contacts = $campaignEvent->getContacts();
@@ -119,13 +119,13 @@ class CampaignActionJumpToEventSubscriber implements EventSubscriberInterface
         $toSave   = [];
 
         foreach ($events as $event) {
-            if (self::EVENT_NAME !== $event->getType()) {
+            if ($event->getType() !== self::EVENT_NAME) {
                 continue;
             }
 
             $jumpTarget = $this->getJumpTargetForEvent($event, 'e.tempId');
 
-            if (null !== $jumpTarget) {
+            if ($jumpTarget !== null) {
                 $event->setProperties(array_merge(
                     $event->getProperties(),
                     [

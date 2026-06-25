@@ -57,6 +57,66 @@ class TriggerApiController extends CommonApiController
     }
 
     /**
+     * Return array of available point trigger event types.
+     *
+     * @return Response
+     */
+    public function getPointTriggerEventTypesAction()
+    {
+        if (!$this->security->isGranted([$this->permissionBase.':view', $this->permissionBase.':viewown'])) {
+            return $this->accessDenied();
+        }
+
+        $eventTypesRaw = $this->model->getEvents();
+        $eventTypes    = [];
+
+        foreach ($eventTypesRaw as $key => $type) {
+            $eventTypes[$key] = $type['label'];
+        }
+
+        $view = $this->view(['eventTypes' => $eventTypes]);
+
+        return $this->handleView($view);
+    }
+
+    /**
+     * Delete events from a point trigger.
+     *
+     * @param int $triggerId
+     *
+     * @return Response
+     */
+    public function deletePointTriggerEventsAction($triggerId)
+    {
+        if (!$this->security->isGranted([$this->permissionBase.':editown', $this->permissionBase.':editother'], 'MATCH_ONE')) {
+            return $this->accessDenied();
+        }
+
+        $entity = $this->model->getEntity($triggerId);
+
+        if ($entity === null) {
+            return $this->notFound();
+        }
+
+        $eventsToDelete = $this->requestStack->getCurrentRequest()->get('events');
+        $currentEvents  = $entity->getEvents();
+
+        if (!is_array($eventsToDelete)) {
+            return $this->badRequest('The events attribute must be array.');
+        }
+
+        foreach ($currentEvents as $currentEvent) {
+            if (in_array($currentEvent->getId(), $eventsToDelete)) {
+                $entity->removeTriggerEvent($currentEvent);
+            }
+        }
+
+        $view = $this->view([$this->entityNameOne => $entity]);
+
+        return $this->handleView($view);
+    }
+
+    /**
      * @param Trigger              $entity
      * @param FormInterface<mixed> $form
      * @param array<mixed>         $parameters
@@ -96,12 +156,12 @@ class TriggerApiController extends CommonApiController
                     $requestTriggerIds[] = $eventParams['id'];
                 }
 
-                if (null === $triggerEventEntity) {
+                if ($triggerEventEntity === null) {
                     return $this->notFound();
                 }
 
                 $triggerEventForm = $this->createTriggerEventEntityForm($triggerEventEntity);
-                $triggerEventForm->submit($eventParams, 'PATCH' !== $method);
+                $triggerEventForm->submit($eventParams, $method !== 'PATCH');
 
                 if (!($triggerEventForm->isSubmitted() && $triggerEventForm->isValid())) {
                     $formErrors = $this->getFormErrorMessages($triggerEventForm);
@@ -115,7 +175,7 @@ class TriggerApiController extends CommonApiController
         }
 
         // Remove events which weren't in the PUT request
-        if (!$isNew && 'PUT' === $method) {
+        if (!$isNew && $method === 'PUT') {
             foreach ($currentEvents as $currentEvent) {
                 if (!in_array($currentEvent->getId(), $requestTriggerIds)) {
                     $entity->removeTriggerEvent($currentEvent);
@@ -141,65 +201,5 @@ class TriggerApiController extends CommonApiController
                 'allow_extra_fields' => true,
             ]
         );
-    }
-
-    /**
-     * Return array of available point trigger event types.
-     *
-     * @return Response
-     */
-    public function getPointTriggerEventTypesAction()
-    {
-        if (!$this->security->isGranted([$this->permissionBase.':view', $this->permissionBase.':viewown'])) {
-            return $this->accessDenied();
-        }
-
-        $eventTypesRaw = $this->model->getEvents();
-        $eventTypes    = [];
-
-        foreach ($eventTypesRaw as $key => $type) {
-            $eventTypes[$key] = $type['label'];
-        }
-
-        $view = $this->view(['eventTypes' => $eventTypes]);
-
-        return $this->handleView($view);
-    }
-
-    /**
-     * Delete events from a point trigger.
-     *
-     * @param int $triggerId
-     *
-     * @return Response
-     */
-    public function deletePointTriggerEventsAction($triggerId)
-    {
-        if (!$this->security->isGranted([$this->permissionBase.':editown', $this->permissionBase.':editother'], 'MATCH_ONE')) {
-            return $this->accessDenied();
-        }
-
-        $entity = $this->model->getEntity($triggerId);
-
-        if (null === $entity) {
-            return $this->notFound();
-        }
-
-        $eventsToDelete = $this->requestStack->getCurrentRequest()->get('events');
-        $currentEvents  = $entity->getEvents();
-
-        if (!is_array($eventsToDelete)) {
-            return $this->badRequest('The events attribute must be array.');
-        }
-
-        foreach ($currentEvents as $currentEvent) {
-            if (in_array($currentEvent->getId(), $eventsToDelete)) {
-                $entity->removeTriggerEvent($currentEvent);
-            }
-        }
-
-        $view = $this->view([$this->entityNameOne => $entity]);
-
-        return $this->handleView($view);
     }
 }

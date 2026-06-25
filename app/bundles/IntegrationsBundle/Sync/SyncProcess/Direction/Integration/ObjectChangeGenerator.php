@@ -92,7 +92,7 @@ class ObjectChangeGenerator
         ObjectChangeDAO $objectChange,
     ): void {
         // Skip adding fields for the push process that should sync to Mautic only.
-        if (ObjectMappingDAO::SYNC_TO_MAUTIC === $fieldMappingDAO->getSyncDirection()) {
+        if ($fieldMappingDAO->getSyncDirection() === ObjectMappingDAO::SYNC_TO_MAUTIC) {
             DebugLogger::log(
                 $mappingManual->getIntegration(),
                 sprintf(

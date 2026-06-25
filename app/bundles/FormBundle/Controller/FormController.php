@@ -163,7 +163,7 @@ class FormController extends CommonFormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.form.page', 1);
 
-        if (null === $activeForm) {
+        if ($activeForm === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $page]);
 
@@ -316,7 +316,7 @@ class FormController extends CommonFormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -396,7 +396,7 @@ class FormController extends CommonFormController
                             );
                             $valid = false;
 
-                            if ('dev' == $this->getParameter('kernel.environment')) {
+                            if ($this->getParameter('kernel.environment') == 'dev') {
                                 throw $e;
                             }
                         }
@@ -511,7 +511,7 @@ class FormController extends CommonFormController
             $entity = $model->getEntity($objectId);
 
             // Process submit of cloned form
-            if (null == $entity && $objectId == $sessionId) {
+            if ($entity == null && $objectId == $sessionId) {
                 $entity = $model->getEntity();
             }
         }
@@ -535,7 +535,7 @@ class FormController extends CommonFormController
         ];
 
         // form not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -566,7 +566,7 @@ class FormController extends CommonFormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // set added/updated fields
@@ -718,11 +718,11 @@ class FormController extends CommonFormController
         foreach ($existingFields as $fieldId => $formField) {
             // Check to see if the field still exists
 
-            if ('button' == $formField->getType()) {
+            if ($formField->getType() == 'button') {
                 // submit button found
                 $submitButton = true;
             }
-            if ('button' !== $formField->getType() && !in_array($formField->getType(), $availableFields)) {
+            if ($formField->getType() !== 'button' && !in_array($formField->getType(), $availableFields)) {
                 continue;
             }
 
@@ -859,7 +859,7 @@ class FormController extends CommonFormController
         /** @var Form $entity */
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('form:forms:create')
                 || !$this->security->hasEntityAccess(
                     'form:forms:viewown',
@@ -907,7 +907,7 @@ class FormController extends CommonFormController
         $model = $this->getModel('form.form');
         $form  = $model->getEntity($objectId);
 
-        if (null === $form) {
+        if ($form === null) {
             $html =
                 '<h1>'.
                 $this->translator->trans('mautic.form.error.notfound', ['%id%' => $objectId], 'flashes').
@@ -993,12 +993,12 @@ class FormController extends CommonFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('form.form');
             \assert($model instanceof FormModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.form.error.notfound',
@@ -1057,7 +1057,7 @@ class FormController extends CommonFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('form');
             \assert($model instanceof FormModel);
             $ids       = json_decode($request->query->get('ids', ''));
@@ -1068,7 +1068,7 @@ class FormController extends CommonFormController
                 $objectId = (int) $objectId;
                 $entity   = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.form.error.notfound',
@@ -1142,7 +1142,7 @@ class FormController extends CommonFormController
             ],
         ];
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             /** @var FormModel $model */
             $model = $this->getModel('form');
             $ids   = json_decode($request->query->get('ids', ''));
@@ -1151,7 +1151,7 @@ class FormController extends CommonFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.form.error.notfound',

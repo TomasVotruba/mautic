@@ -49,7 +49,7 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
     public function onSegmentExport(EntityExportEvent $event): void
     {
-        if (LeadList::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== LeadList::ENTITY_NAME) {
             return;
         }
 
@@ -99,7 +99,7 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
     public function onSegmentImport(EntityImportEvent $event): void
     {
-        if (LeadList::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== LeadList::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -141,7 +141,7 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (LeadList::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== LeadList::ENTITY_NAME) {
             return;
         }
 
@@ -164,7 +164,7 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
 
     public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
     {
-        if (LeadList::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
+        if ($event->getEntityName() !== LeadList::ENTITY_NAME || empty($event->getEntityData())) {
             return;
         }
 
@@ -172,7 +172,7 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
         foreach ($event->getEntityData() as $item) {
             if (!empty($item['filters'])) {
                 foreach ($item['filters'] as $filter) {
-                    if (isset($filter['object']) && 'custom_object' === $filter['object']) {
+                    if (isset($filter['object']) && $filter['object'] === 'custom_object') {
                         $plugins = $this->pluginModel->getAllPluginsConfig();
                         if (!isset($plugins['CustomObjectsBundle'])) {
                             $event->setSummary('errors', ['messages' => ['Segment filter uses Custom Objects but the plugin CustomObjectBundle is not installed.']]);

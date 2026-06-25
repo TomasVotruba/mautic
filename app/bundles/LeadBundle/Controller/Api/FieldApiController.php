@@ -42,7 +42,7 @@ class FieldApiController extends CommonApiController
     public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, FieldModel $fieldModel)
     {
         $request = $requestStack->getCurrentRequest();
-        \assert(null !== $request);
+        \assert($request !== null);
 
         $this->model           = $fieldModel;
         $this->fieldObject     = $request->get('object');
@@ -51,7 +51,7 @@ class FieldApiController extends CommonApiController
         $this->entityNameMulti = 'fields';
         $this->routeParams     = ['object' => $this->fieldObject];
 
-        if ('contact' === $this->fieldObject) {
+        if ($this->fieldObject === 'contact') {
             $this->fieldObject = 'lead';
         }
 
@@ -122,7 +122,7 @@ class FieldApiController extends CommonApiController
         if (isset($parameters['properties'])) {
             $result = $this->model->setFieldProperties($entity, $parameters['properties']);
 
-            if (true !== $result) {
+            if ($result !== true) {
                 return $this->returnError($this->translator->trans($result, [], 'validators'), Response::HTTP_BAD_REQUEST);
             }
         }

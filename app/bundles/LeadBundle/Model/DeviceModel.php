@@ -57,7 +57,7 @@ class DeviceModel extends FormModel
      */
     public function getEntity($id = null): ?LeadDevice
     {
-        if (null === $id) {
+        if ($id === null) {
             return new LeadDevice();
         }
 

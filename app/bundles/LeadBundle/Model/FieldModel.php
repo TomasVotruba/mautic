@@ -513,7 +513,7 @@ class FieldModel extends FormModel
      */
     public function getEntity($id = null): ?LeadField
     {
-        if (null === $id) {
+        if ($id === null) {
             return new LeadField();
         }
 
@@ -618,7 +618,7 @@ class FieldModel extends FormModel
 
         $this->setTimestamps($entity, $entity->isNew(), $unlock);
 
-        if ('time' === $entity->getType()) {
+        if ($entity->getType() === 'time') {
             // time does not work well with list filters
             $entity->setIsListable(false);
         }
@@ -727,7 +727,7 @@ class FieldModel extends FormModel
      */
     public function filterUsedFieldIds(array $ids): array
     {
-        return array_filter($ids, fn ($id): bool => false === $this->isUsedField($this->getEntity($id)));
+        return array_filter($ids, fn ($id): bool => $this->isUsedField($this->getEntity($id)) === false);
     }
 
     /**
@@ -832,7 +832,7 @@ class FieldModel extends FormModel
         $type   = $entity->getType();
 
         // Trim select field option values BEFORE validation + save
-        if (('select' === $type || 'multiselect' === $type)
+        if (($type === 'select' || $type === 'multiselect')
             && isset($properties['list']) && is_array($properties['list'])
         ) {
             foreach ($properties['list'] as &$item) {
@@ -853,41 +853,6 @@ class FieldModel extends FormModel
         }
 
         return $result[1];
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        switch ($action) {
-            case 'pre_save':
-                $action = LeadEvents::FIELD_PRE_SAVE;
-                break;
-            case 'post_save':
-                $action = LeadEvents::FIELD_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $action = LeadEvents::FIELD_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $action = LeadEvents::FIELD_POST_DELETE;
-                break;
-        }
-
-        if (!$entity instanceof LeadField) {
-            throw new MethodNotAllowedHttpException(['LeadField']);
-        }
-
-        if (null !== $event && !$event instanceof LeadFieldEvent) {
-            throw new \RuntimeException('Event should be LeadFieldEvent|null.');
-        }
-
-        try {
-            return $this->fieldSaveDispatcher->dispatchEvent($action, $entity, $isNew, $event);
-        } catch (NoListenerException) {
-            return $event;
-        }
     }
 
     /**
@@ -1082,5 +1047,40 @@ class FieldModel extends FormModel
         }
 
         return $alias;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        switch ($action) {
+            case 'pre_save':
+                $action = LeadEvents::FIELD_PRE_SAVE;
+                break;
+            case 'post_save':
+                $action = LeadEvents::FIELD_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $action = LeadEvents::FIELD_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $action = LeadEvents::FIELD_POST_DELETE;
+                break;
+        }
+
+        if (!$entity instanceof LeadField) {
+            throw new MethodNotAllowedHttpException(['LeadField']);
+        }
+
+        if ($event !== null && !$event instanceof LeadFieldEvent) {
+            throw new \RuntimeException('Event should be LeadFieldEvent|null.');
+        }
+
+        try {
+            return $this->fieldSaveDispatcher->dispatchEvent($action, $entity, $isNew, $event);
+        } catch (NoListenerException) {
+            return $event;
+        }
     }
 }

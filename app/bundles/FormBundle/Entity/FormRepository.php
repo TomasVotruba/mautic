@@ -62,7 +62,7 @@ class FormRepository extends CommonRepository
      */
     public function getFormList($search = '', $limit = 10, $start = 0, $viewOther = false, $formType = null): array
     {
-        if (null !== $formType) {
+        if ($formType !== null) {
             trigger_deprecation('mautic/mautic', '7.1', 'The $formType parameter in FormRepository::getFormList() is deprecated and will be removed in 8.0.');
         }
 
@@ -93,96 +93,6 @@ class FormRepository extends CommonRepository
         }
 
         return $q->getQuery()->getArrayResult();
-    }
-
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause($q, $filter, [
-            'f.name',
-            'f.description',
-        ]);
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $standardSearchParameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $standardSearchParameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $parameters      = [];
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.form.form.searchcommand.isexpired'):
-            case $this->translator->trans('mautic.form.form.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = $q->expr()->and(
-                    $q->expr()->eq('f.isPublished', ":$unique"),
-                    $q->expr()->isNotNull('f.publishDown'),
-                    $q->expr()->neq('f.publishDown', $q->expr()->literal('')),
-                    $q->expr()->lt('f.publishDown', 'CURRENT_TIMESTAMP()')
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.form.form.searchcommand.ispending'):
-            case $this->translator->trans('mautic.form.form.searchcommand.ispending', [], null, 'en_US'):
-                $expr = $q->expr()->and(
-                    $q->expr()->eq('f.isPublished', ":$unique"),
-                    $q->expr()->isNotNull('f.publishUp'),
-                    $q->expr()->neq('f.publishUp', $q->expr()->literal('')),
-                    $q->expr()->gt('f.publishUp', 'CURRENT_TIMESTAMP()')
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.form.form.searchcommand.hasresults'):
-            case $this->translator->trans('mautic.form.form.searchcommand.hasresults', [], null, 'en_US'):
-                $sq       = $this->getEntityManager()->createQueryBuilder();
-                $subquery = $sq->select('count(s.id)')
-                    ->from(Submission::class, 's')
-                    ->leftJoin(Form::class, 'f2',
-                        Join::WITH,
-                        $sq->expr()->eq('s.form', 'f2')
-                    )
-                    ->where(
-                        $q->expr()->eq('s.form', 'f')
-                    )
-                    ->getDql();
-                $expr = $q->expr()->gt(sprintf('(%s)', $subquery), 1);
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.name'):
-            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
-                $expr            = $q->expr()->like('f.name', ':'.$unique);
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'form_id',
-                    'form_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [
-            $expr,
-            $parameters,
-        ];
     }
 
     /**
@@ -272,13 +182,6 @@ class FormRepository extends CommonRepository
         return array_merge($commands, parent::getSearchCommands());
     }
 
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['f.name', 'ASC'],
-        ];
-    }
-
     public function getTableAlias(): string
     {
         return 'f';
@@ -310,5 +213,102 @@ class FormRepository extends CommonRepository
             ->setParameter('id', $formId)
             ->getQuery()
             ->execute();
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause($q, $filter, [
+            'f.name',
+            'f.description',
+        ]);
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $standardSearchParameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $standardSearchParameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $parameters      = [];
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.form.form.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.form.form.searchcommand.isexpired', [], null, 'en_US'):
+                $expr = $q->expr()->and(
+                    $q->expr()->eq('f.isPublished', ":{$unique}"),
+                    $q->expr()->isNotNull('f.publishDown'),
+                    $q->expr()->neq('f.publishDown', $q->expr()->literal('')),
+                    $q->expr()->lt('f.publishDown', 'CURRENT_TIMESTAMP()')
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.form.form.searchcommand.ispending'):
+            case $this->translator->trans('mautic.form.form.searchcommand.ispending', [], null, 'en_US'):
+                $expr = $q->expr()->and(
+                    $q->expr()->eq('f.isPublished', ":{$unique}"),
+                    $q->expr()->isNotNull('f.publishUp'),
+                    $q->expr()->neq('f.publishUp', $q->expr()->literal('')),
+                    $q->expr()->gt('f.publishUp', 'CURRENT_TIMESTAMP()')
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.form.form.searchcommand.hasresults'):
+            case $this->translator->trans('mautic.form.form.searchcommand.hasresults', [], null, 'en_US'):
+                $sq       = $this->getEntityManager()->createQueryBuilder();
+                $subquery = $sq->select('count(s.id)')
+                    ->from(Submission::class, 's')
+                    ->leftJoin(Form::class, 'f2',
+                        Join::WITH,
+                        $sq->expr()->eq('s.form', 'f2')
+                    )
+                    ->where(
+                        $q->expr()->eq('s.form', 'f')
+                    )
+                    ->getDql();
+                $expr = $q->expr()->gt(sprintf('(%s)', $subquery), 1);
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.name'):
+            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
+                $expr            = $q->expr()->like('f.name', ':'.$unique);
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'form_id',
+                    'form_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [
+            $expr,
+            $parameters,
+        ];
+    }
+
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['f.name', 'ASC'],
+        ];
     }
 }

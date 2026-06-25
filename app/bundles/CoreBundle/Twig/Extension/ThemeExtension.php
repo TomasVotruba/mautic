@@ -30,7 +30,7 @@ class ThemeExtension extends AbstractExtension
     public function getThemeName(string $theme = 'current'): string
     {
         // Special case for Code Mode
-        if ('mautic_code_mode' === $theme) {
+        if ($theme === 'mautic_code_mode') {
             return $this->translator->trans('mautic.core.code.mode');
         }
 

@@ -50,7 +50,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function updateContacts(InternalObjectUpdateEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Contact::NAME) {
             return;
         }
 
@@ -65,7 +65,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function createContacts(InternalObjectCreateEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Contact::NAME) {
             return;
         }
 
@@ -75,7 +75,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function findContactsByIds(InternalObjectFindEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName() || empty($event->getIds())) {
+        if ($event->getObject()->getName() !== Contact::NAME || empty($event->getIds())) {
             return;
         }
 
@@ -85,7 +85,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function findContactsByDateRange(InternalObjectFindEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName() || empty($event->getDateRange())) {
+        if ($event->getObject()->getName() !== Contact::NAME || empty($event->getDateRange())) {
             return;
         }
 
@@ -102,7 +102,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function findContactsByFieldValues(InternalObjectFindEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName() || empty($event->getFieldValues())) {
+        if ($event->getObject()->getName() !== Contact::NAME || empty($event->getFieldValues())) {
             return;
         }
 
@@ -116,7 +116,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function findOwnerIdsForContacts(InternalObjectOwnerEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Contact::NAME) {
             return;
         }
 
@@ -130,7 +130,7 @@ class ContactObjectSubscriber implements EventSubscriberInterface
 
     public function buildContactRoute(InternalObjectRouteEvent $event): void
     {
-        if (Contact::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Contact::NAME) {
             return;
         }
 
@@ -151,13 +151,13 @@ class ContactObjectSubscriber implements EventSubscriberInterface
      */
     public function findContactById(InternalObjectFindByIdEvent $event): void
     {
-        if (null === $event->getId() || Contact::NAME !== $event->getObject()->getName()) {
+        if ($event->getId() === null || $event->getObject()->getName() !== Contact::NAME) {
             return;
         }
 
         $contact = $this->contactObjectHelper->findObjectById($event->getId());
 
-        if (null === $contact) {
+        if ($contact === null) {
             return;
         }
 

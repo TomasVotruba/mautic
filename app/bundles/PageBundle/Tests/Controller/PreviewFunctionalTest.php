@@ -245,7 +245,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         bool $isPublished = true,
         bool $publicPreview = true,
     ): Page {
-        if (null === $dynamicContent) {
+        if ($dynamicContent === null) {
             $customHtml = '<html lang="en"><body>Hello</body></html>';
         } else {
             $customHtml = sprintf('<div data-slot="dwc" data-param-slot-name="%s"><span>%s</span></div>', $dynamicContent->getSlotName(), $defaultContent);

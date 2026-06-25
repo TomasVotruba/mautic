@@ -12,13 +12,13 @@ use Symfony\Component\Mime\RawMessage;
 
 class InvalidTransport implements TransportInterface
 {
-    public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
-    {
-        throw new TransportException('Unknown DSN scheme. Please make sure the mailer DSN is configured properly.');
-    }
 
     public function __toString(): string
     {
         return 'invalid://';
+    }
+    public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
+    {
+        throw new TransportException('Unknown DSN scheme. Please make sure the mailer DSN is configured properly.');
     }
 }

@@ -34,19 +34,6 @@ final class FormFieldCheckboxGroupTypeTest extends TypeTestCase
         parent::setUp();
     }
 
-    /**
-     * @return array<FormExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
-        return [
-            new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([
-                FormFieldCheckboxGroupType::class => new FormFieldCheckboxGroupType($this->translator),
-            ], []),
-        ];
-    }
-
     public function testFormFieldsAreCreated(): void
     {
         $form = $this->factory->create(FormFieldCheckboxGroupType::class, [], [
@@ -313,5 +300,18 @@ final class FormFieldCheckboxGroupTypeTest extends TypeTestCase
         $this->assertEquals('Custom min message', $data['min_message']);
         $this->assertEquals('10', $data['maximum']);
         $this->assertEquals('Custom max message', $data['max_message']);
+    }
+
+    /**
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([
+                FormFieldCheckboxGroupType::class => new FormFieldCheckboxGroupType($this->translator),
+            ], []),
+        ];
     }
 }

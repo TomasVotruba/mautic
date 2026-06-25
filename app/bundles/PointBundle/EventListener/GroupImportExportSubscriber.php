@@ -42,7 +42,7 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
 
     public function onPointGroupExport(EntityExportEvent $event): void
     {
-        if (Group::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Group::ENTITY_NAME) {
             return;
         }
 
@@ -66,7 +66,7 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
 
     public function onPointGroupImport(EntityImportEvent $event): void
     {
-        if (Group::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== Group::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -107,7 +107,7 @@ final class GroupImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (Group::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Group::ENTITY_NAME) {
             return;
         }
 

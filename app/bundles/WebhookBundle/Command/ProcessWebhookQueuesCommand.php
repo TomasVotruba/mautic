@@ -73,7 +73,7 @@ class ProcessWebhookQueuesCommand extends Command
         $healthyWebhookTime     = $this->webhookService->getHealthyWebhookTime();
         if ($id) {
             $webhook        = $this->webhookModel->getEntity($id);
-            $webhooks       = (null !== $webhook && $webhook->isPublished()
+            $webhooks       = ($webhook !== null && $webhook->isPublished()
                 && $this->webhookService->isWebhookHealthy($webhook)) ? [$id => $webhook] : [];
             $queueRangeMode = $minId && $maxId;
         } else {
@@ -124,7 +124,7 @@ class ProcessWebhookQueuesCommand extends Command
             if ($queueRangeMode) {
                 $webhookLimit = $this->webhookModel->getWebhookLimit();
 
-                if (1 > $webhookLimit) {
+                if ($webhookLimit < 1) {
                     throw new \InvalidArgumentException('`webhook limit` parameter must be greater than zero.');
                 }
 

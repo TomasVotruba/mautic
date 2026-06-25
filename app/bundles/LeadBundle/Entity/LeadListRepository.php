@@ -49,24 +49,6 @@ class LeadListRepository extends CommonRepository
      */
     protected $companyTableSchema;
 
-    private function getSingleEntity(int $id, bool $ignoreDeleted = true): ?LeadList
-    {
-        try {
-            $q = $this
-                ->createQueryBuilder('l');
-            $q->where('l.id = :listId');
-            if ($ignoreDeleted) {
-                $q->andWhere($q->expr()->isNull($this->getTableAlias().'.deleted'));
-            }
-
-            return $q->setParameter('listId', $id)
-                ->getQuery()
-                ->getSingleResult();
-        } catch (\Exception) {
-            return null;
-        }
-    }
-
     /**
      * @param int $id
      */
@@ -293,7 +275,7 @@ class LeadListRepository extends CommonRepository
 
         $countListIds = count($listIds);
 
-        if (1 === $countListIds) {
+        if ($countListIds === 1) {
             $q          = $this->forceUseIndex($q, MAUTIC_TABLE_PREFIX.'manually_removed');
             $expression = $q->expr()->eq('l.leadlist_id', $listIds[0]);
         } else {
@@ -322,17 +304,7 @@ class LeadListRepository extends CommonRepository
             }
         }
 
-        return (1 === $countListIds) ? $return[$listIds[0]] : $return;
-    }
-
-    private function forceUseIndex(QueryBuilder $qb, string $indexName): QueryBuilder
-    {
-        $fromPart             = $qb->getQueryPart('from');
-        $fromPart[0]['alias'] = sprintf('%s USE INDEX (%s)', $fromPart[0]['alias'], $indexName);
-        $qb->resetQueryPart('from');
-        $qb->from($fromPart[0]['table'], $fromPart[0]['alias']);
-
-        return $qb;
+        return ($countListIds === 1) ? $return[$listIds[0]] : $return;
     }
 
     public function arrangeFilters($filters): array
@@ -359,122 +331,6 @@ class LeadListRepository extends CommonRepository
     public function setDispatcher(EventDispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @return QueryBuilder
-     */
-    protected function createFilterExpressionSubQuery($table, $alias, $column, $value, array &$parameters, $leadId = null, array $subQueryFilters = [])
-    {
-        $subQb   = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $subExpr = [];
-
-        foreach ($subQueryFilters as $subColumn => $subParameter) {
-            $subExpr[] = $subQb->expr()->eq($subColumn, ":$subParameter");
-        }
-
-        if ('leads' !== $table) {
-            $subExpr[] = $subQb->expr()->eq($alias.'.lead_id', 'l.id');
-        }
-
-        // Specific lead
-        if (!empty($leadId)) {
-            $columnName = ('leads' === $table) ? 'id' : 'lead_id';
-            $subExpr[]  = $subQb->expr()->eq($alias.'.'.$columnName, $leadId);
-        }
-
-        if (null !== $value && !empty($column)) {
-            $subFilterParamter = $this->generateRandomParameterName();
-            $subFunc           = 'eq';
-            if (is_array($value)) {
-                $subFunc                        = 'in';
-                $subExpr[]                      = $subQb->expr()->in(sprintf('%s.%s', $alias, $column), ":$subFilterParamter");
-                $parameters[$subFilterParamter] = ['value' => $value, 'type' => ArrayParameterType::STRING];
-            } else {
-                $parameters[$subFilterParamter] = $value;
-            }
-
-            $subExpr = $subQb->expr()->$subFunc(sprintf('%s.%s', $alias, $column), ":$subFilterParamter");
-        }
-
-        $subQb->expr()->and(...$subExpr);
-
-        $subQb->select('null')
-            ->from(MAUTIC_TABLE_PREFIX.$table, $alias)
-            ->where($subExpr);
-
-        return $subQb;
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
-     */
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            [
-                'l.name',
-                'l.alias',
-            ]
-        );
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = parent::addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.lead.list.searchcommand.isglobal'):
-            case $this->translator->trans('mautic.lead.list.searchcommand.isglobal', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('l.isGlobal', ":$unique");
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.name'):
-            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
-                $expr            = $q->expr()->like('l.name', ':'.$unique);
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.lead.list.searchcommand.filters_field'):
-            case $this->translator->trans('mautic.lead.list.searchcommand.filters_field', [], null, 'en_US'):
-                $pattern         = sprintf('%%s:5:"field";s:%d:"%s"%%', strlen($filter->string), $filter->string);
-                $expr            = $q->expr()->like('l.filters', ':'.$unique);
-                $forceParameters = [$unique => $pattern];
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'leadlist_id',
-                    'lead_list_projects_xref',
-                    'l',
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [
-            $expr,
-            $parameters,
-        ];
     }
 
     /**
@@ -527,16 +383,6 @@ class LeadListRepository extends CommonRepository
         ];
     }
 
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['l.name', 'ASC'],
-        ];
-    }
-
     public function getTableAlias(): string
     {
         return 'l';
@@ -549,7 +395,7 @@ class LeadListRepository extends CommonRepository
             ->executeQuery("SELECT EXISTS(SELECT 1 FROM {$tableName} WHERE id = {$id})")
             ->fetchOne();
 
-        return 1 === $result;
+        return $result === 1;
     }
 
     /**
@@ -584,7 +430,7 @@ class LeadListRepository extends CommonRepository
 
         $sql = <<<SQL
             SELECT leadlist_id 
-            FROM $tableName
+            FROM {$tableName}
             WHERE lead_id = ?
                 AND manually_removed = 0
             LIMIT 1
@@ -653,36 +499,7 @@ SQL;
     {
         $segmentIds = $this->fetchContactToSegmentIdsRelationships($contactId, $expectedSegmentIds);
 
-        return [] === $segmentIds;
-    }
-
-    /**
-     * @param int[] $expectedSegmentIds
-     *
-     * @return int[]
-     */
-    private function fetchContactToSegmentIdsRelationships(int $contactId, array $expectedSegmentIds): array
-    {
-        $tableName = MAUTIC_TABLE_PREFIX.'lead_lists_leads';
-
-        $sql = <<<SQL
-            SELECT leadlist_id 
-            FROM $tableName
-            WHERE lead_id = ?
-                AND leadlist_id IN (?)
-                AND manually_removed = 0
-SQL;
-
-        return $this->getEntityManager()->getConnection()
-            ->executeQuery(
-                $sql,
-                [$contactId, $expectedSegmentIds],
-                [
-                    \PDO::PARAM_INT,
-                    ArrayParameterType::INTEGER,
-                ]
-            )
-            ->fetchFirstColumn();
+        return $segmentIds === [];
     }
 
     public function setSegmentAsDeleted(int $leadListId): void
@@ -797,7 +614,7 @@ SQL;
         foreach ($query->getResult() as $rowFilters) {
             $segmentMembershipFilters = array_filter(
                 \Mautic\CoreBundle\Helper\Serializer::decode($rowFilters['filters']),
-                fn (array $filter): bool => 'leadlist' === $filter['type']
+                fn (array $filter): bool => $filter['type'] === 'leadlist'
             );
 
             foreach ($segmentMembershipFilters as $filter) {
@@ -924,5 +741,188 @@ SQL;
             ->fetchAllNumeric();
 
         return array_map(fn ($row): int => (int) $row[0], $result);
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function createFilterExpressionSubQuery($table, $alias, $column, $value, array &$parameters, $leadId = null, array $subQueryFilters = [])
+    {
+        $subQb   = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $subExpr = [];
+
+        foreach ($subQueryFilters as $subColumn => $subParameter) {
+            $subExpr[] = $subQb->expr()->eq($subColumn, ":{$subParameter}");
+        }
+
+        if ($table !== 'leads') {
+            $subExpr[] = $subQb->expr()->eq($alias.'.lead_id', 'l.id');
+        }
+
+        // Specific lead
+        if (!empty($leadId)) {
+            $columnName = ($table === 'leads') ? 'id' : 'lead_id';
+            $subExpr[]  = $subQb->expr()->eq($alias.'.'.$columnName, $leadId);
+        }
+
+        if ($value !== null && !empty($column)) {
+            $subFilterParamter = $this->generateRandomParameterName();
+            $subFunc           = 'eq';
+            if (is_array($value)) {
+                $subFunc                        = 'in';
+                $subExpr[]                      = $subQb->expr()->in(sprintf('%s.%s', $alias, $column), ":{$subFilterParamter}");
+                $parameters[$subFilterParamter] = ['value' => $value, 'type' => ArrayParameterType::STRING];
+            } else {
+                $parameters[$subFilterParamter] = $value;
+            }
+
+            $subExpr = $subQb->expr()->{$subFunc}(sprintf('%s.%s', $alias, $column), ":{$subFilterParamter}");
+        }
+
+        $subQb->expr()->and(...$subExpr);
+
+        $subQb->select('null')
+            ->from(MAUTIC_TABLE_PREFIX.$table, $alias)
+            ->where($subExpr);
+
+        return $subQb;
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
+     */
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            [
+                'l.name',
+                'l.alias',
+            ]
+        );
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = parent::addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.lead.list.searchcommand.isglobal'):
+            case $this->translator->trans('mautic.lead.list.searchcommand.isglobal', [], null, 'en_US'):
+                $expr            = $q->expr()->eq('l.isGlobal', ":{$unique}");
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.name'):
+            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
+                $expr            = $q->expr()->like('l.name', ':'.$unique);
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.lead.list.searchcommand.filters_field'):
+            case $this->translator->trans('mautic.lead.list.searchcommand.filters_field', [], null, 'en_US'):
+                $pattern         = sprintf('%%s:5:"field";s:%d:"%s"%%', strlen($filter->string), $filter->string);
+                $expr            = $q->expr()->like('l.filters', ':'.$unique);
+                $forceParameters = [$unique => $pattern];
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'leadlist_id',
+                    'lead_list_projects_xref',
+                    'l',
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [
+            $expr,
+            $parameters,
+        ];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['l.name', 'ASC'],
+        ];
+    }
+
+    private function getSingleEntity(int $id, bool $ignoreDeleted = true): ?LeadList
+    {
+        try {
+            $q = $this
+                ->createQueryBuilder('l');
+            $q->where('l.id = :listId');
+            if ($ignoreDeleted) {
+                $q->andWhere($q->expr()->isNull($this->getTableAlias().'.deleted'));
+            }
+
+            return $q->setParameter('listId', $id)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
+    private function forceUseIndex(QueryBuilder $qb, string $indexName): QueryBuilder
+    {
+        $fromPart             = $qb->getQueryPart('from');
+        $fromPart[0]['alias'] = sprintf('%s USE INDEX (%s)', $fromPart[0]['alias'], $indexName);
+        $qb->resetQueryPart('from');
+        $qb->from($fromPart[0]['table'], $fromPart[0]['alias']);
+
+        return $qb;
+    }
+
+    /**
+     * @param int[] $expectedSegmentIds
+     *
+     * @return int[]
+     */
+    private function fetchContactToSegmentIdsRelationships(int $contactId, array $expectedSegmentIds): array
+    {
+        $tableName = MAUTIC_TABLE_PREFIX.'lead_lists_leads';
+
+        $sql = <<<SQL
+            SELECT leadlist_id 
+            FROM {$tableName}
+            WHERE lead_id = ?
+                AND leadlist_id IN (?)
+                AND manually_removed = 0
+SQL;
+
+        return $this->getEntityManager()->getConnection()
+            ->executeQuery(
+                $sql,
+                [$contactId, $expectedSegmentIds],
+                [
+                    \PDO::PARAM_INT,
+                    ArrayParameterType::INTEGER,
+                ]
+            )
+            ->fetchFirstColumn();
     }
 }

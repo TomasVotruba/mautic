@@ -39,7 +39,7 @@ class LeadDeviceRepository extends CommonRepository
         $selectQuery->select('es.id as id, es.device as device')
             ->from(MAUTIC_TABLE_PREFIX.'lead_devices', 'es');
 
-        if (null !== $deviceNames) {
+        if ($deviceNames !== null) {
             if (!is_array($deviceNames)) {
                 $deviceNames = [$deviceNames];
             }
@@ -53,7 +53,7 @@ class LeadDeviceRepository extends CommonRepository
             }
         }
 
-        if (null !== $deviceBrands) {
+        if ($deviceBrands !== null) {
             if (!is_array($deviceBrands)) {
                 $deviceBrands = [$deviceBrands];
             }
@@ -67,7 +67,7 @@ class LeadDeviceRepository extends CommonRepository
             }
         }
 
-        if (null !== $deviceModels) {
+        if ($deviceModels !== null) {
             if (!is_array($deviceModels)) {
                 $deviceModels = [$deviceModels];
             }
@@ -81,7 +81,7 @@ class LeadDeviceRepository extends CommonRepository
             }
         }
 
-        if (null !== $deviceOss) {
+        if ($deviceOss !== null) {
             if (!is_array($deviceOss)) {
                 $deviceOss = [$deviceOss];
             }
@@ -95,11 +95,11 @@ class LeadDeviceRepository extends CommonRepository
             }
         }
 
-        if (null !== $deviceId) {
+        if ($deviceId !== null) {
             $selectQuery->andWhere(
                 $selectQuery->expr()->eq('es.id', $deviceId)
             );
-        } elseif (null !== $lead) {
+        } elseif ($lead !== null) {
             $selectQuery->andWhere(
                 $selectQuery->expr()->eq('es.lead_id', $lead->getId())
             );

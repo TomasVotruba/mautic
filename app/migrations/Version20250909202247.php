@@ -13,13 +13,6 @@ final class Version20250909202247 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = Project::TABLE_NAME;
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME))->hasIndex($this->getIndexName());
-        }, sprintf('Index %s already exists', $this->getIndexName()));
-    }
-
     public function up(Schema $schema): void
     {
         $tableName = $this->getPrefixedTableName(self::TABLE_NAME);
@@ -43,6 +36,13 @@ final class Version20250909202247 extends PreUpAssertionMigration
 
         $table->dropIndex($this->getIndexName());
         $table->addIndex(['name'], $this->prefix.'project_name');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME))->hasIndex($this->getIndexName());
+        }, sprintf('Index %s already exists', $this->getIndexName()));
     }
 
     private function getIndexName(): string

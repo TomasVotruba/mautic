@@ -49,6 +49,14 @@ class TriggerRepository extends CommonRepository
         return 't';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
+    }
+
     protected function addCatchAllWhereClause($q, $filter): array
     {
         return $this->addStandardCatchAllWhereClause($q, $filter, [
@@ -71,13 +79,5 @@ class TriggerRepository extends CommonRepository
             // Handle standard search commands
             default => $this->addStandardSearchCommandWhereClause($q, $filter),
         };
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
     }
 }

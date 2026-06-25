@@ -8,15 +8,6 @@ use Mautic\CoreBundle\Entity\CommonRepository;
 
 class ProjectRepository extends CommonRepository
 {
-    /**
-     * @return array<string[]>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['p.date_modified', 'ASC'],
-        ];
-    }
 
     public function getTableAlias(): string
     {
@@ -31,11 +22,20 @@ class ProjectRepository extends CommonRepository
         $q->setParameter('name', $name);
         $q->setMaxResults(1);
 
-        if (null !== $ignoredId) {
+        if ($ignoredId !== null) {
             $q->andWhere($q->expr()->neq($this->getTableAlias().'.id', ':ignoredId'));
             $q->setParameter('ignoredId', $ignoredId);
         }
 
         return !empty($q->getQuery()->getResult());
+    }
+    /**
+     * @return array<string[]>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['p.date_modified', 'ASC'],
+        ];
     }
 }

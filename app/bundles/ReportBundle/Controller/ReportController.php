@@ -172,7 +172,7 @@ class ReportController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('report');
             \assert($model instanceof ReportModel);
             $entity = $model->getEntity($objectId);
@@ -185,7 +185,7 @@ class ReportController extends FormController
                 $model,
                 'report'
             );
-            if (true !== $check) {
+            if ($check !== true) {
                 return $check;
             }
 
@@ -231,7 +231,7 @@ class ReportController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('report');
             \assert($model instanceof ReportModel);
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -241,7 +241,7 @@ class ReportController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.report.report.error.notfound',
@@ -323,7 +323,7 @@ class ReportController extends FormController
             $model,
             'report'
         );
-        if (true !== $check) {
+        if ($check !== true) {
             return $check;
         }
 
@@ -332,7 +332,7 @@ class ReportController extends FormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // Columns have to be reset in order for Symfony to honor the new submitted order
@@ -454,7 +454,7 @@ class ReportController extends FormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -540,7 +540,7 @@ class ReportController extends FormController
         $entity   = $model->getEntity($objectId);
         $security = $this->security;
 
-        if (null === $entity) {
+        if ($entity === null) {
             $page = $request->getSession()->get('mautic.report.page', 1);
 
             return $this->postActionRedirect(
@@ -590,7 +590,7 @@ class ReportController extends FormController
         }
 
         $dateRangeForm = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
-        if ('POST' === $request->getMethod() && $request->request->has('daterange')) {
+        if ($request->getMethod() === 'POST' && $request->request->has('daterange')) {
             if ($this->isFormValid($dateRangeForm)) {
                 $to                         = new \DateTime($dateRangeForm['date_to']->getData());
                 $dateRangeValues['date_to'] = $to->format($mysqlFormat);
@@ -611,7 +611,7 @@ class ReportController extends FormController
         if (count($dynamicFilters) > 0 && count($entity->getFilters()) > 0) {
             foreach ($entity->getFilters() as $filter) {
                 foreach ($dynamicFilters as $dfcol => $dfval) {
-                    if (1 === $filter['dynamic'] && $filter['column'] === $dfcol) {
+                    if ($filter['dynamic'] === 1 && $filter['column'] === $dfcol) {
                         $dynamicFilters[$dfcol]['expr'] = $filter['condition'];
                         break;
                     }
@@ -624,27 +624,27 @@ class ReportController extends FormController
         }
 
         foreach ($entity->getFilters() as $filter) {
-            if (!isset($filter['dynamic']) || 1 !== $filter['dynamic']) {
+            if (!isset($filter['dynamic']) || $filter['dynamic'] !== 1) {
                 continue;
             }
 
             $column     = $filter['column'] ?? null;
-            $definition = (null !== $column) ? ($filterDefinitions->definitions[$column] ?? []) : [];
+            $definition = ($column !== null) ? ($filterDefinitions->definitions[$column] ?? []) : [];
             $alias      = $definition['alias'] ?? null;
 
-            if (null === $alias || isset($filterSettings[$alias])) {
+            if ($alias === null || isset($filterSettings[$alias])) {
                 continue;
             }
 
             $value = $filter['value'] ?? null;
-            if ('' === $value || null === $value) {
+            if ($value === '' || $value === null) {
                 $default = $definition['defaultValue'] ?? null;
-                if ('' !== $default && null !== $default) {
+                if ($default !== '' && $default !== null) {
                     $value = $default;
                 }
             }
 
-            if ('' !== $value && null !== $value) {
+            if ($value !== '' && $value !== null) {
                 $filterSettings[$alias] = $value;
             }
         }
@@ -727,41 +727,6 @@ class ReportController extends FormController
     }
 
     /**
-     * Checks access to an entity.
-     *
-     * @param array<mixed> $postActionVars
-     * @param array<mixed> $permissions
-     *
-     * @return array<string, string|array<string, string>>|bool|HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|Response
-     */
-    private function checkEntityAccess(array $postActionVars, ?Report $entity, int $objectId, array $permissions, ReportModel $model, string $modelName)
-    {
-        if (null === $entity) {
-            return $this->postActionRedirect(
-                array_merge(
-                    $postActionVars,
-                    [
-                        'flashes' => [
-                            [
-                                'type'    => 'error',
-                                'msg'     => 'mautic.report.report.error.notfound',
-                                'msgVars' => ['%id%' => $objectId],
-                            ],
-                        ],
-                    ]
-                )
-            );
-        } elseif (!$this->security->hasEntityAccess($permissions[0], $permissions[1], $entity->getCreatedBy())) {
-            $this->throwAccessDenied();
-        } elseif ($model->isLocked($entity)) {
-            // deny access if the entity is locked
-            return $this->isLocked($postActionVars, $entity, $modelName);
-        }
-
-        return true;
-    }
-
-    /**
      * @param int    $objectId
      * @param string $format
      *
@@ -776,7 +741,7 @@ class ReportController extends FormController
         $entity   = $model->getEntity($objectId);
         $security = $this->security;
 
-        if (null === $entity) {
+        if ($entity === null) {
             $page = $request->getSession()->get('mautic.report.page', 1);
 
             return $this->postActionRedirect(
@@ -814,7 +779,7 @@ class ReportController extends FormController
         $dynamicFilters            = $session->get('mautic.report.'.$objectId.'.filters', []);
         $options['dynamicFilters'] = $dynamicFilters;
 
-        if ('csv' === $format) {
+        if ($format === 'csv') {
             $response = new HttpFoundation\StreamedResponse(
                 function () use ($model, $entity, $format, $options): void {
                     $options['paginate']        = true;
@@ -828,7 +793,7 @@ class ReportController extends FormController
                         $reportData = $model->getReportData($entity, null, $options);
 
                         // Calculate number of pages only once
-                        if (1 === $options['page']) {
+                        if ($options['page'] === 1) {
                             $totalPages = (int) ceil($reportData['totalResults'] / $options['limit']);
                         }
 
@@ -853,7 +818,7 @@ class ReportController extends FormController
             $fileName = $name.'.'.$format;
             ExportResponse::setResponseHeaders($response, $fileName);
         } else {
-            if ('xlsx' === $format) {
+            if ($format === 'xlsx') {
                 $options['ignoreGraphData'] = true;
             }
             $reportData       = $model->getReportData($entity, null, $options);
@@ -874,7 +839,7 @@ class ReportController extends FormController
      */
     public function downloadAction(FileHandler $fileHandler, $reportId, $format = 'csv')
     {
-        if ('csv' !== $format) {
+        if ($format !== 'csv') {
             throw new \Exception($this->translator->trans('mautic.format.invalid', ['%format%' => $format, '%validFormats%' => 'csv']));
         }
 
@@ -917,5 +882,40 @@ class ReportController extends FormController
     protected function getDefaultOrderDirection(): string
     {
         return 'DESC';
+    }
+
+    /**
+     * Checks access to an entity.
+     *
+     * @param array<mixed> $postActionVars
+     * @param array<mixed> $permissions
+     *
+     * @return array<string, string|array<string, string>>|bool|HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|Response
+     */
+    private function checkEntityAccess(array $postActionVars, ?Report $entity, int $objectId, array $permissions, ReportModel $model, string $modelName)
+    {
+        if ($entity === null) {
+            return $this->postActionRedirect(
+                array_merge(
+                    $postActionVars,
+                    [
+                        'flashes' => [
+                            [
+                                'type'    => 'error',
+                                'msg'     => 'mautic.report.report.error.notfound',
+                                'msgVars' => ['%id%' => $objectId],
+                            ],
+                        ],
+                    ]
+                )
+            );
+        } elseif (!$this->security->hasEntityAccess($permissions[0], $permissions[1], $entity->getCreatedBy())) {
+            $this->throwAccessDenied();
+        } elseif ($model->isLocked($entity)) {
+            // deny access if the entity is locked
+            return $this->isLocked($postActionVars, $entity, $modelName);
+        }
+
+        return true;
     }
 }

@@ -94,7 +94,7 @@ class CompanyType extends AbstractType
             );
         }
 
-        if (null === $options['data']->getId()) {
+        if ($options['data']->getId() === null) {
             $builder->add(
                 'buttons',
                 FormButtonsType::class

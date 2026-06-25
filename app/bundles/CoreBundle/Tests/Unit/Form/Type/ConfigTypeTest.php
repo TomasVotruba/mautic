@@ -114,21 +114,6 @@ class ConfigTypeTest extends TypeTestCase
         $this->assertTrue($form->isValid());
     }
 
-    private function getConfigFormType(): ConfigType
-    {
-        $translator                 = $this->createMock(TranslatorInterface::class);
-        $languageHelper             = $this->createMock(LanguageHelper::class);
-        $ipLookupFactory            = $this->createMock(IpLookupFactory::class);
-        $shortener                  = $this->createMock(Shortener::class);
-        $coreParametersHelper       = $this->createMock(CoreParametersHelper::class);
-
-        $languageHelper->expects($this->any())
-                       ->method('fetchLanguages')
-                       ->willReturn(['en' => ['name'=>'English']]);
-
-        return new ConfigType($translator, $languageHelper, $ipLookupFactory, null, $shortener, $coreParametersHelper);
-    }
-
     /** @return array<int, PreloadedExtension|ValidatorExtension> */
     protected function getExtensions(): array
     {
@@ -157,5 +142,20 @@ class ConfigTypeTest extends TypeTestCase
             new ValidatorExtension($validator),
             new PreloadedExtension([$configType, $pageListType], []),
         ];
+    }
+
+    private function getConfigFormType(): ConfigType
+    {
+        $translator                 = $this->createMock(TranslatorInterface::class);
+        $languageHelper             = $this->createMock(LanguageHelper::class);
+        $ipLookupFactory            = $this->createMock(IpLookupFactory::class);
+        $shortener                  = $this->createMock(Shortener::class);
+        $coreParametersHelper       = $this->createMock(CoreParametersHelper::class);
+
+        $languageHelper->expects($this->any())
+                       ->method('fetchLanguages')
+                       ->willReturn(['en' => ['name'=>'English']]);
+
+        return new ConfigType($translator, $languageHelper, $ipLookupFactory, null, $shortener, $coreParametersHelper);
     }
 }

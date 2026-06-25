@@ -204,6 +204,42 @@ class UserRepository extends CommonRepository
         return $q->getQuery()->getArrayResult();
     }
 
+    /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        $commands = [
+            'mautic.core.searchcommand.email',
+            'mautic.core.searchcommand.ispublished',
+            'mautic.core.searchcommand.isunpublished',
+            'mautic.user.user.searchcommand.isadmin',
+            'mautic.core.searchcommand.name',
+            'mautic.user.user.searchcommand.position',
+            'mautic.user.user.searchcommand.role',
+            'mautic.user.user.searchcommand.username',
+        ];
+
+        return array_merge($commands, parent::getSearchCommands());
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'u';
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getAllAdminUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->join('u.role', 'r')
+            ->where('r.isAdmin = 1')
+            ->getQuery()
+            ->getResult();
+    }
+
     protected function addCatchAllWhereClause($q, $filter): array
     {
         return $this->addStandardCatchAllWhereClause(
@@ -230,19 +266,19 @@ class UserRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.core.searchcommand.ispublished'):
             case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('u.isPublished', ":$unique");
+                $expr            = $q->expr()->eq('u.isPublished', ":{$unique}");
                 $forceParameters = [$unique => true];
 
                 break;
             case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
             case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('u.isPublished', ":$unique");
+                $expr            = $q->expr()->eq('u.isPublished', ":{$unique}");
                 $forceParameters = [$unique => false];
 
                 break;
             case $this->translator->trans('mautic.user.user.searchcommand.isadmin'):
             case $this->translator->trans('mautic.user.user.searchcommand.isadmin', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('r.isAdmin', ":$unique");
+                $expr            = $q->expr()->eq('r.isAdmin', ":{$unique}");
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.email'):
@@ -287,29 +323,10 @@ class UserRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = ["{$unique}" => $string];
         }
 
         return [$expr, $parameters];
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        $commands = [
-            'mautic.core.searchcommand.email',
-            'mautic.core.searchcommand.ispublished',
-            'mautic.core.searchcommand.isunpublished',
-            'mautic.user.user.searchcommand.isadmin',
-            'mautic.core.searchcommand.name',
-            'mautic.user.user.searchcommand.position',
-            'mautic.user.user.searchcommand.role',
-            'mautic.user.user.searchcommand.username',
-        ];
-
-        return array_merge($commands, parent::getSearchCommands());
     }
 
     protected function getDefaultOrder(): array
@@ -319,22 +336,5 @@ class UserRepository extends CommonRepository
             ['u.firstName', 'ASC'],
             ['u.username', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'u';
-    }
-
-    /**
-     * @return User[]
-     */
-    public function getAllAdminUsers(): array
-    {
-        return $this->createQueryBuilder('u')
-            ->join('u.role', 'r')
-            ->where('r.isAdmin = 1')
-            ->getQuery()
-            ->getResult();
     }
 }

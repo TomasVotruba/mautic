@@ -39,14 +39,14 @@ class AjaxController extends CommonAjaxController
 
     public function reorderFieldsAction(Request $request, string $name = 'fields'): JsonResponse
     {
-        if ('form' === $name) {
+        if ($name === 'form') {
             $name = 'fields';
         }
         $dataArray   = ['success' => 0];
         $sessionId   = InputHelper::clean($request->request->get('formId'));
         $sessionName = 'mautic.form.'.$sessionId.'.'.$name.'.modified';
         $session     = $request->getSession();
-        $orderName   = ('fields' == $name) ? 'mauticform' : 'mauticform_action';
+        $orderName   = ($name == 'fields') ? 'mauticform' : 'mauticform_action';
         $order       = InputHelper::clean($request->request->all()[$orderName]);
         $components  = $session->get($sessionName);
 
@@ -97,7 +97,7 @@ class AjaxController extends CommonAjaxController
         $fields     = [];
 
         foreach ($formFields as $field) {
-            if ('button' != $field->getType()) {
+            if ($field->getType() != 'button') {
                 $properties = $field->getProperties();
                 $options    = [];
 

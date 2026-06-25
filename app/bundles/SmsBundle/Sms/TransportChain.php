@@ -54,11 +54,11 @@ class TransportChain
         $enabled = $this->getEnabledTransports();
 
         // If there no primary transport selected and there is just one available we will use it as primary
-        if (1 === count($enabled)) {
+        if (count($enabled) === 1) {
             return array_shift($enabled);
         }
 
-        if (0 === count($enabled)) {
+        if (count($enabled) === 0) {
             throw new PrimaryTransportNotEnabledException('Primary SMS transport is not enabled');
         }
 
@@ -97,31 +97,6 @@ class TransportChain
     public function sendMMS(RecipientCollection $collection, array $media = []): RecipientCollection
     {
         return $this->sendMessage($collection, $media);
-    }
-
-    /**
-     * @param RecipientCollection<SmsRecipientDTO> $collection
-     * @param array<mixed>                         $media
-     *
-     * @return RecipientCollection<SmsRecipientDTO>
-     */
-    private function sendMessage(RecipientCollection $collection, array $media = []): RecipientCollection
-    {
-        // loops through contacts
-        foreach ($collection as $recipient) {
-            $content          = $recipient->getFinalMessage();
-            $primaryTransport = $this->getPrimaryTransport();
-
-            // As of now media is only supported by twilio
-            if ($media && $primaryTransport instanceof MMSTransportInterface) {
-                $status = $primaryTransport->sendMms($recipient->getLead(), $content, $media);
-            } else {
-                $status  = $this->sendSms($recipient->getLead(), $content);
-            }
-            $recipient->setResult($status);
-        }
-
-        return $collection;
     }
 
     /**
@@ -187,5 +162,30 @@ class TransportChain
         }
 
         return $enabled;
+    }
+
+    /**
+     * @param RecipientCollection<SmsRecipientDTO> $collection
+     * @param array<mixed>                         $media
+     *
+     * @return RecipientCollection<SmsRecipientDTO>
+     */
+    private function sendMessage(RecipientCollection $collection, array $media = []): RecipientCollection
+    {
+        // loops through contacts
+        foreach ($collection as $recipient) {
+            $content          = $recipient->getFinalMessage();
+            $primaryTransport = $this->getPrimaryTransport();
+
+            // As of now media is only supported by twilio
+            if ($media && $primaryTransport instanceof MMSTransportInterface) {
+                $status = $primaryTransport->sendMms($recipient->getLead(), $content, $media);
+            } else {
+                $status  = $this->sendSms($recipient->getLead(), $content);
+            }
+            $recipient->setResult($status);
+        }
+
+        return $collection;
     }
 }

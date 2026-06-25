@@ -87,6 +87,11 @@ class ReportDevicesSubscriberFunctionalTest extends MauticMysqlTestCase
         ],
     ];
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function testOnReportGenerate(): void
     {
         $countDevices = 0;
@@ -219,10 +224,5 @@ class ReportDevicesSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         return $report;
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
     }
 }

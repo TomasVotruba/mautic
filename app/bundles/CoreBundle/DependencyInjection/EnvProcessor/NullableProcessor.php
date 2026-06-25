@@ -10,7 +10,7 @@ class NullableProcessor implements EnvVarProcessorInterface
     {
         $env = $getEnv($name);
 
-        return '' === $env ? null : $env;
+        return $env === '' ? null : $env;
     }
 
     public static function getProvidedTypes(): array

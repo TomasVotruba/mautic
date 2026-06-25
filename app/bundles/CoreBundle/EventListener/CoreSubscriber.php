@@ -120,7 +120,7 @@ class CoreSubscriber implements EventSubscriberInterface
         foreach ($bundles as $bundle) {
             if (!empty($bundle['config']['routes'][$type])) {
                 foreach ($bundle['config']['routes'][$type] as $name => $details) {
-                    if ('api' == $type && !empty($details['standard_entity'])) {
+                    if ($type == 'api' && !empty($details['standard_entity'])) {
                         $standards = [
                             'getall' => [
                                 'action' => 'getEntities',
@@ -176,7 +176,7 @@ class CoreSubscriber implements EventSubscriberInterface
 
                         foreach (['name', 'path', 'controller'] as $required) {
                             if (empty($details[$required])) {
-                                throw new \InvalidArgumentException("$bundle.$name must have $required defined");
+                                throw new \InvalidArgumentException("{$bundle}.{$name} must have {$required} defined");
                             }
                         }
 
@@ -254,13 +254,13 @@ class CoreSubscriber implements EventSubscriberInterface
         }
         if (isset($details['format'])) {
             $defaults['_format'] = $details['format'];
-        } elseif ('api' == $type) {
+        } elseif ($type == 'api') {
             $defaults['_format'] = 'json';
         }
         $method = [];
         if (isset($details['method'])) {
             $method = (array) $details['method'];
-        } elseif ('api' === $type) {
+        } elseif ($type === 'api') {
             $method = ['GET'];
         }
         // Set requirements
@@ -285,7 +285,7 @@ class CoreSubscriber implements EventSubscriberInterface
                 $requirements['objectId'] = '[a-zA-Z0-9_-]+';
             }
         }
-        if ('api' == $type) {
+        if ($type == 'api') {
             if (str_contains($details['path'], '{id}')) {
                 if (!isset($requirements['page'])) {
                     $requirements['id'] = '\d+';

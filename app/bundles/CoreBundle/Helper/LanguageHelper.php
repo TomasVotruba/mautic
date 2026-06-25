@@ -75,7 +75,7 @@ class LanguageHelper
         $zipper  = new \ZipArchive();
         $archive = $zipper->open($packagePath);
 
-        if (true !== $archive) {
+        if ($archive !== true) {
             $error = match ($archive) {
                 \ZipArchive::ER_EXISTS => 'mautic.core.update.archive_file_exists',
                 \ZipArchive::ER_INCONS, \ZipArchive::ER_INVAL, \ZipArchive::ER_MEMORY => 'mautic.core.update.archive_zip_corrupt',
@@ -172,7 +172,7 @@ class LanguageHelper
                 ];
         }
 
-        if (200 != $data->getStatusCode()) {
+        if ($data->getStatusCode() != 200) {
             // Log the error
             $this->logger->error(
                 sprintf(
@@ -258,7 +258,7 @@ class LanguageHelper
                     '%url%' => $langUrl,
                 ],
             ];
-        } elseif (200 != $data->getStatusCode()) {
+        } elseif ($data->getStatusCode() != 200) {
             return [
                 'error'   => true,
                 'message' => 'mautic.core.language.helper.error.on.language.server.side',
@@ -342,6 +342,27 @@ class LanguageHelper
         }
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getLanguageChoices(): array
+    {
+        // Get the list of available languages
+        $languages   = $this->fetchLanguages(false, false);
+        $choices     = [];
+
+        foreach ($languages as $code => $langData) {
+            $choices[$langData['name']] = $code;
+        }
+
+        $choices = array_merge($choices, array_flip($this->getSupportedLanguages()));
+
+        // Alpha sort the languages by name
+        ksort($choices, SORT_FLAG_CASE | SORT_NATURAL);
+
+        return $choices;
+    }
+
     private function loadSupportedLanguages(): void
     {
         // Find available translations
@@ -365,26 +386,5 @@ class LanguageHelper
             $config                            = json_decode(file_get_contents($configFile), true);
             $this->supportedLanguages[$locale] = (!empty($config['name'])) ? $config['name'] : $locale;
         }
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getLanguageChoices(): array
-    {
-        // Get the list of available languages
-        $languages   = $this->fetchLanguages(false, false);
-        $choices     = [];
-
-        foreach ($languages as $code => $langData) {
-            $choices[$langData['name']] = $code;
-        }
-
-        $choices = array_merge($choices, array_flip($this->getSupportedLanguages()));
-
-        // Alpha sort the languages by name
-        ksort($choices, SORT_FLAG_CASE | SORT_NATURAL);
-
-        return $choices;
     }
 }

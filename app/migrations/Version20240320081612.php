@@ -9,13 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20240320081612 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable("{$this->prefix}campaign_events")->hasColumn('trigger_window'),
-            'Column trigger_window already exists'
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -25,5 +18,12 @@ final class Version20240320081612 extends PreUpAssertionMigration
     public function down(Schema $schema): void
     {
         $this->addSql("ALTER TABLE {$this->prefix}campaign_events DROP COLUMN `trigger_window`");
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable("{$this->prefix}campaign_events")->hasColumn('trigger_window'),
+            'Column trigger_window already exists'
+        );
     }
 }

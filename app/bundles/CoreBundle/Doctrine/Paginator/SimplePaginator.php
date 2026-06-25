@@ -37,7 +37,7 @@ class SimplePaginator implements \IteratorAggregate, \Countable
 
     public function count(): int
     {
-        if (null === $this->count) {
+        if ($this->count === null) {
             $this->count = $this->fetchCount();
         }
 

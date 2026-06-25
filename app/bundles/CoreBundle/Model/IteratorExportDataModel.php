@@ -111,6 +111,19 @@ class IteratorExportDataModel implements \Iterator
         $this->getDataForExport();
     }
 
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getArgs(): array
+    {
+        return $this->args;
+    }
+
     private function getDataForExport(): void
     {
         $data       = new DataExporterHelper();
@@ -124,18 +137,5 @@ class IteratorExportDataModel implements \Iterator
         $this->totalResult = $this->data ? count($this->data) : 0;
         $this->total += $this->totalResult;
         $this->position = 0;
-    }
-
-    public function getTotal(): int
-    {
-        return $this->total;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function getArgs(): array
-    {
-        return $this->args;
     }
 }

@@ -123,13 +123,13 @@ class ContactSegmentService
         // We are removing it because we will have to add it later
         // to make sure it's the first column in the query
         $key = array_search($leadsTableAlias.'.id', $select);
-        if (false !== $key) {
+        if ($key !== false) {
             unset($select[$key]);
         }
 
         // We only need to use distinct if we join other tables to the leads table
         $join     = $queryBuilder->getQueryPart('join');
-        $distinct = is_array($join) && (0 < count($join)) ? 'DISTINCT ' : '';
+        $distinct = is_array($join) && (count($join) > 0) ? 'DISTINCT ' : '';
         // Make sure that leads.id is the first column
         array_unshift($select, $distinct.$leadsTableAlias.'.id');
         $queryBuilder->resetQueryPart('select');
@@ -190,42 +190,6 @@ class ContactSegmentService
     }
 
     /**
-     * @param array<string, mixed> $batchLimiters
-     *
-     * @throws Exception\SegmentQueryException
-     * @throws \Exception
-     */
-    private function getNewSegmentContactsQuery(LeadList $segment, array $batchLimiters = [], bool $addNewContactsRestrictions = true): QueryBuilder
-    {
-        $queryBuilder = $this->contactSegmentQueryBuilder->assembleContactsSegmentQueryBuilder(
-            $segment->getId(),
-            $this->contactSegmentFilterFactory->getSegmentFilters($segment, $batchLimiters)
-        );
-
-        if ($addNewContactsRestrictions) {
-            $queryBuilder = $this->contactSegmentQueryBuilder->addNewContactsRestrictions($queryBuilder, (int) $segment->getId(), $batchLimiters);
-        }
-
-        $this->contactSegmentQueryBuilder->queryBuilderGenerated($segment, $queryBuilder);
-
-        return $queryBuilder;
-    }
-
-    /**
-     * @throws Exception\SegmentQueryException
-     * @throws \Exception
-     */
-    private function getTotalSegmentContactsQuery(LeadList $segment): QueryBuilder
-    {
-        $segmentFilters = $this->contactSegmentFilterFactory->getSegmentFilters($segment);
-
-        $queryBuilder = $this->contactSegmentQueryBuilder->assembleContactsSegmentQueryBuilder($segment->getId(), $segmentFilters);
-        $queryBuilder = $this->contactSegmentQueryBuilder->addManuallySubscribedQuery($queryBuilder, $segment->getId());
-
-        return $this->contactSegmentQueryBuilder->addManuallyUnsubscribedQuery($queryBuilder, $segment->getId());
-    }
-
-    /**
      * @param int|null $limit
      *
      * @return QueryBuilder
@@ -259,6 +223,42 @@ class ContactSegmentService
         }
 
         return $qbO;
+    }
+
+    /**
+     * @param array<string, mixed> $batchLimiters
+     *
+     * @throws Exception\SegmentQueryException
+     * @throws \Exception
+     */
+    private function getNewSegmentContactsQuery(LeadList $segment, array $batchLimiters = [], bool $addNewContactsRestrictions = true): QueryBuilder
+    {
+        $queryBuilder = $this->contactSegmentQueryBuilder->assembleContactsSegmentQueryBuilder(
+            $segment->getId(),
+            $this->contactSegmentFilterFactory->getSegmentFilters($segment, $batchLimiters)
+        );
+
+        if ($addNewContactsRestrictions) {
+            $queryBuilder = $this->contactSegmentQueryBuilder->addNewContactsRestrictions($queryBuilder, (int) $segment->getId(), $batchLimiters);
+        }
+
+        $this->contactSegmentQueryBuilder->queryBuilderGenerated($segment, $queryBuilder);
+
+        return $queryBuilder;
+    }
+
+    /**
+     * @throws Exception\SegmentQueryException
+     * @throws \Exception
+     */
+    private function getTotalSegmentContactsQuery(LeadList $segment): QueryBuilder
+    {
+        $segmentFilters = $this->contactSegmentFilterFactory->getSegmentFilters($segment);
+
+        $queryBuilder = $this->contactSegmentQueryBuilder->assembleContactsSegmentQueryBuilder($segment->getId(), $segmentFilters);
+        $queryBuilder = $this->contactSegmentQueryBuilder->addManuallySubscribedQuery($queryBuilder, $segment->getId());
+
+        return $this->contactSegmentQueryBuilder->addManuallyUnsubscribedQuery($queryBuilder, $segment->getId());
     }
 
     private function excludeVisitors(QueryBuilder $queryBuilder): void

@@ -103,7 +103,7 @@ class EmailApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity || !$entity->isPublished()) {
+        if ($entity === null || !$entity->isPublished()) {
             return $this->notFound();
         }
 
@@ -246,7 +246,7 @@ class EmailApiController extends CommonApiController
             unset($parameters['sendToDnc']);
         }
 
-        if (Request::METHOD_PUT === $method && !array_key_exists('sendToDnc', $parameters)) {
+        if ($method === Request::METHOD_PUT && !array_key_exists('sendToDnc', $parameters)) {
             // use default value, in case of PUT method it does not use default value if entity is already exist and tried to call setter method with null value.
             $parameters['sendToDnc'] = false;
         }

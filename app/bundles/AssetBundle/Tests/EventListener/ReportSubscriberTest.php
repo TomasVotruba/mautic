@@ -57,19 +57,19 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnReportBuilderWithUnknownContext(): void
     {
-        $companyReportData = new class extends CompanyReportData {
+        $companyReportData = new class() extends CompanyReportData {
             public function __construct()
             {
             }
         };
 
-        $downloadRepository = new class extends DownloadRepository {
+        $downloadRepository = new class() extends DownloadRepository {
             public function __construct()
             {
             }
         };
 
-        $event = new class extends ReportBuilderEvent {
+        $event = new class() extends ReportBuilderEvent {
             public function __construct()
             {
                 $this->context = 'unicorn';
@@ -85,7 +85,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnReportBuilderWithAssetDownloadContext(): void
     {
-        $companyReportData = new class extends CompanyReportData {
+        $companyReportData = new class() extends CompanyReportData {
             public function __construct()
             {
             }
@@ -99,7 +99,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             }
         };
 
-        $downloadRepository = new class extends DownloadRepository {
+        $downloadRepository = new class() extends DownloadRepository {
             public function __construct()
             {
             }
@@ -150,24 +150,6 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    private function createTranslatorMock(): TranslatorInterface
-    {
-        return new class implements TranslatorInterface {
-            /**
-             * @param array<int|string> $parameters
-             */
-            public function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
-            {
-                return '[trans]'.$id.'[/trans]';
-            }
-
-            public function getLocale(): string
-            {
-                return 'en';
-            }
-        };
-    }
-
     public function testGroupByDefaultConfigured(): void
     {
         $report             = new Report();
@@ -195,5 +177,23 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $subscriber         = new ReportSubscriber($this->companyReportData, $this->downloadRepository, $this->dncReportService);
         $subscriber->onReportGenerate($event);
         $this->assertTrue($event->hasGroupBy());
+    }
+
+    private function createTranslatorMock(): TranslatorInterface
+    {
+        return new class() implements TranslatorInterface {
+            /**
+             * @param array<int|string> $parameters
+             */
+            public function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
+            {
+                return '[trans]'.$id.'[/trans]';
+            }
+
+            public function getLocale(): string
+            {
+                return 'en';
+            }
+        };
     }
 }

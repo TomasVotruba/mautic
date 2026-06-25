@@ -75,7 +75,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
 
     public function getEntity($id = null): ?DynamicContent
     {
-        if (null === $id) {
+        if ($id === null) {
             return new DynamicContent();
         }
 
@@ -95,14 +95,14 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
 
         if (!empty($type)) {
             if (!in_array($typeCondition, ['=', '<>', '!='], true)) {
-                throw new \InvalidArgumentException("Invalid operator '$typeCondition'");
+                throw new \InvalidArgumentException("Invalid operator '{$typeCondition}'");
             }
 
             $qb->andWhere("type {$typeCondition} :type");
             $qb->setParameter('type', $type);
         }
 
-        if (null !== $skipId) {
+        if ($skipId !== null) {
             $qb->andWhere('id != :id');
             $qb->setParameter('id', $skipId);
         }
@@ -210,46 +210,6 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
     }
 
     /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof DynamicContent) {
-            throw new MethodNotAllowedHttpException(['Dynamic Content']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = DynamicContentEvents::PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = DynamicContentEvents::POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = DynamicContentEvents::PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = DynamicContentEvents::POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new DynamicContentEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
-    /**
      * Joins the page table and limits created_by to currently logged in user.
      */
     public function limitQueryToCreator(QueryBuilder &$q): void
@@ -279,7 +239,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
 
-        if (!$flag || 'total_and_unique' === $flag) {
+        if (!$flag || $flag === 'total_and_unique') {
             $q = $query->prepareTimeDataQuery('dynamic_content_stats', 'date_sent', $filter);
 
             if (!$canViewOthers) {
@@ -290,7 +250,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
             $chart->setDataset($this->translator->trans('mautic.dynamicContent.show.total.views'), $data);
         }
 
-        if ('unique' === $flag || 'total_and_unique' === $flag) {
+        if ($flag === 'unique' || $flag === 'total_and_unique') {
             $q = $query->prepareTimeDataQuery('dynamic_content_stats', 'date_sent', $filter);
             $q->groupBy('t.lead_id, t.date_sent');
 
@@ -339,5 +299,45 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
         }
 
         return $results;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof DynamicContent) {
+            throw new MethodNotAllowedHttpException(['Dynamic Content']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = DynamicContentEvents::PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = DynamicContentEvents::POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = DynamicContentEvents::PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = DynamicContentEvents::POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new DynamicContentEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

@@ -136,7 +136,7 @@ trait OperatorListTrait
     {
         $operatorOption = OperatorOptions::getFilterExpressionFunctions();
 
-        return (null === $operator) ? $operatorOption : $operatorOption[$operator];
+        return ($operator === null) ? $operatorOption : $operatorOption[$operator];
     }
 
     /**
@@ -157,7 +157,7 @@ trait OperatorListTrait
 
         $type = $this->normalizeType($type);
 
-        if (null === $type) {
+        if ($type === null) {
             foreach ($this->typeOperators as $type => $def) {
                 if (!array_key_exists($type, $processedTypes)) {
                     $processedTypes[$type] = $this->getOperatorChoiceList($def, $overrideHiddenTypes);
@@ -211,11 +211,11 @@ trait OperatorListTrait
 
     protected function normalizeType(mixed $type): mixed
     {
-        if (null === $type) {
+        if ($type === null) {
             return $type;
         }
 
-        if ('boolean' === $type) {
+        if ($type === 'boolean') {
             return 'bool';
         }
 
@@ -227,7 +227,7 @@ trait OperatorListTrait
             return 'text';
         }
 
-        if ('datetime' === $type) {
+        if ($type === 'datetime') {
             return 'date';
         }
 

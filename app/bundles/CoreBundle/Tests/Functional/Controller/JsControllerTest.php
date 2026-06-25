@@ -18,7 +18,7 @@ final class JsControllerTest extends MauticMysqlTestCase
     {
         $this->configParams['google_analytics_id']                   = 'G-F3825DS9CD';
         $this->configParams['google_analytics_trackingpage_enabled'] = true;
-        $this->configParams['google_analytics_anonymize_ip']         = 'testIndexActionRendersSuccessfullyWithAnonymizeIp' === $this->name();
+        $this->configParams['google_analytics_anonymize_ip']         = $this->name() === 'testIndexActionRendersSuccessfullyWithAnonymizeIp';
         parent::setUp();
     }
 

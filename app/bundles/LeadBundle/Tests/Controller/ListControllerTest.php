@@ -93,12 +93,55 @@ class ListControllerTest extends MauticMysqlTestCase
         self::assertStringContainsString('Jacques', $response->getContent());
     }
 
+    public function testCloneSegmentPage(): void
+    {
+        $list = $this->createList('clone');
+        $list->setDateAdded(new \DateTime('2020-02-07 20:29:02'));
+        $list->setDateModified(new \DateTime('2020-03-21 20:29:02'));
+        $list->setCreatedByUser('Test User');
+
+        $this->em->persist($list);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->client->request('GET', sprintf('/s/segments/clone/%d', $list->getId()));
+
+        $clientResponse = $this->client->getResponse();
+        $this->assertResponseIsSuccessful('Return code must be 200.');
+        self::assertStringContainsString('Segment clone', $clientResponse->getContent());
+    }
+
+    public function testSegmentSearchFilters(): void
+    {
+        $this->createCustomField();
+        $segment = $this->createList('filter');
+        $segment->setFilters([
+            [
+                'glue'       => 'and',
+                'field'      => 'custom_field_test',
+                'object'     => 'lead',
+                'type'       => 'text',
+                'operator'   => '!empty',
+                'properties' => [
+                    'filter' => null,
+                ],
+            ],
+        ]);
+        $this->em->persist($segment);
+        $this->em->flush();
+
+        $this->client->request('GET', '/api/segments?search=filters_field:custom_field_test');
+        $clientResponse = $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Segment filter', $clientResponse->getContent());
+    }
+
     private function createList(string $suffix = 'A'): LeadList
     {
         $list = new LeadList();
-        $list->setName("Segment $suffix");
-        $list->setPublicName("Segment $suffix");
-        $list->setAlias("segment-$suffix");
+        $list->setName("Segment {$suffix}");
+        $list->setPublicName("Segment {$suffix}");
+        $list->setAlias("segment-{$suffix}");
         $list->setDateAdded(new \DateTime('2020-02-07 20:29:02'));
         $list->setDateModified(new \DateTime('2020-03-21 20:29:02'));
         $list->setCreatedByUser('Test User');
@@ -172,49 +215,6 @@ class ListControllerTest extends MauticMysqlTestCase
         $this->em->flush();
 
         return $segment;
-    }
-
-    public function testCloneSegmentPage(): void
-    {
-        $list = $this->createList('clone');
-        $list->setDateAdded(new \DateTime('2020-02-07 20:29:02'));
-        $list->setDateModified(new \DateTime('2020-03-21 20:29:02'));
-        $list->setCreatedByUser('Test User');
-
-        $this->em->persist($list);
-        $this->em->flush();
-        $this->em->clear();
-
-        $this->client->request('GET', sprintf('/s/segments/clone/%d', $list->getId()));
-
-        $clientResponse = $this->client->getResponse();
-        $this->assertResponseIsSuccessful('Return code must be 200.');
-        self::assertStringContainsString('Segment clone', $clientResponse->getContent());
-    }
-
-    public function testSegmentSearchFilters(): void
-    {
-        $this->createCustomField();
-        $segment = $this->createList('filter');
-        $segment->setFilters([
-            [
-                'glue'       => 'and',
-                'field'      => 'custom_field_test',
-                'object'     => 'lead',
-                'type'       => 'text',
-                'operator'   => '!empty',
-                'properties' => [
-                    'filter' => null,
-                ],
-            ],
-        ]);
-        $this->em->persist($segment);
-        $this->em->flush();
-
-        $this->client->request('GET', '/api/segments?search=filters_field:custom_field_test');
-        $clientResponse = $this->client->getResponse();
-        $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Segment filter', $clientResponse->getContent());
     }
 
     private function createCustomField(): LeadField

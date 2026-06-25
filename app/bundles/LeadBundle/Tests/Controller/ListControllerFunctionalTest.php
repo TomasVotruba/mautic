@@ -24,11 +24,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ListControllerFunctionalTest extends MauticMysqlTestCase
 {
+
+    protected SegmentCountCacheHelper $segmentCountCacheHelper;
     private ListModel $listModel;
 
     private LeadListRepository $listRepo;
-
-    protected SegmentCountCacheHelper $segmentCountCacheHelper;
 
     private LeadRepository $leadRepo;
 
@@ -38,7 +38,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCountInBackground' === $this->name();
+        $this->configParams['update_segment_contact_count_in_background'] = $this->name() === 'testSegmentCountInBackground';
         $this->configParams['delete_segment_in_background']               = false;
         parent::setUp();
         $this->listModel = static::getContainer()->get('mautic.lead.model.list');
@@ -408,18 +408,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotSame($aliasFirst, $aliasSecond);
     }
 
-    private function getAliasWhenCloneSegment(int $segmentId): string
-    {
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.$segmentId);
-        $this->assertResponseIsSuccessful();
-        // Save cloned segment
-        $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
-        $crawler = $this->client->submit($form);
-        $this->assertResponseIsSuccessful();
-
-        return $crawler->filter('#leadlist_alias')->attr('value');
-    }
-
     public function testSegmentNotFoundOnAjax(): void
     {
         // Emulate invalid request parameter.
@@ -562,65 +550,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponseBody = json_decode($clientResponse->getContent(), true);
 
         $this->assertStringContainsString($expectedErrorMessage, $clientResponseBody['flashes']);
-    }
-
-    /** @param array<int, array<string, mixed>>|null $filters */
-    private function saveSegment(string $name, string $alias, ?array $filters = null, ?LeadList $segment = null): LeadList
-    {
-        $segment ??= new LeadList();
-        $filters ??= $this->defaultFilter();
-        $segment->setName($name)->setAlias($alias)->setFilters($filters);
-        $this->listModel->saveEntity($segment);
-
-        return $segment;
-    }
-
-    /**
-     * @return Lead[]
-     */
-    private function saveContacts(int $count = 4): array
-    {
-        $contacts = [];
-
-        for ($i = 1; $i <= $count; ++$i) {
-            $contact = new Lead();
-            $contact->setFirstname('Contact '.$i)->setEmail('contact'.$i.'@example.com');
-            $contacts[] = $contact;
-        }
-
-        $this->leadRepo->saveEntities($contacts);
-
-        return $contacts;
-    }
-
-    private function getSegmentCountHtml(Crawler $crawler, int $id): string
-    {
-        $content = $crawler->filter('span.col-count[data-id="'.$id.'"] a')->html();
-
-        return trim($content);
-    }
-
-    private function getSegmentCountClass(Crawler $crawler, int $id): string
-    {
-        $class = $crawler->filter('span.col-count[data-id="'.$id.'"]')->attr('class');
-
-        return trim($class);
-    }
-
-    /**
-     * @param array<string, mixed> $parameter
-     *
-     * @return array<string, mixed>
-     */
-    private function callGetLeadCountAjaxRequest(array $parameter): array
-    {
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=lead:getLeadCount', $parameter);
-        $clientResponse = $this->client->getResponse();
-
-        return [
-            'content'    => json_decode($clientResponse->getContent(), true),
-            'statusCode' => $this->client->getResponse()->getStatusCode(),
-        ];
     }
 
     public function testCloneSegment(): void
@@ -917,6 +846,77 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString('2', $html);
         $this->assertStringContainsString('Active contacts', $html);
         $this->assertStringContainsString('1', $html);
+    }
+
+    private function getAliasWhenCloneSegment(int $segmentId): string
+    {
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.$segmentId);
+        $this->assertResponseIsSuccessful();
+        // Save cloned segment
+        $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
+        $crawler = $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+
+        return $crawler->filter('#leadlist_alias')->attr('value');
+    }
+
+    /** @param array<int, array<string, mixed>>|null $filters */
+    private function saveSegment(string $name, string $alias, ?array $filters = null, ?LeadList $segment = null): LeadList
+    {
+        $segment ??= new LeadList();
+        $filters ??= $this->defaultFilter();
+        $segment->setName($name)->setAlias($alias)->setFilters($filters);
+        $this->listModel->saveEntity($segment);
+
+        return $segment;
+    }
+
+    /**
+     * @return Lead[]
+     */
+    private function saveContacts(int $count = 4): array
+    {
+        $contacts = [];
+
+        for ($i = 1; $i <= $count; ++$i) {
+            $contact = new Lead();
+            $contact->setFirstname('Contact '.$i)->setEmail('contact'.$i.'@example.com');
+            $contacts[] = $contact;
+        }
+
+        $this->leadRepo->saveEntities($contacts);
+
+        return $contacts;
+    }
+
+    private function getSegmentCountHtml(Crawler $crawler, int $id): string
+    {
+        $content = $crawler->filter('span.col-count[data-id="'.$id.'"] a')->html();
+
+        return trim($content);
+    }
+
+    private function getSegmentCountClass(Crawler $crawler, int $id): string
+    {
+        $class = $crawler->filter('span.col-count[data-id="'.$id.'"]')->attr('class');
+
+        return trim($class);
+    }
+
+    /**
+     * @param array<string, mixed> $parameter
+     *
+     * @return array<string, mixed>
+     */
+    private function callGetLeadCountAjaxRequest(array $parameter): array
+    {
+        $this->client->request(Request::METHOD_POST, '/s/ajax?action=lead:getLeadCount', $parameter);
+        $clientResponse = $this->client->getResponse();
+
+        return [
+            'content'    => json_decode($clientResponse->getContent(), true),
+            'statusCode' => $this->client->getResponse()->getStatusCode(),
+        ];
     }
 
     /**

@@ -450,7 +450,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
             'postAction'  => 'return',
         ];
 
-        if (null !== $formType) {
+        if ($formType !== null) {
             $payload['formType'] = $formType;
         }
 
@@ -570,36 +570,6 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
 
         $this->assertSame(Response::HTTP_FORBIDDEN, $clientResponse->getStatusCode(), $clientResponse->getContent());
-    }
-
-    private function createUser(): User
-    {
-        $role = new Role();
-        $role->setName('api_restricted');
-        $role->setDescription('Api Permission Not Granted');
-        $role->setIsAdmin(false);
-        $role->setRawPermissions(['form:forms' => ['viewown']]);
-
-        /** @var RoleRepository $roleRepository */
-        $roleRepository = $this->em->getRepository(Role::class);
-        $roleRepository->saveEntity($role);
-
-        $user = new User();
-        $user->setEmail('api.restricted@test.com');
-        $user->setUsername('non-admin-user');
-        $user->setFirstName('test');
-        $user->setLastName('test');
-        $user->setRole($role);
-
-        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
-        \assert($hasher instanceof PasswordHasherInterface);
-        $user->setPassword($hasher->hash($this->getUserPlainPassword()));
-
-        /** @var UserRepository $userRepo */
-        $userRepo = $this->em->getRepository(User::class);
-        $userRepo->saveEntities([$user]);
-
-        return $user;
     }
 
     public function testCompanyLookupFieldSubmission(): void
@@ -741,11 +711,6 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    private function getUserPlainPassword(): string
-    {
-        return 'test-pass!23';
-    }
-
     /**
      * @param array<string, string> $submissionData
      * @param array<string, string> $expectedData
@@ -866,7 +831,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayHasKey('results', $latestSubmission);
         foreach ($expectedData as $key => $value) {
             $this->assertArrayHasKey($key, $latestSubmission['results']);
-            $this->assertEquals($value, $latestSubmission['results'][$key], "Failed asserting that '{$latestSubmission['results'][$key]}' matches expected '$value' for field '$key'");
+            $this->assertEquals($value, $latestSubmission['results'][$key], "Failed asserting that '{$latestSubmission['results'][$key]}' matches expected '{$value}' for field '{$key}'");
         }
 
         // Check contact details
@@ -1099,7 +1064,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayHasKey('results', $latestSubmission);
         foreach ($expectedData as $key => $value) {
             $this->assertArrayHasKey($key, $latestSubmission['results']);
-            $this->assertEquals($value, $latestSubmission['results'][$key], "Failed asserting that '{$latestSubmission['results'][$key]}' matches expected '$value' for field '$key'");
+            $this->assertEquals($value, $latestSubmission['results'][$key], "Failed asserting that '{$latestSubmission['results'][$key]}' matches expected '{$value}' for field '{$key}'");
         }
 
         // Check contact details
@@ -1563,5 +1528,40 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         if ($this->connection->createSchemaManager()->tablesExist("{$tablePrefix}form_results_1_submission")) {
             $this->connection->executeQuery("DROP TABLE {$tablePrefix}form_results_1_submission");
         }
+    }
+
+    private function createUser(): User
+    {
+        $role = new Role();
+        $role->setName('api_restricted');
+        $role->setDescription('Api Permission Not Granted');
+        $role->setIsAdmin(false);
+        $role->setRawPermissions(['form:forms' => ['viewown']]);
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = $this->em->getRepository(Role::class);
+        $roleRepository->saveEntity($role);
+
+        $user = new User();
+        $user->setEmail('api.restricted@test.com');
+        $user->setUsername('non-admin-user');
+        $user->setFirstName('test');
+        $user->setLastName('test');
+        $user->setRole($role);
+
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash($this->getUserPlainPassword()));
+
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->em->getRepository(User::class);
+        $userRepo->saveEntities([$user]);
+
+        return $user;
+    }
+
+    private function getUserPlainPassword(): string
+    {
+        return 'test-pass!23';
     }
 }

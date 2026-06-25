@@ -29,12 +29,6 @@ final class MigrationCommandSubscriberTest extends MauticMysqlTestCase
         $this->eventDispatcher = static::getContainer()->get('event_dispatcher');
     }
 
-    protected function beforeTearDown(): void
-    {
-        $this->dropTable('test_first');
-        $this->dropTable('test_second');
-    }
-
     public function testMigrationsAreExecuted(): void
     {
         $this->createTables();
@@ -76,6 +70,12 @@ ADD INDEX `{$this->tablePrefix}generated_name_three`(generated_name_three)
         $this->assertTableHasColumnAndIndex('test_first', 'generated_name_one', 'generated_name_one');
         $this->assertTableHasColumnAndIndex('test_first', 'generated_name_three', 'generated_name_three');
         $this->assertTableHasColumnAndIndex('test_second', 'generated_date_year', 'campaign_id_generated_date_year_id');
+    }
+
+    protected function beforeTearDown(): void
+    {
+        $this->dropTable('test_first');
+        $this->dropTable('test_second');
     }
 
     private function assertTableHasColumnAndIndex(string $table, string $column, string $index): void

@@ -74,9 +74,9 @@ class ConfigMetadata
                         // Remove optional services (has argument optional = true) if the service class does not exist
                         is_array($serviceDefinition)
                         && isset($serviceDefinition['optional'])
-                        && true === $serviceDefinition['optional']
+                        && $serviceDefinition['optional'] === true
                         && isset($serviceDefinition['class'])
-                        && false === class_exists($serviceDefinition['class'])
+                        && class_exists($serviceDefinition['class']) === false
                 );
 
                 $filtered->transform(

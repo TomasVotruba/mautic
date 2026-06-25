@@ -34,7 +34,7 @@ final class ImportProcessEvent extends CommonEvent
      */
     public function wasMerged(): bool
     {
-        if (null === $this->wasMerged) {
+        if ($this->wasMerged === null) {
             throw new \UnexpectedValueException("Import failed as {$this->import->getObject()} object is missing import handler.");
         }
 

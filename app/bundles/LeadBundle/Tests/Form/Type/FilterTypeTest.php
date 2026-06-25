@@ -71,7 +71,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
                 /** @var FormInterface<FormBuilderInterface>&MockObject $form */
                 $form = $this->createMock(FormInterface::class);
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                     $callback = function (callable $formModifier) use ($form) {
                         $data = [
@@ -87,7 +87,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     };
                     $callback($parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
                     $callback = function (callable $formModifier) use ($form) {
                         $data = [
@@ -143,10 +143,10 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
         // Adding a filter with an existing field:
         $builder->expects($matcher)
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                     $callback = function (callable $formModifier) {
-                        $form = new class extends Form {
+                        $form = new class() extends Form {
                             public int $addMethodCallCounter = 0;
 
                             public function __construct()
@@ -160,7 +160,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                             {
                                 Assert::assertSame('properties', $name);
 
-                                return new class extends Form {
+                                return new class() extends Form {
                                     public function __construct()
                                     {
                                     }
@@ -208,7 +208,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     };
                     $callback($parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
                 }
 

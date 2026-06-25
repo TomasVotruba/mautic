@@ -28,10 +28,10 @@ final class IntegrationSubscriberTest extends TestCase
         $matcher = $this->exactly(4);
         $logger->expects($matcher)
             ->method('debug')->willReturnCallback(function (...$parameters) use ($matcher, $authorization) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('INTEGRATION REQUEST URL: POST https://mautic.org', $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame("INTEGRATION REQUEST HEADERS: \n".$authorization.PHP_EOL, $parameters[0]);
                 }
             });

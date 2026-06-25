@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageModelTest extends MauticMysqlTestCase
 {
-    private HitRepository $pageHitRepository;
 
     private const DO_NOT_TRACK_IP = '218.30.65.10';
 
@@ -36,6 +35,7 @@ class PageModelTest extends MauticMysqlTestCase
         'Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; AspiegelBot)',
         'serpstatbot/2.1 (advanced backlink tracking bot; https://serpstatbot.com/; abuse@serpstatbot.com)',
     ];
+    private HitRepository $pageHitRepository;
 
     protected function setUp(): void
     {
@@ -82,7 +82,7 @@ class PageModelTest extends MauticMysqlTestCase
         for ($i = 0; $i < $length; ++$i) {
             $codePoint = mt_rand(0x80, 0xFFFF);
             $char      = \IntlChar::chr($codePoint);
-            if (null !== $char && \IntlChar::isprint($char)) {
+            if ($char !== null && \IntlChar::isprint($char)) {
                 $result .= $char;
             } else {
                 --$i;

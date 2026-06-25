@@ -158,7 +158,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (TypeOperatorsEvent $event) {
                         // Emulate a subscriber.
                         $event->setOperatorsForFieldType('text', [
@@ -171,7 +171,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
                     $callback($parameters[0]);
                     $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD_TYPE, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (FieldOperatorsEvent $event) {
                         // Emulate a subscriber.
                         $this->assertSame('text', $event->getType());

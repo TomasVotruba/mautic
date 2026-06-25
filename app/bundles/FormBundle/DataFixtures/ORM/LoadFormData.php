@@ -57,7 +57,7 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
                     throw new \RuntimeException('Form must have an ID set.');
                 }
 
-                if (0 === $firstId) {
+                if ($firstId === 0) {
                     $firstId = $form->getId();
                 }
 
@@ -119,16 +119,16 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
             $form = new Form();
             $key  = $count + 1;
             foreach ($rows as $col => $val) {
-                if ('NULL' !== $val) {
+                if ($val !== 'NULL') {
                     $setter = 'set'.ucfirst($col);
 
-                    if ('dateAdded' === $col) {
+                    if ($col === 'dateAdded') {
                         $form->setDateAdded(new \DateTime($val));
-                    } elseif ('cachedHtml' === $col) {
+                    } elseif ($col === 'cachedHtml') {
                         $val = stripslashes($val);
                         $form->setCachedHtml($val);
                     } else {
-                        $form->$setter($val);
+                        $form->{$setter}($val);
                     }
                 }
             }
@@ -140,7 +140,7 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
 
     private function getFieldEntities(): void
     {
-        if (0 === count($this->formEntities)) {
+        if (count($this->formEntities) === 0) {
             throw new \RuntimeException('This method must be called after getFormEntities.');
         }
 
@@ -149,18 +149,18 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
         foreach ($fields as $count => $rows) {
             $field = new Field();
             foreach ($rows as $col => $val) {
-                if ('NULL' !== $val) {
+                if ($val !== 'NULL') {
                     $setter = 'set'.ucfirst($col);
 
-                    if ('form' === $col) {
+                    if ($col === 'form') {
                         $form = $this->formEntities[$val];
                         $field->setForm($form);
                         $form->addField($count, $field);
                     } elseif (in_array($col, ['customParameters', 'properties'], true)) {
                         $val = Serializer::decode(stripslashes($val));
-                        $field->$setter($val);
+                        $field->{$setter}($val);
                     } else {
-                        $field->$setter($val);
+                        $field->{$setter}($val);
                     }
                 }
             }
@@ -170,7 +170,7 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
 
     private function getActionEntities(): void
     {
-        if (0 === count($this->formEntities)) {
+        if (count($this->formEntities) === 0) {
             throw new \RuntimeException('This method must be called after getFormEntities.');
         }
 
@@ -179,16 +179,16 @@ class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
         foreach ($actions as $rows) {
             $action = new Action();
             foreach ($rows as $col => $val) {
-                if ('NULL' !== $val) {
+                if ($val !== 'NULL') {
                     $setter = 'set'.ucfirst($col);
 
-                    if ('form' === $col) {
+                    if ($col === 'form') {
                         $action->setForm($this->formEntities[$val]);
-                    } elseif ('properties' === $col) {
+                    } elseif ($col === 'properties') {
                         $val = Serializer::decode(stripslashes($val));
                         $action->setProperties($val);
                     } else {
-                        $action->$setter($val);
+                        $action->{$setter}($val);
                     }
                 }
             }

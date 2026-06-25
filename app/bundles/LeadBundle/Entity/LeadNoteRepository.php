@@ -39,13 +39,13 @@ class LeadNoteRepository extends CommonRepository
             ->where($q->expr()->eq('IDENTITY(n.lead)', ':lead'))
             ->setParameter('lead', $leadId);
 
-        if (null != $filter) {
+        if ($filter != null) {
             $q->andWhere(
                 $q->expr()->like('n.text', ':filter')
             )->setParameter('filter', '%'.$filter.'%');
         }
 
-        if (null != $noteTypes) {
+        if ($noteTypes != null) {
             $q->andWhere(
                 $q->expr()->in('n.type', ':noteTypes')
             )->setParameter('noteTypes', $noteTypes);
@@ -59,6 +59,35 @@ class LeadNoteRepository extends CommonRepository
     public function getTableAlias(): string
     {
         return 'n';
+    }
+
+    /**
+     * @return array<string, string[]>
+     */
+    public function getSearchCommands(): array
+    {
+        $commands = [
+            'mautic.lead.note.searchcommand.type' => [
+                'mautic.lead.note.searchcommand.general',
+                'mautic.lead.note.searchcommand.call',
+                'mautic.lead.note.searchcommand.email',
+                'mautic.lead.note.searchcommand.meeting',
+            ],
+        ];
+
+        return array_merge($commands, parent::getSearchCommands());
+    }
+
+    /**
+     * Updates lead ID (e.g. after a lead merge).
+     */
+    public function updateLead($fromLeadId, $toLeadId): void
+    {
+        $this->_em->getConnection()->createQueryBuilder()
+            ->update(MAUTIC_TABLE_PREFIX.'lead_notes')
+            ->set('lead_id', (int) $toLeadId)
+            ->where('lead_id = '.(int) $fromLeadId)
+            ->executeStatement();
     }
 
     /**
@@ -111,7 +140,7 @@ class LeadNoteRepository extends CommonRepository
                         $returnParameter = true;
                         break;
                 }
-                $expr           = $q->expr()->eq('n.type', ":$unique");
+                $expr           = $q->expr()->eq('n.type', ":{$unique}");
                 $filter->strict = true;
                 break;
         }
@@ -122,41 +151,12 @@ class LeadNoteRepository extends CommonRepository
 
         if ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = ["{$unique}" => $string];
         }
 
         return [
             $expr,
             $parameters,
         ];
-    }
-
-    /**
-     * @return array<string, string[]>
-     */
-    public function getSearchCommands(): array
-    {
-        $commands = [
-            'mautic.lead.note.searchcommand.type' => [
-                'mautic.lead.note.searchcommand.general',
-                'mautic.lead.note.searchcommand.call',
-                'mautic.lead.note.searchcommand.email',
-                'mautic.lead.note.searchcommand.meeting',
-            ],
-        ];
-
-        return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * Updates lead ID (e.g. after a lead merge).
-     */
-    public function updateLead($fromLeadId, $toLeadId): void
-    {
-        $this->_em->getConnection()->createQueryBuilder()
-            ->update(MAUTIC_TABLE_PREFIX.'lead_notes')
-            ->set('lead_id', (int) $toLeadId)
-            ->where('lead_id = '.(int) $fromLeadId)
-            ->executeStatement();
     }
 }

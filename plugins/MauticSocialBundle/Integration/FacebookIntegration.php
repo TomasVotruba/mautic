@@ -56,7 +56,7 @@ class FacebookIntegration extends SocialIntegration
         // Facebook is inconsistent in that it returns errors as json and data as parameter list
         $values = parent::parseCallbackResponse($data, $postAuthorization);
 
-        if (null === $values) {
+        if ($values === null) {
             parse_str($data, $values);
 
             $this->requestStack->getSession()->set($this->getName().'_tokenResponse', $values);
@@ -67,7 +67,7 @@ class FacebookIntegration extends SocialIntegration
 
     public function getApiUrl($endpoint): string
     {
-        return "https://graph.facebook.com/$endpoint";
+        return "https://graph.facebook.com/{$endpoint}";
     }
 
     /**

@@ -24,7 +24,7 @@ class BestEvidence implements JudgementModeInterface
         } catch (ConflictUnresolvedException) {
         }
 
-        if (null === $leftChangeRequest->getPossibleChangeDateTime() || null === $rightChangeRequest->getPossibleChangeDateTime()) {
+        if ($leftChangeRequest->getPossibleChangeDateTime() === null || $rightChangeRequest->getPossibleChangeDateTime() === null) {
             throw new ConflictUnresolvedException();
         }
 
@@ -33,11 +33,11 @@ class BestEvidence implements JudgementModeInterface
             $rightChangeRequest->getPossibleChangeDateTime()
         );
 
-        if (SyncJudgeInterface::NO_WINNER === $possibleChangeCompare) {
+        if ($possibleChangeCompare === SyncJudgeInterface::NO_WINNER) {
             throw new ConflictUnresolvedException();
         }
 
-        if (SyncJudgeInterface::LEFT_WINNER === $possibleChangeCompare) {
+        if ($possibleChangeCompare === SyncJudgeInterface::LEFT_WINNER) {
             return $leftChangeRequest;
         }
 

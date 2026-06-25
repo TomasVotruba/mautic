@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class DncSearchFunctionalTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
 
     private const MESSAGE_EMAIL_DNC_SHOULD_APPEAR_IN_EMAIL_SEARCH = 'Contact with email DNC should appear in dnc:email search';
+    protected $useCleanupRollback = false;
 
     public function testDncSearchWithAnyChannel(): void
     {

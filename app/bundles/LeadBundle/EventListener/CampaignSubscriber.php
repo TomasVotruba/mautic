@@ -275,7 +275,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $points            = $event->getConfig()['points'];
         $somethingHappened = false;
 
-        if (null !== $lead && !empty($points)) {
+        if ($lead !== null && !empty($points)) {
             $pointsLogActionName      = "{$event->getEvent()['id']}: {$event->getEvent()['name']}";
             $pointsLogEventName       = "{$event->getEvent()['campaign']['id']}: {$event->getEvent()['campaign']['name']}";
             $pointGroupId             = $event->getConfig()['group'] ?? null;
@@ -345,45 +345,6 @@ class CampaignSubscriber implements EventSubscriberInterface
         foreach ($logs as $log) {
             $this->updateLead($log, $values, $event);
         }
-    }
-
-    /**
-     * @param array<mixed> $values
-     */
-    private function updateLead(LeadEventLog $log, array $values, PendingEvent $event): void
-    {
-        $lead   = $log->getLead();
-        $fields = $lead->getFields(true);
-
-        try {
-            $tokenizedValues = [];
-            foreach ($values as $field => $value) {
-                if (is_string($value)) {
-                    $tokenizedValue = TokenHelper::findLeadTokens($value, $lead->getProfileFields(), true);
-                    $fieldEntity    = $this->leadFieldModel->getEntityByAlias($field);
-                    if ($fieldEntity && ($charLimit = $fieldEntity->getCharLengthLimit()) && mb_strlen($tokenizedValue) > $charLimit) {
-                        $tokenizedValue = mb_substr($tokenizedValue, 0, $charLimit);
-                    }
-                    $tokenizedValues[$field] = $tokenizedValue;
-                } else {
-                    $tokenizedValues[$field] = $value;
-                }
-            }
-            $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
-        } catch (ImportFailedException $e) {
-            $event->fail($log, $e->getMessage());
-        }
-
-        foreach ($values as $alias => &$value) {
-            if (isset($fields[$alias]) && 'boolean' === $fields[$alias]['type'] && 0 === $value) {
-                // 0 is interpreted as 'don't change the bool field' instead of setting it to false, so we change the field manually in this step
-                $lead->addUpdatedField($alias, 0);
-            }
-        }
-
-        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
-        $this->leadModel->saveEntity($lead);
-        $event->pass($log);
     }
 
     public function onCampaignTriggerActionChangeOwner(CampaignExecutionEvent $event)
@@ -482,7 +443,7 @@ class CampaignSubscriber implements EventSubscriberInterface
                 $this->leadModel->setPrimaryCompany($companyEntity->getId(), $lead->getId());
             }
 
-            if (null !== $companyChangeLog) {
+            if ($companyChangeLog !== null) {
                 $this->companyModel->getCompanyLeadRepository()->detachEntity($companyChangeLog);
             }
         } else {
@@ -519,7 +480,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         } elseif ($event->checkContext('lead.campaigns')) {
             $result = $this->campaignModel->getCampaignLeadRepository()->checkLeadInCampaigns($lead, $event->getConfig());
         } elseif ($event->checkContext('lead.field_value')) {
-            if ('date' === $event->getConfig()['operator']) {
+            if ($event->getConfig()['operator'] === 'date') {
                 // Set the date in system timezone since this is triggered by cron
                 $triggerDate = new \DateTime('now',
                     new \DateTimeZone($this->coreParametersHelper->getDefaultTimezone()));
@@ -531,7 +492,7 @@ class CampaignSubscriber implements EventSubscriberInterface
                 } elseif (str_contains($event->getConfig()['value'], '-P')) { // subtract date
                     $triggerDate->sub(new \DateInterval($interval)); // subtract the today date with interval
                     $result = $this->compareDateValue($lead, $event, $triggerDate);
-                } elseif ('anniversary' === $event->getConfig()['value']) {
+                } elseif ($event->getConfig()['value'] === 'anniversary') {
                     /**
                      * note: currently mautic campaign only one time execution
                      * ( to integrate with: recursive campaign (future)).
@@ -586,7 +547,7 @@ class CampaignSubscriber implements EventSubscriberInterface
                         $result = false;
                     }
                 } else {
-                    if (0 !== $isLeadDNC) {
+                    if ($isLeadDNC !== 0) {
                         $result = true;
                     } else {
                         $result = false;
@@ -699,7 +660,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $triggerIntervalUnit    = $campaignExecutionEventConfig['triggerIntervalUnit'] ?? null;
 
         // You may replace if statement to switch and the following code to private function when multiple options available
-        if ('campaign_start_date' !== $timestamp) {
+        if ($timestamp !== 'campaign_start_date') {
             return false;
         }
 
@@ -717,7 +678,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         if (in_array($triggerIntervalUnit, ['H', 'I'])) {
             $timeNotation = 'T';
             // DateInterval Minutes notation is 'M'
-            $triggerIntervalUnit = ('I' == $triggerIntervalUnit) ? 'M' : $triggerIntervalUnit;
+            $triggerIntervalUnit = ($triggerIntervalUnit == 'I') ? 'M' : $triggerIntervalUnit;
         }
 
         $duration = 'P'.$timeNotation.$triggerInterval.$triggerIntervalUnit;
@@ -727,7 +688,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $objEffectiveDate->add($interval);
 
         $now    = new \DateTime();
-        if (OperatorOptions::LESS_THAN == $operator) {
+        if ($operator == OperatorOptions::LESS_THAN) {
             $result = ($now < $objEffectiveDate);
         } else {
             $result = ($now > $objEffectiveDate);
@@ -757,6 +718,56 @@ class CampaignSubscriber implements EventSubscriberInterface
         );
     }
 
+    protected function getFields(Lead $lead): array
+    {
+        if (!$this->fields) {
+            $contactFields = $lead->getFields(true);
+            $companyFields = $this->leadFieldModel->getFieldListWithProperties('company');
+            $this->fields  = array_merge($contactFields, $companyFields);
+        }
+
+        return $this->fields;
+    }
+
+    /**
+     * @param array<mixed> $values
+     */
+    private function updateLead(LeadEventLog $log, array $values, PendingEvent $event): void
+    {
+        $lead   = $log->getLead();
+        $fields = $lead->getFields(true);
+
+        try {
+            $tokenizedValues = [];
+            foreach ($values as $field => $value) {
+                if (is_string($value)) {
+                    $tokenizedValue = TokenHelper::findLeadTokens($value, $lead->getProfileFields(), true);
+                    $fieldEntity    = $this->leadFieldModel->getEntityByAlias($field);
+                    if ($fieldEntity && ($charLimit = $fieldEntity->getCharLengthLimit()) && mb_strlen($tokenizedValue) > $charLimit) {
+                        $tokenizedValue = mb_substr($tokenizedValue, 0, $charLimit);
+                    }
+                    $tokenizedValues[$field] = $tokenizedValue;
+                } else {
+                    $tokenizedValues[$field] = $value;
+                }
+            }
+            $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
+        } catch (ImportFailedException $e) {
+            $event->fail($log, $e->getMessage());
+        }
+
+        foreach ($values as $alias => &$value) {
+            if (isset($fields[$alias]) && $fields[$alias]['type'] === 'boolean' && $value === 0) {
+                // 0 is interpreted as 'don't change the bool field' instead of setting it to false, so we change the field manually in this step
+                $lead->addUpdatedField($alias, 0);
+            }
+        }
+
+        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
+        $this->leadModel->saveEntity($lead);
+        $event->pass($log);
+    }
+
     /**
      * Function to compare date value.
      */
@@ -767,17 +778,6 @@ class CampaignSubscriber implements EventSubscriberInterface
             $event->getConfig()['field'],
             $triggerDate->format('Y-m-d')
         );
-    }
-
-    protected function getFields(Lead $lead): array
-    {
-        if (!$this->fields) {
-            $contactFields = $lead->getFields(true);
-            $companyFields = $this->leadFieldModel->getFieldListWithProperties('company');
-            $this->fields  = array_merge($contactFields, $companyFields);
-        }
-
-        return $this->fields;
     }
 
     /**

@@ -74,6 +74,13 @@ trait AjaxLookupControllerTrait
     }
 
     /**
+     * Get's the content of error page.
+     *
+     * @return Response
+     */
+    abstract public function renderException(\Exception $e);
+
+    /**
      * Get a model instance from the service container.
      *
      * @param string $modelNameKey
@@ -81,11 +88,4 @@ trait AjaxLookupControllerTrait
      * @return AbstractCommonModel<object>
      */
     abstract protected function getModel($modelNameKey): \Mautic\CoreBundle\Model\MauticModelInterface;
-
-    /**
-     * Get's the content of error page.
-     *
-     * @return Response
-     */
-    abstract public function renderException(\Exception $e);
 }

@@ -36,7 +36,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->useDefaultFrequencyRules = ' with data set "Default Frequency Rules"' === $this->dataSetAsString();
+        $this->useDefaultFrequencyRules = $this->dataSetAsString() === ' with data set "Default Frequency Rules"';
 
         $this->configParams['email_frequency_number'] = $this->useDefaultFrequencyRules ? self::EMAILS_A_MONTH : 0;
         $this->configParams['email_frequency_time']   = 'MONTH';
@@ -45,11 +45,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $emailModel = static::getContainer()->get('mautic.email.model.email');
         \assert($emailModel instanceof EmailModel);
         $this->emailModel = $emailModel;
-    }
-
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement(['leads']);
     }
 
     public function testSendEmailToListsInThreads(): void
@@ -121,71 +116,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][4]['data']);
         $this->assertEquals('Bounced', $result['datasets'][5]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][5]['data']);
-    }
-
-    /**
-     * @return Lead[]
-     */
-    private function generateContacts(int $howMany): array
-    {
-        $contacts = [];
-
-        for ($i = 0; $i < $howMany; ++$i) {
-            $contact = new Lead();
-            $contact->setEmail("test{$i}@some.email");
-            $contacts[] = $contact;
-        }
-
-        $contactModel = static::getContainer()->get('mautic.lead.model.lead');
-        \assert($contactModel instanceof LeadModel);
-        $contactModel->saveEntities($contacts);
-
-        return $contacts;
-    }
-
-    private function createSegment(): LeadList
-    {
-        $segment = new LeadList();
-        $segment->setName('Segment A');
-        $segment->setPublicName('Segment A');
-        $segment->setAlias('segment-a');
-        $this->em->persist($segment);
-        $this->em->flush();
-
-        return $segment;
-    }
-
-    /**
-     * @param Lead[] $contacts
-     */
-    private function addContactsToSegment(array $contacts, LeadList $segment): void
-    {
-        foreach ($contacts as $contact) {
-            $reference = new ListLead();
-            $reference->setLead($contact);
-            $reference->setList($segment);
-            $reference->setDateAdded(new \DateTime());
-            $this->em->persist($reference);
-        }
-
-        $this->em->flush();
-    }
-
-    private function createEmail(LeadList $segment): Email
-    {
-        $email = new Email();
-        $email->setName('Email');
-        $email->setSubject('Email Subject');
-        $email->setCustomHtml('Email content');
-        $email->setEmailType('list');
-        $email->setPublishUp(new \DateTime('-1 day'));
-        $email->setContinueSending(true);
-        $email->setIsPublished(true);
-        $email->addList($segment);
-        $this->em->persist($email);
-        $this->em->flush();
-
-        return $email;
     }
 
     public function testSendEmailToLists(): void
@@ -265,95 +195,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
 
         self::assertSame($customHtmlParent, $parentEmail->getCustomHtml());
         self::assertSame($customHtmlChildren, $childrenEmail->getCustomHtml());
-    }
-
-    /**
-     * @throws OptimisticLockException
-     * @throws ORMException
-     */
-    private function emulateEmailStat(Lead $lead, Email $email, bool $isRead): Stat
-    {
-        $stat = new Stat();
-        $stat->setEmailAddress('test@test.com');
-        $stat->setLead($lead);
-        $stat->setDateSent(new \DateTime('2023-07-22'));
-        $stat->setEmail($email);
-        $stat->setIsRead($isRead);
-        $this->em->persist($stat);
-
-        return $stat;
-    }
-
-    /**
-     * @throws OptimisticLockException
-     * @throws ORMException
-     */
-    private function emulateClick(Lead $lead, Email $email, int $hits, int $uniqueHits): void
-    {
-        $ipAddress = new IpAddress();
-        $ipAddress->setIpAddress('127.0.0.1');
-        $this->em->persist($ipAddress);
-        $this->em->flush();
-
-        $redirect = new Redirect();
-        $redirect->setRedirectId(uniqid());
-        $redirect->setUrl('https://example.com');
-        $redirect->setHits($hits);
-        $redirect->setUniqueHits($uniqueHits);
-        $this->em->persist($redirect);
-
-        $trackable = new Trackable();
-        $trackable->setChannelId($email->getId());
-        $trackable->setChannel('email');
-        $trackable->setHits($hits);
-        $trackable->setUniqueHits($uniqueHits);
-        $trackable->setRedirect($redirect);
-        $this->em->persist($trackable);
-
-        $pageHit = new Hit();
-        $pageHit->setRedirect($redirect);
-        $pageHit->setIpAddress($ipAddress);
-        $pageHit->setEmail($email);
-        $pageHit->setLead($lead);
-        $pageHit->setDateHit(new \DateTime());
-        $pageHit->setCode(200);
-        $pageHit->setUrl($redirect->getUrl());
-        $pageHit->setTrackingId($redirect->getRedirectId());
-        $pageHit->setSource('email');
-        $pageHit->setSourceId($email->getId());
-        $this->em->persist($pageHit);
-    }
-
-    private function emulateEmailRead(Stat $emailStat): void
-    {
-        $emailStat->setIsRead(true);
-        $emailStat->setDateRead(new \DateTime());
-        $emailStat->setOpenCount(1);
-        $email = $emailStat->getEmail();
-        $email->setReadCount($email->getReadCount() + 1);
-        $this->em->persist($emailStat);
-        $this->em->persist($email);
-    }
-
-    private function emulateEmailFailed(Stat $emailStat): void
-    {
-        $emailStat->setIsFailed(true);
-        $this->em->persist($emailStat);
-    }
-
-    private function createDnc(string $channel, Lead $contact, int $reason, ?int $channelId = null): DoNotContact
-    {
-        $dnc = new DoNotContact();
-        $dnc->setChannel($channel);
-        $dnc->setLead($contact);
-        $dnc->setReason($reason);
-        $dnc->setDateAdded(new \DateTime());
-        if ($channelId) {
-            $dnc->setChannelId($channelId);
-        }
-        $this->em->persist($dnc);
-
-        return $dnc;
     }
 
     /**
@@ -610,6 +451,165 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $stats = $this->emailModel->getEmailGeneralStats($email, false, null, new \DateTime('2026-03-12'), new \DateTime('2026-03-13'));
         $data  = array_filter($stats['datasets'][0]['data'] ?? []);
         Assert::assertNotEmpty($data, 'The stats should not be empty');
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement(['leads']);
+    }
+
+    /**
+     * @return Lead[]
+     */
+    private function generateContacts(int $howMany): array
+    {
+        $contacts = [];
+
+        for ($i = 0; $i < $howMany; ++$i) {
+            $contact = new Lead();
+            $contact->setEmail("test{$i}@some.email");
+            $contacts[] = $contact;
+        }
+
+        $contactModel = static::getContainer()->get('mautic.lead.model.lead');
+        \assert($contactModel instanceof LeadModel);
+        $contactModel->saveEntities($contacts);
+
+        return $contacts;
+    }
+
+    private function createSegment(): LeadList
+    {
+        $segment = new LeadList();
+        $segment->setName('Segment A');
+        $segment->setPublicName('Segment A');
+        $segment->setAlias('segment-a');
+        $this->em->persist($segment);
+        $this->em->flush();
+
+        return $segment;
+    }
+
+    /**
+     * @param Lead[] $contacts
+     */
+    private function addContactsToSegment(array $contacts, LeadList $segment): void
+    {
+        foreach ($contacts as $contact) {
+            $reference = new ListLead();
+            $reference->setLead($contact);
+            $reference->setList($segment);
+            $reference->setDateAdded(new \DateTime());
+            $this->em->persist($reference);
+        }
+
+        $this->em->flush();
+    }
+
+    private function createEmail(LeadList $segment): Email
+    {
+        $email = new Email();
+        $email->setName('Email');
+        $email->setSubject('Email Subject');
+        $email->setCustomHtml('Email content');
+        $email->setEmailType('list');
+        $email->setPublishUp(new \DateTime('-1 day'));
+        $email->setContinueSending(true);
+        $email->setIsPublished(true);
+        $email->addList($segment);
+        $this->em->persist($email);
+        $this->em->flush();
+
+        return $email;
+    }
+
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
+    private function emulateEmailStat(Lead $lead, Email $email, bool $isRead): Stat
+    {
+        $stat = new Stat();
+        $stat->setEmailAddress('test@test.com');
+        $stat->setLead($lead);
+        $stat->setDateSent(new \DateTime('2023-07-22'));
+        $stat->setEmail($email);
+        $stat->setIsRead($isRead);
+        $this->em->persist($stat);
+
+        return $stat;
+    }
+
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
+    private function emulateClick(Lead $lead, Email $email, int $hits, int $uniqueHits): void
+    {
+        $ipAddress = new IpAddress();
+        $ipAddress->setIpAddress('127.0.0.1');
+        $this->em->persist($ipAddress);
+        $this->em->flush();
+
+        $redirect = new Redirect();
+        $redirect->setRedirectId(uniqid());
+        $redirect->setUrl('https://example.com');
+        $redirect->setHits($hits);
+        $redirect->setUniqueHits($uniqueHits);
+        $this->em->persist($redirect);
+
+        $trackable = new Trackable();
+        $trackable->setChannelId($email->getId());
+        $trackable->setChannel('email');
+        $trackable->setHits($hits);
+        $trackable->setUniqueHits($uniqueHits);
+        $trackable->setRedirect($redirect);
+        $this->em->persist($trackable);
+
+        $pageHit = new Hit();
+        $pageHit->setRedirect($redirect);
+        $pageHit->setIpAddress($ipAddress);
+        $pageHit->setEmail($email);
+        $pageHit->setLead($lead);
+        $pageHit->setDateHit(new \DateTime());
+        $pageHit->setCode(200);
+        $pageHit->setUrl($redirect->getUrl());
+        $pageHit->setTrackingId($redirect->getRedirectId());
+        $pageHit->setSource('email');
+        $pageHit->setSourceId($email->getId());
+        $this->em->persist($pageHit);
+    }
+
+    private function emulateEmailRead(Stat $emailStat): void
+    {
+        $emailStat->setIsRead(true);
+        $emailStat->setDateRead(new \DateTime());
+        $emailStat->setOpenCount(1);
+        $email = $emailStat->getEmail();
+        $email->setReadCount($email->getReadCount() + 1);
+        $this->em->persist($emailStat);
+        $this->em->persist($email);
+    }
+
+    private function emulateEmailFailed(Stat $emailStat): void
+    {
+        $emailStat->setIsFailed(true);
+        $this->em->persist($emailStat);
+    }
+
+    private function createDnc(string $channel, Lead $contact, int $reason, ?int $channelId = null): DoNotContact
+    {
+        $dnc = new DoNotContact();
+        $dnc->setChannel($channel);
+        $dnc->setLead($contact);
+        $dnc->setReason($reason);
+        $dnc->setDateAdded(new \DateTime());
+        if ($channelId) {
+            $dnc->setChannelId($channelId);
+        }
+        $this->em->persist($dnc);
+
+        return $dnc;
     }
 
     private function createContact(): Lead

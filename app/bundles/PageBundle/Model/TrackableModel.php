@@ -84,14 +84,6 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
-     * @return RedirectModel
-     */
-    protected function getRedirectModel()
-    {
-        return $this->redirectModel;
-    }
-
-    /**
      * @param array      $clickthrough
      * @param bool|false $shortenUrl   If true, use the configured shortener service to shorten the URLs
      * @param array      $utmTags
@@ -114,7 +106,7 @@ class TrackableModel extends AbstractCommonModel
 
         $trackedUrl = $redirectModel->generateRedirectUrl($redirect, $clickthrough);
 
-        if ([] !== $utmTags) {
+        if ($utmTags !== []) {
             $trackedUrl = $redirectModel->applyUtmTags($trackedUrl, $utmTags);
         }
 
@@ -140,7 +132,7 @@ class TrackableModel extends AbstractCommonModel
         $url = UrlHelper::decodeAmpersands($url);
 
         $trackable = $this->getRepository()->findByUrl($url, $channel, $channelId);
-        if (null == $trackable) {
+        if ($trackable == null) {
             $trackable = $this->createTrackableEntity($url, $channel, $channelId);
             $this->getRepository()->saveEntity($trackable->getRedirect());
             $this->getRepository()->saveEntity($trackable);
@@ -279,6 +271,14 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
+     * @return RedirectModel
+     */
+    protected function getRedirectModel()
+    {
+        return $this->redirectModel;
+    }
+
+    /**
      * Converts array of Trackable or Redirect entities into {trackable} tokens.
      *
      * @param array<string, Trackable|Redirect> $entities
@@ -322,7 +322,7 @@ class TrackableModel extends AbstractCommonModel
         // Sort longer to shorter strings to ensure that URLs that share the same base are appropriately replaced
         uksort($this->contentReplacements['second_pass'], fn ($a, $b): int => strlen($b) - strlen($a));
 
-        if ('html' === $type) {
+        if ($type === 'html') {
             // Hours spent trying to handle through \DomDocument: 9h. The issue is that tokens "{token}" is replaced
             // by the \DomDocument::save will encode those on all doc, but here we need to replace only `href`.
             foreach ($this->contentReplacements['second_pass'] as $search => $replace) {
@@ -353,7 +353,7 @@ class TrackableModel extends AbstractCommonModel
      */
     protected function extractTrackablesFromContent($content)
     {
-        if (0 !== preg_match('/<[^<]+>/', $content)) {
+        if (preg_match('/<[^<]+>/', $content) !== 0) {
             // Parse as HTML
             $trackableUrls = $this->extractTrackablesFromHtml($content);
         } else {
@@ -450,7 +450,7 @@ class TrackableModel extends AbstractCommonModel
         $urlParts = parse_url($url);
 
         // We need to ignore not parsable and invalid urls
-        if (false === $urlParts || !$this->isValidUrl($urlParts, false)) {
+        if ($urlParts === false || !$this->isValidUrl($urlParts, false)) {
             return false;
         }
 
@@ -682,6 +682,27 @@ class TrackableModel extends AbstractCommonModel
         return $query;
     }
 
+    /**
+     * @return array
+     */
+    protected function getContactFieldUrlTokens()
+    {
+        if ($this->contactFieldUrlTokens !== null) {
+            return $this->contactFieldUrlTokens;
+        }
+
+        $this->contactFieldUrlTokens = [];
+
+        $fieldEntities = $this->leadFieldRepository->getFieldsByType('url');
+        foreach ($fieldEntities as $field) {
+            $this->contactFieldUrlTokens[] = $field->getAlias();
+        }
+
+        $this->leadFieldRepository->detachEntities($fieldEntities);
+
+        return $this->contactFieldUrlTokens;
+    }
+
     private function isContactFieldToken($token): bool
     {
         return str_contains($token, '{contactfield') || str_contains($token, '{leadfield');
@@ -739,27 +760,6 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
-     * @return array
-     */
-    protected function getContactFieldUrlTokens()
-    {
-        if (null !== $this->contactFieldUrlTokens) {
-            return $this->contactFieldUrlTokens;
-        }
-
-        $this->contactFieldUrlTokens = [];
-
-        $fieldEntities = $this->leadFieldRepository->getFieldsByType('url');
-        foreach ($fieldEntities as $field) {
-            $this->contactFieldUrlTokens[] = $field->getAlias();
-        }
-
-        $this->leadFieldRepository->detachEntities($fieldEntities);
-
-        return $this->contactFieldUrlTokens;
-    }
-
-    /**
      * @param \DOMNodeList<\DOMNode> $links
      *
      * @return array<string, string>
@@ -779,7 +779,7 @@ class TrackableModel extends AbstractCommonModel
             }
 
             // Check for a do not track in proper HTML format
-            if ($link->hasAttribute('data-mautic-disable-tracking') && 'true' === $link->getAttribute('data-mautic-disable-tracking')) {
+            if ($link->hasAttribute('data-mautic-disable-tracking') && $link->getAttribute('data-mautic-disable-tracking') === 'true') {
                 $this->doNotTrack[$url] = $url;
                 continue;
             }
@@ -802,7 +802,7 @@ class TrackableModel extends AbstractCommonModel
         foreach ($elements as $element) {
             $url = $element->getAttribute('href');
 
-            if ('' === $url) {
+            if ($url === '') {
                 continue;
             }
 

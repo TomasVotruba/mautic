@@ -29,7 +29,7 @@ class ImportHelper
         $maxRatio     = 10;    // Maximum compression ratio (1:10)
         $readLength   = 1024;  // Read buffer size
 
-        if (true !== $zip->open($filePath)) {
+        if ($zip->open($filePath) !== true) {
             throw new \RuntimeException(sprintf('Unable to open ZIP file: %s', $filePath));
         }
 
@@ -117,7 +117,7 @@ class ImportHelper
 
                 while (!feof($fp)) {
                     $data = fread($fp, $readLength);
-                    if (false === $data) {
+                    if ($data === false) {
                         break;
                     }
 
@@ -181,7 +181,7 @@ class ImportHelper
                         throw new \RuntimeException(sprintf('Failed to copy file to destination: %s', $destinationPath));
                     }
                 }
-            } elseif ('json' === pathinfo($normalizedFilename, PATHINFO_EXTENSION)) {
+            } elseif (pathinfo($normalizedFilename, PATHINFO_EXTENSION) === 'json') {
                 $jsonFilePath = $tempDir.'/'.$normalizedFilename;
             }
         }
@@ -191,43 +191,17 @@ class ImportHelper
         }
 
         $fileContents = file_get_contents($jsonFilePath);
-        if (false === $fileContents) {
+        if ($fileContents === false) {
             throw new \RuntimeException('Failed to read JSON file contents.');
         }
 
         $jsonData = json_decode($fileContents, true);
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             unlink($jsonFilePath);
             throw new \RuntimeException('Invalid JSON: '.json_last_error_msg());
         }
 
         return $jsonData;
-    }
-
-    private function normalizePath(string $path): string
-    {
-        $parts    = [];
-        $unixPath = str_replace('\\', '/', $path);
-        $absolute = str_starts_with($unixPath, '/');
-        $segments = explode('/', $unixPath);
-
-        foreach ($segments as $segment) {
-            if ('' === $segment || '.' === $segment) {
-                continue;
-            }
-            if ('..' === $segment) {
-                if (!empty($parts)) {
-                    array_pop($parts);
-                } else {
-                    // Cannot resolve upward — preserve so callers detect traversal.
-                    $parts[] = '..';
-                }
-            } else {
-                $parts[] = $segment;
-            }
-        }
-
-        return ($absolute ? '/' : '').implode('/', $parts);
     }
 
     /**
@@ -250,5 +224,31 @@ class ImportHelper
                 $this->recursiveRemoveEmailaddress($value);
             }
         }
+    }
+
+    private function normalizePath(string $path): string
+    {
+        $parts    = [];
+        $unixPath = str_replace('\\', '/', $path);
+        $absolute = str_starts_with($unixPath, '/');
+        $segments = explode('/', $unixPath);
+
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+            if ($segment === '..') {
+                if (!empty($parts)) {
+                    array_pop($parts);
+                } else {
+                    // Cannot resolve upward — preserve so callers detect traversal.
+                    $parts[] = '..';
+                }
+            } else {
+                $parts[] = $segment;
+            }
+        }
+
+        return ($absolute ? '/' : '').implode('/', $parts);
     }
 }

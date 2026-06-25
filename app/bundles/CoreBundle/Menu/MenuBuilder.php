@@ -43,10 +43,10 @@ class MenuBuilder
         try {
             /** @var \Knp\Menu\ItemInterface $item */
             foreach ($menu as $item) {
-                if ('current' == $forRouteUri && $this->matcher->isCurrent($item)) {
+                if ($forRouteUri == 'current' && $this->matcher->isCurrent($item)) {
                     // current match
                     return $item;
-                } elseif ('current' != $forRouteUri && $item->getUri() == $forRouteUri) {
+                } elseif ($forRouteUri != 'current' && $item->getUri() == $forRouteUri) {
                     // route uri match
                     return $item;
                 } elseif (!empty($forRouteName) && $forRouteName == $item->getExtra('routeName')) {

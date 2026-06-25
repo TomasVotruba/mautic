@@ -21,26 +21,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotificationTypeTest extends TypeTestCase
 {
-    /**
-     * @return array<FormExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
-        $validatorBuilder = Validation::createValidatorBuilder();
-        $validatorBuilder->addMethodMapping('loadValidatorMetadata');
-
-        return [
-            new ValidatorExtension($validatorBuilder->getValidator()),
-            new PreloadedExtension([
-                new CategoryListType(
-                    $this->createMock(EntityManager::class),
-                    $this->createMock(TranslatorInterface::class),
-                    $this->createMock(CategoryModel::class),
-                    $this->createMock(RouterInterface::class),
-                ),
-            ], []),
-        ];
-    }
 
     public function testSubmitInvalidData(): void
     {
@@ -132,5 +112,25 @@ class NotificationTypeTest extends TypeTestCase
         }
 
         self::assertCount(0, $view->vars['errors']);
+    }
+    /**
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
+        $validatorBuilder = Validation::createValidatorBuilder();
+        $validatorBuilder->addMethodMapping('loadValidatorMetadata');
+
+        return [
+            new ValidatorExtension($validatorBuilder->getValidator()),
+            new PreloadedExtension([
+                new CategoryListType(
+                    $this->createMock(EntityManager::class),
+                    $this->createMock(TranslatorInterface::class),
+                    $this->createMock(CategoryModel::class),
+                    $this->createMock(RouterInterface::class),
+                ),
+            ], []),
+        ];
     }
 }

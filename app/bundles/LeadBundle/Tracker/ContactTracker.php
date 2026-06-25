@@ -51,7 +51,7 @@ class ContactTracker
      */
     public function getContact()
     {
-        if (null !== $this->getRequest() && $this->getRequest()->cookies->get('Blocked-Tracking')) {
+        if ($this->getRequest() !== null && $this->getRequest()->cookies->get('Blocked-Tracking')) {
             return null;
         }
 
@@ -130,7 +130,7 @@ class ContactTracker
      */
     public function setSystemContact(?Lead $lead = null): void
     {
-        if (null !== $lead) {
+        if ($lead !== null) {
             $this->logger->debug("LEAD: {$lead->getId()} set as system lead.");
 
             $fields = $lead->getFields();
@@ -175,6 +175,38 @@ class ContactTracker
     /**
      * @return Lead|null
      */
+    public function getContactByTrackedDevice()
+    {
+        $lead = null;
+
+        // Return null for leads that are from a non-trackable request (IP, bot, privacy signal, prefetch checks)
+        if (!$this->ipLookupHelper->isRequestTrackable()) {
+            return $lead;
+        }
+
+        // Is there a device being tracked?
+        if ($trackedDevice = $this->deviceTracker->getTrackedDevice()) {
+            $lead = $trackedDevice->getLead();
+
+            // Lead associations are not hydrated with custom field values by default
+            $this->hydrateCustomFieldData($lead);
+        }
+
+        if ($lead === null) {
+            // Check to see if a contact is being tracked via the old cookie method in order to migrate them to the new
+            $lead = $this->contactTrackingService->getTrackedLead();
+        }
+
+        if ($lead) {
+            $this->logger->debug("CONTACT: Existing lead found with ID# {$lead->getId()}.");
+        }
+
+        return $lead;
+    }
+
+    /**
+     * @return Lead|null
+     */
     private function getSystemContact()
     {
         if ($this->useSystemContact() && $this->systemContact) {
@@ -211,38 +243,6 @@ class ContactTracker
         }
 
         return $this->getContactByIpAddress();
-    }
-
-    /**
-     * @return Lead|null
-     */
-    public function getContactByTrackedDevice()
-    {
-        $lead = null;
-
-        // Return null for leads that are from a non-trackable request (IP, bot, privacy signal, prefetch checks)
-        if (!$this->ipLookupHelper->isRequestTrackable()) {
-            return $lead;
-        }
-
-        // Is there a device being tracked?
-        if ($trackedDevice = $this->deviceTracker->getTrackedDevice()) {
-            $lead = $trackedDevice->getLead();
-
-            // Lead associations are not hydrated with custom field values by default
-            $this->hydrateCustomFieldData($lead);
-        }
-
-        if (null === $lead) {
-            // Check to see if a contact is being tracked via the old cookie method in order to migrate them to the new
-            $lead = $this->contactTrackingService->getTrackedLead();
-        }
-
-        if ($lead) {
-            $this->logger->debug("CONTACT: Existing lead found with ID# {$lead->getId()}.");
-        }
-
-        return $lead;
     }
 
     /**
@@ -302,7 +302,7 @@ class ContactTracker
 
     private function hydrateCustomFieldData(?Lead $lead = null): void
     {
-        if (null === $lead) {
+        if ($lead === null) {
             return;
         }
 
@@ -313,11 +313,11 @@ class ContactTracker
 
     private function useSystemContact(): bool
     {
-        if (null !== $this->useSystemContact) {
+        if ($this->useSystemContact !== null) {
             return $this->useSystemContact;
         }
 
-        return $this->isUserSession() || $this->systemContact || defined('IN_MAUTIC_CONSOLE') || null === $this->getRequest();
+        return $this->isUserSession() || $this->systemContact || defined('IN_MAUTIC_CONSOLE') || $this->getRequest() === null;
     }
 
     private function isUserSession(): bool
@@ -329,10 +329,10 @@ class ContactTracker
     {
         $newTrackingId = $this->getTrackingId();
         $this->logger->debug(
-            "CONTACT: Tracking code changed from $previouslyTrackedId for contact ID# {$previouslyTrackedContact->getId()} to $newTrackingId for contact ID# {$this->trackedContact->getId()}"
+            "CONTACT: Tracking code changed from {$previouslyTrackedId} for contact ID# {$previouslyTrackedContact->getId()} to {$newTrackingId} for contact ID# {$this->trackedContact->getId()}"
         );
 
-        if (null !== $previouslyTrackedId) {
+        if ($previouslyTrackedId !== null) {
             if ($this->dispatcher->hasListeners(LeadEvents::CURRENT_LEAD_CHANGED)) {
                 $event = new LeadChangeEvent($previouslyTrackedContact, $previouslyTrackedId, $this->trackedContact, $newTrackingId);
                 $this->dispatcher->dispatch($event, LeadEvents::CURRENT_LEAD_CHANGED);

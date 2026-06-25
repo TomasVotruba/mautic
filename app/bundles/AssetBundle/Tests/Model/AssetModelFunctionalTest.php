@@ -11,10 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssetModelFunctionalTest extends MauticMysqlTestCase
 {
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement(['assets']);
-    }
 
     /**
      * @param array<string, string> $clickthrough
@@ -120,5 +116,9 @@ class AssetModelFunctionalTest extends MauticMysqlTestCase
         assert($assetModel instanceof AssetModel);
         $generatedUrl = $assetModel->generateUrl($asset, true, [], null);
         $this->assertSame('https://localhost/asset/1:the-alias', $generatedUrl);
+    }
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement(['assets']);
     }
 }

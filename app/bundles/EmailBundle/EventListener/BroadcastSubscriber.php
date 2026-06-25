@@ -49,7 +49,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
             );
 
             if ($emailEntity->shouldCheckForUnpublishEmail()) {
-                $isNotParallelSending = !$event->getThreadId() || 1 === $event->getThreadId();
+                $isNotParallelSending = !$event->getThreadId() || $event->getThreadId() === 1;
                 $totalPendingCount ??= $this->model->getPendingLeads($emailEntity, null, true);
                 // only If no pending and nothing was sent
                 if ($isNotParallelSending && !$totalPendingCount && !$sentCount) {

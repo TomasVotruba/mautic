@@ -31,10 +31,10 @@ final class LanguageHelperTest extends MauticMysqlTestCase
         Assert::assertNotEmpty(
             array_filter(
                 $languageFiles[$bundle],
-                static fn (string $file): bool => 1 === preg_match(
+                static fn (string $file): bool => preg_match(
                     sprintf('/app\/bundles\/%s\/Translations\/en_US\/(messages|validators|flashes)\.ini/', $bundle),
                     $file
-                )
+                ) === 1
             )
         );
     }

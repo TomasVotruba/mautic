@@ -283,24 +283,6 @@ class ChartQueryTest extends TestCase
         $this->assertTimeDataWithoutSqlOrder($expectedResult, $rawData);
     }
 
-    private function createChartQuery(): void
-    {
-        $this->chartQuery = new ChartQuery($this->connection, $this->dateFrom, $this->dateTo, $this->unit);
-    }
-
-    /**
-     * @param array<mixed> $expectedResult
-     * @param array<mixed> $data
-     */
-    private function assertTimeDataWithoutSqlOrder(array $expectedResult, array $data): void
-    {
-        $this->createChartQuery();
-        self::assertSame(
-            $expectedResult,
-            $this->chartQuery->completeTimeData($data)
-        );
-    }
-
     public function testPrepareTimeDataQueryWithLeadEventLog(): void
     {
         $table   = 'lead_event_log';
@@ -335,5 +317,23 @@ class ChartQueryTest extends TestCase
         $this->createChartQuery();
         $query = $this->chartQuery->prepareTimeDataQuery($table, $column, $filters);
         $this->assertInstanceOf(QueryBuilder::class, $query);
+    }
+
+    private function createChartQuery(): void
+    {
+        $this->chartQuery = new ChartQuery($this->connection, $this->dateFrom, $this->dateTo, $this->unit);
+    }
+
+    /**
+     * @param array<mixed> $expectedResult
+     * @param array<mixed> $data
+     */
+    private function assertTimeDataWithoutSqlOrder(array $expectedResult, array $data): void
+    {
+        $this->createChartQuery();
+        self::assertSame(
+            $expectedResult,
+            $this->chartQuery->completeTimeData($data)
+        );
     }
 }

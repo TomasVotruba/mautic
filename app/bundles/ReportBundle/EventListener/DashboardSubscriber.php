@@ -55,7 +55,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
     {
         $this->checkPermissions($event);
 
-        if ('report' == $event->getType()) {
+        if ($event->getType() == 'report') {
             $widget = $event->getWidget();
             $params = $widget->getParams();
             if (!$event->isCached()) {
@@ -93,13 +93,13 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $type      = $graphData[$graph]['type'] ?? 'table';
 
         $options = [
-            'ignoreTableData' => 'table' !== $type,
+            'ignoreTableData' => $type !== 'table',
             'graphName'       => $graph,
             'dateFrom'        => $params['dateFrom'],
             'dateTo'          => $params['dateTo'],
         ];
 
-        if ('table' === $type) {
+        if ($type === 'table') {
             $options['paginate'] = true;
             $options['limit']    = self::TABLE_ROW_LIMIT;
             $options['page']     = 1;
@@ -126,7 +126,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             'dateTo'      => $params['dateTo'],
         ];
 
-        if ('table' === $graphData['type']) {
+        if ($graphData['type'] === 'table') {
             $templateData['chartHeight'] = $widget->getHeight();
             $templateData['tableHeader'] = $this->getTableHeader($columns, $report->getColumns());
         }

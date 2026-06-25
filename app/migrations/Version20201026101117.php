@@ -22,7 +22,7 @@ final class Version20201026101117 extends AbstractMauticMigration
     {
         $table = $schema->getTable($this->prefix.'emails');
 
-        if ('utf8mb4' === $table->getColumn('subject')->getPlatformOption('charset')) {
+        if ($table->getColumn('subject')->getPlatformOption('charset') === 'utf8mb4') {
             throw new SkipMigration('Schema includes this migration');
         }
     }

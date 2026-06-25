@@ -35,7 +35,7 @@ final class SegmentDateValidator extends ConstraintValidator
                     continue;
                 }
 
-                if (null === $parameterValue) {
+                if ($parameterValue === null) {
                     continue;
                 }
 
@@ -47,12 +47,12 @@ final class SegmentDateValidator extends ConstraintValidator
 
                 foreach ($formats as $fmt) {
                     $dateTime = \DateTime::createFromFormat($fmt, $parameterValue);
-                    if (false !== $dateTime) {
+                    if ($dateTime !== false) {
                         break;
                     }
                 }
 
-                if (false === $dateTime) {
+                if ($dateTime === false) {
                     $this->context->addViolation($this->translator->trans('mautic.lead.segment.date_invalid', ['%value%' => $parameterValue], 'validators'));
 
                     return;

@@ -24,7 +24,7 @@ class ReportCleanupTest extends TestCase
         $reportIds  = [11, 13, 33];
         $reportsDir = sys_get_temp_dir().'/csv_reports';
 
-        if (false === file_exists($reportsDir)) {
+        if (file_exists($reportsDir) === false) {
             mkdir($reportsDir);
         }
 
@@ -37,7 +37,7 @@ class ReportCleanupTest extends TestCase
             $days = ReportCleanup::KEEP_FILE_DAYS + 1;
 
             // this report shouldn't be deleted
-            if (33 === $reportId) {
+            if ($reportId === 33) {
                 $days = ReportCleanup::KEEP_FILE_DAYS - 1;
             }
 
@@ -67,7 +67,7 @@ class ReportCleanupTest extends TestCase
         $reportId   = 9;
         $reportsDir = sys_get_temp_dir().'/csv_reports';
 
-        if (false === file_exists($reportsDir)) {
+        if (file_exists($reportsDir) === false) {
             mkdir($reportsDir);
         }
 
@@ -95,7 +95,7 @@ class ReportCleanupTest extends TestCase
     private function createTmpFile(string $filePath, ?int $modifiedDate = null, string $content = ''): string
     {
         file_put_contents($filePath, $content);
-        if (null !== $modifiedDate) {
+        if ($modifiedDate !== null) {
             touch($filePath, $modifiedDate);
         }
 

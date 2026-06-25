@@ -95,7 +95,7 @@ class SlowTest implements Extension
 
     public function testSuiteFinished(\PHPUnit\Event\TestSuite\Finished $finished): void
     {
-        if ([] === $this->classes) {
+        if ($this->classes === []) {
             return;
         }
 
@@ -108,7 +108,7 @@ class SlowTest implements Extension
 
     private function handleFinish(Info $telemetryInfo, TestMethod $test): void
     {
-        assert(null !== $this->time);
+        assert($this->time !== null);
 
         $time = $telemetryInfo->time()->duration($this->time)->asFloat();
 

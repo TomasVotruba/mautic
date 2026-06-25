@@ -74,7 +74,7 @@ final class FieldValidator implements FieldValidatorInterface
     {
         $schemaLength = SchemaDefinition::getFieldCharLengthLimit($schemaDefinition);
 
-        if (null === $schemaLength) {
+        if ($schemaLength === null) {
             return true;
         }
 

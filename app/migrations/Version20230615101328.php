@@ -11,20 +11,6 @@ use Mautic\CoreBundle\Helper\Dsn\Dsn;
 
 final class Version20230615101328 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $configurator = $this->getConfigurator();
-
-        $this->skipAssertion(
-            fn () => !$configurator->isFileWritable(),
-            'The local.php file is not writable. Skipping the email configuration migration.'
-        );
-
-        $this->skipAssertion(
-            fn () => array_key_exists('mailer_dsn', $configurator->getParameters()),
-            'The mailer_dsn parameter is already set. Skipping the email configuration migration.'
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -42,6 +28,20 @@ final class Version20230615101328 extends PreUpAssertionMigration
 
         $configurator->mergeParameters($parameters);
         $configurator->write();
+    }
+    protected function preUpAssertions(): void
+    {
+        $configurator = $this->getConfigurator();
+
+        $this->skipAssertion(
+            fn () => !$configurator->isFileWritable(),
+            'The local.php file is not writable. Skipping the email configuration migration.'
+        );
+
+        $this->skipAssertion(
+            fn () => array_key_exists('mailer_dsn', $configurator->getParameters()),
+            'The mailer_dsn parameter is already set. Skipping the email configuration migration.'
+        );
     }
 
     private function getConfigurator(): Configurator

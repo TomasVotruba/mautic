@@ -54,7 +54,7 @@ class SmsController extends FormController
 
         // set limits
         $limit = $session->get('mautic.sms.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -90,7 +90,7 @@ class SmsController extends FormController
         $count = count($smss);
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (floor($count / $limit)) ?: 1;
@@ -147,7 +147,7 @@ class SmsController extends FormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.sms.page', 1);
 
-        if (null === $sms) {
+        if ($sms === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_sms_index', ['page' => $page]);
 
@@ -273,7 +273,7 @@ class SmsController extends FormController
         $page         = $session->get('mautic.sms.page', 1);
         $action       = $this->generateUrl('mautic_sms_action', ['objectAction' => 'new']);
         $sms          = $request->request->all()['sms'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($sms['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
@@ -285,7 +285,7 @@ class SmsController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -412,7 +412,7 @@ class SmsController extends FormController
         ];
 
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -442,14 +442,14 @@ class SmsController extends FormController
         // Create the form
         $action       = $this->generateUrl('mautic_sms_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $sms          = $request->request->all()['sms'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($sms['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && $method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -560,7 +560,7 @@ class SmsController extends FormController
         $model  = $this->getModel('sms');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('sms:smses:create')
                 || !$this->security->hasEntityAccess(
                     'sms:smses:viewown',
@@ -598,12 +598,12 @@ class SmsController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('sms');
             \assert($model instanceof SmsModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.sms.error.notfound',
@@ -659,7 +659,7 @@ class SmsController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST == $request->getMethod()) {
+        if ($request->getMethod() == Request::METHOD_POST) {
             $model = $this->getModel('sms');
             \assert($model instanceof SmsModel);
             $ids = json_decode($request->query->get('ids', '{}'));
@@ -670,7 +670,7 @@ class SmsController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.sms.error.notfound',
@@ -722,7 +722,7 @@ class SmsController extends FormController
         $sms      = $model->getEntity($objectId);
         $security = $this->security;
 
-        if (null !== $sms && $security->hasEntityAccess('sms:smses:viewown', 'sms:smses:viewother')) {
+        if ($sms !== null && $security->hasEntityAccess('sms:smses:viewown', 'sms:smses:viewother')) {
             return $this->delegateView([
                 'viewParameters' => [
                     'sms' => $sms,

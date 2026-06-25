@@ -237,7 +237,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
         foreach ($fields as $col => $val) {
             // Use andWhere because Mautic treats conflicting unique identifiers as different objects
-            $q->{$this->repository->getUniqueIdentifiersWherePart()}("l.$col = :".$col)
+            $q->{$this->repository->getUniqueIdentifiersWherePart()}("l.{$col} = :".$col)
                 ->setParameter($col, $val);
         }
 
@@ -262,7 +262,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
         $status = $q->executeQuery()->fetchOne();
 
-        if (false === $status) {
+        if ($status === false) {
             return DoNotContact::IS_CONTACTABLE;
         }
 
@@ -300,7 +300,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
     private function getAvailableFields(): array
     {
-        if (null === $this->availableFields) {
+        if ($this->availableFields === null) {
             $availableFields       = $this->fieldList->getFieldList(false, false);
             $this->availableFields = array_keys($availableFields);
         }
@@ -313,7 +313,7 @@ class ContactObjectHelper implements ObjectHelperInterface
      */
     private function getUniqueIdentifierFields(): array
     {
-        if (null === $this->uniqueIdentifierFields) {
+        if ($this->uniqueIdentifierFields === null) {
             $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => MauticSyncDataExchange::OBJECT_CONTACT]);
             $this->uniqueIdentifierFields = array_keys($uniqueIdentifierFields);
         }
@@ -332,7 +332,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
                 $dncReason = $this->getDoNotContactReason($field->getValue()->getNormalizedValue());
 
-                if (DoNotContact::IS_CONTACTABLE === $dncReason) {
+                if ($dncReason === DoNotContact::IS_CONTACTABLE) {
                     $this->dncModel->removeDncForContact($contact->getId(), $channel);
 
                     continue;
@@ -348,7 +348,7 @@ class ContactObjectHelper implements ObjectHelperInterface
                 );
             }
 
-            if ('owner_id' == $name) {
+            if ($name == 'owner_id') {
                 $ownerId = $field->getValue()->getNormalizedValue();
                 $this->model->updateLeadOwner($contact, $ownerId);
             }

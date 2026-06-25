@@ -75,7 +75,7 @@ class CategoryController extends AbstractFormController
         }
 
         // hack to make pagination work for default list view
-        if ('all' == $bundle) {
+        if ($bundle == 'all') {
             $bundle = 'category';
         }
 
@@ -108,14 +108,14 @@ class CategoryController extends AbstractFormController
 
         // set limits
         $limit = $session->get('mautic.category.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
 
         $filter = ['string' => $search];
 
-        if ('category' != $bundle) {
+        if ($bundle != 'category') {
             $filter['force'] = [
                 [
                     'column' => 'c.bundle',
@@ -141,7 +141,7 @@ class CategoryController extends AbstractFormController
         $count = count($entities);
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (ceil($count / $limit)) ?: 1;
@@ -226,10 +226,10 @@ class CategoryController extends AbstractFormController
             'objectAction' => 'new',
             'bundle'       => $bundle,
         ]);
-        $form = $model->createForm($entity, $this->formFactory, $action, ['bundle' => $bundle, 'show_bundle_select' => 'category' === $bundle]);
+        $form = $model->createForm($entity, $this->formFactory, $action, ['bundle' => $bundle, 'show_bundle_select' => $bundle === 'category']);
         $form['inForm']->setData($inForm);
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $method) {
+        if ($method === Request::METHOD_POST) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -315,7 +315,7 @@ class CategoryController extends AbstractFormController
         $inForm    = $this->getInFormValue($request, $method);
         $response  = null;
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             $closeModal = true;
         } elseif (!$this->security->isGranted($model->getPermissionBase($bundle).':edit')) {
             $response = $this->modalAccessDenied();
@@ -329,7 +329,7 @@ class CategoryController extends AbstractFormController
             ]);
         }
 
-        if (null !== $response) {
+        if ($response !== null) {
             return $response;
         }
 
@@ -346,7 +346,7 @@ class CategoryController extends AbstractFormController
         $form['inForm']->setData($inForm);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && $method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -468,12 +468,12 @@ class CategoryController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model  = $this->getModel('category');
             \assert($model instanceof CategoryModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.category.error.notfound',
@@ -539,7 +539,7 @@ class CategoryController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('category');
             \assert($model instanceof CategoryModel);
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -550,7 +550,7 @@ class CategoryController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.category.error.notfound',
@@ -601,7 +601,7 @@ class CategoryController extends AbstractFormController
     private function getInFormValue(Request $request, string $method): int
     {
         $inForm = $request->get('inForm', 0);
-        if (Request::METHOD_POST == $method) {
+        if ($method == Request::METHOD_POST) {
             $category_form = $request->request->all()['category_form'] ?? [];
             $inForm        = $category_form['inForm'] ?? 0;
         }

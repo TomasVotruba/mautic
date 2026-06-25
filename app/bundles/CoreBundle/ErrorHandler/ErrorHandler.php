@@ -56,7 +56,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         {
             if ($debugLogger = self::$handler->getDebugLogger()) {
                 if (!is_array($context)) {
-                    if (null === $context) {
+                    if ($context === null) {
                         $context = ['null'];
                     } else {
                         $context = (array) $context;
@@ -71,11 +71,11 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 }
 
                 $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-                if (true === $backtrace) {
+                if ($backtrace === true) {
                     $context['trace'] = array_slice($debug, 1, 5);
                 }
 
-                if (__FILE__ === $debug[0]['file']) {
+                if ($debug[0]['file'] === __FILE__) {
                     $file             = $debug[1];
                     $file['function'] = $debug[2]['function'];
                 } else {
@@ -124,7 +124,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          */
         public function handleError($level, $message, $file = 'unknown', $line = 0, $context = []): bool
         {
-            $errorReporting = ('dev' === self::$environment) ? -1 : error_reporting();
+            $errorReporting = (self::$environment === 'dev') ? -1 : error_reporting();
             if ($level & $errorReporting) {
                 switch (true) {
                     case $level & E_STRICT:
@@ -144,13 +144,13 @@ namespace Mautic\CoreBundle\ErrorHandler {
                         $logLevel = LogLevel::ERROR;
                 }
 
-                $message = 'PHP '.$this->getErrorName($level)." - $message";
-                if (LogLevel::DEBUG === $logLevel) {
-                    $this->log($logLevel, "$message - in file $file - at line $line", $context);
+                $message = 'PHP '.$this->getErrorName($level)." - {$message}";
+                if ($logLevel === LogLevel::DEBUG) {
+                    $this->log($logLevel, "{$message} - in file {$file} - at line {$line}", $context);
                 } elseif ($this->displayErrors) {
                     throw new \ErrorException($message, 0, $level, $file, $line);
                 } else {
-                    $this->log($logLevel, "$message - in file $file - at line $line", $context);
+                    $this->log($logLevel, "{$message} - in file {$file} - at line {$line}", $context);
                 }
             }
 
@@ -172,7 +172,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
             $content = $this->generateResponse($error, $inTemplate);
 
             $message = $error['logMessage'] ?? $error['message'];
-            $this->log(LogLevel::ERROR, "$message - in file {$error['file']} - at line {$error['line']}", [], $error['trace']);
+            $this->log(LogLevel::ERROR, "{$message} - in file {$error['file']} - at line {$error['line']}", [], $error['trace']);
 
             if ($returnContent) {
                 return $content;
@@ -200,13 +200,13 @@ namespace Mautic\CoreBundle\ErrorHandler {
             static $handlingFatal = false;
             $error                = error_get_last();
 
-            if (null !== $error) {
+            if ($error !== null) {
                 $name = $this->getErrorName($error['type']);
                 if ($error['type'] & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR)) {
                     if (!$handlingFatal) {
                         // Prevent fatal loop
                         $handlingFatal = true;
-                        $this->log(LogLevel::ERROR, "PHP $name: {$error['message']} - in file {$error['file']} - at line {$error['line']}");
+                        $this->log(LogLevel::ERROR, "PHP {$name}: {$error['message']} - in file {$error['file']} - at line {$error['line']}");
 
                         if (str_starts_with($error['message'], 'Allowed memory') || str_starts_with($error['message'], 'Out of memory')) {
                             $exception = new OutOfMemoryError(
@@ -262,7 +262,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                     $exception  = $previous;
                     $logMessage = $exception->getMessage();
 
-                    if ('dev' === self::$environment) {
+                    if (self::$environment === 'dev') {
                         $message = '<strong>'.$exception::class.':</strong> '.$exception->getMessage();
                     }
                 }
@@ -281,7 +281,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
             }
 
             if (empty($message)) {
-                $message = ($showExceptionMessage && 'dev' !== self::$environment) ? $exception->getMessage()
+                $message = ($showExceptionMessage && self::$environment !== 'dev') ? $exception->getMessage()
                     : '<strong>'.$exception->getClass().':</strong> '.$exception->getMessage();
             }
 
@@ -307,7 +307,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          */
         public static function register($environment = 'prod')
         {
-            if ('dev' === $environment) {
+            if ($environment === 'dev') {
                 Debug::enable();
             }
 
@@ -327,7 +327,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 set_error_handler([self::$handler, 'handleError']);
 
                 // Hide errors by default so we can format them
-                self::$handler->setDisplayErrors(('dev' === $environment) ? 1 : 0); // ini_get('display_errors'));
+                self::$handler->setDisplayErrors(($environment === 'dev') ? 1 : 0); // ini_get('display_errors'));
                 ini_set('display_errors', '0');
             }
 
@@ -389,7 +389,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         {
             $message = strip_tags($message);
             if ($this->logger) {
-                if (LogLevel::DEBUG === $logLevel) {
+                if ($logLevel === LogLevel::DEBUG) {
                     $this->mainLogger->log($logLevel, $message, $context);
                 } else {
                     $this->logger->log($logLevel, $message, $context);
@@ -416,7 +416,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         private function generateResponse($error, $inTemplate = false)
         {
             // Get a trace
-            if ('dev' == self::$environment) {
+            if (self::$environment == 'dev') {
                 if (empty($error['trace'])) {
                     ob_start();
                     debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -436,8 +436,8 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 }
             }
 
-            $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 'XMLHttpRequest' == $_SERVER['HTTP_X_REQUESTED_WITH'])
-                || (isset($_SERVER['HTTP_ACCEPT']) && 'application/json' === $_SERVER['HTTP_ACCEPT']);
+            $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')
+                || (isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] === 'application/json');
 
             if (!$inTemplate && !defined('MAUTIC_RENDERING_TEMPLATE') && $isAjax) {
                 $dataArray = [];
@@ -454,7 +454,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                     ],
                 ];
 
-                if ('dev' == self::$environment) {
+                if (self::$environment == 'dev') {
                     $dataArray['trace'] = $error['trace'];
                     if (isset($error['context'])) {
                         $dataArray['context'] = $error['context'];
@@ -470,10 +470,10 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 return json_encode($dataArray);
             }
 
-            if ('dev' == self::$environment || $this->displayErrors) {
+            if (self::$environment == 'dev' || $this->displayErrors) {
                 $error['file']          = str_replace(self::$root, '', $error['file']);
                 $errorMessage           = $error['logMessage'] ?? $error['message'];
-                $error['message']       = "$errorMessage - in file {$error['file']} - at line {$error['line']}";
+                $error['message']       = "{$errorMessage} - in file {$error['file']} - at line {$error['line']}";
             } else {
                 if (empty($error['showExceptionMessage']) && empty($error['showExceptionDetails'])) {
                     unset($error);
@@ -528,7 +528,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 return $exception->getMessage();
             }
 
-            if ('dev' == self::$environment && !empty($error['previous'])) {
+            if (self::$environment == 'dev' && !empty($error['previous'])) {
                 $previousContent = '<div><h4>Previous Exceptions</h4>'.$this->generateResponse($error['previous']).'</div>';
                 $content         = str_replace('<div id="previous"></div>', $previousContent, $content);
             }
@@ -557,7 +557,7 @@ namespace {
         {
             if ('dev' === MAUTIC_ENV) {
                 // Only allowing dev mode just in case uses accidentally left in code
-                if (1 === count($context) && true === $context[0]) {
+                if (count($context) === 1 && $context[0] === true) {
                     ErrorHandler::logDebugEntry($log, $context, true);
                 } else {
                     ErrorHandler::logDebugEntry($log, (empty($context)) ? [] : $context);

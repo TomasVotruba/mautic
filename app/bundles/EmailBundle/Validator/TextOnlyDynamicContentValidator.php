@@ -19,7 +19,7 @@ final class TextOnlyDynamicContentValidator extends ConstraintValidator
     public function validate(mixed $value, Constraint $constraint): void
     {
         // Skip validation for null or empty values
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return;
         }
 

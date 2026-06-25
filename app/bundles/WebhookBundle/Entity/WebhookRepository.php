@@ -9,6 +9,14 @@ use Mautic\CoreBundle\Entity\CommonRepository;
  */
 class WebhookRepository extends CommonRepository
 {
+
+    /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return $this->getStandardSearchCommands();
+    }
     /**
      * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      */
@@ -23,14 +31,6 @@ class WebhookRepository extends CommonRepository
     protected function addSearchCommandWhereClause($q, $filter): array
     {
         return $this->addStandardSearchCommandWhereClause($q, $filter);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return $this->getStandardSearchCommands();
     }
 
     /**

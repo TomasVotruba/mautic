@@ -15,49 +15,12 @@ class HubspotApi extends CrmApi
         'encode_parameters' => 'json',
     ];
 
-    protected function request($operation, $parameters = [], $method = 'GET', $object = 'contacts')
-    {
-        if ('oauth2' === $this->integration->getAuthenticationType()) {
-            $url     = sprintf('%s/%s/%s/', $this->integration->getApiUrl(), $object, $operation);
-        } else {
-            $url     = sprintf('%s/%s/%s/?hapikey=%s', $this->integration->getApiUrl(), $object, $operation, $this->integration->getHubSpotApiKey());
-        }
-        $request = $this->integration->makeRequest($url, $parameters, $method, $this->requestSettings);
-        if (isset($request['status']) && 'error' == $request['status']) {
-            $message = $request['message'];
-            if (isset($request['validationResults'])) {
-                $message .= " \n ".print_r($request['validationResults'], true);
-            }
-            if (isset($request['validationResults'][0]['error']) && 'PROPERTY_DOESNT_EXIST' == $request['validationResults'][0]['error']) {
-                $this->createProperty($request['validationResults'][0]['name']);
-                $this->request($operation, $parameters, $method, $object);
-            } else {
-                throw new ApiErrorException($message);
-            }
-        }
-
-        if (isset($request['error']) && 401 == $request['error']['code']) {
-            $response = json_decode($request['error']['message'] ?? null, true);
-
-            if (isset($response)) {
-                throw new ApiErrorException($response['message'], $request['error']['code']);
-            }
-            throw new ApiErrorException('401 Unauthorized - Error with Hubspot API', $request['error']['code']);
-        }
-
-        if (isset($request['error'])) {
-            throw new ApiErrorException($request['error']['message']);
-        }
-
-        return $request;
-    }
-
     /**
      * @return mixed
      */
     public function getLeadFields($object = 'contacts')
     {
-        if ('company' == $object) {
+        if ($object == 'company') {
             $object = 'companies'; // hubspot company object name
         }
 
@@ -120,5 +83,42 @@ class HubspotApi extends CrmApi
     public function createProperty($propertyName, $object = 'properties')
     {
         return $this->request('v1/contacts/properties', ['name' => $propertyName,  'groupName' => 'contactinformation', 'type' => 'string'], 'POST', $object);
+    }
+
+    protected function request($operation, $parameters = [], $method = 'GET', $object = 'contacts')
+    {
+        if ($this->integration->getAuthenticationType() === 'oauth2') {
+            $url     = sprintf('%s/%s/%s/', $this->integration->getApiUrl(), $object, $operation);
+        } else {
+            $url     = sprintf('%s/%s/%s/?hapikey=%s', $this->integration->getApiUrl(), $object, $operation, $this->integration->getHubSpotApiKey());
+        }
+        $request = $this->integration->makeRequest($url, $parameters, $method, $this->requestSettings);
+        if (isset($request['status']) && $request['status'] == 'error') {
+            $message = $request['message'];
+            if (isset($request['validationResults'])) {
+                $message .= " \n ".print_r($request['validationResults'], true);
+            }
+            if (isset($request['validationResults'][0]['error']) && $request['validationResults'][0]['error'] == 'PROPERTY_DOESNT_EXIST') {
+                $this->createProperty($request['validationResults'][0]['name']);
+                $this->request($operation, $parameters, $method, $object);
+            } else {
+                throw new ApiErrorException($message);
+            }
+        }
+
+        if (isset($request['error']) && $request['error']['code'] == 401) {
+            $response = json_decode($request['error']['message'] ?? null, true);
+
+            if (isset($response)) {
+                throw new ApiErrorException($response['message'], $request['error']['code']);
+            }
+            throw new ApiErrorException('401 Unauthorized - Error with Hubspot API', $request['error']['code']);
+        }
+
+        if (isset($request['error'])) {
+            throw new ApiErrorException($request['error']['message']);
+        }
+
+        return $request;
     }
 }

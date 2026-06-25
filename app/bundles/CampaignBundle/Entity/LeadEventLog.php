@@ -245,7 +245,7 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
     public function setDateTriggered(?\DateTimeInterface $dateTriggered = null)
     {
         $this->dateTriggered = $dateTriggered;
-        if (null !== $dateTriggered) {
+        if ($dateTriggered !== null) {
             $this->setIsScheduled(false);
         }
 
@@ -327,7 +327,7 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
      */
     public function setIsScheduled($isScheduled)
     {
-        if (null === $this->previousScheduledState) {
+        if ($this->previousScheduledState === null) {
             $this->previousScheduledState = $this->isScheduled;
         }
 
@@ -364,16 +364,6 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
         $this->logTriggerDateChange($triggerDate, $note);
 
         return $this;
-    }
-
-    private function logTriggerDateChange(?\DateTimeInterface $newTriggerDate, ?string $note): void
-    {
-        $this->metadata['triggerDateLog'] ??= [];
-        $this->metadata['triggerDateLog'][] = [
-            'date'      => (new \DateTime())->format(DateTimeHelper::FORMAT_DB),
-            'changedTo' => $newTriggerDate ? $newTriggerDate->format(DateTimeHelper::FORMAT_DB) : null,
-            'note'      => $note,
-        ];
     }
 
     /**
@@ -569,10 +559,20 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
         return $this->dateQueued;
     }
 
-    public function setDateQueued(?\DateTime $dateQueued): LeadEventLog
+    public function setDateQueued(?\DateTime $dateQueued): self
     {
         $this->dateQueued = $dateQueued;
 
         return $this;
+    }
+
+    private function logTriggerDateChange(?\DateTimeInterface $newTriggerDate, ?string $note): void
+    {
+        $this->metadata['triggerDateLog'] ??= [];
+        $this->metadata['triggerDateLog'][] = [
+            'date'      => (new \DateTime())->format(DateTimeHelper::FORMAT_DB),
+            'changedTo' => $newTriggerDate ? $newTriggerDate->format(DateTimeHelper::FORMAT_DB) : null,
+            'note'      => $note,
+        ];
     }
 }

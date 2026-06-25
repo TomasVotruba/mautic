@@ -46,16 +46,6 @@ class FocusController extends AbstractStandardFormController
         parent::__construct($formFactory, $fieldHelper, $doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
-    protected function getTemplateBase(): string
-    {
-        return '@MauticFocus/Focus';
-    }
-
-    protected function getModelName(): string
-    {
-        return 'focus';
-    }
-
     /**
      * @param int $page
      */
@@ -138,7 +128,7 @@ class FocusController extends AbstractStandardFormController
     {
         $cacheTimeout = (int) $this->coreParametersHelper->get('cached_data_timeout');
 
-        if ('view' == $action) {
+        if ($action == 'view') {
             /** @var Focus $item */
             $item = $args['viewParameters']['item'];
 
@@ -178,7 +168,7 @@ class FocusController extends AbstractStandardFormController
                     $statsDateTo
                 );
 
-                if ('link' === $item->getType()) {
+                if ($item->getType() === 'link') {
                     $trackableModel = $this->getModel('page.trackable');
                     \assert($trackableModel instanceof TrackableModel);
                     $trackables = $trackableModel->getTrackableList('focus', $item->getId());
@@ -201,13 +191,23 @@ class FocusController extends AbstractStandardFormController
         return $args;
     }
 
+    protected function getTemplateBase(): string
+    {
+        return '@MauticFocus/Focus';
+    }
+
+    protected function getModelName(): string
+    {
+        return 'focus';
+    }
+
     /**
      * @return mixed[]
      */
     protected function getPostActionRedirectArguments(array $args, $action): array
     {
         $focus        = $this->getCurrentRequest()->request->all()['focus'] ?? [];
-        $updateSelect = 'POST' === $this->getCurrentRequest()->getMethod()
+        $updateSelect = $this->getCurrentRequest()->getMethod() === 'POST'
             ? ($focus['updateSelect'] ?? false)
             : $this->getCurrentRequest()->get('updateSelect', false);
 
@@ -238,7 +238,7 @@ class FocusController extends AbstractStandardFormController
     protected function getEntityFormOptions()
     {
         $focus        = $this->getCurrentRequest()->request->all()['focus'] ?? [];
-        $updateSelect = 'POST' === $this->getCurrentRequest()->getMethod()
+        $updateSelect = $this->getCurrentRequest()->getMethod() === 'POST'
             ? ($focus['updateSelect'] ?? false)
             : $this->getCurrentRequest()->get('updateSelect', false);
 
@@ -260,7 +260,7 @@ class FocusController extends AbstractStandardFormController
         return [
             'updateSelect' => $updateSelect,
             'id'           => $entity->getId(),
-            'name'         => $entity->$nameMethod(),
+            'name'         => $entity->{$nameMethod}(),
         ];
     }
 }

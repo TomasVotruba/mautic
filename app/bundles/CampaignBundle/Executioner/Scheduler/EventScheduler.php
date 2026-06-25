@@ -141,14 +141,14 @@ class EventScheduler
      */
     public function getExecutionDateTime(Event $event, ?\DateTimeInterface $compareFromDateTime = null, ?\DateTime $comparedToDateTime = null): \DateTimeInterface
     {
-        if (null === $compareFromDateTime) {
+        if ($compareFromDateTime === null) {
             $compareFromDateTime = new \DateTime();
         } else {
             // Prevent comparisons from modifying original object
             $compareFromDateTime = clone $compareFromDateTime;
         }
 
-        if (null === $comparedToDateTime) {
+        if ($comparedToDateTime === null) {
             $comparedToDateTime = clone $compareFromDateTime;
         } else {
             // Prevent comparisons from modifying original object
@@ -178,7 +178,7 @@ class EventScheduler
     {
         $event = $log->getEvent();
 
-        if (Event::TRIGGER_MODE_INTERVAL !== $event->getTriggerMode()) {
+        if ($event->getTriggerMode() !== Event::TRIGGER_MODE_INTERVAL) {
             return false; // Only extend trigger date for interval events
         }
 
@@ -290,7 +290,7 @@ class EventScheduler
     {
         // Mainly for functional tests so we don't have to wait minutes but technically can be used in an environment as well if this behavior
         // is desired by system admin
-        if (false === (bool) getenv('CAMPAIGN_EXECUTIONER_SCHEDULER_ACKNOWLEDGE_SECONDS')) {
+        if ((bool) getenv('CAMPAIGN_EXECUTIONER_SCHEDULER_ACKNOWLEDGE_SECONDS') === false) {
             // Purposively ignore seconds to prevent rescheduling based on a variance of a few seconds
             $executionDate = new \DateTime($executionDate->format('Y-m-d H:i'), $executionDate->getTimezone());
             $now           = new \DateTime($now->format('Y-m-d H:i'), $now->getTimezone());
@@ -381,7 +381,7 @@ class EventScheduler
             $log = $this->eventLogger->buildLogEntry($event, $contact, $isInactiveEvent);
 
             // Determine the execution date based on the trigger mode
-            if (Event::TRIGGER_MODE_OPTIMIZED === $event->getTriggerMode()) {
+            if ($event->getTriggerMode() === Event::TRIGGER_MODE_OPTIMIZED) {
                 $optimizedExecutionDate = $this->optimizedScheduler->getExecutionDateTimeForContact($event, $contact);
                 $log->setTriggerDate($optimizedExecutionDate, 'Initial optimized event scheduling');
             } else {

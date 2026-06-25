@@ -18,15 +18,6 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
      */
     private array $csvFiles = [];
 
-    protected function beforeTearDown(): void
-    {
-        foreach ($this->csvFiles as $file) {
-            if (file_exists($file)) {
-                unlink($file);
-            }
-        }
-    }
-
     public function testUpdateCustomFieldsRunsIntoException(): void
     {
         $commandTester = $this->testSymfonyCommand('mautic:fields:modify', [
@@ -71,6 +62,15 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
         $output = $this->testSymfonyCommand('mautic:fields:modify', ['csv-path' => $file])->getDisplay();
 
         $this->assertStringContainsString('No custom field(s) to update!!!', $output);
+    }
+
+    protected function beforeTearDown(): void
+    {
+        foreach ($this->csvFiles as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
     }
 
     /**

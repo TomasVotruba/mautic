@@ -53,7 +53,7 @@ class ConditionExecutioner implements EventInterface
      */
     private function dispatchEvent(ConditionAccessor $config, LeadEventLog $log): void
     {
-        if (Event::TYPE_CONDITION !== $log->getEvent()->getEventType()) {
+        if ($log->getEvent()->getEventType() !== Event::TYPE_CONDITION) {
             throw new CannotProcessEventException('Cannot process event ID '.$log->getEvent()->getId().' as a condition.');
         }
 

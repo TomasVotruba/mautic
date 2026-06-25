@@ -14,6 +14,13 @@ abstract class AbstractFormatter
 
     protected string $name;
 
+    public function __construct(
+        protected Connection $db,
+    ) {
+        $this->platform = $this->db->getDatabasePlatform();
+        $this->name     = DatabasePlatform::getDatabasePlatform($this->platform);
+    }
+
     /**
      * @return AbstractFormatter
      */
@@ -23,13 +30,6 @@ abstract class AbstractFormatter
         $class = '\Mautic\CoreBundle\Doctrine\QueryFormatter\\'.ucfirst($name).'Formatter';
 
         return new $class($db);
-    }
-
-    public function __construct(
-        protected Connection $db,
-    ) {
-        $this->platform = $this->db->getDatabasePlatform();
-        $this->name     = DatabasePlatform::getDatabasePlatform($this->platform);
     }
 
     /**

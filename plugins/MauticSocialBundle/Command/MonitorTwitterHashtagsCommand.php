@@ -11,6 +11,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 )]
 class MonitorTwitterHashtagsCommand extends MonitorTwitterBaseCommand
 {
+
+    public function getNetworkName(): string
+    {
+        return 'twitter';
+    }
     /**
      * Search for tweets by hashtag.
      *
@@ -41,10 +46,5 @@ class MonitorTwitterHashtagsCommand extends MonitorTwitterBaseCommand
         }
 
         return $this->twitter->makeRequest($searchUrl, $requestQuery);
-    }
-
-    public function getNetworkName(): string
-    {
-        return 'twitter';
     }
 }

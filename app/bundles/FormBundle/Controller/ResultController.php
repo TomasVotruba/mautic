@@ -58,7 +58,7 @@ class ResultController extends CommonFormController
         $returnUrl      = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
         $viewOnlyFields = $formModel->getCustomComponents()['viewOnlyFields'];
 
-        if (null === $form) {
+        if ($form === null) {
             // redirect back to form list
             return $this->postActionRedirect(
                 [
@@ -87,7 +87,7 @@ class ResultController extends CommonFormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $this->setListFilters($request->query->get('name'));
         }
 
@@ -110,7 +110,7 @@ class ResultController extends CommonFormController
         if ($request->query->has('result')) {
             // Force ID
             $filters['s.id'] = ['column' => 's.id', 'expr' => 'like', 'value' => (int) $request->query->get('result'), 'strict' => false];
-            $session->set("mautic.formresult.$objectId.filters", $filters);
+            $session->set("mautic.formresult.{$objectId}.filters", $filters);
         }
 
         // get the results
@@ -201,7 +201,7 @@ class ResultController extends CommonFormController
         $results     = $submission->getResults();
         $fieldEntity = $submission->getFieldByAlias($field);
 
-        if (empty($results[$field]) || null === $fieldEntity) {
+        if (empty($results[$field]) || $fieldEntity === null) {
             throw $this->createNotFoundException();
         }
 
@@ -280,7 +280,7 @@ class ResultController extends CommonFormController
             $this->throwAccessDenied();
         }
 
-        if (null === $form) {
+        if ($form === null) {
             // redirect back to form list
             return $this->postActionRedirect(
                 [
@@ -338,14 +338,14 @@ class ResultController extends CommonFormController
         $page     = $session->get('mautic.formresult.'.$formId.'.page', 1);
         $flashes  = [];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('form.submission');
             \assert($model instanceof SubmissionModel);
 
             // Find the result
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.form.error.notfound',
@@ -393,39 +393,6 @@ class ResultController extends CommonFormController
         return $this->batchDeleteStandard($request);
     }
 
-    protected function getModelName(): string
-    {
-        return 'form.submission';
-    }
-
-    protected function getIndexRoute(): string
-    {
-        return 'mautic_form_results';
-    }
-
-    protected function getActionRoute(): string
-    {
-        return 'mautic_form_results_action';
-    }
-
-    /**
-     * Set the main form ID as the objectId.
-     */
-    protected function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
-    {
-        $formId = $this->getFormIdFromRequest($parameters);
-        switch ($route) {
-            case 'mautic_form_results_action':
-                $parameters['formId'] = $formId;
-                break;
-            case 'mautic_form_results':
-                $parameters['objectId'] = $formId;
-                break;
-        }
-
-        return parent::generateUrl($route, $parameters, $referenceType);
-    }
-
     public function getPostActionRedirectArguments(array $args, $action): array
     {
         switch ($action) {
@@ -438,26 +405,6 @@ class ResultController extends CommonFormController
         return $args;
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return mixed
-     */
-    protected function getFormIdFromRequest($parameters = [])
-    {
-        $request = $this->getCurrentRequest();
-        if ($request->attributes->has('formId')) {
-            $formId = $request->attributes->get('formId');
-        } elseif ($request->request->has('formId')) {
-            $formId = $request->request->get('formId');
-        } else {
-            $objectId = $parameters['objectId'] ?? 0;
-            $formId   = $parameters['formId'] ?? $request->query->get('formId', $objectId);
-        }
-
-        return $formId;
-    }
-
     public function addToSegmentAction(Request $request, int $objectId, FormModel $formModel, SubmissionModel $model, ListModel $segmentModel): Response
     {
         $form      = $formModel->getEntity($objectId);
@@ -465,7 +412,7 @@ class ResultController extends CommonFormController
         $formPage  = $session->get('mautic.form.page', 1);
         $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
 
-        if (null === $form) {
+        if ($form === null) {
             return $this->postActionRedirect([
                 'returnUrl'       => $returnUrl,
                 'viewParameters'  => ['page' => $formPage],
@@ -546,5 +493,58 @@ class ResultController extends CommonFormController
                 'route'         => $route,
             ],
         ]);
+    }
+
+    protected function getModelName(): string
+    {
+        return 'form.submission';
+    }
+
+    protected function getIndexRoute(): string
+    {
+        return 'mautic_form_results';
+    }
+
+    protected function getActionRoute(): string
+    {
+        return 'mautic_form_results_action';
+    }
+
+    /**
+     * Set the main form ID as the objectId.
+     */
+    protected function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
+    {
+        $formId = $this->getFormIdFromRequest($parameters);
+        switch ($route) {
+            case 'mautic_form_results_action':
+                $parameters['formId'] = $formId;
+                break;
+            case 'mautic_form_results':
+                $parameters['objectId'] = $formId;
+                break;
+        }
+
+        return parent::generateUrl($route, $parameters, $referenceType);
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return mixed
+     */
+    protected function getFormIdFromRequest($parameters = [])
+    {
+        $request = $this->getCurrentRequest();
+        if ($request->attributes->has('formId')) {
+            $formId = $request->attributes->get('formId');
+        } elseif ($request->request->has('formId')) {
+            $formId = $request->request->get('formId');
+        } else {
+            $objectId = $parameters['objectId'] ?? 0;
+            $formId   = $parameters['formId'] ?? $request->query->get('formId', $objectId);
+        }
+
+        return $formId;
     }
 }

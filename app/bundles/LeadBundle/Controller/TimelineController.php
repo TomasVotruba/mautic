@@ -28,7 +28,7 @@ class TimelineController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' == $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() == 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),
@@ -75,7 +75,7 @@ class TimelineController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' === $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() === 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),
@@ -98,7 +98,7 @@ class TimelineController extends CommonController
         parse_str($str, $query);
 
         $tmpl = 'table';
-        if (array_key_exists('from', $query) && 'iframe' === $query['from']) {
+        if (array_key_exists('from', $query) && $query['from'] === 'iframe') {
             $tmpl = 'list';
         }
         if (array_key_exists('tmpl', $query)) {
@@ -139,7 +139,7 @@ class TimelineController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' === $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() === 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),
@@ -161,7 +161,7 @@ class TimelineController extends CommonController
         parse_str($str, $query);
 
         $tmpl = 'table';
-        if (array_key_exists('from', $query) && 'iframe' === $query['from']) {
+        if (array_key_exists('from', $query) && $query['from'] === 'iframe') {
             $tmpl = 'list';
         }
         if (array_key_exists('tmpl', $query)) {
@@ -205,7 +205,7 @@ class TimelineController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' == $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() == 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),

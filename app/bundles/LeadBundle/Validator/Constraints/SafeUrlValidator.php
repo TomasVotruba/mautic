@@ -12,7 +12,7 @@ final class SafeUrlValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return;
         }
 

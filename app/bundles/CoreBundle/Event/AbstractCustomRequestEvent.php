@@ -35,7 +35,7 @@ abstract class AbstractCustomRequestEvent extends Event
                 $this->routeParams = $this->request->attributes->get('_route_params');
             }
 
-            if (null === $this->routeParams) {
+            if ($this->routeParams === null) {
                 $this->routeParams = [];
             }
         }
@@ -63,11 +63,11 @@ abstract class AbstractCustomRequestEvent extends Event
 
     public function checkRouteContext($route): bool
     {
-        if (null == $this->request) {
+        if ($this->request == null) {
             return false;
         }
 
-        if (null !== $route) {
+        if ($route !== null) {
             [$currentRoute, $routeParams]     = $this->getRoute(true);
             $givenRoute                       = $route;
             $givenRouteParams                 = [];

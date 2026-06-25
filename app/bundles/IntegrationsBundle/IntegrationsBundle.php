@@ -23,7 +23,7 @@ class IntegrationsBundle extends AbstractPluginBundle
         $container->addCompilerPass(new ConfigIntegrationPass(), \Symfony\Component\DependencyInjection\Compiler\PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
         $container->addCompilerPass(new BuilderIntegrationPass(), \Symfony\Component\DependencyInjection\Compiler\PassConfig::TYPE_BEFORE_OPTIMIZATION, 0);
 
-        if ('test' === $container->getParameter('kernel.environment')) {
+        if ($container->getParameter('kernel.environment') === 'test') {
             $container->addCompilerPass(new TestPass());
         }
     }

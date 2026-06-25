@@ -77,7 +77,7 @@ class EmailSubscriber implements EventSubscriberInterface
     {
         $tokens = $this->tokenParser->findTokens($event->getContent());
 
-        if (0 === $tokens->count()) {
+        if ($tokens->count() === 0) {
             return;
         }
 

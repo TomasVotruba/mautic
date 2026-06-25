@@ -52,6 +52,40 @@ class MailHelperTest extends TestCase
     </html>';
 
     /**
+     * @var array<array<string,string|int>>
+     */
+    protected array $contacts = [
+        [
+            'id'        => 1,
+            'email'     => 'contact1@somewhere.com',
+            'firstname' => 'Contact',
+            'lastname'  => '1',
+            'owner_id'  => 1,
+        ],
+        [
+            'id'        => 2,
+            'email'     => 'contact2@somewhere.com',
+            'firstname' => 'Contact',
+            'lastname'  => '2',
+            'owner_id'  => 0,
+        ],
+        [
+            'id'        => 3,
+            'email'     => 'contact3@somewhere.com',
+            'firstname' => 'Contact',
+            'lastname'  => '3',
+            'owner_id'  => 2,
+        ],
+        [
+            'id'        => 4,
+            'email'     => 'contact4@somewhere.com',
+            'firstname' => 'Contact',
+            'lastname'  => '4',
+            'owner_id'  => 1,
+        ],
+    ];
+
+    /**
      * @var array<array<int|string|null>>
      */
     private array $defaultParams = [
@@ -95,40 +129,6 @@ class MailHelperTest extends TestCase
     private MockObject&RedirectModel $redirectModel;
 
     private MockObject&EmailStatModel $emailStatModel;
-
-    /**
-     * @var array<array<string,string|int>>
-     */
-    protected array $contacts = [
-        [
-            'id'        => 1,
-            'email'     => 'contact1@somewhere.com',
-            'firstname' => 'Contact',
-            'lastname'  => '1',
-            'owner_id'  => 1,
-        ],
-        [
-            'id'        => 2,
-            'email'     => 'contact2@somewhere.com',
-            'firstname' => 'Contact',
-            'lastname'  => '2',
-            'owner_id'  => 0,
-        ],
-        [
-            'id'        => 3,
-            'email'     => 'contact3@somewhere.com',
-            'firstname' => 'Contact',
-            'lastname'  => '3',
-            'owner_id'  => 2,
-        ],
-        [
-            'id'        => 4,
-            'email'     => 'contact4@somewhere.com',
-            'firstname' => 'Contact',
-            'lastname'  => '4',
-            'owner_id'  => 1,
-        ],
-    ];
 
     protected function setUp(): void
     {
@@ -415,7 +415,7 @@ class MailHelperTest extends TestCase
         foreach ($metadatas as $key => $metadata) {
             $this->assertTrue(isset($metadata[$this->contacts[$key]['email']]));
 
-            if (0 === $key) {
+            if ($key === 0) {
                 // Should have two contacts
                 $this->assertCount(2, $metadata);
                 $this->assertTrue(isset($metadata['contact4@somewhere.com']));
@@ -424,13 +424,13 @@ class MailHelperTest extends TestCase
             }
 
             // Check that signatures are valid
-            if (1 === $key) {
+            if ($key === 1) {
                 // signature should be empty
                 $this->assertEquals('', $metadata['contact2@somewhere.com']['tokens']['{signature}']);
             } else {
                 $this->assertEquals($metadata[$this->contacts[$key]['email']]['tokens']['{signature}'], 'owner '.$this->contacts[$key]['owner_id']);
 
-                if (0 === $key) {
+                if ($key === 0) {
                     // Ensure the last contact has the correct signature
                     $this->assertEquals($metadata['contact4@somewhere.com']['tokens']['{signature}'], 'owner '.$this->contacts[$key]['owner_id']);
                 }
@@ -1164,20 +1164,20 @@ class MailHelperTest extends TestCase
         $headers = $mailer->message->getHeaders()->all();
 
         foreach ($headers as $header) {
-            if ('X-Mautic-Test' === $header->getName() || 'X-Mautic-Test2' === $header->getName()) {
+            if ($header->getName() === 'X-Mautic-Test' || $header->getName() === 'X-Mautic-Test2') {
                 $customHeadersFounds[] = $header->getName();
                 $this->assertEquals('test', $header->getBody());
             }
-            if ('X-Mautic-Test3' === $header->getName() || 'X-Mautic-Test4' === $header->getName()) {
+            if ($header->getName() === 'X-Mautic-Test3' || $header->getName() === 'X-Mautic-Test4') {
                 $customHeadersFounds[] = $header->getName();
                 $this->assertEquals('test2', $header->getBody());
             }
-            if ('custom-mautic-header' === $header->getName()) {
+            if ($header->getName() === 'custom-mautic-header') {
                 $customHeadersFounds[] = $header->getName();
                 $this->assertEquals($this->contacts[0]['email'], $header->getBody());
             }
 
-            if ('Reply-To' === $header->getName()) {
+            if ($header->getName() === 'Reply-To') {
                 $customHeadersFounds[] = $header->getName();
                 $this->assertCount(1, $header->getBody());
             }
@@ -1201,7 +1201,7 @@ class MailHelperTest extends TestCase
         $callCount = 0;
         $this->router->method('generate')
             ->willReturnCallback(function ($route, $params = []) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl, $emailSecret) {
-                if (0 === $callCount++) {
+                if ($callCount++ === 0) {
                     $this->assertSame('mautic_email_unsubscribe', $route);
                     $this->assertSame(['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret], $params);
 
@@ -1317,72 +1317,6 @@ class MailHelperTest extends TestCase
 
         $this->assertSame('<http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret.'>,<mailto:list@host.com?subject=unsubscribe>', $headers['List-Unsubscribe']);
         $this->assertSame('List-Unsubscribe=One-Click', $headers['List-Unsubscribe-Post']);
-    }
-
-    protected function mockEmptyMailHelper(): MailHelper
-    {
-        $transport     = new SmtpTransport();
-        $symfonyMailer = new Mailer($transport);
-
-        return new MailHelper(
-            $symfonyMailer,
-            $this->fromEmailHelper,
-            $this->coreParametersHelper,
-            $this->mailbox,
-            $this->logger,
-            $this->mailHashHelper,
-            $this->router,
-            $this->twig,
-            $this->themeHelper,
-            $this->pathsHelper,
-            $this->createMock(EventDispatcherInterface::class),
-            $this->requestStack,
-            $this->entityManager,
-            $this->createMock(AssetModel::class),
-            $this->createMock(TrackableModel::class),
-            $this->createMock(RedirectModel::class),
-            $this->sMimeHelper,
-            $this->emailStatModel,
-        );
-    }
-
-    /**
-     * @param mixed[] $parameterMap
-     */
-    protected function getMockLeadModel(bool $mailIsOwner = true, array $parameterMap = []): LeadModel&MockObject
-    {
-        $mockLeadRepository = $this->createMock(LeadRepository::class);
-
-        $mockLeadRepository->method('getLeadOwner')
-            ->willReturnMap(
-                [
-                    [1, ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 1']],
-                    [2, ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 2']],
-                    [3, ['id' => 3, 'email' => 'owner3@owner.com', 'first_name' => 'John', 'last_name' => 'S&#39;mith', 'signature' => 'owner 2']],
-                ]
-            );
-
-        $mockLeadModel = $this->createMock(LeadModel::class);
-
-        $mockLeadModel->method('getRepository')->willReturn($mockLeadRepository);
-
-        $parameterMap = array_merge(
-            [
-                ['mailer_return_path', false, null],
-                ['mailer_is_owner', false, $mailIsOwner],
-            ],
-            $parameterMap
-        );
-
-        $coreParametersHelper = $this->coreParametersHelper;
-
-        $coreParametersHelper->method('get')->willReturnMap($parameterMap);
-
-        $mockMailboxHelper = $this->createMock(Mailbox::class);
-        $mockMailboxHelper->method('isConfigured')
-            ->willReturn(false);
-
-        return $mockLeadModel;
     }
 
     public function testArrayOfAddressesAreRemappedIntoEmailToNameKeyValuePair(): void
@@ -2002,7 +1936,7 @@ class MailHelperTest extends TestCase
 
         $this->dispatcher->method('dispatch')
             ->willReturnCallback(function (EmailSendEvent $event, string $eventName): EmailSendEvent {
-                if (EmailEvents::EMAIL_ON_SEND === $eventName) {
+                if ($eventName === EmailEvents::EMAIL_ON_SEND) {
                     $event->addToken('{ token }', 'https://mautic.com/app/assets/images/flags/Venezuela.png');
                     $event->addToken('{ country }', 'Venezuela');
                 }
@@ -2082,7 +2016,7 @@ class MailHelperTest extends TestCase
         $eventDispatcher->expects(self::atLeastOnce())
             ->method('dispatch')
             ->willReturnCallback(function (object $event, ?string $eventName = null) use (&$onSendDispatchCount): object {
-                if ($event instanceof EmailSendEvent && EmailEvents::EMAIL_ON_SEND === $eventName) {
+                if ($event instanceof EmailSendEvent && $eventName === EmailEvents::EMAIL_ON_SEND) {
                     ++$onSendDispatchCount;
                     $event->addToken('{signature}', 'Demo Signature');
                 }
@@ -2099,5 +2033,71 @@ class MailHelperTest extends TestCase
         $mailer->send(true);
         Assert::assertSame(1, $onSendDispatchCount);
         Assert::assertStringContainsString('Demo Signature', (string) $mailer->message->getHtmlBody());
+    }
+
+    protected function mockEmptyMailHelper(): MailHelper
+    {
+        $transport     = new SmtpTransport();
+        $symfonyMailer = new Mailer($transport);
+
+        return new MailHelper(
+            $symfonyMailer,
+            $this->fromEmailHelper,
+            $this->coreParametersHelper,
+            $this->mailbox,
+            $this->logger,
+            $this->mailHashHelper,
+            $this->router,
+            $this->twig,
+            $this->themeHelper,
+            $this->pathsHelper,
+            $this->createMock(EventDispatcherInterface::class),
+            $this->requestStack,
+            $this->entityManager,
+            $this->createMock(AssetModel::class),
+            $this->createMock(TrackableModel::class),
+            $this->createMock(RedirectModel::class),
+            $this->sMimeHelper,
+            $this->emailStatModel,
+        );
+    }
+
+    /**
+     * @param mixed[] $parameterMap
+     */
+    protected function getMockLeadModel(bool $mailIsOwner = true, array $parameterMap = []): LeadModel&MockObject
+    {
+        $mockLeadRepository = $this->createMock(LeadRepository::class);
+
+        $mockLeadRepository->method('getLeadOwner')
+            ->willReturnMap(
+                [
+                    [1, ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 1']],
+                    [2, ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 2']],
+                    [3, ['id' => 3, 'email' => 'owner3@owner.com', 'first_name' => 'John', 'last_name' => 'S&#39;mith', 'signature' => 'owner 2']],
+                ]
+            );
+
+        $mockLeadModel = $this->createMock(LeadModel::class);
+
+        $mockLeadModel->method('getRepository')->willReturn($mockLeadRepository);
+
+        $parameterMap = array_merge(
+            [
+                ['mailer_return_path', false, null],
+                ['mailer_is_owner', false, $mailIsOwner],
+            ],
+            $parameterMap
+        );
+
+        $coreParametersHelper = $this->coreParametersHelper;
+
+        $coreParametersHelper->method('get')->willReturnMap($parameterMap);
+
+        $mockMailboxHelper = $this->createMock(Mailbox::class);
+        $mockMailboxHelper->method('isConfigured')
+            ->willReturn(false);
+
+        return $mockLeadModel;
     }
 }

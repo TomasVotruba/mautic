@@ -15,24 +15,6 @@ final class ProjectEntityLookupLimitTest extends MauticMysqlTestCase
     private const LOOKUP_CHOICE_LIST_URL = '/s/ajax?action=project:getLookupChoiceList';
 
     /**
-     * Create 2000 test emails.
-     */
-    private function createTestEmails(): void
-    {
-        /** @var EmailModel $emailModel */
-        $emailModel = self::getContainer()->get(EmailModel::class);
-
-        for ($i = 1; $i <= 2000; ++$i) {
-            $email = new Email();
-            $email->setName('Common Autocomplete Email '.$i);
-            $email->setSubject('Subject '.$i);
-            $email->setEmailType('template');
-            $email->setTemplate('blank');
-            $emailModel->saveEntity($email);
-        }
-    }
-
-    /**
      * Test: AJAX search with a common keyword
      * Must return exactly 1000 results.
      */
@@ -65,5 +47,23 @@ final class ProjectEntityLookupLimitTest extends MauticMysqlTestCase
             $count,
             "AJAX autocomplete search should return exactly 1000 results, got {$count}."
         );
+    }
+
+    /**
+     * Create 2000 test emails.
+     */
+    private function createTestEmails(): void
+    {
+        /** @var EmailModel $emailModel */
+        $emailModel = self::getContainer()->get(EmailModel::class);
+
+        for ($i = 1; $i <= 2000; ++$i) {
+            $email = new Email();
+            $email->setName('Common Autocomplete Email '.$i);
+            $email->setSubject('Subject '.$i);
+            $email->setEmailType('template');
+            $email->setTemplate('blank');
+            $emailModel->saveEntity($email);
+        }
     }
 }

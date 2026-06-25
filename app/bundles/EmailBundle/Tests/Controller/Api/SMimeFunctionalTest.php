@@ -31,12 +31,6 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $this->certPath = $this->getContainer()->getParameter('kernel.project_dir').'/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
     }
 
-    protected function beforeTearDown(): void
-    {
-        $this->cleanupEncryptedCertificate();
-        parent::beforeTearDown();
-    }
-
     /**
      * @return iterable<string, array{encrypted: bool}>
      */
@@ -82,6 +76,12 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
             Assert::assertStringContainsString('Hey '.$contactEmail, $message->toString());
             $this->assertMessageIsSigned($message, 'Test Subject');
         }
+    }
+
+    protected function beforeTearDown(): void
+    {
+        $this->cleanupEncryptedCertificate();
+        parent::beforeTearDown();
     }
 
     private function sendEmailBatchAndAssertSuccess(Email $email, int $expectedCount): void

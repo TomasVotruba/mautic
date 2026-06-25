@@ -381,15 +381,15 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
         $contact = $this->createLead('First name', emailId: 'halusky@bramborak.makovec');
 
         $contactValue = null;
-        if (1 === $addFieldToContact) {
+        if ($addFieldToContact === 1) {
             $contactValue = 'halusky';
         }
 
-        if (2 === $addFieldToContact) {
+        if ($addFieldToContact === 2) {
             $contactValue = 'bramborak';
         }
 
-        if (3 === $addFieldToContact) {
+        if ($addFieldToContact === 3) {
             $contactValue = 'makovec';
         }
 

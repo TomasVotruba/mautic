@@ -204,7 +204,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->queryBuilderMock->expects($this->any())
             ->method('getQueryPart')
             ->willReturnCallback(function ($input) {
-                if ('join' === $input) {
+                if ($input === 'join') {
                     return [
                         'lp' => [[
                             'joinType'      => 'left',
@@ -221,7 +221,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     ];
                 }
 
-                if ('where' === $input) {
+                if ($input === 'where') {
                     return '(lp.date_added IS NULL OR (lp.date_added BETWEEN :dateFrom AND :dateTo)) AND (s.leadlist_id = :i3csleadlistid))';
                 }
 
@@ -356,7 +356,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportBuilderEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if (1 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',
@@ -381,7 +381,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $matcher = $this->exactly(2);
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if (1 === $matcher->numberOfInvocations()) {
+            if ($matcher->numberOfInvocations() === 1) {
                 $this->assertSame([
                     'leads',
                     'lead.pointlog',
@@ -391,7 +391,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     'contact.frequencyrules',
                 ], $parameters[0]);
             }
-            if (2 === $matcher->numberOfInvocations()) {
+            if ($matcher->numberOfInvocations() === 2) {
                 $this->assertSame(['companies'], $parameters[0]);
             }
 
@@ -407,7 +407,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('eventDataProvider')]
     public function testOnReportBuilder(string $event): void
     {
-        if ('companies' != $event) {
+        if ($event != 'companies') {
             $this->fieldsBuilderMock->expects($this->once())
                 ->method('getLeadFieldsColumns')
                 ->with('l.')
@@ -882,7 +882,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if (1 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',

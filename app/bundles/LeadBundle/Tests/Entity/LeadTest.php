@@ -321,7 +321,7 @@ class LeadTest extends TestCase
      */
     private function adjustPointsTest(int $points, array $expected, Lead $lead, string|false $operator = false): void
     {
-        if (false !== $operator) {
+        if ($operator !== false) {
             $lead->adjustPoints($points, $operator);
         } else {
             $lead->adjustPoints($points);

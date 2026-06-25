@@ -95,7 +95,7 @@ final class FormFieldCheckboxGroupType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
-            if (isset($data['minimum'], $data['maximum']) && '' !== $data['minimum'] && '' !== $data['maximum']) {
+            if (isset($data['minimum'], $data['maximum']) && $data['minimum'] !== '' && $data['maximum'] !== '') {
                 if ((int) $data['maximum'] < (int) $data['minimum']) {
                     $form->get('maximum')->addError(new FormError(
                         $this->translator->trans('mautic.form.field.checkboxgrp.range.invalid', [], 'validators')

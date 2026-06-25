@@ -18,7 +18,7 @@ class UTCDateTimeType extends DateTimeType
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 
@@ -47,7 +47,7 @@ class UTCDateTimeType extends DateTimeType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 

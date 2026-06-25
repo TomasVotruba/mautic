@@ -36,7 +36,7 @@ class FlashBag
      */
     public function add($message, $messageVars = [], $level = self::LEVEL_NOTICE, $domain = 'flashes', $addNotification = false): void
     {
-        if (false === $domain) {
+        if ($domain === false) {
             // message is already translated
             $translatedMessage = $message;
         } else {

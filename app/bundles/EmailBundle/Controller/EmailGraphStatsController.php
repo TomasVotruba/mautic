@@ -40,7 +40,7 @@ class EmailGraphStatsController extends AbstractController
         $action          = $this->generateUrl('mautic_email_action', ['objectAction' => 'view', 'objectId' => $objectId]);
         $dateRangeForm   = $formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
 
-        if (null === $email || !$security->hasEntityAccess(
+        if ($email === null || !$security->hasEntityAccess(
             'email:emails:viewown',
             'email:emails:viewother',
             $email->getCreatedBy()
@@ -56,7 +56,7 @@ class EmailGraphStatsController extends AbstractController
 
         // Prepare stats for bargraph
         if ($chartStatsSource = $request->query->get('stats')) {
-            $includeVariants = ('all' === $chartStatsSource);
+            $includeVariants = ($chartStatsSource === 'all');
         } else {
             $includeVariants = (($email->isVariant() && $parent === $email) || ($email->isTranslation() && $translationParent === $email));
         }
@@ -64,7 +64,7 @@ class EmailGraphStatsController extends AbstractController
         $dateFromObject = new \DateTime($dateFrom);
         $dateToObject   = new \DateTime($dateTo);
 
-        if ('template' === $email->getEmailType()) {
+        if ($email->getEmailType() === 'template') {
             $stats = $model->getEmailGeneralStats(
                 $email,
                 $includeVariants,

@@ -57,7 +57,7 @@ class ProcessSignalService
 
         pcntl_signal_dispatch();
 
-        return null !== $this->signal;
+        return $this->signal !== null;
     }
 
     /**

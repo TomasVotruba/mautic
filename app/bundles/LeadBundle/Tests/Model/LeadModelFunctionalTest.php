@@ -18,9 +18,9 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class LeadModelFunctionalTest extends MauticMysqlTestCase
 {
-    private bool $pointsAdded = false;
 
     protected $useCleanupRollback = false;
+    private bool $pointsAdded = false;
 
     public function testSavingPrimaryCompanyAfterPointsAreSetByListenerAreNotResetToDefaultOf0BecauseOfPointsFieldDefaultIs0(): void
     {
@@ -78,43 +78,6 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
         $this->setUpSymfony(array_merge($this->configParams, ['contact_allow_multiple_companies' => 0]));
 
         self::assertEquals(1, count($this->getContactWithAssignTwoCompanies()));
-    }
-
-    /**
-     * @return array<int,array<int|string>>
-     *
-     * @throws DBALException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    protected function getContactWithAssignTwoCompanies(): array
-    {
-        $company = new Company();
-        $company->setName('Doe Corp');
-
-        $this->em->persist($company);
-
-        $company2 = new Company();
-        $company2->setName('Doe Corp 2');
-
-        $this->em->persist($company2);
-
-        $contact = new Lead();
-        $contact->setEmail('test@test.com');
-
-        $this->em->persist($contact);
-        $this->em->flush();
-
-        /** @var LeadModel $leadModel */
-        $leadModel = $this->getContainer()->get('mautic.lead.model.lead');
-        $leadModel->addToCompany($contact, $company);
-        $leadModel->addToCompany($contact, $company2);
-
-        /** @var CompanyLeadRepository $companyLeadRepo */
-        $companyLeadRepo  = $this->em->getRepository(CompanyLead::class);
-        $contactCompanies = $companyLeadRepo->getCompaniesByLeadId($contact->getId());
-
-        return $contactCompanies;
     }
 
     public function testGetCustomLeadFieldLength(): void
@@ -255,5 +218,42 @@ class LeadModelFunctionalTest extends MauticMysqlTestCase
             'disallowed_value' => ['gibberish', null],
             'with_quotes'      => ['other\'s', 'other\'s'],
         ];
+    }
+
+    /**
+     * @return array<int,array<int|string>>
+     *
+     * @throws DBALException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    protected function getContactWithAssignTwoCompanies(): array
+    {
+        $company = new Company();
+        $company->setName('Doe Corp');
+
+        $this->em->persist($company);
+
+        $company2 = new Company();
+        $company2->setName('Doe Corp 2');
+
+        $this->em->persist($company2);
+
+        $contact = new Lead();
+        $contact->setEmail('test@test.com');
+
+        $this->em->persist($contact);
+        $this->em->flush();
+
+        /** @var LeadModel $leadModel */
+        $leadModel = $this->getContainer()->get('mautic.lead.model.lead');
+        $leadModel->addToCompany($contact, $company);
+        $leadModel->addToCompany($contact, $company2);
+
+        /** @var CompanyLeadRepository $companyLeadRepo */
+        $companyLeadRepo  = $this->em->getRepository(CompanyLead::class);
+        $contactCompanies = $companyLeadRepo->getCompaniesByLeadId($contact->getId());
+
+        return $contactCompanies;
     }
 }

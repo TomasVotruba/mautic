@@ -54,20 +54,6 @@ class ExcelExporterTest extends TestCase
         }
     }
 
-    /**
-     * @return array<mixed>
-     *
-     * @throws Exception
-     */
-    private function getExcelResult(): array
-    {
-        /** @var Xlsx $objReader */
-        $objReader   = IOFactory::createReader('Xlsx');
-        $spreadsheet = $objReader->load($this->tmpFile);
-
-        return $spreadsheet->getActiveSheet()->toArray();
-    }
-
     public function testExport(): void
     {
         $reportData       = Fixtures::getValidReportResultWithAggregatedColumns();
@@ -121,5 +107,19 @@ class ExcelExporterTest extends TestCase
         $reportDataResult   = new ReportDataResult($reportData);
 
         $this->excelExporter->export($reportDataResult, 'mautic_xlsx_export_test', $this->tmpFile);
+    }
+
+    /**
+     * @return array<mixed>
+     *
+     * @throws Exception
+     */
+    private function getExcelResult(): array
+    {
+        /** @var Xlsx $objReader */
+        $objReader   = IOFactory::createReader('Xlsx');
+        $spreadsheet = $objReader->load($this->tmpFile);
+
+        return $spreadsheet->getActiveSheet()->toArray();
     }
 }

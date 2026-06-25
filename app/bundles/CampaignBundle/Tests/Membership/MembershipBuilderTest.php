@@ -96,7 +96,7 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testWhileLoopBreaksWithNoMoreContacts(): void
     {
-        $campaign = new class extends Campaign {
+        $campaign = new class() extends Campaign {
             public function getId(): int
             {
                 return 111;
@@ -108,28 +108,28 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
 
         $this->campaignMemberRepository->expects($matcher)
             ->method('getCampaignContactsBySegments')->willReturnCallback(function (...$parameters) use ($matcher, $contactLimiter) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertFalse($parameters[2]);
 
                     return [20];
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertFalse($parameters[2]);
 
                     return [21];
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertFalse($parameters[2]);
 
                     return [22];
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertFalse($parameters[2]);
@@ -157,7 +157,7 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testWhileLoopBreaksWithNoMoreContactsForRepeatableCampaign(): void
     {
-        $campaign = new class extends Campaign {
+        $campaign = new class() extends Campaign {
             public function getId(): int
             {
                 return 111;
@@ -171,28 +171,28 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
 
         $this->campaignMemberRepository->expects($matcher)
             ->method('getCampaignContactsBySegments')->willReturnCallback(function (...$parameters) use ($matcher, $contactLimiter) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertTrue($parameters[2]);
 
                     return [20];
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertTrue($parameters[2]);
 
                     return [21];
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertTrue($parameters[2]);
 
                     return [22];
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame(111, $parameters[0]);
                     $this->assertSame($contactLimiter, $parameters[1]);
                     $this->assertTrue($parameters[2]);

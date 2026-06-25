@@ -21,7 +21,7 @@ class PluginSubscriber implements EventSubscriberInterface
     {
         $eventMetadata = $event->getMetadata();
 
-        if (null === $eventMetadata) {
+        if ($eventMetadata === null) {
             $metadata = self::getMetadata($this->entityManager);
         } else {
             $metadata = [];

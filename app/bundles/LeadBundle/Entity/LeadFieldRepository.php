@@ -130,32 +130,6 @@ class LeadFieldRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     * @param object                                                       $filter
-     */
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            [
-                'f.label',
-                'f.alias',
-            ]
-        );
-    }
-
-    /**
-     * @return string[][]
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['f.order', 'ASC'],
-        ];
-    }
-
-    /**
      * Get field aliases for lead table columns.
      *
      * @param string $object name of object using the custom fields
@@ -186,17 +160,6 @@ class LeadFieldRepository extends CommonRepository
         $queryBuilder->orderBy("{$this->getTableAlias()}.object");
 
         return new ArrayCollection($queryBuilder->getQuery()->execute());
-    }
-
-    /**
-     * Add company left join.
-     *
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    private function addCompanyLeftJoin($q): void
-    {
-        $q->leftJoin('l', MAUTIC_TABLE_PREFIX.'companies_leads', 'companies_lead', 'l.id = companies_lead.lead_id');
-        $q->leftJoin('companies_lead', MAUTIC_TABLE_PREFIX.'companies', 'company', 'companies_lead.company_id = company.id');
     }
 
     /**
@@ -236,7 +199,7 @@ class LeadFieldRepository extends CommonRepository
         $q->select('l.id')
             ->from(MAUTIC_TABLE_PREFIX.'leads', 'l');
 
-        if ('tags' === $field) {
+        if ($field === 'tags') {
             // Special reserved tags field
             $q->join('l', MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'x', 'l.id = x.lead_id')
                 ->join('x', MAUTIC_TABLE_PREFIX.'lead_tags', 't', 'x.tag_id = t.id')
@@ -251,18 +214,18 @@ class LeadFieldRepository extends CommonRepository
 
             $result = $q->executeQuery()->fetchAssociative();
 
-            if (('eq' === $operatorExpr) || ('like' === $operatorExpr)) {
+            if (($operatorExpr === 'eq') || ($operatorExpr === 'like')) {
                 return !empty($result['id']);
-            } elseif (('neq' === $operatorExpr) || ('notLike' === $operatorExpr)) {
+            } elseif (($operatorExpr === 'neq') || ($operatorExpr === 'notLike')) {
                 return empty($result['id']);
             }
 
             return false;
         }
         $property = $this->getPropertyByField($field, $q);
-        if ('empty' === $operatorExpr || 'notEmpty' === $operatorExpr) {
+        if ($operatorExpr === 'empty' || $operatorExpr === 'notEmpty') {
             $doesSupportEmptyValue            = !in_array($fieldType, ['date', 'datetime'], true);
-            $compositeExpression              = ('empty' === $operatorExpr) ?
+            $compositeExpression              = ($operatorExpr === 'empty') ?
                 $q->expr()->or(
                     $q->expr()->isNull($property),
                     $doesSupportEmptyValue ? $q->expr()->eq($property, $q->expr()->literal('')) : null
@@ -279,8 +242,8 @@ class LeadFieldRepository extends CommonRepository
                 )
             )
               ->setParameter('lead', (int) $lead);
-        } elseif ('regexp' === $operatorExpr || 'notRegexp' === $operatorExpr) {
-            if ('regexp' === $operatorExpr) {
+        } elseif ($operatorExpr === 'regexp' || $operatorExpr === 'notRegexp') {
+            if ($operatorExpr === 'regexp') {
                 $where = $property.' REGEXP  :value';
             } else {
                 $where = $property.' NOT REGEXP  :value';
@@ -294,7 +257,7 @@ class LeadFieldRepository extends CommonRepository
             )
               ->setParameter('lead', (int) $lead)
               ->setParameter('value', $value);
-        } elseif ('in' === $operatorExpr || 'notIn' === $operatorExpr) {
+        } elseif ($operatorExpr === 'in' || $operatorExpr === 'notIn') {
             $values   = (!is_array($value)) ? [$value] : $value;
             $operator = str_starts_with($operatorExpr, 'not') ? 'NOT REGEXP' : 'REGEXP';
             $expr     = $q->expr()->and(
@@ -307,8 +270,8 @@ class LeadFieldRepository extends CommonRepository
                 // Don't use InputHelper::clean() to avoid converting special characters to HTML entities
                 $paramName   = 'value'.$paramCount++;
                 $v           = trim((string) $v, "'");
-                $innerExpr[] = $property." $operator :".$paramName;
-                $q->setParameter($paramName, "\\|?$v\\|?");
+                $innerExpr[] = $property." {$operator} :".$paramName;
+                $q->setParameter($paramName, "\\|?{$v}\\|?");
             }
 
             if (str_starts_with($operatorExpr, 'not')) {
@@ -327,11 +290,11 @@ class LeadFieldRepository extends CommonRepository
                 $q->expr()->eq('l.id', ':lead')
             );
 
-            if ('neq' === $operatorExpr) {
+            if ($operatorExpr === 'neq') {
                 // include null
                 $expr = $expr->with(
                     $q->expr()->or(
-                        $q->expr()->$operatorExpr($property, ':value'),
+                        $q->expr()->{$operatorExpr}($property, ':value'),
                         $q->expr()->isNull($property)
                     )
                 );
@@ -352,7 +315,7 @@ class LeadFieldRepository extends CommonRepository
                 }
 
                 $expr = $expr->with(
-                    $q->expr()->$operatorExpr($property, ':value')
+                    $q->expr()->{$operatorExpr}($property, ':value')
                 );
             }
 
@@ -382,7 +345,7 @@ class LeadFieldRepository extends CommonRepository
             ->where(
                 $q->expr()->and(
                     $q->expr()->eq('l.id', ':lead'),
-                    ('empty' === $operatorExpr) ?
+                    ($operatorExpr === 'empty') ?
                         $q->expr()->isNull($property)
                         :
                         $q->expr()->isNotNull($property)
@@ -437,8 +400,8 @@ class LeadFieldRepository extends CommonRepository
             ->where(
                 $q->expr()->and(
                     $q->expr()->eq('l.id', ':lead'),
-                    $q->expr()->eq("MONTH(l. $field)", ':month'),
-                    $q->expr()->eq("DAY(l. $field)", ':day')
+                    $q->expr()->eq("MONTH(l. {$field})", ':month'),
+                    $q->expr()->eq("DAY(l. {$field})", ':day')
                 )
             )
             ->setParameter('lead', (int) $lead)
@@ -502,6 +465,32 @@ class LeadFieldRepository extends CommonRepository
 
     /**
      * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     * @param object                                                       $filter
+     */
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            [
+                'f.label',
+                'f.alias',
+            ]
+        );
+    }
+
+    /**
+     * @return string[][]
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['f.order', 'ASC'],
+        ];
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      * @param \StdClass                                                    $filter
      *
      * @return mixed[]
@@ -520,12 +509,12 @@ class LeadFieldRepository extends CommonRepository
 
         switch ($command) {
             case $this->translator->trans('mautic.lead.field.searchcommand.isindexed'):
-                $expr            = $q->expr()->eq($prefix.'.isIndex', ":$unique");
+                $expr            = $q->expr()->eq($prefix.'.isIndex', ":{$unique}");
                 $forceParameters = [$unique => true];
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.lead.field.searchcommand.isunique'):
-                $expr            = $q->expr()->eq($prefix.'.isUniqueIdentifer', ":$unique");
+                $expr            = $q->expr()->eq($prefix.'.isUniqueIdentifer', ":{$unique}");
                 $forceParameters = [$unique => true];
                 $returnParameter = true;
                 break;
@@ -533,14 +522,14 @@ class LeadFieldRepository extends CommonRepository
                 $forceParameters = [
                     $unique     => $filter->string,
                 ];
-                $expr            = $q->expr()->like($prefix.'.type', ":$unique");
+                $expr            = $q->expr()->like($prefix.'.type', ":{$unique}");
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.lead.field.searchcommand.group'):
                 $forceParameters = [
                     $unique     => $filter->string,
                 ];
-                $expr            = $q->expr()->like($prefix.'.group', ":$unique");
+                $expr            = $q->expr()->like($prefix.'.group', ":{$unique}");
                 $returnParameter = true;
                 break;
         }
@@ -553,9 +542,20 @@ class LeadFieldRepository extends CommonRepository
             $parameters = $forceParameters;
         } elseif ($returnParameter) {
             $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
+            $parameters = ["{$unique}" => $string];
         }
 
         return [$expr, $parameters];
+    }
+
+    /**
+     * Add company left join.
+     *
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    private function addCompanyLeftJoin($q): void
+    {
+        $q->leftJoin('l', MAUTIC_TABLE_PREFIX.'companies_leads', 'companies_lead', 'l.id = companies_lead.lead_id');
+        $q->leftJoin('companies_lead', MAUTIC_TABLE_PREFIX.'companies', 'company', 'companies_lead.company_id = company.id');
     }
 }

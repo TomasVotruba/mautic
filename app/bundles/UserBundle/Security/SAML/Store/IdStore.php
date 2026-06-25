@@ -22,7 +22,7 @@ class IdStore implements IdStoreInterface
     public function set($entityId, $id, \DateTime $expiryTime): void
     {
         $idEntry = $this->manager->find(IdEntry::class, ['entityId' => $entityId, 'id' => $id]);
-        if (null == $idEntry) {
+        if ($idEntry == null) {
             $idEntry = new IdEntry();
         }
         $idEntry->setEntityId($entityId)
@@ -40,7 +40,7 @@ class IdStore implements IdStoreInterface
     {
         /** @var IdEntry $idEntry */
         $idEntry = $this->manager->find(IdEntry::class, ['entityId' => $entityId, 'id' => $id]);
-        if (null == $idEntry) {
+        if ($idEntry == null) {
             return false;
         }
 

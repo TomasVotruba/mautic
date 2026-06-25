@@ -10,54 +10,6 @@ use MauticPlugin\MauticCrmBundle\Integration\ConnectwiseIntegration;
  */
 class ConnectwiseApi extends CrmApi
 {
-    /**
-     * @param string $endpoint
-     * @param array  $parameters
-     * @param string $method
-     *
-     * @return mixed|string
-     *
-     * @throws ApiErrorException
-     */
-    protected function request($endpoint, $parameters = [], $method = 'GET')
-    {
-        $apiUrl = $this->integration->getApiUrl();
-
-        $url = sprintf('%s/%s', $apiUrl, $endpoint);
-
-        $response = $this->integration->makeRequest(
-            $url,
-            $parameters,
-            $method,
-            ['encode_parameters' => 'json']
-        );
-
-        $errors = [];
-        $code   = 0;
-
-        if (is_array($response)) {
-            foreach ($response as $key => $r) {
-                $key = preg_replace('/[\r\n]+/', '', $key);
-                switch ($key) {
-                    case '<!DOCTYPE_html_PUBLIC_"-//W3C//DTD_XHTML_1_0_Strict//EN"_"http://www_w3_org/TR/xhtml1/DTD/xhtml1-strict_dtd"><html_xmlns':
-                        $errors[] = '404 not found error';
-                        $code     = 404;
-                        break;
-                    case 'errors':
-                        $errors[] = $response['message'];
-                        // no break
-                    case 'code':
-                        $errors[] = $response['message'];
-                        break;
-                }
-            }
-        }
-        if (!empty($errors)) {
-            throw new ApiErrorException(implode(' ', $errors), $code);
-        }
-
-        return $response;
-    }
 
     /**
      * @param int $page
@@ -203,12 +155,60 @@ class ConnectwiseApi extends CrmApi
                 }
             }
         } catch (ApiErrorException $exception) {
-            if (404 !== $exception->getCode()) {
+            if ($exception->getCode() !== 404) {
                 // Ignore 404 due to pagination
                 throw $exception;
             }
         }
 
         return $allRecords;
+    }
+    /**
+     * @param string $endpoint
+     * @param array  $parameters
+     * @param string $method
+     *
+     * @return mixed|string
+     *
+     * @throws ApiErrorException
+     */
+    protected function request($endpoint, $parameters = [], $method = 'GET')
+    {
+        $apiUrl = $this->integration->getApiUrl();
+
+        $url = sprintf('%s/%s', $apiUrl, $endpoint);
+
+        $response = $this->integration->makeRequest(
+            $url,
+            $parameters,
+            $method,
+            ['encode_parameters' => 'json']
+        );
+
+        $errors = [];
+        $code   = 0;
+
+        if (is_array($response)) {
+            foreach ($response as $key => $r) {
+                $key = preg_replace('/[\r\n]+/', '', $key);
+                switch ($key) {
+                    case '<!DOCTYPE_html_PUBLIC_"-//W3C//DTD_XHTML_1_0_Strict//EN"_"http://www_w3_org/TR/xhtml1/DTD/xhtml1-strict_dtd"><html_xmlns':
+                        $errors[] = '404 not found error';
+                        $code     = 404;
+                        break;
+                    case 'errors':
+                        $errors[] = $response['message'];
+                        // no break
+                    case 'code':
+                        $errors[] = $response['message'];
+                        break;
+                }
+            }
+        }
+        if (!empty($errors)) {
+            throw new ApiErrorException(implode(' ', $errors), $code);
+        }
+
+        return $response;
     }
 }

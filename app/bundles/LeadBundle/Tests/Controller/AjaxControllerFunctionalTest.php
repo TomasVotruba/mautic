@@ -23,13 +23,6 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 {
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement([
-            'leads',
-            'campaigns',
-        ]);
-    }
 
     public function testToggleLeadCampaignAction(): void
     {
@@ -507,7 +500,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             }
 
             $lead = new Lead();
-            $lead->setFirstname("User $i");
+            $lead->setFirstname("User {$i}");
             $lead->setOwner($owner);
             $leads[] = $lead;
         }
@@ -545,7 +538,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         // Create 2 leads with owned by admin user.
         for ($i = 1; $i <= 2; ++$i) {
             $lead = new Lead();
-            $lead->setFirstname("User $i");
+            $lead->setFirstname("User {$i}");
             $lead->setOwner($adminUser);
             $leads[] = $lead;
         }
@@ -587,7 +580,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         // Create 2 leads with owned by non-admin user.
         for ($i = 3; $i <= 4; ++$i) {
             $lead = new Lead();
-            $lead->setFirstname("User $i");
+            $lead->setFirstname("User {$i}");
             $lead->setOwner($nonAdminUser);
             $nonAdminLeads[] = $lead;
         }
@@ -655,7 +648,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             $this->assertEmpty($actualOptions);
         }
         foreach ($expectedOptions as $expectedValue) {
-            $this->assertContains($expectedValue, $actualOptions, "Missing expected option '$expectedValue' for object: $object, group: $group");
+            $this->assertContains($expectedValue, $actualOptions, "Missing expected option '{$expectedValue}' for object: {$object}, group: {$group}");
         }
     }
 
@@ -846,6 +839,13 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $response       = json_decode($clientResponse->getContent(), true);
         Assert::assertArrayHasKey('viewParameters', $response);
         Assert::assertStringContainsString('data-model="category.category"', $response['viewParameters']['form']);
+    }
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement([
+            'leads',
+            'campaigns',
+        ]);
     }
 
     /** @return array<int, array<string, mixed>> */

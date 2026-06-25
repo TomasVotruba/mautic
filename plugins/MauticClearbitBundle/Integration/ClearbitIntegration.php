@@ -44,7 +44,7 @@ class ClearbitIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('keys' === $formArea) {
+        if ($formArea === 'keys') {
             $builder->add(
                 'auto_update',
                 YesNoButtonGroupType::class,
@@ -71,7 +71,7 @@ class ClearbitIntegration extends AbstractIntegration
      */
     public function getFormNotes($section)
     {
-        if ('custom' === $section) {
+        if ($section === 'custom') {
             return [
                 'template'   => '@MauticClearbit/Integration/form.html.twig',
                 'parameters' => [

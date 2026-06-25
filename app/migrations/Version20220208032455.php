@@ -9,15 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20220208032455 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            $sql         = sprintf('select id from %s%s limit 1', $this->prefix, 'forms');
-            $recordCount = $this->connection->executeQuery($sql)->fetchOne();
-
-            return !(bool) $recordCount;
-        }, 'Migration is not required.');
-    }
 
     public function up(Schema $schema): void
     {
@@ -43,6 +34,15 @@ final class Version20220208032455 extends PreUpAssertionMigration
                 $this->addSql(sprintf('ALTER TABLE %s %s', $tableName, implode(', ', $dropColumns)));
             }
         }
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            $sql         = sprintf('select id from %s%s limit 1', $this->prefix, 'forms');
+            $recordCount = $this->connection->executeQuery($sql)->fetchOne();
+
+            return !(bool) $recordCount;
+        }, 'Migration is not required.');
     }
 
     /**

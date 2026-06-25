@@ -66,19 +66,6 @@ class TwitterCommandHelper
     }
 
     /**
-     * @param string $message
-     * @param bool   $newLine
-     */
-    private function output($message, $newLine = true): void
-    {
-        if ($newLine) {
-            $this->output->writeln($message);
-        } else {
-            $this->output->write($message);
-        }
-    }
-
-    /**
      * Processes a list of tweets and creates / updates leads in Mautic.
      *
      * @param array      $statusList
@@ -309,6 +296,19 @@ class TwitterCommandHelper
     public function getMonitor($mid): ?Monitoring
     {
         return $this->monitoringModel->getEntity($mid);
+    }
+
+    /**
+     * @param string $message
+     * @param bool   $newLine
+     */
+    private function output($message, $newLine = true): void
+    {
+        if ($newLine) {
+            $this->output->writeln($message);
+        } else {
+            $this->output->write($message);
+        }
     }
 
     /**

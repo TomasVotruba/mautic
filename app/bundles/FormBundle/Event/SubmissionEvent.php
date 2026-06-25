@@ -206,7 +206,7 @@ class SubmissionEvent extends CommonEvent
      */
     public function getActionFeedback($key = null)
     {
-        if (null === $key) {
+        if ($key === null) {
             return $this->feedback;
         } elseif (isset($this->feedback[$key])) {
             return $this->feedback[$key];
@@ -262,7 +262,7 @@ class SubmissionEvent extends CommonEvent
      */
     public function getPostSubmitCallback($key = null)
     {
-        return (null === $key) ? $this->callbacks : $this->callbacks[$key];
+        return ($key === null) ? $this->callbacks : $this->callbacks[$key];
     }
 
     public function hasPostSubmitCallbacks(): bool
@@ -275,7 +275,7 @@ class SubmissionEvent extends CommonEvent
      */
     public function getPostSubmitCallbackResponse($key = null)
     {
-        return (null === $key) ? $this->callbackResponses : $this->callbackResponses[$key];
+        return ($key === null) ? $this->callbackResponses : $this->callbackResponses[$key];
     }
 
     /**
@@ -292,7 +292,7 @@ class SubmissionEvent extends CommonEvent
 
     public function hasPostSubmitResponse(): bool
     {
-        return null !== $this->postSubmitResponse;
+        return $this->postSubmitResponse !== null;
     }
 
     public function getPostSubmitResponse()

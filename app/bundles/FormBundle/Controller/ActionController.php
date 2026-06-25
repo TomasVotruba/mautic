@@ -24,7 +24,7 @@ class ActionController extends CommonFormController
         $method  = $request->getMethod();
         $session = $request->getSession();
 
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             $formAction = $request->request->all()['formaction'] ?? [];
             $actionType = $formAction['type'];
             $formId     = $formAction['formId'];
@@ -57,7 +57,7 @@ class ActionController extends CommonFormController
         $formAction['settings'] = $customComponents['actions'][$actionType];
 
         // Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -147,13 +147,13 @@ class ActionController extends CommonFormController
         $session    = $request->getSession();
         $method     = $request->getMethod();
         $formaction = $request->request->all()['formaction'] ?? [];
-        $formId     = 'POST' === $method ? ($formaction['formId'] ?? '') : $request->query->get('formId');
+        $formId     = $method === 'POST' ? ($formaction['formId'] ?? '') : $request->query->get('formId');
         $actions    = $session->get('mautic.form.'.$formId.'.actions.modified', []);
         $success    = 0;
         $valid      = $cancelled      = false;
         $formAction = array_key_exists($objectId, $actions) ? $actions[$objectId] : null;
 
-        if (null !== $formAction) {
+        if ($formAction !== null) {
             $formModel = $this->getModel('form.form');
             \assert($formModel instanceof FormModel);
             $actionType             = $formAction['type'];
@@ -176,7 +176,7 @@ class ActionController extends CommonFormController
             $form->get('formId')->setData($formId);
 
             // Check for a submitted form and process it
-            if ('POST' == $method) {
+            if ($method == 'POST') {
                 if (!$cancelled = $this->isFormCancelled($form)) {
                     if ($valid = $this->isFormValid($form)) {
                         $success = 1;
@@ -200,13 +200,13 @@ class ActionController extends CommonFormController
                         $keyId = $objectId;
 
                         // take note if this is a submit button or not
-                        if ('button' == $actionType) {
+                        if ($actionType == 'button') {
                             $submits = $session->get('mautic.formactions.submits', []);
-                            if ('submit' == $formAction['properties']['type'] && !in_array($keyId, $submits)) {
+                            if ($formAction['properties']['type'] == 'submit' && !in_array($keyId, $submits)) {
                                 // button type updated to submit
                                 $submits[] = $keyId;
                                 $session->set('mautic.formactions.submits', $submits);
-                            } elseif ('submit' != $formAction['properties']['type'] && in_array($keyId, $submits)) {
+                            } elseif ($formAction['properties']['type'] != 'submit' && in_array($keyId, $submits)) {
                                 // button type updated to something other than submit
                                 $key = array_search($keyId, $submits);
                                 unset($submits[$key]);
@@ -291,7 +291,7 @@ class ActionController extends CommonFormController
         }
 
         $formAction = (array_key_exists($objectId, $actions)) ? $actions[$objectId] : null;
-        if ('POST' == $request->getMethod() && null !== $formAction) {
+        if ($request->getMethod() == 'POST' && $formAction !== null) {
             // add the field to the delete list
             if (!in_array($objectId, $delete)) {
                 $delete[] = $objectId;
@@ -299,10 +299,10 @@ class ActionController extends CommonFormController
             }
 
             // take note if this is a submit button or not
-            if ('button' == $formAction['type']) {
+            if ($formAction['type'] == 'button') {
                 $submits    = $session->get('mautic.formactions.submits', []);
                 $properties = $formAction['properties'];
-                if ('submit' == $properties['type'] && in_array($objectId, $submits)) {
+                if ($properties['type'] == 'submit' && in_array($objectId, $submits)) {
                     $key = array_search($objectId, $submits);
                     unset($submits[$key]);
                     $session->set('mautic.formactions.submits', $submits);

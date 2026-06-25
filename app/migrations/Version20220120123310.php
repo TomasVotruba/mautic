@@ -11,6 +11,11 @@ final class Version20220120123310 extends PreUpAssertionMigration
 {
     private const TABLE = 'lead_lists';
 
+    public function up(Schema $schema): void
+    {
+        $this->addSql("CREATE INDEX {$this->getIndexName()} ON {$this->getPrefixedTableName(self::TABLE)} (deleted)");
+    }
+
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(
@@ -21,11 +26,6 @@ final class Version20220120123310 extends PreUpAssertionMigration
             },
             "Index {$this->getIndexName()} cannot be created because the index already exists"
         );
-    }
-
-    public function up(Schema $schema): void
-    {
-        $this->addSql("CREATE INDEX {$this->getIndexName()} ON {$this->getPrefixedTableName(self::TABLE)} (deleted)");
     }
 
     private function getIndexName(): string

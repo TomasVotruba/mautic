@@ -142,8 +142,8 @@ class TableSchemaHelper
 
         if (!empty($options)) {
             foreach ($options as $option => $value) {
-                $func = ('uniqueIndex' == $option ? 'add' : 'set').ucfirst($option);
-                $newTable->$func($value);
+                $func = ($option == 'uniqueIndex' ? 'add' : 'set').ucfirst($option);
+                $newTable->{$func}($value);
             }
         }
 
@@ -198,7 +198,7 @@ class TableSchemaHelper
     {
         if ($this->sm->tablesExist([$this->prefix.$table])) {
             if ($throwException) {
-                throw new SchemaException($this->prefix."$table already exists");
+                throw new SchemaException($this->prefix."{$table} already exists");
             }
 
             return true;

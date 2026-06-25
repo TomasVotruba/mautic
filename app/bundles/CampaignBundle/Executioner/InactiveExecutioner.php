@@ -23,6 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InactiveExecutioner implements ExecutionerInterface
 {
+
+    protected ?\DateTime $now = null;
     /**
      * @var Campaign
      */
@@ -37,8 +39,6 @@ class InactiveExecutioner implements ExecutionerInterface
     private ?Counter $counter = null;
 
     private ?ArrayCollection $decisions = null;
-
-    protected ?\DateTime $now = null;
 
     public function __construct(
         private InactiveContactFinder $inactiveContactFinder,
@@ -280,7 +280,7 @@ class InactiveExecutioner implements ExecutionerInterface
             $event = $this->redirectionHelper->handleEventRedirection($event, $events, $key);
 
             // Ignore decisions
-            if (Event::TYPE_DECISION == $event->getEventType()) {
+            if ($event->getEventType() == Event::TYPE_DECISION) {
                 $this->logger->debug('CAMPAIGN: Ignoring child event ID '.$event->getId().' as a decision');
 
                 $events->remove($key);

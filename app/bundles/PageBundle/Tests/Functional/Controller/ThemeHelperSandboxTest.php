@@ -144,7 +144,7 @@ final class ThemeHelperSandboxTest extends MauticMysqlTestCase
         }
 
         foreach (scandir($dir) ?: [] as $item) {
-            if ('.' === $item || '..' === $item) {
+            if ($item === '.' || $item === '..') {
                 continue;
             }
             $path = $dir.'/'.$item;

@@ -45,7 +45,7 @@ final class ProjectController extends AbstractFormController
         $this->setListFilters();
 
         $limit = $session->get('mautic.project.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -87,7 +87,7 @@ final class ProjectController extends AbstractFormController
 
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (ceil($count / $limit)) ?: 1;
@@ -144,7 +144,7 @@ final class ProjectController extends AbstractFormController
 
         $form = $this->buildForm($project, $action, $formFactory);
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $valid     = $this->isFormValid($form);
             $cancelled = $this->isFormCancelled($form);
             if (!$cancelled && $valid) {
@@ -209,7 +209,7 @@ final class ProjectController extends AbstractFormController
             $action = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'edit', 'objectId' => $objectId]);
             $form   = $this->buildForm($project, $action, $formFactory);
 
-            if (!$ignorePost && 'POST' === $request->getMethod()) {
+            if (!$ignorePost && $request->getMethod() === 'POST') {
                 if ($this->isFormCancelled($form)) {
                     return $this->postActionRedirect($postActionVars);
                 }
@@ -288,40 +288,13 @@ final class ProjectController extends AbstractFormController
         }
     }
 
-    /**
-     * @return array<mixed>
-     */
-    private function getPostActionVars(Request $request, string|int|null $objectId = null): array
-    {
-        if ($objectId) {
-            $returnUrl       = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'view', 'objectId' => $objectId]);
-            $viewParameters  = ['objectAction' => 'view', 'objectId' => $objectId];
-            $contentTemplate = 'Mautic\ProjectBundle\Controller\ProjectController::viewAction';
-        } else {
-            $page            = $request->getSession()->get('mautic.project.page', 1);
-            $returnUrl       = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
-            $viewParameters  = ['page' => $page];
-            $contentTemplate = self::TEMPLATE_INDEX;
-        }
-
-        return [
-            'returnUrl'       => $returnUrl,
-            'viewParameters'  => $viewParameters,
-            'contentTemplate' => $contentTemplate,
-            'passthroughVars' => [
-                'activeLink'    => self::LINK_ID_INDEX,
-                'mauticContent' => 'project',
-            ],
-        ];
-    }
-
     public function viewAction(string|int $objectId, Request $request, ProjectModel $projectModel, CorePermissions $corePermissions, ProjectEntityLoaderService $entityLoader): Response
     {
         /** @var ?Project $project */
         $project = $projectModel->getEntity($objectId);
 
         $page = $request->getSession()->get('mautic.project.page', 1);
-        if (null === $project) {
+        if ($project === null) {
             $returnUrl = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
 
             return $this->postActionRedirect([
@@ -380,11 +353,11 @@ final class ProjectController extends AbstractFormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             /** @var ?Project $project */
             $project = $projectModel->getEntity($objectId);
 
-            if (null === $project) {
+            if ($project === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.project.error.notfound',
@@ -425,7 +398,7 @@ final class ProjectController extends AbstractFormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $ids       = json_decode($request->query->get('ids', '{}'));
             $deleteIds = [];
 
@@ -433,7 +406,7 @@ final class ProjectController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $projectModel->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.project.error.notfound',
@@ -555,7 +528,7 @@ final class ProjectController extends AbstractFormController
             'projectId'  => $project->getId(),
         ]);
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $flashes   = [];
             $returnUrl = $this->generateUrl(self::ROUTE_ACTION, [
                 'objectAction' => 'view',
@@ -672,7 +645,7 @@ final class ProjectController extends AbstractFormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             /** @var ?Project $project */
             $project = $projectModel->getEntity($projectId);
             if (!$project instanceof Project) {
@@ -726,6 +699,33 @@ final class ProjectController extends AbstractFormController
         }
 
         return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private function getPostActionVars(Request $request, string|int|null $objectId = null): array
+    {
+        if ($objectId) {
+            $returnUrl       = $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'view', 'objectId' => $objectId]);
+            $viewParameters  = ['objectAction' => 'view', 'objectId' => $objectId];
+            $contentTemplate = 'Mautic\ProjectBundle\Controller\ProjectController::viewAction';
+        } else {
+            $page            = $request->getSession()->get('mautic.project.page', 1);
+            $returnUrl       = $this->generateUrl(self::ROUTE_INDEX, ['page' => $page]);
+            $viewParameters  = ['page' => $page];
+            $contentTemplate = self::TEMPLATE_INDEX;
+        }
+
+        return [
+            'returnUrl'       => $returnUrl,
+            'viewParameters'  => $viewParameters,
+            'contentTemplate' => $contentTemplate,
+            'passthroughVars' => [
+                'activeLink'    => self::LINK_ID_INDEX,
+                'mauticContent' => 'project',
+            ],
+        ];
     }
 
     /**

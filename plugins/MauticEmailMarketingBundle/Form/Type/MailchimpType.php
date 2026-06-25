@@ -85,7 +85,7 @@ class MailchimpType extends AbstractType
             });
         }
 
-        if (isset($options['form_area']) && 'integration' == $options['form_area']) {
+        if (isset($options['form_area']) && $options['form_area'] == 'integration') {
             $leadFields = $this->pluginModel->getLeadFields();
 
             $formModifier = function (FormInterface $form, $data) use ($mailchimp, $leadFields): void {
@@ -101,7 +101,7 @@ class MailchimpType extends AbstractType
                     'feature_settings'   => [
                         'list_settings' => $data,
                     ],
-                    'ignore_field_cache' => 1 == $page && 'POST' !== $_SERVER['REQUEST_METHOD'],
+                    'ignore_field_cache' => $page == 1 && $_SERVER['REQUEST_METHOD'] !== 'POST',
                 ];
                 try {
                     $fields = $mailchimp->getFormLeadFields($settings);

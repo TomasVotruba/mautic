@@ -45,7 +45,7 @@ class ChannelClickQueryBuilder extends BaseFilterQueryBuilder
 
         if ($this->isDateBased($filter->getField())) {
             $expr = $expr->with(
-                $subQb->expr()->$filterOperator($tableAlias.'.date_hit', $filter->getParameterHolder($parameters))
+                $subQb->expr()->{$filterOperator}($tableAlias.'.date_hit', $filter->getParameterHolder($parameters))
             );
         }
 
@@ -55,7 +55,7 @@ class ChannelClickQueryBuilder extends BaseFilterQueryBuilder
 
         $this->addLeadAndMinMaxLimiters($subQb, $batchLimiters, 'page_hits');
 
-        if ('empty' === $filterOperator && !$this->isDateBased($filter->getField())) {
+        if ($filterOperator === 'empty' && !$this->isDateBased($filter->getField())) {
             $queryBuilder->addLogic($queryBuilder->expr()->notIn($leadsTableAlias.'.id', $subQb->getSQL()), $filter->getGlue());
         } else {
             $queryBuilder->addLogic($queryBuilder->expr()->in($leadsTableAlias.'.id', $subQb->getSQL()), $filter->getGlue());
@@ -68,7 +68,7 @@ class ChannelClickQueryBuilder extends BaseFilterQueryBuilder
 
     private function getChannel(string $name): string
     {
-        if ('email_id' === $name) {
+        if ($name === 'email_id') {
             // BC for existing filter
             return 'email';
         }

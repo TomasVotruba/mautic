@@ -55,7 +55,7 @@ abstract class CommonStatsSubscriber implements EventSubscriberInterface
 
             foreach ($permissions as $tableAlias => $permBase) {
                 // It's an admin, don't check any further
-                if ('admin' === $permBase && $this->security->isAdmin()) {
+                if ($permBase === 'admin' && $this->security->isAdmin()) {
                     continue;
                 }
 
@@ -77,11 +77,11 @@ abstract class CommonStatsSubscriber implements EventSubscriberInterface
                     $aliasParts = explode('.', $tableAlias);
                     $tableAlias = array_pop($aliasParts);
 
-                    if ('lead:leads' === $permBase) {
+                    if ($permBase === 'lead:leads') {
                         // Acknowledge owner then created_by
-                        $where['value'] = "IF ($tableAlias.owner_id IS NOT NULL, $tableAlias.owner_id, $tableAlias.created_by) = $userId";
+                        $where['value'] = "IF ({$tableAlias}.owner_id IS NOT NULL, {$tableAlias}.owner_id, {$tableAlias}.created_by) = {$userId}";
                     } else {
-                        $where['value'] = "$tableAlias.created_by = $userId";
+                        $where['value'] = "{$tableAlias}.created_by = {$userId}";
                     }
                     $event->addWhere($where);
 

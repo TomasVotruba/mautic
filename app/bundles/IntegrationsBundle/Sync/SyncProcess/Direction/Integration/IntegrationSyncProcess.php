@@ -49,7 +49,7 @@ class IntegrationSyncProcess
         $integrationObjectsNames = $this->mappingManualDAO->getIntegrationObjectNames();
         $mauticObjectTypes       = $integrationRequestDAO->getInputOptionsDAO()->getMauticObjectIds() ?
             $integrationRequestDAO->getInputOptionsDAO()->getMauticObjectIds()->getObjectTypes() : [];
-        $hasMauticObjectIDs = 0 < count($mauticObjectTypes);
+        $hasMauticObjectIDs = count($mauticObjectTypes) > 0;
 
         foreach ($integrationObjectsNames as $integrationObjectName) {
             if ($hasMauticObjectIDs) {
@@ -59,7 +59,7 @@ class IntegrationSyncProcess
                 } catch (ObjectNotFoundException) {
                 }
 
-                if (1 > count(array_intersect($mauticObjectTypes, $mappedInternalObjectsNames))) {
+                if (count(array_intersect($mauticObjectTypes, $mappedInternalObjectsNames)) < 1) {
                     DebugLogger::log(
                         $this->mappingManualDAO->getIntegration(),
                         sprintf(
@@ -73,7 +73,7 @@ class IntegrationSyncProcess
             }
 
             $integrationObjectFields = $this->mappingManualDAO->getIntegrationObjectFieldsToSyncToMautic($integrationObjectName);
-            if (0 === count($integrationObjectFields)) {
+            if (count($integrationObjectFields) === 0) {
                 // No fields configured for a sync
                 DebugLogger::log(
                     $this->mappingManualDAO->getIntegration(),

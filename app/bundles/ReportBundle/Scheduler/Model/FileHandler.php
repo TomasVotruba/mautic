@@ -47,7 +47,7 @@ class FileHandler
         $zipFilePath = str_replace('.csv', '.zip', $originalFilePath);
         $zipArchive  = new \ZipArchive();
 
-        if (true === $zipArchive->open($zipFilePath, \ZipArchive::OVERWRITE | \ZipArchive::CREATE)) {
+        if ($zipArchive->open($zipFilePath, \ZipArchive::OVERWRITE | \ZipArchive::CREATE) === true) {
             $zipArchive->addFile($originalFilePath, 'report.csv');
             $zipArchive->close();
 

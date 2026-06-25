@@ -62,7 +62,7 @@ class AssetApiController extends CommonApiController
     {
         // During delete responses Doctrine may already de-reference the entity ID.
         // In that case, generating a public slug is not possible and should be skipped.
-        if (null === $entity->getId()) {
+        if ($entity->getId() === null) {
             return;
         }
 
@@ -82,14 +82,14 @@ class AssetApiController extends CommonApiController
         $entity->setUploadDir($assetDir);
 
         if (isset($parameters['file'])) {
-            if ('local' === $parameters['storageLocation']) {
+            if ($parameters['storageLocation'] === 'local') {
                 $entity->setPath($parameters['file']);
                 $entity->setFileInfoFromFile();
 
-                if (null === $entity->loadFile()) {
+                if ($entity->loadFile() === null) {
                     return $this->returnError('File '.$parameters['file'].' was not found in the asset directory.', Response::HTTP_BAD_REQUEST);
                 }
-            } elseif ('remote' === $parameters['storageLocation']) {
+            } elseif ($parameters['storageLocation'] === 'remote') {
                 $parameters['remotePath'] = $parameters['file'];
                 $entity->setTitle($parameters['title']);
                 $entity->setStorageLocation('remote');
@@ -99,7 +99,7 @@ class AssetApiController extends CommonApiController
             }
 
             unset($parameters['file']);
-        } elseif ('new' === $action) {
+        } elseif ($action === 'new') {
             return $this->returnError('File of the asset is required.', Response::HTTP_BAD_REQUEST);
         }
 

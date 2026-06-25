@@ -11,7 +11,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 #[\PHPUnit\Framework\Attributes\CoversClass(InstagramIntegration::class)]
 class InstagramIntegrationTest extends AbstractIntegrationTestCase
 {
-    private InstagramIntegration $integration;
 
     /**
      * @var Translator&MockObject
@@ -22,6 +21,7 @@ class InstagramIntegrationTest extends AbstractIntegrationTestCase
      * @var IntegrationHelper&MockObject
      */
     protected $integrationHelper;
+    private InstagramIntegration $integration;
 
     protected function setUp(): void
     {

@@ -16,35 +16,6 @@ abstract class DateOptionAbstract implements FilterDecoratorInterface
     }
 
     /**
-     * This function is responsible for setting date. $this->dateTimeHelper holds date with midnight today.
-     * Eg. +1 day for "tomorrow", -1 for yesterday etc.
-     */
-    abstract protected function modifyBaseDate(DateTimeHelper $dateTimeHelper);
-
-    /**
-     * This function is responsible for date modification for between operator.
-     * Eg. +1 day for "today", "tomorrow" and "yesterday", +1 week for "this week", "last week", "next week" etc.
-     *
-     * @return string
-     */
-    abstract protected function getModifierForBetweenRange();
-
-    /**
-     * This function returns a value if between range is needed. Could return string for like operator or array for between operator
-     * Eg. //LIKE 2018-01-23% for today, //LIKE 2017-12-% for last month, //LIKE 2017-% for last year, array for this week.
-     *
-     * @return string|array
-     */
-    abstract protected function getValueForBetweenRange(DateTimeHelper $dateTimeHelper);
-
-    /**
-     * This function returns an operator if between range is needed. Could return like or between.
-     *
-     * @return string
-     */
-    abstract protected function getOperatorForBetweenRange(ContactSegmentFilterCrate $leadSegmentFilterCrate);
-
-    /**
      * @return string|null
      */
     public function getField(ContactSegmentFilterCrate $contactSegmentFilterCrate)
@@ -123,4 +94,33 @@ abstract class DateOptionAbstract implements FilterDecoratorInterface
     {
         return $this->dateDecorator->getWhere($contactSegmentFilterCrate);
     }
+
+    /**
+     * This function is responsible for setting date. $this->dateTimeHelper holds date with midnight today.
+     * Eg. +1 day for "tomorrow", -1 for yesterday etc.
+     */
+    abstract protected function modifyBaseDate(DateTimeHelper $dateTimeHelper);
+
+    /**
+     * This function is responsible for date modification for between operator.
+     * Eg. +1 day for "today", "tomorrow" and "yesterday", +1 week for "this week", "last week", "next week" etc.
+     *
+     * @return string
+     */
+    abstract protected function getModifierForBetweenRange();
+
+    /**
+     * This function returns a value if between range is needed. Could return string for like operator or array for between operator
+     * Eg. //LIKE 2018-01-23% for today, //LIKE 2017-12-% for last month, //LIKE 2017-% for last year, array for this week.
+     *
+     * @return string|array
+     */
+    abstract protected function getValueForBetweenRange(DateTimeHelper $dateTimeHelper);
+
+    /**
+     * This function returns an operator if between range is needed. Could return like or between.
+     *
+     * @return string
+     */
+    abstract protected function getOperatorForBetweenRange(ContactSegmentFilterCrate $leadSegmentFilterCrate);
 }

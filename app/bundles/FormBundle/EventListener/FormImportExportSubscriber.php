@@ -46,7 +46,7 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
     public function onFormExport(EntityExportEvent $event): void
     {
-        if (Form::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Form::ENTITY_NAME) {
             return;
         }
 
@@ -109,7 +109,7 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
     public function onFormImport(EntityImportEvent $event): void
     {
-        if (Form::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== Form::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -149,7 +149,7 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (Form::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Form::ENTITY_NAME) {
             return;
         }
 

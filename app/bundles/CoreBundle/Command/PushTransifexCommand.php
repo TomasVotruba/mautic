@@ -89,7 +89,7 @@ EOT
                 );
 
                 try {
-                    if (false === $content) {
+                    if ($content === false) {
                         throw new \RuntimeException('Unable to read file '.$file);
                     }
 

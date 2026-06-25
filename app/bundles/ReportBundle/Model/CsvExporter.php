@@ -23,7 +23,7 @@ class CsvExporter
      */
     public function export(ReportDataResult $reportDataResult, $handle, $page = 1): void
     {
-        if (1 === $page) {
+        if ($page === 1) {
             $this->putHeader($reportDataResult, $handle);
         }
 
@@ -31,7 +31,7 @@ class CsvExporter
             $row = [];
             foreach ($data as $k => $v) {
                 $type       = $reportDataResult->getType($k);
-                $typeString = 'string' !== $type;
+                $typeString = $type !== 'string';
                 $row[]      = $typeString ? $this->formatterHelper->_($v, $type, true) : $v;
             }
             $this->putRow($handle, $row);

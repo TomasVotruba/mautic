@@ -98,40 +98,6 @@ class ListModelTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    /** @param array<int, mixed> $getLookupResultsReturn */
-    private function prepareMockForTestGetSourcesLists(array $getLookupResultsReturn): void
-    {
-        $coreParametersHelper     = $this->createMock(CoreParametersHelper::class);
-        $leadSegment              = $this->createMock(ContactSegmentService::class);
-        $segmentChartQueryFactory = $this->createMock(SegmentChartQueryFactory::class);
-        $requestStack             = $this->createMock(RequestStack::class);
-        $categoryModel            = $this->createMock(CategoryModel::class);
-        $categoryModel->expects($this->once())->method('getLookupResults')->willReturn($getLookupResultsReturn);
-        $segmentCountCacheHelperMock = $this->createMock(SegmentCountCacheHelper::class);
-        $doNotContactRepositoryMock  = $this->createMock(DoNotContactRepository::class);
-
-        $mockListModel = $this->getMockBuilder(ListModel::class)
-            ->setConstructorArgs([
-                $categoryModel,
-                $coreParametersHelper,
-                $leadSegment,
-                $segmentChartQueryFactory,
-                $requestStack,
-                $segmentCountCacheHelperMock,
-                $doNotContactRepositoryMock,
-                $this->createMock(EntityManagerInterface::class),
-                $this->createMock(CorePermissions::class),
-                $this->createMock(EventDispatcherInterface::class),
-                $this->createMock(UrlGeneratorInterface::class),
-                $this->createMock(Translator::class),
-                $this->createMock(UserHelper::class),
-                $this->createMock(LoggerInterface::class)])
-            ->onlyMethods([])
-            ->getMock();
-
-        $this->fixture = $mockListModel;
-    }
-
     /** @return array<int, array{0: array<int, mixed>, 1: string|null, 2: array<string|int, mixed>}> */
     public static function sourceTypeTestDataProvider(): array
     {
@@ -387,6 +353,40 @@ class ListModelTest extends TestCase
             ->willReturn(true);
 
         self::assertTrue($this->model->leadListExists($segmentId));
+    }
+
+    /** @param array<int, mixed> $getLookupResultsReturn */
+    private function prepareMockForTestGetSourcesLists(array $getLookupResultsReturn): void
+    {
+        $coreParametersHelper     = $this->createMock(CoreParametersHelper::class);
+        $leadSegment              = $this->createMock(ContactSegmentService::class);
+        $segmentChartQueryFactory = $this->createMock(SegmentChartQueryFactory::class);
+        $requestStack             = $this->createMock(RequestStack::class);
+        $categoryModel            = $this->createMock(CategoryModel::class);
+        $categoryModel->expects($this->once())->method('getLookupResults')->willReturn($getLookupResultsReturn);
+        $segmentCountCacheHelperMock = $this->createMock(SegmentCountCacheHelper::class);
+        $doNotContactRepositoryMock  = $this->createMock(DoNotContactRepository::class);
+
+        $mockListModel = $this->getMockBuilder(ListModel::class)
+            ->setConstructorArgs([
+                $categoryModel,
+                $coreParametersHelper,
+                $leadSegment,
+                $segmentChartQueryFactory,
+                $requestStack,
+                $segmentCountCacheHelperMock,
+                $doNotContactRepositoryMock,
+                $this->createMock(EntityManagerInterface::class),
+                $this->createMock(CorePermissions::class),
+                $this->createMock(EventDispatcherInterface::class),
+                $this->createMock(UrlGeneratorInterface::class),
+                $this->createMock(Translator::class),
+                $this->createMock(UserHelper::class),
+                $this->createMock(LoggerInterface::class)])
+            ->onlyMethods([])
+            ->getMock();
+
+        $this->fixture = $mockListModel;
     }
 
     private function mockLeadList(int $id): LeadList

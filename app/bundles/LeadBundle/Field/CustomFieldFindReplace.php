@@ -104,7 +104,7 @@ final class CustomFieldFindReplace
             $value = trim($value);
         }
 
-        if ('' === $value) {
+        if ($value === '') {
             return null;
         }
 

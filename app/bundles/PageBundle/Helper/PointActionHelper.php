@@ -52,7 +52,7 @@ class PointActionHelper
         $lead          = $eventDetails->getLead();
         $urlWithSqlWC  = str_replace('*', '%', $limitToUrl);
 
-        if (isset($action['properties']['first_time']) && true === $action['properties']['first_time']) {
+        if (isset($action['properties']['first_time']) && $action['properties']['first_time'] === true) {
             $hitStats = $hitRepository->getDwellTimesForUrl($urlWithSqlWC, ['leadId' => $lead->getId()]);
             if (isset($hitStats['count']) && $hitStats['count']) {
                 $changePoints['first_time'] = false;

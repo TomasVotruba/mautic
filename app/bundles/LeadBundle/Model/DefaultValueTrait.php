@@ -26,7 +26,7 @@ trait DefaultValueTrait
             // Prevent defaults from overwriting values already set
             $value = $entity->getFieldValue($alias);
 
-            if ((null === $value || '' === $value) && '' !== $field['defaultValue'] && null !== $field['defaultValue']) {
+            if (($value === null || $value === '') && $field['defaultValue'] !== '' && $field['defaultValue'] !== null) {
                 $entity->addUpdatedField($alias, $field['defaultValue']);
             }
         }

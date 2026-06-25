@@ -147,7 +147,7 @@ class VtigerIntegration extends CrmAbstractIntegration
                 if (!empty($vTigerObjects) && is_array($vTigerObjects)) {
                     foreach ($vTigerObjects as $object) {
                         // The object key for contacts should be 0 for some BC reasons
-                        if ('contacts' == $object) {
+                        if ($object == 'contacts') {
                             $object = 0;
                         }
 
@@ -202,7 +202,7 @@ class VtigerIntegration extends CrmAbstractIntegration
      */
     public function getFormNotes($section)
     {
-        if ('leadfield_match' == $section) {
+        if ($section == 'leadfield_match') {
             return ['mautic.vtiger.form.field_match_notes', 'info'];
         }
 
@@ -224,7 +224,7 @@ class VtigerIntegration extends CrmAbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ($formArea == 'features') {
             $builder->add(
                 'objects',
                 ChoiceType::class,

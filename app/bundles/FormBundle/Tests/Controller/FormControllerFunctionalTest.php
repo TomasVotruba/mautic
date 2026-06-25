@@ -28,7 +28,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
     {
         parent::setUp();
 
-        if ('testLabelsForFormAction' === $this->name()) {
+        if ($this->name() === 'testLabelsForFormAction') {
             $this->truncateTables('assets', 'categories', 'emails', 'lead_lists');
         }
     }
@@ -585,23 +585,6 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @param array<string, int|string|array<mixed>> $properties
-     */
-    private function createFormAction(Form $form, string $type, array $properties = []): Action
-    {
-        $action = new Action();
-
-        $action->setName($type);
-        $action->setType($type);
-        $action->setForm($form);
-        $action->setProperties($properties);
-
-        $this->em->persist($action);
-
-        return $action;
-    }
-
     public function testCloneActionWithCondition(): void
     {
         $form = $this->createForm('Conditional Form', 'Conditional Form');
@@ -752,6 +735,23 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotNull($oninputAttr, 'Slider input should have oninput attribute');
         $this->assertStringContainsString('document.getElementById', $oninputAttr, 'Slider input should use getElementById to target output element');
         $this->assertStringContainsString('.textContent = this.value', $oninputAttr, 'Slider input should set output value to input value');
+    }
+
+    /**
+     * @param array<string, int|string|array<mixed>> $properties
+     */
+    private function createFormAction(Form $form, string $type, array $properties = []): Action
+    {
+        $action = new Action();
+
+        $action->setName($type);
+        $action->setType($type);
+        $action->setForm($form);
+        $action->setProperties($properties);
+
+        $this->em->persist($action);
+
+        return $action;
     }
 
     private function createForm(string $name, string $alias): Form

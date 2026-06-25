@@ -214,6 +214,16 @@ class Asset extends FormEntity implements UuidInterface
         $this->initializeProjects();
     }
 
+    /**
+     * Clone magic function.
+     */
+    public function __clone()
+    {
+        $this->id = null;
+
+        parent::__clone();
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -329,16 +339,6 @@ class Asset extends FormEntity implements UuidInterface
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'asset');
-    }
-
-    /**
-     * Clone magic function.
-     */
-    public function __clone()
-    {
-        $this->id = null;
-
-        parent::__clone();
     }
 
     /**
@@ -487,7 +487,7 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function getStorageLocation()
     {
-        if (null === $this->storageLocation) {
+        if ($this->storageLocation === null) {
             $this->storageLocation = 'local';
         }
 
@@ -497,7 +497,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * @param ?string $path
      */
-    public function setPath($path): Asset
+    public function setPath($path): self
     {
         $this->isChanged('path', $path);
         $this->path = $path;
@@ -518,7 +518,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * @param ?string $remotePath
      */
-    public function setRemotePath($remotePath): Asset
+    public function setRemotePath($remotePath): self
     {
         $this->isChanged('remotePath', $remotePath);
         $this->remotePath = $remotePath;
@@ -730,16 +730,16 @@ class Asset extends FormEntity implements UuidInterface
         $this->setOriginalFileName($fileName);
 
         // set the asset title as original file name if title is missing
-        if (null === $this->getTitle()) {
+        if ($this->getTitle() === null) {
             $this->setTitle($fileName);
         }
     }
 
     public function preUpload(): void
     {
-        if (null !== $this->getFile()) {
+        if ($this->getFile() !== null) {
             // set the asset title as original file name if title is missing
-            if (null === $this->getTitle()) {
+            if ($this->getTitle() === null) {
                 $this->setTitle($this->file->getClientOriginalName());
             }
 
@@ -751,7 +751,7 @@ class Asset extends FormEntity implements UuidInterface
                 $extension = pathinfo($this->originalFileName, PATHINFO_EXTENSION);
             }
             $this->path = $filename.'.'.$extension;
-        } elseif ($this->isRemote() && null !== $this->getRemotePath()) {
+        } elseif ($this->isRemote() && $this->getRemotePath() !== null) {
             $this->setFileNameFromRemote();
         }
     }
@@ -759,7 +759,7 @@ class Asset extends FormEntity implements UuidInterface
     public function upload(): void
     {
         // the file property can be empty if the field is not required
-        if (null === $this->getFile()) {
+        if ($this->getFile() === null) {
             // check for the remote and set type data
             if ($this->isRemote()) {
                 $this->setFileInfoFromFile();
@@ -834,7 +834,7 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function getAbsolutePath()
     {
-        return null === $this->path
+        return $this->path === null
             ? null
             : $this->getUploadDir().'/'.$this->path;
     }
@@ -846,7 +846,7 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function getAbsoluteTempPath()
     {
-        return null === $this->tempId || null === $this->tempName
+        return $this->tempId === null || $this->tempName === null
             ? null
             : $this->getAbsoluteTempDir().'/'.$this->tempName;
     }
@@ -858,23 +858,9 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function getAbsoluteTempDir()
     {
-        return null === $this->tempId
+        return $this->tempId === null
             ? null
             : $this->getUploadDir().'/tmp/'.$this->tempId;
-    }
-
-    /**
-     * Returns absolute path to upload dir.
-     *
-     * @return string
-     */
-    protected function getUploadDir()
-    {
-        if ($this->uploadDir) {
-            return $this->uploadDir;
-        }
-
-        return 'media/files';
     }
 
     /**
@@ -889,21 +875,6 @@ class Asset extends FormEntity implements UuidInterface
         $this->uploadDir = $uploadDir;
 
         return $this;
-    }
-
-    /**
-     * Returns maximal uploadable size in bytes.
-     * If not set, 6000000 is default.
-     *
-     * @return string
-     */
-    protected function getMaxSize()
-    {
-        if ($this->maxSize) {
-            return $this->maxSize;
-        }
-
-        return 6_000_000;
     }
 
     /**
@@ -935,7 +906,7 @@ class Asset extends FormEntity implements UuidInterface
             return pathinfo(parse_url($this->getRemotePath(), PHP_URL_PATH), PATHINFO_EXTENSION);
         }
 
-        if (null === $this->loadFile()) {
+        if ($this->loadFile() === null) {
             return '';
         }
 
@@ -965,7 +936,7 @@ class Asset extends FormEntity implements UuidInterface
             return $fileInfo;
         }
 
-        if (null === $this->loadFile()) {
+        if ($this->loadFile() === null) {
             return '';
         }
 
@@ -985,7 +956,7 @@ class Asset extends FormEntity implements UuidInterface
 
         $file = $this->loadFile();
 
-        if (null === $file) {
+        if ($file === null) {
             return '';
         }
 
@@ -1252,7 +1223,7 @@ class Asset extends FormEntity implements UuidInterface
                 $this->setSize(round(curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD)));
             }
 
-            if (null === $this->loadFile()) {
+            if ($this->loadFile() === null) {
                 return 0;
             }
 
@@ -1284,7 +1255,7 @@ class Asset extends FormEntity implements UuidInterface
     {
         $value = ini_get($setting);
 
-        if ('-1' === $value || '0' === $value) {
+        if ($value === '-1' || $value === '0') {
             return PHP_INT_MAX;
         }
 
@@ -1318,13 +1289,13 @@ class Asset extends FormEntity implements UuidInterface
     {
         $unit = strtoupper($unit);
 
-        if ((!$unit && $size >= 1 << 30) || 'GB' == $unit || 'G' == $unit) {
+        if ((!$unit && $size >= 1 << 30) || $unit == 'GB' || $unit == 'G') {
             return [$size / (1 << 30), 'GB'];
         }
-        if ((!$unit && $size >= 1 << 20) || 'MB' == $unit || 'M' == $unit) {
+        if ((!$unit && $size >= 1 << 20) || $unit == 'MB' || $unit == 'M') {
             return [$size / (1 << 20), 'MB'];
         }
-        if ((!$unit && $size >= 1 << 10) || 'KB' == $unit || 'K' == $unit) {
+        if ((!$unit && $size >= 1 << 10) || $unit == 'KB' || $unit == 'K') {
             return [$size / (1 << 10), 'KB'];
         }
 
@@ -1354,12 +1325,12 @@ class Asset extends FormEntity implements UuidInterface
 
     public function isLocal(): bool
     {
-        return 'local' === $this->storageLocation;
+        return $this->storageLocation === 'local';
     }
 
     public function isRemote(): bool
     {
-        return 'remote' === $this->storageLocation;
+        return $this->storageLocation === 'remote';
     }
 
     /**
@@ -1388,7 +1359,7 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function getSlug(): string
     {
-        if (null === $this->id) {
+        if ($this->id === null) {
             throw new \LogicException('This asset must be saved before it can be used in a URL.');
         }
 
@@ -1429,13 +1400,42 @@ class Asset extends FormEntity implements UuidInterface
 
         $chunk = curl_exec($ch);
 
-        if (false === $chunk) {
+        if ($chunk === false) {
             return '';
         }
 
         $mimeType = (string) (new \finfo(FILEINFO_MIME_TYPE))->buffer($chunk);
 
         return $this->extractMimeType($mimeType);
+    }
+
+    /**
+     * Returns absolute path to upload dir.
+     *
+     * @return string
+     */
+    protected function getUploadDir()
+    {
+        if ($this->uploadDir) {
+            return $this->uploadDir;
+        }
+
+        return 'media/files';
+    }
+
+    /**
+     * Returns maximal uploadable size in bytes.
+     * If not set, 6000000 is default.
+     *
+     * @return string
+     */
+    protected function getMaxSize()
+    {
+        if ($this->maxSize) {
+            return $this->maxSize;
+        }
+
+        return 6_000_000;
     }
 
     private function extractMimeType(string $mimeType): string

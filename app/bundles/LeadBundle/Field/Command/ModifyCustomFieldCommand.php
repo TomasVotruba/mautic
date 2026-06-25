@@ -95,7 +95,7 @@ final class ModifyCustomFieldCommand extends Command
         $data           = [];
 
         foreach ($inputCsv as $row) {
-            if (false === $row) {
+            if ($row === false) {
                 // skip the last empty row
                 continue;
             }

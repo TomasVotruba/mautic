@@ -30,29 +30,29 @@ final class ContactTrackingService implements ContactTrackingServiceInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if ($request === null) {
             return null;
         }
 
         $trackingId = $this->getTrackedIdentifier();
-        if (null === $trackingId) {
+        if ($trackingId === null) {
             return null;
         }
 
         $leadId = $this->cookieHelper->getCookie($trackingId);
-        if (null === $leadId) {
+        if ($leadId === null) {
             $leadId = $request->get('mtc_id');
-            if (null === $leadId) {
+            if ($leadId === null) {
                 return null;
             }
         }
 
         $lead = $this->leadRepository->getEntity($leadId);
-        if (null === $lead) {
+        if ($lead === null) {
             // Check if this contact was merged into another and if so, return the new contact
             $lead = $this->mergeRecordRepository->findMergedContact($leadId);
 
-            if (null === $lead) {
+            if ($lead === null) {
                 return null;
             }
 

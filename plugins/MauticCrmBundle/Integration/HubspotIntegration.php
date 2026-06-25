@@ -207,7 +207,7 @@ class HubspotIntegration extends CrmAbstractIntegration
                                 $hubsFields[$object][$fieldInfo['name']] = [
                                     'type'     => 'string',
                                     'label'    => $fieldInfo['label'],
-                                    'required' => ('email' === $fieldInfo['name']),
+                                    'required' => ($fieldInfo['name'] === 'email'),
                                 ];
                                 if (!empty($fieldInfo['readOnlyValue'])) {
                                     $hubsFields[$object][$fieldInfo['name']]['update_mautic'] = 1;
@@ -232,27 +232,6 @@ class HubspotIntegration extends CrmAbstractIntegration
     }
 
     /**
-     * @param array $objects
-     *
-     * @return array
-     */
-    protected function cleanPriorityFields($fieldsToUpdate, $objects = null)
-    {
-        if (null === $objects) {
-            $objects = ['Leads', 'Contacts'];
-        }
-
-        if (isset($fieldsToUpdate['leadFields'])) {
-            // Pass in the whole config
-            $fields = $fieldsToUpdate['leadFields'];
-        } else {
-            $fields = array_flip($fieldsToUpdate);
-        }
-
-        return $this->prepareFieldsForSync($fields, $fieldsToUpdate, $objects);
-    }
-
-    /**
      * Format the lead data to the structure that HubSpot requires for the createOrUpdate request.
      *
      * @param array $leadData All the lead fields mapped
@@ -263,7 +242,7 @@ class HubspotIntegration extends CrmAbstractIntegration
 
         if (!$updateLink) {
             foreach ($leadData as $field => $value) {
-                if ('lifecyclestage' == $field || 'associatedcompanyid' == $field) {
+                if ($field == 'lifecyclestage' || $field == 'associatedcompanyid') {
                     continue;
                 }
                 $formattedLeadData['properties'][] = [
@@ -300,7 +279,7 @@ class HubspotIntegration extends CrmAbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('keys' === $formArea) {
+        if ($formArea === 'keys') {
             $builder->add(
                 self::ACCESS_KEY,
                 TextType::class,
@@ -328,7 +307,7 @@ class HubspotIntegration extends CrmAbstractIntegration
                 ]
             );
         }
-        if ('features' == $formArea) {
+        if ($formArea == 'features') {
             $builder->add(
                 'objects',
                 ChoiceType::class,
@@ -360,9 +339,9 @@ class HubspotIntegration extends CrmAbstractIntegration
             $value              = str_replace(';', '|', $field['value']);
             $fieldsValues[$key] = $value;
         }
-        if ('Lead' == $object && !isset($fieldsValues['email'])) {
+        if ($object == 'Lead' && !isset($fieldsValues['email'])) {
             foreach ($data['identity-profiles'][0]['identities'] as $identifiedProfile) {
-                if ('EMAIL' == $identifiedProfile['type']) {
+                if ($identifiedProfile['type'] == 'EMAIL') {
                     $fieldsValues['email'] = $identifiedProfile['value'];
                 }
             }
@@ -638,6 +617,27 @@ class HubspotIntegration extends CrmAbstractIntegration
         foreach ($mappedData as &$data) {
             $data = str_replace('|', ';', $data);
         }
+    }
+
+    /**
+     * @param array $objects
+     *
+     * @return array
+     */
+    protected function cleanPriorityFields($fieldsToUpdate, $objects = null)
+    {
+        if ($objects === null) {
+            $objects = ['Leads', 'Contacts'];
+        }
+
+        if (isset($fieldsToUpdate['leadFields'])) {
+            // Pass in the whole config
+            $fields = $fieldsToUpdate['leadFields'];
+        } else {
+            $fields = array_flip($fieldsToUpdate);
+        }
+
+        return $this->prepareFieldsForSync($fields, $fieldsToUpdate, $objects);
     }
 
     /**

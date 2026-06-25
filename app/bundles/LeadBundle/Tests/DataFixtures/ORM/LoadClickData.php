@@ -101,6 +101,14 @@ class LoadClickData extends AbstractFixture implements OrderedFixtureInterface
     }
 
     /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return 6;
+    }
+
+    /**
      * @param array<string,mixed> $hitConfig
      */
     protected function createHit(array $hitConfig, ObjectManager $manager): void
@@ -124,13 +132,5 @@ class LoadClickData extends AbstractFixture implements OrderedFixtureInterface
         $this->setReference($hitConfig['alias'], $hit);
         $manager->persist($hit);
         $manager->flush();
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder()
-    {
-        return 6;
     }
 }

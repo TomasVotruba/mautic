@@ -386,7 +386,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
                     yield $quotesName.', '.$spaceName.', '.$newLineName => [
                         'Ahoy <i>{contactfield=email}</i><a href='.$href.'>Mautic</a>',
-                        'single quote' === $quotesName,
+                        $quotesName === 'single quote',
                     ];
                 }
             }
@@ -464,8 +464,8 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var MauticMessage[] $messages */
         $messages   = self::getMailerMessages();
-        $messageOne = array_values(array_filter($messages, fn ($message) => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
-        $messageTwo = array_values(array_filter($messages, fn ($message) => 'contact@two.email' === $message->getTo()[0]->getAddress()))[0];
+        $messageOne = array_values(array_filter($messages, fn ($message) => $message->getTo()[0]->getAddress() === 'contact@one.email'))[0];
+        $messageTwo = array_values(array_filter($messages, fn ($message) => $message->getTo()[0]->getAddress() === 'contact@two.email'))[0];
 
         Assert::assertSame('Subject A', $messageOne->getSubject());
         Assert::assertMatchesRegularExpression('#Ahoy <i>contact@one\.email<\/i><a href="https:\/\/localhost\/r\/[a-z0-9]+\?ct=[a-zA-Z0-9%]+">Mautic<\/a><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^"]+" alt="" \/>#', $messageOne->getHtmlBody());
@@ -706,7 +706,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
         self::assertResponseIsSuccessful();
         $errString = sprintf('The Dynamic Content slot &#039;%s&#039; is not of type &#039;text&#039;.', $dwc->getSlotName());
-        if (TypeList::TEXT === $type) {
+        if ($type === TypeList::TEXT) {
             $this->assertStringNotContainsString($errString, $this->client->getResponse()->getContent());
         } else {
             $this->assertStringContainsString($errString, $this->client->getResponse()->getContent());
@@ -766,51 +766,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             'The record you are updating has been changed by someone else in the meantime. Please refresh the browser window and re-submit your changes.',
             $crawler->text(), 'There should be an optimistic error as the form was not refreshed after the previous submission.',
         );
-    }
-
-    /**
-     * @param array<mixed> $emails
-     *
-     * @throws \Doctrine\ORM\Exception\ORMException
-     */
-    private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
-    {
-        foreach ($emails as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-
-            if ($contactCallback) {
-                $contactCallback($contact, $emailAddress);
-            }
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
-    }
-
-    /**
-     * Helper method to send batch email and assert common response expectations.
-     */
-    private function sendBatchEmail(Email $email, int $pending = 2, int $batchLimit = 10, bool $setCsrf = false): void
-    {
-        if ($setCsrf) {
-            $this->setCsrfHeader();
-        }
-
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => $pending,
-            'batchLimit' => $batchLimit,
-        ]);
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
     }
 
     public function testPublishPermissionOnNewEmailForAdminUser(): void
@@ -1084,7 +1039,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             $member = new ListLead();
             $member->setLead($contact);
             $member->setList($segment);
-            if ('test@three.email' === $emailAddress) {
+            if ($emailAddress === 'test@three.email') {
                 $member->setDateAdded(new \DateTime('-10 minutes'));
             } else {
                 $member->setDateAdded(new \DateTime('-1 hour'));
@@ -1131,7 +1086,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             $member = new ListLead();
             $member->setLead($contact);
             $member->setList($segment);
-            if ('test@three.email' === $emailAddress) {
+            if ($emailAddress === 'test@three.email') {
                 $member->setDateAdded(new \DateTime('-10 minutes'));
             } else {
                 $member->setDateAdded(new \DateTime('-1 hour'));
@@ -1179,30 +1134,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNull($email->getPublishUp());
     }
 
-    private function createDynamicContent(string $type): DynamicContent
-    {
-        $dynamicContent = new DynamicContent();
-        $dynamicContent->setName('Dynamic content');
-        $dynamicContent->setType($type);
-        $dynamicContent->setIsCampaignBased(false);
-        $dynamicContent->setSlotName('slot-name');
-        $dynamicContent->setContent('text content');
-        $dynamicContent->setFilters([
-            [
-                'glue'     => 'and',
-                'field'    => 'email',
-                'object'   => 'lead',
-                'type'     => 'email',
-                'filter'   => null,
-                'display'  => null,
-                'operator' => '!empty',
-            ],
-        ]);
-        $this->em->persist($dynamicContent);
-
-        return $dynamicContent;
-    }
-
     /**
      * @throws \Doctrine\ORM\Exception\ORMException
      * @throws OptimisticLockException
@@ -1230,7 +1161,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form = $crawler->selectButton('Save')->form();
         $form->setValues([
             'emailform[name]'            => 'Child Email - Updated',
-            "emailform[$parentField]"    => $parentEmail->getId(),
+            "emailform[{$parentField}]"    => $parentEmail->getId(),
         ]);
 
         $this->client->submit($form);
@@ -1239,7 +1170,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         /** @var Email $updatedChild */
         $updatedChild      = $this->em->find(Email::class, $childEmail->getId());
         $translationParent = $updatedChild->getTranslationParent();
-        \assert($translationParent instanceof Email || null === $translationParent);
+        \assert($translationParent instanceof Email || $translationParent === null);
 
         $this->assertNotNull($translationParent, 'Translation parent should be set.');
         $this->assertSame(
@@ -1424,6 +1355,75 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         // Should contain validation messages for both name length and subject being required
         $content = $response->getContent();
         $this->assertStringContainsString('Email name maximum length is 190 characters', $content);
+    }
+
+    /**
+     * @param array<mixed> $emails
+     *
+     * @throws \Doctrine\ORM\Exception\ORMException
+     */
+    private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
+    {
+        foreach ($emails as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            if ($contactCallback) {
+                $contactCallback($contact, $emailAddress);
+            }
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            $member->setDateAdded(new \DateTime());
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+    }
+
+    /**
+     * Helper method to send batch email and assert common response expectations.
+     */
+    private function sendBatchEmail(Email $email, int $pending = 2, int $batchLimit = 10, bool $setCsrf = false): void
+    {
+        if ($setCsrf) {
+            $this->setCsrfHeader();
+        }
+
+        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
+            'id'         => $email->getId(),
+            'pending'    => $pending,
+            'batchLimit' => $batchLimit,
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
+        $this->assertQueuedEmailCount(2);
+    }
+
+    private function createDynamicContent(string $type): DynamicContent
+    {
+        $dynamicContent = new DynamicContent();
+        $dynamicContent->setName('Dynamic content');
+        $dynamicContent->setType($type);
+        $dynamicContent->setIsCampaignBased(false);
+        $dynamicContent->setSlotName('slot-name');
+        $dynamicContent->setContent('text content');
+        $dynamicContent->setFilters([
+            [
+                'glue'     => 'and',
+                'field'    => 'email',
+                'object'   => 'lead',
+                'type'     => 'email',
+                'filter'   => null,
+                'display'  => null,
+                'operator' => '!empty',
+            ],
+        ]);
+        $this->em->persist($dynamicContent);
+
+        return $dynamicContent;
     }
 
     private function createSegment(string $name, string $alias): LeadList

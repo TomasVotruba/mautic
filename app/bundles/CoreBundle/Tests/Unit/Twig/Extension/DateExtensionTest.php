@@ -21,7 +21,7 @@ class DateExtensionTest extends TestCase
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')
             ->willReturnCallback(function ($id, $parameters = []) {
-                if (0 === strpos($id, 'mautic.core.date.')) {
+                if (strpos($id, 'mautic.core.date.') === 0) {
                     $unit = str_replace('mautic.core.date.', '', $id);
 
                     return $parameters['%count%'].' '.$unit.($parameters['%count%'] > 1 ? 's' : '');
@@ -42,12 +42,6 @@ class DateExtensionTest extends TestCase
         );
 
         $this->dateExtension = new DateExtension($this->dateHelper);
-    }
-
-    // Add this method to allow injection of a mocked DateHelper
-    protected function createDateExtensionWithMockedHelper(DateHelper $mockedHelper): DateExtension
-    {
-        return new DateExtension($mockedHelper);
     }
 
     public function testGetFunctions(): void
@@ -140,5 +134,11 @@ class DateExtensionTest extends TestCase
         $this->assertStringContainsString('4 hours', $result);
         $this->assertStringContainsString('5 minutes', $result);
         $this->assertStringContainsString('6 seconds', $result);
+    }
+
+    // Add this method to allow injection of a mocked DateHelper
+    protected function createDateExtensionWithMockedHelper(DateHelper $mockedHelper): DateExtension
+    {
+        return new DateExtension($mockedHelper);
     }
 }

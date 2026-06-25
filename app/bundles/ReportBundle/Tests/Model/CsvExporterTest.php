@@ -169,7 +169,7 @@ class CsvExporterTest extends \PHPUnit\Framework\TestCase
 
         $dateTimeHelper = new DateTimeHelper();
         foreach ($expected as $key => $expect) {
-            if (0 === $key) {
+            if ($key === 0) {
                 continue;
             }
             if (!empty($expect[3])) {

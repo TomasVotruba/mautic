@@ -39,6 +39,13 @@ class FileControllerTest extends MauticMysqlTestCase
         Assert::assertEquals('The uploaded image does not have an allowed mime type', $responseData['error']['message']);
     }
 
+    protected function beforeTearDown(): void
+    {
+        if ($this->uploadedFilePath && file_exists($this->uploadedFilePath)) {
+            unlink($this->uploadedFilePath);
+        }
+    }
+
     private function createUploadFile(string $fileName, string $tmpFile): UploadedFile
     {
         $filePath = $this->getFixurePath();
@@ -56,12 +63,5 @@ class FileControllerTest extends MauticMysqlTestCase
     private function getFixurePath(): string
     {
         return realpath(__DIR__.'/../../Fixtures/').'/';
-    }
-
-    protected function beforeTearDown(): void
-    {
-        if ($this->uploadedFilePath && file_exists($this->uploadedFilePath)) {
-            unlink($this->uploadedFilePath);
-        }
     }
 }

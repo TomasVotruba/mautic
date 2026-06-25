@@ -11,7 +11,7 @@ class BroadcastResult
     public function process(array $results): void
     {
         foreach ($results as $result) {
-            if (isset($result['sent']) && true === $result['sent']) {
+            if (isset($result['sent']) && $result['sent'] === true) {
                 $this->sent();
             } else {
                 $this->failed();

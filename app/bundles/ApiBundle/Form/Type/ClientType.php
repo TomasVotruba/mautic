@@ -34,17 +34,6 @@ class ClientType extends AbstractType
     ) {
     }
 
-    /**
-     * @return bool|mixed
-     */
-    private function getApiMode()
-    {
-        return $this->requestStack->getCurrentRequest()->get(
-            'api_mode',
-            $this->requestStack->getSession()->get('mautic.client.filter.api_mode', 'oauth2')
-        );
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $apiMode = $this->getApiMode();
@@ -165,6 +154,17 @@ class ClientType extends AbstractType
             [
                 'data_class' => $dataClass,
             ]
+        );
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    private function getApiMode()
+    {
+        return $this->requestStack->getCurrentRequest()->get(
+            'api_mode',
+            $this->requestStack->getSession()->get('mautic.client.filter.api_mode', 'oauth2')
         );
     }
 }

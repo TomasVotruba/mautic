@@ -74,7 +74,7 @@ class InsightModel extends CommonFormModel
 
     public function getEntity($id = null): ?PointInsight
     {
-        if (null === $id) {
+        if ($id === null) {
             return new PointInsight();
         }
 
@@ -138,7 +138,7 @@ class InsightModel extends CommonFormModel
         $winner   = $results[0];
         $maxScore = (int) $winner['score'];
 
-        if (0 === $maxScore) {
+        if ($maxScore === 0) {
             return false;
         }
 

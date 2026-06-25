@@ -46,7 +46,7 @@ class RemoveCommand extends Command
 
         $removeResult = $this->composer->remove($packageVendorAndName);
 
-        if (0 !== $removeResult->exitCode) {
+        if ($removeResult->exitCode !== 0) {
             $message = 'Error while removing plugin through Composer: '.$removeResult->output;
             $this->logger->error($message);
             $output->writeLn($message);

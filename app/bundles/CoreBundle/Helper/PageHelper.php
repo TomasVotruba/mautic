@@ -28,7 +28,7 @@ final class PageHelper implements PageHelperInterface
     {
         $currentPage = (int) (ceil($count / $this->getLimit())) ?: 1;
 
-        return (1 === $count) ? 1 : $currentPage;
+        return ($count === 1) ? 1 : $currentPage;
     }
 
     public function getStart(): int

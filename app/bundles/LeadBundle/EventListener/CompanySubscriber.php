@@ -106,7 +106,7 @@ class CompanySubscriber implements EventSubscriberInterface
 
     private function clearCompanyInLeadsCompanyFields(?string $companyName): void
     {
-        if (null === $companyName) {
+        if ($companyName === null) {
             return;
         }
         $connection = $this->entityManager->getConnection();

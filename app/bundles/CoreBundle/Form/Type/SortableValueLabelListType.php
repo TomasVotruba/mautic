@@ -45,7 +45,7 @@ class SortableValueLabelListType extends AbstractType
                 $data = $event->getData();
 
                 if (is_array($data)
-                    && (!isset($data['value']) || '' === $data['value'])
+                    && (!isset($data['value']) || $data['value'] === '')
                     && !empty($data['label'])
                 ) {
                     $data['value'] = $this->generateSlugFromLabel((string) $data['label']);
@@ -68,7 +68,7 @@ class SortableValueLabelListType extends AbstractType
     private function generateSlugFromLabel(string $label): string
     {
         $transliterated = InputHelper::transliterate($label);
-        if (false === $transliterated) {
+        if ($transliterated === false) {
             return '';
         }
         $alphanumeric = InputHelper::alphanum($transliterated, false, '_');

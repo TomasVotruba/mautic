@@ -46,7 +46,7 @@ trait EntityFieldsBuildFormTrait
         $mapped = !$isObject;
 
         foreach ($options['fields'] as $field) {
-            if (false === $field['isPublished'] || $field['object'] !== $object) {
+            if ($field['isPublished'] === false || $field['object'] !== $object) {
                 continue;
             }
             $attr       = ['class' => 'form-control'];
@@ -94,7 +94,7 @@ trait EntityFieldsBuildFormTrait
                         $properties['scale'] = (int) $properties['scale'];
                     }
 
-                    if ('' === $value) {
+                    if ($value === '') {
                         // Prevent transform errors
                         $value = null;
                     }
@@ -107,7 +107,7 @@ trait EntityFieldsBuildFormTrait
                             'label'         => $field['label'],
                             'label_attr'    => ['class' => 'control-label'],
                             'attr'          => $attr,
-                            'data'          => (null !== $value) ? (float) $value : $value,
+                            'data'          => ($value !== null) ? (float) $value : $value,
                             'mapped'        => $mapped,
                             'constraints'   => $constraints,
                             'scale'         => $properties['scale'],
@@ -142,7 +142,7 @@ trait EntityFieldsBuildFormTrait
                                 $value = null;
                             }
                         }
-                        if (DateTimeType::class === $type) {
+                        if ($type === DateTimeType::class) {
                             $opts['attr']['data-toggle'] = 'datetime';
                             $opts['model_timezone']      = 'UTC';
                             $opts['view_timezone']       = date_default_timezone_get();
@@ -150,7 +150,7 @@ trait EntityFieldsBuildFormTrait
                             $opts['with_seconds']        = true;
 
                             $opts['data'] = (!empty($value)) ? $dtHelper->toLocalString('Y-m-d H:i:s') : null;
-                        } elseif (DateType::class === $type) {
+                        } elseif ($type === DateType::class) {
                             $opts['attr']['data-toggle'] = 'date';
                             $opts['data']                = (!empty($value)) ? $dtHelper->toLocalString('Y-m-d') : null;
                         } else {
@@ -193,7 +193,7 @@ trait EntityFieldsBuildFormTrait
                 case SelectType::class:
                 case MultiselectType::class:
                 case BooleanType::class:
-                    if (MultiselectType::class === $type) {
+                    if ($type === MultiselectType::class) {
                         $constraints[] = new Length(['max' => 65535]);
                     }
 
@@ -207,23 +207,23 @@ trait EntityFieldsBuildFormTrait
 
                     $emptyValue = '';
 
-                    if (array_key_exists('use_nullable_yes_no_type', $options) && true === $options['use_nullable_yes_no_type'] && BooleanType::class === $type) {
+                    if (array_key_exists('use_nullable_yes_no_type', $options) && $options['use_nullable_yes_no_type'] === true && $type === BooleanType::class) {
                         $type       = NullableYesNoButtonGroupType::class;
                         $emptyValue = 'mautic.core.form.no_change';
                     } elseif (in_array($type, [SelectType::class, MultiselectType::class]) && !empty($properties['list'])) {
                         $typeProperties['choices']      = array_flip(FormFieldHelper::parseList($properties['list']));
                         $cleaningRules[$field['alias']] = 'raw';
                     }
-                    if (BooleanType::class === $type && !empty($properties['yes']) && !empty($properties['no'])) {
+                    if ($type === BooleanType::class && !empty($properties['yes']) && !empty($properties['no'])) {
                         $typeProperties['yes_label'] = $properties['yes'];
                         $typeProperties['no_label']  = $properties['no'];
                         $emptyValue                  = ' x ';
-                        if ('' !== $value && null !== $value) {
+                        if ($value !== '' && $value !== null) {
                             $value = (int) $value;
                         }
                     }
 
-                    $typeProperties['data']        = MultiselectType::class === $type ? FormFieldHelper::parseList($value) : $value;
+                    $typeProperties['data']        = $type === MultiselectType::class ? FormFieldHelper::parseList($value) : $value;
                     $typeProperties['placeholder'] = $emptyValue;
                     $builder->add(
                         $alias,

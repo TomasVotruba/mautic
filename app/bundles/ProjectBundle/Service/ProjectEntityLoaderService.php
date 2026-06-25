@@ -193,8 +193,8 @@ final class ProjectEntityLoaderService
 
             foreach ($metadata->getAssociationMappings() as $association) {
                 if (
-                    ClassMetadataInfo::MANY_TO_MANY === $association['type']
-                    && Project::class === $association['targetEntity']
+                    $association['type'] === ClassMetadataInfo::MANY_TO_MANY
+                    && $association['targetEntity'] === Project::class
                 ) {
                     $shortName  = $metadata->getReflectionClass()->getShortName();
                     $entityType = $this->normalizeEntityType(strtolower($shortName));
@@ -228,7 +228,7 @@ final class ProjectEntityLoaderService
         $allowedEntityTypes = [];
 
         foreach ($allEntityTypes as $entityType => $config) {
-            $hasPermission = 'view' === $permissionType
+            $hasPermission = $permissionType === 'view'
                 ? $this->hasViewPermissionForEntityType($config)
                 : $this->hasEditPermissionForEntityType($config);
 
@@ -275,8 +275,8 @@ final class ProjectEntityLoaderService
     {
         // Try possible translation keys in order
         $keys = [
-            "mautic.project.$entityType",
-            "mautic.$entityType.$entityType",
+            "mautic.project.{$entityType}",
+            "mautic.{$entityType}.{$entityType}",
         ];
 
         foreach ($keys as $key) {

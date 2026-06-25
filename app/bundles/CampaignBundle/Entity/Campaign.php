@@ -63,6 +63,9 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
     public const TABLE_NAME  = 'campaigns';
     public const ENTITY_NAME = 'campaign';
 
+    #[Groups(['campaign:read', 'campaign:write'])]
+    public ?\DateTimeInterface $deleted = null;
+
     /**
      * @var int
      */
@@ -92,9 +95,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
      */
     #[Groups(['campaign:read', 'campaign:write'])]
     private $publishDown;
-
-    #[Groups(['campaign:read', 'campaign:write'])]
-    public ?\DateTimeInterface $deleted = null;
 
     // see Mautic\CampaignBundle\Enum\RepublishBehavior for available values.
     #[Groups(['campaign:read', 'campaign:write'])]
@@ -276,48 +276,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
     public function convertToArray(): array
     {
         return get_object_vars($this);
-    }
-
-    /**
-     * @param string $prop
-     * @param mixed  $val
-     */
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ('category' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } elseif ('projects' === $prop) {
-            // Initialize project tracking on first change
-            if (!isset($this->changes['projects']['old'])) {
-                $currentProjects           = array_map(fn ($project) => $project->getName(), iterator_to_array($current));
-                $this->changes['projects'] = [
-                    'old' => $currentProjects,
-                    'new' => $currentProjects,
-                ];
-            }
-
-            // Update the new state based on the operation
-            if ($val instanceof Project) {
-                // Add project if not already in the list
-                $projectName = $val->getName();
-                if (!in_array($projectName, $this->changes['projects']['new'], true)) {
-                    $this->changes['projects']['new'][] = $projectName;
-                }
-            } else {
-                // Remove project from the list
-                $this->changes['projects']['new'] = array_values(
-                    array_diff($this->changes['projects']['new'], [$val])
-                );
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     public function getId(): ?int
@@ -764,6 +722,48 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
             'data-confirm-text' => 'mautic.campaign.form.confirmation.confirm_text',
             'data-cancel-text'  => 'mautic.campaign.form.confirmation.cancel_text',
         ];
+    }
+
+    /**
+     * @param string $prop
+     * @param mixed  $val
+     */
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+        if ($prop == 'category') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } elseif ($prop === 'projects') {
+            // Initialize project tracking on first change
+            if (!isset($this->changes['projects']['old'])) {
+                $currentProjects           = array_map(fn ($project) => $project->getName(), iterator_to_array($current));
+                $this->changes['projects'] = [
+                    'old' => $currentProjects,
+                    'new' => $currentProjects,
+                ];
+            }
+
+            // Update the new state based on the operation
+            if ($val instanceof Project) {
+                // Add project if not already in the list
+                $projectName = $val->getName();
+                if (!in_array($projectName, $this->changes['projects']['new'], true)) {
+                    $this->changes['projects']['new'][] = $projectName;
+                }
+            } else {
+                // Remove project from the list
+                $this->changes['projects']['new'] = array_values(
+                    array_diff($this->changes['projects']['new'], [$val])
+                );
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 
     /**

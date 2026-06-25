@@ -52,7 +52,7 @@ class WebhookSubscriber implements EventSubscriberInterface
     public function onEmailSend(EmailSendEvent $event): void
     {
         // Ignore test email sends.
-        if ($event->isInternalSend() || null === $event->getLead()) {
+        if ($event->isInternalSend() || $event->getLead() === null) {
             return;
         }
 
@@ -108,10 +108,10 @@ class WebhookSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (EmailEvents::EMAIL_ON_SEND === $eventType) {
+        if ($eventType === EmailEvents::EMAIL_ON_SEND) {
             unset($payload['email']['customHtml']);
             unset($payload['email']['plainText']);
-        } elseif (EmailEvents::EMAIL_ON_OPEN === $eventType) {
+        } elseif ($eventType === EmailEvents::EMAIL_ON_OPEN) {
             unset($payload['stat']['email']['customHtml']);
             unset($payload['stat']['email']['plainText']);
         }

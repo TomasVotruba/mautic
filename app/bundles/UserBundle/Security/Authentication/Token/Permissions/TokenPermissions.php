@@ -27,27 +27,27 @@ class TokenPermissions
      */
     public function setActivePermissionsOnAuthToken(TokenInterface|OAuthTokenInterface|null $token = null): ?UserInterface
     {
-        if (null === $token) {
+        if ($token === null) {
             $token = $this->tokenStorage->getToken();
         }
 
-        if (null === $token) {
+        if ($token === null) {
             return null;
         }
 
         $user = $token->getUser();
-        \assert(null === $user || $user instanceof User);
+        \assert($user === null || $user instanceof User);
 
         // If no user is associated with a token, it's a client credentials grant type. Handle accordingly.
-        if (null === $user && ($token instanceof OAuthToken || $token instanceof OAuthTokenInterface)) {
+        if ($user === null && ($token instanceof OAuthToken || $token instanceof OAuthTokenInterface)) {
             $user = $this->assignRoleFromToken($token->getToken());
         }
 
-        if (null !== $user) {
+        if ($user !== null) {
             $this->setPermissionsOnUser($user);
         }
 
-        if (null === $user) {
+        if ($user === null) {
             throw new \RuntimeException('The user should be either already set in the token, or come from assignRoleFromToken.');
         }
 
@@ -68,7 +68,7 @@ class TokenPermissions
         /** @var AccessToken|null $accessToken assert ill yield phpstan error. */
         $accessToken = $this->entityManager->getRepository(AccessToken::class)->findOneBy(['token' => $tokenIdentifier]);
 
-        if (null === $accessToken) {
+        if ($accessToken === null) {
             throw new UserNotFoundException('API access token not found.');
         }
 
@@ -95,7 +95,7 @@ class TokenPermissions
 
     private function setPermissionsOnUser(User $user): void
     {
-        if (!$user->isAdmin() && (null === $user->getActivePermissions() || [] === $user->getActivePermissions())) {
+        if (!$user->isAdmin() && ($user->getActivePermissions() === null || $user->getActivePermissions() === [])) {
             $activePermissions = $this->permissionRepository->getPermissionsByRole($user->getRole());
 
             $user->setActivePermissions($activePermissions);

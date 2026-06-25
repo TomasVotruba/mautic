@@ -11,10 +11,6 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class SafeUrlValidatorTest extends ConstraintValidatorTestCase
 {
-    protected function createValidator(): ConstraintValidatorInterface
-    {
-        return new SafeUrlValidator();
-    }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testSafeUrlValidation(string $url, bool $isValid): void
@@ -40,5 +36,9 @@ class SafeUrlValidatorTest extends ConstraintValidatorTestCase
             ['https://example.com/path', true],
             ['data:text/html;base64,abc', false],
         ];
+    }
+    protected function createValidator(): ConstraintValidatorInterface
+    {
+        return new SafeUrlValidator();
     }
 }

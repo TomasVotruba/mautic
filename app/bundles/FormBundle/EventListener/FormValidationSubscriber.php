@@ -86,7 +86,7 @@ class FormValidationSubscriber implements EventSubscriberInterface
         $field = $event->getField();
         $value = $event->getValue();
 
-        if ('email' !== $field->getType()) {
+        if ($field->getType() !== 'email') {
             return;
         }
 
@@ -115,7 +115,7 @@ class FormValidationSubscriber implements EventSubscriberInterface
         $field = $event->getField();
         $value = $event->getValue();
 
-        if ('tel' === $field->getType() && !empty($field->getValidation()['international'])) {
+        if ($field->getType() === 'tel' && !empty($field->getValidation()['international'])) {
             $phoneUtil = PhoneNumberUtil::getInstance();
             try {
                 $phoneUtil->parse($value, PhoneNumberUtil::UNKNOWN_REGION);
@@ -132,7 +132,7 @@ class FormValidationSubscriber implements EventSubscriberInterface
     private function fieldCheckboxGroupValidation(Events\ValidationEvent $event): void
     {
         $field = $event->getField();
-        if ('checkboxgrp' !== $field->getType()) {
+        if ($field->getType() !== 'checkboxgrp') {
             return;
         }
 
@@ -144,7 +144,7 @@ class FormValidationSubscriber implements EventSubscriberInterface
         }
 
         foreach ($value as $v) {
-            if ('' !== $v && null !== $v) {
+            if ($v !== '' && $v !== null) {
                 ++$selectedCnt;
             }
         }

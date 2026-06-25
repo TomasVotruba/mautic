@@ -48,7 +48,7 @@ class PublicController extends FormController
             return new Response('ERROR');
         }
 
-        if ('company' == $validatedRequest['type']) {
+        if ($validatedRequest['type'] == 'company') {
             return $this->compcallbackAction($mauticLogger, $result, $validatedRequest);
         }
 
@@ -72,7 +72,7 @@ class PublicController extends FormController
                     }
                 }
 
-                if (0 === count($org) && 0 !== count($result['organizations'])) {
+                if (count($org) === 0 && count($result['organizations']) !== 0) {
                     // primary not found, use the first one if exists
                     $org = $result['organizations'][0];
                 }
@@ -275,10 +275,10 @@ class PublicController extends FormController
                         $phone = $result['organization']['contactInfo']['phoneNumbers'][0];
                         foreach ($result['organization']['contactInfo']['phoneNumbers'] as $phoneNumber) {
                             if (array_key_exists('label', $phoneNumber)
-                                && 0 >= strpos(
+                                && strpos(
                                     strtolower($phoneNumber['label']),
                                     'fax'
-                                )
+                                ) <= 0
                             ) {
                                 $fax = $phoneNumber;
                             }

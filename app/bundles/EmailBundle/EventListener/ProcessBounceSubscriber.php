@@ -14,17 +14,17 @@ class ProcessBounceSubscriber implements EventSubscriberInterface
 
     public const FOLDER_KEY = 'bounces';
 
+    public function __construct(
+        private Bounce $bouncer,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
             EmailEvents::MONITORED_EMAIL_CONFIG => ['onEmailConfig', 0],
             EmailEvents::EMAIL_PARSE            => ['onEmailParse', 0],
         ];
-    }
-
-    public function __construct(
-        private Bounce $bouncer,
-    ) {
     }
 
     public function onEmailConfig(MonitoredEmailEvent $event): void

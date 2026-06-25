@@ -6,40 +6,6 @@ use Mautic\PluginBundle\Exception\ApiErrorException;
 
 class ZohoApi extends CrmApi
 {
-    /**
-     * @param string $operation
-     * @param string $method
-     * @param bool   $json
-     * @param array  $settings
-     *
-     * @return array
-     *
-     * @throws ApiErrorException
-     */
-    protected function request($operation, array $parameters = [], $method = 'GET', $json = false, $settings = [])
-    {
-        $tokenData = $this->integration->getKeys();
-
-        $url = sprintf('%s/%s', $tokenData['api_domain'].'/crm/v2', $operation);
-
-        if (!isset($settings['headers'])) {
-            $settings['headers'] = [];
-        }
-        $settings['headers']['Authorization'] = 'Zoho-oauthtoken '.$tokenData['access_token'];
-
-        if ($json) {
-            $settings['Content-Type']      = 'application/json';
-            $settings['encode_parameters'] = 'json';
-        }
-
-        $response = $this->integration->makeRequest($url, $parameters, $method, $settings);
-
-        if (isset($response['status']) && 'error' === $response['status']) {
-            throw new ApiErrorException($response['message']);
-        }
-
-        return $response;
-    }
 
     /**
      * @param string $object
@@ -50,7 +16,7 @@ class ZohoApi extends CrmApi
      */
     public function getLeadFields($object = 'Leads')
     {
-        if ('company' == $object) {
+        if ($object == 'company') {
             $object = 'Accounts'; // Zoho object name
         }
 
@@ -166,5 +132,39 @@ class ZohoApi extends CrmApi
         ];
 
         return $this->request($object.'/search', $parameters, 'GET', false);
+    }
+    /**
+     * @param string $operation
+     * @param string $method
+     * @param bool   $json
+     * @param array  $settings
+     *
+     * @return array
+     *
+     * @throws ApiErrorException
+     */
+    protected function request($operation, array $parameters = [], $method = 'GET', $json = false, $settings = [])
+    {
+        $tokenData = $this->integration->getKeys();
+
+        $url = sprintf('%s/%s', $tokenData['api_domain'].'/crm/v2', $operation);
+
+        if (!isset($settings['headers'])) {
+            $settings['headers'] = [];
+        }
+        $settings['headers']['Authorization'] = 'Zoho-oauthtoken '.$tokenData['access_token'];
+
+        if ($json) {
+            $settings['Content-Type']      = 'application/json';
+            $settings['encode_parameters'] = 'json';
+        }
+
+        $response = $this->integration->makeRequest($url, $parameters, $method, $settings);
+
+        if (isset($response['status']) && $response['status'] === 'error') {
+            throw new ApiErrorException($response['message']);
+        }
+
+        return $response;
     }
 }

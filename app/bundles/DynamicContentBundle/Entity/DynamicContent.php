@@ -307,22 +307,6 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
         self::addProjectsInLoadApiMetadata($metadata, 'dwc');
     }
 
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-
-        if ('variantParent' == $prop || 'translationParent' == $prop || 'category' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
-    }
-
     /**
      * @return int|null
      */
@@ -565,5 +549,21 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     public function getUtmTags()
     {
         return $this->utmTags;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+
+        if ($prop == 'variantParent' || $prop == 'translationParent' || $prop == 'category') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

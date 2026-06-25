@@ -35,7 +35,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $pageIds   = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($pageIds)) {
+        if ($startDate != null && !empty($pageIds)) {
             // get their bounce rates
             $counts = $this->hitRepository->getBounces($pageIds, $startDate, true);
             if ($counts) {
@@ -119,7 +119,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $pageIds   = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($pageIds)) {
+        if ($startDate != null && !empty($pageIds)) {
             // get their bounce rates
             $counts  = $this->hitRepository->getDwellTimesForPages($pageIds, ['fromDate' => $startDate]);
             $support = [];

@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[\PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses]
 class BuilderSubscriberTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
 
     // Custom preference center page
     public const CUSTOM_SEGMENT_SELECTOR           = '.pref-segmentlist input';
@@ -39,6 +38,7 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
     // Common to both custom and default
     public const TOKEN_SELECTOR = '#lead_contact_frequency_rules__token';
     public const FORM_SELECTOR  = 'form[name="lead_contact_frequency_rules"]';
+    protected $useCleanupRollback = false;
 
     protected function setUp(): void
     {
@@ -87,7 +87,7 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
         foreach ($selectorsAndExpectedCounts as $selector => $expectedCount) {
             $message = sprintf(
                 'The form HTML %s not contain the %s section. %s',
-                0 === $expectedCount ? 'should' : 'does',
+                $expectedCount === 0 ? 'should' : 'does',
                 $selector,
                 $html
             );

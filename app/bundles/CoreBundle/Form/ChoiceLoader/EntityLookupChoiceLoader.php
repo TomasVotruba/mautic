@@ -91,7 +91,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
      */
     protected function getChoices($data = null, $includeNew = false)
     {
-        if (null === $data) {
+        if ($data === null) {
             $data = $this->selected;
         }
 
@@ -176,7 +176,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
 
             if (count($duplicates)) {
                 foreach ($duplicates as $value => $label) {
-                    $prepped[$value] = "$label ($value)";
+                    $prepped[$value] = "{$label} ({$value})";
                 }
             }
 
@@ -195,7 +195,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
         $idColumn    = $this->options['entity_id_column'];
 
         if (!$this->modelFactory->hasModel($modelName)) {
-            throw new \InvalidArgumentException("$modelName not found as a registered model service.");
+            throw new \InvalidArgumentException("{$modelName} not found as a registered model service.");
         }
         $model = $this->modelFactory->getModel($modelName);
         if (!$model instanceof AjaxLookupModelInterface) {
@@ -210,7 +210,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
         // Default to 100 records if no data is populated
         if (!isset($args['limit'])) {
             $args['limit'] = empty($data) ? 100 : count($data);
-        } elseif (0 !== $args['limit']) {
+        } elseif ($args['limit'] !== 0) {
             $args['limit'] = max($args['limit'], count($data));
         }
 
@@ -304,7 +304,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
             $id = null;
 
             if (is_object($value) && method_exists($value, $getter)) {
-                $id = $value->$getter();
+                $id = $value->{$getter}();
             } elseif (is_scalar($value)) {
                 $id = $value;
             }

@@ -46,13 +46,13 @@ final class UploadValidator extends ConstraintValidator
 
     private function validateLocal(Asset $asset): void
     {
-        if ($asset->isNew() && null === $asset->getTempName() && null === $asset->getPath()) {
+        if ($asset->isNew() && $asset->getTempName() === null && $asset->getPath() === null) {
             $this->context->buildViolation('mautic.asset.asset.error.missing.file')
                 ->atPath('tempName')
                 ->addViolation();
         }
 
-        if (null === $asset->getTitle()) {
+        if ($asset->getTitle() === null) {
             $this->context->buildViolation('mautic.asset.asset.error.missing.title')
                 ->atPath('title')
                 ->addViolation();
@@ -65,7 +65,7 @@ final class UploadValidator extends ConstraintValidator
 
     private function validateRemote(Asset $asset): void
     {
-        if (null === $asset->getRemotePath()) {
+        if ($asset->getRemotePath() === null) {
             $this->context->buildViolation('mautic.asset.asset.error.missing.remote.path')
                 ->atPath('remotePath')
                 ->addViolation();
@@ -77,7 +77,7 @@ final class UploadValidator extends ConstraintValidator
 
     private function parseExtension(?string $fileName): ?string
     {
-        if (null === $fileName) {
+        if ($fileName === null) {
             return null;
         }
 
@@ -86,7 +86,7 @@ final class UploadValidator extends ConstraintValidator
 
     private function validateExtensionAndMimeType(?string $extension, ?File $file): bool
     {
-        if (null === $extension) {
+        if ($extension === null) {
             return true;
         }
 

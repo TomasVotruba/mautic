@@ -23,7 +23,7 @@ final class SliderStepLessThanMaxValidator extends ConstraintValidator
         }
 
         $max = $form->has('max') ? $form->get('max')->getData() : null;
-        if (null === $max || '' === $max) {
+        if ($max === null || $max === '') {
             return;
         }
 

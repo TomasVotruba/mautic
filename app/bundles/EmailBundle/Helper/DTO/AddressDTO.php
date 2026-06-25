@@ -66,33 +66,6 @@ final class AddressDTO
         return $this->getTokenValue($this->getEmail(), $contact);
     }
 
-    /**
-     * @param array<string,mixed>|null $contact
-     *
-     * @throws TokenNotFoundOrEmptyException
-     */
-    private function getTokenValue(?string $content, ?array $contact = null): string
-    {
-        if (!$content || !TokenHelper::validToken($content)) {
-            throw new TokenNotFoundOrEmptyException();
-        }
-
-        if ($contact) {
-            $tokenValue = TokenHelper::findLeadTokens($content, $contact, true);
-        } else {
-            // Use a non-empty lead array so token defaults are resolved while preserving the whole content.
-            $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
-        }
-
-        $tokenValue = trim((string) $tokenValue);
-
-        if ('' === $tokenValue) {
-            throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
-        }
-
-        return $tokenValue;
-    }
-
     public function isEmailTokenized(): bool
     {
         return $this->email && preg_match('/{contactfield=(.*?)}/', $this->email);
@@ -128,5 +101,32 @@ final class AddressDTO
         }
 
         $this->name = trim(html_entity_decode($name, ENT_QUOTES));
+    }
+
+    /**
+     * @param array<string,mixed>|null $contact
+     *
+     * @throws TokenNotFoundOrEmptyException
+     */
+    private function getTokenValue(?string $content, ?array $contact = null): string
+    {
+        if (!$content || !TokenHelper::validToken($content)) {
+            throw new TokenNotFoundOrEmptyException();
+        }
+
+        if ($contact) {
+            $tokenValue = TokenHelper::findLeadTokens($content, $contact, true);
+        } else {
+            // Use a non-empty lead array so token defaults are resolved while preserving the whole content.
+            $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
+        }
+
+        $tokenValue = trim((string) $tokenValue);
+
+        if ($tokenValue === '') {
+            throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
+        }
+
+        return $tokenValue;
     }
 }

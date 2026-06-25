@@ -91,8 +91,8 @@ class AssetGenerationHelper
             $rootPath   = $this->pathsHelper->getSystemPath('assets_root');
             $assetsPath = $this->pathsHelper->getSystemPath('media');
 
-            $assetsFullPath = "$rootPath/$assetsPath";
-            if ('prod' == $env) {
+            $assetsFullPath = "{$rootPath}/{$assetsPath}";
+            if ($env == 'prod') {
                 $loadAll = false; // by default, loading should not be required
 
                 // check for libraries and app files and generate them if they don't exist if in prod environment
@@ -104,7 +104,7 @@ class AssetGenerationHelper
                 ];
 
                 foreach ($prodFiles as $file) {
-                    if (!file_exists("$assetsFullPath/$file")) {
+                    if (!file_exists("{$assetsFullPath}/{$file}")) {
                         $loadAll = true; // it's missing so compile it
                         break;
                     }
@@ -112,10 +112,10 @@ class AssetGenerationHelper
             }
 
             if ($loadAll || $forceRegeneration) {
-                if ('prod' == $env) {
+                if ($env == 'prod') {
                     ini_set('max_execution_time', '300');
 
-                    $inProgressFile = "$assetsFullPath/generation_in_progress.txt";
+                    $inProgressFile = "{$assetsFullPath}/generation_in_progress.txt";
 
                     if (!$forceRegeneration) {
                         while (file_exists($inProgressFile)) {
@@ -134,7 +134,7 @@ class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ($env == 'prod') {
                         $assets[$ext]['libraries'][$relPath] = $details;
                     } else {
                         $assets[$ext][$relPath] = $details;
@@ -152,7 +152,7 @@ class AssetGenerationHelper
                         if (!isset($modifiedLast[$ft])) {
                             $modifiedLast[$ft] = [];
                         }
-                        $dir = "{$bundle['directory']}/Assets/$ft";
+                        $dir = "{$bundle['directory']}/Assets/{$ft}";
                         if (file_exists($dir)) {
                             $modifiedLast[$ft] = array_merge($modifiedLast[$ft], $this->findAssets($dir, $ft, $env, $assets));
                         }
@@ -161,11 +161,11 @@ class AssetGenerationHelper
                 $modifiedLast = array_merge($modifiedLast, $this->findOverrides($env, $assets));
 
                 // combine the files into their corresponding name and put in the root media folder
-                if ('prod' == $env) {
+                if ($env == 'prod') {
                     $checkPaths = [
                         $assetsFullPath,
-                        "$assetsFullPath/css",
-                        "$assetsFullPath/js",
+                        "{$assetsFullPath}/css",
+                        "{$assetsFullPath}/js",
                     ];
                     array_walk($checkPaths, function ($path): void {
                         if (!file_exists($path)) {
@@ -175,7 +175,7 @@ class AssetGenerationHelper
 
                     foreach ($assets as $type => $groups) {
                         foreach ($groups as $group => $files) {
-                            $assetFile = "$assetsFullPath/$type/$group.$type";
+                            $assetFile = "{$assetsFullPath}/{$type}/{$group}.{$type}";
 
                             // only refresh if a change has occurred
                             $modified = ($forceRegeneration || !file_exists($assetFile)) ? true : filemtime($assetFile) < $modifiedLast[$type][$group];
@@ -195,11 +195,11 @@ class AssetGenerationHelper
                                     $missing[] = $file['fullPath'];
                                 }
 
-                                if ([] !== $missing) {
+                                if ($missing !== []) {
                                     throw new \ErrorException('These files are missing: '.implode(', ', $missing).'. Have you forgot to install/update modules?');
                                 }
 
-                                if ('css' == $type) {
+                                if ($type == 'css') {
                                     $minifier = new Minify\CSS(...array_column($files, 'fullPath'));
                                     $minifier->minify($assetFile);
                                 } else {
@@ -214,7 +214,7 @@ class AssetGenerationHelper
                 }
             }
 
-            if ('prod' == $env) {
+            if ($env == 'prod') {
                 // return prod generated assets
                 $assets = [
                     'css' => [
@@ -280,7 +280,7 @@ class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ($env == 'prod') {
                         $lastModified = filemtime($fullPath);
                         if (!isset($modifiedLast[$group]) || $lastModified > $modifiedLast[$group]) {
                             $modifiedLast[$group] = $lastModified;
@@ -310,7 +310,7 @@ class AssetGenerationHelper
                 'relPath'  => $relPath,
             ];
 
-            if ('prod' == $env) {
+            if ($env == 'prod') {
                 $lastModified = filemtime($fullPath);
                 if (!isset($modifiedLast['app']) || $lastModified > $modifiedLast['app']) {
                     $modifiedLast['app'] = $lastModified;
@@ -341,16 +341,16 @@ class AssetGenerationHelper
 
         foreach ($types as $ext) {
             foreach ($overrideFiles as $group => $of) {
-                if (file_exists("$rootPath/$currentTheme/$ext/$of.$ext")) {
-                    $fullPath = "$rootPath/$currentTheme/$ext/$of.$ext";
-                    $relPath  = "$currentTheme/$ext/$of.$ext";
+                if (file_exists("{$rootPath}/{$currentTheme}/{$ext}/{$of}.{$ext}")) {
+                    $fullPath = "{$rootPath}/{$currentTheme}/{$ext}/{$of}.{$ext}";
+                    $relPath  = "{$currentTheme}/{$ext}/{$of}.{$ext}";
 
                     $details = [
                         'fullPath' => $fullPath,
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ($env == 'prod') {
                         $lastModified = filemtime($fullPath);
                         if (!isset($modifiedLast[$ext][$group]) || $lastModified > $modifiedLast[$ext][$group]) {
                             $modifiedLast[$ext][$group] = $lastModified;

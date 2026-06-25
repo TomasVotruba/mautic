@@ -20,7 +20,7 @@ class GroupContactScoreRepository extends CommonRepository
         $expr = $q->expr()->and(
             $q->expr()->eq('lcs.contact_id', ':lead'),
             $q->expr()->eq('lcs.group_id', ':groupId'),
-            $q->expr()->$operatorExpr('lcs.score', ':score'),
+            $q->expr()->{$operatorExpr}('lcs.score', ':score'),
         );
 
         $q->where($expr)
@@ -28,6 +28,6 @@ class GroupContactScoreRepository extends CommonRepository
             ->setParameter('groupId', $groupId)
             ->setParameter('score', $score);
 
-        return false !== $q->executeQuery()->fetchOne();
+        return $q->executeQuery()->fetchOne() !== false;
     }
 }

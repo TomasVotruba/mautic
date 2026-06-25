@@ -11,52 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MonitoringV2ApiTest extends MauticMysqlTestCase
 {
-    private function createMonitoring(
-        string $title = 'Test Monitoring',
-        string $networkType = 'type',
-        ?string $description = null,
-    ): Monitoring {
-        $monitoring = new Monitoring();
-        $monitoring->setTitle($title);
-        $monitoring->setNetworkType($networkType);
-        if (null !== $description) {
-            $monitoring->setDescription($description);
-        }
-        $this->em->persist($monitoring);
-        $this->em->flush();
-
-        return $monitoring;
-    }
-
-    /**
-     * @param array<string,mixed>  $data
-     * @param array<string,string> $headers
-     *
-     * @return array<string,?mixed>
-     */
-    private function sendRequest(
-        string $method,
-        string $uri,
-        array $data = [],
-        array $headers = [
-            'CONTENT_TYPE' => 'application/ld+json',
-            'HTTP_ACCEPT'  => 'application/ld+json',
-        ],
-    ): array {
-        $this->client->request(
-            $method,
-            $uri,
-            [],
-            [],
-            $headers,
-            !empty($data) ? json_encode($data) : null
-        );
-
-        return [
-            'status'  => $this->client->getResponse()->getStatusCode(),
-            'content' => $this->client->getResponse()->getContent(),
-        ];
-    }
 
     public function testGetOperationWorks(): void
     {
@@ -249,5 +203,51 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
         Assert::assertNotNull($updatedMonitoring);
         Assert::assertSame('Updated Monitoring Title Only', $updatedMonitoring->getTitle());
         Assert::assertSame('Original Description', $updatedMonitoring->getDescription());
+    }
+    private function createMonitoring(
+        string $title = 'Test Monitoring',
+        string $networkType = 'type',
+        ?string $description = null,
+    ): Monitoring {
+        $monitoring = new Monitoring();
+        $monitoring->setTitle($title);
+        $monitoring->setNetworkType($networkType);
+        if ($description !== null) {
+            $monitoring->setDescription($description);
+        }
+        $this->em->persist($monitoring);
+        $this->em->flush();
+
+        return $monitoring;
+    }
+
+    /**
+     * @param array<string,mixed>  $data
+     * @param array<string,string> $headers
+     *
+     * @return array<string,?mixed>
+     */
+    private function sendRequest(
+        string $method,
+        string $uri,
+        array $data = [],
+        array $headers = [
+            'CONTENT_TYPE' => 'application/ld+json',
+            'HTTP_ACCEPT'  => 'application/ld+json',
+        ],
+    ): array {
+        $this->client->request(
+            $method,
+            $uri,
+            [],
+            [],
+            $headers,
+            !empty($data) ? json_encode($data) : null
+        );
+
+        return [
+            'status'  => $this->client->getResponse()->getStatusCode(),
+            'content' => $this->client->getResponse()->getContent(),
+        ];
     }
 }

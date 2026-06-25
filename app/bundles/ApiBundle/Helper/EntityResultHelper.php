@@ -70,11 +70,11 @@ class EntityResultHelper
     private function getDataForObject($object)
     {
         foreach ($object as $key => $value) {
-            if (0 === $key) {
+            if ($key === 0) {
                 continue;
             }
 
-            $object[0]->$key = $value;
+            $object[0]->{$key} = $value;
         }
 
         return $object[0];

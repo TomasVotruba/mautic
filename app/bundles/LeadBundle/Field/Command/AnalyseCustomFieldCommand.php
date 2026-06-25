@@ -80,7 +80,7 @@ class AnalyseCustomFieldCommand extends Command
 
             $label  = $analysisDetail['label'];
             $rows[] = [
-                "\"$label\"",
+                "\"{$label}\"",
                 $analysisDetail['alias'],
                 $columnLength,
                 $maxLength,
@@ -120,7 +120,7 @@ class AnalyseCustomFieldCommand extends Command
             }
 
             $schemaDef = SchemaDefinition::getSchemaDefinition($field->getAlias(), $field->getType(), $field->getIsUniqueIdentifier(), $field->getCharLengthLimit());
-            if ('string' !== $schemaDef['type']) {
+            if ($schemaDef['type'] !== 'string') {
                 continue;
             }
 
@@ -139,7 +139,7 @@ class AnalyseCustomFieldCommand extends Command
     private function getSuggestedMaxSize(int $columnLength, int $utilisedLength): int
     {
         if ($utilisedLength > 0) {
-            if (191 < $utilisedLength) {
+            if ($utilisedLength > 191) {
                 return $columnLength;
             }
 

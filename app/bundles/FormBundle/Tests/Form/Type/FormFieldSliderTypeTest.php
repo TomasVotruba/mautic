@@ -12,15 +12,6 @@ use Symfony\Component\Validator\Validation;
 
 final class FormFieldSliderTypeTest extends TypeTestCase
 {
-    protected function getExtensions(): array
-    {
-        return [
-            new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([
-                FormFieldSliderType::class => new FormFieldSliderType(),
-            ], []),
-        ];
-    }
 
     public function testSubmitValidData(): void
     {
@@ -61,5 +52,14 @@ final class FormFieldSliderTypeTest extends TypeTestCase
 
         $errors = $form->getErrors(true);
         $this->assertGreaterThan(0, count($errors));
+    }
+    protected function getExtensions(): array
+    {
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([
+                FormFieldSliderType::class => new FormFieldSliderType(),
+            ], []),
+        ];
     }
 }

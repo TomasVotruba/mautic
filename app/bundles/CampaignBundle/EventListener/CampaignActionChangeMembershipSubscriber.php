@@ -94,7 +94,7 @@ class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterfa
             return;
         }
 
-        if ('campaign.addremovelead' !== $campaignEvent->getType()) {
+        if ($campaignEvent->getType() !== 'campaign.addremovelead') {
             return;
         }
 
@@ -115,7 +115,7 @@ class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterfa
         // Check for the keyword "this"
         $includeExecutingCampaign = false;
         $key                      = array_search('this', $campaigns);
-        if (false !== $key) {
+        if ($key !== false) {
             $includeExecutingCampaign = true;
             // Remove it from the list of IDs
             unset($campaigns[$key]);

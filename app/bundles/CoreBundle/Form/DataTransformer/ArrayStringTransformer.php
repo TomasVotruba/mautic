@@ -16,7 +16,7 @@ class ArrayStringTransformer implements DataTransformerInterface
      */
     public function transform(mixed $array): mixed
     {
-        if (null === $array) {
+        if ($array === null) {
             return '';
         }
         if (is_string($array)) {

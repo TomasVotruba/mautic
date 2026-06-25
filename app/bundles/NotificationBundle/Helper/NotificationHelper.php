@@ -56,7 +56,7 @@ class NotificationHelper
         if ($this->hasScript()) {
             $integration = $this->integrationHelper->getIntegrationObject('OneSignal');
 
-            if (!$integration || false === $integration->getIntegrationSettings()->getIsPublished()) {
+            if (!$integration || $integration->getIntegrationSettings()->getIsPublished() === false) {
                 return;
             }
 
@@ -82,7 +82,7 @@ class NotificationHelper
             }
 
             $server        = $this->requestStack->getCurrentRequest()->server;
-            $https         = 'https' == parse_url($server->get('HTTP_REFERER'), PHP_URL_SCHEME);
+            $https         = parse_url($server->get('HTTP_REFERER'), PHP_URL_SCHEME) == 'https';
             $subdomainName = '';
 
             if (!$https && $notificationSubdomainName) {
@@ -176,19 +176,19 @@ JS;
 
         $integration = $this->integrationHelper->getIntegrationObject('OneSignal');
 
-        if (!$integration || false === $integration->getIntegrationSettings()->getIsPublished()) {
+        if (!$integration || $integration->getIntegrationSettings()->getIsPublished() === false) {
             return false;
         }
 
         $supportedFeatures = $integration->getIntegrationSettings()->getSupportedFeatures();
 
         // disable on Landing pages
-        if (true === $landingPage && !in_array('landing_page_enabled', $supportedFeatures)) {
+        if ($landingPage === true && !in_array('landing_page_enabled', $supportedFeatures)) {
             return false;
         }
 
         // disable on Landing pages
-        if (false === $landingPage && !in_array('tracking_page_enabled', $supportedFeatures)) {
+        if ($landingPage === false && !in_array('tracking_page_enabled', $supportedFeatures)) {
             return false;
         }
 

@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FormApiControllerFunctionalTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
 
     private const TEST_PAYLOAD = [
         'name'        => 'API form',
@@ -86,6 +85,7 @@ final class FormApiControllerFunctionalTest extends MauticMysqlTestCase
         ],
         'postAction' => 'return',
     ];
+    protected $useCleanupRollback = false;
 
     /**
      * @param array<string, mixed> $payload

@@ -37,7 +37,7 @@ class CompanyListType extends AbstractType
                 'lookup_arguments'    => fn (Options $options): array => [
                     'type'      => 'lead.company',
                     'limit'     => self::DEFAULT_LIMIT,
-                ] + ((isset($options['model_lookup_method']) && ('getSimpleLookupResults' === $options['model_lookup_method'])) ? ['exclude' => $options['main_entity']] : []),
+                ] + ((isset($options['model_lookup_method']) && ($options['model_lookup_method'] === 'getSimpleLookupResults')) ? ['exclude' => $options['main_entity']] : []),
                 'multiple'            => true,
                 'main_entity'         => null,
             ]

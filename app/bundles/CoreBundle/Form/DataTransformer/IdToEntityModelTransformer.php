@@ -33,7 +33,7 @@ class IdToEntityModelTransformer implements DataTransformerInterface
                 return '';
             }
 
-            return $entity->$func();
+            return $entity->{$func}();
         }
 
         if (!is_array($entity) && !$entity instanceof PersistentCollection) {
@@ -42,7 +42,7 @@ class IdToEntityModelTransformer implements DataTransformerInterface
 
         $return = [];
         foreach ($entity as $e) {
-            $return[] = $e->$func();
+            $return[] = $e->{$func}();
         }
 
         return $return;
@@ -64,7 +64,7 @@ class IdToEntityModelTransformer implements DataTransformerInterface
                 ->getRepository($this->repository)
                 ->findOneBy([$this->id => $id]);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 throw new TransformationFailedException(sprintf('An entity with a/an '.$this->id.' of "%s" does not exist!', $id));
             }
 

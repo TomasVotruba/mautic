@@ -139,16 +139,16 @@ class FormSubscriber implements EventSubscriberInterface
 
         $config    = $event->getActionConfig();
         $lead      = $event->getSubmission()->getLead();
-        $leadEmail = null !== $lead ? $lead->getEmail() : null;
+        $leadEmail = $lead !== null ? $lead->getEmail() : null;
         $ccEmails  = $bccEmails = [];
         $emails    = $this->getEmailsFromString($config['to']);
 
-        if (isset($config['cc']) && '' !== $config['cc']) {
+        if (isset($config['cc']) && $config['cc'] !== '') {
             $ccEmails = $this->getEmailsFromString($config['cc']);
             unset($config['cc']);
         }
 
-        if (isset($config['bcc']) && '' !== $config['bcc']) {
+        if (isset($config['bcc']) && $config['bcc'] !== '') {
             $bccEmails = $this->getEmailsFromString($config['bcc']);
             unset($config['bcc']);
         }
@@ -180,8 +180,8 @@ class FormSubscriber implements EventSubscriberInterface
             $this->mailer->send(true);
         }
 
-        $owner = null !== $lead ? $lead->getOwner() : null;
-        if (!empty($config['email_to_owner']) && null !== $owner) {
+        $owner = $lead !== null ? $lead->getOwner() : null;
+        if (!empty($config['email_to_owner']) && $owner !== null) {
             // Send copy to owner
             $this->setMailer($config, $tokens, [$owner->getEmail() => null], $lead);
 
@@ -212,7 +212,7 @@ class FormSubscriber implements EventSubscriberInterface
         $fieldTypes = [];
         foreach ($fields as $field) {
             $fieldTypes[$field['alias']] = $field['type'];
-            if (!isset($post[$field['alias']]) || 'button' == $field['type']) {
+            if (!isset($post[$field['alias']]) || $field['type'] == 'button') {
                 continue;
             }
 
@@ -348,7 +348,7 @@ class FormSubscriber implements EventSubscriberInterface
             }
         }
 
-        if (!$error && 200 !== $response->getStatusCode()) {
+        if (!$error && $response->getStatusCode() !== 200) {
             $error = (string) $response->getBody();
         }
 
@@ -366,7 +366,7 @@ class FormSubscriber implements EventSubscriberInterface
     {
         $output = '<table>';
         foreach ($post as $key => $row) {
-            $output .= "<tr><td style='vertical-align: top'><strong>$key</strong></td><td>";
+            $output .= "<tr><td style='vertical-align: top'><strong>{$key}</strong></td><td>";
             if (is_array($row)) {
                 $output .= $this->postToHtml($row);
             } else {

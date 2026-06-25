@@ -11,12 +11,6 @@ use Mautic\LeadBundle\Field\Helper\IndexHelper;
  */
 class Version20190524124819 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable("{$this->prefix}lead_fields")->hasColumn('is_index');
-        }, sprintf('Schema includes this migration'));
-    }
 
     public function up(Schema $schema): void
     {
@@ -41,5 +35,11 @@ class Version20190524124819 extends PreUpAssertionMigration
 	        SET `is_index` = TRUE 
 	        WHERE `alias` IN ('{$indexedColumns}');
         ");
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable("{$this->prefix}lead_fields")->hasColumn('is_index');
+        }, sprintf('Schema includes this migration'));
     }
 }

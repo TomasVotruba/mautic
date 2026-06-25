@@ -63,7 +63,7 @@ class FilterType extends AbstractType
             // Keep legacy operators available for existing saved segments, but not for new filters.
             // @see https://github.com/mautic/mautic/pull/16012
             $legacyOperators  = [OperatorOptions::INCLUDING_ALL, OperatorOptions::EXCLUDING_ALL];
-            $isLegacyOperator = null !== $operator && in_array($operator, $legacyOperators, true);
+            $isLegacyOperator = $operator !== null && in_array($operator, $legacyOperators, true);
 
             if ($isLegacyOperator && !in_array($operator, $operators, true)) {
                 $deprecatedOperatorTypes = $this->listModel->getOperatorsForFieldType([
@@ -93,7 +93,7 @@ class FilterType extends AbstractType
                 ]
             );
 
-            if (null === $field) {
+            if ($field === null) {
                 // The field was probably deleted since the segment was created.
                 // Do not show up the filter based on a deleted field.
                 return;

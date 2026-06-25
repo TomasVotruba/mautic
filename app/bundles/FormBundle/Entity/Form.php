@@ -54,6 +54,9 @@ class Form extends FormEntity implements UuidInterface
     public const ENTITY_NAME = 'forms';
     public const TABLE_NAME  = 'forms';
 
+    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
+    public int $submission_count = 0;
+
     /**
      * @var int
      */
@@ -159,9 +162,6 @@ class Form extends FormEntity implements UuidInterface
     #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private Collection $submissions;
 
-    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
-    public int $submission_count = 0;
-
     /**
      * @var string|null
      *
@@ -198,13 +198,6 @@ class Form extends FormEntity implements UuidInterface
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read'])]
     private $usesProgressiveProfiling;
 
-    public function __clone()
-    {
-        $this->id = null;
-
-        parent::__clone();
-    }
-
     public function __construct()
     {
         $this->fields      = new ArrayCollection();
@@ -212,6 +205,13 @@ class Form extends FormEntity implements UuidInterface
         $this->submissions = new ArrayCollection();
         $this->noIndex     = true;
         $this->initializeProjects();
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+
+        parent::__clone();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -346,15 +346,15 @@ class Form extends FormEntity implements UuidInterface
 
         $postAction = $data->getPostAction();
 
-        if ('message' == $postAction) {
+        if ($postAction == 'message') {
             $groups[] = 'messageRequired';
-        } elseif ('redirect' == $postAction) {
+        } elseif ($postAction == 'redirect') {
             $groups[] = 'urlRequired';
-        } elseif ('hideform' == $postAction) {
+        } elseif ($postAction == 'hideform') {
             $groups[] = 'hideformRequired';
         }
 
-        if ('' != $data->getProgressiveProfilingLimit()) {
+        if ($data->getProgressiveProfilingLimit() != '') {
             $groups[] = 'progressiveProfilingLimit';
         }
 
@@ -397,16 +397,6 @@ class Form extends FormEntity implements UuidInterface
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'form');
-    }
-
-    protected function isChanged($prop, $val)
-    {
-        if ('actions' == $prop || 'fields' == $prop) {
-            // changes are already computed so just add them
-            $this->changes[$prop][$val[0] ?? ''] = $val[1];
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     /**
@@ -529,7 +519,7 @@ class Form extends FormEntity implements UuidInterface
 
     public function getPostActionProperty(): ?string
     {
-        if ('return' === $this->getPostAction()) {
+        if ($this->getPostAction() === 'return') {
             return null;
         }
 
@@ -845,7 +835,7 @@ class Form extends FormEntity implements UuidInterface
      */
     public function setNoIndex($noIndex): void
     {
-        $sanitizedNoIndex = null === $noIndex ? null : (bool) $noIndex;
+        $sanitizedNoIndex = $noIndex === null ? null : (bool) $noIndex;
         $this->isChanged('noIndex', $sanitizedNoIndex);
         $this->noIndex = $sanitizedNoIndex;
     }
@@ -899,7 +889,7 @@ class Form extends FormEntity implements UuidInterface
     {
         trigger_deprecation('mautic/mautic', '7.1', 'Form::isStandalone() is deprecated and will be removed in 8.0.');
 
-        return 'campaign' != $this->formType;
+        return $this->formType != 'campaign';
     }
 
     /**
@@ -930,13 +920,13 @@ class Form extends FormEntity implements UuidInterface
      */
     public function usesProgressiveProfiling()
     {
-        if (null !== $this->usesProgressiveProfiling) {
+        if ($this->usesProgressiveProfiling !== null) {
             return $this->usesProgressiveProfiling;
         }
 
         // Progressive profiling must be turned off in the kiosk mode
-        if (false === $this->getInKioskMode()) {
-            if ('' != $this->getProgressiveProfilingLimit()) {
+        if ($this->getInKioskMode() === false) {
+            if ($this->getProgressiveProfilingLimit() != '') {
                 $this->usesProgressiveProfiling = true;
 
                 return $this->usesProgressiveProfiling;
@@ -944,7 +934,7 @@ class Form extends FormEntity implements UuidInterface
 
             // Search for a field with a progressive profiling setting on
             foreach ($this->fields->toArray() as $field) {
-                if (false === $field->getShowWhenValueExists() || $field->getShowAfterXSubmissions() > 0) {
+                if ($field->getShowWhenValueExists() === false || $field->getShowAfterXSubmissions() > 0) {
                     $this->usesProgressiveProfiling = true;
 
                     return $this->usesProgressiveProfiling;
@@ -1018,6 +1008,16 @@ class Form extends FormEntity implements UuidInterface
 
     public function isSubmissionLimitReached(): bool
     {
-        return null !== $this->submissionLimit && $this->submissionLimit > 0 && $this->submissionCount >= $this->submissionLimit;
+        return $this->submissionLimit !== null && $this->submissionLimit > 0 && $this->submissionCount >= $this->submissionLimit;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        if ($prop == 'actions' || $prop == 'fields') {
+            // changes are already computed so just add them
+            $this->changes[$prop][$val[0] ?? ''] = $val[1];
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

@@ -32,9 +32,9 @@ class ClientModel extends FormModel implements GlobalSearchInterface
      */
     public const API_MODE_OAUTH2 = 'oauth2';
 
-    private ?string $apiMode = null;
-
     private const DEFAULT_API_MODE = 'oauth2';
+
+    private ?string $apiMode = null;
 
     public function __construct(
         private RequestStack $requestStack,
@@ -48,19 +48,6 @@ class ClientModel extends FormModel implements GlobalSearchInterface
         CoreParametersHelper $coreParametersHelper,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
-    }
-
-    private function getApiMode(): string
-    {
-        if (null !== $this->apiMode) {
-            return $this->apiMode;
-        }
-
-        if (null !== $request = $this->requestStack->getCurrentRequest()) {
-            return $request->get('api_mode', $request->getSession()->get('mautic.client.filter.api_mode', self::DEFAULT_API_MODE));
-        }
-
-        return self::DEFAULT_API_MODE;
     }
 
     public function setApiMode($apiMode): void
@@ -94,11 +81,37 @@ class ClientModel extends FormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Client
     {
-        if (null === $id) {
-            return 'oauth2' === $this->getApiMode() ? new Client() : null;
+        if ($id === null) {
+            return $this->getApiMode() === 'oauth2' ? new Client() : null;
         }
 
         return parent::getEntity($id);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserClients(User $user)
+    {
+        return $this->getRepository()->getUserClients($user);
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    public function revokeAccess($entity): void
+    {
+        if (!$entity instanceof Client) {
+            throw new MethodNotAllowedHttpException(['Client']);
+        }
+
+        // remove the user from the client
+        if ($this->getApiMode() === 'oauth2') {
+            $entity->removeUser($this->userHelper->getUser());
+            $this->saveEntity($entity);
+        } else {
+            $this->getRepository()->deleteAccessTokens($entity, $this->userHelper->getUser());
+        }
     }
 
     /**
@@ -134,29 +147,16 @@ class ClientModel extends FormModel implements GlobalSearchInterface
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public function getUserClients(User $user)
+    private function getApiMode(): string
     {
-        return $this->getRepository()->getUserClients($user);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    public function revokeAccess($entity): void
-    {
-        if (!$entity instanceof Client) {
-            throw new MethodNotAllowedHttpException(['Client']);
+        if ($this->apiMode !== null) {
+            return $this->apiMode;
         }
 
-        // remove the user from the client
-        if ('oauth2' === $this->getApiMode()) {
-            $entity->removeUser($this->userHelper->getUser());
-            $this->saveEntity($entity);
-        } else {
-            $this->getRepository()->deleteAccessTokens($entity, $this->userHelper->getUser());
+        if (null !== $request = $this->requestStack->getCurrentRequest()) {
+            return $request->get('api_mode', $request->getSession()->get('mautic.client.filter.api_mode', self::DEFAULT_API_MODE));
         }
+
+        return self::DEFAULT_API_MODE;
     }
 }

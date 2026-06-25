@@ -19,7 +19,7 @@ class Responses
             $metadata = $log->getMetadata();
             $response = $metadata;
 
-            if (isset($metadata['timeline']) && 1 === count($metadata)) {
+            if (isset($metadata['timeline']) && count($metadata) === 1) {
                 // Legacy listeners set a string in CampaignExecutionEvent::setResult that Lead::appendToMetadata put into
                 // under a timeline key for BC support. To keep BC for decisions, we have to extract that back out for the bubble
                 // up responses

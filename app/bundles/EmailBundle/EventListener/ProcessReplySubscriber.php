@@ -18,6 +18,12 @@ class ProcessReplySubscriber implements EventSubscriberInterface
 
     public const CACHE_KEY  = self::BUNDLE.'_'.self::FOLDER_KEY;
 
+    public function __construct(
+        private Reply $replier,
+        private CacheStorageHelper $cache,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -25,12 +31,6 @@ class ProcessReplySubscriber implements EventSubscriberInterface
             EmailEvents::EMAIL_PRE_FETCH        => ['onEmailPreFetch', 0],
             EmailEvents::EMAIL_PARSE            => ['onEmailParse', 1],
         ];
-    }
-
-    public function __construct(
-        private Reply $replier,
-        private CacheStorageHelper $cache,
-    ) {
     }
 
     public function onEmailConfig(MonitoredEmailEvent $event): void
@@ -49,7 +49,7 @@ class ProcessReplySubscriber implements EventSubscriberInterface
         // Using * will return the last UID even if the starting UID doesn't exist so let's just use a highball number
         $endingUID = $startingUID + 1_000_000_000;
 
-        $event->setCriteriaRequest(self::BUNDLE, self::FOLDER_KEY, Mailbox::CRITERIA_UID." $startingUID:$endingUID");
+        $event->setCriteriaRequest(self::BUNDLE, self::FOLDER_KEY, Mailbox::CRITERIA_UID." {$startingUID}:{$endingUID}");
     }
 
     public function onEmailParse(ParseEmailEvent $event): void

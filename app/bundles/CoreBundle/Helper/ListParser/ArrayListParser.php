@@ -21,7 +21,7 @@ class ArrayListParser implements ListParserInterface
 
             // Numerical array so set labels as values and return as choices
             foreach ($list as $value) {
-                if ('' === $value || null === $value) {
+                if ($value === '' || $value === null) {
                     continue;
                 }
 

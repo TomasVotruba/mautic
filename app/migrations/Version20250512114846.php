@@ -10,14 +10,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20250512114846 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getTableName())
-                ->hasColumn('redirect_event_id'),
-            'Column redirect_event_id already exists in campaign_events table'
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -33,6 +25,14 @@ final class Version20250512114846 extends PreUpAssertionMigration
 
         $this->addSql("ALTER TABLE {$tableName} DROP FOREIGN KEY {$this->getForeignKeyName()}");
         $this->addSql("ALTER TABLE {$tableName} DROP COLUMN redirect_event_id");
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getTableName())
+                ->hasColumn('redirect_event_id'),
+            'Column redirect_event_id already exists in campaign_events table'
+        );
     }
 
     private function getTableName(): string

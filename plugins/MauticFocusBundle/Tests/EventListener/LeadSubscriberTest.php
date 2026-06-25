@@ -20,6 +20,21 @@ use Symfony\Component\Routing\RouterInterface;
 
 class LeadSubscriberTest extends CommonMocks
 {
+
+    /**
+     * @var string
+     */
+    private const EVENT_TYPE_VIEW_NAME = 'Focus view';
+
+    /**
+     * @var string
+     */
+    private const EVENT_TYPE_CLICK_NAME = 'Focus click';
+
+    /**
+     * @var string
+     */
+    private const FOCUS_NAME = 'test Focus Item';
     /**
      * @var Translator|MockObject
      */
@@ -40,21 +55,6 @@ class LeadSubscriberTest extends CommonMocks
      */
     private MockObject $statRepository;
 
-    /**
-     * @var string
-     */
-    private const EVENT_TYPE_VIEW_NAME = 'Focus view';
-
-    /**
-     * @var string
-     */
-    private const EVENT_TYPE_CLICK_NAME = 'Focus click';
-
-    /**
-     * @var string
-     */
-    private const FOCUS_NAME = 'test Focus Item';
-
     protected function setUp(): void
     {
         $this->translator     = $this->createMock(Translator::class);
@@ -65,12 +65,12 @@ class LeadSubscriberTest extends CommonMocks
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic.focus.event.view', $parameters[0]);
 
                     return self::EVENT_TYPE_VIEW_NAME;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('mautic.focus.event.click', $parameters[0]);
 
                     return self::EVENT_TYPE_CLICK_NAME;

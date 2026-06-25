@@ -40,6 +40,8 @@ class Tag implements UuidInterface
 {
     use UuidTrait;
 
+    public ?int $deletedId = null;
+
     /**
      * @var int
      */
@@ -57,8 +59,6 @@ class Tag implements UuidInterface
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $description;
-
-    public ?int $deletedId = null;
 
     public function __construct(?string $tag = null, bool $clean = true)
     {

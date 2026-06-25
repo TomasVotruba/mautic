@@ -66,7 +66,7 @@ class OrderExecutioner
             self::class.':'.__FUNCTION__
         );
 
-        if (0 === $updateCount) {
+        if ($updateCount === 0) {
             return;
         }
 
@@ -118,7 +118,7 @@ class OrderExecutioner
             self::class.':'.__FUNCTION__
         );
 
-        if (0 === $createCount) {
+        if ($createCount === 0) {
             return;
         }
 

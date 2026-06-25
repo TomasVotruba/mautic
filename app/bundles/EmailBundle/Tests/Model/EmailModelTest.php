@@ -416,7 +416,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
 
         $counts = [];
         foreach ($emailSettings as $id => $details) {
-            $counts[] = "$id:{$details['variantCount']}";
+            $counts[] = "{$id}:{$details['variantCount']}";
         }
         $counts = implode('; ', $counts);
 
@@ -550,7 +550,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
 
         $counts = [];
         foreach ($emailSettings as $id => $details) {
-            $counts[] = "$id:{$details['variantCount']}";
+            $counts[] = "{$id}:{$details['variantCount']}";
         }
         $counts = implode('; ', $counts);
 
@@ -588,7 +588,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailEntity->method('getId')
             ->willReturn(1);
 
-        $this->assertTrue(0 === count($this->emailModel->sendEmail($this->emailEntity, [1 => ['id' => 1, 'email' => 'someone@domain.com']])));
+        $this->assertTrue(count($this->emailModel->sendEmail($this->emailEntity, [1 => ['id' => 1, 'email' => 'someone@domain.com']])) === 0);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('dataStatRecordExistance')]
@@ -656,7 +656,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $email = new class extends Email {
+        $email = new class() extends Email {
             public function getId(): int
             {
                 return 1;
@@ -787,7 +787,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ],
             ['email_type' => MailHelper::EMAIL_TYPE_MARKETING]
         );
-        $this->assertTrue(0 === count($result), print_r($result, true));
+        $this->assertTrue(count($result) === 0, print_r($result, true));
     }
 
     public function testHitEmailSavesEmailStatAndDeviceStatInTwoTransactions(): void
@@ -818,7 +818,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('persist')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher, $stat, $ipAddress) {
-                    if (1 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
@@ -878,7 +878,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('persist')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher, $stat, $ipAddress) {
-                    if (1 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
@@ -998,35 +998,6 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         self::assertEquals(self::SEGMENT_B, $result['datasets'][2]['label']);
     }
 
-    /** @return array<string, mixed> */
-    private function getEmailListStats(ArrayCollection $lists): array
-    {
-        $trackableRepo    = $this->createMock(TrackableRepository::class);
-        $doNotContactRepo = $this->createMock(DoNotContactRepository::class);
-
-        $this->entityManager->expects($this->any())
-            ->method('getRepository')
-            ->willReturnMap(
-                [
-                    [Stat::class, $this->statRepository],
-                    [DoNotContactEntity::class, $doNotContactRepo],
-                    [\Mautic\PageBundle\Entity\Trackable::class, $trackableRepo],
-                ]
-            );
-
-        $this->emailEntity->method('getLists')->willReturn($lists);
-
-        $connection   = $this->createMock(Connection::class);
-        $this->entityManager->method('getConnection')->willReturn($connection);
-
-        $dateFromObject = new \DateTime('now');
-        $dateToObject   = new \DateTime('-1 month');
-
-        $this->emailEntity->method('getLists')->willReturn($lists);
-
-        return $this->emailModel->getEmailListStats($this->emailEntity, true, $dateFromObject, $dateToObject);
-    }
-
     public function testGetBestHours(): void
     {
         $dbalMock = new DBALMocker($this);
@@ -1088,5 +1059,34 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     {
         yield [true];
         yield [false];
+    }
+
+    /** @return array<string, mixed> */
+    private function getEmailListStats(ArrayCollection $lists): array
+    {
+        $trackableRepo    = $this->createMock(TrackableRepository::class);
+        $doNotContactRepo = $this->createMock(DoNotContactRepository::class);
+
+        $this->entityManager->expects($this->any())
+            ->method('getRepository')
+            ->willReturnMap(
+                [
+                    [Stat::class, $this->statRepository],
+                    [DoNotContactEntity::class, $doNotContactRepo],
+                    [\Mautic\PageBundle\Entity\Trackable::class, $trackableRepo],
+                ]
+            );
+
+        $this->emailEntity->method('getLists')->willReturn($lists);
+
+        $connection   = $this->createMock(Connection::class);
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $dateFromObject = new \DateTime('now');
+        $dateToObject   = new \DateTime('-1 month');
+
+        $this->emailEntity->method('getLists')->willReturn($lists);
+
+        return $this->emailModel->getEmailListStats($this->emailEntity, true, $dateFromObject, $dateToObject);
     }
 }

@@ -74,31 +74,6 @@ class ConfigFormTest extends KernelTestCase
         }
     }
 
-    /**
-     * @param array<string> $headers
-     *
-     * @return array<mixed>
-     */
-    private function getOauthData(string $key, array $headers = []): array
-    {
-        $result = [
-            [
-                'a'   => 'testa',
-                'b'   => 'testb',
-                $key  => '',
-            ], [
-                'oauth-token: '.$key,
-                'Authorization: OAuth ',
-            ],
-        ];
-
-        if ([] !== $headers) {
-            $result[1] = array_merge($result[1], $headers);
-        }
-
-        return $result;
-    }
-
     public function testAmendLeadDataBeforeMauticPopulate(): void
     {
         $plugins = $this->getIntegrationObject()->getIntegrationObjects();
@@ -167,5 +142,30 @@ class ConfigFormTest extends KernelTestCase
         );
 
         return $integrationHelper;
+    }
+
+    /**
+     * @param array<string> $headers
+     *
+     * @return array<mixed>
+     */
+    private function getOauthData(string $key, array $headers = []): array
+    {
+        $result = [
+            [
+                'a'   => 'testa',
+                'b'   => 'testb',
+                $key  => '',
+            ], [
+                'oauth-token: '.$key,
+                'Authorization: OAuth ',
+            ],
+        ];
+
+        if ($headers !== []) {
+            $result[1] = array_merge($result[1], $headers);
+        }
+
+        return $result;
     }
 }

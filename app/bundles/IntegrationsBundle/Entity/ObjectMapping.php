@@ -59,6 +59,16 @@ class ObjectMapping
      */
     private $integrationReferenceId;
 
+    public function __construct(?\DateTime $dateCreated = null)
+    {
+        if ($dateCreated === null) {
+            $dateCreated = new \DateTime();
+        }
+
+        $this->dateCreated  = $dateCreated;
+        $this->lastSyncDate = $dateCreated;
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -121,16 +131,6 @@ class ObjectMapping
             ->columnName('integration_reference_id')
             ->nullable()
             ->build();
-    }
-
-    public function __construct(?\DateTime $dateCreated = null)
-    {
-        if (null === $dateCreated) {
-            $dateCreated = new \DateTime();
-        }
-
-        $this->dateCreated  = $dateCreated;
-        $this->lastSyncDate = $dateCreated;
     }
 
     /**
@@ -273,7 +273,7 @@ class ObjectMapping
      */
     public function setLastSyncDate($lastSyncDate)
     {
-        if (null === $lastSyncDate) {
+        if ($lastSyncDate === null) {
             $lastSyncDate = new \DateTime();
         }
 

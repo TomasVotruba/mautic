@@ -11,6 +11,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 )]
 class MonitorTwitterMentionsCommand extends MonitorTwitterBaseCommand
 {
+
+    public function getNetworkName(): string
+    {
+        return 'twitter';
+    }
     /**
      * Search for tweets by mention.
      *
@@ -41,10 +46,5 @@ class MonitorTwitterMentionsCommand extends MonitorTwitterBaseCommand
         }
 
         return $this->twitter->makeRequest($mentionsUrl, $requestQuery);
-    }
-
-    public function getNetworkName(): string
-    {
-        return 'twitter';
     }
 }

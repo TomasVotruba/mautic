@@ -169,56 +169,6 @@ class LeadListRepositoryTest extends TestCase
     }
 
     /**
-     * @param array<int> $queryResult
-     */
-    private function mockIsContactInAnySegment(int $contactId, array $queryResult): void
-    {
-        $prefix = MAUTIC_TABLE_PREFIX;
-        $sql    = <<<SQL
-            SELECT leadlist_id 
-            FROM {$prefix}lead_lists_leads
-            WHERE lead_id = ?
-                AND manually_removed = 0
-            LIMIT 1
-SQL;
-        $this->connection->expects(self::once())
-            ->method('executeQuery')
-            ->with($sql, [$contactId], [\PDO::PARAM_INT])
-            ->willReturn($this->result);
-        $this->result->expects(self::once())
-            ->method('fetchFirstColumn')
-            ->willReturn($queryResult);
-    }
-
-    /**
-     * @param array<int> $expectedSegmentIds
-     * @param array<int> $queryResult
-     */
-    private function mockIsContactInSegments(int $contactId, array $expectedSegmentIds, array $queryResult): void
-    {
-        $prefix = MAUTIC_TABLE_PREFIX;
-        $sql    = <<<SQL
-            SELECT leadlist_id 
-            FROM {$prefix}lead_lists_leads
-            WHERE lead_id = ?
-                AND leadlist_id IN (?)
-                AND manually_removed = 0
-SQL;
-        $this->connection->expects(self::once())
-            ->method('executeQuery')
-            ->with(
-                $sql,
-                [$contactId, $expectedSegmentIds],
-                [\PDO::PARAM_INT, ArrayParameterType::INTEGER]
-            )
-            ->willReturn($this->result);
-
-        $this->result->expects(self::once())
-            ->method('fetchFirstColumn')
-            ->willReturn($queryResult);
-    }
-
-    /**
      * @throws InvalidArgumentException
      */
     public function testGetMultipleLeadCounts(): void
@@ -296,13 +246,13 @@ SQL;
 
         $this->queryBuilderMock->expects($matcher)
             ->method('from')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
                     $this->assertSame('l', $parameters[1]);
 
                     return $this->queryBuilderMock;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
                     $this->assertSame('l USE INDEX ('.MAUTIC_TABLE_PREFIX.'manually_removed)', $parameters[1]);
 
@@ -313,11 +263,11 @@ SQL;
 
         $this->expressionMock->expects($matcher)
             ->method('eq')->willReturnCallback(function (...$parameters) use ($matcher, $listIds) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('l.leadlist_id', $parameters[0]);
                     $this->assertSame($listIds[0], $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('l.manually_removed', $parameters[0]);
                     $this->assertSame(':false', $parameters[1]);
                 }
@@ -326,6 +276,56 @@ SQL;
             });
 
         self::assertSame($counts[0], $this->repository->getLeadCount($listIds));
+    }
+
+    /**
+     * @param array<int> $queryResult
+     */
+    private function mockIsContactInAnySegment(int $contactId, array $queryResult): void
+    {
+        $prefix = MAUTIC_TABLE_PREFIX;
+        $sql    = <<<SQL
+            SELECT leadlist_id 
+            FROM {$prefix}lead_lists_leads
+            WHERE lead_id = ?
+                AND manually_removed = 0
+            LIMIT 1
+SQL;
+        $this->connection->expects(self::once())
+            ->method('executeQuery')
+            ->with($sql, [$contactId], [\PDO::PARAM_INT])
+            ->willReturn($this->result);
+        $this->result->expects(self::once())
+            ->method('fetchFirstColumn')
+            ->willReturn($queryResult);
+    }
+
+    /**
+     * @param array<int> $expectedSegmentIds
+     * @param array<int> $queryResult
+     */
+    private function mockIsContactInSegments(int $contactId, array $expectedSegmentIds, array $queryResult): void
+    {
+        $prefix = MAUTIC_TABLE_PREFIX;
+        $sql    = <<<SQL
+            SELECT leadlist_id 
+            FROM {$prefix}lead_lists_leads
+            WHERE lead_id = ?
+                AND leadlist_id IN (?)
+                AND manually_removed = 0
+SQL;
+        $this->connection->expects(self::once())
+            ->method('executeQuery')
+            ->with(
+                $sql,
+                [$contactId, $expectedSegmentIds],
+                [\PDO::PARAM_INT, ArrayParameterType::INTEGER]
+            )
+            ->willReturn($this->result);
+
+        $this->result->expects(self::once())
+            ->method('fetchFirstColumn')
+            ->willReturn($queryResult);
     }
 
     /**

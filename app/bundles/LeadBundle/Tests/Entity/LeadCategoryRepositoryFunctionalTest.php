@@ -49,11 +49,6 @@ class LeadCategoryRepositoryFunctionalTest extends MauticMysqlTestCase
         $this->setLeadCategories($this->lead, $this->categories);
     }
 
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement(['categories', 'lead_categories']);
-    }
-
     public function testCategoriesOnContactPreferences(): void
     {
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/contactFrequency/'.$this->lead->getId());
@@ -165,6 +160,11 @@ class LeadCategoryRepositoryFunctionalTest extends MauticMysqlTestCase
 
         $this->assertArrayHasKey($this->categories['one']->getId(), $unSubscribed);
         $this->assertArrayHasKey($this->categories['two']->getId(), $unSubscribed);
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement(['categories', 'lead_categories']);
     }
 
     /**

@@ -112,6 +112,14 @@ class PointRepository extends CommonRepository
         return $return;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
+    }
+
     protected function addCatchAllWhereClause($q, $filter): array
     {
         return $this->addStandardCatchAllWhereClause($q, $filter, [
@@ -133,13 +141,5 @@ class PointRepository extends CommonRepository
             ),
             default => $this->addStandardSearchCommandWhereClause($q, $filter),
         };
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
     }
 }

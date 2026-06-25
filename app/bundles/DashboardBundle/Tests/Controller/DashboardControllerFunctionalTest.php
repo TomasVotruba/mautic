@@ -171,37 +171,6 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertStringContainsString('deleted', $printResponse());
     }
 
-    private function createSegment(string $name, string $alias, float $lastBuildTime = 0, ?User $user = null): LeadList
-    {
-        $segment = new LeadList();
-        $segment->setName($name);
-        $segment->setPublicName($name);
-        $segment->setAlias($alias);
-        $segment->setLastBuiltTime($lastBuildTime);
-
-        if ($user) {
-            $segment->setCreatedBy($user);
-            $segment->setCreatedByUser($user->getName());
-        }
-
-        $this->em->persist($segment);
-
-        return $segment;
-    }
-
-    /**
-     * @return array<int,array<int,string>>
-     */
-    private function widgetHtmlWithTableToArray(string $widgetHtml): array
-    {
-        $doc = new \DOMDocument();
-        $doc->loadHTML($widgetHtml);
-        $crawler      = new Crawler($doc);
-        $crawlerTable = $crawler->filter('table')->first();
-
-        return array_slice($crawlerTable->filter('tr')->each(fn ($tr) => $tr->filter('td')->each(fn ($td) => trim($td->text()))), 1);
-    }
-
     public function testUpcomingEmailsWidget(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
@@ -241,5 +210,36 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
 
         self::assertResponseIsSuccessful();
         Assert::assertStringContainsString('TestFN TestLN', $this->client->getResponse()->getContent());
+    }
+
+    private function createSegment(string $name, string $alias, float $lastBuildTime = 0, ?User $user = null): LeadList
+    {
+        $segment = new LeadList();
+        $segment->setName($name);
+        $segment->setPublicName($name);
+        $segment->setAlias($alias);
+        $segment->setLastBuiltTime($lastBuildTime);
+
+        if ($user) {
+            $segment->setCreatedBy($user);
+            $segment->setCreatedByUser($user->getName());
+        }
+
+        $this->em->persist($segment);
+
+        return $segment;
+    }
+
+    /**
+     * @return array<int,array<int,string>>
+     */
+    private function widgetHtmlWithTableToArray(string $widgetHtml): array
+    {
+        $doc = new \DOMDocument();
+        $doc->loadHTML($widgetHtml);
+        $crawler      = new Crawler($doc);
+        $crawlerTable = $crawler->filter('table')->first();
+
+        return array_slice($crawlerTable->filter('tr')->each(fn ($tr) => $tr->filter('td')->each(fn ($td) => trim($td->text()))), 1);
     }
 }

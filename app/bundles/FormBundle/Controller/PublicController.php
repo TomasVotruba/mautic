@@ -37,7 +37,7 @@ class PublicController extends CommonFormController
         NotificationModel $notificationModel,
         UserRepository $userRepository,
     ) {
-        if ('POST' !== $request->getMethod()) {
+        if ($request->getMethod() !== 'POST') {
             $this->throwAccessDenied();
         }
 
@@ -56,6 +56,185 @@ class PublicController extends CommonFormController
         return ($context['messengerMode'] || $context['isAjax'])
             ? $this->buildMessengerResponse($context, $submissionResult)
             : $this->buildStandardResponse($request, $context, $submissionResult);
+    }
+
+    /**
+     * Displays a message.
+     */
+    public function messageAction(Request $request, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper): Response
+    {
+        $session = $request->getSession();
+        $message = $session->get('mautic.emailbundle.message', []);
+
+        $msg     = (!empty($message['message'])) ? $message['message'] : '';
+        $msgType = (!empty($message['type'])) ? $message['type'] : 'notice';
+
+        $analytics = $analyticsHelper->getCode();
+
+        if (!empty($analytics)) {
+            $assetsHelper->addCustomDeclaration($analytics);
+        }
+
+        $logicalName = $themeHelper->checkForTwigTemplate('@themes/'.$this->coreParametersHelper->get('theme').'/html/message.html.twig');
+
+        return new Response($themeHelper->renderThemeTemplate($logicalName, [
+            'message'  => $msg,
+            'type'     => $msgType,
+            'template' => $this->coreParametersHelper->get('theme'),
+        ]));
+    }
+
+    /**
+     * Gives a preview of the form.
+     *
+     * @return Response
+     *
+     * @throws \Exception
+     * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
+     */
+    public function previewAction(Request $request, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id = 0)
+    {
+        $model = $this->getModel('form.form');
+        \assert($model instanceof FormModel);
+        $objectId          = (empty($id)) ? (int) $request->get('id') : $id;
+        $css               = InputHelper::string((string) $request->get('css'));
+        $form              = $model->getEntity($objectId);
+        $customStylesheets = (!empty($css)) ? explode(',', $css) : [];
+        $template          = null;
+
+        if ($form === null || !$form->isPublished()) {
+            return $this->notFound();
+        }
+        $html = $model->getContent($form);
+
+        $model->populateValuesWithGetParameters($form, $html);
+
+        $viewParams = [
+            'content'     => $html,
+            'stylesheets' => $customStylesheets,
+            'name'        => $form->getName(),
+            'metaRobots'  => '<meta name="robots" content="index">',
+        ];
+
+        if ($form->getNoIndex()) {
+            $viewParams['metaRobots'] = '<meta name="robots" content="noindex">';
+        }
+
+        // Use form specific template or system-wide default theme
+        $template = $form->getTemplate() ?? $this->coreParametersHelper->get('theme');
+        if (!empty($template)) {
+            $theme = $themeHelper->getTheme($template);
+            if ($theme->getTheme() != $template) {
+                $config = $theme->getConfig();
+                if (in_array('form', $config['features'])) {
+                    $template = $theme->getTheme();
+                } else {
+                    $template = null;
+                }
+            }
+        }
+
+        $viewParams['template'] = $template;
+
+        if (!empty($template)) {
+            $logicalName  = $themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/form.html.twig');
+            $analytics    = $analyticsHelper->getCode();
+
+            foreach ($customStylesheets as $css) {
+                $assetsHelper->addStylesheet($css);
+            }
+
+            if (!empty($analytics)) {
+                $assetsHelper->addCustomDeclaration($analytics);
+            }
+            if ($form->getNoIndex()) {
+                $assetsHelper->addCustomDeclaration('<meta name="robots" content="noindex">');
+            }
+
+            return new Response($themeHelper->renderThemeTemplate($logicalName, $viewParams));
+        }
+
+        return $this->render('@MauticForm/form.html.twig', $viewParams);
+    }
+
+    /**
+     * Generates JS file for automatic form generation.
+     */
+    public function generateAction(Request $request): Response
+    {
+        // Don't store a visitor with this request
+        defined('MAUTIC_NON_TRACKABLE_REQUEST') || define('MAUTIC_NON_TRACKABLE_REQUEST', 1);
+
+        $formId = (int) $request->get('id');
+
+        $model = $this->getModel('form.form');
+        \assert($model instanceof FormModel);
+        $form  = $model->getEntity($formId);
+        $js    = '';
+
+        if ($form !== null) {
+            $status = $form->getPublishStatus();
+            if ($status === 'published') {
+                $js = $model->getAutomaticJavascript($form);
+            }
+        }
+
+        $response = new Response();
+        $response->setContent($js);
+        $response->setStatusCode(Response::HTTP_OK);
+        $response->headers->set('Content-Type', 'text/javascript');
+
+        return $response;
+    }
+
+    /**
+     * @return Response
+     */
+    public function embedAction(Request $request)
+    {
+        $formId = (int) $request->get('id');
+        /** @var FormModel $model */
+        $model = $this->getModel('form');
+        $form  = $model->getEntity($formId);
+
+        if ($form !== null) {
+            $status = $form->getPublishStatus();
+            if ($status === 'published') {
+                if ($request->get('video')) {
+                    return $this->render(
+                        '@MauticForm/Public/videoembed.html.twig',
+                        ['form' => $form, 'fieldSettings' => $model->getCustomComponents()['fields']]
+                    );
+                }
+
+                $content = $model->getContent($form, false, true);
+
+                return new Response($content);
+            }
+        }
+
+        return new Response('', Response::HTTP_NOT_FOUND);
+    }
+
+    public function lookupCompanyAction(Request $request, FieldModel $fieldModel, CompanyModel $companyModel): JsonResponse
+    {
+        $parameters = json_decode($request->getContent(), true);
+        $search     = InputHelper::clean($parameters['search'] ?? '');
+        $formId     = (int) ($parameters['formId'] ?? 0);
+
+        // Intentionally vague message as the JS takes care of this.
+        // Make it hard to abuse this public endpoint.
+        $vagueErrorMessage = ['error' => 'Invalid request param'];
+
+        if (mb_strlen($search) < 3 || !$formId) {
+            return new JsonResponse($vagueErrorMessage, JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        if (!$fieldModel->getRepository()->fieldExistsByFormAndType($formId, 'companyLookup')) {
+            return new JsonResponse($vagueErrorMessage, JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse($companyModel->getRepository()->getCompanyLookupData($search));
     }
 
     /**
@@ -120,7 +299,7 @@ class PublicController extends CommonFormController
             $formModel = $this->getModel('form.form');
             $form      = $formModel->getEntity($post['formId']);
 
-            if (null === $form) {
+            if ($form === null) {
                 $result['error'] = $this->translator->trans('mautic.form.submit.error.unavailable', [], 'flashes');
             } else {
                 \assert($form instanceof Form);
@@ -130,7 +309,7 @@ class PublicController extends CommonFormController
                 $result['postActionProperty'] = $form->getPostActionProperty();
                 $result['error']              = $this->getFormAvailabilityError($form, $dateTemplateHelper);
 
-                if (null === $result['error']) {
+                if ($result['error'] === null) {
                     $result = array_merge(
                         $result,
                         $this->handlePublishedForm($request, $context, $form, $notificationModel, $userRepository)
@@ -146,7 +325,7 @@ class PublicController extends CommonFormController
     {
         $status = $form->getPublishStatus();
 
-        if ('pending' === $status) {
+        if ($status === 'pending') {
             $publishUp = $form->getPublishUp();
 
             return $this->translator->trans(
@@ -156,7 +335,7 @@ class PublicController extends CommonFormController
             );
         }
 
-        if ('expired' === $status) {
+        if ($status === 'expired') {
             $publishDown = $form->getPublishDown();
 
             return $this->translator->trans(
@@ -166,7 +345,7 @@ class PublicController extends CommonFormController
             );
         }
 
-        return ('published' !== $status)
+        return ($status !== 'published')
             ? $this->translator->trans('mautic.form.submit.error.unavailable', [], 'flashes')
             : null;
     }
@@ -418,14 +597,14 @@ class PublicController extends CommonFormController
     {
         $response = $this->getStandardRedirectResponse($context, $submissionResult);
 
-        if (null === $response) {
+        if ($response === null) {
             $msg     = $submissionResult['postActionProperty'];
             $msgType = 'notice';
 
             if (!empty($submissionResult['error'])) {
                 $msg     = $submissionResult['error'];
                 $msgType = 'error';
-            } elseif ('return' === $submissionResult['postAction']) {
+            } elseif ($submissionResult['postAction'] === 'return') {
                 $msg = $this->translator->trans('mautic.form.submission.thankyou');
             }
 
@@ -458,9 +637,9 @@ class PublicController extends CommonFormController
             $hash = ($form instanceof Form) ? '#'.strtolower($form->getAlias()) : '';
 
             $response = $this->redirect($context['return'].$context['query'].'mauticError='.rawurlencode((string) $error).$hash); // NOSONAR return URL is sanitized in createSubmitContext().
-        } elseif ('redirect' === $submissionResult['postAction']) {
+        } elseif ($submissionResult['postAction'] === 'redirect') {
             $response = $this->redirect((string) $submissionResult['postActionProperty']);
-        } elseif ('return' === $submissionResult['postAction'] && !empty($context['return'])) {
+        } elseif ($submissionResult['postAction'] === 'return' && !empty($context['return'])) {
             $return = (string) $context['return'];
             if (!empty($submissionResult['postActionProperty'])) {
                 $return .= $context['query'].'mauticMessage='.rawurlencode((string) $submissionResult['postActionProperty']);
@@ -470,164 +649,6 @@ class PublicController extends CommonFormController
         }
 
         return $response;
-    }
-
-    /**
-     * Displays a message.
-     */
-    public function messageAction(Request $request, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper): Response
-    {
-        $session = $request->getSession();
-        $message = $session->get('mautic.emailbundle.message', []);
-
-        $msg     = (!empty($message['message'])) ? $message['message'] : '';
-        $msgType = (!empty($message['type'])) ? $message['type'] : 'notice';
-
-        $analytics = $analyticsHelper->getCode();
-
-        if (!empty($analytics)) {
-            $assetsHelper->addCustomDeclaration($analytics);
-        }
-
-        $logicalName = $themeHelper->checkForTwigTemplate('@themes/'.$this->coreParametersHelper->get('theme').'/html/message.html.twig');
-
-        return new Response($themeHelper->renderThemeTemplate($logicalName, [
-            'message'  => $msg,
-            'type'     => $msgType,
-            'template' => $this->coreParametersHelper->get('theme'),
-        ]));
-    }
-
-    /**
-     * Gives a preview of the form.
-     *
-     * @return Response
-     *
-     * @throws \Exception
-     * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
-     */
-    public function previewAction(Request $request, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id = 0)
-    {
-        $model = $this->getModel('form.form');
-        \assert($model instanceof FormModel);
-        $objectId          = (empty($id)) ? (int) $request->get('id') : $id;
-        $css               = InputHelper::string((string) $request->get('css'));
-        $form              = $model->getEntity($objectId);
-        $customStylesheets = (!empty($css)) ? explode(',', $css) : [];
-        $template          = null;
-
-        if (null === $form || !$form->isPublished()) {
-            return $this->notFound();
-        }
-        $html = $model->getContent($form);
-
-        $model->populateValuesWithGetParameters($form, $html);
-
-        $viewParams = [
-            'content'     => $html,
-            'stylesheets' => $customStylesheets,
-            'name'        => $form->getName(),
-            'metaRobots'  => '<meta name="robots" content="index">',
-        ];
-
-        if ($form->getNoIndex()) {
-            $viewParams['metaRobots'] = '<meta name="robots" content="noindex">';
-        }
-
-        // Use form specific template or system-wide default theme
-        $template = $form->getTemplate() ?? $this->coreParametersHelper->get('theme');
-        if (!empty($template)) {
-            $theme = $themeHelper->getTheme($template);
-            if ($theme->getTheme() != $template) {
-                $config = $theme->getConfig();
-                if (in_array('form', $config['features'])) {
-                    $template = $theme->getTheme();
-                } else {
-                    $template = null;
-                }
-            }
-        }
-
-        $viewParams['template'] = $template;
-
-        if (!empty($template)) {
-            $logicalName  = $themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/form.html.twig');
-            $analytics    = $analyticsHelper->getCode();
-
-            foreach ($customStylesheets as $css) {
-                $assetsHelper->addStylesheet($css);
-            }
-
-            if (!empty($analytics)) {
-                $assetsHelper->addCustomDeclaration($analytics);
-            }
-            if ($form->getNoIndex()) {
-                $assetsHelper->addCustomDeclaration('<meta name="robots" content="noindex">');
-            }
-
-            return new Response($themeHelper->renderThemeTemplate($logicalName, $viewParams));
-        }
-
-        return $this->render('@MauticForm/form.html.twig', $viewParams);
-    }
-
-    /**
-     * Generates JS file for automatic form generation.
-     */
-    public function generateAction(Request $request): Response
-    {
-        // Don't store a visitor with this request
-        defined('MAUTIC_NON_TRACKABLE_REQUEST') || define('MAUTIC_NON_TRACKABLE_REQUEST', 1);
-
-        $formId = (int) $request->get('id');
-
-        $model = $this->getModel('form.form');
-        \assert($model instanceof FormModel);
-        $form  = $model->getEntity($formId);
-        $js    = '';
-
-        if (null !== $form) {
-            $status = $form->getPublishStatus();
-            if ('published' === $status) {
-                $js = $model->getAutomaticJavascript($form);
-            }
-        }
-
-        $response = new Response();
-        $response->setContent($js);
-        $response->setStatusCode(Response::HTTP_OK);
-        $response->headers->set('Content-Type', 'text/javascript');
-
-        return $response;
-    }
-
-    /**
-     * @return Response
-     */
-    public function embedAction(Request $request)
-    {
-        $formId = (int) $request->get('id');
-        /** @var FormModel $model */
-        $model = $this->getModel('form');
-        $form  = $model->getEntity($formId);
-
-        if (null !== $form) {
-            $status = $form->getPublishStatus();
-            if ('published' === $status) {
-                if ($request->get('video')) {
-                    return $this->render(
-                        '@MauticForm/Public/videoembed.html.twig',
-                        ['form' => $form, 'fieldSettings' => $model->getCustomComponents()['fields']]
-                    );
-                }
-
-                $content = $model->getContent($form, false, true);
-
-                return new Response($content);
-            }
-        }
-
-        return new Response('', Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -655,26 +676,5 @@ class PublicController extends CommonFormController
         );
 
         return str_replace(array_keys($this->tokens), array_values($this->tokens), $string);
-    }
-
-    public function lookupCompanyAction(Request $request, FieldModel $fieldModel, CompanyModel $companyModel): JsonResponse
-    {
-        $parameters = json_decode($request->getContent(), true);
-        $search     = InputHelper::clean($parameters['search'] ?? '');
-        $formId     = (int) ($parameters['formId'] ?? 0);
-
-        // Intentionally vague message as the JS takes care of this.
-        // Make it hard to abuse this public endpoint.
-        $vagueErrorMessage = ['error' => 'Invalid request param'];
-
-        if (mb_strlen($search) < 3 || !$formId) {
-            return new JsonResponse($vagueErrorMessage, JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        if (!$fieldModel->getRepository()->fieldExistsByFormAndType($formId, 'companyLookup')) {
-            return new JsonResponse($vagueErrorMessage, JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        return new JsonResponse($companyModel->getRepository()->getCompanyLookupData($search));
     }
 }

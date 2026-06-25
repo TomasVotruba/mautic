@@ -81,16 +81,16 @@ class CustomFieldValueHelper
      */
     public static function normalize($value, $type, $properties)
     {
-        if ('' !== $value && $type && $properties) {
+        if ($value !== '' && $type && $properties) {
             if (!is_array($properties)) {
                 $properties = Serializer::decode($properties);
             }
             switch ($type) {
                 case self::TYPE_BOOLEAN:
                     foreach ($properties as $key => $property) {
-                        if ('yes' === $key && !isset($properties[1])) {
+                        if ($key === 'yes' && !isset($properties[1])) {
                             $properties[1] = $property;
-                        } elseif ('no' === $key && !isset($properties[0])) {
+                        } elseif ($key === 'no' && !isset($properties[0])) {
                             $properties[0] = $property;
                         }
                     }

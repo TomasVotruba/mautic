@@ -146,11 +146,26 @@ class TweetModel extends FormModel implements AjaxLookupModelInterface
      */
     public function getEntity($id = null): ?Tweet
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Tweet();
         }
 
         return parent::getEntity($id);
+    }
+
+    public function getRepository(): TweetRepository
+    {
+        return $this->em->getRepository(Tweet::class);
+    }
+
+    public function getStatRepository(): TweetStatRepository
+    {
+        return $this->em->getRepository(TweetStat::class);
+    }
+
+    public function getPermissionBase(): string
+    {
+        return 'mauticSocial:tweets';
     }
 
     /**
@@ -190,20 +205,5 @@ class TweetModel extends FormModel implements AjaxLookupModelInterface
         }
 
         return null;
-    }
-
-    public function getRepository(): TweetRepository
-    {
-        return $this->em->getRepository(Tweet::class);
-    }
-
-    public function getStatRepository(): TweetStatRepository
-    {
-        return $this->em->getRepository(TweetStat::class);
-    }
-
-    public function getPermissionBase(): string
-    {
-        return 'mauticSocial:tweets';
     }
 }

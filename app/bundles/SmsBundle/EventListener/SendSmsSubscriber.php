@@ -48,7 +48,7 @@ final class SendSmsSubscriber implements EventSubscriberInterface
         $options         = $event->getOptions();
         $messageQueue    = $options['resend_message_queue'] ?? null;
         $channel         = $options['channel'] ?? null;
-        $campaignEventId = (is_array($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1] : null;
+        $campaignEventId = (is_array($channel) && $channel[0] === 'campaign.event' && !empty($channel[1])) ? $channel[1] : null;
 
         $contacts       = $event->getContacts();
         $queuedContacts = $this->messageQueueModel->processFrequencyRules(

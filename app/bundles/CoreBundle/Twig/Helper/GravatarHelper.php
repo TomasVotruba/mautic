@@ -46,7 +46,7 @@ final class GravatarHelper
 
         $url = 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($email))).'?s='.$size;
 
-        if (null === $default) {
+        if ($default === null) {
             $default = $localDefault;
         }
 

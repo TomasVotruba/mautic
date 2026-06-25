@@ -230,7 +230,7 @@ class EmailType extends AbstractType
         );
 
         $template = $emailEntity->getTemplate() ?? 'blank';
-        if (true === $this->isDraftEnabled && $emailEntity->hasDraft() && !empty($emailEntity->getDraft()->getTemplate())) {
+        if ($this->isDraftEnabled === true && $emailEntity->hasDraft() && !empty($emailEntity->getDraft()->getTemplate())) {
             $template = $emailEntity->getDraft()->getTemplate();
         }
         // If theme does not exist, set empty
@@ -283,7 +283,7 @@ class EmailType extends AbstractType
         );
 
         $html = $emailEntity->getCustomHtml();
-        if (true === $this->isDraftEnabled && $emailEntity->hasDraft() && !empty($emailEntity->getDraft()->getHtml())) {
+        if ($this->isDraftEnabled === true && $emailEntity->hasDraft() && !empty($emailEntity->getDraft()->getHtml())) {
             $html = $emailEntity->getDraft()->getHtml();
         }
         $builder->add(
@@ -442,7 +442,7 @@ class EmailType extends AbstractType
 
                 $emailType = $data['emailType'] ?? null;
 
-                if ('list' === $emailType && isset($data['segmentTranslationParent'])) {
+                if ($emailType === 'list' && isset($data['segmentTranslationParent'])) {
                     $data['translationParent'] = $data['segmentTranslationParent'];
                 } elseif (isset($data['templateTranslationParent'])) {
                     $data['translationParent'] = $data['templateTranslationParent'];
@@ -617,13 +617,45 @@ class EmailType extends AbstractType
         }
     }
 
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(
+            [
+                'data_class' => Email::class,
+            ]
+        );
+
+        $resolver->setDefined(['update_select']);
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $stages       = $this->stageModel->getRepository()->getSimpleList();
+        $stageChoices = [];
+
+        foreach ($stages as $stage) {
+            $stageChoices[$stage['value']] = $stage['label'];
+        }
+
+        $view->vars['countries'] = FormFieldHelper::getCountryChoices();
+        $view->vars['regions']   = FormFieldHelper::getRegionChoices();
+        $view->vars['timezones'] = FormFieldHelper::getTimezonesChoices();
+        $view->vars['locales']   = FormFieldHelper::getLocaleChoices();
+        $view->vars['stages']    = $stageChoices;
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'emailform';
+    }
+
     /**
      * @return mixed[]
      */
     private function getDraftActionButtons(Email $email): array
     {
         $draftActionButtons = [];
-        if (false === $this->isDraftEnabled || empty($email->getId())) {
+        if ($this->isDraftEnabled === false || empty($email->getId())) {
             return $draftActionButtons;
         }
 
@@ -659,38 +691,6 @@ class EmailType extends AbstractType
         }
 
         return $draftActionButtons;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(
-            [
-                'data_class' => Email::class,
-            ]
-        );
-
-        $resolver->setDefined(['update_select']);
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
-        $stages       = $this->stageModel->getRepository()->getSimpleList();
-        $stageChoices = [];
-
-        foreach ($stages as $stage) {
-            $stageChoices[$stage['value']] = $stage['label'];
-        }
-
-        $view->vars['countries'] = FormFieldHelper::getCountryChoices();
-        $view->vars['regions']   = FormFieldHelper::getRegionChoices();
-        $view->vars['timezones'] = FormFieldHelper::getTimezonesChoices();
-        $view->vars['locales']   = FormFieldHelper::getLocaleChoices();
-        $view->vars['stages']    = $stageChoices;
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'emailform';
     }
 
     /**

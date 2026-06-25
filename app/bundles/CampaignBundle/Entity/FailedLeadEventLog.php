@@ -92,7 +92,7 @@ class FailedLeadEventLog
      */
     public function setDateAdded(?\DateTime $dateAdded = null)
     {
-        if (null === $dateAdded) {
+        if ($dateAdded === null) {
             $dateAdded = new \DateTime();
         }
 

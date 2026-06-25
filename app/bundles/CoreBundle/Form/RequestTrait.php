@@ -24,6 +24,67 @@ use Symfony\Component\Form\FormInterface;
 
 trait RequestTrait
 {
+
+    /**
+     * @param array<mixed> $fieldData
+     * @param array<mixed> $leadField
+     */
+    public function cleanFields(array &$fieldData, array $leadField): void
+    {
+        // This will catch null values or non-existent values to prevent null from converting to false/0
+        if (!isset($fieldData[$leadField['alias']])) {
+            return;
+        }
+
+        switch ($leadField['type']) {
+            case 'boolean':
+                $fieldData[$leadField['alias']] = InputHelper::boolean($fieldData[$leadField['alias']]);
+                break;
+                // Ensure date/time entries match what symfony expects
+            case 'datetime':
+            case 'date':
+            case 'time':
+                // Prevent zero based date placeholders
+                $dateTest = (int) str_replace(['/', '-', ' '], '', $fieldData[$leadField['alias']]);
+                if (!$dateTest) {
+                    // Date placeholder was used so just ignore it to allow import of the field
+                    unset($fieldData[$leadField['alias']]);
+                } else {
+                    if (false === ($timestamp = strtotime($fieldData[$leadField['alias']]))) {
+                        $timestamp = null;
+                    }
+                    if ($timestamp) {
+                        switch ($leadField['type']) {
+                            case 'datetime':
+                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d H:i:s', $timestamp)))->format('Y-m-d H:i:s');
+                                break;
+                            case 'date':
+                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d', $timestamp)))->format('Y-m-d');
+                                break;
+                            case 'time':
+                                $fieldData[$leadField['alias']] = (new \DateTime(date('H:i:s', $timestamp)))->format('H:i:s');
+                                break;
+                        }
+                    }
+                }
+                break;
+            case 'multiselect':
+                if (!is_array($fieldData[$leadField['alias']])) {
+                    if (str_contains($fieldData[$leadField['alias']], '|')) {
+                        $fieldData[$leadField['alias']] = explode('|', $fieldData[$leadField['alias']]);
+                    } else {
+                        $fieldData[$leadField['alias']] = [$fieldData[$leadField['alias']]];
+                    }
+                }
+                break;
+            case 'number':
+                $fieldData[$leadField['alias']] = (float) $fieldData[$leadField['alias']];
+                break;
+            case 'email':
+                $fieldData[$leadField['alias']] = InputHelper::email($fieldData[$leadField['alias']]);
+                break;
+        }
+    }
     /**
      * @param FormInterface<mixed> $form
      * @param array<mixed>         $params
@@ -62,11 +123,11 @@ trait RequestTrait
                     $setter = 'set'.ucfirst($name);
                     // Symfony fails to recognize true values on PATCH and add support for all boolean types (on, off, true, false, 1, 0)
                     // If value is array and count 1, return value of array as string
-                    if (is_array($params[$name]) && 1 == count($params[$name])) {
+                    if (is_array($params[$name]) && count($params[$name]) == 1) {
                         $params[$name] = end($params[$name]);
                     }
 
-                    if ('' === $params[$name]) {
+                    if ($params[$name] === '') {
                         break;
                     }
 
@@ -84,7 +145,7 @@ trait RequestTrait
                     $data = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN);
                     $data = (bool) $data;
                     try {
-                        $entity->$setter($data);
+                        $entity->{$setter}($data);
                         // Manually handled so remove from form processing
                         unset($form[$name], $params[$name]);
                         break;
@@ -166,66 +227,5 @@ trait RequestTrait
         }
 
         $params = InputHelper::_($params, $masks);
-    }
-
-    /**
-     * @param array<mixed> $fieldData
-     * @param array<mixed> $leadField
-     */
-    public function cleanFields(array &$fieldData, array $leadField): void
-    {
-        // This will catch null values or non-existent values to prevent null from converting to false/0
-        if (!isset($fieldData[$leadField['alias']])) {
-            return;
-        }
-
-        switch ($leadField['type']) {
-            case 'boolean':
-                $fieldData[$leadField['alias']] = InputHelper::boolean($fieldData[$leadField['alias']]);
-                break;
-                // Ensure date/time entries match what symfony expects
-            case 'datetime':
-            case 'date':
-            case 'time':
-                // Prevent zero based date placeholders
-                $dateTest = (int) str_replace(['/', '-', ' '], '', $fieldData[$leadField['alias']]);
-                if (!$dateTest) {
-                    // Date placeholder was used so just ignore it to allow import of the field
-                    unset($fieldData[$leadField['alias']]);
-                } else {
-                    if (false === ($timestamp = strtotime($fieldData[$leadField['alias']]))) {
-                        $timestamp = null;
-                    }
-                    if ($timestamp) {
-                        switch ($leadField['type']) {
-                            case 'datetime':
-                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d H:i:s', $timestamp)))->format('Y-m-d H:i:s');
-                                break;
-                            case 'date':
-                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d', $timestamp)))->format('Y-m-d');
-                                break;
-                            case 'time':
-                                $fieldData[$leadField['alias']] = (new \DateTime(date('H:i:s', $timestamp)))->format('H:i:s');
-                                break;
-                        }
-                    }
-                }
-                break;
-            case 'multiselect':
-                if (!is_array($fieldData[$leadField['alias']])) {
-                    if (str_contains($fieldData[$leadField['alias']], '|')) {
-                        $fieldData[$leadField['alias']] = explode('|', $fieldData[$leadField['alias']]);
-                    } else {
-                        $fieldData[$leadField['alias']] = [$fieldData[$leadField['alias']]];
-                    }
-                }
-                break;
-            case 'number':
-                $fieldData[$leadField['alias']] = (float) $fieldData[$leadField['alias']];
-                break;
-            case 'email':
-                $fieldData[$leadField['alias']] = InputHelper::email($fieldData[$leadField['alias']]);
-                break;
-        }
     }
 }

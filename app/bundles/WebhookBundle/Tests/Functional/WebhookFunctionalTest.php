@@ -62,14 +62,6 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         $this->webhhokRepository            = $this->em->getRepository(Webhook::class);
     }
 
-    /**
-     * Clean up after the tests.
-     */
-    protected function beforeTearDown(): void
-    {
-        $this->truncateTables('leads', 'webhooks', 'webhook_queue', 'webhook_events');
-    }
-
     public function testWebhookWorkflowWithCommandProcess(): void
     {
         $webhookQueueRepository = $this->em->getRepository(WebhookQueue::class);
@@ -201,6 +193,14 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
 
         // The queue should be processed.
         Assert::assertSame(0, $this->getQueueCountByWebhookId($webhook->getId()));
+    }
+
+    /**
+     * Clean up after the tests.
+     */
+    protected function beforeTearDown(): void
+    {
+        $this->truncateTables('leads', 'webhooks', 'webhook_queue', 'webhook_events');
     }
 
     private function createWebhook(): Webhook

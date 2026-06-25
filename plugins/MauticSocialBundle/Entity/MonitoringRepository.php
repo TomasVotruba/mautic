@@ -36,6 +36,19 @@ class MonitoringRepository extends CommonRepository
         return count(parent::getEntities($args));
     }
 
+    public function getTableAlias(): string
+    {
+        return 'e';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return $this->getStandardSearchCommands();
+    }
+
     /**
      * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      */
@@ -57,18 +70,5 @@ class MonitoringRepository extends CommonRepository
     protected function addSearchCommandWhereClause($q, $filter): array
     {
         return $this->addStandardSearchCommandWhereClause($q, $filter);
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'e';
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return $this->getStandardSearchCommands();
     }
 }

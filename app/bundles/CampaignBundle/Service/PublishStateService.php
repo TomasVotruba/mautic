@@ -124,7 +124,7 @@ class PublishStateService
         $currentState = null;
         $currentRange = null;
         foreach ($ranges as $range) {
-            if (null === $currentRange) {
+            if ($currentRange === null) {
                 $currentRange   = $range;
                 $currentState   = $range->getPublished();
                 $mergedRanges[] = $currentRange;
@@ -230,7 +230,7 @@ class PublishStateService
 
         // At first build a timeline of only manually set publish state changes without publish up and down dates.
         foreach ($publishStates as $publishState) {
-            if (null === $currentRange) {
+            if ($currentRange === null) {
                 $currentRange          = new PublishStateDateRange($publishState->getPublished(), $publishState->getDateAdded());
                 $currentState          = $publishState->getPublished();
                 $manualPublishRanges[] = $currentRange;
@@ -240,7 +240,7 @@ class PublishStateService
             // Always set the to date of the current (previous) range.
             $currentRange->setToDate($publishState->getDateAdded());
 
-            if ($currentState === $publishState->getPublished() && false === $publishState->getPublished()) {
+            if ($currentState === $publishState->getPublished() && $publishState->getPublished() === false) {
                 // Merge with the current range if unpublished
                 continue;
             }

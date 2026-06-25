@@ -248,7 +248,7 @@ class SchemaHelper
             // drop old indexes
             /** @var Index $oldIndex */
             foreach ($backupIndexes[$t] as $indexName => $oldIndex) {
-                if ('primary' == $indexName) {
+                if ($indexName == 'primary') {
                     continue;
                 }
 
@@ -331,7 +331,7 @@ class SchemaHelper
      */
     private function getSchemaManager(): AbstractSchemaManager
     {
-        if (null !== $this->schemaManager) {
+        if ($this->schemaManager !== null) {
             return $this->schemaManager;
         }
 

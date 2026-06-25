@@ -107,11 +107,6 @@ class LeadApiController extends CommonApiController
         return $this->handleView($view);
     }
 
-    protected function getTotalCountTtl(): ?int
-    {
-        return $this->coreParametersHelper->get('contact_api_count_cache_ttl', 5);
-    }
-
     /**
      * Obtains a list of custom fields.
      *
@@ -154,7 +149,7 @@ class LeadApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -206,7 +201,7 @@ class LeadApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -257,7 +252,7 @@ class LeadApiController extends CommonApiController
     public function getListsAction($id)
     {
         $entity = $this->model->getEntity($id);
-        if (null !== $entity) {
+        if ($entity !== null) {
             if (!$this->security->hasEntityAccess('lead:leads:viewown', 'lead:leads:viewother', $entity->getPermissionUser())) {
                 return $this->accessDenied();
             }
@@ -296,7 +291,7 @@ class LeadApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -325,7 +320,7 @@ class LeadApiController extends CommonApiController
     public function getCampaignsAction($id)
     {
         $entity = $this->model->getEntity($id);
-        if (null !== $entity) {
+        if ($entity !== null) {
             if (!$this->security->hasEntityAccess('lead:leads:viewown', 'lead:leads:viewother', $entity->getPermissionUser())) {
                 return $this->accessDenied();
             }
@@ -371,7 +366,7 @@ class LeadApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -419,7 +414,7 @@ class LeadApiController extends CommonApiController
     {
         $entity = $this->model->getEntity((int) $id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -436,7 +431,7 @@ class LeadApiController extends CommonApiController
         $reason = (int) $request->request->get('reason', DoNotContact::MANUAL);
 
         // If a reason is set, but it's empty or 0, show an error.
-        if (0 === $reason) {
+        if ($reason === 0) {
             return $this->returnError(
                 'Invalid reason code given',
                 Response::HTTP_BAD_REQUEST,
@@ -464,7 +459,7 @@ class LeadApiController extends CommonApiController
 
         $entity = $this->model->getEntity((int) $id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -479,48 +474,6 @@ class LeadApiController extends CommonApiController
                 $this->entityNameOne => $entity,
             ]
         );
-
-        return $this->handleView($view);
-    }
-
-    /**
-     * Add/Remove a UTM Tagset to/from the contact.
-     *
-     * @param int              $id
-     * @param string           $method
-     * @param array<mixed>|int $data
-     *
-     * @return Response
-     */
-    protected function applyUtmTagsAction($id, $method, $data)
-    {
-        $entity = $this->model->getEntity((int) $id);
-
-        if (null === $entity) {
-            return $this->notFound();
-        }
-
-        if (!$this->checkEntityAccess($entity, 'edit')) {
-            return $this->accessDenied();
-        }
-
-        // calls add/remove method as appropriate
-        $result = $this->model->$method($entity, $data);
-
-        if (false === $result) {
-            return $this->badRequest();
-        }
-
-        if ('removeUtmTags' == $method) {
-            $view = $this->view(
-                [
-                    'recordFound'        => $result,
-                    $this->entityNameOne => $entity,
-                ]
-            );
-        } else {
-            $view = $this->view([$this->entityNameOne => $entity]);
-        }
 
         return $this->handleView($view);
     }
@@ -560,6 +513,53 @@ class LeadApiController extends CommonApiController
         return $this->model->checkForDuplicateContact($params);
     }
 
+    protected function getTotalCountTtl(): ?int
+    {
+        return $this->coreParametersHelper->get('contact_api_count_cache_ttl', 5);
+    }
+
+    /**
+     * Add/Remove a UTM Tagset to/from the contact.
+     *
+     * @param int              $id
+     * @param string           $method
+     * @param array<mixed>|int $data
+     *
+     * @return Response
+     */
+    protected function applyUtmTagsAction($id, $method, $data)
+    {
+        $entity = $this->model->getEntity((int) $id);
+
+        if ($entity === null) {
+            return $this->notFound();
+        }
+
+        if (!$this->checkEntityAccess($entity, 'edit')) {
+            return $this->accessDenied();
+        }
+
+        // calls add/remove method as appropriate
+        $result = $this->model->{$method}($entity, $data);
+
+        if ($result === false) {
+            return $this->badRequest();
+        }
+
+        if ($method == 'removeUtmTags') {
+            $view = $this->view(
+                [
+                    'recordFound'        => $result,
+                    $this->entityNameOne => $entity,
+                ]
+            );
+        } else {
+            $view = $this->view([$this->entityNameOne => $entity]);
+        }
+
+        return $this->handleView($view);
+    }
+
     protected function prepareParametersForBinding(Request $request, $parameters, $entity, $action)
     {
         // Unset the tags from params to avoid a validation error
@@ -592,7 +592,7 @@ class LeadApiController extends CommonApiController
      */
     protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
     {
-        if ('edit' === $action) {
+        if ($action === 'edit') {
             // Merge existing duplicate contact based on unique fields if exist
             // new endpoints will leverage getNewEntity in order to return the correct status codes
             $existingEntity = $this->model->checkForDuplicateContact($this->entityRequestParameters);
@@ -669,7 +669,7 @@ class LeadApiController extends CommonApiController
 
                 $doNotContact = $this->doNotContactModel;
 
-                if (DoNotContact::IS_CONTACTABLE === $reason) {
+                if ($reason === DoNotContact::IS_CONTACTABLE) {
                     if (!empty($entity->getId())) {
                         // Remove DNC record
                         $doNotContact->removeDncForContact($entity->getId(), $channel, false);
@@ -703,7 +703,7 @@ class LeadApiController extends CommonApiController
             unset($parameters['frequencyRules']);
         }
 
-        $isPostOrPatch = 'POST' === $this->requestStack->getCurrentRequest()->getMethod() || 'PATCH' === $this->requestStack->getCurrentRequest()->getMethod();
+        $isPostOrPatch = $this->requestStack->getCurrentRequest()->getMethod() === 'POST' || $this->requestStack->getCurrentRequest()->getMethod() === 'PATCH';
         $this->setCustomFieldValues($entity, $form, $parameters, $isPostOrPatch);
     }
 
@@ -720,7 +720,7 @@ class LeadApiController extends CommonApiController
      */
     protected function isFormValid(FormInterface $form, ?array $data = null): bool
     {
-        $form->submit($data, 'PATCH' !== $this->requestStack->getCurrentRequest()->getMethod());
+        $form->submit($data, $this->requestStack->getCurrentRequest()->getMethod() !== 'PATCH');
 
         return $form->isSubmitted() && $form->isValid();
     }

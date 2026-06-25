@@ -39,6 +39,12 @@ class RedirectUrlTokensFinderTest extends TestCase
 
     private RedirectUrlTokensFinder $redirectUrlTokensFinder;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->redirectUrlTokensFinder = new RedirectUrlTokensFinder();
+    }
+
     public static function provideUrlToCheck(): \Generator
     {
         yield 'empty string' => [
@@ -353,11 +359,5 @@ class RedirectUrlTokensFinderTest extends TestCase
     public function testReplaceTokensWithDummyData(string $url, string $expected): void
     {
         self::assertSame($expected, $this->redirectUrlTokensFinder->replaceTokensWithDummyData($url));
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->redirectUrlTokensFinder = new RedirectUrlTokensFinder();
     }
 }

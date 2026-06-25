@@ -82,7 +82,7 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (InternalObjectUpdateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                         Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
@@ -91,7 +91,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (InternalObjectCreateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                         Assert::assertCount(1, $event->getCreateObjects());
@@ -128,7 +128,7 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (InternalObjectUpdateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                         Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
@@ -143,7 +143,7 @@ class OrderExecutionerTest extends TestCase
                                 new \DateTime()
                             );
 
-                            if (0 !== $key) {
+                            if ($key !== 0) {
                                 // Only inject an object mapping for one of the objects
                                 break;
                             }
@@ -160,7 +160,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (InternalObjectCreateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                         Assert::assertCount(1, $event->getCreateObjects());
@@ -197,7 +197,7 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (InternalObjectUpdateEvent $event) {
                         Assert::assertSame(Company::NAME, $event->getObject()->getName());
                         Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
@@ -206,7 +206,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (InternalObjectCreateEvent $event) {
                         Assert::assertSame(Company::NAME, $event->getObject()->getName());
                         Assert::assertCount(1, $event->getCreateObjects());
@@ -239,22 +239,22 @@ class OrderExecutionerTest extends TestCase
         $matcher = $this->exactly(4);
         $this->objectProvider->expects($matcher)
             ->method('getObjectByName')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
 
                     return new Contact();
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(Company::NAME, $parameters[0]);
 
                     return new Company();
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame(Contact::NAME, $parameters[0]);
 
                     return new Contact();
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame(Company::NAME, $parameters[0]);
 
                     return new Company();
@@ -264,7 +264,7 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (InternalObjectUpdateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
 
@@ -288,7 +288,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (InternalObjectUpdateEvent $event) {
                         Assert::assertSame(Company::NAME, $event->getObject()->getName());
 
@@ -313,7 +313,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $callback = function (InternalObjectCreateEvent $event) {
                         Assert::assertSame(Contact::NAME, $event->getObject()->getName());
 
@@ -331,7 +331,7 @@ class OrderExecutionerTest extends TestCase
                     $callback($parameters[0]);
                     $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $callback = function (InternalObjectCreateEvent $event) {
                         Assert::assertSame(Company::NAME, $event->getObject()->getName());
 
@@ -406,7 +406,7 @@ class OrderExecutionerTest extends TestCase
             ->method('getObjectByName')
             ->willReturnCallback(
                 function (string $objectName) {
-                    if ('bar' === $objectName) {
+                    if ($objectName === 'bar') {
                         throw new ObjectNotFoundException($objectName);
                     }
 

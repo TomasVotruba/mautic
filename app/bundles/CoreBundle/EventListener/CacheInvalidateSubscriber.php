@@ -51,7 +51,7 @@ class CacheInvalidateSubscriber
             return;
         }
 
-        if (self::ACTION_UPDATE === $action && $entity instanceof FormEntity && !$this->isEntityChanged($entity)) {
+        if ($action === self::ACTION_UPDATE && $entity instanceof FormEntity && !$this->isEntityChanged($entity)) {
             return;
         }
 

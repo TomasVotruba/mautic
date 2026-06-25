@@ -71,6 +71,14 @@ class OwnerSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * @return array|string|string[]
+     */
+    protected function getOwnerColumnNormalized(string $ownerColumn): string|array
+    {
+        return str_replace(['firstname', 'lastname'], ['first_name', 'last_name'], $ownerColumn);
+    }
+
+    /**
      * Generates an array of tokens based on the given token.
      *
      * * If contact[owner_id] === 0, then we need fake data
@@ -191,13 +199,5 @@ class OwnerSubscriber implements EventSubscriberInterface
         }
 
         return $tokens;
-    }
-
-    /**
-     * @return array|string|string[]
-     */
-    protected function getOwnerColumnNormalized(string $ownerColumn): string|array
-    {
-        return str_replace(['firstname', 'lastname'], ['first_name', 'last_name'], $ownerColumn);
     }
 }

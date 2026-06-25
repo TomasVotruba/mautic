@@ -46,7 +46,7 @@ class IntegrationEntityRepository extends CommonRepository
                 ->setParameter('integrationEntity', $integrationEntity);
         }
 
-        if ('lead' === $internalEntity) {
+        if ($internalEntity === 'lead') {
             $joinCondition = $q->expr()->and(
                 $q->expr()->eq('l.id', 'i.internal_entity_id')
             );
@@ -173,7 +173,7 @@ class IntegrationEntityRepository extends CommonRepository
         $integrationEntity = ['Contact', 'Lead'],
         $excludeIntegrationIds = [],
     ): array {
-        if ('company' == $internalEntity) {
+        if ($internalEntity == 'company') {
             $joinTable = 'companies';
         } else {
             $joinTable = 'leads';
@@ -182,7 +182,7 @@ class IntegrationEntityRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'integration_entity', 'i')
             ->join('i', MAUTIC_TABLE_PREFIX.$joinTable, 'l', 'l.id = i.internal_entity_id');
 
-        if (false === $limit) {
+        if ($limit === false) {
             $q->select('count(i.integration_entity_id) as total');
 
             if ($integrationEntity) {
@@ -200,7 +200,7 @@ class IntegrationEntityRepository extends CommonRepository
             }
             $sub = null;
             foreach ($integrationEntity as $key => $entity) {
-                if (null === $sub) {
+                if ($sub === null) {
                     $sub = CompositeExpression::or($q->expr()->eq('i.integration_entity', ':entity'.$key));
                     $q->setParameter('entity'.$key, $entity);
                     continue;
@@ -242,7 +242,7 @@ class IntegrationEntityRepository extends CommonRepository
             )
         );
 
-        if ('lead' == $internalEntity) {
+        if ($internalEntity == 'lead') {
             $q->andWhere(
                 $q->expr()->and($q->expr()->isNotNull('l.email')));
         } else {
@@ -272,7 +272,7 @@ class IntegrationEntityRepository extends CommonRepository
 
         // Group by email to prevent duplicates from affecting this
 
-        if (false === $limit and $integrationEntity) {
+        if ($limit === false and $integrationEntity) {
             $q->groupBy('i.integration_entity')->having('total');
         }
         if ($limit) {
@@ -285,13 +285,13 @@ class IntegrationEntityRepository extends CommonRepository
 
         if ($integrationEntity) {
             foreach ($integrationEntity as $entity) {
-                $leads[$entity] = (false === $limit) ? 0 : [];
+                $leads[$entity] = ($limit === false) ? 0 : [];
             }
         }
 
         foreach ($results as $result) {
             if ($integrationEntity) {
-                if (false === $limit) {
+                if ($limit === false) {
                     $leads[$result['integration_entity']] = (int) $result['total'];
                 } else {
                     $leads[$result['integration_entity']][$result['internal_entity_id']] = $result;
@@ -311,7 +311,7 @@ class IntegrationEntityRepository extends CommonRepository
      */
     public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead')
     {
-        if ('company' == $internalEntity) {
+        if ($internalEntity == 'company') {
             $joinTable = 'companies';
         } else {
             $joinTable = 'leads';
@@ -319,12 +319,12 @@ class IntegrationEntityRepository extends CommonRepository
         $q = $this->_em->getConnection()->createQueryBuilder()
             ->from(MAUTIC_TABLE_PREFIX.$joinTable, 'l');
 
-        if (false === $limit) {
+        if ($limit === false) {
             $q->select('count(*) as total');
         } else {
             $q->select('l.id as internal_entity_id,'.$leadFields);
         }
-        if ('company' == $internalEntity) {
+        if ($internalEntity == 'company') {
             $q->where('not exists (select null from '.MAUTIC_TABLE_PREFIX
                 .'integration_entity i where i.integration = :integration and i.internal_entity LIKE "'.$internalEntity.'%" and i.internal_entity_id = l.id)')
                 ->setParameter('integration', $integration);
@@ -337,7 +337,7 @@ class IntegrationEntityRepository extends CommonRepository
                 ->setParameter('integration', $integration);
         }
 
-        if ('company' == $internalEntity) {
+        if ($internalEntity == 'company') {
             $q->andWhere('l.companyname is not null');
         } else {
             $q->andWhere('l.email is not null');
@@ -395,7 +395,7 @@ class IntegrationEntityRepository extends CommonRepository
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if (false === $limit) {
+        if ($limit === false) {
             return (int) $results[0]['total'];
         }
 
@@ -425,7 +425,7 @@ class IntegrationEntityRepository extends CommonRepository
         $q = $this->_em->getConnection()->createQueryBuilder()
             ->from(MAUTIC_TABLE_PREFIX.'integration_entity', 'i');
 
-        if (false === $limit) {
+        if ($limit === false) {
             $q->select('count(*) as total');
         } else {
             $q->select('i.integration, i.integration_entity, i.integration_entity_id, i.date_added, i.last_sync_date, i.internal');
@@ -474,7 +474,7 @@ class IntegrationEntityRepository extends CommonRepository
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if (false === $limit && count($results) > 0) {
+        if ($limit === false && count($results) > 0) {
             return (int) $results[0]['total'];
         }
 

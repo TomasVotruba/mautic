@@ -11,7 +11,7 @@ class CampaignEventHelper
      */
     public static function validateLeadChangeTrigger(?CampaignLeadChangeEvent $eventDetails = null, array $event = []): bool
     {
-        if (null == $eventDetails) {
+        if ($eventDetails == null) {
             return true;
         }
 
@@ -25,7 +25,7 @@ class CampaignEventHelper
 
         // check against the selected action (was lead removed or added)
         $func = 'was'.ucfirst($action);
-        if (!method_exists($eventDetails, $func) || !$eventDetails->$func()) {
+        if (!method_exists($eventDetails, $func) || !$eventDetails->{$func}()) {
             return false;
         }
 

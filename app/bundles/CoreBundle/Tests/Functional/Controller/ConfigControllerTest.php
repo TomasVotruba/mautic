@@ -13,7 +13,7 @@ final class ConfigControllerTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
-        $this->configParams['validate_remote_domains'] = 'validate remote domains enabled' === $this->dataName();
+        $this->configParams['validate_remote_domains'] = $this->dataName() === 'validate remote domains enabled';
 
         parent::setUp();
     }

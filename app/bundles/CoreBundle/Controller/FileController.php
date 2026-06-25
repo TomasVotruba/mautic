@@ -107,12 +107,12 @@ class FileController extends AjaxController
     {
         $mediaDir = realpath($pathsHelper->getSystemPath('images', true));
 
-        if (false === $mediaDir) {
+        if ($mediaDir === false) {
             $this->response['error'] = 'Media dir does not exist';
             $this->statusCode        = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        if (false === is_writable($mediaDir)) {
+        if (is_writable($mediaDir) === false) {
             $this->response['error'] = 'Media dir is not writable';
             $this->statusCode        = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -134,7 +134,7 @@ class FileController extends AjaxController
     private function successfulResponse(Request $request, string $fileName, string $editor): void
     {
         $filePath = $this->getMediaUrl($request).'/'.$fileName;
-        if (self::EDITOR_CKEDITOR === $editor) {
+        if ($editor === self::EDITOR_CKEDITOR) {
             $this->response['uploaded'] = true;
             $this->response['url']      = $filePath;
         } else {
@@ -145,7 +145,7 @@ class FileController extends AjaxController
     private function failureResponse(string $editor): void
     {
         $errorMsg = 'The uploaded image does not have an allowed mime type';
-        if (self::EDITOR_CKEDITOR === $editor) {
+        if ($editor === self::EDITOR_CKEDITOR) {
             $this->response['uploaded']         = false;
             $this->response['error']['message'] = $errorMsg;
         } else {

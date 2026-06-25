@@ -17,7 +17,7 @@ class NoNestingValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, NoNesting::class);
         }
 
-        if (null === $value) {
+        if ($value === null) {
             return;
         }
 

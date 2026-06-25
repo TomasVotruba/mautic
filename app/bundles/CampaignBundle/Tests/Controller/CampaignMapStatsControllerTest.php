@@ -37,57 +37,6 @@ class CampaignMapStatsControllerTest extends MauticMysqlTestCase
         $this->mapController           = new CampaignMapStatsController($this->campaignModelMock);
     }
 
-    /**
-     * @return array<string, array<int, array<string, string>>>
-     */
-    private function getStats(): array
-    {
-        return [
-            'contacts' => [
-                [
-                    'contacts' => '4',
-                    'country'  => '',
-                ],
-                [
-                    'contacts' => '4',
-                    'country'  => 'Spain',
-                ],
-                [
-                    'contacts' => '4',
-                    'country'  => 'Finland',
-                ],
-            ],
-            'clicked_through_count' => [
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => '',
-                ],
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => 'Spain',
-                ],
-                [
-                    'clicked_through_count' => '4',
-                    'country'               => 'Finland',
-                ],
-            ],
-            'read_count' => [
-                [
-                    'read_count'            => '4',
-                    'country'               => '',
-                ],
-                [
-                    'read_count'            => '8',
-                    'country'               => 'Spain',
-                ],
-                [
-                    'read_count'            => '8',
-                    'country'               => 'Finland',
-                ],
-            ],
-        ];
-    }
-
     public function testMapCountries(): void
     {
         $stats   = $this->getStats();
@@ -223,6 +172,57 @@ class CampaignMapStatsControllerTest extends MauticMysqlTestCase
 
         $result = $this->mapController->getMapOptions($campaign);
         $this->assertSame(['contacts' => CampaignMapStatsController::MAP_OPTIONS['contacts']], $result);
+    }
+
+    /**
+     * @return array<string, array<int, array<string, string>>>
+     */
+    private function getStats(): array
+    {
+        return [
+            'contacts' => [
+                [
+                    'contacts' => '4',
+                    'country'  => '',
+                ],
+                [
+                    'contacts' => '4',
+                    'country'  => 'Spain',
+                ],
+                [
+                    'contacts' => '4',
+                    'country'  => 'Finland',
+                ],
+            ],
+            'clicked_through_count' => [
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => '',
+                ],
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => 'Spain',
+                ],
+                [
+                    'clicked_through_count' => '4',
+                    'country'               => 'Finland',
+                ],
+            ],
+            'read_count' => [
+                [
+                    'read_count'            => '4',
+                    'country'               => '',
+                ],
+                [
+                    'read_count'            => '8',
+                    'country'               => 'Spain',
+                ],
+                [
+                    'read_count'            => '8',
+                    'country'               => 'Finland',
+                ],
+            ],
+        ];
     }
 
     /**

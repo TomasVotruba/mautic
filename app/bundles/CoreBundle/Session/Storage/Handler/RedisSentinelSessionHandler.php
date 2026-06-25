@@ -31,6 +31,24 @@ class RedisSentinelSessionHandler extends AbstractSessionHandler
         $this->redis = PRedisConnectionHelper::createClient(PRedisConnectionHelper::getRedisEndpoints($redisConfiguration['url']), $redisOptions);
     }
 
+    public function close(): bool
+    {
+        return true;
+    }
+
+    public function gc($maxlifetime): int|false
+    {
+        // No garbage collection needed as Redis handles expiration.
+        return false;
+    }
+
+    public function updateTimestamp($sessionId, $data): bool
+    {
+        $expireTime = isset($this->redisConfiguration['session_expire_time']) ? (int) $this->redisConfiguration['session_expire_time'] : 1_209_600;
+
+        return (bool) $this->redis->expire($sessionId, $expireTime);
+    }
+
     protected function doRead(string $sessionId): string
     {
         return $this->redis->get($sessionId) ?: '';
@@ -49,23 +67,5 @@ class RedisSentinelSessionHandler extends AbstractSessionHandler
         $this->redis->del($sessionId);
 
         return true;
-    }
-
-    public function close(): bool
-    {
-        return true;
-    }
-
-    public function gc($maxlifetime): int|false
-    {
-        // No garbage collection needed as Redis handles expiration.
-        return false;
-    }
-
-    public function updateTimestamp($sessionId, $data): bool
-    {
-        $expireTime = isset($this->redisConfiguration['session_expire_time']) ? (int) $this->redisConfiguration['session_expire_time'] : 1_209_600;
-
-        return (bool) $this->redis->expire($sessionId, $expireTime);
     }
 }

@@ -21,10 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PublicControllerFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @var int
-     */
-    private $leadId;
 
     /**
      * Tests that use the classic unsubscribe page. Not preference center.
@@ -33,6 +29,10 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         'testUnsubscribeWithEmailStat',
         'testUnsubscribeEmail',
     ];
+    /**
+     * @var int
+     */
+    private $leadId;
 
     protected function setUp(): void
     {
@@ -219,19 +219,6 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(1, $tokenInput->count(), $this->client->getResponse()->getContent());
     }
 
-    private function getPreferencesCenterLandingPage(): Page
-    {
-        $page = new Page();
-        $page->setTitle('Preference center');
-        $page->setAlias('Preference-center');
-        $page->setIsPublished(true);
-        $page->setIsPreferenceCenter(true);
-        $page->setCustomHtml('<html><body>{saveprefsbutton}</body></html>');
-        $this->em->persist($page);
-
-        return $page;
-    }
-
     public function testUnsubscribeFormActionWithUsingLandingPageWithoutContactLocale(): void
     {
         $lead = $this->createLead();
@@ -317,93 +304,6 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString($needle, $crawler->html());
     }
 
-    /**
-     * @throws ORMException
-     */
-    protected function getStat(?Form $form = null, ?Lead $lead = null, ?Page $preferenceCenter = null): Stat
-    {
-        $trackingHash = 'tracking_hash_unsubscribe_form_email';
-        $emailName    = 'Test unsubscribe form email';
-
-        $email = new Email();
-        $email->setName($emailName);
-        $email->setSubject($emailName);
-        $email->setEmailType('template');
-        $email->setUnsubscribeForm($form);
-        $email->setPreferenceCenter($preferenceCenter);
-        $this->em->persist($email);
-
-        // Create a test email stat.
-        $stat = new Stat();
-        $stat->setTrackingHash($trackingHash);
-        $stat->setEmailAddress('john@doe.email');
-        $stat->setLead($lead);
-        $stat->setDateSent(new \DateTime());
-        $stat->setEmail($email);
-        $this->em->persist($stat);
-
-        return $stat;
-    }
-
-    /**
-     * @throws ORMException
-     */
-    protected function getForm(?string $formTemplate): Form
-    {
-        $formName = 'unsubscribe_test_form';
-
-        $form = new Form();
-        $form->setName($formName);
-        $form->setAlias($formName);
-        $form->setTemplate($formTemplate);
-        $this->em->persist($form);
-
-        return $form;
-    }
-
-    protected function createLead(?string $locale = null): Lead
-    {
-        $lead = new Lead();
-        $lead->setEmail('john@doe.email');
-        $lead->addUpdatedField('preferred_locale', $locale);
-        $this->em->persist($lead);
-
-        return $lead;
-    }
-
-    protected function createCustomPreferencesPage(string $html = ''): Page
-    {
-        $page = new Page();
-        $page->setTitle('Contact Preferences');
-        $page->setAlias('contact-preferences');
-        $page->setTemplate('blank');
-        $page->setIsPreferenceCenter(true);
-        $page->setIsPublished(true);
-        $page->setCustomHtml($html);
-        $this->em->persist($page);
-
-        return $page;
-    }
-
-    protected function createPage(?string $locale = ''): Page
-    {
-        $page = new Page();
-        $page->setTitle('Page:Page:LandingPagePrefCenter');
-        $page->setAlias('page-page-landingPagePrefCenter');
-        $page->setIsPublished(true);
-        $page->setTemplate('blank');
-        $page->setCustomHtml('<h1>Preference center page</h1><br>{saveprefsbutton}');
-        $page->setIsPreferenceCenter(true);
-
-        if ($locale) {
-            $page->setLanguage($locale);
-        }
-
-        $this->em->persist($page);
-
-        return $page;
-    }
-
     public function testPreviewDisabledByDefault(): void
     {
         $emailName    = 'Test preview email';
@@ -482,79 +382,6 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
             $this->em->remove($addedDoNotContact);
             $this->em->flush();
         }
-    }
-
-    /**
-     * @return array<string,array<string|bool>>
-     *
-     * @throws ORMException
-     *
-     * @see self::testUnsubscribeEmail()
-     */
-    private function getUnsubscribeProvider(): array
-    {
-        // Emails
-        $wrongEmail = 'test@mautictest.sk';
-        $rightEmail = 'test@mautictest.cz';
-        $lead       = new Lead();
-        $lead->setEmail($rightEmail);
-        $this->em->persist($lead);
-        // Email hash
-        $coreParametersHelper   = self::getContainer()->get('mautic.helper.core_parameters');
-        $configSecretEmailHash  = $coreParametersHelper->get('secret_key');
-        $rightHashForWrongEmail = hash_hmac('sha256', $wrongEmail, $configSecretEmailHash);
-        $rightHashForRightEmail = hash_hmac('sha256', $rightEmail, $configSecretEmailHash);
-        $wrongHash              = hash_hmac('sha256', 'wrong', $configSecretEmailHash);
-        // Stat hash
-        $wrongStatHash = 'wrong';
-        $rightStatHash = 'right';
-        $stat          = new Stat();
-        $stat->setTrackingHash($rightStatHash);
-        $stat->setLead($lead);
-        $stat->setEmailAddress($rightEmail);
-        $stat->setDateSent(new \DateTime());
-        $this->em->persist($stat);
-        // Flush
-        $this->em->flush();
-        $this->leadId = $lead->getId();
-
-        return [
-            'ok' => [
-                $rightStatHash,
-                $rightEmail,
-                $rightHashForRightEmail,
-                'We are sorry to see you go!',
-                true,
-            ],
-            'ok_right_stat_hash' => [
-                $rightStatHash,
-                $wrongEmail,
-                $wrongHash,
-                'We are sorry to see you go!',
-                true,
-            ],
-            'ok_right_email_and_hash' => [
-                $wrongStatHash,
-                $rightEmail,
-                $rightHashForRightEmail,
-                'We are sorry to see you go!',
-                true,
-            ],
-            'ko_right_email_and_wrong_hash' => [
-                $wrongStatHash,
-                $rightEmail,
-                $wrongHash,
-                'Record not found',
-                false,
-            ],
-            'ko_wrong_email_and_right_hash' => [
-                $wrongStatHash,
-                $wrongEmail,
-                $rightHashForWrongEmail,
-                'Record not found',
-                false,
-            ],
-        ];
     }
 
     public function testUnsubscribeNotFoundEmailStat(): void
@@ -670,5 +497,178 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
         $successMessage = $crawler->filter('div.pref-successmessage');
         $this->assertEquals(1, $successMessage->count());
+    }
+
+    /**
+     * @throws ORMException
+     */
+    protected function getStat(?Form $form = null, ?Lead $lead = null, ?Page $preferenceCenter = null): Stat
+    {
+        $trackingHash = 'tracking_hash_unsubscribe_form_email';
+        $emailName    = 'Test unsubscribe form email';
+
+        $email = new Email();
+        $email->setName($emailName);
+        $email->setSubject($emailName);
+        $email->setEmailType('template');
+        $email->setUnsubscribeForm($form);
+        $email->setPreferenceCenter($preferenceCenter);
+        $this->em->persist($email);
+
+        // Create a test email stat.
+        $stat = new Stat();
+        $stat->setTrackingHash($trackingHash);
+        $stat->setEmailAddress('john@doe.email');
+        $stat->setLead($lead);
+        $stat->setDateSent(new \DateTime());
+        $stat->setEmail($email);
+        $this->em->persist($stat);
+
+        return $stat;
+    }
+
+    /**
+     * @throws ORMException
+     */
+    protected function getForm(?string $formTemplate): Form
+    {
+        $formName = 'unsubscribe_test_form';
+
+        $form = new Form();
+        $form->setName($formName);
+        $form->setAlias($formName);
+        $form->setTemplate($formTemplate);
+        $this->em->persist($form);
+
+        return $form;
+    }
+
+    protected function createLead(?string $locale = null): Lead
+    {
+        $lead = new Lead();
+        $lead->setEmail('john@doe.email');
+        $lead->addUpdatedField('preferred_locale', $locale);
+        $this->em->persist($lead);
+
+        return $lead;
+    }
+
+    protected function createCustomPreferencesPage(string $html = ''): Page
+    {
+        $page = new Page();
+        $page->setTitle('Contact Preferences');
+        $page->setAlias('contact-preferences');
+        $page->setTemplate('blank');
+        $page->setIsPreferenceCenter(true);
+        $page->setIsPublished(true);
+        $page->setCustomHtml($html);
+        $this->em->persist($page);
+
+        return $page;
+    }
+
+    protected function createPage(?string $locale = ''): Page
+    {
+        $page = new Page();
+        $page->setTitle('Page:Page:LandingPagePrefCenter');
+        $page->setAlias('page-page-landingPagePrefCenter');
+        $page->setIsPublished(true);
+        $page->setTemplate('blank');
+        $page->setCustomHtml('<h1>Preference center page</h1><br>{saveprefsbutton}');
+        $page->setIsPreferenceCenter(true);
+
+        if ($locale) {
+            $page->setLanguage($locale);
+        }
+
+        $this->em->persist($page);
+
+        return $page;
+    }
+
+    private function getPreferencesCenterLandingPage(): Page
+    {
+        $page = new Page();
+        $page->setTitle('Preference center');
+        $page->setAlias('Preference-center');
+        $page->setIsPublished(true);
+        $page->setIsPreferenceCenter(true);
+        $page->setCustomHtml('<html><body>{saveprefsbutton}</body></html>');
+        $this->em->persist($page);
+
+        return $page;
+    }
+
+    /**
+     * @return array<string,array<string|bool>>
+     *
+     * @throws ORMException
+     *
+     * @see self::testUnsubscribeEmail()
+     */
+    private function getUnsubscribeProvider(): array
+    {
+        // Emails
+        $wrongEmail = 'test@mautictest.sk';
+        $rightEmail = 'test@mautictest.cz';
+        $lead       = new Lead();
+        $lead->setEmail($rightEmail);
+        $this->em->persist($lead);
+        // Email hash
+        $coreParametersHelper   = self::getContainer()->get('mautic.helper.core_parameters');
+        $configSecretEmailHash  = $coreParametersHelper->get('secret_key');
+        $rightHashForWrongEmail = hash_hmac('sha256', $wrongEmail, $configSecretEmailHash);
+        $rightHashForRightEmail = hash_hmac('sha256', $rightEmail, $configSecretEmailHash);
+        $wrongHash              = hash_hmac('sha256', 'wrong', $configSecretEmailHash);
+        // Stat hash
+        $wrongStatHash = 'wrong';
+        $rightStatHash = 'right';
+        $stat          = new Stat();
+        $stat->setTrackingHash($rightStatHash);
+        $stat->setLead($lead);
+        $stat->setEmailAddress($rightEmail);
+        $stat->setDateSent(new \DateTime());
+        $this->em->persist($stat);
+        // Flush
+        $this->em->flush();
+        $this->leadId = $lead->getId();
+
+        return [
+            'ok' => [
+                $rightStatHash,
+                $rightEmail,
+                $rightHashForRightEmail,
+                'We are sorry to see you go!',
+                true,
+            ],
+            'ok_right_stat_hash' => [
+                $rightStatHash,
+                $wrongEmail,
+                $wrongHash,
+                'We are sorry to see you go!',
+                true,
+            ],
+            'ok_right_email_and_hash' => [
+                $wrongStatHash,
+                $rightEmail,
+                $rightHashForRightEmail,
+                'We are sorry to see you go!',
+                true,
+            ],
+            'ko_right_email_and_wrong_hash' => [
+                $wrongStatHash,
+                $rightEmail,
+                $wrongHash,
+                'Record not found',
+                false,
+            ],
+            'ko_wrong_email_and_right_hash' => [
+                $wrongStatHash,
+                $wrongEmail,
+                $rightHashForWrongEmail,
+                'Record not found',
+                false,
+            ],
+        ];
     }
 }

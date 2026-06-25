@@ -52,7 +52,7 @@ class ExceptionListener extends ErrorListener
                 $message = $context->getInboundContext()->getMessage();
                 if (
                     method_exists($message, 'getStatus')
-                    && 'urn:oasis:names:tc:SAML:2.0:status:Success' === $message->getStatus()->getStatusCode()->getValue()
+                    && $message->getStatus()->getStatusCode()->getValue() === 'urn:oasis:names:tc:SAML:2.0:status:Success'
                 ) {
                     $session = $event->getRequest()->attributes->get('_session');
                     if ($session) {

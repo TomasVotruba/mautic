@@ -181,7 +181,7 @@ class SubmissionRepository extends CommonRepository
     {
         $entity = parent::getEntity($id);
 
-        if (null != $entity) {
+        if ($entity != null) {
             $form = $entity->getForm();
 
             // use DBAL to get entity fields
@@ -247,27 +247,20 @@ class SubmissionRepository extends CommonRepository
      */
     public function getFilterExpr($q, array $filter, ?string $unique = null): array
     {
-        if ('s.date_submitted' === $filter['column']) {
+        if ($filter['column'] === 's.date_submitted') {
             $date       = (new DateTimeHelper($filter['value'], 'Y-m-d'))->toUtcString();
             $date1      = $this->generateRandomParameterName();
             $date2      = $this->generateRandomParameterName();
             $parameters = [$date1 => $date.' 00:00:00', $date2 => $date.' 23:59:59'];
             $expr       = $q->expr()->and(
-                $q->expr()->gte('s.date_submitted', ":$date1"),
-                $q->expr()->lte('s.date_submitted', ":$date2")
+                $q->expr()->gte('s.date_submitted', ":{$date1}"),
+                $q->expr()->lte('s.date_submitted', ":{$date2}")
             );
 
             return [$expr, $parameters];
         }
 
         return parent::getFilterExpr($q, $filter);
-    }
-
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['s.date_submitted', 'ASC'],
-        ];
     }
 
     /**
@@ -367,7 +360,7 @@ class SubmissionRepository extends CommonRepository
                 ->setParameter('page', (int) $pageId);
         }
 
-        if (null != $fromDate) {
+        if ($fromDate != null) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('s.date_submitted', ':date'))
                 ->setParameter('date', $dh->toUtcString());
@@ -400,7 +393,7 @@ class SubmissionRepository extends CommonRepository
                 ->setParameter('id', (int) $emailId);
         }
 
-        if (null != $fromDate) {
+        if ($fromDate != null) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('s.date_submitted', ':date'))
                 ->setParameter('date', $dh->toUtcString());
@@ -495,8 +488,8 @@ class SubmissionRepository extends CommonRepository
             ->setParameter('form', (int) $form);
 
         match ($type) {
-            'boolean', 'number' => $q->andWhere($q->expr()->$operatorExpr('r.'.$field, $value)),
-            default => $q->andWhere($q->expr()->$operatorExpr('r.'.$field, ':value'))
+            'boolean', 'number' => $q->andWhere($q->expr()->{$operatorExpr}('r.'.$field, $value)),
+            default => $q->andWhere($q->expr()->{$operatorExpr}('r.'.$field, ':value'))
                 ->setParameter('value', $value),
         };
 
@@ -594,5 +587,12 @@ class SubmissionRepository extends CommonRepository
         $qb->delete($tableName)
             ->where($qb->expr()->in('submission_id', $inValidSubmissionIds))
             ->executeStatement();
+    }
+
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['s.date_submitted', 'ASC'],
+        ];
     }
 }

@@ -62,17 +62,6 @@ class CompanyApiController extends CommonApiController
     }
 
     /**
-     * @param Company              &$entity
-     * @param FormInterface<mixed> $form
-     * @param array<mixed>         $parameters
-     * @param string               $action
-     */
-    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
-    {
-        $this->setCustomFieldValues($entity, $form, $parameters);
-    }
-
-    /**
      * Adds a contact to a company.
      *
      * @param int $companyId Company ID
@@ -87,7 +76,7 @@ class CompanyApiController extends CommonApiController
         $company = $this->model->getEntity($companyId);
         $view    = $this->view(['success' => 1], Response::HTTP_OK);
 
-        if (null === $company) {
+        if ($company === null) {
             return $this->notFound();
         }
 
@@ -116,7 +105,7 @@ class CompanyApiController extends CommonApiController
         $company = $this->model->getEntity($companyId);
         $view    = $this->view(['success' => 1], Response::HTTP_OK);
 
-        if (null === $company) {
+        if ($company === null) {
             return $this->notFound();
         }
 
@@ -124,7 +113,7 @@ class CompanyApiController extends CommonApiController
         $contact      = $contactModel->getEntity($contactId);
 
         // Does the contact exist and the user has permission to edit
-        if (null === $contact) {
+        if ($contact === null) {
             return $this->notFound();
         } elseif (!$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $contact->getPermissionUser())) {
             return $this->accessDenied();
@@ -133,5 +122,16 @@ class CompanyApiController extends CommonApiController
         $this->model->removeLeadFromCompany($company, $contact);
 
         return $this->handleView($view);
+    }
+
+    /**
+     * @param Company              &$entity
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $parameters
+     * @param string               $action
+     */
+    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
+    {
+        $this->setCustomFieldValues($entity, $form, $parameters);
     }
 }

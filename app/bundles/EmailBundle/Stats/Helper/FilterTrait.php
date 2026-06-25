@@ -18,7 +18,7 @@ trait FilterTrait
      */
     protected function addCompanyFilter(QueryBuilder $q, $companyId = null, $fromAlias = 't')
     {
-        if (null !== $companyId && intval($companyId)) {
+        if ($companyId !== null && intval($companyId)) {
             $sb = $this->connection->createQueryBuilder();
 
             $sb->select('null')
@@ -42,7 +42,7 @@ trait FilterTrait
      */
     protected function addCampaignFilter(QueryBuilder $q, $campaignId = null, $fromAlias = 't')
     {
-        if (null !== $campaignId && intval($campaignId)) {
+        if ($campaignId !== null && intval($campaignId)) {
             $q->innerJoin($fromAlias, '(SELECT DISTINCT event_id, lead_id FROM '.MAUTIC_TABLE_PREFIX.'campaign_lead_event_log WHERE campaign_id = :campaignId)', 'clel', $fromAlias.'.source_id = clel.event_id AND '.$fromAlias.'.source = "campaign.event" AND '.$fromAlias.'.lead_id = clel.lead_id')
                 ->setParameter('campaignId', $campaignId);
         }
@@ -54,7 +54,7 @@ trait FilterTrait
      */
     protected function addCampaignFilterForEmailSource(QueryBuilder $q, $campaignId = null, $fromAlias = 't')
     {
-        if (null !== $campaignId && intval($campaignId)) {
+        if ($campaignId !== null && intval($campaignId)) {
             $q->innerJoin($fromAlias, '(SELECT DISTINCT channel_id, lead_id FROM '.MAUTIC_TABLE_PREFIX.'campaign_lead_event_log WHERE campaign_id = :campaignId AND channel = "email")', 'clel', $fromAlias.'.source_id = clel.channel_id AND '.$fromAlias.'.source = "email" AND '.$fromAlias.'.lead_id = clel.lead_id')
                 ->setParameter('campaignId', $campaignId);
         }
@@ -66,7 +66,7 @@ trait FilterTrait
      */
     protected function addSegmentFilter(QueryBuilder $q, $segmentId = null, $fromAlias = 't')
     {
-        if (null !== $segmentId && intval($segmentId)) {
+        if ($segmentId !== null && intval($segmentId)) {
             $sb = $this->connection->createQueryBuilder();
 
             $sb->select('null')

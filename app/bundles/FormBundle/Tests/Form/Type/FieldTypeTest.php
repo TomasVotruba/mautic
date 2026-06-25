@@ -48,25 +48,6 @@ class FieldTypeTest extends TypeTestCase
         parent::setUp();
     }
 
-    /**
-     * @return array<FormExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
-        return [
-            new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([
-                FieldType::class => new FieldType(
-                    $this->translator,
-                    $this->objectCollector,
-                    $this->fieldCollector,
-                    $this->mappedFieldCollector
-                ),
-                FormFieldRatingType::class => new FormFieldRatingType($this->translator),
-            ], []),
-        ];
-    }
-
     public function testFieldWidthDefaultValue(): void
     {
         $formData = [
@@ -150,5 +131,24 @@ class FieldTypeTest extends TypeTestCase
         $this->assertSame('◆', $form->get('properties')->get('symbol')->getData());
         $this->assertSame('#112233', $form->get('properties')->get('star_color')->getData());
         $this->assertSame('#ddeeff', $form->get('properties')->get('base_color')->getData());
+    }
+
+    /**
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([
+                FieldType::class => new FieldType(
+                    $this->translator,
+                    $this->objectCollector,
+                    $this->fieldCollector,
+                    $this->mappedFieldCollector
+                ),
+                FormFieldRatingType::class => new FormFieldRatingType($this->translator),
+            ], []),
+        ];
     }
 }

@@ -31,13 +31,13 @@ final class InfiniteLoopValidator extends ConstraintValidator
             return;
         }
 
-        if ('immediate' === $triggerMode) {
+        if ($triggerMode === 'immediate') {
             $context->buildViolation('mautic.campaign.infiniteloop.immediate')->addViolation();
 
             return;
         }
 
-        if ('interval' === $triggerMode && 'i' === $triggerIntervalUnit && $triggerInterval < 30) {
+        if ($triggerMode === 'interval' && $triggerIntervalUnit === 'i' && $triggerInterval < 30) {
             $context->buildViolation('mautic.campaign.infiniteloop.interval')
                 ->setParameter('%count%', (string) $triggerInterval)
                 ->addViolation();

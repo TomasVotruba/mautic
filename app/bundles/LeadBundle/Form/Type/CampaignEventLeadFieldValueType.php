@@ -76,7 +76,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
                     if (!empty($properties['list'])) {
                         // Lookup/Select options
                         $fieldValues = FormFieldHelper::parseList($properties['list']);
-                    } elseif (!empty($properties) && 'boolean' == $fieldType) {
+                    } elseif (!empty($properties) && $fieldType == 'boolean') {
                         // Boolean options
                         $fieldValues = [
                             0 => $properties['no'],
@@ -99,7 +99,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
                                 break;
                             case 'date':
                             case 'datetime':
-                                if ('date' === $operator) {
+                                if ($operator === 'date') {
                                     $fieldHelper = new FormFieldHelper();
                                     $fieldHelper->setTranslator($this->translator);
                                     $fieldValues = $fieldHelper->getDateChoices();
@@ -203,7 +203,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
                 'operator',
                 ChoiceType::class,
                 [
-                    'choices'           => $this->leadModel->getOperatorsForFieldType(null == $fieldType ? 'default' : $fieldType, ['date']),
+                    'choices'           => $this->leadModel->getOperatorsForFieldType($fieldType == null ? 'default' : $fieldType, ['date']),
                     'label'             => 'mautic.lead.lead.submitaction.operator',
                     'label_attr'        => ['class' => 'control-label'],
                     'attr'              => [

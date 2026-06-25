@@ -89,7 +89,7 @@ class Engine
     {
         $fileNames = @scandir($this->migrationsPath);
 
-        if (false === $fileNames) {
+        if ($fileNames === false) {
             throw new PathNotFoundException(sprintf("'%s' directory not found", $this->migrationsPath));
         }
 

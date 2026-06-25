@@ -115,9 +115,9 @@ class UserApiController extends CommonApiController
             return $this->accessDenied();
         }
 
-        if (null === $entity) {
-            if ('PATCH' === $method
-                || ('PUT' === $method && !$this->security->isGranted('user:users:create'))
+        if ($entity === null) {
+            if ($method === 'PATCH'
+                || ($method === 'PUT' && !$this->security->isGranted('user:users:create'))
             ) {
                 // PATCH requires that an entity exists or must have create access for PUT
                 return $this->notFound();
@@ -132,7 +132,7 @@ class UserApiController extends CommonApiController
             if (!empty($parameters['plainPassword'])) {
                 unset($parameters['plainPassword']);
             }
-            if ('PATCH' == $method) {
+            if ($method == 'PATCH') {
                 // PATCH will accept a diff so just remove the entities
 
                 // Changing username via API is forbidden
@@ -147,30 +147,6 @@ class UserApiController extends CommonApiController
         }
 
         return $this->processForm($request, $entity, $parameters, $method);
-    }
-
-    /**
-     * @param User                 &$entity
-     * @param FormInterface<mixed> $form
-     * @param array<mixed>         $parameters
-     * @param string               $action
-     */
-    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
-    {
-        switch ($action) {
-            case 'new':
-                $submittedPassword = null;
-                if (isset($parameters['plainPassword'])) {
-                    if (is_array($parameters['plainPassword']) && isset($parameters['plainPassword']['password'])) {
-                        $submittedPassword = $parameters['plainPassword']['password'];
-                    } else {
-                        $submittedPassword = $parameters['plainPassword'];
-                    }
-                }
-
-                $entity->setPassword($this->model->checkNewPassword($entity, $this->hasher, $submittedPassword, true));
-                break;
-        }
     }
 
     /**
@@ -228,5 +204,29 @@ class UserApiController extends CommonApiController
         $view->setContext($context);
 
         return $this->handleView($view);
+    }
+
+    /**
+     * @param User                 &$entity
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $parameters
+     * @param string               $action
+     */
+    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
+    {
+        switch ($action) {
+            case 'new':
+                $submittedPassword = null;
+                if (isset($parameters['plainPassword'])) {
+                    if (is_array($parameters['plainPassword']) && isset($parameters['plainPassword']['password'])) {
+                        $submittedPassword = $parameters['plainPassword']['password'];
+                    } else {
+                        $submittedPassword = $parameters['plainPassword'];
+                    }
+                }
+
+                $entity->setPassword($this->model->checkNewPassword($entity, $this->hasher, $submittedPassword, true));
+                break;
+        }
     }
 }

@@ -116,7 +116,7 @@ class AuthenticationEvent extends Event
     {
         $this->token                 = $token;
         $this->authenticatingService = $service;
-        $this->isAuthenticated       = null !== $token->getUser();
+        $this->isAuthenticated       = $token->getUser() !== null;
 
         $this->stopPropagation();
     }
@@ -149,7 +149,7 @@ class AuthenticationEvent extends Event
     {
         $this->authenticatingService = $service;
 
-        if (null !== $user) {
+        if ($user !== null) {
             $this->isAuthenticated = true;
             $this->setUser($user, $createIfNotExists);
         }

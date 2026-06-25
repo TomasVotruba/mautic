@@ -16,6 +16,28 @@ class MauticMessage extends Email
     protected ?string $leadIdHash = null;
 
     /**
+     * @return array<mixed>
+     */
+    public function __serialize(): array
+    {
+        if (empty($this->leadIdHash)) {
+            $this->leadIdHash = '';
+        }
+
+        return [$this->metadata, $this->leadIdHash, parent::__serialize()];
+    }
+
+    /**
+     * @param array<mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        [$this->metadata, $this->leadIdHash, $parentData] = $data;
+
+        parent::__unserialize($parentData);
+    }
+
+    /**
      * @param array<string, string> $metadata
      */
     public function addMetadata(string $email, array $metadata): void
@@ -47,27 +69,5 @@ class MauticMessage extends Email
     public function getLeadIdHash(): ?string
     {
         return $this->leadIdHash;
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function __serialize(): array
-    {
-        if (empty($this->leadIdHash)) {
-            $this->leadIdHash = '';
-        }
-
-        return [$this->metadata, $this->leadIdHash, parent::__serialize()];
-    }
-
-    /**
-     * @param array<mixed> $data
-     */
-    public function __unserialize(array $data): void
-    {
-        [$this->metadata, $this->leadIdHash, $parentData] = $data;
-
-        parent::__unserialize($parentData);
     }
 }

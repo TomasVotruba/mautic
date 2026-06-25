@@ -65,8 +65,8 @@ class SearchSubscriber implements EventSubscriberInterface
         $filter    = ['string' => $str, 'force' => ''];
 
         // only show results that are not anonymous so as to not clutter up things
-        if (!str_contains($str, "$anonymous")) {
-            $filter['force'] = " !$anonymous";
+        if (!str_contains($str, "{$anonymous}")) {
+            $filter['force'] = " !{$anonymous}";
         }
 
         $permissions = $this->security->isGranted(
@@ -77,7 +77,7 @@ class SearchSubscriber implements EventSubscriberInterface
         if ($permissions['lead:leads:viewown'] || $permissions['lead:leads:viewother']) {
             // only show own leads if the user does not have permission to view others
             if (!$permissions['lead:leads:viewother']) {
-                $filter['force'] .= " $mine";
+                $filter['force'] .= " {$mine}";
             }
 
             $results = $this->leadModel->getEntities(
@@ -221,7 +221,7 @@ class SearchSubscriber implements EventSubscriberInterface
         $emailId = (int) $event->getString();
         /** @var Email $email */
         $email = $this->emailRepository->getEntity($emailId);
-        if (null !== $email) {
+        if ($email !== null) {
             $variantIds = $email->getRelatedEntityIds();
             $nq         = $this->emailRepository->getEmailPendingQuery($emailId, $variantIds);
             if (!$nq instanceof QueryBuilder) {
@@ -502,7 +502,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
     private function buildJoinQuery(LeadBuildSearchEvent $event, array $tables, array $config): void
     {
-        if (!isset($config['column']) || 0 === count($tables)) {
+        if (!isset($config['column']) || count($tables) === 0) {
             return;
         }
 
@@ -539,7 +539,7 @@ class SearchSubscriber implements EventSubscriberInterface
     ): void {
         $count = $results['count'] ? (int) $results['count'] : 0;
 
-        if (0 === $count) {
+        if ($count === 0) {
             return;
         }
 

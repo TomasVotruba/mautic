@@ -79,7 +79,7 @@ trait EntityContactsTrait
         }
 
         // Apply filters
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $this->setListFilters($sessionVar.'.contact');
         }
 
@@ -97,7 +97,7 @@ trait EntityContactsTrait
             $this->coreParametersHelper->get('default_pagelimit')
         );
 
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -106,7 +106,7 @@ trait EntityContactsTrait
         $repo     = $this->getModel('lead')->getRepository();
         $contacts = $repo->getEntityContacts(
             [
-                'withTotalCount' => (null === $count),
+                'withTotalCount' => ($count === null),
                 'start'          => $start,
                 'limit'          => $limit,
                 'filter'         => $filter,

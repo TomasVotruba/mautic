@@ -123,7 +123,7 @@ class FormUploader
      */
     private function fixRotationJPG($filename): void
     {
-        if (IMAGETYPE_JPEG != exif_imagetype($filename)) {
+        if (exif_imagetype($filename) != IMAGETYPE_JPEG) {
             return;
         }
         $exif = exif_read_data($filename);

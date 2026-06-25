@@ -32,41 +32,6 @@ final class Dsn implements \Stringable
     ) {
     }
 
-    /**
-     * Convert from a DSN string to a DSN object.
-     *
-     * @param string $dsn The DSN string
-     *
-     * @return self The DSN object
-     */
-    public static function fromString(string $dsn): self
-    {
-        if (array_key_exists($dsn, self::ALLOWED_DSN_ARRAY)) {
-            return new self(...self::ALLOWED_DSN_ARRAY[$dsn]);
-        }
-
-        if (false === $parsedDsn = parse_url($dsn)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" DSN is invalid.', $dsn));
-        }
-
-        if (!isset($parsedDsn['scheme'])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" DSN must contain a scheme.', $dsn));
-        }
-
-        if (!isset($parsedDsn['host'])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" DSN must contain a host (use "default" by default).', $dsn));
-        }
-
-        $host     = urldecode($parsedDsn['host']);
-        $user     = '' !== ($parsedDsn['user'] ?? '') ? urldecode($parsedDsn['user']) : null;
-        $password = '' !== ($parsedDsn['pass'] ?? '') ? urldecode($parsedDsn['pass']) : null;
-        $port     = isset($parsedDsn['port']) ? (int) $parsedDsn['port'] : null;
-        $path     = isset($parsedDsn['path']) ? ltrim(urldecode($parsedDsn['path']), '/') : null;
-        parse_str($parsedDsn['query'] ?? '', $query);
-
-        return new self($parsedDsn['scheme'], $host, $user, $password, $port, $path, $query);
-    }
-
     public function __toString(): string
     {
         $dsn = $this->scheme.'://';
@@ -102,12 +67,47 @@ final class Dsn implements \Stringable
         return $dsn;
     }
 
+    /**
+     * Convert from a DSN string to a DSN object.
+     *
+     * @param string $dsn The DSN string
+     *
+     * @return self The DSN object
+     */
+    public static function fromString(string $dsn): self
+    {
+        if (array_key_exists($dsn, self::ALLOWED_DSN_ARRAY)) {
+            return new self(...self::ALLOWED_DSN_ARRAY[$dsn]);
+        }
+
+        if (false === $parsedDsn = parse_url($dsn)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" DSN is invalid.', $dsn));
+        }
+
+        if (!isset($parsedDsn['scheme'])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" DSN must contain a scheme.', $dsn));
+        }
+
+        if (!isset($parsedDsn['host'])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" DSN must contain a host (use "default" by default).', $dsn));
+        }
+
+        $host     = urldecode($parsedDsn['host']);
+        $user     = '' !== ($parsedDsn['user'] ?? '') ? urldecode($parsedDsn['user']) : null;
+        $password = '' !== ($parsedDsn['pass'] ?? '') ? urldecode($parsedDsn['pass']) : null;
+        $port     = isset($parsedDsn['port']) ? (int) $parsedDsn['port'] : null;
+        $path     = isset($parsedDsn['path']) ? ltrim(urldecode($parsedDsn['path']), '/') : null;
+        parse_str($parsedDsn['query'] ?? '', $query);
+
+        return new self($parsedDsn['scheme'], $host, $user, $password, $port, $path, $query);
+    }
+
     public function getScheme(): string
     {
         return $this->scheme;
     }
 
-    public function setScheme(string $scheme): Dsn
+    public function setScheme(string $scheme): self
     {
         $dsn         = clone $this;
         $dsn->scheme = $scheme;
@@ -120,7 +120,7 @@ final class Dsn implements \Stringable
         return $this->host;
     }
 
-    public function setHost(string $host): Dsn
+    public function setHost(string $host): self
     {
         $dsn       = clone $this;
         $dsn->host = $host;
@@ -133,7 +133,7 @@ final class Dsn implements \Stringable
         return $this->user;
     }
 
-    public function setUser(?string $user): Dsn
+    public function setUser(?string $user): self
     {
         $dsn       = clone $this;
         $dsn->user = $user;
@@ -159,7 +159,7 @@ final class Dsn implements \Stringable
         return $this->port;
     }
 
-    public function setPort(?int $port): Dsn
+    public function setPort(?int $port): self
     {
         $dsn       = clone $this;
         $dsn->port = $port;
@@ -183,7 +183,7 @@ final class Dsn implements \Stringable
     /**
      * @param array<string, string> $options
      */
-    public function setOptions(array $options): Dsn
+    public function setOptions(array $options): self
     {
         $dsn          = clone $this;
         $dsn->options = $options;
@@ -196,7 +196,7 @@ final class Dsn implements \Stringable
         return $this->path;
     }
 
-    public function setPath(?string $path): Dsn
+    public function setPath(?string $path): self
     {
         $dsn       = clone $this;
         $dsn->path = $path;

@@ -242,7 +242,7 @@ class LeadTimelineEvent extends Event
                 }
             );
 
-            if ('DESC' == $this->orderBy[1]) {
+            if ($this->orderBy[1] == 'DESC') {
                 $events = array_reverse($events);
             }
         }
@@ -319,7 +319,7 @@ class LeadTimelineEvent extends Event
         return [
             'leadId' => ($this->lead instanceof Lead) ? $this->lead->getId() : null,
             'limit'  => $this->limit,
-            'start'  => (1 >= $this->page) ? 0 : ($this->page - 1) * $this->limit,
+            'start'  => ($this->page <= 1) ? 0 : ($this->page - 1) * $this->limit,
         ];
     }
 
@@ -549,7 +549,7 @@ class LeadTimelineEvent extends Event
                 $this->prepareDetailsForAPI($detailValues);
             }
 
-            if ('lead_id' === $key) {
+            if ($key === 'lead_id') {
                 // Don't include this as it should be included in parent as contactId
                 unset($details[$key]);
                 continue;

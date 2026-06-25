@@ -46,6 +46,15 @@ class IpAddress
     #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
     private $ipDetails;
 
+    /**
+     * @param string|null $ipAddress
+     */
+    public function __construct(
+        #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
+        private $ipAddress = null,
+    ) {
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -87,15 +96,6 @@ class IpAddress
             )
             ->addGroup('ipAddress', true)
             ->build();
-    }
-
-    /**
-     * @param string|null $ipAddress
-     */
-    public function __construct(
-        #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
-        private $ipAddress = null,
-    ) {
     }
 
     /**

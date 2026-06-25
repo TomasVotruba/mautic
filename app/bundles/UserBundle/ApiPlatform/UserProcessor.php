@@ -22,7 +22,7 @@ final class UserProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
-        if ($data instanceof User && null !== $data->getPlainPassword()) {
+        if ($data instanceof User && $data->getPlainPassword() !== null) {
             $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPlainPassword());
             $data->setPassword($hashedPassword);
             $data->setPlainPassword(null);

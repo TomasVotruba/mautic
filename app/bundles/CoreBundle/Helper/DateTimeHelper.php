@@ -8,9 +8,9 @@ class DateTimeHelper
 {
     public const FORMAT_DB = 'Y-m-d H:i:s';
 
-    private static ?string $defaultLocalTimezone = null;
-
     public const FORMAT_DB_DATE_ONLY = 'Y-m-d';
+
+    private static ?string $defaultLocalTimezone = null;
 
     /**
      * @var string
@@ -46,7 +46,7 @@ class DateTimeHelper
      */
     public function setDateTime($datetime = '', ?string $fromFormat = self::FORMAT_DB, string $timezone = 'local'): void
     {
-        if ('local' == $timezone) {
+        if ($timezone == 'local') {
             $timezone = self::$defaultLocalTimezone;
         } elseif (empty($timezone)) {
             $timezone = 'UTC';
@@ -65,7 +65,7 @@ class DateTimeHelper
         } elseif (empty($datetime)) {
             $this->datetime = new \DateTime('now', new \DateTimeZone($this->timezone));
             $this->string   = $this->datetime->format($this->format);
-        } elseif (null === $fromFormat) {
+        } elseif ($fromFormat === null) {
             $this->string   = $datetime;
             $this->datetime = new \DateTime($datetime, new \DateTimeZone($this->timezone));
         } else {
@@ -77,7 +77,7 @@ class DateTimeHelper
                 new \DateTimeZone($this->timezone)
             );
 
-            if (false === $this->datetime) {
+            if ($this->datetime === false) {
                 // the format does not match the string so let's attempt to fix that
                 $this->string   = date($this->format, strtotime($datetime));
                 $this->datetime = \DateTime::createFromFormat(
@@ -97,7 +97,7 @@ class DateTimeHelper
     {
         if ($this->datetime) {
             $dateTime = clone $this->datetime;
-            $utc      = ('UTC' == $this->timezone) ? $dateTime : $dateTime->setTimezone($this->utc);
+            $utc      = ($this->timezone == 'UTC') ? $dateTime : $dateTime->setTimezone($this->utc);
             if (empty($format)) {
                 $format = $this->format;
             }
@@ -201,7 +201,7 @@ class DateTimeHelper
      */
     public function getDiff($compare = 'now', $format = null, $resetTime = false)
     {
-        if ('now' == $compare) {
+        if ($compare == 'now') {
             $compare = new \DateTime('now', $this->datetime->getTimezone());
         }
 
@@ -214,7 +214,7 @@ class DateTimeHelper
 
         $interval = $compare->diff($with);
 
-        return (null == $format) ? $interval : $interval->format($format);
+        return ($format == null) ? $interval : $interval->format($format);
     }
 
     /**
@@ -316,7 +316,7 @@ class DateTimeHelper
      */
     public function getTextDate($interval = null)
     {
-        if (null == $interval) {
+        if ($interval == null) {
             $interval = $this->getDiff('now', null, true);
         }
 
@@ -369,21 +369,13 @@ class DateTimeHelper
 
         if (!in_array($unit, $possibleUnits, true)) {
             $possibleUnitsString = implode(', ', $possibleUnits);
-            throw new \InvalidArgumentException("Unit '$unit' is not supported. Use one of these: $possibleUnitsString");
+            throw new \InvalidArgumentException("Unit '{$unit}' is not supported. Use one of these: {$possibleUnitsString}");
         }
     }
 
     public function getLocalTimezoneOffset(): string
     {
         return $this->getLocalDateTime()->format('P');
-    }
-
-    protected function setDefaultTimezone(): void
-    {
-        if (null === self::$defaultLocalTimezone) {
-            $parameterLoader            = new ParameterLoader();
-            self::$defaultLocalTimezone = $parameterLoader->getParameterBag()->get('default_timezone') ?? date_default_timezone_get();
-        }
     }
 
     /**
@@ -397,5 +389,13 @@ class DateTimeHelper
         }
 
         return new \DateTimeImmutable($dateString, new \DateTimeZone($timezone));
+    }
+
+    protected function setDefaultTimezone(): void
+    {
+        if (self::$defaultLocalTimezone === null) {
+            $parameterLoader            = new ParameterLoader();
+            self::$defaultLocalTimezone = $parameterLoader->getParameterBag()->get('default_timezone') ?? date_default_timezone_get();
+        }
     }
 }

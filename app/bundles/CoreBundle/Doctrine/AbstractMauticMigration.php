@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractMauticMigration extends AbstractMigration
 {
-    protected const TABLE_NAME = null;
 
     /**
      * @var string
@@ -23,6 +22,7 @@ abstract class AbstractMauticMigration extends AbstractMigration
      * @var string
      */
     public const COLUMN_TYPE_UNSIGNED = 'UNSIGNED';
+    protected const TABLE_NAME = null;
 
     protected ContainerInterface $container;
 
@@ -54,7 +54,7 @@ abstract class AbstractMauticMigration extends AbstractMigration
         $function = $platform.'Up';
 
         if (method_exists($this, $function)) {
-            $this->$function($schema);
+            $this->{$function}($schema);
         }
     }
 
@@ -124,9 +124,9 @@ abstract class AbstractMauticMigration extends AbstractMigration
                         $isIdx  = stripos($name, 'idx');
                         $isUniq = stripos($name, 'uniq');
 
-                        if (false !== $isIdx || false !== $isUniq) {
+                        if ($isIdx !== false || $isUniq !== false) {
                             $key     = substr($name, -4);
-                            $keyType = (false !== $isIdx) ? 'idx' : 'uniq';
+                            $keyType = ($isIdx !== false) ? 'idx' : 'uniq';
 
                             $tables[$table]['idx'][$keyType][$key] = $name;
                         }
@@ -189,7 +189,7 @@ abstract class AbstractMauticMigration extends AbstractMigration
      */
     protected function getPrefixedTableName(?string $tableName = null): string
     {
-        if (null === $tableName) {
+        if ($tableName === null) {
             $tableName = static::TABLE_NAME;
         }
 
@@ -202,7 +202,7 @@ abstract class AbstractMauticMigration extends AbstractMigration
         $idColumn    = $pagesTable->getColumn($columnName);
         $idDataType  = self::COLUMN_TYPE_SIGNED;
 
-        if (true === $idColumn->getUnsigned()) {
+        if ($idColumn->getUnsigned() === true) {
             $idDataType = self::COLUMN_TYPE_UNSIGNED;
         }
 

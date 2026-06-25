@@ -404,7 +404,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
 
             $fieldsToUpdateInMautic = array_intersect_key($leadFields, $fieldsToUpdateInMautic);
             $matchedFields          = array_intersect_key($matchedFields, array_flip($fieldsToUpdateInMautic));
-            if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' == $config['updateBlanks'][0]) {
+            if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && $config['updateBlanks'][0] == 'updateBlanks') {
                 $matchedFields = $this->getBlankFieldsToUpdateInMautic($matchedFields, $lead->getFields(true), $leadFields, $data, $object);
             }
         }
@@ -419,7 +419,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             $leadSocialCache[$this->getName()] = array_merge($leadSocialCache[$this->getName()], $socialCache);
 
             // Check for activity while here
-            if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures())) {
+            if ($identifiers !== null && in_array('public_activity', $this->getSupportedFeatures())) {
                 $this->getPublicActivity($identifiers, $leadSocialCache[$this->getName()]);
             }
 
@@ -435,7 +435,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
 
         // Update the owner if it matches (needs to be set by the integration) when fetching the data
         if (isset($data['owner_email']) && isset($config['updateOwner']) && isset($config['updateOwner'][0])
-            && 'updateOwner' == $config['updateOwner'][0]
+            && $config['updateOwner'][0] == 'updateOwner'
         ) {
             if ($mauticUser = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->findOneBy(['email' => $data['owner_email']])) {
                 $lead->setOwner($mauticUser);
@@ -454,6 +454,39 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
         }
 
         return $lead;
+    }
+
+    public function getBlankFieldsToUpdateInMautic($matchedFields, $leadFieldValues, $objectFields, $integrationData, $object = 'Lead')
+    {
+        foreach ($objectFields as $integrationField => $mauticField) {
+            if (isset($leadFieldValues[$mauticField]) && empty($leadFieldValues[$mauticField]['value']) && !empty($integrationData[$integrationField.'__'.$object]) && $this->translator->trans('mautic.integration.form.lead.unknown') !== $integrationData[$integrationField.'__'.$object]) {
+                $matchedFields[$mauticField] = $integrationData[$integrationField.'__'.$object];
+            }
+        }
+
+        return $matchedFields;
+    }
+
+    public function getBlankFieldsToUpdate($fields, $sfRecord, $objectFields, $config)
+    {
+        // check if update blank fields is selected
+        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0])
+            && $config['updateBlanks'][0] == 'updateBlanks'
+            && !empty($sfRecord)
+            && isset($objectFields['required']['fields'])
+        ) {
+            foreach ($sfRecord as $fieldName => $sfField) {
+                if (array_key_exists($fieldName, $objectFields['required']['fields'])) {
+                    continue; // this will be treated differently
+                }
+                if (empty($sfField) && array_key_exists($fieldName, $objectFields['create']) && !array_key_exists($fieldName, $fields)) {
+                    // map to mautic field
+                    $fields[$fieldName] = $objectFields['create'][$fieldName];
+                }
+            }
+        }
+
+        return $fields;
     }
 
     /**
@@ -515,7 +548,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             return $fieldsToUpdate;
         }
 
-        if (null === $objects || is_array($objects)) {
+        if ($objects === null || is_array($objects)) {
             return $fieldsToUpdate['leadFields'];
         }
 
@@ -533,39 +566,6 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             : null;
 
         return [$fromDate, $toDate];
-    }
-
-    public function getBlankFieldsToUpdateInMautic($matchedFields, $leadFieldValues, $objectFields, $integrationData, $object = 'Lead')
-    {
-        foreach ($objectFields as $integrationField => $mauticField) {
-            if (isset($leadFieldValues[$mauticField]) && empty($leadFieldValues[$mauticField]['value']) && !empty($integrationData[$integrationField.'__'.$object]) && $this->translator->trans('mautic.integration.form.lead.unknown') !== $integrationData[$integrationField.'__'.$object]) {
-                $matchedFields[$mauticField] = $integrationData[$integrationField.'__'.$object];
-            }
-        }
-
-        return $matchedFields;
-    }
-
-    public function getBlankFieldsToUpdate($fields, $sfRecord, $objectFields, $config)
-    {
-        // check if update blank fields is selected
-        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0])
-            && 'updateBlanks' == $config['updateBlanks'][0]
-            && !empty($sfRecord)
-            && isset($objectFields['required']['fields'])
-        ) {
-            foreach ($sfRecord as $fieldName => $sfField) {
-                if (array_key_exists($fieldName, $objectFields['required']['fields'])) {
-                    continue; // this will be treated differently
-                }
-                if (empty($sfField) && array_key_exists($fieldName, $objectFields['create']) && !array_key_exists($fieldName, $fields)) {
-                    // map to mautic field
-                    $fields[$fieldName] = $objectFields['create'][$fieldName];
-                }
-            }
-        }
-
-        return $fields;
     }
 
     /**
@@ -592,6 +592,25 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
     }
 
     /**
+     * Limits the string.
+     *
+     * @param mixed  $value
+     * @param string $fieldType
+     *
+     * @return mixed
+     */
+    protected function limitString($value, $fieldType = '')
+    {
+        // We must not convert boolean values to string, otherwise "false" will be converted to an empty string.
+        // "False" has to be converted to 0 instead.
+        if (($fieldType == 'text') && !is_bool($value)) {
+            return substr($value, 0, 255);
+        }
+
+        return $value;
+    }
+
+    /**
      * @return array
      */
     private function hydrateCompanyName(array $matchedFields)
@@ -614,24 +633,5 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
         }
 
         return $matchedFields;
-    }
-
-    /**
-     * Limits the string.
-     *
-     * @param mixed  $value
-     * @param string $fieldType
-     *
-     * @return mixed
-     */
-    protected function limitString($value, $fieldType = '')
-    {
-        // We must not convert boolean values to string, otherwise "false" will be converted to an empty string.
-        // "False" has to be converted to 0 instead.
-        if (('text' == $fieldType) && !is_bool($value)) {
-            return substr($value, 0, 255);
-        }
-
-        return $value;
     }
 }

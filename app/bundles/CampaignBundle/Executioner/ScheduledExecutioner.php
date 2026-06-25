@@ -38,6 +38,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
 {
+
+    protected ?\DateTime $now = null;
     private ?Campaign $campaign = null;
 
     private ?ContactLimiter $limiter = null;
@@ -49,8 +51,6 @@ class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
     private ?array $scheduledEvents = null;
 
     private ?Counter $counter = null;
-
-    protected ?\DateTime $now = null;
 
     public function __construct(
         private LeadEventLogRepository $repo,
@@ -465,7 +465,7 @@ class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
             $event     = $log->getEvent();
             $eventType = $event->getType();
 
-            if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $eventType) {
+            if ($eventType === CampaignActionJumpToEventSubscriber::EVENT_NAME) {
                 if (!isset($jumpTo[$event->getId()])) {
                     $jumpTo[$event->getId()] = new ArrayCollection();
                 }

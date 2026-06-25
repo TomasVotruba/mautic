@@ -36,7 +36,7 @@ class CookieHelper implements EventSubscriberInterface
      */
     public function getCookie(string $key, $default = null)
     {
-        if (null === $this->getRequest()) {
+        if ($this->getRequest() === null) {
             return $default;
         }
 
@@ -48,14 +48,14 @@ class CookieHelper implements EventSubscriberInterface
      */
     public function setCookie(string $name, $value, ?int $expire = 1800, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $httponly = null, ?string $sameSite = Cookie::SAMESITE_LAX): void
     {
-        if (null !== $value) {
+        if ($value !== null) {
             $value = (string) $value;
         }
 
         $cookie = Cookie::create(
             $name,
             $value,
-            null !== $expire ? time() + $expire : 0,
+            $expire !== null ? time() + $expire : 0,
             $path ?? $this->path,
             $domain ?? $this->domain,
             $secure ?? $this->secure,
@@ -91,7 +91,7 @@ class CookieHelper implements EventSubscriberInterface
 
     private function getRequest(): ?Request
     {
-        if (null !== $this->request) {
+        if ($this->request !== null) {
             return $this->request;
         }
 

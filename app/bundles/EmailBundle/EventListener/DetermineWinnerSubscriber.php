@@ -42,7 +42,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $ids       = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($ids)) {
+        if ($startDate != null && !empty($ids)) {
             // get their bounce rates
             $counts = $repo->getOpenedRates($ids, $startDate);
 
@@ -138,7 +138,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $ids = $parent->getRelatedEntityIds();
 
         $startDate = $parent->getVariantStartDate();
-        if (null != $startDate && !empty($ids)) {
+        if ($startDate != null && !empty($ids)) {
             // get their bounce rates
             $clickthroughCounts = $pageRepo->getEmailClickthroughHitCount($ids, $startDate);
             $sentCounts         = $emailRepo->getSentCounts($ids, $startDate);

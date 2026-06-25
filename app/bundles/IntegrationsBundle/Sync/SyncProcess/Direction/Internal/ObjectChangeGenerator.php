@@ -111,7 +111,7 @@ class ObjectChangeGenerator
         ObjectChangeDAO $objectChange,
     ): void {
         // Skip adding fields for the pull process that should sync to integration only.
-        if (ObjectMappingDAO::SYNC_TO_INTEGRATION === $fieldMappingDAO->getSyncDirection()) {
+        if ($fieldMappingDAO->getSyncDirection() === ObjectMappingDAO::SYNC_TO_INTEGRATION) {
             DebugLogger::log(
                 $mappingManual->getIntegration(),
                 sprintf(
@@ -144,7 +144,7 @@ class ObjectChangeGenerator
 
         try {
             // If syncing bidirectional, let the sync judge determine what value should be used for the field
-            if (ObjectMappingDAO::SYNC_BIDIRECTIONALLY === $fieldMappingDAO->getSyncDirection()) {
+            if ($fieldMappingDAO->getSyncDirection() === ObjectMappingDAO::SYNC_BIDIRECTIONALLY) {
                 $this->judgeThenAddFieldToObjectChange($mappingManual, $internalObject, $fieldMappingDAO, $integrationInformationChangeRequest, $objectChange, $internalFieldState);
 
                 return;
@@ -156,7 +156,7 @@ class ObjectChangeGenerator
                 $fieldMappingDAO->getSyncDirection()
             );
         } catch (RequiredValueException $e) {
-            $isNewObject = (null === $internalObject->getObjectId());
+            $isNewObject = ($internalObject->getObjectId() === null);
 
             $this->notifyAboutInvalidValue($e, $fieldMappingDAO, $integrationInformationChangeRequest, $isNewObject);
 

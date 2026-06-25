@@ -150,12 +150,12 @@ class Interval implements ScheduleModeInterface
 
     private function isTriggerModeInterval(Event $event): bool
     {
-        return Event::TRIGGER_MODE_INTERVAL === $event->getTriggerMode();
+        return $event->getTriggerMode() === Event::TRIGGER_MODE_INTERVAL;
     }
 
     private function isTriggerModeOptimized(Event $event): bool
     {
-        return Event::TRIGGER_MODE_OPTIMIZED === $event->getTriggerMode();
+        return $event->getTriggerMode() === Event::TRIGGER_MODE_OPTIMIZED;
     }
 
     private function isRestrictedToDailyScheduling(Event $event): bool
@@ -166,15 +166,15 @@ class Interval implements ScheduleModeInterface
 
     private function hasTimeRelatedRestrictions(Event $event): bool
     {
-        return null === $event->getTriggerHour()
-            && (null === $event->getTriggerRestrictedStartHour() || null === $event->getTriggerRestrictedStopHour())
+        return $event->getTriggerHour() === null
+            && ($event->getTriggerRestrictedStartHour() === null || $event->getTriggerRestrictedStopHour() === null)
             && empty($event->getTriggerRestrictedDaysOfWeek());
     }
 
     private function isNegativePath(Event $event): bool
     {
         if ($event->getParent()) {
-            return Event::TYPE_DECISION === $event->getParent()->getEventType() && Event::TYPE_ACTION === $event->getEventType() && Event::PATH_INACTION === $event->getDecisionPath();
+            return $event->getParent()->getEventType() === Event::TYPE_DECISION && $event->getEventType() === Event::TYPE_ACTION && $event->getDecisionPath() === Event::PATH_INACTION;
         }
 
         return false;
@@ -221,7 +221,7 @@ class Interval implements ScheduleModeInterface
             $groupDateTime = clone $compareFromDateTime;
         }
 
-        if ([] !== $daysOfWeek) {
+        if ($daysOfWeek !== []) {
             $this->logger->debug(
                 sprintf(
                     'CAMPAIGN: Scheduling event ID %s for contact ID %s based on DOW restrictions of %s',

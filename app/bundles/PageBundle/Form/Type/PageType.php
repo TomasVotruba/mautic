@@ -361,6 +361,13 @@ class PageType extends AbstractType
         }
     }
 
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Page::class,
+        ]);
+    }
+
     /**
      * @return array<mixed>
      */
@@ -403,12 +410,5 @@ class PageType extends AbstractType
         }
 
         return $draftActionButtons;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Page::class,
-        ]);
     }
 }

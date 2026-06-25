@@ -266,12 +266,12 @@ trait FilterTrait
                 $choices = [];
                 if (!empty($field['properties']['list'])) {
                     $list    = $field['properties']['list'];
-                    $choices = ('boolean' === $fieldType)
+                    $choices = ($fieldType === 'boolean')
                         ? FormFieldHelper::parseBooleanList($list)
                         : FormFieldHelper::parseList($list);
                 }
 
-                if ('select' === $fieldType) {
+                if ($fieldType === 'select') {
                     // array_unshift cannot be used because numeric values get lost as keys
                     $choices     = array_reverse($choices, true);
                     $choices[''] = '';
@@ -348,7 +348,7 @@ trait FilterTrait
             );
         } else {
             foreach ($customOptions['constraints'] as $i => $constraint) {
-                if (NotBlank::class === $constraint::class) {
+                if ($constraint::class === NotBlank::class) {
                     array_splice($customOptions['constraints'], $i, 1);
                 }
             }
@@ -397,7 +397,7 @@ trait FilterTrait
             ]
         );
 
-        if (FormEvents::PRE_SUBMIT === $eventName) {
+        if ($eventName === FormEvents::PRE_SUBMIT) {
             $event->setData($data);
         }
     }

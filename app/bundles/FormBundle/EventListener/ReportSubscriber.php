@@ -130,7 +130,7 @@ class ReportSubscriber implements EventSubscriberInterface
         if ($event->checkContext(self::CONTEXT_FORM_RESULT)) {
             $formRepository = $this->formModel->getRepository();
             // select only the table for an existing report, if the setting is disabled
-            if (false === $this->coreParametersHelper->get('form_results_data_sources')) {
+            if ($this->coreParametersHelper->get('form_results_data_sources') === false) {
                 $reportSource = empty($event->getContext()) ? ($event->getReportSource() ?? '') : $event->getContext();
 
                 $id   = $formRepository->getFormTableIdViaResults($reportSource);
@@ -306,11 +306,11 @@ class ReportSubscriber implements EventSubscriberInterface
                 $index                      = $prefix.$field->getAlias();
                 $formResultsColumns[$index] = [
                     'label' => $this->translator->trans('mautic.form.report.form_results.label', ['%field%' => $field->getLabel()]),
-                    'type'  => 'number' === $field->getType() ? 'int' : 'string',
+                    'type'  => $field->getType() === 'number' ? 'int' : 'string',
                     'alias' => $field->getAlias(),
                 ];
 
-                if ('file' === $field->getType()) {
+                if ($field->getType() === 'file') {
                     $formResultsColumns[$index]['link']           = 'mautic_form_file_download_by_name';
                     $formResultsColumns[$index]['linkParameters'] = [
                         'fieldId'  => $field->getId(),

@@ -45,6 +45,8 @@ class Field implements UuidInterface
     public const TABLE_NAME  = 'form_fields';
     public const ENTITY_NAME = 'form_field';
 
+    public ?int $deletedId = null;
+
     /**
      * @var int
      */
@@ -228,8 +230,6 @@ class Field implements UuidInterface
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedField;
 
-    public ?int $deletedId = null;
-
     public function __clone()
     {
         $this->id   = null;
@@ -328,17 +328,6 @@ class Field implements UuidInterface
                 ]
             )
             ->build();
-    }
-
-    /**
-     * @param string $prop
-     * @param mixed  $val
-     */
-    private function isChanged($prop, $val): void
-    {
-        if ($this->$prop != $val) {
-            $this->changes[$prop] = [$this->$prop, $val];
-        }
     }
 
     /**
@@ -852,16 +841,16 @@ class Field implements UuidInterface
     public function showForContact($submissions = null, ?Lead $lead = null, ?Form $form = null, ?DisplayManager $displayManager = null): bool
     {
         // Always show in the kiosk mode
-        if (null !== $form && true === $form->getInKioskMode()) {
+        if ($form !== null && $form->getInKioskMode() === true) {
             return true;
         }
 
         // Hide the field if there is the submission count limit and hide it until the limit is overcame
-        if (!$this->alwaysDisplay && $this->showAfterXSubmissions > 0 && null !== $submissions && $this->showAfterXSubmissions > count($submissions)) {
+        if (!$this->alwaysDisplay && $this->showAfterXSubmissions > 0 && $submissions !== null && $this->showAfterXSubmissions > count($submissions)) {
             return false;
         }
 
-        if (!$this->alwaysDisplay && false === $this->showWhenValueExists) {
+        if (!$this->alwaysDisplay && $this->showWhenValueExists === false) {
             // Hide the field if there is the value condition and if we already know the value for this field
             if ($submissions) {
                 foreach ($submissions as $submission) {
@@ -872,9 +861,9 @@ class Field implements UuidInterface
             }
 
             // Hide the field if the value is already known from the lead profile
-            if (null !== $lead
+            if ($lead !== null
                 && $this->mappedField
-                && 'contact' === $this->mappedObject
+                && $this->mappedObject === 'contact'
                 && !empty($lead->getFieldValue($this->mappedField))
                 && !$this->isAutoFill
             ) {
@@ -913,13 +902,13 @@ class Field implements UuidInterface
 
         foreach ($sendValues as $value) {
             // any value
-            if ('' !== $value && !empty($this->conditions['any'])) {
+            if ($value !== '' && !empty($this->conditions['any'])) {
                 return true;
             }
 
-            if ('notIn' === $this->conditions['expr']) {
+            if ($this->conditions['expr'] === 'notIn') {
                 // value not matched
-                if ('' !== $value && !in_array(InputHelper::clean($value), $this->conditions['values'])) {
+                if ($value !== '' && !in_array(InputHelper::clean($value), $this->conditions['values'])) {
                     return true;
                 }
             } elseif (in_array(InputHelper::clean($value), $this->conditions['values'])) {
@@ -932,20 +921,20 @@ class Field implements UuidInterface
 
     public function isCaptchaType(): bool
     {
-        return 'captcha' === $this->type;
+        return $this->type === 'captcha';
     }
 
     public function isFileType(): bool
     {
-        return 'file' === $this->type;
+        return $this->type === 'file';
     }
 
     public function hasChoices(): bool
     {
         $properties = $this->getProperties();
 
-        return 'checkboxgrp' === $this->getType()
-            || (key_exists('multiple', $properties) && 1 === $properties['multiple']);
+        return $this->getType() === 'checkboxgrp'
+            || (key_exists('multiple', $properties) && $properties['multiple'] === 1);
     }
 
     /**
@@ -1006,22 +995,6 @@ class Field implements UuidInterface
         return $this->parent;
     }
 
-    private function findParentFieldInForm(): ?Field
-    {
-        if (!$this->parent) {
-            return null;
-        }
-
-        $fields = $this->getForm()->getFields();
-        foreach ($fields as $field) {
-            if (intval($field->getId()) === intval($this->parent)) {
-                return $field;
-            }
-        }
-
-        return null;
-    }
-
     public function getMappedObject(): ?string
     {
         return $this->mappedObject;
@@ -1044,21 +1017,6 @@ class Field implements UuidInterface
         $this->resetLeadFieldIfValueIsEmpty($mappedField);
     }
 
-    private function resetLeadFieldIfValueIsEmpty(?string $value): void
-    {
-        if ($value) {
-            return;
-        }
-
-        /**
-         * Ignoring this line because the leadField is deprecated and will be removed in Mautic 4.
-         * Todo: Use mappedObject or mappedField instead.
-         *
-         * @phpstan-ignore-next-line
-         */
-        $this->leadField = null;
-    }
-
     public function isAutoFillReadOnly(): bool
     {
         return $this->isAutoFill && $this->isReadOnly;
@@ -1069,7 +1027,7 @@ class Field implements UuidInterface
         return empty($this->fieldWidth) ? '100%' : $this->fieldWidth;
     }
 
-    public function setFieldWidth(?string $fieldWidth): Field
+    public function setFieldWidth(?string $fieldWidth): self
     {
         $this->isChanged('fieldWidth', $fieldWidth);
         $this->fieldWidth = $fieldWidth;
@@ -1085,5 +1043,47 @@ class Field implements UuidInterface
     public function getPermissionUser(): mixed
     {
         return $this->getForm()?->getCreatedBy();
+    }
+
+    /**
+     * @param string $prop
+     * @param mixed  $val
+     */
+    private function isChanged($prop, $val): void
+    {
+        if ($this->{$prop} != $val) {
+            $this->changes[$prop] = [$this->{$prop}, $val];
+        }
+    }
+
+    private function findParentFieldInForm(): ?self
+    {
+        if (!$this->parent) {
+            return null;
+        }
+
+        $fields = $this->getForm()->getFields();
+        foreach ($fields as $field) {
+            if (intval($field->getId()) === intval($this->parent)) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    private function resetLeadFieldIfValueIsEmpty(?string $value): void
+    {
+        if ($value) {
+            return;
+        }
+
+        /**
+         * Ignoring this line because the leadField is deprecated and will be removed in Mautic 4.
+         * Todo: Use mappedObject or mappedField instead.
+         *
+         * @phpstan-ignore-next-line
+         */
+        $this->leadField = null;
     }
 }

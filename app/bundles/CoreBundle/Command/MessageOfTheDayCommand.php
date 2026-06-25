@@ -36,7 +36,7 @@ final class MessageOfTheDayCommand extends Command
             $messages        = $this->getMessages($json);
             $selectedMessage = $this->selectMessage($messages);
 
-            if (null === $selectedMessage) {
+            if ($selectedMessage === null) {
                 return Command::SUCCESS;
             }
 
@@ -58,7 +58,7 @@ final class MessageOfTheDayCommand extends Command
             throw new MessageOfTheDayException('MOTD URL is not configured');
         }
 
-        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             throw new MessageOfTheDayException('MOTD URL is not valid');
         }
 
@@ -68,7 +68,7 @@ final class MessageOfTheDayCommand extends Command
         if (is_file($cachePath) && time() - filemtime($cachePath) < $cacheTtl) {
             $cached = file_get_contents($cachePath);
 
-            if (false !== $cached) {
+            if ($cached !== false) {
                 return $cached;
             }
         }
@@ -86,13 +86,13 @@ final class MessageOfTheDayCommand extends Command
             throw new MessageOfTheDayException('Could not fetch motd.json');
         }
 
-        if ('' === $json) {
+        if ($json === '') {
             throw new MessageOfTheDayException('MOTD response was empty');
         }
 
         $written = file_put_contents($cachePath, $json);
 
-        if (false === $written && $output->isVerbose()) {
+        if ($written === false && $output->isVerbose()) {
             $output->writeln('<error>Could not write MOTD cache to '.$cachePath.'</error>');
         }
 
@@ -160,15 +160,15 @@ final class MessageOfTheDayCommand extends Command
                 continue;
             }
 
-            if (null !== $start && $now < $start) {
+            if ($start !== null && $now < $start) {
                 continue;
             }
 
-            if (null !== $end && $now > $end) {
+            if ($end !== null && $now > $end) {
                 continue;
             }
 
-            $pool = (null !== $start && null !== $end) ? 'timed' : 'timeless';
+            $pool = ($start !== null && $end !== null) ? 'timed' : 'timeless';
 
             $messages[$pool][] = [
                 'category' => $data['categories'][$message['category']],
@@ -191,15 +191,15 @@ final class MessageOfTheDayCommand extends Command
     {
         ['timed' => $timed, 'timeless' => $timeless] = $messages;
 
-        if ([] === $timed && [] === $timeless) {
+        if ($timed === [] && $timeless === []) {
             return null;
         }
 
-        if ([] === $timed) {
+        if ($timed === []) {
             return $timeless[array_rand($timeless)];
         }
 
-        if ([] === $timeless) {
+        if ($timeless === []) {
             return $timed[array_rand($timed)];
         }
 
@@ -217,7 +217,7 @@ final class MessageOfTheDayCommand extends Command
         $label = $message['category']['label'];
         $lines = $message['lines'];
 
-        if ([] === $lines) {
+        if ($lines === []) {
             return;
         }
 

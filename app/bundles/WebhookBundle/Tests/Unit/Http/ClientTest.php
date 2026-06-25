@@ -59,12 +59,12 @@ final class ClientTest extends TestCase
         $this->parametersMock->expects($matcher)
             ->method('get')
             ->willReturnCallback(function (string $parameter) use ($matcher, $siteUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('site_url', $parameter);
 
                     return $siteUrl;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('webhook_allowed_private_addresses', $parameter);
 
                     return [];

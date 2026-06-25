@@ -169,13 +169,6 @@ class IntegrationSyncProcessTest extends TestCase
         $this->assertEquals([$objectName => [2 => $objectChangeDAO]], $syncOrder->getIdentifiedObjects());
     }
 
-    private function getSyncProcess(MappingManualDAO $mappingManualDAO): IntegrationSyncProcess
-    {
-        $this->integrationSyncProcess->setupSync($this->inputOptionsDAO, $mappingManualDAO, $this->syncDataExchange);
-
-        return $this->integrationSyncProcess;
-    }
-
     public function testThatItDoesntSyncOtherEntityTypesWhenIDsForSomeEntityAreSpecified(): void
     {
         $mappingManual         = new MappingManualDAO(self::INTEGRATION_NAME);
@@ -200,11 +193,11 @@ class IntegrationSyncProcessTest extends TestCase
         $matcher          = $this->exactly(2);
         $this->syncDateHelper->expects($matcher)
             ->method('getSyncFromDateTime')->willReturnCallback(function (...$parameters) use ($matcher, $fromSyncDateTime) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(self::INTEGRATION_NAME, $parameters[0]);
                     $this->assertSame('Contact', $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(self::INTEGRATION_NAME, $parameters[0]);
                     $this->assertSame('Lead', $parameters[1]);
                 }
@@ -237,5 +230,12 @@ class IntegrationSyncProcessTest extends TestCase
 
         $syncReport = $this->getSyncProcess($mappingManual)->getSyncReport(1);
         $this->assertEquals(self::INTEGRATION_NAME, $syncReport->getIntegration());
+    }
+
+    private function getSyncProcess(MappingManualDAO $mappingManualDAO): IntegrationSyncProcess
+    {
+        $this->integrationSyncProcess->setupSync($this->inputOptionsDAO, $mappingManualDAO, $this->syncDataExchange);
+
+        return $this->integrationSyncProcess;
     }
 }

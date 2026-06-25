@@ -32,47 +32,6 @@ class TimelineTraitTest extends TestCase
         $this->getTimelineResults = new \ReflectionMethod($this->repository, 'getTimelineResults');
     }
 
-    /**
-     * Build a QueryBuilder mock that records ORDER BY clauses into $orderByParts.
-     * Using ArrayObject so the closure and caller share the same mutable object
-     * (avoids reference-breaking on array destructuring).
-     *
-     * @return array{0: QueryBuilder&MockObject, 1: \ArrayObject<int, string>}
-     */
-    private function buildQueryBuilderSpy(): array
-    {
-        /** @var \ArrayObject<int, string> $orderByParts */
-        $orderByParts = new \ArrayObject();
-
-        $qb = $this->createMock(QueryBuilder::class);
-        $qb->method('andWhere')->willReturnSelf();
-        $qb->method('setParameter')->willReturnSelf();
-        $qb->method('setMaxResults')->willReturnSelf();
-        $qb->method('setFirstResult')->willReturnSelf();
-
-        $qb->method('orderBy')->willReturnCallback(
-            static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
-                $orderByParts->append($sort.' '.$dir);
-
-                return $qb;
-            }
-        );
-
-        $qb->method('addOrderBy')->willReturnCallback(
-            static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
-                $orderByParts->append($sort.' '.$dir);
-
-                return $qb;
-            }
-        );
-
-        $result = $this->createMock(Result::class);
-        $result->method('fetchAllAssociative')->willReturn([]);
-        $qb->method('executeQuery')->willReturn($result);
-
-        return [$qb, $orderByParts];
-    }
-
     public function testOrderByDirAscIsPassedThrough(): void
     {
         [$qb, $orderByParts] = $this->buildQueryBuilderSpy();
@@ -184,5 +143,46 @@ class TimelineTraitTest extends TestCase
         );
 
         $this->assertSame(['ut.utm_campaign ASC'], $orderByParts->getArrayCopy());
+    }
+
+    /**
+     * Build a QueryBuilder mock that records ORDER BY clauses into $orderByParts.
+     * Using ArrayObject so the closure and caller share the same mutable object
+     * (avoids reference-breaking on array destructuring).
+     *
+     * @return array{0: QueryBuilder&MockObject, 1: \ArrayObject<int, string>}
+     */
+    private function buildQueryBuilderSpy(): array
+    {
+        /** @var \ArrayObject<int, string> $orderByParts */
+        $orderByParts = new \ArrayObject();
+
+        $qb = $this->createMock(QueryBuilder::class);
+        $qb->method('andWhere')->willReturnSelf();
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('setMaxResults')->willReturnSelf();
+        $qb->method('setFirstResult')->willReturnSelf();
+
+        $qb->method('orderBy')->willReturnCallback(
+            static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
+                $orderByParts->append($sort.' '.$dir);
+
+                return $qb;
+            }
+        );
+
+        $qb->method('addOrderBy')->willReturnCallback(
+            static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
+                $orderByParts->append($sort.' '.$dir);
+
+                return $qb;
+            }
+        );
+
+        $result = $this->createMock(Result::class);
+        $result->method('fetchAllAssociative')->willReturn([]);
+        $qb->method('executeQuery')->willReturn($result);
+
+        return [$qb, $orderByParts];
     }
 }

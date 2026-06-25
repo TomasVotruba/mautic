@@ -206,22 +206,22 @@ class ConfigType extends AbstractType
                     'required'    => false,
                     'constraints' => [
                         new Callback(static function (?array $values, ExecutionContextInterface $context): void {
-                            if (null === $values) {
+                            if ($values === null) {
                                 return;
                             }
 
-                            if ([] === $values) {
+                            if ($values === []) {
                                 return;
                             }
 
                             foreach ($values as $value) {
                                 // Valid domain name. @see https://stackoverflow.com/questions/10306690/what-is-a-regular-expression-which-will-match-a-valid-domain-name-without-a-subd
-                                if (0 !== preg_match('/^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/', $value)) {
+                                if (preg_match('/^(((?!-))(xn--|_)?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/', $value) !== 0) {
                                     continue;
                                 }
 
                                 // Allowed characters are a-z, 0-9 and "-".
-                                if (0 === preg_match('/^[a-z0-9\-.]+$/i', $value)) {
+                                if (preg_match('/^[a-z0-9\-.]+$/i', $value) === 0) {
                                     // Regexp given
 
                                     // In environments, which set the `error_reporting` to ALL the code need to be executed without warnings.
@@ -237,7 +237,7 @@ class ConfigType extends AbstractType
 
                                     restore_error_handler();
 
-                                    if (false === $pregMatchResult || $regexpError) {
+                                    if ($pregMatchResult === false || $regexpError) {
                                         $context->buildViolation('mautic.core.config.form.trusted_hosts.invalid.regexp')->atPath('trusted_hosts')->addViolation();
 
                                         break;
@@ -770,14 +770,14 @@ class ConfigType extends AbstractType
             empty($normalizedValue)
             || str_contains($normalizedValue, '..')
             || str_contains($normalizedValue, '.'.DIRECTORY_SEPARATOR)
-            || DIRECTORY_SEPARATOR === $normalizedValue
+            || $normalizedValue === DIRECTORY_SEPARATOR
         ) {
             $isValid = false;
         }
 
         $mediaFile = substr($value, 0, 6);
 
-        if ('media/' !== $mediaFile) {
+        if ($mediaFile !== 'media/') {
             $isValid = false;
         }
 
@@ -792,7 +792,7 @@ class ConfigType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['ipLookupAttribution'] = (null !== $this->ipLookup) ? $this->ipLookup->getAttribution() : '';
+        $view->vars['ipLookupAttribution'] = ($this->ipLookup !== null) ? $this->ipLookup->getAttribution() : '';
     }
 
     public function getBlockPrefix(): string

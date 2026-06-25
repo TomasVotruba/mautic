@@ -27,7 +27,7 @@ class UUIDListener
     {
         $object = $args->getObject();
 
-        if (false === $object instanceof UuidInterface) {
+        if ($object instanceof UuidInterface === false) {
             return;
         }
 
@@ -45,7 +45,7 @@ class UUIDListener
      */
     private function updateDuplicateUUID(object $object): void
     {
-        if (empty($object->getUuid()) || (method_exists($object::class, 'getId') && null !== $object->getId())) {
+        if (empty($object->getUuid()) || (method_exists($object::class, 'getId') && $object->getId() !== null)) {
             return;
         }
 

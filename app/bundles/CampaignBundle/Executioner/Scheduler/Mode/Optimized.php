@@ -28,7 +28,7 @@ class Optimized implements ScheduleModeInterface
 
     public function getExecutionDateTimeForContact(Event $event, Lead $contact): \DateTimeInterface
     {
-        if (self::OPTIMIZED_DAY_AND_TIME === $event->getTriggerWindow()) {
+        if ($event->getTriggerWindow() === self::OPTIMIZED_DAY_AND_TIME) {
             return $this->peakInteractionTimer->getOptimalTimeAndDay($contact);
         }
 

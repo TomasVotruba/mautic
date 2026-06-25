@@ -30,8 +30,8 @@ class ReleaseParser
             }
 
             if (
-                ('stable' === $allowedStability && 'stable' !== $metadata->getStability())
-                || ('stable' !== $metadata->getStability() && version_compare($allowedStability, $metadata->getStability(), 'gt'))
+                ($allowedStability === 'stable' && $metadata->getStability() !== 'stable')
+                || ($metadata->getStability() !== 'stable' && version_compare($allowedStability, $metadata->getStability(), 'gt'))
             ) {
                 // This Mautic does support the given release's stability so continue
                 continue;
@@ -68,7 +68,7 @@ class ReleaseParser
 
         try {
             $response = $this->client->request('GET', $metadataUrl);
-            if (200 !== $response->getStatusCode()) {
+            if ($response->getStatusCode() !== 200) {
                 // A metadata file could not be found so let's assume that a release prior to the new upgrade
                 // system has been encountered
                 throw new MetadataNotFoundException();

@@ -349,7 +349,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
         $field = $this->createField($name, $type)
             ->nullable();
 
-        if (null !== $columnName) {
+        if ($columnName !== null) {
             $field->columnName($columnName);
         }
 
@@ -433,11 +433,11 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
 
         $definition = ['columns' => $columns];
 
-        if (null !== $flags) {
+        if ($flags !== null) {
             $definition['flags'] = $flags;
         }
 
-        if (null !== $options) {
+        if ($options !== null) {
             $definition['options'] = $options;
         }
 
@@ -459,7 +459,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      */
     public function isIndexedVarchar(string $name, string $type): bool
     {
-        return Types::STRING === $type || isset($this->getClassMetadata()->table['indexes'][$name]);
+        return $type === Types::STRING || isset($this->getClassMetadata()->table['indexes'][$name]);
     }
 
     /**
@@ -468,7 +468,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      * @param list<string>         $columns
      * @param array<string, mixed> $options
      */
-    public function addIndexWithOptions(array $columns, string $name, array $options): ClassMetadataBuilder
+    public function addIndexWithOptions(array $columns, string $name, array $options): self
     {
         $cm = $this->getClassMetadata();
 

@@ -164,7 +164,7 @@ class BuilderSubscriber implements EventSubscriberInterface
             $unsubscribeHash = $this->mailHash->getEmailHash($toEmail);
         }
 
-        if (null == $idHash) {
+        if ($idHash == null) {
             // Generate a bogus idHash to prevent errors for routes that may include it
             $idHash = uniqid();
         }

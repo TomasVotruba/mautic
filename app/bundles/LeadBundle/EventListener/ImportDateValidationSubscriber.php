@@ -62,13 +62,13 @@ final class ImportDateValidationSubscriber implements EventSubscriberInterface
     {
         $newAlias = array_search($alias, $mappedData, true);
 
-        if (false === $newAlias) {
+        if ($newAlias === false) {
             return;
         }
 
         $value = trim((string) ($rowData[$newAlias] ?? ''));
 
-        if ('' === $value) {
+        if ($value === '') {
             return;
         }
 
@@ -89,7 +89,7 @@ final class ImportDateValidationSubscriber implements EventSubscriberInterface
      */
     private function getDateFields(): array
     {
-        if (null !== $this->dateFields) {
+        if ($this->dateFields !== null) {
             return $this->dateFields;
         }
 

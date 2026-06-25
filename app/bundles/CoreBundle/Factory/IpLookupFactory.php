@@ -29,7 +29,7 @@ class IpLookupFactory
             return null;
         }
 
-        if (!isset($services[$service]) || null !== $auth) {
+        if (!isset($services[$service]) || $auth !== null) {
             if (!isset($this->lookupServices[$service])) {
                 throw new \InvalidArgumentException($service.' not registered.');
             }

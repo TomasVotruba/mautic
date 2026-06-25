@@ -22,34 +22,6 @@ class MobileNotificationDetailsTypeTest extends TypeTestCase
      */
     private MockObject $integrationSettings;
 
-    /**
-     * @return array<FormExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
-        $validatorBuilder = Validation::createValidatorBuilder();
-        $validatorBuilder->addMethodMapping('loadValidatorMetadata');
-
-        $this->integrationSettings = $this->createMock(Integration::class);
-
-        // @phpstan-ignore-next-line
-        $integration = $this->createMock(AbstractIntegration::class);
-        $integration->method('getIntegrationSettings')
-            ->willReturn($this->integrationSettings);
-
-        $integrationHelper = $this->createMock(IntegrationHelper::class);
-        $integrationHelper->method('getIntegrationObject')
-            ->with('OneSignal')
-            ->willReturn($integration);
-
-        return [
-            new ValidatorExtension($validatorBuilder->getValidator()),
-            new PreloadedExtension([
-                new MobileNotificationDetailsType($integrationHelper),
-            ], []),
-        ];
-    }
-
     public function testNoPlatformsSelected(): void
     {
         $this->integrationSettings->method('getFeatureSettings')
@@ -110,5 +82,33 @@ class MobileNotificationDetailsTypeTest extends TypeTestCase
         yield 'ios' => [['ios'], $iosSettings];
         yield 'android' => [['android'], $androidSettings];
         yield 'both' => [['android', 'ios'], array_merge($androidSettings, $iosSettings)];
+    }
+
+    /**
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
+        $validatorBuilder = Validation::createValidatorBuilder();
+        $validatorBuilder->addMethodMapping('loadValidatorMetadata');
+
+        $this->integrationSettings = $this->createMock(Integration::class);
+
+        // @phpstan-ignore-next-line
+        $integration = $this->createMock(AbstractIntegration::class);
+        $integration->method('getIntegrationSettings')
+            ->willReturn($this->integrationSettings);
+
+        $integrationHelper = $this->createMock(IntegrationHelper::class);
+        $integrationHelper->method('getIntegrationObject')
+            ->with('OneSignal')
+            ->willReturn($integration);
+
+        return [
+            new ValidatorExtension($validatorBuilder->getValidator()),
+            new PreloadedExtension([
+                new MobileNotificationDetailsType($integrationHelper),
+            ], []),
+        ];
     }
 }

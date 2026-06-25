@@ -471,10 +471,10 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
 
         $columnSchemaHelper->expects($matcher)
             ->method('dropColumn')->willReturnCallback(function (...$parameters) use ($matcher, $columnSchemaHelper) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('IamAlias', $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('leads', $parameters[0]);
                 }
 

@@ -83,7 +83,7 @@ class EmojiHelper
             }
         }
 
-        if ('emoji' !== $to) {
+        if ($to !== 'emoji') {
             // Parse out missed emojis
             $text = self::removeEmoji($text);
         }

@@ -27,7 +27,7 @@ final class MenuSubscriber implements EventSubscriberInterface
 
     public function onBuildMenu(MenuEvent $event): void
     {
-        if ('admin' !== $event->getType() || !$this->config->marketplaceIsEnabled()) {
+        if ($event->getType() !== 'admin' || !$this->config->marketplaceIsEnabled()) {
             return;
         }
 

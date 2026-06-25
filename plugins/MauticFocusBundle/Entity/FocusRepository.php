@@ -43,6 +43,32 @@ class FocusRepository extends CommonRepository
     }
 
     /**
+     * @return string[]
+     */
+    public function getSearchCommands(): array
+    {
+        return array_merge([
+            'mautic.project.searchcommand.name',
+        ], $this->getStandardSearchCommands());
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'f';
+    }
+
+    /**
+     * @return array
+     */
+    public function getFocusList($currentId)
+    {
+        $q = $this->createQueryBuilder('f');
+        $q->select('partial f.{id, name, description}')->orderBy('f.name');
+
+        return $q->getQuery()->getArrayResult();
+    }
+
+    /**
      * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      */
     protected function addCatchAllWhereClause($q, $filter): array
@@ -70,16 +96,6 @@ class FocusRepository extends CommonRepository
     }
 
     /**
-     * @return string[]
-     */
-    public function getSearchCommands(): array
-    {
-        return array_merge([
-            'mautic.project.searchcommand.name',
-        ], $this->getStandardSearchCommands());
-    }
-
-    /**
      * @return array<array<string>>
      */
     protected function getDefaultOrder(): array
@@ -87,21 +103,5 @@ class FocusRepository extends CommonRepository
         return [
             [$this->getTableAlias().'.name', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'f';
-    }
-
-    /**
-     * @return array
-     */
-    public function getFocusList($currentId)
-    {
-        $q = $this->createQueryBuilder('f');
-        $q->select('partial f.{id, name, description}')->orderBy('f.name');
-
-        return $q->getQuery()->getArrayResult();
     }
 }

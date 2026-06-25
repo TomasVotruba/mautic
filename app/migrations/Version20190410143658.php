@@ -17,7 +17,7 @@ class Version20190410143658 extends AbstractMauticMigration
         $tableName    = $this->getTableName();
         $table        = $schema->getTable($tableName);
 
-        if (true === $table->hasIndex($newIndexName)) {
+        if ($table->hasIndex($newIndexName) === true) {
             throw new SkipMigration('Schema includes this migration');
         }
     }

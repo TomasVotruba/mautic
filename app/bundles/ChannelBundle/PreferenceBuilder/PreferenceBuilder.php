@@ -47,7 +47,7 @@ class PreferenceBuilder
     {
         $channelPreferences = $this->getChannelPreferenceObject($channel, $priority);
 
-        if (DoNotContact::IS_CONTACTABLE !== $rule['dnc']) {
+        if ($rule['dnc'] !== DoNotContact::IS_CONTACTABLE) {
             $log->appendToMetadata(
                 [
                     $channel => [
@@ -60,7 +60,7 @@ class PreferenceBuilder
             return;
         }
 
-        $this->logger->debug("MARKETING MESSAGE: Set $channel as priority $priority for contact ID #".$log->getLead()->getId());
+        $this->logger->debug("MARKETING MESSAGE: Set {$channel} as priority {$priority} for contact ID #".$log->getLead()->getId());
 
         $channelPreferences->addLog($log, $priority);
     }

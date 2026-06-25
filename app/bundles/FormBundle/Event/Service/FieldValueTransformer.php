@@ -22,7 +22,7 @@ class FieldValueTransformer
 
     public function transformValuesAfterSubmit(SubmissionEvent $submissionEvent): void
     {
-        if (true === $this->isTransformed) {
+        if ($this->isTransformed === true) {
             return;
         }
 
@@ -50,7 +50,7 @@ class FieldValueTransformer
                     }
 
                     $contactFieldAlias = $field->getMappedField();
-                    if ('contact' === $field->getMappedObject() && !empty($contactFieldMatches[$contactFieldAlias])) {
+                    if ($field->getMappedObject() === 'contact' && !empty($contactFieldMatches[$contactFieldAlias])) {
                         $this->contactFieldsToUpdate[$contactFieldAlias] = $contactFieldMatches[$contactFieldAlias] = $newValue;
                     }
 

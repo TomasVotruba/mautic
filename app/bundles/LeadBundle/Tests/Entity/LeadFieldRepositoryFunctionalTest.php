@@ -10,8 +10,8 @@ use Mautic\LeadBundle\Model\LeadModel;
 
 class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback     = false;
     private const ADMINISTRATOR_VALUE = "administrator's";
+    protected $useCleanupRollback     = false;
 
     public function testCompareValueEqualsOperator(): void
     {
@@ -235,7 +235,7 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $colorFieldExist = false;
         if (!empty($allLeadFields)) {
             foreach ($allLeadFields as $field) {
-                if ('colors' == $field->getAlias()) {
+                if ($field->getAlias() == 'colors') {
                     $colorFieldExist = true;
                 }
             }

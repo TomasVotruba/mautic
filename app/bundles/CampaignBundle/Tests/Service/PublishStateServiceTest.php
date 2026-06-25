@@ -59,7 +59,7 @@ final class PublishStateServiceTest extends MauticMysqlTestCase
             $unpublishStateService->getLastPublishDate($campaign)?->format(DateTimeHelper::FORMAT_DB)
         );
 
-        if (null === $expectedUnpublishedSecondsSinceCampaignCreated) {
+        if ($expectedUnpublishedSecondsSinceCampaignCreated === null) {
             return;
         }
 

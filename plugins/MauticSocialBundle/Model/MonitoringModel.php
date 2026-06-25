@@ -59,45 +59,6 @@ class MonitoringModel extends FormModel
     }
 
     /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Monitoring) {
-            throw new MethodNotAllowedHttpException(['Monitoring']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = SocialEvents::MONITOR_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = SocialEvents::MONITOR_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = SocialEvents::MONITOR_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = SocialEvents::MONITOR_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new Events\SocialEvent($entity, $isNew);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
-    /**
      * @param Monitoring $monitoringEntity
      * @param bool       $unlock
      */
@@ -152,5 +113,44 @@ class MonitoringModel extends FormModel
     public function getFormByType($type)
     {
         return array_key_exists($type, $this->networkTypes) ? $this->networkTypes[$type]['form'] : null;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Monitoring) {
+            throw new MethodNotAllowedHttpException(['Monitoring']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = SocialEvents::MONITOR_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = SocialEvents::MONITOR_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = SocialEvents::MONITOR_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = SocialEvents::MONITOR_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new Events\SocialEvent($entity, $isNew);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

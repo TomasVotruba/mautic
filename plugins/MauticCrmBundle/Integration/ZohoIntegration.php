@@ -125,9 +125,9 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function amendLeadDataBeforeMauticPopulate($data, $object = null): array
     {
-        if ('company' === $object) {
+        if ($object === 'company') {
             $object = 'Accounts';
-        } elseif ('Lead' === $object || 'Contact' === $object) {
+        } elseif ($object === 'Lead' || $object === 'Contact') {
             $object .= 's'; // pluralize object name for Zoho
         }
 
@@ -143,7 +143,7 @@ class ZohoIntegration extends CrmAbstractIntegration
             /** @var array $objects */
             foreach ($objects as $recordId => $entityData) {
                 $isModified = false;
-                if ('Accounts' === $object) {
+                if ($object === 'Accounts') {
                     $recordId = $entityData['id'];
                     // first try to find integration entity
                     $integrationId = $integrationEntityRepo->getIntegrationsEntityId(
@@ -203,7 +203,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                         $result[] = $entity->getName();
                     }
                     $mauticObjectReference = 'company';
-                } elseif ('Leads' === $object) {
+                } elseif ($object === 'Leads') {
                     $recordId = $entityData['id'];
                     // first try to find integration entity
                     $integrationId = $integrationEntityRepo->getIntegrationsEntityId(
@@ -279,7 +279,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                     }
 
                     $mauticObjectReference = 'lead';
-                } elseif ('Contacts' === $object) {
+                } elseif ($object === 'Contacts') {
                     $recordId = $entityData['id'];
 
                     $integrationId = $integrationEntityRepo->getIntegrationsEntityId(
@@ -372,7 +372,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                         $entity->getId()
                     );
 
-                    if (0 === count($integrationId)) {
+                    if (count($integrationId) === 0) {
                         $integrationEntity = new IntegrationEntity();
                         $integrationEntity->setDateAdded(new \DateTime());
                         $integrationEntity->setIntegration('Zoho');
@@ -411,7 +411,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function getLeads($params, $query, &$executed, $result = [], $object = 'Lead'): int
     {
-        if ('Lead' === $object || 'Contact' === $object) {
+        if ($object === 'Lead' || $object === 'Contact') {
             $object .= 's'; // pluralize object name for Zoho
         }
 
@@ -555,7 +555,7 @@ class ZohoIntegration extends CrmAbstractIntegration
         $aFields       = $this->getAvailableLeadFields($config);
         $matchedFields = [];
 
-        $fieldsName = ('company' === $object) ? 'companyFields' : 'leadFields';
+        $fieldsName = ($object === 'company') ? 'companyFields' : 'leadFields';
 
         if (isset($aFields[$object])) {
             $aFields = $aFields[$object];
@@ -579,7 +579,7 @@ class ZohoIntegration extends CrmAbstractIntegration
     {
         $authType = $this->getAuthenticationType();
 
-        if ('oauth2' == $authType) {
+        if ($authType == 'oauth2') {
             $callback    = $this->getAuthCallbackUrl();
             $clientIdKey = $this->getClientIdKey();
             $state       = $this->getAuthLoginState();
@@ -615,7 +615,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ($formArea == 'features') {
             $builder->add(
                 'updateBlanks',
                 ChoiceType::class,
@@ -632,7 +632,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                 ]
             );
         }
-        if ('keys' === $formArea) {
+        if ($formArea === 'keys') {
             $builder->add(
                 'datacenter',
                 ChoiceType::class,
@@ -651,7 +651,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                     ],
                 ]
             );
-        } elseif ('features' === $formArea) {
+        } elseif ($formArea === 'features') {
             $builder->add(
                 'objects',
                 ChoiceType::class,
@@ -726,19 +726,19 @@ class ZohoIntegration extends CrmAbstractIntegration
                         }
                         $leadObject = $this->getApiHelper()->getLeadFields($zohoObject);
 
-                        if (null === $leadObject || (isset($leadObject['status']) && 'error' === $leadObject['status'])) {
+                        if ($leadObject === null || (isset($leadObject['status']) && $leadObject['status'] === 'error')) {
                             return [];
                         }
 
                         /** @var array $opts */
                         $opts = $leadObject['fields'];
                         foreach ($opts as $field) {
-                            if (true == $field['read_only']) {
+                            if ($field['read_only'] == true) {
                                 continue;
                             }
 
                             $is_required = false;
-                            if (true == $field['system_mandatory']) {
+                            if ($field['system_mandatory'] == true) {
                                 $is_required = true;
                             }
 
@@ -821,7 +821,7 @@ class ZohoIntegration extends CrmAbstractIntegration
             // start with update
             if ($totalToUpdate + $totalToCreate) {
                 $output = new ConsoleOutput();
-                $output->writeln("About $totalToUpdate to update and about $totalToCreate to create/update");
+                $output->writeln("About {$totalToUpdate} to update and about {$totalToCreate} to create/update");
                 $progress = new ProgressBar($output, $totalCount);
             }
         }
@@ -1075,12 +1075,12 @@ class ZohoIntegration extends CrmAbstractIntegration
     public function getBlankFieldsToUpdate($fields, $sfRecord, $objectFields, $config)
     {
         // check if update blank fields is selected
-        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' == $config['updateBlanks'][0]) {
+        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && $config['updateBlanks'][0] == 'updateBlanks') {
             foreach ($sfRecord as $fieldName => $sfField) {
                 if (array_key_exists($fieldName, $objectFields['required']['fields'])) {
                     continue; // this will be treated differently
                 }
-                if ('null' === $sfField && array_key_exists($fieldName, $objectFields['create']) && !array_key_exists($fieldName, $fields)) {
+                if ($sfField === 'null' && array_key_exists($fieldName, $objectFields['create']) && !array_key_exists($fieldName, $fields)) {
                     // map to mautic field
                     $fields[$fieldName] = $objectFields['create'][$fieldName];
                 }
@@ -1096,6 +1096,64 @@ class ZohoIntegration extends CrmAbstractIntegration
     public function getDataPriority(): bool
     {
         return true;
+    }
+
+    /**
+     * @param array $fields
+     * @param array $keys
+     * @param mixed $object
+     *
+     * @return array
+     */
+    public function prepareFieldsForSync($fields, $keys, $object = null)
+    {
+        $leadFields = [];
+        if ($object === null) {
+            $object = 'Leads';
+        }
+
+        $objects = (!is_array($object)) ? [$object] : $object;
+        if (is_string($object) && $object === 'Accounts') {
+            return $fields['companyFields'] ?? $fields;
+        }
+
+        if (isset($fields['leadFields'])) {
+            $fields = $fields['leadFields'];
+            $keys   = array_keys($fields);
+        }
+
+        foreach ($objects as $obj) {
+            if (!isset($leadFields[$obj])) {
+                $leadFields[$obj] = [];
+            }
+
+            foreach ($keys as $key) {
+                $leadFields[$obj][$key] = $fields[$key];
+            }
+        }
+
+        return (is_array($object)) ? $leadFields : $leadFields[$object];
+    }
+
+    /**
+     * @param array $objects
+     *
+     * @return array
+     */
+    protected function cleanPriorityFields($fieldsToUpdate, $objects = null)
+    {
+        if ($objects === null) {
+            $objects = ['Leads', 'Contacts'];
+        }
+
+        if (isset($fieldsToUpdate['leadFields'])) {
+            // Pass in the whole config
+            $fields = $fieldsToUpdate;
+        } else {
+            $fields = array_flip($fieldsToUpdate);
+        }
+
+        return $this->prepareFieldsForSync($fields, $fieldsToUpdate, $objects);
     }
 
     /**
@@ -1116,7 +1174,7 @@ class ZohoIntegration extends CrmAbstractIntegration
         foreach ($rows as $key => $row) {
             $mauticId = $mapper->getContactIdByKey($key);
 
-            if ('SUCCESS' === $row['code'] && $createIntegrationEntity) {
+            if ($row['code'] === 'SUCCESS' && $createIntegrationEntity) {
                 $zohoId = $row['details']['id'];
                 $this->logger->debug('CREATE INTEGRATION ENTITY: '.$zohoId);
                 $integrationId = $this->getIntegrationEntityRepository()->getIntegrationsEntityId(
@@ -1132,10 +1190,10 @@ class ZohoIntegration extends CrmAbstractIntegration
                     $zohoId
                 );
 
-                if (0 === count($integrationId)) {
+                if (count($integrationId) === 0) {
                     $this->createIntegrationEntity($zObject, $zohoId, 'lead', $mauticId);
                 }
-            } elseif (isset($row['status']) && 'error' === $row['status']) {
+            } elseif (isset($row['status']) && $row['status'] === 'error') {
                 ++$failed;
                 $exception = new ApiErrorException($row['message']);
                 $exception->setContactId($mauticId);
@@ -1211,63 +1269,5 @@ class ZohoIntegration extends CrmAbstractIntegration
         $failed       = $this->consumeResponse($response, $object, true, $mapper);
         $counter -= $failed;
         $errorCounter += $failed;
-    }
-
-    /**
-     * @param array $objects
-     *
-     * @return array
-     */
-    protected function cleanPriorityFields($fieldsToUpdate, $objects = null)
-    {
-        if (null === $objects) {
-            $objects = ['Leads', 'Contacts'];
-        }
-
-        if (isset($fieldsToUpdate['leadFields'])) {
-            // Pass in the whole config
-            $fields = $fieldsToUpdate;
-        } else {
-            $fields = array_flip($fieldsToUpdate);
-        }
-
-        return $this->prepareFieldsForSync($fields, $fieldsToUpdate, $objects);
-    }
-
-    /**
-     * @param array $fields
-     * @param array $keys
-     * @param mixed $object
-     *
-     * @return array
-     */
-    public function prepareFieldsForSync($fields, $keys, $object = null)
-    {
-        $leadFields = [];
-        if (null === $object) {
-            $object = 'Leads';
-        }
-
-        $objects = (!is_array($object)) ? [$object] : $object;
-        if (is_string($object) && 'Accounts' === $object) {
-            return $fields['companyFields'] ?? $fields;
-        }
-
-        if (isset($fields['leadFields'])) {
-            $fields = $fields['leadFields'];
-            $keys   = array_keys($fields);
-        }
-
-        foreach ($objects as $obj) {
-            if (!isset($leadFields[$obj])) {
-                $leadFields[$obj] = [];
-            }
-
-            foreach ($keys as $key) {
-                $leadFields[$obj][$key] = $fields[$key];
-            }
-        }
-
-        return (is_array($object)) ? $leadFields : $leadFields[$object];
     }
 }

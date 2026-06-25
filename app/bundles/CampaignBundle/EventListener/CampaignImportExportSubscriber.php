@@ -56,7 +56,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
 
     public function onCampaignExport(EntityExportEvent $event): void
     {
-        if (Campaign::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Campaign::ENTITY_NAME) {
             return;
         }
 
@@ -64,7 +64,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
         $campaignData = $this->fetchCampaignData($campaignId);
 
         if (!$campaignData) {
-            $this->logger->warning("Campaign data not found for ID: $campaignId");
+            $this->logger->warning("Campaign data not found for ID: {$campaignId}");
 
             return;
         }
@@ -83,7 +83,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
 
     public function onCampaignImport(EntityImportEvent $event): void
     {
-        if (Campaign::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Campaign::ENTITY_NAME) {
             return;
         }
 
@@ -102,6 +102,40 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
         $this->importDependentEntities($event, $entityData, $userId);
     }
 
+    public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
+    {
+        $this->performDuplicationCheck(
+            $event,
+            Campaign::ENTITY_NAME,
+            Campaign::class,
+            'name',
+            $this->entityManager
+        );
+    }
+
+    public function onUndoImport(EntityImportUndoEvent $event): void
+    {
+        if ($event->getEntityName() !== Campaign::ENTITY_NAME) {
+            return;
+        }
+
+        $summary  = $event->getSummary();
+
+        if (!isset($summary['ids']) || empty($summary['ids'])) {
+            return;
+        }
+        foreach ($summary['ids'] as $id) {
+            $entity = $this->entityManager->getRepository(Campaign::class)->find($id);
+
+            if ($entity) {
+                $this->entityManager->remove($entity);
+                $this->logAction('undo_import', $id, []);
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -109,7 +143,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
     {
         $campaign = $this->campaignModel->getEntity($campaignId);
         if (!$campaign) {
-            $this->logger->warning("Campaign not found for ID: $campaignId");
+            $this->logger->warning("Campaign not found for ID: {$campaignId}");
 
             return [];
         }
@@ -219,17 +253,6 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
-    {
-        $this->performDuplicationCheck(
-            $event,
-            Campaign::ENTITY_NAME,
-            Campaign::class,
-            'name',
-            $this->entityManager
-        );
-    }
-
     /**
      * Import Dependent Entities Dynamically and Track Progress.
      *
@@ -336,7 +359,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
 
         $user = $this->userModel->getEntity($userId);
         if (!$user) {
-            $this->logger->warning("User ID $userId not found. Campaigns will not have a created_by_user field set.");
+            $this->logger->warning("User ID {$userId} not found. Campaigns will not have a created_by_user field set.");
 
             return '';
         }
@@ -460,7 +483,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
     {
         foreach ($dependencies as &$dependencyGroup) {
             foreach ($dependencyGroup as $key => $items) {
-                if (Form::ENTITY_NAME === $key) {
+                if ($key === Form::ENTITY_NAME) {
                     foreach ($items as &$dependency) {
                         if (isset($dependency[Campaign::ENTITY_NAME])) {
                             $this->insertCampaignFormXref($dependency[Campaign::ENTITY_NAME], $dependency[Form::ENTITY_NAME]);
@@ -468,7 +491,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                     }
                     unset($dependency);
                 }
-                if (LeadList::ENTITY_NAME === $key) {
+                if ($key === LeadList::ENTITY_NAME) {
                     foreach ($items as &$dependency) {
                         if (isset($dependency[Campaign::ENTITY_NAME])) {
                             $this->insertCampaignSegmentXref($dependency[Campaign::ENTITY_NAME], $dependency[LeadList::ENTITY_NAME]);
@@ -631,9 +654,9 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
     {
         // Define the possible locations where the channel ID may be stored
         $propertyPaths = [
-            "properties.$channelKey",
+            "properties.{$channelKey}",
             "properties.{$channelKey}s",
-            "properties.properties.$channelKey",
+            "properties.properties.{$channelKey}",
             "properties.properties.{$channelKey}s",
         ];
 
@@ -777,29 +800,6 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
         }
 
         return [];
-    }
-
-    public function onUndoImport(EntityImportUndoEvent $event): void
-    {
-        if (Campaign::ENTITY_NAME !== $event->getEntityName()) {
-            return;
-        }
-
-        $summary  = $event->getSummary();
-
-        if (!isset($summary['ids']) || empty($summary['ids'])) {
-            return;
-        }
-        foreach ($summary['ids'] as $id) {
-            $entity = $this->entityManager->getRepository(Campaign::class)->find($id);
-
-            if ($entity) {
-                $this->entityManager->remove($entity);
-                $this->logAction('undo_import', $id, []);
-            }
-        }
-
-        $this->entityManager->flush();
     }
 
     /**

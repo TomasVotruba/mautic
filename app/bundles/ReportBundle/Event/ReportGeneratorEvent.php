@@ -258,7 +258,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      *
      * @throws \Exception
      */
-    public function applyDateFilters(QueryBuilder $queryBuilder, $dateColumn, $tablePrefix = 't', $dateOnly = false): ReportGeneratorEvent
+    public function applyDateFilters(QueryBuilder $queryBuilder, $dateColumn, $tablePrefix = 't', $dateOnly = false): self
     {
         $this->setDateRangeQueryFilters(
             $queryBuilder, $tablePrefix, $dateOnly, $dateColumn,
@@ -269,7 +269,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
         return $this;
     }
 
-    public function applyDateFiltersWithoutNullValues(QueryBuilder $queryBuilder, string $dateColumn, string $tablePrefix = 't', bool $dateOnly = false): ReportGeneratorEvent
+    public function applyDateFiltersWithoutNullValues(QueryBuilder $queryBuilder, string $dateColumn, string $tablePrefix = 't', bool $dateOnly = false): self
     {
         $this->setDateRangeQueryFilters(
             $queryBuilder, $tablePrefix, $dateOnly, $dateColumn,
@@ -405,7 +405,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
 
     private function buildSortedFilters(): void
     {
-        if (null !== $this->sortedFilters) {
+        if ($this->sortedFilters !== null) {
             return;
         }
 

@@ -124,7 +124,7 @@ class WidgetApiController extends CommonApiController
             return $this->notFound();
         }
 
-        if ('raw' == $dataFormat) {
+        if ($dataFormat == 'raw') {
             if (isset($data['chartData']['labels']) && isset($data['chartData']['datasets'])) {
                 $rawData = [];
                 foreach ($data['chartData']['datasets'] as $dataset) {

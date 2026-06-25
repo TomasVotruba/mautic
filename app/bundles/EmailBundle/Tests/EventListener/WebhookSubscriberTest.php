@@ -37,14 +37,14 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $event->expects($matcher)
             ->method('addEvent')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(EmailEvents::EMAIL_ON_SEND, $parameters[0]);
                     $this->assertSame([
                         'label'       => 'mautic.email.webhook.event.send',
                         'description' => 'mautic.email.webhook.event.send_desc',
                     ], $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(EmailEvents::EMAIL_ON_OPEN, $parameters[0]);
                     $this->assertSame([
                         'label'       => 'mautic.email.webhook.event.open',

@@ -47,6 +47,16 @@ class AuthorizeController extends \FOS\OAuthServerBundle\Controller\AuthorizeCon
         $this->tokenStorage = $tokenStorage;
     }
 
+    public function authorizeAction(Request $request, AuthorizeFormHandler $formHandler, Environment $twig): Response
+    {
+        // The parent bundle does not care about token being empty.
+        if ($this->tokenStorage->getToken() === null) {
+            throw new AccessDeniedException('This user does not have access to this section. No token.');
+        }
+
+        return parent::authorizeAction($request, $formHandler, $twig);
+    }
+
     /**
      * @param array<string , mixed> $data Various data to be passed to the twig template
      *
@@ -62,15 +72,5 @@ class AuthorizeController extends \FOS\OAuthServerBundle\Controller\AuthorizeCon
         );
 
         return new Response($response);
-    }
-
-    public function authorizeAction(Request $request, AuthorizeFormHandler $formHandler, Environment $twig): Response
-    {
-        // The parent bundle does not care about token being empty.
-        if (null === $this->tokenStorage->getToken()) {
-            throw new AccessDeniedException('This user does not have access to this section. No token.');
-        }
-
-        return parent::authorizeAction($request, $formHandler, $twig);
     }
 }

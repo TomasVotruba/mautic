@@ -56,7 +56,7 @@ class NoteModel extends FormModel
      */
     public function getEntity($id = null): ?LeadNote
     {
-        if (null === $id) {
+        if ($id === null) {
             return new LeadNote();
         }
 
@@ -78,6 +78,17 @@ class NoteModel extends FormModel
         }
 
         return $formFactory->create(NoteType::class, $entity, $options);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNoteCount(Lead $lead, $useFilters = false)
+    {
+        $filter   = ($useFilters) ? $this->requestStack->getSession()->get('mautic.lead.'.$lead->getId().'.note.filter', '') : null;
+        $noteType = ($useFilters) ? $this->requestStack->getSession()->get('mautic.lead.'.$lead->getId().'.notetype.filter', []) : null;
+
+        return $this->getRepository()->getNoteCount($lead->getId(), $filter, $noteType);
     }
 
     /**
@@ -118,16 +129,5 @@ class NoteModel extends FormModel
         }
 
         return null;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNoteCount(Lead $lead, $useFilters = false)
-    {
-        $filter   = ($useFilters) ? $this->requestStack->getSession()->get('mautic.lead.'.$lead->getId().'.note.filter', '') : null;
-        $noteType = ($useFilters) ? $this->requestStack->getSession()->get('mautic.lead.'.$lead->getId().'.notetype.filter', []) : null;
-
-        return $this->getRepository()->getNoteCount($lead->getId(), $filter, $noteType);
     }
 }

@@ -10,12 +10,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ErrorHandlingListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 2047],
-        ];
-    }
 
     public function __construct(LoggerInterface $logger, LoggerInterface $mainLogger, ?LoggerInterface $debugLogger = null)
     {
@@ -23,6 +17,12 @@ class ErrorHandlingListener implements EventSubscriberInterface
             ->setLogger($logger)
             ->setMainLogger($mainLogger)
             ->setDebugLogger($debugLogger);
+    }
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 2047],
+        ];
     }
 
     public function onKernelRequest(RequestEvent $event): void

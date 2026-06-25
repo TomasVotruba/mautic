@@ -13,7 +13,7 @@ trait IsolatedTestTrait
     {
         if (!defined('MAUTIC_TABLE_PREFIX')) {
             EnvLoader::load();
-            $prefix = false === getenv('MAUTIC_DB_PREFIX') ? 'test_' : getenv('MAUTIC_DB_PREFIX');
+            $prefix = getenv('MAUTIC_DB_PREFIX') === false ? 'test_' : getenv('MAUTIC_DB_PREFIX');
             define('MAUTIC_TABLE_PREFIX', $prefix);
         }
     }

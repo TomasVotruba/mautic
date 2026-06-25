@@ -13,6 +13,18 @@ class EmailReply
 
     private \DateTimeInterface $dateReplied;
 
+    /**
+     * @param string $messageId
+     */
+    public function __construct(
+        private Stat $stat,
+        private $messageId,
+        ?\DateTime $dateReplied = null,
+    ) {
+        $this->id          = Uuid::uuid4()->toString();
+        $this->dateReplied = $dateReplied ?? new \DateTime();
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -52,18 +64,6 @@ class EmailReply
                 ]
             )
             ->build();
-    }
-
-    /**
-     * @param string $messageId
-     */
-    public function __construct(
-        private Stat $stat,
-        private $messageId,
-        ?\DateTime $dateReplied = null,
-    ) {
-        $this->id          = Uuid::uuid4()->toString();
-        $this->dateReplied = $dateReplied ?? new \DateTime();
     }
 
     public function getId(): string

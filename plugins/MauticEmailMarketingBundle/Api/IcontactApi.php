@@ -6,21 +6,6 @@ use Mautic\PluginBundle\Exception\ApiErrorException;
 
 class IcontactApi extends EmailMarketingApi
 {
-    protected function request($endpoint, $parameters = [], $method = 'GET')
-    {
-        $url = sprintf('%s/%s/c/%s/%s', $this->integration->getApiUrl(), $this->keys['accountId'], $this->keys['clientFolderId'], $endpoint);
-
-        $response = $this->integration->makeRequest($url, $parameters, $method, [
-            'encode_parameters'    => 'json',
-            'encoding_headers_set' => true,
-        ]);
-
-        if (is_array($response) && !empty($response['errors'])) {
-            throw new ApiErrorException(implode(' ', $response['errors']));
-        }
-
-        return $response;
-    }
 
     /**
      * @return mixed|string
@@ -68,5 +53,20 @@ class IcontactApi extends EmailMarketingApi
         }
 
         return $contacts;
+    }
+    protected function request($endpoint, $parameters = [], $method = 'GET')
+    {
+        $url = sprintf('%s/%s/c/%s/%s', $this->integration->getApiUrl(), $this->keys['accountId'], $this->keys['clientFolderId'], $endpoint);
+
+        $response = $this->integration->makeRequest($url, $parameters, $method, [
+            'encode_parameters'    => 'json',
+            'encoding_headers_set' => true,
+        ]);
+
+        if (is_array($response) && !empty($response['errors'])) {
+            throw new ApiErrorException(implode(' ', $response['errors']));
+        }
+
+        return $response;
     }
 }

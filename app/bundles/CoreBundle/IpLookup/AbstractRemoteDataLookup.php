@@ -49,7 +49,7 @@ abstract class AbstractRemoteDataLookup extends AbstractLookup
         $url = $this->getUrl();
 
         try {
-            $response = ('post' == $this->method) ?
+            $response = ($this->method == 'post') ?
                 $this->client->post($url, [
                     \GuzzleHttp\RequestOptions::BODY    => $this->getParameters(),
                     \GuzzleHttp\RequestOptions::HEADERS => $this->getHeaders(),

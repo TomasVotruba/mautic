@@ -10,12 +10,6 @@ use Mautic\LeadBundle\Entity\ListLead;
 
 final class Version20231205094436 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getTableName())->hasIndex($this->getIndexName());
-        }, sprintf('Index %s already exists', $this->getIndexName()));
-    }
 
     public function up(Schema $schema): void
     {
@@ -29,6 +23,12 @@ final class Version20231205094436 extends PreUpAssertionMigration
     public function down(Schema $schema): void
     {
         $this->addSql('ALTER TABLE '.$this->getTableName().' DROP INDEX '.$this->getIndexName());
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getTableName())->hasIndex($this->getIndexName());
+        }, sprintf('Index %s already exists', $this->getIndexName()));
     }
 
     private function getTableName(): string

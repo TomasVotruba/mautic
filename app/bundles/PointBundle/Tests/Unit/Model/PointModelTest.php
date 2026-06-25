@@ -154,7 +154,7 @@ class PointModelTest extends TestCase
         $this->dispatcher->expects(self::exactly(2))
             ->method('dispatch')
             ->willReturnCallback(function (Event $event, string $eventName) use ($pointActionHelper, $type, $lead, $point): Event {
-                if (PointEvents::POINT_ON_BUILD === $eventName) {
+                if ($eventName === PointEvents::POINT_ON_BUILD) {
                     self::assertInstanceOf(PointBuilderEvent::class, $event);
                     self::assertEquals(new PointBuilderEvent($this->translator), $event);
                     $event->addAction(
@@ -172,7 +172,7 @@ class PointModelTest extends TestCase
                     return $event;
                 }
 
-                if (PointEvents::POINT_ON_ACTION === $eventName) {
+                if ($eventName === PointEvents::POINT_ON_ACTION) {
                     $pointActionEvent = new PointActionEvent($point, $lead);
                     self::assertEquals($pointActionEvent, $event);
 

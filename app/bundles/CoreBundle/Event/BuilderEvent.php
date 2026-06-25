@@ -27,7 +27,7 @@ class BuilderEvent extends Event
     ) {
         $this->tokenFilterTarget = (str_starts_with($tokenFilter, '{@')) ? 'label' : 'token';
         $this->tokenFilterText   = str_replace(['{@', '{', '}'], '', $tokenFilter);
-        $this->tokenFilter       = ('label' == $this->tokenFilterTarget) ? $this->tokenFilterText : str_replace('{@', '{', $tokenFilter);
+        $this->tokenFilter       = ($this->tokenFilterTarget == 'label') ? $this->tokenFilterText : str_replace('{@', '{', $tokenFilter);
     }
 
     /**
@@ -73,7 +73,7 @@ class BuilderEvent extends Event
     public function addAbTestWinnerCriteria($key, array $criteria): void
     {
         if (array_key_exists($key, $this->abTestWinnerCriteria)) {
-            throw new InvalidArgumentException("The key, '$key' is already used by another criteria. Please use a different key.");
+            throw new InvalidArgumentException("The key, '{$key}' is already used by another criteria. Please use a different key.");
         }
 
         // check for required keys
@@ -85,15 +85,6 @@ class BuilderEvent extends Event
         // translate the group
         $criteria['group']                = $this->translator->trans($criteria['group']);
         $this->abTestWinnerCriteria[$key] = $criteria;
-    }
-
-    private function verifyCriteria(array $keys, array $criteria): void
-    {
-        foreach ($keys as $k) {
-            if (!array_key_exists($k, $criteria)) {
-                throw new InvalidArgumentException("The key, '$k' is missing.");
-            }
-        }
     }
 
     /**
@@ -122,7 +113,7 @@ class BuilderEvent extends Event
      */
     public function getTokens($withBC = true)
     {
-        if (false === $withBC) {
+        if ($withBC === false) {
             $tokens = [];
             foreach ($this->tokens as $key => $value) {
                 if (!str_starts_with($key, '{leadfield')) {
@@ -145,14 +136,14 @@ class BuilderEvent extends Event
     public function tokensRequested($tokenKeys = null): bool
     {
         if ($requested = $this->getRequested('tokens')) {
-            if (!empty($this->tokenFilter) && 'token' == $this->tokenFilterTarget) {
+            if (!empty($this->tokenFilter) && $this->tokenFilterTarget == 'token') {
                 if (!is_array($tokenKeys)) {
                     $tokenKeys = [$tokenKeys];
                 }
 
                 $found = false;
                 foreach ($tokenKeys as $token) {
-                    if (0 === stripos($token, $this->tokenFilter)) {
+                    if (stripos($token, $this->tokenFilter) === 0) {
                         $found = true;
                         break;
                     }
@@ -193,17 +184,17 @@ class BuilderEvent extends Event
             return $tokens;
         }
 
-        if ('label' == $this->tokenFilterTarget) {
+        if ($this->tokenFilterTarget == 'label') {
             // Do a search against the label
             $tokens = array_filter(
                 $tokens,
-                fn ($v): bool => 0 === stripos($v, $filter)
+                fn ($v): bool => stripos($v, $filter) === 0
             );
         } else {
             // Do a search against the token
             $found = array_filter(
                 array_keys($tokens),
-                fn ($k): bool => 0 === stripos($k, $filter)
+                fn ($k): bool => stripos($k, $filter) === 0
             );
 
             $tokens = array_intersect_key($tokens, array_flip($found));
@@ -229,7 +220,7 @@ class BuilderEvent extends Event
         $convertToLinks = false,
     ): void {
         $tokens = $this->getTokensFromHelper($tokenHelper, $tokens, $labelColumn, $valueColumn);
-        if (null == $tokens) {
+        if ($tokens == null) {
             $tokens = [];
         }
 
@@ -250,7 +241,7 @@ class BuilderEvent extends Event
     {
         return $tokenHelper->getTokens(
             $tokens,
-            'label' == $this->tokenFilterTarget ? $this->tokenFilterText : '',
+            $this->tokenFilterTarget == 'label' ? $this->tokenFilterText : '',
             $labelColumn,
             $valueColumn
         );
@@ -270,6 +261,15 @@ class BuilderEvent extends Event
             return in_array($type, $this->requested);
         }
 
-        return $this->requested == $type || 'all' == $this->requested;
+        return $this->requested == $type || $this->requested == 'all';
+    }
+
+    private function verifyCriteria(array $keys, array $criteria): void
+    {
+        foreach ($keys as $k) {
+            if (!array_key_exists($k, $criteria)) {
+                throw new InvalidArgumentException("The key, '{$k}' is missing.");
+            }
+        }
     }
 }

@@ -210,7 +210,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 function () use (&$counter) {
                     ++$counter;
 
-                    return (1 === $counter) ? 100 : 0;
+                    return ($counter === 1) ? 100 : 0;
                 }
             );
 
@@ -972,7 +972,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                                     'totalSize' => 0,
                                     'records'   => [],
                                 ];
-                            } elseif (isset($args[1]['q']) && 'SELECT CreatedDate from Organization' === $args[1]['q']) {
+                            } elseif (isset($args[1]['q']) && $args[1]['q'] === 'SELECT CreatedDate from Organization') {
                                 return [
                                     'records' => [
                                         ['CreatedDate' => '2012-10-30T17:56:50.000+0000'],
@@ -1029,7 +1029,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
                     // determine whether to return a count or records
                     $results = [];
-                    if (false === $args[3]) {
+                    if ($args[3] === false) {
                         foreach ($object as $object) {
                             if ($specificObject && $specificObject !== $object) {
                                 continue;
@@ -1054,7 +1054,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 function () use ($max) {
                     $args = func_get_args();
 
-                    if (false === $args[2]) {
+                    if ($args[2] === false) {
                         return $max;
                     }
 
@@ -1167,7 +1167,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 preg_match('/(Lead|Contact)([0-9]*)@sftest\.com/', $email, $match);
                 $object = $match[1];
 
-                if ('Lead' === $object) {
+                if ($object === 'Lead') {
                     if ($leadCount >= $maxLeads) {
                         continue;
                     }
@@ -1183,7 +1183,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 $records[] = [
                     'attributes' => [
                         'type' => $object,
-                        'url'  => "/services/data/v34.0/sobjects/$object/SF$id",
+                        'url'  => "/services/data/v34.0/sobjects/{$object}/SF{$id}",
                     ],
                     'Id'        => 'SF'.$id,
                     'FirstName' => $object.$id,
@@ -1295,7 +1295,7 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
     {
         $response = [];
         foreach ($data['compositeRequest'] as $subrequest) {
-            if ('PATCH' === $subrequest['method']) {
+            if ($subrequest['method'] === 'PATCH') {
                 $response[] = [
                     'body'           => null,
                     'httpHeaders'    => [],
@@ -1306,11 +1306,11 @@ class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 $contactId = '';
                 $parts     = explode('-', $subrequest['referenceId']);
 
-                if (3 === count($parts)) {
+                if (count($parts) === 3) {
                     [$contactId, $sfObject, $id] = $parts;
-                } elseif (2 === count($parts)) {
+                } elseif (count($parts) === 2) {
                     [$contactId, $sfObject] = $parts;
-                } elseif (4 === count($parts)) {
+                } elseif (count($parts) === 4) {
                     [$contactId, $sfObject, $empty, $campaignId] = $parts;
                 }
                 $response[] = [

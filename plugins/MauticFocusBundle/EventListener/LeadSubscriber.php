@@ -52,21 +52,21 @@ class LeadSubscriber implements EventSubscriberInterface
 
             // Add the view to the event array
             foreach (array_merge($statsViewsByLead['results'] ?? [], $statsClickByLead['results'] ?? []) as $statsView) {
-                if (((Stat::TYPE_CLICK == $statsView['type']) && $eventClickApplicable)
-                    || ((Stat::TYPE_NOTIFICATION == $statsView['type']) && $eventViewApplicable)) {
+                if ((($statsView['type'] == Stat::TYPE_CLICK) && $eventClickApplicable)
+                    || (($statsView['type'] == Stat::TYPE_NOTIFICATION) && $eventViewApplicable)) {
                     $eventLabel = [
                         'label' => $statsView['focus_name'],
                         'href'  => $this->router->generate('mautic_focus_action', ['objectAction' => 'view', 'objectId' => $statsView['focus_id']]),
                     ];
 
-                    $eventType = (Stat::TYPE_NOTIFICATION == $statsView['type']) ? FocusEventTypes::FOCUS_ON_VIEW : FocusEventTypes::FOCUS_ON_CLICK;
+                    $eventType = ($statsView['type'] == Stat::TYPE_NOTIFICATION) ? FocusEventTypes::FOCUS_ON_VIEW : FocusEventTypes::FOCUS_ON_CLICK;
 
                     $event->addEvent(
                         [
                             'event'           => $eventType,
                             'eventId'         => $eventType.'.'.$statsView['id'],
                             'eventLabel'      => $eventLabel,
-                            'eventType'       => (Stat::TYPE_NOTIFICATION == $statsView['type']) ? $eventViewTypeName : $eventClickTypeName,
+                            'eventType'       => ($statsView['type'] == Stat::TYPE_NOTIFICATION) ? $eventViewTypeName : $eventClickTypeName,
                             'timestamp'       => $statsView['date_added'],
                             'icon'            => $icon,
                             'contactId'       => $leadId,

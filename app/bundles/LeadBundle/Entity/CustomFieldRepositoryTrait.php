@@ -84,7 +84,7 @@ trait CustomFieldRepositoryTrait
             $this->buildSelectClause($dq, $args);
 
             $results = $dq->executeQuery()->fetchAllAssociative();
-            if (isset($args['route']) && ListController::ROUTE_SEGMENT_CONTACTS == $args['route']) {
+            if (isset($args['route']) && $args['route'] == ListController::ROUTE_SEGMENT_CONTACTS) {
                 unset($args['select']); // Our purpose of getting list of ids has already accomplished. We no longer need this.
             }
 
@@ -220,7 +220,7 @@ trait CustomFieldRepositoryTrait
         $table = $this->getEntityManager()->getClassMetadata($this->getClassName())->getTableName();
         $col   = $this->getTableAlias().'.'.$field;
         $q     = $this->getEntityManager()->getConnection()->createQueryBuilder()
-            ->select("DISTINCT $col")
+            ->select("DISTINCT {$col}")
             ->from($table, 'l');
 
         $q->where(
@@ -231,7 +231,7 @@ trait CustomFieldRepositoryTrait
         );
 
         if (!empty($search)) {
-            $q->andWhere("$col LIKE :search")
+            $q->andWhere("{$col} LIKE :search")
                 ->setParameter('search', "{$search}%");
         }
 
@@ -285,6 +285,56 @@ trait CustomFieldRepositoryTrait
         }
 
         $this->postSaveEntity($entity);
+    }
+
+    /**
+     * Retrieves the aliases of searchable fields that are indexed and published.
+     *
+     * @return array<int, string>
+     */
+    public function getSearchableFieldAliases(LeadFieldRepository $leadFieldRepository, string $object): array
+    {
+        return $leadFieldRepository->getSearchableFieldAliases($object);
+    }
+
+    /**
+     * @param string $object
+     *
+     * @return array [$fields, $fixedFields]
+     */
+    public function getCustomFieldList($object)
+    {
+        if (empty($this->customFieldList)) {
+            // Get the list of custom fields
+            $results = $this->getFieldList($object);
+
+            $fields      = [];
+            $fixedFields = [];
+            foreach ($results as $r) {
+                $fields[$r['alias']] = $r;
+                if ($r['is_fixed']) {
+                    $fixedFields[$r['alias']] = $r['alias'];
+                }
+            }
+
+            $this->customFieldList = [$fields, $fixedFields];
+        }
+
+        return $this->customFieldList;
+    }
+
+    public function setUniqueIdentifiersOperator(string $uniqueIdentifiersOperator): void
+    {
+        $this->uniqueIdentifiersOperator = $uniqueIdentifiersOperator;
+    }
+
+    public function getUniqueIdentifiersWherePart(): string
+    {
+        if ($this->uniqueIdentifiersOperatorIs(CompositeExpression::TYPE_AND)) {
+            return 'andWhere';
+        }
+
+        return 'orWhere';
     }
 
     /**
@@ -363,42 +413,6 @@ trait CustomFieldRepositoryTrait
         return $fieldValues;
     }
 
-    /**
-     * Retrieves the aliases of searchable fields that are indexed and published.
-     *
-     * @return array<int, string>
-     */
-    public function getSearchableFieldAliases(LeadFieldRepository $leadFieldRepository, string $object): array
-    {
-        return $leadFieldRepository->getSearchableFieldAliases($object);
-    }
-
-    /**
-     * @param string $object
-     *
-     * @return array [$fields, $fixedFields]
-     */
-    public function getCustomFieldList($object)
-    {
-        if (empty($this->customFieldList)) {
-            // Get the list of custom fields
-            $results = $this->getFieldList($object);
-
-            $fields      = [];
-            $fixedFields = [];
-            foreach ($results as $r) {
-                $fields[$r['alias']] = $r;
-                if ($r['is_fixed']) {
-                    $fixedFields[$r['alias']] = $r['alias'];
-                }
-            }
-
-            $this->customFieldList = [$fields, $fixedFields];
-        }
-
-        return $this->customFieldList;
-    }
-
     protected function prepareDbalFieldsForSave(&$fields)
     {
         // Ensure booleans are integers
@@ -407,6 +421,22 @@ trait CustomFieldRepositoryTrait
                 $fields[$field] = (int) $value;
             }
         }
+    }
+
+    /**
+     * Inherit and use in class if required to do something to the entity prior to persisting.
+     */
+    protected function preSaveEntity(object $entity): void
+    {
+        // Inherit and use if required
+    }
+
+    /**
+     * Inherit and use in class if required to do something with the entity after persisting.
+     */
+    protected function postSaveEntity($entity)
+    {
+        // Inherit and use if required
     }
 
     /**
@@ -426,42 +456,12 @@ trait CustomFieldRepositoryTrait
             ->setParameter('published', true, 'boolean')
             ->addOrderBy('f.field_order', 'asc');
 
-        if (null !== $object) {
+        if ($object !== null) {
             $fq->andWhere($fq->expr()->eq('object', ':object'))
                 ->setParameter('object', $object);
         }
 
         return $fq->executeQuery()->fetchAllAssociative() ?: [];
-    }
-
-    /**
-     * Inherit and use in class if required to do something to the entity prior to persisting.
-     */
-    protected function preSaveEntity(object $entity): void
-    {
-        // Inherit and use if required
-    }
-
-    /**
-     * Inherit and use in class if required to do something with the entity after persisting.
-     */
-    protected function postSaveEntity($entity)
-    {
-        // Inherit and use if required
-    }
-
-    public function setUniqueIdentifiersOperator(string $uniqueIdentifiersOperator): void
-    {
-        $this->uniqueIdentifiersOperator = $uniqueIdentifiersOperator;
-    }
-
-    public function getUniqueIdentifiersWherePart(): string
-    {
-        if ($this->uniqueIdentifiersOperatorIs(CompositeExpression::TYPE_AND)) {
-            return 'andWhere';
-        }
-
-        return 'orWhere';
     }
 
     private function uniqueIdentifiersOperatorIs(string $operator): bool

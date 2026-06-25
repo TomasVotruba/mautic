@@ -74,64 +74,6 @@ class CampaignControllerTest extends MauticMysqlTestCase
         $this->assertStringContainsString('No Contacts Found', $content, $content);
     }
 
-    /**
-     * @throws ORMException
-     * @throws MappingException
-     * @throws OptimisticLockException
-     * @throws NotSupported
-     */
-    private function setupCampaignData(int $bitwise, int $export): User
-    {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->em->getRepository(User::class);
-        $adminUser      = $userRepository->findOneBy(['username' => 'admin']);
-
-        // create users
-        $nonAdminUser = $this->createUserWithPermission([
-            'user-name'  => 'non-admin',
-            'email'      => 'non-admin@mautic-test.com',
-            'first-name' => 'non-admin',
-            'last-name'  => 'non-admin',
-            'role'       => [
-                'name'        => 'perm_non_admin',
-                'permissions' => [
-                    'lead:leads'             => $bitwise,
-                    'campaign:campaigns'     => 2,
-                    'campaign:export:enable' => $export,
-                ],
-            ],
-        ]);
-
-        // create contacts
-        $this->contactOne   = $this->createLead('John', '', '', $adminUser);
-        $this->contactTwo   = $this->createLead('Alex', '', '', $adminUser);
-        $this->contactThree = $this->createLead('Gemini', '', '', $nonAdminUser);
-
-        // Create Segment
-        $segment = $this->createSegment('seg1', []);
-
-        // Add contacts to segment
-        $this->createListLead($segment, $this->contactOne);
-        $this->createListLead($segment, $this->contactTwo);
-        $this->createListLead($segment, $this->contactThree);
-
-        $this->campaign = $this->createCampaign('Campaign');
-        $this->campaign->addList($segment);
-
-        $this->createEvent('Add 10 points', $this->campaign,
-            'lead.changepoints',
-            'action',
-            ['points' => 10]
-        );
-
-        $this->em->flush();
-        $this->em->clear();
-
-        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $this->campaign->getId(), '-vv']);
-
-        return $nonAdminUser;
-    }
-
     public function testCountsProcessedCampaignsMethodCountsProcessedCampaignsCorrectly(): void
     {
         $campaign = new Campaign();
@@ -200,42 +142,6 @@ class CampaignControllerTest extends MauticMysqlTestCase
         ];
 
         Assert::assertSame($expectedEventsStatistics, $eventsStatistics, 'Events statistics doesn\'t match the actual events in the database.');
-    }
-
-    private function getCrawler(Campaign $campaign): Crawler
-    {
-        $now    = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $before = $now->modify('-1 month');
-        $after  = $now->modify('+1 month');
-        $url    = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $before->format('Y-m-d'), $after->format('Y-m-d'));
-        $this->client->request('GET', $url);
-        $response = $this->client->getResponse();
-        $body     = Utils::jsonDecode($response->getContent(), true);
-        $this->client->restart();
-
-        return new Crawler($body['actions']);
-    }
-
-    /**
-     * @return array<array<string, string>>
-     */
-    private function getEventsStatistics(Campaign $campaign): array
-    {
-        $crawler = $this->getCrawler($campaign);
-        $events  = [];
-        for ($eventIndex = 0;; ++$eventIndex) {
-            $node = $crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3);
-            if (1 > $node->count()) {
-                break;
-            }
-            $events[] = [
-                'successPercent' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3)->html()),
-                'completed'      => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 1)->html()),
-                'pending'        => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 2)->html()),
-            ];
-        }
-
-        return $events;
     }
 
     public function testExportAction(): void
@@ -385,5 +291,99 @@ class CampaignControllerTest extends MauticMysqlTestCase
 
         $this->assertArrayHasKey('error', $responseData);
         $this->assertStringContainsString('Export file could not be created', $responseData['error']);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws MappingException
+     * @throws OptimisticLockException
+     * @throws NotSupported
+     */
+    private function setupCampaignData(int $bitwise, int $export): User
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->em->getRepository(User::class);
+        $adminUser      = $userRepository->findOneBy(['username' => 'admin']);
+
+        // create users
+        $nonAdminUser = $this->createUserWithPermission([
+            'user-name'  => 'non-admin',
+            'email'      => 'non-admin@mautic-test.com',
+            'first-name' => 'non-admin',
+            'last-name'  => 'non-admin',
+            'role'       => [
+                'name'        => 'perm_non_admin',
+                'permissions' => [
+                    'lead:leads'             => $bitwise,
+                    'campaign:campaigns'     => 2,
+                    'campaign:export:enable' => $export,
+                ],
+            ],
+        ]);
+
+        // create contacts
+        $this->contactOne   = $this->createLead('John', '', '', $adminUser);
+        $this->contactTwo   = $this->createLead('Alex', '', '', $adminUser);
+        $this->contactThree = $this->createLead('Gemini', '', '', $nonAdminUser);
+
+        // Create Segment
+        $segment = $this->createSegment('seg1', []);
+
+        // Add contacts to segment
+        $this->createListLead($segment, $this->contactOne);
+        $this->createListLead($segment, $this->contactTwo);
+        $this->createListLead($segment, $this->contactThree);
+
+        $this->campaign = $this->createCampaign('Campaign');
+        $this->campaign->addList($segment);
+
+        $this->createEvent('Add 10 points', $this->campaign,
+            'lead.changepoints',
+            'action',
+            ['points' => 10]
+        );
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $this->campaign->getId(), '-vv']);
+
+        return $nonAdminUser;
+    }
+
+    private function getCrawler(Campaign $campaign): Crawler
+    {
+        $now    = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $before = $now->modify('-1 month');
+        $after  = $now->modify('+1 month');
+        $url    = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $before->format('Y-m-d'), $after->format('Y-m-d'));
+        $this->client->request('GET', $url);
+        $response = $this->client->getResponse();
+        $body     = Utils::jsonDecode($response->getContent(), true);
+        $this->client->restart();
+
+        return new Crawler($body['actions']);
+    }
+
+    /**
+     * @return array<array<string, string>>
+     */
+    private function getEventsStatistics(Campaign $campaign): array
+    {
+        $crawler = $this->getCrawler($campaign);
+        $events  = [];
+        for ($eventIndex = 0;; ++$eventIndex) {
+            $node = $crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3);
+            if ($node->count() < 1) {
+                break;
+            }
+            $events[] = [
+                'successPercent' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3)->html()),
+                'completed'      => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 1)->html()),
+                'pending'        => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 2)->html()),
+            ];
+        }
+
+        return $events;
     }
 }

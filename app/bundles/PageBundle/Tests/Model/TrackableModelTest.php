@@ -131,7 +131,7 @@ class TrackableModelTest extends TestCase
         $url   = 'https://foo-bar.com?foo=bar&amp;one=two&three=four&amp;five=six';
         $model = $this->getModel();
 
-        if (null !== $useMap) {
+        if ($useMap !== null) {
             $emailContent = $this->generateContent($url, 'html', false, $useMap);
         } else {
             $emailContent = $this->generateContent($url, 'html', false, true)
@@ -168,7 +168,7 @@ class TrackableModelTest extends TestCase
         $url   = 'https://foo-bar.com';
         $model = $this->getModel();
 
-        if (null !== $useMap) {
+        if ($useMap !== null) {
             $emailContent = $this->generateContent($url, 'html', false, $useMap);
         } else {
             $emailContent = $this->generateContent($url, 'html', false, true)
@@ -205,7 +205,7 @@ class TrackableModelTest extends TestCase
         $url   = 'https://foo-bar.com?foo={contactfield=bar}&bar=foo';
         $model = $this->getModel();
 
-        if (null !== $useMap) {
+        if ($useMap !== null) {
             $emailContent = $this->generateContent($url, 'html', false, $useMap);
         } else {
             $emailContent = $this->generateContent($url, 'html', false, true)
@@ -416,7 +416,7 @@ class TrackableModelTest extends TestCase
         $url   = 'http://{pagelink=1}';
         $model = $this->getModel();
 
-        if (null !== $useMap) {
+        if ($useMap !== null) {
             $emailContent = $this->generateContent($url, 'html', false, $useMap);
         } else {
             $emailContent = $this->generateContent($url, 'html', false, true)
@@ -451,7 +451,7 @@ class TrackableModelTest extends TestCase
 
         $model = $this->getModel();
 
-        if (null !== $useMap) {
+        if ($useMap !== null) {
             $emailContent = $this->generateContent($urls, 'html', false, $useMap);
         } else {
             $emailContent = $this->generateContent($urls, 'html', false, true)
@@ -560,6 +560,18 @@ TEXT;
     }
 
     /**
+     * @return array<array<bool|null>> Use null to include both <a> and <map> tags
+     */
+    public static function trackMapProvider(): array
+    {
+        return [
+            [true],
+            [false],
+            [null],
+        ];
+    }
+
+    /**
      * @param array<int, string>        $doNotTrack
      * @param array<string|int, string> $urlFieldsForPlaintext
      *
@@ -647,40 +659,28 @@ TEXT;
         }
 
         foreach ($urls as $url) {
-            if ('html' === $type) {
+            if ($type === 'html') {
                 $dnc = ($doNotTrack) ? ' mautic:disable-tracking' : '';
 
                 if ($useMap) {
                     $content .= <<<CONTENT
     ABC123 321ABC
-    ABC123 <map><area href="$url"$dnc alt="alt" /></map> 321ABC
+    ABC123 <map><area href="{$url}"{$dnc} alt="alt" /></map> 321ABC
 CONTENT;
                 } else {
                     $content .= <<<CONTENT
     ABC123 321ABC
-    ABC123 <a href="$url"$dnc>$url</a> 321ABC
+    ABC123 <a href="{$url}"{$dnc}>{$url}</a> 321ABC
 CONTENT;
                 }
             } else {
                 $content .= <<<CONTENT
     ABC123 321ABC
-    ABC123 $url 321ABC
+    ABC123 {$url} 321ABC
 CONTENT;
             }
         }
 
         return $content;
-    }
-
-    /**
-     * @return array<array<bool|null>> Use null to include both <a> and <map> tags
-     */
-    public static function trackMapProvider(): array
-    {
-        return [
-            [true],
-            [false],
-            [null],
-        ];
     }
 }

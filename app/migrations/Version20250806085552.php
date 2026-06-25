@@ -14,14 +14,6 @@ final class Version20250806085552 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = LeadEventLog::TABLE_NAME;
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('version'),
-            "Table {$this->getPrefixedTableName()} already has 'version' column"
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName());
@@ -34,5 +26,13 @@ final class Version20250806085552 extends PreUpAssertionMigration
     {
         $table = $schema->getTable($this->getPrefixedTableName());
         $table->dropColumn('version');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('version'),
+            "Table {$this->getPrefixedTableName()} already has 'version' column"
+        );
     }
 }

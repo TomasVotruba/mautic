@@ -12,6 +12,11 @@ final class Version20211020092759 extends PreUpAssertionMigration
 {
     private const TABLE = 'leads';
 
+    public function up(Schema $schema): void
+    {
+        $this->addSql("CREATE INDEX {$this->getIndexName()} ON {$this->getPrefixedTableName(self::TABLE)} (date_modified)");
+    }
+
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(
@@ -22,11 +27,6 @@ final class Version20211020092759 extends PreUpAssertionMigration
             },
             "Index {$this->getIndexName()} cannot be created because the {$this->getPrefixedTableName(self::TABLE)} has hit the table index limit or the index already exists"
         );
-    }
-
-    public function up(Schema $schema): void
-    {
-        $this->addSql("CREATE INDEX {$this->getIndexName()} ON {$this->getPrefixedTableName(self::TABLE)} (date_modified)");
     }
 
     private function getIndexName(): string

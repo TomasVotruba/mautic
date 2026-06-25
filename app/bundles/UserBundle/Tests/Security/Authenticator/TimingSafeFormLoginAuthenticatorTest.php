@@ -18,15 +18,6 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
 class TimingSafeFormLoginAuthenticatorTest extends TestCase
 {
-    /**
-     * @return array<mixed>
-     */
-    private function getCredentials(TimingSafeFormLoginAuthenticator $authenticator, Request $request): array
-    {
-        $method = new \ReflectionMethod(TimingSafeFormLoginAuthenticator::class, 'getCredentials');
-
-        return $method->invoke($authenticator, $request);
-    }
 
     public function testAuthenticateWithExistingUser(): void
     {
@@ -114,5 +105,14 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
 
         $passport = $authenticator->authenticate($request);
         $passport->getUser();
+    }
+    /**
+     * @return array<mixed>
+     */
+    private function getCredentials(TimingSafeFormLoginAuthenticator $authenticator, Request $request): array
+    {
+        $method = new \ReflectionMethod(TimingSafeFormLoginAuthenticator::class, 'getCredentials');
+
+        return $method->invoke($authenticator, $request);
     }
 }

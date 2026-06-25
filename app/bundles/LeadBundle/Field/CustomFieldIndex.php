@@ -42,7 +42,7 @@ class CustomFieldIndex
 
             $modifySchema->executeChanges();
         } catch (DriverException $e) {
-            if (1069 === $e->getCode() /* ER_TOO_MANY_KEYS */) {
+            if ($e->getCode() === 1069 /* ER_TOO_MANY_KEYS */) {
                 $this->logger->warning($e->getMessage());
             } else {
                 throw $e;
@@ -70,7 +70,7 @@ class CustomFieldIndex
 
             $modifySchema->executeChanges();
         } catch (DriverException $e) {
-            if (1069 === $e->getCode() /* ER_TOO_MANY_KEYS */) {
+            if ($e->getCode() === 1069 /* ER_TOO_MANY_KEYS */) {
                 $this->logger->warning($e->getMessage());
             } else {
                 throw $e;
@@ -112,7 +112,7 @@ class CustomFieldIndex
             return $this->indexSchemaHelper->hasMatchingUniqueIdentifierIndex($leadField, $uniqueIdentifierColumns);
         } catch (DoctrineSchemaException) {
             // Return true only if there are no unique identifier fields but otherwise assume the index is missing
-            return 0 === count($uniqueIdentifierColumns);
+            return count($uniqueIdentifierColumns) === 0;
         }
     }
 

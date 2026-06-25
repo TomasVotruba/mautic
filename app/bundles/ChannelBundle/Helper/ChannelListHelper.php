@@ -68,7 +68,7 @@ class ChannelListHelper
             $channels[$feature] = $returnChannels;
         }
 
-        if (1 === count($features)) {
+        if (count($features) === 1) {
             $channels = $channels[$features[0]];
         }
 

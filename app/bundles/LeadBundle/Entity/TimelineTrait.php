@@ -73,7 +73,7 @@ trait TimelineTrait
                 'eventLabel' => $eventNameColumn,
                 default      => $timestampColumn,
             };
-            $orderByDir = 'ASC' === strtoupper((string) $orderByDir) ? 'ASC' : 'DESC';
+            $orderByDir = strtoupper((string) $orderByDir) === 'ASC' ? 'ASC' : 'DESC';
 
             $query->orderBy($orderBy, $orderByDir);
 
@@ -96,7 +96,7 @@ trait TimelineTrait
             foreach ($results as &$result) {
                 foreach ($serializedColumns as $col) {
                     if (isset($result[$col])) {
-                        $result[$col] = (null == $result[$col]) ? [] : Serializer::decode($result[$col]);
+                        $result[$col] = ($result[$col] == null) ? [] : Serializer::decode($result[$col]);
                     }
                 }
 

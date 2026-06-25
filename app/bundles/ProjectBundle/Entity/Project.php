@@ -47,6 +47,12 @@ class Project extends FormEntity implements UuidInterface
 
     public const TABLE_NAME = 'projects';
 
+    /**
+     * Transient property to store the count of entities associated with this project.
+     * This is not persisted to the database.
+     */
+    public int $entitiesCount = 0;
+
     #[Groups(['project:read'])]
     private ?int $id = null;
 
@@ -61,12 +67,6 @@ class Project extends FormEntity implements UuidInterface
      */
     #[Groups(['project:read', 'project:write'])]
     private array $properties = [];
-
-    /**
-     * Transient property to store the count of entities associated with this project.
-     * This is not persisted to the database.
-     */
-    public int $entitiesCount = 0;
 
     public function __clone()
     {

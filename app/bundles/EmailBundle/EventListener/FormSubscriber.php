@@ -63,7 +63,7 @@ class FormSubscriber implements EventSubscriberInterface
      */
     public function onFormSubmitActionSendEmail(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('email.send.user') && false === $event->checkContext('email.send.lead')) {
+        if ($event->checkContext('email.send.user') === false && $event->checkContext('email.send.lead') === false) {
             return;
         }
 
@@ -71,7 +71,7 @@ class FormSubscriber implements EventSubscriberInterface
         $emailId    = isset($properties['useremail']) ? (int) $properties['useremail']['email'] : (int) $properties['email'];
         $email      = $this->emailModel->getEntity($emailId);
 
-        if (null === $email || false === $email->isPublished()) {
+        if ($email === null || $email->isPublished() === false) {
             return;
         }
 

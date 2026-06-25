@@ -57,97 +57,6 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Configure a CircularDependencyValidator.
-     *
-     * @param string $expectedMessage the expected message on a validation violation, if any
-     */
-    private function configureValidator(?string $expectedMessage, int $currentSegmentId): CircularDependencyValidator
-    {
-        $filters = [
-            [
-                'glue'     => 'and',
-                'field'    => 'leadlist',
-                'object'   => 'lead',
-                'type'     => 'leadlist',
-                'filter'   => [2], // Keeping filter in the root to test also for BC segments.
-                'display'  => null,
-                'operator' => 'in',
-            ],
-        ];
-
-        $filters2 = [
-            [
-                'glue'       => 'and',
-                'field'      => 'leadlist',
-                'object'     => 'lead',
-                'type'       => 'leadlist',
-                'properties' => ['filter' => [1]],
-                'display'    => null,
-                'operator'   => 'in',
-            ],
-        ];
-
-        $filters3 = [
-            [
-                'glue'       => 'and',
-                'field'      => 'first_name',
-                'object'     => 'lead',
-                'type'       => 'text',
-                'properties' => ['filter' => 'John'],
-                'display'    => null,
-                'operator'   => '=',
-            ],
-        ];
-
-        $mockEntity1 = $this->createMock(LeadList::class);
-        $mockEntity1->expects($this->any())
-            ->method('getId')
-            ->willReturn(1);
-        $mockEntity1->expects($this->any())
-            ->method('getFilters')
-            ->willReturn($filters);
-
-        $mockEntity2 = $this->createMock(LeadList::class);
-        $mockEntity2->expects($this->any())
-            ->method('getId')
-            ->willReturn(2);
-        $mockEntity2->expects($this->any())
-            ->method('getFilters')
-            ->willReturn($filters2);
-
-        $mockEntity3 = $this->createMock(LeadList::class);
-        $mockEntity3->expects($this->any())
-            ->method('getId')
-            ->willReturn(3);
-        $mockEntity3->expects($this->any())
-            ->method('getFilters')
-            ->willReturn($filters3);
-
-        $entities = [
-            1 => $mockEntity1,
-            2 => $mockEntity2,
-            3 => $mockEntity3,
-        ];
-
-        $this->mockListModel->expects($this->any())
-            ->method('getEntity')
-            ->willReturnCallback(fn ($id) => $entities[$id]);
-
-        if (!empty($expectedMessage)) {
-            $this->context->expects($this->once())
-                ->method('addViolation')
-                ->with($this->equalTo($expectedMessage));
-        } else {
-            $this->context->expects($this->never())
-                ->method('addViolation');
-        }
-
-        $this->request->request->add(['_route_params' => ['objectId' => $currentSegmentId]]);
-
-        return $this->validator;
-    }
-
-    /**
      * Verify a constraint message.
      *
      * @param array<int, array<string, mixed>> $filters
@@ -257,5 +166,96 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             // @TODO: MUST ADD TEST CASES ONCE WE FIX DEEP CIRCULAR (1 depends on 2 which depends on 3 which depends on 1) TO AN ARBITRARY DEPTH
         ];
+    }
+
+    /**
+     * Configure a CircularDependencyValidator.
+     *
+     * @param string $expectedMessage the expected message on a validation violation, if any
+     */
+    private function configureValidator(?string $expectedMessage, int $currentSegmentId): CircularDependencyValidator
+    {
+        $filters = [
+            [
+                'glue'     => 'and',
+                'field'    => 'leadlist',
+                'object'   => 'lead',
+                'type'     => 'leadlist',
+                'filter'   => [2], // Keeping filter in the root to test also for BC segments.
+                'display'  => null,
+                'operator' => 'in',
+            ],
+        ];
+
+        $filters2 = [
+            [
+                'glue'       => 'and',
+                'field'      => 'leadlist',
+                'object'     => 'lead',
+                'type'       => 'leadlist',
+                'properties' => ['filter' => [1]],
+                'display'    => null,
+                'operator'   => 'in',
+            ],
+        ];
+
+        $filters3 = [
+            [
+                'glue'       => 'and',
+                'field'      => 'first_name',
+                'object'     => 'lead',
+                'type'       => 'text',
+                'properties' => ['filter' => 'John'],
+                'display'    => null,
+                'operator'   => '=',
+            ],
+        ];
+
+        $mockEntity1 = $this->createMock(LeadList::class);
+        $mockEntity1->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
+        $mockEntity1->expects($this->any())
+            ->method('getFilters')
+            ->willReturn($filters);
+
+        $mockEntity2 = $this->createMock(LeadList::class);
+        $mockEntity2->expects($this->any())
+            ->method('getId')
+            ->willReturn(2);
+        $mockEntity2->expects($this->any())
+            ->method('getFilters')
+            ->willReturn($filters2);
+
+        $mockEntity3 = $this->createMock(LeadList::class);
+        $mockEntity3->expects($this->any())
+            ->method('getId')
+            ->willReturn(3);
+        $mockEntity3->expects($this->any())
+            ->method('getFilters')
+            ->willReturn($filters3);
+
+        $entities = [
+            1 => $mockEntity1,
+            2 => $mockEntity2,
+            3 => $mockEntity3,
+        ];
+
+        $this->mockListModel->expects($this->any())
+            ->method('getEntity')
+            ->willReturnCallback(fn ($id) => $entities[$id]);
+
+        if (!empty($expectedMessage)) {
+            $this->context->expects($this->once())
+                ->method('addViolation')
+                ->with($this->equalTo($expectedMessage));
+        } else {
+            $this->context->expects($this->never())
+                ->method('addViolation');
+        }
+
+        $this->request->request->add(['_route_params' => ['objectId' => $currentSegmentId]]);
+
+        return $this->validator;
     }
 }

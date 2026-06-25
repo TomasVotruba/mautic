@@ -35,6 +35,18 @@ class ContactSegmentFilter implements \Stringable
         $this->contactSegmentFilterCrate = $contactSegmentFilterCrate;
     }
 
+    public function __toString(): string
+    {
+        return sprintf(
+            'table: %s,  %s on %s %s %s',
+            $this->getTable(),
+            $this->getField(),
+            $this->getQueryType(),
+            $this->getOperator(),
+            json_encode($this->getParameterValue())
+        );
+    }
+
     /**
      * @return Column
      *
@@ -160,7 +172,7 @@ class ContactSegmentFilter implements \Stringable
      */
     public function isContactSegmentReference(): bool
     {
-        return 'leadlist' === $this->getField();
+        return $this->getField() === 'leadlist';
     }
 
     public function isColumnTypeBoolean(): bool
@@ -184,18 +196,6 @@ class ContactSegmentFilter implements \Stringable
     public function getIntegrationCampaignParts(): IntegrationCampaignParts
     {
         return new IntegrationCampaignParts($this->getParameterValue());
-    }
-
-    public function __toString(): string
-    {
-        return sprintf(
-            'table: %s,  %s on %s %s %s',
-            $this->getTable(),
-            $this->getField(),
-            $this->getQueryType(),
-            $this->getOperator(),
-            json_encode($this->getParameterValue())
-        );
     }
 
     /**

@@ -229,7 +229,7 @@ class UserModelTest extends TestCase
             ->method('persist')
             ->with($this->callback(function (UserInvite $invite) use ($email, $role): bool {
                 return $email === $invite->getEmail()
-                    && 32 === strlen((string) $invite->getTokenSelector())
+                    && strlen((string) $invite->getTokenSelector()) === 32
                     && str_starts_with((string) $invite->getTokenVerifierHash(), '$')
                     && $role === $invite->getRole()
                     && $invite->getExpiration() > new \DateTime();

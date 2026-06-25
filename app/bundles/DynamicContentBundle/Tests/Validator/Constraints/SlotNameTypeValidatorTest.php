@@ -16,13 +16,6 @@ class SlotNameTypeValidatorTest extends ConstraintValidatorTestCase
      */
     private $dynamicContentModel;
 
-    protected function createValidator(): SlotNameTypeValidator
-    {
-        $this->dynamicContentModel = $this->createMock(DynamicContentModel::class);
-
-        return new SlotNameTypeValidator($this->dynamicContentModel);
-    }
-
     public function testValidSlotNameType(): void
     {
         $dynamicContent = new DynamicContent();
@@ -62,5 +55,12 @@ class SlotNameTypeValidatorTest extends ConstraintValidatorTestCase
         $this->buildViolation($constraint->message)
             ->atPath('property.path.type')
             ->assertRaised();
+    }
+
+    protected function createValidator(): SlotNameTypeValidator
+    {
+        $this->dynamicContentModel = $this->createMock(DynamicContentModel::class);
+
+        return new SlotNameTypeValidator($this->dynamicContentModel);
     }
 }

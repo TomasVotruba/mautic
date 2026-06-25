@@ -21,17 +21,6 @@ use Twig\Environment;
 
 final class BuilderSubscriber implements EventSubscriberInterface
 {
-    private const pageTokenRegex         = '{pagelink=(.*?)}';
-
-    private const dwcTokenRegex          = '{dwc=(.*?)}';
-
-    private const langBarRegex           = '{langbar}';
-
-    private const shareButtonsRegex      = '{sharebuttons}';
-
-    private const titleRegex             = '{pagetitle}';
-
-    private const descriptionRegex       = '{pagemetadescription}';
 
     public const brandName                = '{brand=name}';
 
@@ -52,6 +41,17 @@ final class BuilderSubscriber implements EventSubscriberInterface
     public const saveButtonContainerClass = 'prefs-saveprefs';
 
     public const firstSlotAttribute       = ' data-prefs-center-first="1"';
+    private const pageTokenRegex         = '{pagelink=(.*?)}';
+
+    private const dwcTokenRegex          = '{dwc=(.*?)}';
+
+    private const langBarRegex           = '{langbar}';
+
+    private const shareButtonsRegex      = '{sharebuttons}';
+
+    private const titleRegex             = '{pagetitle}';
+
+    private const descriptionRegex       = '{pagemetadescription}';
 
     /**
      * @var array<string,string>
@@ -81,7 +81,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
             $tokens      = $tokenHelper->getFormattedTokens(
                 self::pageTokenRegex,
                 TokenFormatOptions::linkWithId('mautic.page.token.pagelink', self::pageTokenRegex),
-                'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '',
+                $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '',
                 'title',
                 'id'
             );
@@ -127,7 +127,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
 
         if ($event->tokensRequested([static::pageTokenRegex, static::dwcTokenRegex])) {
             $tokenFilter = $event->getTokenFilter();
-            $labelFilter = 'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '';
+            $labelFilter = $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '';
             $tokens      = $tokenHelper->getFormattedTokens(
                 self::pageTokenRegex,
                 TokenFormatOptions::linkWithId('mautic.page.token.pagelink', self::pageTokenRegex),
@@ -436,7 +436,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
         $xpath = $this->createDOMXPathForContent($content);
         $node  = $this->getFirstNodeThatContainsAPreferenceCenterToken($xpath);
 
-        if (null === $node) {
+        if ($node === null) {
             return $content;
         }
 
@@ -452,7 +452,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
     {
         $nodeList = $xpath->query('//*[@data-prefs-center-first="1"]');
 
-        if (false !== $nodeList) {
+        if ($nodeList !== false) {
             return $nodeList->item(0);
         }
 
@@ -465,7 +465,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
 
         // Check if the save button exists in the content. If not, try again with the parentNode.
         if (!str_contains($content, static::saveButtonContainerClass)) {
-            if (null === $node->parentNode) {
+            if ($node->parentNode === null) {
                 throw new \RuntimeException("Can't get parent node of #document. Did you forget to insert a save button in your preference center form?");
             }
 

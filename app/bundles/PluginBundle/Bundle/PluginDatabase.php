@@ -34,7 +34,7 @@ class PluginDatabase
      */
     public function installPluginSchema(array $metadata, ?bool $installedSchema = null): void
     {
-        if (null !== $installedSchema) {
+        if ($installedSchema !== null) {
             // Schema already exists, so no need to proceed
             return;
         }

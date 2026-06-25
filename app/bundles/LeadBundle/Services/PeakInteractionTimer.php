@@ -97,6 +97,11 @@ class PeakInteractionTimer
             : $this->findOptimalDateTime($currentDateTime);
     }
 
+    protected function getCurrentDateTime(\DateTimeZone $timezone): \DateTime
+    {
+        return new \DateTime('now', $timezone);
+    }
+
     private function resetBias(): void
     {
         $this->bestHourStart  = (int) $this->bestDefaultHourStart;
@@ -144,11 +149,6 @@ class PeakInteractionTimer
         $timezone = $contact->getTimezone() ? new \DateTimeZone($contact->getTimezone()) : $this->getDefaultTimezone();
 
         return $this->getCurrentDateTime($timezone);
-    }
-
-    protected function getCurrentDateTime(\DateTimeZone $timezone): \DateTime
-    {
-        return new \DateTime('now', $timezone);
     }
 
     private function getDefaultTimezone(): \DateTimeZone
@@ -300,7 +300,7 @@ class PeakInteractionTimer
      */
     private function calculateOptimalDays(array $elements): array
     {
-        if (0 === count($elements)) {
+        if (count($elements) === 0) {
             throw new \Exception('Not enough elements to calculate optimal days');
         }
 

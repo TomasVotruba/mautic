@@ -27,7 +27,7 @@ final class PageHitValidator extends ConstraintValidator
         }
 
         // We are not validating 404 request as 404 page hit can be persisted with null values
-        if (404 === $value->getCode()) {
+        if ($value->getCode() === 404) {
             return;
         }
 

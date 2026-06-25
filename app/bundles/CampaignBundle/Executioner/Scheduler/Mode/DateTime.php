@@ -16,7 +16,7 @@ class DateTime implements ScheduleModeInterface
     {
         $triggerDate = $event->getTriggerDate();
 
-        if (null === $triggerDate) {
+        if ($triggerDate === null) {
             $this->logger->debug('CAMPAIGN: Trigger date is null');
 
             return $compareFromDateTime;

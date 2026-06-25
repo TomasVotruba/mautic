@@ -32,7 +32,7 @@ class EmailGraphStatsControllerFunctionalTest extends MauticMysqlTestCase
     private function createAndPersistEmail(string $name, ?LeadList $segment = null): Email
     {
         $email = $this->createEmail($name);
-        if (null !== $segment) {
+        if ($segment !== null) {
             $email->addList($segment);
         }
         $this->em->persist($email);

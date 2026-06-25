@@ -9,16 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20231206152313 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getTableName())->hasIndex($this->getSentIndexName());
-        }, sprintf('Index %s already exists', $this->getSentIndexName()));
-
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getTableName())->hasIndex($this->getIsReadIndexName());
-        }, sprintf('Index %s already exists', $this->getIsReadIndexName()));
-    }
 
     public function up(Schema $schema): void
     {
@@ -29,6 +19,16 @@ final class Version20231206152313 extends PreUpAssertionMigration
     {
         $this->dropIndex(['lead_id']);
         $this->dropIndex(['email_id']);
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getTableName())->hasIndex($this->getSentIndexName());
+        }, sprintf('Index %s already exists', $this->getSentIndexName()));
+
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getTableName())->hasIndex($this->getIsReadIndexName());
+        }, sprintf('Index %s already exists', $this->getIsReadIndexName()));
     }
 
     private function getTableName(): string

@@ -35,7 +35,7 @@ class DoNotContact implements MauticModelInterface
             $contact = $this->leadModel->getEntity($contact);
         }
 
-        if (null === $contact) {
+        if ($contact === null) {
             return false;
         }
 
@@ -88,7 +88,7 @@ class DoNotContact implements MauticModelInterface
             $contact = $this->leadModel->getEntity($contact);
         }
 
-        if (null === $contact) {
+        if ($contact === null) {
             // Contact not found, nothing to do
             return false;
         }
@@ -99,7 +99,7 @@ class DoNotContact implements MauticModelInterface
         /** @var ArrayCollection<int, DNC> $dncEntities */
         $dncEntities = new ArrayCollection();
         // If they don't have a DNC entry yet
-        if (DNC::IS_CONTACTABLE === $isContactable) {
+        if ($isContactable === DNC::IS_CONTACTABLE) {
             $dnc = $dncEntities[] = $this->createDncRecord($contact, $channel, $reason, $comments);
         } elseif ($isContactable !== $reason) {
             // Or if the given reason is different than the stated reason
@@ -107,7 +107,7 @@ class DoNotContact implements MauticModelInterface
             $dncEntities = $contact->getDoNotContact();
             foreach ($dncEntities as $dnc) {
                 // Only update if the contact did not unsubscribe themselves or if the code forces it
-                $allowOverride = ($allowUnsubscribeOverride || DNC::UNSUBSCRIBED !== $dnc->getReason());
+                $allowOverride = ($allowUnsubscribeOverride || $dnc->getReason() !== DNC::UNSUBSCRIBED);
 
                 // Only update if the contact did not unsubscribe themselves
                 if ($allowOverride && $dnc->getChannel() === $channel) {
@@ -122,7 +122,7 @@ class DoNotContact implements MauticModelInterface
             }
         }
 
-        if (null !== $dnc && $persist) {
+        if ($dnc !== null && $persist) {
             // Use model saveEntity to trigger events for DNC change
             $this->leadModel->saveEntity($contact);
             $this->dncRepo->detachEntities($dncEntities->toArray());
@@ -159,7 +159,7 @@ class DoNotContact implements MauticModelInterface
         }
 
         foreach ($dncEntries as $dnc) {
-            if (DNC::IS_CONTACTABLE !== $dnc->getReason()) {
+            if ($dnc->getReason() !== DNC::IS_CONTACTABLE) {
                 return $dnc->getReason();
             }
         }

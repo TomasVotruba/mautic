@@ -1067,6 +1067,14 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
         }
     }
 
+    /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return 7;
+    }
+
     protected function createSegment($listConfig, ObjectManager $manager)
     {
         $adminUser = $this->getReference('admin-user');
@@ -1099,13 +1107,5 @@ class LoadSegmentsData extends AbstractFixture implements OrderedFixtureInterfac
                 $this->contactModel->removeFromLists($lead, $list);
             }
         }
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder()
-    {
-        return 7;
     }
 }

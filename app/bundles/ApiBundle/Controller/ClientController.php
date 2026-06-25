@@ -149,10 +149,10 @@ class ClientController extends AbstractStandardFormController
         $success = 0;
         $flashes = [];
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $client = $this->clientModel->getEntity($clientId);
 
-            if (null === $client) {
+            if ($client === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.api.client.error.notfound',
@@ -196,7 +196,7 @@ class ClientController extends AbstractStandardFormController
             $this->throwAccessDenied();
         }
 
-        $apiMode = (0 === $objectId) ? $request->getSession()->get('mautic.client.filter.api_mode', 'oauth2') : $objectId;
+        $apiMode = ($objectId === 0) ? $request->getSession()->get('mautic.client.filter.api_mode', 'oauth2') : $objectId;
         $request->getSession()->set('mautic.client.filter.api_mode', $apiMode);
 
         $this->clientModel->setApiMode($apiMode);
@@ -219,7 +219,7 @@ class ClientController extends AbstractStandardFormController
         $form->remove('consumerSecret');
 
         // /Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -227,7 +227,7 @@ class ClientController extends AbstractStandardFormController
                     // If the admin is creating API credentials, enable 'Client Credential' grant type
                     /** @var User $user */
                     $user = $this->getUser();
-                    if (ClientModel::API_MODE_OAUTH2 == $apiMode && $user->getRole()->isAdmin()) {
+                    if ($apiMode == ClientModel::API_MODE_OAUTH2 && $user->getRole()->isAdmin()) {
                         $client->addGrantType(OAuth2::GRANT_TYPE_CLIENT_CREDENTIALS);
                     }
                     $client->setRole($user->getRole());
@@ -309,7 +309,7 @@ class ClientController extends AbstractStandardFormController
         ];
 
         // client not found
-        if (null === $client) {
+        if ($client === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -336,7 +336,7 @@ class ClientController extends AbstractStandardFormController
         $form->remove('api_mode');
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     // form is valid so process the data
@@ -414,9 +414,9 @@ class ClientController extends AbstractStandardFormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $entity = $this->clientModel->getEntity($objectId);
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.api.client.error.notfound',

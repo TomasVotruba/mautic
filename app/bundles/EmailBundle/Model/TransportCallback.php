@@ -68,7 +68,7 @@ class TransportCallback
 
     private function updateStatDetails(Stat $stat, $comments, $dncReason): void
     {
-        if (DNC::BOUNCED === $dncReason) {
+        if ($dncReason === DNC::BOUNCED) {
             $stat->setIsFailed(true);
         }
 

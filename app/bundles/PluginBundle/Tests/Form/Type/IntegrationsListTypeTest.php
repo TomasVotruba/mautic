@@ -81,7 +81,7 @@ class IntegrationsListTypeTest extends TestCase
 
         $form->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use (&$callsForm, $form): FormInterface {
-                if ('config' === $key) {
+                if ($key === 'config') {
                     ++$callsForm;
                     self::assertSame(IntegrationConfigType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration', $options);
@@ -90,7 +90,7 @@ class IntegrationsListTypeTest extends TestCase
                     self::assertSame([], $options['data']);
                 }
 
-                if ('campaign_member_status' === $key) {
+                if ($key === 'campaign_member_status') {
                     ++$callsForm;
                     self::assertSame(IntegrationCampaignsType::class, $fieldFQCN);
                     self::assertArrayHasKey('attr', $options);
@@ -118,7 +118,7 @@ class IntegrationsListTypeTest extends TestCase
         $callsBuilder = 0;
         $builder->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder, $builder): FormBuilderInterface {
-                if ('integration' === $key) {
+                if ($key === 'integration') {
                     ++$callsBuilder;
                     self::assertSame(ChoiceType::class, $fieldFQCN);
                     self::assertArrayHasKey('choices', $options);
@@ -211,7 +211,7 @@ class IntegrationsListTypeTest extends TestCase
         $form      = $this->createMock(FormInterface::class);
         $form->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($integrationInstance1, &$callsForm, $form): FormInterface {
-                if ('config' === $key) {
+                if ($key === 'config') {
                     ++$callsForm;
                     self::assertSame(IntegrationConfigType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration', $options);
@@ -220,7 +220,7 @@ class IntegrationsListTypeTest extends TestCase
                     self::assertSame(['config' => 'test'], $options['data']);
                 }
 
-                if ('campaign_member_status' === $key) {
+                if ($key === 'campaign_member_status') {
                     ++$callsForm;
                     self::assertSame(IntegrationCampaignsType::class, $fieldFQCN);
                     self::assertArrayHasKey('attr', $options);
@@ -259,7 +259,7 @@ class IntegrationsListTypeTest extends TestCase
         \assert($builder instanceof FormBuilderInterface);
         $builder->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder, $builder): FormBuilderInterface {
-                if ('integration' === $key) {
+                if ($key === 'integration') {
                     ++$callsBuilder;
                     self::assertSame(ChoiceType::class, $fieldFQCN);
                     self::assertArrayHasKey('choices', $options);

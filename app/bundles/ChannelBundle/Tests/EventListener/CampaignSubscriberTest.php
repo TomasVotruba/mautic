@@ -230,14 +230,14 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $logs     = $event->getPending();
         $this->assertCount(1, $logs);
 
-        if (1 === $contacts->first()->getId()) {
+        if ($contacts->first()->getId() === 1) {
             // Processing priority 1 for contact 1, let's fail this one so that SMS is used
             $event->fail($logs->first(), 'just because');
 
             return;
         }
 
-        if (2 === $contacts->first()->getId()) {
+        if ($contacts->first()->getId() === 2) {
             // Processing priority 1 for contact 2 so let's pass it
             $event->pass($logs->first());
 
@@ -252,13 +252,13 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     public function sendMarketingMessageSms(CampaignExecutionEvent $event): void
     {
         $lead = $event->getLead();
-        if (1 === $lead->getId()) {
+        if ($lead->getId() === 1) {
             $event->setResult(true);
 
             return;
         }
 
-        if (2 === $lead->getId()) {
+        if ($lead->getId() === 2) {
             $this->fail('Lead ID 2 is unsubscribed from SMS so this shouldn not have happened.');
         }
     }

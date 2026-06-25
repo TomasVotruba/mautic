@@ -15,7 +15,7 @@ final class UserInviteRepository extends CommonRepository implements UserInviteR
     public function findOneByTokenSelector(string $selector): ?UserInvite
     {
         $invite = $this->findOneBy(['tokenSelector' => $selector]);
-        \assert(null === $invite || $invite instanceof UserInvite);
+        \assert($invite === null || $invite instanceof UserInvite);
 
         return $invite;
     }

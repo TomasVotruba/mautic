@@ -9,9 +9,9 @@ use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
 
 final class Version20240708153845 extends AbstractMauticMigration
 {
-    private string $emailStatsTableName;
 
     protected string $emailsTableName;
+    private string $emailStatsTableName;
 
     public function preUp(Schema $schema): void
     {

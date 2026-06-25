@@ -133,7 +133,7 @@ class FetchLeadsCommand extends Command
         define('MAUTIC_DATE_MODIFIED_OVERRIDE', time());
 
         if (isset($supportedFeatures) && in_array('get_leads', $supportedFeatures)) {
-            if (null !== $integrationObject && method_exists($integrationObject, 'getLeads') && isset($config['objects'])) {
+            if ($integrationObject !== null && method_exists($integrationObject, 'getLeads') && isset($config['objects'])) {
                 $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.leads', ['%integration%' => $integration]).'</info>');
                 $output->writeln('<comment>'.$this->translator->trans('mautic.plugin.command.fetch.leads.starting').'</comment>');
 
@@ -191,7 +191,7 @@ class FetchLeadsCommand extends Command
                 }
             }
 
-            if (null !== $integrationObject && method_exists($integrationObject, 'getCompanies') && isset($config['objects'])
+            if ($integrationObject !== null && method_exists($integrationObject, 'getCompanies') && isset($config['objects'])
                 && in_array(
                     'company',
                     $config['objects']
@@ -232,9 +232,9 @@ class FetchLeadsCommand extends Command
             $result  = $integrationObject->pushLeads($params);
             $ignored = 0;
 
-            if (4 === count($result)) {
+            if (count($result) === 4) {
                 [$updated, $created, $errored, $ignored] = $result;
-            } elseif (3 === count($result)) {
+            } elseif (count($result) === 3) {
                 [$updated, $created, $errored] = $result;
             } else {
                 $errored                 = '?';
@@ -258,9 +258,9 @@ class FetchLeadsCommand extends Command
                 $result  = $integrationObject->pushCompanies($params);
                 $ignored = 0;
 
-                if (4 === count($result)) {
+                if (count($result) === 4) {
                     [$updated, $created, $errored, $ignored] = $result;
-                } elseif (3 === count($result)) {
+                } elseif (count($result) === 3) {
                     [$updated, $created, $errored] = $result;
                 } else {
                     $errored                 = '?';

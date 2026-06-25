@@ -147,12 +147,12 @@ class ContactSegmentFilterTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->filterDecorator->expects($matcher)->method('getField')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if (1 === $matcher->numberOfInvocations()) {
+            if ($matcher->numberOfInvocations() === 1) {
                 $this->assertSame($this->contactSegmentFilterCrate, $parameters[0]);
 
                 return 'leadlist';
             }
-            if (2 === $matcher->numberOfInvocations()) {
+            if ($matcher->numberOfInvocations() === 2) {
                 $this->assertSame($this->contactSegmentFilterCrate, $parameters[0]);
 
                 return 'something';

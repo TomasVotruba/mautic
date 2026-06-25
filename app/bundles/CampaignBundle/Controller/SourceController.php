@@ -32,7 +32,7 @@ class SourceController extends CommonFormController
         $success = 0;
         $valid   = $cancelled   = false;
         $this->setCampaignElements($request->request);
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             $source     = $request->request->all()['campaign_leadsource'] ?? [];
             $sourceType = $source['sourceType'];
         } else {
@@ -74,7 +74,7 @@ class SourceController extends CommonFormController
 
         $modifiedSources = $this->modifiedSources;
         // Check for a submitted form and process it
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success                      = 1;
@@ -91,7 +91,7 @@ class SourceController extends CommonFormController
             'route'         => false,
         ];
 
-        if (1 === $success && !empty($modifiedSources)) {
+        if ($success === 1 && !empty($modifiedSources)) {
             $passthroughVars['modifiedSources'] = $modifiedSources;
         }
 
@@ -136,7 +136,7 @@ class SourceController extends CommonFormController
         $this->setCampaignElements($request->request);
         $modifiedSources = $this->modifiedSources;
 
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             $source     = $request->request->all()['campaign_leadsource'] ?? [];
             $sourceType = $source['sourceType'];
         } else {
@@ -180,7 +180,7 @@ class SourceController extends CommonFormController
         );
 
         // Check for a submitted form and process it
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -199,7 +199,7 @@ class SourceController extends CommonFormController
             'route'         => false,
         ];
 
-        if (1 === $success && !empty($modifiedSources)) {
+        if ($success === 1 && !empty($modifiedSources)) {
             $passthroughVars['modifiedSources'] = $modifiedSources;
         }
 
@@ -261,7 +261,7 @@ class SourceController extends CommonFormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             // Add the field to the delete list
             if (isset($modifiedSources[$sourceType])) {
                 unset($modifiedSources[$sourceType]);

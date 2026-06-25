@@ -46,7 +46,7 @@ class ChannelExtractor
         }
 
         $channelId = $properties[$channelIdField];
-        if (is_array($channelId) && (1 === count($channelId))) {
+        if (is_array($channelId) && (count($channelId) === 1)) {
             // Only store channel ID if a single item was selected
             $channelId = reset($channelId);
         }

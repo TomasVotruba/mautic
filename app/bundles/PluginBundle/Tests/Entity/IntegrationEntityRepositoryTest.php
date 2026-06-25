@@ -154,19 +154,6 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
         $this->assertCount(1, $this->integrationEntityRepository->findBy(['internalEntity' => sprintf('%s-deleted', self::INTERNAL_ENTITY)]));
     }
 
-    private function createLead(string $email, string $firstName): Lead
-    {
-        $lead = new Lead();
-        $lead->setEmail($email);
-        $lead->setFirstname($firstName);
-        $lead->setDateModified(new \DateTime());
-
-        $this->em->persist($lead);
-        $this->em->flush();
-
-        return $lead;
-    }
-
     /**
      * @param mixed $integrationEntityId
      * @param mixed $internalEntityId
@@ -190,5 +177,18 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
 
         $this->em->persist($integrationEntity);
         $this->em->flush();
+    }
+
+    private function createLead(string $email, string $firstName): Lead
+    {
+        $lead = new Lead();
+        $lead->setEmail($email);
+        $lead->setFirstname($firstName);
+        $lead->setDateModified(new \DateTime());
+
+        $this->em->persist($lead);
+        $this->em->flush();
+
+        return $lead;
     }
 }

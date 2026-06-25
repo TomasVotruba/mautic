@@ -64,7 +64,7 @@ class DeviceApiController extends CommonApiController
 
             $entity->setLead($lead);
             unset($parameters['lead'], $parameters['contact']);
-        } elseif ('new' === $action) {
+        } elseif ($action === 'new') {
             return $this->returnError('contact ID is mandatory', Response::HTTP_BAD_REQUEST);
         }
     }

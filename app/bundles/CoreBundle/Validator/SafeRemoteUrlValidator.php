@@ -22,7 +22,7 @@ final class SafeRemoteUrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, SafeRemoteUrl::class);
         }
 
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return;
         }
 

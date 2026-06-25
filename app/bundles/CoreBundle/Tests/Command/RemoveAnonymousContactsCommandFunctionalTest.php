@@ -45,6 +45,26 @@ class RemoveAnonymousContactsCommandFunctionalTest extends MauticMysqlTestCase
         Assert::assertCount(0, $this->em->getRepository(LeadEventLog::class)->findBy(['campaign' => $campaign, 'lead' => $lead], ['event' => 'ASC']));
     }
 
+    protected function createListLead(LeadList $segment, Lead $lead): void
+    {
+        $segmentRef = new ListLead();
+        $segmentRef->setLead($lead);
+        $segmentRef->setList($segment);
+        $segmentRef->setDateAdded(new \DateTime());
+        $this->em->persist($segmentRef);
+    }
+
+    protected function createCampaignLead(Campaign $campaign, Lead $lead): CampaignLead
+    {
+        $campaignLead = new CampaignLead();
+        $campaignLead->setCampaign($campaign);
+        $campaignLead->setLead($lead);
+        $campaignLead->setDateAdded(new \DateTime());
+        $this->em->persist($campaignLead);
+
+        return $campaignLead;
+    }
+
     private function createAnonymousLead(): Lead
     {
         $lead = new Lead();
@@ -63,15 +83,6 @@ class RemoveAnonymousContactsCommandFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($segment);
 
         return $segment;
-    }
-
-    protected function createListLead(LeadList $segment, Lead $lead): void
-    {
-        $segmentRef = new ListLead();
-        $segmentRef->setLead($lead);
-        $segmentRef->setList($segment);
-        $segmentRef->setDateAdded(new \DateTime());
-        $this->em->persist($segmentRef);
     }
 
     private function createCampaign(): Campaign
@@ -107,16 +118,5 @@ class RemoveAnonymousContactsCommandFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($leadEventLog);
 
         return $leadEventLog;
-    }
-
-    protected function createCampaignLead(Campaign $campaign, Lead $lead): CampaignLead
-    {
-        $campaignLead = new CampaignLead();
-        $campaignLead->setCampaign($campaign);
-        $campaignLead->setLead($lead);
-        $campaignLead->setDateAdded(new \DateTime());
-        $this->em->persist($campaignLead);
-
-        return $campaignLead;
     }
 }

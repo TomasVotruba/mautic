@@ -34,40 +34,6 @@ final class Version20230621074925 extends PreUpAssertionMigration
 
     private string $leadPointsChangeLogGroupFk;
 
-    private function initTableNames(): void
-    {
-        $this->groupTableName               = $this->generateTableName(Group::TABLE_NAME);
-        $this->contactScoreTableName        = $this->generateTableName(GroupContactScore::TABLE_NAME);
-        $this->contactTableName             = $this->generateTableName('leads');
-        $this->pointsTableName              = $this->generateTableName('points');
-        $this->pointTriggersTableName       = $this->generateTableName('point_triggers');
-        $this->leadPointsChangeLogTableName = $this->generateTableName('lead_points_change_log');
-
-        $this->contactScoreContactFk      = $this->generatePropertyName($this->contactScoreTableName, 'fk', ['contact_id']);
-        $this->contactScoreGroupFk        = $this->generatePropertyName($this->contactScoreTableName, 'fk', ['group_id']);
-        $this->pointsGroupFk              = $this->generatePropertyName($this->pointsTableName, 'fk', ['group_id']);
-        $this->pointTriggersGroupFk       = $this->generatePropertyName($this->pointTriggersTableName, 'fk', ['group_id']);
-        $this->leadPointsChangeLogGroupFk = $this->generatePropertyName($this->leadPointsChangeLogTableName, 'fk', ['group_id']);
-    }
-
-    protected function preUpAssertions(): void
-    {
-        $this->initTableNames();
-
-        $this->assertTableDoesNotExist($this->groupTableName);
-        $this->assertTableDoesNotExist($this->contactScoreTableName);
-
-        $this->assertColumnDoesNotExist($this->pointsTableName, 'group_id');
-        $this->assertColumnDoesNotExist($this->pointTriggersTableName, 'group_id');
-        $this->assertColumnDoesNotExist($this->leadPointsChangeLogTableName, 'group_id');
-
-        $this->assertForeignKeyDoesNotExist($this->contactScoreTableName, $this->contactScoreContactFk);
-        $this->assertForeignKeyDoesNotExist($this->contactScoreTableName, $this->contactScoreGroupFk);
-        $this->assertForeignKeyDoesNotExist($this->pointsTableName, $this->pointsGroupFk);
-        $this->assertForeignKeyDoesNotExist($this->pointTriggersTableName, $this->pointTriggersGroupFk);
-        $this->assertForeignKeyDoesNotExist($this->leadPointsChangeLogTableName, $this->leadPointsChangeLogGroupFk);
-    }
-
     public function up(Schema $schema): void
     {
         $this->initTableNames();
@@ -160,6 +126,40 @@ final class Version20230621074925 extends PreUpAssertionMigration
         if ($schema->hasTable($this->groupTableName)) {
             $this->addSql("DROP TABLE {$this->groupTableName}");
         }
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->initTableNames();
+
+        $this->assertTableDoesNotExist($this->groupTableName);
+        $this->assertTableDoesNotExist($this->contactScoreTableName);
+
+        $this->assertColumnDoesNotExist($this->pointsTableName, 'group_id');
+        $this->assertColumnDoesNotExist($this->pointTriggersTableName, 'group_id');
+        $this->assertColumnDoesNotExist($this->leadPointsChangeLogTableName, 'group_id');
+
+        $this->assertForeignKeyDoesNotExist($this->contactScoreTableName, $this->contactScoreContactFk);
+        $this->assertForeignKeyDoesNotExist($this->contactScoreTableName, $this->contactScoreGroupFk);
+        $this->assertForeignKeyDoesNotExist($this->pointsTableName, $this->pointsGroupFk);
+        $this->assertForeignKeyDoesNotExist($this->pointTriggersTableName, $this->pointTriggersGroupFk);
+        $this->assertForeignKeyDoesNotExist($this->leadPointsChangeLogTableName, $this->leadPointsChangeLogGroupFk);
+    }
+
+    private function initTableNames(): void
+    {
+        $this->groupTableName               = $this->generateTableName(Group::TABLE_NAME);
+        $this->contactScoreTableName        = $this->generateTableName(GroupContactScore::TABLE_NAME);
+        $this->contactTableName             = $this->generateTableName('leads');
+        $this->pointsTableName              = $this->generateTableName('points');
+        $this->pointTriggersTableName       = $this->generateTableName('point_triggers');
+        $this->leadPointsChangeLogTableName = $this->generateTableName('lead_points_change_log');
+
+        $this->contactScoreContactFk      = $this->generatePropertyName($this->contactScoreTableName, 'fk', ['contact_id']);
+        $this->contactScoreGroupFk        = $this->generatePropertyName($this->contactScoreTableName, 'fk', ['group_id']);
+        $this->pointsGroupFk              = $this->generatePropertyName($this->pointsTableName, 'fk', ['group_id']);
+        $this->pointTriggersGroupFk       = $this->generatePropertyName($this->pointTriggersTableName, 'fk', ['group_id']);
+        $this->leadPointsChangeLogGroupFk = $this->generatePropertyName($this->leadPointsChangeLogTableName, 'fk', ['group_id']);
     }
 
     private function generateTableName(string $tableName): string

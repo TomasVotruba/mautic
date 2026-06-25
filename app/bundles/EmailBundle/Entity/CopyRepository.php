@@ -47,13 +47,13 @@ class CopyRepository extends CommonRepository
      */
     public function findByHash($string, $subject = null)
     {
-        if (null !== $subject) {
+        if ($subject !== null) {
             // Combine subject with $string and hash together
             $string = $subject.$string;
         }
 
         // Assume that $string is already a md5 hash if 32 characters
-        $hash = (32 !== strlen($string)) ? $hash = md5($string) : $string;
+        $hash = (strlen($string) !== 32) ? $hash = md5($string) : $string;
 
         $q = $this->createQueryBuilder($this->getTableAlias());
         $q->where(

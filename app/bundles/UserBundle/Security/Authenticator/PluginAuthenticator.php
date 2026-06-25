@@ -40,13 +40,13 @@ final class PluginAuthenticator extends AbstractAuthenticator
     public function supports(Request $request): ?bool
     {
         // Pass to oAuth2 if the token is present, but try to execute in case the Request does not look like oAuth2.
-        return null === $this->oAuth2->getBearerToken($request) ? null : false;
+        return $this->oAuth2->getBearerToken($request) === null ? null : false;
     }
 
     public function authenticate(Request $request): Passport
     {
         $authenticatingService = $request->get('integration');
-        \assert(null === $authenticatingService || is_string($authenticatingService));
+        \assert($authenticatingService === null || is_string($authenticatingService));
         $token = new PluginToken($this->firewallName, $authenticatingService);
 
         $user               = null;
@@ -58,7 +58,7 @@ final class PluginAuthenticator extends AbstractAuthenticator
         if ($this->dispatcher->hasListeners(UserEvents::USER_PRE_AUTHENTICATION)) {
             $integrations = $this->integrationHelper->getIntegrationObjects($authenticatingService, ['sso_service'], false, null, true);
 
-            $loginCheck = 'mautic_sso_login_check' === $request->attributes->get('_route');
+            $loginCheck = $request->attributes->get('_route') === 'mautic_sso_login_check';
             $authEvent  = new AuthenticationEvent(
                 null,
                 $token,
@@ -86,7 +86,7 @@ final class PluginAuthenticator extends AbstractAuthenticator
                 // Set the user in the token.
                 $user = $authEvent->getUser();
 
-                if (null === $user) {
+                if ($user === null) {
                     throw new \RuntimeException('User must be set in the authenticated token.');
                 }
 
@@ -96,19 +96,19 @@ final class PluginAuthenticator extends AbstractAuthenticator
 
             $response = $authEvent->getResponse();
 
-            if (!$authenticated && $loginCheck && null === $response) {
+            if (!$authenticated && $loginCheck && $response === null) {
                 // Set an empty JSON response
                 $response = new JsonResponse([]);
             }
         }
 
         // The check is intended to catch: Plugin authenticator must be authenticated and have $user. oAuth should have a response.
-        if (!$user instanceof User && !$authenticated && null === $response) {
+        if (!$user instanceof User && !$authenticated && $response === null) {
             throw new AuthenticationException('mautic.user.auth.error.invalidlogin');
         }
 
         // Otherwise if the plugin authenticator has a response, then pass it to the Symfony.
-        if (null === $user && !$authenticated && null !== $response) {
+        if ($user === null && !$authenticated && $response !== null) {
             throw new LazyResponseException($response);
         }
 
@@ -159,7 +159,7 @@ final class PluginAuthenticator extends AbstractAuthenticator
             throw new \RuntimeException('Token is not a PluginToken');
         }
 
-        if ('api' === $this->firewallName) {
+        if ($this->firewallName === 'api') {
             return $token->getResponse();
         }
 
@@ -172,7 +172,7 @@ final class PluginAuthenticator extends AbstractAuthenticator
         $this->dispatcher->dispatch($loginEvent, SecurityEvents::INTERACTIVE_LOGIN);
 
         $response = null;
-        if (null === $token->getResponse()) {
+        if ($token->getResponse() === null) {
             $response = $this->authenticationHandler->onAuthenticationSuccess($request, $token);
         }
 

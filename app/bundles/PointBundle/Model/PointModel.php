@@ -95,51 +95,11 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
 
     public function getEntity($id = null): ?Point
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Point();
         }
 
         return parent::getEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Point) {
-            throw new MethodNotAllowedHttpException(['Point']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = PointEvents::POINT_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = PointEvents::POINT_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = PointEvents::POINT_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = PointEvents::POINT_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new PointEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -149,7 +109,7 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
      */
     public function getPointActions()
     {
-        if ([] === $this->actions) {
+        if ($this->actions === []) {
             // build them
             $this->actions = [];
             $event         = new PointBuilderEvent($this->translator);
@@ -178,7 +138,7 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
             return;
         }
 
-        if (null !== $typeId && MAUTIC_ENV === 'prod' && null !== $this->requestStack->getMainRequest()) {
+        if ($typeId !== null && MAUTIC_ENV === 'prod' && $this->requestStack->getMainRequest() !== null) {
             // let's prevent some unnecessary DB calls
             $session         = $this->requestStack->getMainRequest()->getSession();
             $triggeredEvents = $session->get('mautic.triggered.point.actions', []);
@@ -199,10 +159,10 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
         $ipAddress       = $this->ipLookupHelper->getIpAddress();
 
         $hasLeadPointChanges = false;
-        if (null === $lead) {
+        if ($lead === null) {
             $lead = $this->contactTracker->getContact();
 
-            if (null === $lead || !$lead->getId()) {
+            if ($lead === null || !$lead->getId()) {
                 return;
             }
         }
@@ -367,5 +327,45 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
     public function reset(): void
     {
         $this->actions = [];
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Point) {
+            throw new MethodNotAllowedHttpException(['Point']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = PointEvents::POINT_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = PointEvents::POINT_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = PointEvents::POINT_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = PointEvents::POINT_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new PointEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

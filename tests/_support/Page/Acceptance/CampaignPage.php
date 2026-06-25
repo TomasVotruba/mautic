@@ -8,11 +8,6 @@ class CampaignPage
     public static $contactsTab          = '//ul[contains(@class, "nav-tabs")]/li/a[@href="#leads-container"]';
     public static $contactsTabContainer = '#leads-container';
 
-    public static function route($param)
-    {
-        return static::$URL.$param;
-    }
-
     /**
      * @var \AcceptanceTester;
      */
@@ -21,5 +16,10 @@ class CampaignPage
     public function __construct(\AcceptanceTester $I)
     {
         $this->acceptanceTester = $I;
+    }
+
+    public static function route($param)
+    {
+        return static::$URL.$param;
     }
 }

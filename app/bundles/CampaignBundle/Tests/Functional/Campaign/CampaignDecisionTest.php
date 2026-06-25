@@ -93,7 +93,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         $this->testSymfonyCommand('mautic:campaigns:update', ['--campaign-id' => $campaign->getId()]);
         $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
 
-        if ('in' === $operator) {
+        if ($operator === 'in') {
             $this->assertCampaignLeadEventLog(
                 $campaign,
                 $yesEvent,
@@ -110,6 +110,21 @@ class CampaignDecisionTest extends MauticMysqlTestCase
                 [$lead2->getId(), $lead4->getId(), $lead5->getId()]
             );
         }
+    }
+
+    /**
+     * @return iterable<string, mixed>
+     */
+    public static function dataProviderLeadSelect(): iterable
+    {
+        yield 'With include filter for contact select field' => ['lead', 'select', 'in'];
+        yield 'With exclude filter for contact select field' => ['lead', 'select', '!in'];
+        yield 'With include filter for contact multiselect field' => ['lead', 'multiselect', 'in', ['v5']];
+        yield 'With exclude filter for contact multiselect field' => ['lead', 'multiselect', '!in', ['v5']];
+        yield 'With include filter for company select field' => ['company', 'select', 'in'];
+        yield 'With exclude filter for company select field' => ['company', 'select', '!in'];
+        yield 'With include filter for company multiselect field' => ['company', 'multiselect', 'in', ['v5']];
+        yield 'With exclude filter for company multiselect field' => ['company', 'multiselect', '!in', ['v5']];
     }
 
     /**
@@ -154,20 +169,5 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         }
 
         return $leadIds;
-    }
-
-    /**
-     * @return iterable<string, mixed>
-     */
-    public static function dataProviderLeadSelect(): iterable
-    {
-        yield 'With include filter for contact select field' => ['lead', 'select', 'in'];
-        yield 'With exclude filter for contact select field' => ['lead', 'select', '!in'];
-        yield 'With include filter for contact multiselect field' => ['lead', 'multiselect', 'in', ['v5']];
-        yield 'With exclude filter for contact multiselect field' => ['lead', 'multiselect', '!in', ['v5']];
-        yield 'With include filter for company select field' => ['company', 'select', 'in'];
-        yield 'With exclude filter for company select field' => ['company', 'select', '!in'];
-        yield 'With include filter for company multiselect field' => ['company', 'multiselect', 'in', ['v5']];
-        yield 'With exclude filter for company multiselect field' => ['company', 'multiselect', '!in', ['v5']];
     }
 }

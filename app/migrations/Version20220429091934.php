@@ -14,13 +14,6 @@ class Version20220429091934 extends PreUpAssertionMigration
 
     private const UNSIGNED = 'UNSIGNED';
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->hasTable("{$this->prefix}contact_export_scheduler");
-        }, sprintf('Table %s already exists', "{$this->prefix}contact_export_scheduler"));
-    }
-
     public function up(Schema $schema): void
     {
         $userIdFK = $this->generatePropertyName('users', 'fk', ['user_id']);
@@ -42,7 +35,7 @@ class Version20220429091934 extends PreUpAssertionMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;"
         );
 
-        $this->addSql("ALTER TABLE {$contactExportSchedulerTableName} ADD CONSTRAINT {$userIdFK} FOREIGN KEY (user_id) REFERENCES $usersTableName (id)");
+        $this->addSql("ALTER TABLE {$contactExportSchedulerTableName} ADD CONSTRAINT {$userIdFK} FOREIGN KEY (user_id) REFERENCES {$usersTableName} (id)");
     }
 
     public function down(Schema $schema): void
@@ -52,6 +45,13 @@ class Version20220429091934 extends PreUpAssertionMigration
             # ------------------------------------------------------------
             DROP TABLE {$this->prefix}contact_export_scheduler"
         );
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->hasTable("{$this->prefix}contact_export_scheduler");
+        }, sprintf('Table %s already exists', "{$this->prefix}contact_export_scheduler"));
     }
 
     /**

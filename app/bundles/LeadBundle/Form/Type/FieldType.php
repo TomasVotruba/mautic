@@ -256,7 +256,7 @@ class FieldType extends AbstractType
                         $properties = $data->getProperties();
                     }
 
-                    $propertiesList['list'] = isset($properties['list']) && 'lookup' === $type ? array_flip(array_filter($properties['list'])) : $properties['list'];
+                    $propertiesList['list'] = isset($properties['list']) && $type === 'lookup' ? array_flip(array_filter($properties['list'])) : $properties['list'];
 
                     $form->add(
                         'properties',
@@ -265,7 +265,7 @@ class FieldType extends AbstractType
                             'required'          => false,
                             'label'             => 'mautic.lead.field.form.properties.select',
                             'data'              => $propertiesList,
-                            'with_labels'       => ('lookup' !== $type),
+                            'with_labels'       => ($type !== 'lookup'),
                             'option_constraint' => [],
                         ]
                     );
@@ -280,8 +280,8 @@ class FieldType extends AbstractType
                             'attr'        => ['class' => 'form-control'],
                             'required'    => false,
                             'choices'     => array_flip($list),
-                            'multiple'    => 'multiselect' === $type,
-                            'data'        => 'multiselect' === $type && is_string($options['data']->getDefaultValue()) ? explode('|', $options['data']->getDefaultValue()) : $options['data']->getDefaultValue(),
+                            'multiple'    => $type === 'multiselect',
+                            'data'        => $type === 'multiselect' && is_string($options['data']->getDefaultValue()) ? explode('|', $options['data']->getDefaultValue()) : $options['data']->getDefaultValue(),
                             'disabled'    => $disableDefaultValue,
                             'constraints' => $constraints,
                         ]
@@ -316,7 +316,7 @@ class FieldType extends AbstractType
                         $noLabel  = !empty($props['no']) ? $props['no'] : 'mautic.core.form.no';
                     }
 
-                    if ('' !== $value && null !== $value) {
+                    if ($value !== '' && $value !== null) {
                         $value = (int) $value;
                     }
 
@@ -344,7 +344,7 @@ class FieldType extends AbstractType
                             $constraints = [
                                 new Assert\Callback(
                                     function ($object, ExecutionContextInterface $context): void {
-                                        if (!empty($object) && false === \DateTime::createFromFormat('Y-m-d H:i', $object)) {
+                                        if (!empty($object) && \DateTime::createFromFormat('Y-m-d H:i', $object) === false) {
                                             $context->buildViolation('mautic.lead.datetime.invalid')->addViolation();
                                         }
                                     }
@@ -492,7 +492,7 @@ class FieldType extends AbstractType
                 // clean the data
                 $data = InputHelper::_($data, $masks);
 
-                if ((isset($data['group']) && 'social' === $data['group']) || !empty($data['isUniqueIdentifer']) || $disableDefaultValue) {
+                if ((isset($data['group']) && $data['group'] === 'social') || !empty($data['isUniqueIdentifer']) || $disableDefaultValue) {
                     // Don't allow a default for social or unique identifiers
                     $data['defaultValue'] = null;
                 }
@@ -543,7 +543,7 @@ class FieldType extends AbstractType
             [
                 'disabled' => $options['data']->disablePublishChange(),
                 'attr'     => $attr,
-                'data'     => ('email' == $options['data']->getAlias()) ? true : $options['data']->getIsPublished(),
+                'data'     => ($options['data']->getAlias() == 'email') ? true : $options['data']->getIsPublished(),
                 'label'    => 'mautic.core.form.available',
             ]
         );
@@ -586,7 +586,7 @@ class FieldType extends AbstractType
 
         $constraints = [];
 
-        if (false === $options['data']->isIsindex() && false === $this->indexHelper->isNewIndexAllowed()) {
+        if ($options['data']->isIsindex() === false && $this->indexHelper->isNewIndexAllowed() === false) {
             $constraints[] = new IsFalse(['message' => 'mautic.lead.field.form.index_count.error']);
         }
 
@@ -601,7 +601,7 @@ class FieldType extends AbstractType
                 'attr'       => [
                     'class'   => 'form-control',
                     'tooltip' => $this->translator->trans('mautic.lead.field.form.isIndex.tooltip', ['%indexCount%' => $this->indexHelper->getIndexCount(), '%maxCount%' => $this->indexHelper->getMaxCount()]),
-                    'readonly'=> (false === $isIndex && $this->indexHelper->getIndexCount() >= $this->indexHelper->getMaxCount()),
+                    'readonly'=> ($isIndex === false && $this->indexHelper->getIndexCount() >= $this->indexHelper->getMaxCount()),
                 ],
                 'required'    => false,
                 'constraints' => $constraints,

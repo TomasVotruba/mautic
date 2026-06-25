@@ -65,6 +65,34 @@ class CampaignModelTransactionalTest extends TestCase
             ->getMock();
     }
 
+    public function testTransactionalCampaignUnPublish(): void
+    {
+        $campaignMock = $this->createCampaignMockForUnpublish();
+
+        // Saving the entity
+        $this->campaignModel->expects($this->once())
+            ->method('saveEntity')
+            ->with($campaignMock);
+
+        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
+    }
+
+    public function testTransactionalCampaignUnPublishWithException(): void
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Database error');
+
+        $campaignMock = $this->createCampaignMockForUnpublish();
+
+        // Saving the entity throws an exception
+        $this->campaignModel->expects($this->once())
+            ->method('saveEntity')
+            ->with($campaignMock)
+            ->willThrowException(new \Exception('Database error'));
+
+        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
+    }
+
     /**
      * Helper function to set up common campaign mock expectations for unpublish tests.
      *
@@ -108,33 +136,5 @@ class CampaignModelTransactionalTest extends TestCase
             ->method('markForVersionIncrement');
 
         return $campaignMock;
-    }
-
-    public function testTransactionalCampaignUnPublish(): void
-    {
-        $campaignMock = $this->createCampaignMockForUnpublish();
-
-        // Saving the entity
-        $this->campaignModel->expects($this->once())
-            ->method('saveEntity')
-            ->with($campaignMock);
-
-        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
-    }
-
-    public function testTransactionalCampaignUnPublishWithException(): void
-    {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Database error');
-
-        $campaignMock = $this->createCampaignMockForUnpublish();
-
-        // Saving the entity throws an exception
-        $this->campaignModel->expects($this->once())
-            ->method('saveEntity')
-            ->with($campaignMock)
-            ->willThrowException(new \Exception('Database error'));
-
-        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
     }
 }

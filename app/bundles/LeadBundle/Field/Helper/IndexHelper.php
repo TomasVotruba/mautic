@@ -66,14 +66,14 @@ class IndexHelper
      */
     private function getIndexes(): void
     {
-        if (false !== $this->indexedColumns) {
+        if ($this->indexedColumns !== false) {
             // Query below performed
             return;
         }
 
         $tableName = $this->entityManager->getClassMetadata(Lead::class)->getTableName();
 
-        $sql = "SHOW INDEXES FROM `$tableName`";
+        $sql = "SHOW INDEXES FROM `{$tableName}`";
 
         $stmt    = $this->entityManager->getConnection()->prepare($sql);
         $indexes = $stmt->executeQuery()->fetchAllAssociative();

@@ -71,18 +71,6 @@ class SegmentContactsLineChartQuery extends ChartQuery
     }
 
     /**
-     * Return total of contact to date end of graph.
-     */
-    private function getTotalToDateRange(int $total): int
-    {
-        $queryForTotal = clone $this;
-        // try figure out total count in dateTo
-        $queryForTotal->setDateRange($this->dateTo, new \DateTime());
-
-        return $total - array_sum(ArrayHelper::sub($queryForTotal->getAddedEventLogStats(), $queryForTotal->getRemovedEventLogStats()));
-    }
-
-    /**
      * Get data about add/remove from segment based on LeadEventLog.
      *
      * @param string $action
@@ -126,6 +114,18 @@ class SegmentContactsLineChartQuery extends ChartQuery
     public function getRemovedEventLogStats()
     {
         return $this->removedEventLogStats;
+    }
+
+    /**
+     * Return total of contact to date end of graph.
+     */
+    private function getTotalToDateRange(int $total): int
+    {
+        $queryForTotal = clone $this;
+        // try figure out total count in dateTo
+        $queryForTotal->setDateRange($this->dateTo, new \DateTime());
+
+        return $total - array_sum(ArrayHelper::sub($queryForTotal->getAddedEventLogStats(), $queryForTotal->getRemovedEventLogStats()));
     }
 
     /**

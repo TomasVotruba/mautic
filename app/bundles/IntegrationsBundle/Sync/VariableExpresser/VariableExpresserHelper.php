@@ -56,7 +56,7 @@ final class VariableExpresserHelper implements VariableExpresserHelperInterface
         if (is_bool($var)) {
             return new EncodedValueDAO(
                 EncodedValueDAO::BOOLEAN_TYPE,
-                true === $var ? self::TRUE_BOOLEAN_VALUE : self::FALSE_BOOLEAN_VALUE
+                $var === true ? self::TRUE_BOOLEAN_VALUE : self::FALSE_BOOLEAN_VALUE
             );
         }
 

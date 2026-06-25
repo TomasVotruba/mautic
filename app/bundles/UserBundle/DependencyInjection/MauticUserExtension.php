@@ -21,7 +21,7 @@ class MauticUserExtension extends Extension
         $loader->load('services.php');
 
         $samlEnabled = $container->getParameter('mautic.saml_enabled');
-        if (true !== $samlEnabled) {
+        if ($samlEnabled !== true) {
             $container->removeDefinition(SAMLSubscriber::class);
         }
     }

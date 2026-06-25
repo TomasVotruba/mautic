@@ -34,13 +34,6 @@ class SegmentStressTest extends MauticMysqlTestCase
         ini_set('memory_limit', $currentMemoryUsageMb.'M');
     }
 
-    protected function beforeTearDown(): void
-    {
-        parent::beforeTearDown();
-
-        ini_set('memory_limit', $this->initialMemoryLimit);
-    }
-
     public function testSegmentStressTest(): void
     {
         $this->saveContacts();
@@ -51,12 +44,19 @@ class SegmentStressTest extends MauticMysqlTestCase
         self::assertSame(Command::SUCCESS, $commandTester->getStatusCode(), $commandTester->getDisplay());
     }
 
+    protected function beforeTearDown(): void
+    {
+        parent::beforeTearDown();
+
+        ini_set('memory_limit', $this->initialMemoryLimit);
+    }
+
     private function saveContacts(): void
     {
         for ($i = 0; $i <= 10000; ++$i) {
             $this->createLead('fn'.$i, 'ln'.$i);
 
-            if (0 === $i % 100) {
+            if ($i % 100 === 0) {
                 $this->em->flush();
                 $this->em->clear();
             }

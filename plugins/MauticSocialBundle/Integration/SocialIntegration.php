@@ -79,7 +79,7 @@ abstract class SocialIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ($formArea == 'features') {
             $name     = strtolower($this->getName());
             $formType = $this->getFormType();
             if ($formType) {
@@ -135,7 +135,7 @@ abstract class SocialIntegration extends AbstractIntegration
                         }
                         break;
                     case 'array_object':
-                        if ('urls' == $field || 'url' == $field) {
+                        if ($field == 'urls' || $field == 'url') {
                             foreach ($socialProfileUrls as $p => $d) {
                                 $fields["{$p}ProfileHandle"] = (!$label)
                                     ? $this->translator->transConditional("mautic.integration.common.{$p}ProfileHandle", "mautic.integration.{$s}.{$p}ProfileHandle")
@@ -245,6 +245,13 @@ abstract class SocialIntegration extends AbstractIntegration
     }
 
     /**
+     * Returns form type.
+     *
+     * @return string|null
+     */
+    abstract public function getFormType();
+
+    /**
      * Get the access token from session or socialCache.
      *
      * @return array|mixed|null
@@ -275,11 +282,4 @@ abstract class SocialIntegration extends AbstractIntegration
 
         return $accessToken;
     }
-
-    /**
-     * Returns form type.
-     *
-     * @return string|null
-     */
-    abstract public function getFormType();
 }

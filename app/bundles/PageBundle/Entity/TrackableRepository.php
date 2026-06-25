@@ -45,12 +45,12 @@ class TrackableRepository extends CommonRepository
     {
         $alias = $this->getTableAlias();
         $q     = $this->createQueryBuilder($alias)
-            ->innerJoin("$alias.redirect", 'r');
+            ->innerJoin("{$alias}.redirect", 'r');
 
         $q->where(
             $q->expr()->andX(
-                $q->expr()->eq("$alias.channel", ':channel'),
-                $q->expr()->eq("$alias.channelId", (int) $channelId),
+                $q->expr()->eq("{$alias}.channel", ':channel'),
+                $q->expr()->eq("{$alias}.channelId", (int) $channelId),
                 $q->expr()->eq('r.url', ':url')
             )
         )
@@ -71,12 +71,12 @@ class TrackableRepository extends CommonRepository
     {
         $alias = $this->getTableAlias();
         $q     = $this->createQueryBuilder($alias)
-            ->innerJoin("$alias.redirect", 'r');
+            ->innerJoin("{$alias}.redirect", 'r');
 
         $q->where(
             $q->expr()->andX(
-                $q->expr()->eq("$alias.channel", ':channel'),
-                $q->expr()->eq("$alias.channelId", (int) $channelId),
+                $q->expr()->eq("{$alias}.channel", ':channel'),
+                $q->expr()->eq("{$alias}.channelId", (int) $channelId),
                 $q->expr()->in('r.url', ':urls')
             )
         )
@@ -147,7 +147,7 @@ class TrackableRepository extends CommonRepository
             if (!$combined) {
                 $q->innerJoin('ph', MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'cs', 'cs.lead_id = ph.lead_id');
 
-                if (true === $listId) {
+                if ($listId === true) {
                     $q->addSelect('cs.leadlist_id')
                         ->groupBy('cs.leadlist_id');
                 } elseif (is_array($listId)) {
@@ -181,7 +181,7 @@ class TrackableRepository extends CommonRepository
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if ((true === $listId || is_array($listId)) && !$combined) {
+        if (($listId === true || is_array($listId)) && !$combined) {
             // Return array of results
             $byList = [];
             foreach ($results as $result) {

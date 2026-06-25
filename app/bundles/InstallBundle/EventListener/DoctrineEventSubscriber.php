@@ -32,13 +32,13 @@ class DoctrineEventSubscriber
                     $definition = SchemaDefinition::getSchemaDefinition($alias, $type, !empty($field['unique']));
                     $table->addColumn($definition['name'], $definition['type'], $definition['options']);
 
-                    if ('textarea' !== $type) {
+                    if ($type !== 'textarea') {
                         $table->addIndex([$definition['name']], $definition['name'].'_search');
                     }
                 }
             }
 
-            if ('leads' === $tableName) {
+            if ($tableName === 'leads') {
                 // Add an attribution index
                 $table->addIndex(['attribution', 'attribution_date'], 'contact_attribution');
                 // Add date added and country index

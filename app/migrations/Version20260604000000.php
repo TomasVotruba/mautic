@@ -13,14 +13,6 @@ final class Version20260604000000 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = Form::TABLE_NAME;
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('submission_limit'),
-            "Table {$this->getPrefixedTableName()} already has 'submission_limit' column"
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $forms = $this->getPrefixedTableName();
@@ -56,5 +48,13 @@ final class Version20260604000000 extends PreUpAssertionMigration
         if ($table->hasColumn('submission_count')) {
             $table->dropColumn('submission_count');
         }
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('submission_limit'),
+            "Table {$this->getPrefixedTableName()} already has 'submission_limit' column"
+        );
     }
 }

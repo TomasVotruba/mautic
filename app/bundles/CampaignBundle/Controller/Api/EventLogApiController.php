@@ -107,7 +107,7 @@ class EventLogApiController extends FetchCommonApiController
         // Ensure campaign exists and user has access
         if (!empty($campaignId)) {
             $campaign = $this->getModel('campaign')->getEntity($campaignId);
-            if (null == $campaign || !$campaign->getId()) {
+            if ($campaign == null || !$campaign->getId()) {
                 return $this->notFound();
             }
             if (!$this->checkEntityAccess($campaign)) {
@@ -115,7 +115,7 @@ class EventLogApiController extends FetchCommonApiController
             }
             // Check that contact is part of the campaign
             $membership = $campaign->getContactMembership($contact);
-            if (0 === count($membership)) {
+            if (count($membership) === 0) {
                 return $this->returnError(
                     $this->translator->trans(
                         'mautic.campaign.error.contact_not_in_campaign',
@@ -160,7 +160,7 @@ class EventLogApiController extends FetchCommonApiController
         $eventModel = $this->getModel('campaign.event');
         /** @var Event $event */
         $event = $eventModel->getEntity($eventId);
-        if (null === $event || !$event->getId()) {
+        if ($event === null || !$event->getId()) {
             return $this->notFound();
         }
 

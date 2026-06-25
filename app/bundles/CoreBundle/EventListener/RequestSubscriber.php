@@ -45,12 +45,12 @@ class RequestSubscriber implements EventSubscriberInterface
 
     private function isAjaxPost(Request $request): bool
     {
-        return $request->isXmlHttpRequest() && Request::METHOD_POST === $request->getMethod();
+        return $request->isXmlHttpRequest() && $request->getMethod() === Request::METHOD_POST;
     }
 
     private function isSecurePath(Request $request): bool
     {
-        return 1 === preg_match('/^\/s\//', $request->getPathinfo());
+        return preg_match('/^\/s\//', $request->getPathinfo()) === 1;
     }
 
     private function isCsrfTokenFromRequestHeaderValid(Request $request): bool

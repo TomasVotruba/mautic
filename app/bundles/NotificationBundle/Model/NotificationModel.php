@@ -95,7 +95,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
                 $this->dispatchEvent('post_save', $entity, $isNew, $event);
             }
 
-            if (0 === ++$i % $batchSize) {
+            if (++$i % $batchSize === 0) {
                 $this->em->flush();
             }
         }
@@ -129,7 +129,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
      */
     public function getEntity($id = null): ?Notification
     {
-        if (null === $id) {
+        if ($id === null) {
             $entity = new Notification();
         } else {
             $entity = parent::getEntity($id);
@@ -162,46 +162,6 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
     }
 
     /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Notification) {
-            throw new MethodNotAllowedHttpException(['Notification']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = NotificationEvents::NOTIFICATION_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = NotificationEvents::NOTIFICATION_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = NotificationEvents::NOTIFICATION_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = NotificationEvents::NOTIFICATION_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new NotificationEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
-    /**
      * Joins the page table and limits created_by to currently logged in user.
      */
     public function limitQueryToCreator(QueryBuilder &$q): void
@@ -231,7 +191,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
 
-        if (!$flag || 'total_and_unique' === $flag) {
+        if (!$flag || $flag === 'total_and_unique') {
             $q = $query->prepareTimeDataQuery('push_notification_stats', 'date_sent', $filter);
 
             if (!$canViewOthers) {
@@ -324,5 +284,45 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
         }
 
         return $results;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Notification) {
+            throw new MethodNotAllowedHttpException(['Notification']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = NotificationEvents::NOTIFICATION_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = NotificationEvents::NOTIFICATION_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = NotificationEvents::NOTIFICATION_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = NotificationEvents::NOTIFICATION_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new NotificationEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

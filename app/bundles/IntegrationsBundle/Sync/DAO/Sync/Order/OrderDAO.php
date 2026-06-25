@@ -101,7 +101,7 @@ class OrderDAO
             return $this->changedObjects[$objectType];
         }
 
-        throw new UnexpectedValueException("There are no change objects for object type '$objectType'");
+        throw new UnexpectedValueException("There are no change objects for object type '{$objectType}'");
     }
 
     /**
@@ -132,7 +132,7 @@ class OrderDAO
         $integrationObjectId,
         ?\DateTimeInterface $objectModifiedDate = null,
     ): void {
-        if (null === $objectModifiedDate) {
+        if ($objectModifiedDate === null) {
             $objectModifiedDate = new \DateTime();
         }
 
@@ -157,7 +157,7 @@ class OrderDAO
      */
     public function remapObject($oldObjectName, $oldObjectId, $newObjectName, $newObjectId = null): void
     {
-        if (null === $newObjectId) {
+        if ($newObjectId === null) {
             $newObjectId = $oldObjectId;
         }
 
@@ -169,7 +169,7 @@ class OrderDAO
      */
     public function updateLastSyncDate(ObjectChangeDAO $objectChangeDAO, ?\DateTimeInterface $objectModifiedDate = null): void
     {
-        if (null === $objectModifiedDate) {
+        if ($objectModifiedDate === null) {
             $objectModifiedDate = new \DateTime();
         }
 

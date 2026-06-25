@@ -81,29 +81,6 @@ class CommonApiControllerTest extends CampaignTestAbstract
         $this->assertEquals($where, $result);
     }
 
-    /** @param array<int, mixed> $args */
-    protected function getResultFromProtectedMethod(string $method, array $args): mixed
-    {
-        $controller = new CommonApiController(
-            $this->createMock(CorePermissions::class),
-            $this->createMock(Translator::class),
-            $this->createMock(EntityResultHelper::class),
-            $this->createMock(Router::class),
-            $this->createMock(FormFactoryInterface::class),
-            $this->createMock(AppVersion::class),
-            $this->createMock(RequestStack::class),
-            $this->createMock(ManagerRegistry::class),
-            $this->createMock(ModelFactory::class),
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(CoreParametersHelper::class)
-        );
-
-        $controllerReflection = new \ReflectionClass(CommonApiController::class);
-        $methodReflection     = $controllerReflection->getMethod($method);
-
-        return $methodReflection->invokeArgs($controller, $args);
-    }
-
     /**
      * Top-level 'internal' entries must be stripped from the where clause.
      */
@@ -214,33 +191,6 @@ class CommonApiControllerTest extends CampaignTestAbstract
         $this->assertSame($original, $where);
     }
 
-    /**
-     * Helper: invoke the protected sanitizeWhereClauseArrayFromRequest method,
-     * passing $where by reference so mutations are visible to the caller.
-     *
-     * @param array<mixed> $where
-     */
-    private function invokeProtectedSanitize(array &$where): void
-    {
-        $controller = new CommonApiController(
-            $this->createMock(CorePermissions::class),
-            $this->createMock(Translator::class),
-            $this->createMock(EntityResultHelper::class),
-            $this->createMock(Router::class),
-            $this->createMock(FormFactoryInterface::class),
-            $this->createMock(AppVersion::class),
-            $this->createMock(RequestStack::class),
-            $this->createMock(ManagerRegistry::class),
-            $this->createMock(ModelFactory::class),
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(CoreParametersHelper::class)
-        );
-
-        $reflection = new \ReflectionClass(CommonApiController::class);
-        $method     = $reflection->getMethod('sanitizeWhereClauseArrayFromRequest');
-        $method->invokeArgs($controller, [&$where]);
-    }
-
     public function testGetBatchEntities(): void
     {
         $controller = new class($this->createMock(CorePermissions::class), $this->createMock(Translator::class), new EntityResultHelper(), $this->createMock(Router::class), $this->createMock(FormFactoryInterface::class), $this->createMock(AppVersion::class), $this->createMock(RequestStack::class), $this->createMock(ManagerRegistry::class), $this->createMock(ModelFactory::class), $this->createMock(EventDispatcherInterface::class), $this->createMock(CoreParametersHelper::class)) extends CommonApiController {
@@ -321,5 +271,55 @@ class CommonApiControllerTest extends CampaignTestAbstract
         $this->assertSame(3, $entities[0]->getId());
         $this->assertSame(4, $entities[1]->getId());
         $this->assertSame(5, $entities[2]->getId());
+    }
+
+    /** @param array<int, mixed> $args */
+    protected function getResultFromProtectedMethod(string $method, array $args): mixed
+    {
+        $controller = new CommonApiController(
+            $this->createMock(CorePermissions::class),
+            $this->createMock(Translator::class),
+            $this->createMock(EntityResultHelper::class),
+            $this->createMock(Router::class),
+            $this->createMock(FormFactoryInterface::class),
+            $this->createMock(AppVersion::class),
+            $this->createMock(RequestStack::class),
+            $this->createMock(ManagerRegistry::class),
+            $this->createMock(ModelFactory::class),
+            $this->createMock(EventDispatcherInterface::class),
+            $this->createMock(CoreParametersHelper::class)
+        );
+
+        $controllerReflection = new \ReflectionClass(CommonApiController::class);
+        $methodReflection     = $controllerReflection->getMethod($method);
+
+        return $methodReflection->invokeArgs($controller, $args);
+    }
+
+    /**
+     * Helper: invoke the protected sanitizeWhereClauseArrayFromRequest method,
+     * passing $where by reference so mutations are visible to the caller.
+     *
+     * @param array<mixed> $where
+     */
+    private function invokeProtectedSanitize(array &$where): void
+    {
+        $controller = new CommonApiController(
+            $this->createMock(CorePermissions::class),
+            $this->createMock(Translator::class),
+            $this->createMock(EntityResultHelper::class),
+            $this->createMock(Router::class),
+            $this->createMock(FormFactoryInterface::class),
+            $this->createMock(AppVersion::class),
+            $this->createMock(RequestStack::class),
+            $this->createMock(ManagerRegistry::class),
+            $this->createMock(ModelFactory::class),
+            $this->createMock(EventDispatcherInterface::class),
+            $this->createMock(CoreParametersHelper::class)
+        );
+
+        $reflection = new \ReflectionClass(CommonApiController::class);
+        $method     = $reflection->getMethod('sanitizeWhereClauseArrayFromRequest');
+        $method->invokeArgs($controller, [&$where]);
     }
 }

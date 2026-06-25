@@ -12,23 +12,6 @@ trait MessageRequestTrait
 
     private Request $request;
 
-    public function getEventTime(): ?\DateTimeInterface
-    {
-        return $this->eventTime;
-    }
-
-    public function setEventTime(?\DateTimeInterface $eventTime = null): self
-    {
-        $this->eventTime = $eventTime;
-
-        return $this;
-    }
-
-    public function getRequest(): Request
-    {
-        return $this->request;
-    }
-
     public function __serialize(): array
     {
         $data            = get_object_vars($this);
@@ -60,7 +43,24 @@ trait MessageRequestTrait
         );
 
         foreach ($data as $key => $item) {
-            $this->$key = $item;
+            $this->{$key} = $item;
         }
+    }
+
+    public function getEventTime(): ?\DateTimeInterface
+    {
+        return $this->eventTime;
+    }
+
+    public function setEventTime(?\DateTimeInterface $eventTime = null): self
+    {
+        $this->eventTime = $eventTime;
+
+        return $this;
+    }
+
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 }

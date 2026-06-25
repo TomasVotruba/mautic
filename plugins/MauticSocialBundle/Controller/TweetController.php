@@ -11,6 +11,83 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TweetController extends FormController
 {
+
+    /**
+     * Get updateSelect value from request.
+     *
+     * @return string|bool
+     */
+    public function getUpdateSelect()
+    {
+        $request = $this->getCurrentRequest();
+
+        return ($request->getMethod() === 'POST')
+            ? ($request->request->all()['twitter_tweet']['updateSelect'] ?? false)
+            : $request->get('updateSelect', false);
+    }
+
+    /**
+     * @param int $page
+     */
+    public function indexAction(Request $request, $page = 1): Response
+    {
+        return parent::indexStandard($request, $page);
+    }
+
+    /**
+     * Generates new form and processes post data.
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     */
+    public function newAction(Request $request)
+    {
+        return parent::newStandard($request);
+    }
+
+    /**
+     * Generates edit form and processes post data.
+     *
+     * @param int  $objectId
+     * @param bool $ignorePost
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     */
+    public function editAction(Request $request, $objectId, $ignorePost = false)
+    {
+        return parent::editStandard($request, $objectId, $ignorePost);
+    }
+
+    /**
+     * @param int $objectId
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function cloneAction(Request $request, $objectId)
+    {
+        return parent::cloneStandard($request, $objectId);
+    }
+
+    /**
+     * Deletes the entity.
+     *
+     * @param int $objectId
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteAction(Request $request, $objectId)
+    {
+        return parent::deleteStandard($request, $objectId);
+    }
+
+    /**
+     * Deletes a group of entities.
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function batchDeleteAction(Request $request)
+    {
+        return parent::batchDeleteStandard($request);
+    }
     protected function getModelName(): string
     {
         return 'social.tweet';
@@ -58,20 +135,6 @@ class TweetController extends FormController
     }
 
     /**
-     * Get updateSelect value from request.
-     *
-     * @return string|bool
-     */
-    public function getUpdateSelect()
-    {
-        $request = $this->getCurrentRequest();
-
-        return ('POST' === $request->getMethod())
-            ? ($request->request->all()['twitter_tweet']['updateSelect'] ?? false)
-            : $request->get('updateSelect', false);
-    }
-
-    /**
      * Set custom form themes, etc.
      *
      * @param string $action
@@ -82,77 +145,14 @@ class TweetController extends FormController
     }
 
     /**
-     * @param int $page
-     */
-    public function indexAction(Request $request, $page = 1): Response
-    {
-        return parent::indexStandard($request, $page);
-    }
-
-    /**
-     * Generates new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
-     */
-    public function newAction(Request $request)
-    {
-        return parent::newStandard($request);
-    }
-
-    /**
      * Get the template file.
      */
     protected function getTemplateName($file): string
     {
-        if (('form.html.twig' === $file) && 1 == $this->getCurrentRequest()->get('modal')) {
+        if (($file === 'form.html.twig') && $this->getCurrentRequest()->get('modal') == 1) {
             return '@MauticSocial/Tweet/form_modal.html.twig';
         }
 
         return AbstractStandardFormController::getTemplateName($file);
-    }
-
-    /**
-     * Generates edit form and processes post data.
-     *
-     * @param int  $objectId
-     * @param bool $ignorePost
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
-     */
-    public function editAction(Request $request, $objectId, $ignorePost = false)
-    {
-        return parent::editStandard($request, $objectId, $ignorePost);
-    }
-
-    /**
-     * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     */
-    public function cloneAction(Request $request, $objectId)
-    {
-        return parent::cloneStandard($request, $objectId);
-    }
-
-    /**
-     * Deletes the entity.
-     *
-     * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function deleteAction(Request $request, $objectId)
-    {
-        return parent::deleteStandard($request, $objectId);
-    }
-
-    /**
-     * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function batchDeleteAction(Request $request)
-    {
-        return parent::batchDeleteStandard($request);
     }
 }

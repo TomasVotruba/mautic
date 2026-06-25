@@ -82,52 +82,6 @@ class RoleRepository extends CommonRepository
         return $q->getQuery()->getArrayResult();
     }
 
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            [
-                'r.name',
-                'r.description',
-            ]
-        );
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        $command                 = $filter->command;
-        $unique                  = $this->generateRandomParameterName();
-        $returnParameter         = false; // returning a parameter that is not used will lead to a Doctrine error
-        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
-
-        switch ($command) {
-            case $this->translator->trans('mautic.user.user.searchcommand.isadmin'):
-            case $this->translator->trans('mautic.user.user.searchcommand.isadmin', [], null, 'en_US'):
-                $expr = $q->expr()->eq('r.isAdmin', 1);
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.name'):
-            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
-                $expr            = $q->expr()->like('r.name', ':'.$unique);
-                $returnParameter = true;
-                break;
-        }
-
-        if ($filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [
-            $expr,
-            $parameters,
-        ];
-    }
-
     /**
      * Get a count of users that belong to the role.
      *
@@ -182,15 +136,61 @@ class RoleRepository extends CommonRepository
         return array_merge($commands, parent::getSearchCommands());
     }
 
+    public function getTableAlias(): string
+    {
+        return 'r';
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            [
+                'r.name',
+                'r.description',
+            ]
+        );
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        $command                 = $filter->command;
+        $unique                  = $this->generateRandomParameterName();
+        $returnParameter         = false; // returning a parameter that is not used will lead to a Doctrine error
+        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
+
+        switch ($command) {
+            case $this->translator->trans('mautic.user.user.searchcommand.isadmin'):
+            case $this->translator->trans('mautic.user.user.searchcommand.isadmin', [], null, 'en_US'):
+                $expr = $q->expr()->eq('r.isAdmin', 1);
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.name'):
+            case $this->translator->trans('mautic.core.searchcommand.name', [], null, 'en_US'):
+                $expr            = $q->expr()->like('r.name', ':'.$unique);
+                $returnParameter = true;
+                break;
+        }
+
+        if ($filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [
+            $expr,
+            $parameters,
+        ];
+    }
+
     protected function getDefaultOrder(): array
     {
         return [
             ['r.name', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'r';
     }
 }

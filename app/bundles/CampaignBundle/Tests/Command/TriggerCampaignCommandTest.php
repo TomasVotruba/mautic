@@ -26,7 +26,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
     protected function setUp(): void
     {
-        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCacheCountInBackground' === $this->name();
+        $this->configParams['update_segment_contact_count_in_background'] = $this->name() === 'testSegmentCacheCountInBackground';
         parent::setUp();
 
         putenv('CAMPAIGN_EXECUTIONER_SCHEDULER_ACKNOWLEDGE_SECONDS=1');
@@ -61,7 +61,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         // Sending Campaign Test Email 1 should be scheduled
         foreach ($byEvent[2] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Sending Campaign Test Email 1 was not scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -102,7 +102,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $byEvent = $this->getCampaignEventLogs([2, 4]);
         $this->assertCount(50, $byEvent[2]);
         foreach ($byEvent[2] as $log) {
-            if (1 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 1) {
                 $this->fail('Sending Campaign Test Email 1 is still scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -163,27 +163,27 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         $utcTimezone = new \DateTimeZone('UTC');
         foreach ($byEvent[14] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (2 !== $diff->i) {
+            if ($diff->i !== 2) {
                 $this->fail('Tag EmailNotOpen should be scheduled for around 2 minutes ('.$diff->i.' minutes)');
             }
         }
 
         foreach ($byEvent[15] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen Again is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (6 !== $diff->i) {
+            if ($diff->i !== 6) {
                 $this->fail('Tag EmailNotOpen Again should be scheduled for around 6 minutes ('.$diff->i.' minutes)');
             }
         }
@@ -227,7 +227,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         // Sending Campaign Test Email 1 should be scheduled
         foreach ($byEvent[2] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Sending Campaign Test Email 1 was not scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -269,7 +269,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $byEvent = $this->getCampaignEventLogs([2, 4]);
         $this->assertCount(1, $byEvent[2]);
         foreach ($byEvent[2] as $log) {
-            if (1 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 1) {
                 $this->fail('Sending Campaign Test Email 1 is still scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -327,27 +327,27 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         $utcTimezone = new \DateTimeZone('UTC');
         foreach ($byEvent[14] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (2 !== $diff->i) {
+            if ($diff->i !== 2) {
                 $this->fail('Tag EmailNotOpen should be scheduled for around 2 minutes ('.$diff->i.' minutes)');
             }
         }
 
         foreach ($byEvent[15] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen Again is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (6 !== $diff->i) {
+            if ($diff->i !== 6) {
                 $this->fail('Tag EmailNotOpen Again should be scheduled for around 6 minutes ('.$diff->i.' minutes)');
             }
         }
@@ -388,7 +388,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         // Sending Campaign Test Email 1 should be scheduled
         foreach ($byEvent[2] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Sending Campaign Test Email 1 was not scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -430,7 +430,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $byEvent = $this->getCampaignEventLogs([2, 4]);
         $this->assertCount(5, $byEvent[2]);
         foreach ($byEvent[2] as $log) {
-            if (1 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 1) {
                 $this->fail('Sending Campaign Test Email 1 is still scheduled for lead ID '.$log['lead_id']);
             }
         }
@@ -490,27 +490,27 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         $utcTimezone = new \DateTimeZone('UTC');
         foreach ($byEvent[14] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (2 !== $diff->i) {
+            if ($diff->i !== 2) {
                 $this->fail('Tag EmailNotOpen should be scheduled for around 2 minutes ('.$diff->i.' minutes)');
             }
         }
 
         foreach ($byEvent[15] as $log) {
-            if (0 === (int) $log['is_scheduled']) {
+            if ((int) $log['is_scheduled'] === 0) {
                 $this->fail('Tag EmailNotOpen Again is not scheduled for lead ID '.$log['lead_id']);
             }
 
             $scheduledFor = new \DateTime($log['trigger_date'], $utcTimezone);
             $diff         = $this->eventDate->diff($scheduledFor);
 
-            if (6 !== $diff->i) {
+            if ($diff->i !== 6) {
                 $this->fail('Tag EmailNotOpen Again should be scheduled for around 6 minutes ('.$diff->i.' minutes)');
             }
         }
@@ -774,38 +774,6 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         self::assertEquals(50, $count);
     }
 
-    /** @return array<string, int> */
-    private function getTagCounts(): array
-    {
-        $tags = $this->db->createQueryBuilder()
-            ->select('t.tag, count(*) as the_count')
-            ->from($this->prefix.'lead_tags', 't')
-            ->join('t', $this->prefix.'lead_tags_xref', 'l', 't.id = l.tag_id')
-            ->groupBy('t.tag')
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        $tagCounts = [];
-        foreach ($tags as $tag) {
-            $tagCounts[$tag['tag']] = (int) $tag['the_count'];
-        }
-
-        return $tagCounts;
-    }
-
-    /** @param array<int, array<string, mixed>> $logs */
-    private function getNonActionPathTakenCount(array $logs): int
-    {
-        $nonActionCount = 0;
-        foreach ($logs as $log) {
-            if ((int) $log['non_action_path_taken']) {
-                ++$nonActionCount;
-            }
-        }
-
-        return $nonActionCount;
-    }
-
     /**
      * @param array<array{dateAdded: string, details: array<string, array<int, mixed>>}> $auditLogs
      * @param array<int, array<string, string>>                                          $expectedTriggerDateLog
@@ -1018,5 +986,37 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
         ];
+    }
+
+    /** @return array<string, int> */
+    private function getTagCounts(): array
+    {
+        $tags = $this->db->createQueryBuilder()
+            ->select('t.tag, count(*) as the_count')
+            ->from($this->prefix.'lead_tags', 't')
+            ->join('t', $this->prefix.'lead_tags_xref', 'l', 't.id = l.tag_id')
+            ->groupBy('t.tag')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $tagCounts = [];
+        foreach ($tags as $tag) {
+            $tagCounts[$tag['tag']] = (int) $tag['the_count'];
+        }
+
+        return $tagCounts;
+    }
+
+    /** @param array<int, array<string, mixed>> $logs */
+    private function getNonActionPathTakenCount(array $logs): int
+    {
+        $nonActionCount = 0;
+        foreach ($logs as $log) {
+            if ((int) $log['non_action_path_taken']) {
+                ++$nonActionCount;
+            }
+        }
+
+        return $nonActionCount;
     }
 }

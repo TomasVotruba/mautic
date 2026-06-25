@@ -23,7 +23,7 @@ class MainEntryPoint implements AuthenticationEntryPointInterface
         // log in always as SAML for all requests.
         // todo: task for testers: enable saml, and check if regular login page is available
         $route = (string) $request->attributes->get('_route');
-        if ($this->samlEnabled && 'login' !== $route && 'mautic_user_logincheck' !== $route) {
+        if ($this->samlEnabled && $route !== 'login' && $route !== 'mautic_user_logincheck') {
             // As the system doesn't know the IDP of the service, we can spare one redirect,
             // and redirect the user straight to discovery.
             return new RedirectResponse($this->urlGenerator->generate('lightsaml_sp.discovery'));

@@ -45,7 +45,7 @@ trait DeduperTrait
      */
     private function getAvailableFields()
     {
-        if (null === $this->availableFields) {
+        if ($this->availableFields === null) {
             $this->availableFields = $this->fieldModel->getFieldList(
                 false,
                 false,

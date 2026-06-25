@@ -11,10 +11,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckStep implements StepInterface
 {
+
     /**
-     * Flag if the configuration file is writable.
+     * Recommended minimum memory limit for Mautic.
+     *
+     * @var string
      */
-    private bool $configIsWritable;
+    public const RECOMMENDED_MEMORY_LIMIT = '512M';
 
     /**
      * Absolute path to cache directory.
@@ -38,13 +41,10 @@ class CheckStep implements StepInterface
      * @var string
      */
     public $site_url = '';
-
     /**
-     * Recommended minimum memory limit for Mautic.
-     *
-     * @var string
+     * Flag if the configuration file is writable.
      */
-    public const RECOMMENDED_MEMORY_LIMIT = '512M';
+    private bool $configIsWritable;
 
     /**
      * @param Configurator $configurator Configurator service
@@ -122,7 +122,7 @@ class CheckStep implements StepInterface
             $messages[] = 'mautic.install.function.simplexml';
         }
 
-        if (false === $this->openSSLCipher->isSupported()) {
+        if ($this->openSSLCipher->isSupported() === false) {
             $messages[] = 'mautic.install.extension.openssl';
         }
 
@@ -216,7 +216,7 @@ class CheckStep implements StepInterface
             }
         }
 
-        if (-1 !== (int) ini_get('zend.assertions')) {
+        if ((int) ini_get('zend.assertions') !== -1) {
             $messages[] = 'mautic.install.zend_assertions';
         }
 

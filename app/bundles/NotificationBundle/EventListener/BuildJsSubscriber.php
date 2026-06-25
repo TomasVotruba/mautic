@@ -30,7 +30,7 @@ class BuildJsSubscriber implements EventSubscriberInterface
     {
         $integration = $this->integrationHelper->getIntegrationObject('OneSignal');
 
-        if (!$integration || false === $integration->getIntegrationSettings()->getIsPublished()) {
+        if (!$integration || $integration->getIntegrationSettings()->getIsPublished() === false) {
             return;
         }
 

@@ -54,7 +54,7 @@ class PageSubscriber implements EventSubscriberInterface
             $tokens      = $tokenHelper->getFormattedTokens(
                 $this->formRegex,
                 TokenFormatOptions::simplePrefix('mautic.form.form'),
-                'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '',
+                $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '',
             );
             if ($tokens) {
                 $event->addTokens($tokens);
@@ -73,7 +73,7 @@ class PageSubscriber implements EventSubscriberInterface
         if (count($matches[0])) {
             foreach ($matches[1] as $id) {
                 $form = $this->formModel->getEntity($id);
-                if (null !== $form
+                if ($form !== null
                     && (
                         $form->isPublished(false)
                         || $this->security->hasEntityAccess(

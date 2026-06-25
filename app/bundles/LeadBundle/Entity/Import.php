@@ -126,17 +126,17 @@ class Import extends FormEntity
      */
     private $properties = [];
 
+    public function __construct()
+    {
+        $this->status   = self::QUEUED;
+        $this->priority = self::LOW;
+    }
+
     public function __clone()
     {
         $this->id = null;
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->status   = self::QUEUED;
-        $this->priority = self::LOW;
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -212,7 +212,7 @@ class Import extends FormEntity
             return false;
         }
 
-        if (false === file_exists($this->getFilePath()) || false === is_readable($this->getFilePath())) {
+        if (file_exists($this->getFilePath()) === false || is_readable($this->getFilePath()) === false) {
             $this->setStatus(self::FAILED);
             $this->setStatusInfo($this->getFile().' not found');
 
@@ -238,7 +238,7 @@ class Import extends FormEntity
      */
     public function isBackgroundProcess(): bool
     {
-        return !(self::MANUAL === $this->getStatus());
+        return !($this->getStatus() === self::MANUAL);
     }
 
     /**
@@ -537,7 +537,7 @@ class Import extends FormEntity
     {
         $this->setDateEnded(new \DateTime());
 
-        if (self::IN_PROGRESS === $this->getStatus()) {
+        if ($this->getStatus() === self::IN_PROGRESS) {
             $this->setStatus(self::IMPORTED);
 
             if ($removeFile) {
@@ -571,7 +571,7 @@ class Import extends FormEntity
         $startTime = $this->getDateStarted();
         $endTime   = $this->getDateEnded();
 
-        if (!$endTime && self::IN_PROGRESS === $this->getStatus()) {
+        if (!$endTime && $this->getStatus() === self::IN_PROGRESS) {
             $endTime = $this->getDateModified();
         }
 
@@ -592,7 +592,7 @@ class Import extends FormEntity
         $startTime = $this->getDateStarted();
         $endTime   = $this->getDateEnded();
 
-        if (!$endTime && self::IN_PROGRESS === $this->getStatus()) {
+        if (!$endTime && $this->getStatus() === self::IN_PROGRESS) {
             $endTime = $this->getDateModified();
         }
 
@@ -806,11 +806,11 @@ class Import extends FormEntity
      */
     public function setIsPublished($isPublished)
     {
-        if ($isPublished && self::STOPPED === $this->getStatus()) {
+        if ($isPublished && $this->getStatus() === self::STOPPED) {
             $this->setStatus(self::QUEUED);
         }
 
-        if (!$isPublished && (self::IN_PROGRESS === $this->getStatus() || self::QUEUED === $this->getStatus())) {
+        if (!$isPublished && ($this->getStatus() === self::IN_PROGRESS || $this->getStatus() === self::QUEUED)) {
             $this->setStatus(self::STOPPED);
         }
 

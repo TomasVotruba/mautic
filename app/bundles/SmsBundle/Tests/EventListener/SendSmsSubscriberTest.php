@@ -132,7 +132,7 @@ final class SendSmsSubscriberTest extends TestCase
     private function setProperty(object $object, string $property, $value): void
     {
         \Closure::bind(function (object $object) use ($property, $value) {
-            $object->$property = $value;
+            $object->{$property} = $value;
         }, null, $object)($object);
     }
 }

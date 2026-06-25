@@ -20,13 +20,6 @@ use Mautic\UserBundle\Entity\User;
  */
 final class UserApiTest extends MauticMysqlTestCase
 {
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement([
-            'users',
-            'roles',
-        ]);
-    }
 
     /**
      * Test that password hash is not exposed in API GET responses.
@@ -73,5 +66,12 @@ final class UserApiTest extends MauticMysqlTestCase
             $this->assertArrayNotHasKey('password', $userData, 'Password should not be exposed in collection');
             $this->assertArrayHasKey('username', $userData);
         }
+    }
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement([
+            'users',
+            'roles',
+        ]);
     }
 }

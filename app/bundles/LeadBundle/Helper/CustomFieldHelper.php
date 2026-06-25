@@ -25,13 +25,13 @@ class CustomFieldHelper
      */
     public static function fixValueType($type, $value)
     {
-        if (null === $value) {
+        if ($value === null) {
             // do not transform null values
             return null;
         }
 
         return match ($type) {
-            self::TYPE_NUMBER  => is_numeric($value) || '' === $value ? (float) $value : $value,
+            self::TYPE_NUMBER  => is_numeric($value) || $value === '' ? (float) $value : $value,
             self::TYPE_BOOLEAN => (bool) $value,
             self::TYPE_SELECT  => is_scalar($value) ? (string) $value : $value,
             default            => $value,
@@ -45,7 +45,7 @@ class CustomFieldHelper
      */
     public static function fieldValueTransfomer(array $field, $value, ?DateTimeHelper $dateTimeHelper = null)
     {
-        if (null === $value) {
+        if ($value === null) {
             // do not transform null values
             return null;
         }
@@ -56,7 +56,7 @@ class CustomFieldHelper
             case 'date':
             case 'time':
                 // Not sure if this happens anywhere but just in case do not transform empty strings
-                if ('' === $value) {
+                if ($value === '') {
                     return null;
                 }
 

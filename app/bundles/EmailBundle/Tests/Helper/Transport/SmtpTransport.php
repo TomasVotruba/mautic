@@ -10,16 +10,21 @@ use Symfony\Component\Mime\RawMessage;
 
 class SmtpTransport implements TransportInterface
 {
+
+    public Email $sentMessage;
     /**
      * @var array<string, mixed>
      */
     private $transports = []; // @phpstan-ignore-line
 
-    public Email $sentMessage;
-
     public function __construct()
     {
         $this->transports['main'] = $this;
+    }
+
+    public function __toString(): string
+    {
+        return 'null://';
     }
 
     public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
@@ -29,10 +34,5 @@ class SmtpTransport implements TransportInterface
         }
 
         return null;
-    }
-
-    public function __toString(): string
-    {
-        return 'null://';
     }
 }

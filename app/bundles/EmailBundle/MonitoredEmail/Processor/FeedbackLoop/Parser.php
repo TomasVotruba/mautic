@@ -18,7 +18,7 @@ class Parser
      */
     public function parse(): string
     {
-        if (null === $this->message->fblReport) {
+        if ($this->message->fblReport === null) {
             throw new FeedbackLoopNotFound();
         }
 

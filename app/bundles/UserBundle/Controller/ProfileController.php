@@ -48,7 +48,7 @@ class ProfileController extends FormController
 
         // make sure this user has access to edit privileged fields
         foreach ($permissions as $permName => $hasAccess) {
-            if ('apiAccess' == $permName) {
+            if ($permName == 'apiAccess') {
                 continue;
             }
 
@@ -146,7 +146,7 @@ class ProfileController extends FormController
 
         // Check for a submitted form and process it
         $submitted = $request->getSession()->get('formProcessed', 0);
-        if ('POST' === $request->getMethod() && !$submitted) {
+        if ($request->getMethod() === 'POST' && !$submitted) {
             $request->getSession()->set('formProcessed', 1);
 
             // check to see if the password needs to be rehashed
@@ -157,7 +157,7 @@ class ProfileController extends FormController
                 if ($this->isFormValid($form)) {
                     foreach ($overrides as $k => $v) {
                         $func = 'set'.ucfirst($k);
-                        $me->$func($v);
+                        $me->{$func}($v);
                     }
 
                     // form is valid so process the data

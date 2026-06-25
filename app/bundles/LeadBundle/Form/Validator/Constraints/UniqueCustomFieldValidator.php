@@ -53,7 +53,7 @@ class UniqueCustomFieldValidator extends ConstraintValidator
             }
 
             $data = $form->get($publishedUniqueField)->getData();
-            if (null === $data || '' === $data) {
+            if ($data === null || $data === '') {
                 continue;
             }
 
@@ -89,7 +89,7 @@ class UniqueCustomFieldValidator extends ConstraintValidator
     private function getLeadFieldsValid(Lead $lead, array $fieldsData): array
     {
         $leadRepository = $this->leadModel->getRepository();
-        if ('orWhere' === $leadRepository->getUniqueIdentifiersWherePart()) {
+        if ($leadRepository->getUniqueIdentifiersWherePart() === 'orWhere') {
             $fieldsValidation = [];
             foreach ($fieldsData as $field => $data) {
                 $leads = $leadRepository->getLeadIdsByUniqueFields([$field => $data]);
@@ -114,7 +114,7 @@ class UniqueCustomFieldValidator extends ConstraintValidator
     private function getCompanyFieldsValid(Company $company, array $fieldsData): array
     {
         $companyRepository = $this->companyModel->getRepository();
-        if ('orWhere' === $companyRepository->getUniqueIdentifiersWherePart()) {
+        if ($companyRepository->getUniqueIdentifiersWherePart() === 'orWhere') {
             $fieldsValidation = [];
             foreach ($fieldsData as $field => $data) {
                 $companies = $companyRepository->getCompanyIdsByUniqueFields([$field => $data]);
@@ -140,7 +140,7 @@ class UniqueCustomFieldValidator extends ConstraintValidator
     private function isValid(array $objects, array $fields, int $objectId): array
     {
         $objectsCount = count($objects);
-        if (0 === $objectsCount) {
+        if ($objectsCount === 0) {
             return array_fill_keys($fields, true);
         }
 

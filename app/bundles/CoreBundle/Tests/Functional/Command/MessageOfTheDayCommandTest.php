@@ -20,7 +20,7 @@ final class MessageOfTheDayCommandTest extends MauticMysqlTestCase
     {
         $cachePath = tempnam(sys_get_temp_dir(), 'motd_');
 
-        if (false === $cachePath) {
+        if ($cachePath === false) {
             self::fail('Unable to create a temporary cache file.');
         }
 

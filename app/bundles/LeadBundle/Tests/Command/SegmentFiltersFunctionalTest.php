@@ -75,6 +75,83 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
+     * @return iterable<int, mixed>
+     */
+    public static function filtersSegmentsContacts(): iterable
+    {
+        $customField = [
+            'label'               => 'Cars',
+            'alias'               => self::FIELD_NAME,
+            'type'                => 'multiselect',
+            'properties'          => [
+                'list' => [
+                    ['label' => 'car1', 'value' => 'value1'],
+                    ['label' => 'car2', 'value' => 'value2'],
+                    ['label' => 'car3', 'value' => 'value3'],
+                ],
+            ],
+        ];
+        $segmentData = [
+            'alias'              => 'segment-a',
+            'name'               => 'Segment A',
+            'filterToSave'       => [
+                'field'     => self::FIELD_NAME,
+                'filter'    => [
+                    'value1',
+                ],
+                'operator'  => OperatorOptions::EXCLUDING_ANY,
+            ],
+        ];
+        // to test excluding filter, should contain blank values as well
+        yield [
+            // custom field
+            $customField,
+            $segmentData,
+            function ($contact): bool {
+                return empty($contact->getFields()) || $contact->getField(self::FIELD_NAME)['value'] !== 'value1';
+            },
+        ];
+
+        // to test multiple excluding values
+        $segmentData['filterToSave']['filter'] = ['value1', 'value2'];
+        yield [
+            // custom field
+            $customField,
+            $segmentData,
+            function ($contact): bool {
+                return
+                    empty($contact->getFields())
+                    || !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
+            },
+        ];
+
+        // to test including filter, should NOT contain blank values
+        $segmentData['filterToSave']['operator'] = OperatorOptions::INCLUDING_ANY;
+        $segmentData['filterToSave']['filter']   = ['value1'];
+        yield [
+            // custom field
+            $customField,
+            $segmentData,
+            function ($contact): bool {
+                return !empty($contact->getFields()) && $contact->getField(self::FIELD_NAME)['value'] === 'value1';
+            },
+        ];
+
+        // to test multiple including values
+        $segmentData['filterToSave']['filter'] = ['value1', 'value2'];
+        yield [
+            // custom field
+            $customField,
+            $segmentData,
+            function ($contact): bool {
+                return
+                    !empty($contact->getFields())
+                    && in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
+            },
+        ];
+    }
+
+    /**
      * @param array<string, mixed> $fieldDetails
      */
     private function saveCustomField(array $fieldDetails = []): void
@@ -169,82 +246,5 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         $segmentRepo->saveEntity($segment);
 
         return $segment;
-    }
-
-    /**
-     * @return iterable<int, mixed>
-     */
-    public static function filtersSegmentsContacts(): iterable
-    {
-        $customField = [
-            'label'               => 'Cars',
-            'alias'               => self::FIELD_NAME,
-            'type'                => 'multiselect',
-            'properties'          => [
-                'list' => [
-                    ['label' => 'car1', 'value' => 'value1'],
-                    ['label' => 'car2', 'value' => 'value2'],
-                    ['label' => 'car3', 'value' => 'value3'],
-                ],
-            ],
-        ];
-        $segmentData = [
-            'alias'              => 'segment-a',
-            'name'               => 'Segment A',
-            'filterToSave'       => [
-                'field'     => self::FIELD_NAME,
-                'filter'    => [
-                    'value1',
-                ],
-                'operator'  => OperatorOptions::EXCLUDING_ANY,
-            ],
-        ];
-        // to test excluding filter, should contain blank values as well
-        yield [
-            // custom field
-            $customField,
-            $segmentData,
-            function ($contact): bool {
-                return empty($contact->getFields()) || 'value1' !== $contact->getField(self::FIELD_NAME)['value'];
-            },
-        ];
-
-        // to test multiple excluding values
-        $segmentData['filterToSave']['filter'] = ['value1', 'value2'];
-        yield [
-            // custom field
-            $customField,
-            $segmentData,
-            function ($contact): bool {
-                return
-                    empty($contact->getFields())
-                    || !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
-            },
-        ];
-
-        // to test including filter, should NOT contain blank values
-        $segmentData['filterToSave']['operator'] = OperatorOptions::INCLUDING_ANY;
-        $segmentData['filterToSave']['filter']   = ['value1'];
-        yield [
-            // custom field
-            $customField,
-            $segmentData,
-            function ($contact): bool {
-                return !empty($contact->getFields()) && 'value1' === $contact->getField(self::FIELD_NAME)['value'];
-            },
-        ];
-
-        // to test multiple including values
-        $segmentData['filterToSave']['filter'] = ['value1', 'value2'];
-        yield [
-            // custom field
-            $customField,
-            $segmentData,
-            function ($contact): bool {
-                return
-                    !empty($contact->getFields())
-                    && in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
-            },
-        ];
     }
 }

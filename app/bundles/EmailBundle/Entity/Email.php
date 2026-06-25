@@ -307,6 +307,19 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     #[Groups(['email:read', 'email:write', 'download:read'])]
     private bool $isDuplicate = false;
 
+    public function __construct()
+    {
+        $this->lists               = new ArrayCollection();
+        $this->excludedLists       = new ArrayCollection();
+        $this->stats               = new ArrayCollection();
+        $this->translationChildren = new ArrayCollection();
+        $this->variantChildren     = new ArrayCollection();
+        $this->assetAttachments    = new ArrayCollection();
+        $this->setDateAdded(new \DateTime());
+        $this->setDateModified(new \DateTime());
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->isCloned          = true;
@@ -330,19 +343,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $this->setDraft(null);
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->lists               = new ArrayCollection();
-        $this->excludedLists       = new ArrayCollection();
-        $this->stats               = new ArrayCollection();
-        $this->translationChildren = new ArrayCollection();
-        $this->variantChildren     = new ArrayCollection();
-        $this->assetAttachments    = new ArrayCollection();
-        $this->setDateAdded(new \DateTime());
-        $this->setDateModified(new \DateTime());
-        $this->initializeProjects();
     }
 
     public function clearStats(): void
@@ -608,22 +608,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         self::addProjectsInLoadApiMetadata($metadata, 'email');
     }
 
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-
-        if ('variantParent' == $prop || 'translationParent' == $prop || 'category' == $prop || 'list' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
-    }
-
     /**
      * @return string
      */
@@ -666,7 +650,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $this;
     }
 
-    public function setId(int $id): Email
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -841,7 +825,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $this->sendToDnc;
     }
 
-    public function setSendToDnc(bool $sendToDnc): Email
+    public function setSendToDnc(bool $sendToDnc): self
     {
         $this->isChanged('sendToDnc', $sendToDnc);
         $this->sendToDnc = $sendToDnc;
@@ -917,7 +901,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $this->preheaderText;
     }
 
-    public function setPreheaderText(?string $preheaderText): Email
+    public function setPreheaderText(?string $preheaderText): self
     {
         $this->isChanged('preheaderText', $preheaderText);
         $this->preheaderText = $preheaderText;
@@ -1309,18 +1293,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * Check all links in content and decode ampersands.
-     */
-    private function decodeAmpersands(string &$content): void
-    {
-        if (preg_match_all('/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i', $content, $matches)) {
-            foreach ($matches[0] as $url) {
-                $content = str_replace($url, UrlHelper::decodeAmpersands($url), $content);
-            }
-        }
-    }
-
-    /**
      * Calculate Read Percentage for each Email.
      */
     public function getReadPercentage($includevariants = false): float|int
@@ -1411,18 +1383,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $this->isPublished() && !empty($this->getPublishUp()) && ($this->getPublishUp() < new \DateTime());
     }
 
-    private function listsChangedAdd(string $property, ?int $id): void
-    {
-        $this->initListChanges($property);
-        $this->changes[$property][1] = array_unique(array_merge($this->changes[$property][1], [$id]));
-    }
-
-    private function listsChangedRemove(string $property, ?int $id): void
-    {
-        $this->initListChanges($property);
-        $this->changes[$property][1] = array_diff($this->changes[$property][1], [$id]);
-    }
-
     public function getDraft(): ?EmailDraft
     {
         return $this->draft;
@@ -1435,7 +1395,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     public function hasDraft(): bool
     {
-        return null !== $this->getDraft();
+        return $this->getDraft() !== null;
     }
 
     public function getDraftContent(): ?string
@@ -1443,43 +1403,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $this->getDraft()?->getHtml();
     }
 
-    /**
-     * @param mixed[] $ids
-     */
-    private function listsChangedSet(string $property, array $ids): void
-    {
-        $this->initListChanges($property);
-        $this->changes[$property][1] = $ids;
-    }
-
-    private function initListChanges(string $property): void
-    {
-        if (!isset($this->changes[$property])) {
-            $list                     = $this->$property;
-            $current                  = $this->getListKeys($list);
-            $this->changes[$property] = [$current, $current];
-        }
-    }
-
-    /**
-     * @param iterable<mixed> $list
-     *
-     * @return mixed[]
-     */
-    private function getListKeys(iterable $list): array
-    {
-        $keys = [];
-
-        foreach ($list as $key => $value) {
-            $keys[] = $key;
-        }
-
-        return $keys;
-    }
-
     public function isSegmentEmail(): bool
     {
-        return 'list' === $this->getEmailType();
+        return $this->getEmailType() === 'list';
     }
 
     public function getSendingStatus(): string
@@ -1525,5 +1451,79 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     public function setIsDuplicate(bool $isDuplicate): void
     {
         $this->isDuplicate = $isDuplicate;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+
+        if ($prop == 'variantParent' || $prop == 'translationParent' || $prop == 'category' || $prop == 'list') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
+    }
+
+    /**
+     * Check all links in content and decode ampersands.
+     */
+    private function decodeAmpersands(string &$content): void
+    {
+        if (preg_match_all('/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i', $content, $matches)) {
+            foreach ($matches[0] as $url) {
+                $content = str_replace($url, UrlHelper::decodeAmpersands($url), $content);
+            }
+        }
+    }
+
+    private function listsChangedAdd(string $property, ?int $id): void
+    {
+        $this->initListChanges($property);
+        $this->changes[$property][1] = array_unique(array_merge($this->changes[$property][1], [$id]));
+    }
+
+    private function listsChangedRemove(string $property, ?int $id): void
+    {
+        $this->initListChanges($property);
+        $this->changes[$property][1] = array_diff($this->changes[$property][1], [$id]);
+    }
+
+    /**
+     * @param mixed[] $ids
+     */
+    private function listsChangedSet(string $property, array $ids): void
+    {
+        $this->initListChanges($property);
+        $this->changes[$property][1] = $ids;
+    }
+
+    private function initListChanges(string $property): void
+    {
+        if (!isset($this->changes[$property])) {
+            $list                     = $this->{$property};
+            $current                  = $this->getListKeys($list);
+            $this->changes[$property] = [$current, $current];
+        }
+    }
+
+    /**
+     * @param iterable<mixed> $list
+     *
+     * @return mixed[]
+     */
+    private function getListKeys(iterable $list): array
+    {
+        $keys = [];
+
+        foreach ($list as $key => $value) {
+            $keys[] = $key;
+        }
+
+        return $keys;
     }
 }

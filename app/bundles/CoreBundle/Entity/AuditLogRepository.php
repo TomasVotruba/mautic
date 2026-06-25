@@ -77,7 +77,7 @@ class AuditLogRepository extends CommonRepository
             $query->andWhere('al.action not in ('.$excludeList.')');
         }
 
-        if (0 === $page) {
+        if ($page === 0) {
             $page = 1;
         }
         $query->setFirstResult(($page - 1) * $limit);
@@ -169,7 +169,7 @@ class AuditLogRepository extends CommonRepository
             ->where('al.object != :category')
             ->setParameter('category', 'category');
 
-        if (null != $object && null !== $id) {
+        if ($object != null && $id !== null) {
             $query
                 ->andWhere('al.object = :object')
                 ->andWhere('al.objectId = :id')

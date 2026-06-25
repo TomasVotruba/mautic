@@ -17,16 +17,16 @@ use PHPUnit\TextUI\Configuration\Configuration;
 
 class SeparateProcess implements Extension
 {
+
+    private const PROBLEMATIC_CONSTANTS = [
+        'MAUTIC_INTEGRATION_SYNC_IN_PROGRESS',
+    ];
     private bool $prepared          = false;
     private bool $preparationFailed = false;
     /**
      * @var array<string,string[]>
      */
     private array $problematicTests = [];
-
-    private const PROBLEMATIC_CONSTANTS = [
-        'MAUTIC_INTEGRATION_SYNC_IN_PROGRESS',
-    ];
 
     public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
@@ -66,7 +66,7 @@ class SeparateProcess implements Extension
 
         $problematicConstants = $this->getDefinedProblematicConstants();
 
-        if ([] === $problematicConstants) {
+        if ($problematicConstants === []) {
             return;
         }
 
@@ -75,7 +75,7 @@ class SeparateProcess implements Extension
 
     public function testSuiteFinished(\PHPUnit\Event\TestSuite\Finished $finished): void
     {
-        if ([] === $this->problematicTests) {
+        if ($this->problematicTests === []) {
             return;
         }
 

@@ -37,7 +37,7 @@ class MenuHelper
             }
 
             // Remove the item if the checks fail
-            if (false === $this->handleChecks($i)) {
+            if ($this->handleChecks($i) === false) {
                 unset($items[$k]);
                 continue;
             }
@@ -274,7 +274,7 @@ class MenuHelper
      */
     protected function handleChecks(array $menuItem): bool
     {
-        if (isset($menuItem['access']) && false === $this->handleAccessCheck($menuItem['access'])) {
+        if (isset($menuItem['access']) && $this->handleAccessCheck($menuItem['access']) === false) {
             return false;
         }
 
@@ -287,7 +287,7 @@ class MenuHelper
                 }
 
                 foreach ($checkConfig as $name => $value) {
-                    if (false === $this->$checkMethod($name, $value)) {
+                    if (false === $this->{$checkMethod}($name, $value)) {
                         return false;
                     }
                 }

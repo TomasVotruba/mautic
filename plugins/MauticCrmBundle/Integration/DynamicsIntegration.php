@@ -77,7 +77,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                 'required'          => false,
             ]
         );
-        if ('features' === $formArea) {
+        if ($formArea === 'features') {
             $builder->add(
                 'objects',
                 ChoiceType::class,
@@ -165,7 +165,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function getFormNotes($section)
     {
-        if ('custom' === $section) {
+        if ($section === 'custom') {
             return [
                 'template'   => '@MauticCrm/Integration/dynamics.html.twig',
                 'parameters' => [
@@ -181,7 +181,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function populateLeadData($lead, $config = [], $object = 'Contacts')
     {
-        if ('company' === $object) {
+        if ($object === 'company') {
             $object = 'accounts';
         }
         $config['object'] = $object;
@@ -237,7 +237,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                             continue;
                         }
                         $leadObject = $this->getApiHelper()->getLeadFields($dynamicsObject);
-                        if (null === $leadObject || !array_key_exists('value', $leadObject)) {
+                        if ($leadObject === null || !array_key_exists('value', $leadObject)) {
                             return [];
                         }
                         $fields = $leadObject['value'];
@@ -259,16 +259,16 @@ class DynamicsIntegration extends CrmAbstractIntegration
                                 'MoneyType',
                             ], true)) {
                                 $type = 'int';
-                            } elseif ('Boolean' === $fieldType) {
+                            } elseif ($fieldType === 'Boolean') {
                                 $type = 'boolean';
-                            } elseif ('DateTimeType' === $fieldType) {
+                            } elseif ($fieldType === 'DateTimeType') {
                                 $type = 'datetime';
                             }
                             $dynamicsFields[$dynamicsObject][$field['LogicalName']] = [
                                 'type'     => $type,
                                 'label'    => $field['DisplayName']['UserLocalizedLabel']['Label'],
                                 'dv'       => $field['LogicalName'],
-                                'required' => 'ApplicationRequired' === $field['RequiredLevel']['Value'],
+                                'required' => $field['RequiredLevel']['Value'] === 'ApplicationRequired',
                             ];
                         }
                         $this->cache->set('leadFields'.$cacheSuffix, $dynamicsFields[$dynamicsObject]);
@@ -356,7 +356,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function getLeads($params = [], $query = null, &$executed = null, $result = [], $object = 'contacts'): int
     {
-        if ('Contacts' === $object) {
+        if ($object === 'Contacts') {
             $object = 'contacts';
         }
         $executed    = 0;
@@ -499,9 +499,9 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function amendLeadDataBeforeMauticPopulate($data, $object = null): array
     {
-        if ('company' === $object) {
+        if ($object === 'company') {
             $object = 'accounts';
-        } elseif ('Lead' === $object || 'Contact' === $object) {
+        } elseif ($object === 'Lead' || $object === 'Contact') {
             $object = 'contacts';
         }
 
@@ -518,7 +518,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
             /** @var array $objects */
             foreach ($objects as $entityData) {
                 $isModified = false;
-                if ('accounts' === $object) {
+                if ($object === 'accounts') {
                     $recordId = $entityData['accountid'];
                     // first try to find integration entity
                     $integrationId = $integrationEntityRepo->getIntegrationsEntityId('Dynamics', $object, 'company',
@@ -568,7 +568,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                         $result[] = $entity->getName();
                     }
                     $mauticObjectReference = 'company';
-                } elseif ('contacts' === $object) {
+                } elseif ($object === 'contacts') {
                     $recordId = $entityData['contactid'];
                     // first try to find integration entity
                     $integrationId = $integrationEntityRepo->getIntegrationsEntityId('Dynamics', $object, 'lead',
@@ -651,7 +651,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                         $entity->getId()
                     );
 
-                    if (0 === count($integrationId)) {
+                    if (count($integrationId) === 0) {
                         $integrationEntity = new IntegrationEntity();
                         $integrationEntity->setDateAdded(new \DateTime());
                         $integrationEntity->setIntegration('Dynamics');
@@ -728,7 +728,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
             // start with update
             if ($totalToUpdate + $totalToCreate) {
                 $output = new ConsoleOutput();
-                $output->writeln("About $totalToUpdate to update and about $totalToCreate to create/update");
+                $output->writeln("About {$totalToUpdate} to update and about {$totalToCreate} to create/update");
                 $output->writeln('<info>This could take some time. Please wait until the process is completed</info>');
                 $progress = new ProgressBar($output, $totalCount);
             }
@@ -873,7 +873,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                 "'".$oid."'"
             );
 
-            if (0 === count($integrationId)) {
+            if (count($integrationId) === 0) {
                 $this->createIntegrationEntity($object, $oid, 'lead', $leadId);
             }
         }

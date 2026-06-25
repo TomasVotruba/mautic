@@ -35,7 +35,7 @@ class AjaxController extends CommonAjaxController
         $data = [];
         foreach ($ids as $id) {
             if ($sms = $model->getEntity($id)) {
-                if ('list' !== $sms->getSmsType()) {
+                if ($sms->getSmsType() !== 'list') {
                     continue;
                 }
 

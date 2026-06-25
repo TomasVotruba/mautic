@@ -607,7 +607,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
         return $this->object;
     }
 
-    public function setCharLengthLimit(?int $charLengthLimit): LeadField
+    public function setCharLengthLimit(?int $charLengthLimit): self
     {
         $this->isChanged('charLengthLimit', $charLengthLimit);
         $this->charLengthLimit = $charLengthLimit;
@@ -904,7 +904,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     public function disablePublishChange(): bool
     {
-        return 'email' === $this->getAlias() || $this->getColumnIsNotCreated() || $this->getColumnIsNotRemoved();
+        return $this->getAlias() === 'email' || $this->getColumnIsNotCreated() || $this->getColumnIsNotRemoved();
     }
 
     public function getOriginalIsPublishedValue(): bool

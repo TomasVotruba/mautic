@@ -25,6 +25,6 @@ trait ConfigurationTrait
      */
     public function hasIntegrationConfiguration(): bool
     {
-        return null !== $this->integration;
+        return $this->integration !== null;
     }
 }

@@ -81,6 +81,6 @@ class SyncDateHelperTest extends TestCase
         $difference                = $internalSyncStartDateTime->getTimestamp() - $now->getTimestamp();
 
         // Add a 1 second buffer in case there is some delay
-        Assert::assertTrue((1 >= $difference) && (-1 < $difference));
+        Assert::assertTrue(($difference <= 1) && ($difference > -1));
     }
 }

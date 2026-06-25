@@ -117,54 +117,6 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @return array<int, string[]>
-     */
-    private function createFormFields(): array
-    {
-        return [
-            ['label' => 'Email', 'type' => 'email', 'alias' => 'email', 'leadField' => 'email'],
-            ['label' => 'Owners Email', 'type' => 'text', 'alias' => 'owner_by_email', 'leadField' => 'ownerbyemail'],
-            ['label' => 'Owners id', 'type' => 'text', 'alias' => 'owner_by_id', 'leadField' => 'ownerbyid'],
-            ['label' => 'Stage', 'type' => 'text', 'alias' => 'stage', 'leadField' => 'stagebyname'],
-            ['label' => 'Submit', 'type' => 'button'],
-        ];
-    }
-
-    /**
-     * @param array<string, string>          $data
-     * @param array<string, int|string|null> $replacements
-     *
-     * @return array<string, string>
-     */
-    private function replacePlaceholders(array $data, array $replacements): array
-    {
-        return array_map(function ($value) use ($replacements) {
-            return str_replace(array_keys($replacements), array_values($replacements), $value);
-        }, $data);
-    }
-
-    /**
-     * @param string[] $submissionDataPlaceholders
-     *
-     * @return array<string, array<string>|string|null>
-     */
-    private static function generateTestCase(
-        string $testName,
-        string $contactEmail,
-        array $submissionDataPlaceholders,
-        ?string $expectedOwnerUsername = null,
-        ?string $expectedStageName = null,
-    ): array {
-        return [
-            'testName'                   => $testName,
-            'contactEmail'               => $contactEmail,
-            'submissionDataPlaceholders' => $submissionDataPlaceholders,
-            'expectedOwnerUsername'      => $expectedOwnerUsername,
-            'expectedStageName'          => $expectedStageName,
-        ];
-    }
-
-    /**
      * @return iterable<string, array<string, string|string[]|null>>
      */
     public static function ownerAndStageDataProvider(): iterable
@@ -271,5 +223,53 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
                 'stage'          => '',
             ]
         );
+    }
+
+    /**
+     * @return array<int, string[]>
+     */
+    private function createFormFields(): array
+    {
+        return [
+            ['label' => 'Email', 'type' => 'email', 'alias' => 'email', 'leadField' => 'email'],
+            ['label' => 'Owners Email', 'type' => 'text', 'alias' => 'owner_by_email', 'leadField' => 'ownerbyemail'],
+            ['label' => 'Owners id', 'type' => 'text', 'alias' => 'owner_by_id', 'leadField' => 'ownerbyid'],
+            ['label' => 'Stage', 'type' => 'text', 'alias' => 'stage', 'leadField' => 'stagebyname'],
+            ['label' => 'Submit', 'type' => 'button'],
+        ];
+    }
+
+    /**
+     * @param array<string, string>          $data
+     * @param array<string, int|string|null> $replacements
+     *
+     * @return array<string, string>
+     */
+    private function replacePlaceholders(array $data, array $replacements): array
+    {
+        return array_map(function ($value) use ($replacements) {
+            return str_replace(array_keys($replacements), array_values($replacements), $value);
+        }, $data);
+    }
+
+    /**
+     * @param string[] $submissionDataPlaceholders
+     *
+     * @return array<string, array<string>|string|null>
+     */
+    private static function generateTestCase(
+        string $testName,
+        string $contactEmail,
+        array $submissionDataPlaceholders,
+        ?string $expectedOwnerUsername = null,
+        ?string $expectedStageName = null,
+    ): array {
+        return [
+            'testName'                   => $testName,
+            'contactEmail'               => $contactEmail,
+            'submissionDataPlaceholders' => $submissionDataPlaceholders,
+            'expectedOwnerUsername'      => $expectedOwnerUsername,
+            'expectedStageName'          => $expectedStageName,
+        ];
     }
 }

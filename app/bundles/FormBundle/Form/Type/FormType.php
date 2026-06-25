@@ -156,7 +156,7 @@ class FormType extends AbstractType
         );
 
         // Render style for new form by default
-        if (null === $options['data']->getId()) {
+        if ($options['data']->getId() === null) {
             $options['data']->setRenderStyle(true);
         }
 

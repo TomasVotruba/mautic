@@ -51,7 +51,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
      */
     public function onWidgetDetailGenerate(WidgetDetailEvent $event): void
     {
-        if (self::TYPE_RECENT_ACTIVITY !== $event->getType()) {
+        if ($event->getType() !== self::TYPE_RECENT_ACTIVITY) {
             return;
         }
 
@@ -69,12 +69,12 @@ class DashboardSubscriber extends MainDashboardSubscriber
                 try {
                     $model = $this->modelFactory->getModel($log['bundle'].'.'.$log['object']);
                     $item  = $model->getEntity($log['objectId']);
-                    if (null === $item) {
+                    if ($item === null) {
                         $log['objectName'] = $log['object'].'-'.$log['objectId'];
                     } elseif ($model instanceof FormModel && $model->getNameGetter() && method_exists($item, $model->getNameGetter())) {
                         $log['objectName'] = $item->{$model->getNameGetter()}();
 
-                        if ('lead' === $log['bundle'] && 'mautic.lead.lead.anonymous' === $log['objectName']) {
+                        if ($log['bundle'] === 'lead' && $log['objectName'] === 'mautic.lead.lead.anonymous') {
                             $log['objectName'] = $this->translator->trans('mautic.lead.lead.anonymous');
                         }
                     } else {
@@ -82,7 +82,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     }
 
                     $routeName = 'mautic_'.$log['bundle'].'_action';
-                    if (null !== $item && null !== $this->router->getRouteCollection()->get($routeName)) {
+                    if ($item !== null && $this->router->getRouteCollection()->get($routeName) !== null) {
                         $log['route'] = $this->router->generate(
                             $routeName,
                             ['objectAction' => 'view', 'objectId' => $log['objectId']]

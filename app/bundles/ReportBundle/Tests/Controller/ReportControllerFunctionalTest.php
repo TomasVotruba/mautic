@@ -554,6 +554,80 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         self::assertFileExists($zipPath);
     }
 
+    public function testDynamicFiltersAreApplied(): void
+    {
+        $contact = new Lead();
+        $contact->setEmail(self::TEST_EMAIL);
+        $this->em->persist($contact);
+        $this->em->flush();
+
+        $report = new Report();
+        $report->setName('Report with dynamic filters');
+        $report->setSource('leads');
+        $report->setColumns(['l.email']);
+        $report->setFilters([
+            [
+                'column'    => 'l.email',
+                'condition' => 'eq',
+                'dynamic'   => 1,
+                'value'     => self::TEST_EMAIL,
+            ],
+        ]);
+
+        $this->getContainer()->get('mautic.report.model.report')->saveEntity($report);
+
+        $this->client->request('GET', '/s/reports/view/'.$report->getId());
+        self::assertResponseIsSuccessful();
+
+        $content  = $this->client->getResponse()->getcontent();
+        Assert::assertStringContainsString(self::TEST_EMAIL, $content);
+    }
+
+    public function testDynamicFiltersWithDefaultValueAreApplied(): void
+    {
+        $contact = new Lead();
+        $contact->setEmail(self::DEFAULT_TEST_EMAIL);
+        $this->em->persist($contact);
+        $this->em->flush();
+
+        $report = new Report();
+        $report->setName('Report with dynamic filters');
+        $report->setSource('leads');
+        $report->setColumns(['l.email']);
+        $report->setFilters([
+            [
+                'column'    => 'l.email',
+                'condition' => 'eq',
+                'dynamic'   => 1,
+                'value'     => '',
+            ],
+        ]);
+
+        $this->getContainer()->get('mautic.report.model.report')->saveEntity($report);
+
+        // Mock the ReportModel to add a defaultValue to the filter definition
+        $reportModel = $this->createMock(ReportModel::class);
+
+        $filterDefinitions              = new \stdClass();
+        $filterDefinitions->definitions = [
+            'l.email' => [
+                'alias'        => 'email',
+                'defaultValue' => self::DEFAULT_TEST_EMAIL,
+                'label'        => 'Email',
+                'type'         => 'text',
+            ],
+        ];
+
+        $reportModel->method('getFilterList')->willReturn($filterDefinitions);
+        static::getContainer()->set('mautic.report.model.report', $reportModel);
+
+        $this->client->request('GET', '/s/reports/view/'.$report->getId());
+        self::assertResponseIsSuccessful();
+
+        $content = $this->client->getResponse()->getContent();
+        Assert::assertStringContainsString(self::DEFAULT_TEST_EMAIL, $content);
+    }
+
     /**
      * @return array<int,array<int,mixed>>
      */
@@ -635,79 +709,5 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
             'You have an error in your SQL syntax',
             $this->client->getResponse()->getContent()
         );
-    }
-
-    public function testDynamicFiltersAreApplied(): void
-    {
-        $contact = new Lead();
-        $contact->setEmail(self::TEST_EMAIL);
-        $this->em->persist($contact);
-        $this->em->flush();
-
-        $report = new Report();
-        $report->setName('Report with dynamic filters');
-        $report->setSource('leads');
-        $report->setColumns(['l.email']);
-        $report->setFilters([
-            [
-                'column'    => 'l.email',
-                'condition' => 'eq',
-                'dynamic'   => 1,
-                'value'     => self::TEST_EMAIL,
-            ],
-        ]);
-
-        $this->getContainer()->get('mautic.report.model.report')->saveEntity($report);
-
-        $this->client->request('GET', '/s/reports/view/'.$report->getId());
-        self::assertResponseIsSuccessful();
-
-        $content  = $this->client->getResponse()->getcontent();
-        Assert::assertStringContainsString(self::TEST_EMAIL, $content);
-    }
-
-    public function testDynamicFiltersWithDefaultValueAreApplied(): void
-    {
-        $contact = new Lead();
-        $contact->setEmail(self::DEFAULT_TEST_EMAIL);
-        $this->em->persist($contact);
-        $this->em->flush();
-
-        $report = new Report();
-        $report->setName('Report with dynamic filters');
-        $report->setSource('leads');
-        $report->setColumns(['l.email']);
-        $report->setFilters([
-            [
-                'column'    => 'l.email',
-                'condition' => 'eq',
-                'dynamic'   => 1,
-                'value'     => '',
-            ],
-        ]);
-
-        $this->getContainer()->get('mautic.report.model.report')->saveEntity($report);
-
-        // Mock the ReportModel to add a defaultValue to the filter definition
-        $reportModel = $this->createMock(ReportModel::class);
-
-        $filterDefinitions              = new \stdClass();
-        $filterDefinitions->definitions = [
-            'l.email' => [
-                'alias'        => 'email',
-                'defaultValue' => self::DEFAULT_TEST_EMAIL,
-                'label'        => 'Email',
-                'type'         => 'text',
-            ],
-        ];
-
-        $reportModel->method('getFilterList')->willReturn($filterDefinitions);
-        static::getContainer()->set('mautic.report.model.report', $reportModel);
-
-        $this->client->request('GET', '/s/reports/view/'.$report->getId());
-        self::assertResponseIsSuccessful();
-
-        $content = $this->client->getResponse()->getContent();
-        Assert::assertStringContainsString(self::DEFAULT_TEST_EMAIL, $content);
     }
 }

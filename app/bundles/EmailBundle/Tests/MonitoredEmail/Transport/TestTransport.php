@@ -22,14 +22,14 @@ class TestTransport implements TransportInterface, BounceProcessorInterface, Uns
         $this->nullTransport = new NullTransport();
     }
 
-    public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
-    {
-        return $this->nullTransport->send($message, $envelope);
-    }
-
     public function __toString(): string
     {
         return (string) $this->nullTransport;
+    }
+
+    public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
+    {
+        return $this->nullTransport->send($message, $envelope);
     }
 
     public function processBounce(Message $message): BouncedEmail

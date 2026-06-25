@@ -69,6 +69,11 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     public const DEFAULT_ALIAS   = 'l';
 
     /**
+     * @var bool
+     */
+    public $imported = false;
+
+    /**
      * Used to determine social identity.
      *
      * @var array
@@ -231,11 +236,6 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      * @var string|null
      */
     private $preferredProfileImage = 'gravatar';
-
-    /**
-     * @var bool
-     */
-    public $imported = false;
 
     /**
      * @var Collection<string, Tag>
@@ -544,82 +544,6 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         ];
     }
 
-    /**
-     * @param string     $prop
-     * @param mixed      $val
-     * @param mixed|null $oldValue
-     */
-    protected function isChanged($prop, $val, $oldValue = null)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $oldValue ?? $this->$getter();
-        if ('owner' == $prop) {
-            if ($current && !$val) {
-                $this->changes['owner'] = [$current->getId(), $val];
-            } elseif (!$current && $val) {
-                $this->changes['owner'] = [$current, $val->getId()];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
-                $this->changes['owner'] = [$current->getId(), $val->getId()];
-            }
-        } elseif ('ipAddresses' == $prop) {
-            $this->changes['ipAddresses'] = ['', $val->getIpAddress()]; // Kept for BC. Not a good way to track changes on a collection
-
-            if (empty($this->changes['ipAddressList'])) {
-                $this->changes['ipAddressList'] = [];
-            }
-
-            $this->changes['ipAddressList'][$val->getIpAddress()] = $val;
-        } elseif ('tags' == $prop) {
-            if ($val instanceof Tag) {
-                $this->changes['tags']['added'][] = $val->getTag();
-            } else {
-                $this->changes['tags']['removed'][] = $val;
-            }
-        } elseif ('utmtags' == $prop) {
-            if ($val instanceof UtmTag) {
-                if ($val->getUtmContent()) {
-                    $this->changes['utmtags'] = ['utm_content', $val->getUtmContent()];
-                }
-                if ($val->getUtmMedium()) {
-                    $this->changes['utmtags'] = ['utm_medium', $val->getUtmMedium()];
-                }
-                if ($val->getUtmCampaign()) {
-                    $this->changes['utmtags'] = ['utm_campaign', $val->getUtmCampaign()];
-                }
-                if ($val->getUtmTerm()) {
-                    $this->changes['utmtags'] = ['utm_term', $val->getUtmTerm()];
-                }
-                if ($val->getUtmSource()) {
-                    $this->changes['utmtags'] = ['utm_source', $val->getUtmSource()];
-                }
-            }
-        } elseif ('frequencyRules' == $prop) {
-            if (!isset($this->changes['frequencyRules'])) {
-                $this->changes['frequencyRules'] = [];
-            }
-
-            if ($val instanceof FrequencyRule) {
-                $channel = $val->getChannel();
-
-                $this->changes['frequencyRules'][$channel] = $val->getChanges();
-            } else {
-                $this->changes['frequencyRules']['removed'][] = $val;
-            }
-        } elseif ('stage' == $prop) {
-            if ($current && !$val) {
-                $this->changes['stage'] = [$current->getId(), $val];
-            } elseif (!$current && $val) {
-                $this->changes['stage'] = [$current, $val->getId()];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
-                $this->changes['stage'] = [$current->getId(), $val->getId()];
-            }
-        } elseif ('points' == $prop && $current != $val) {
-            $this->changes['points'] = [$current, $val];
-        } else {
-            parent::isChanged($prop, $val);
-        }
-    }
-
     public function convertToArray(): array
     {
         return get_object_vars($this);
@@ -685,7 +609,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         }
 
         $ip = $ipAddress->getIpAddress();
-        if (null !== $ip && !isset($this->ipAddresses[$ip])) {
+        if ($ip !== null && !isset($this->ipAddresses[$ip])) {
             $this->isChanged('ipAddresses', $ipAddress);
             $this->ipAddresses[$ip] = $ipAddress;
         }
@@ -827,7 +751,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         // Use $updatedPoints in an attempt to keep track in the $changes log although this may not be accurate if the DB updates the points rather
         // than PHP memory
-        if (null == $this->updatedPoints) {
+        if ($this->updatedPoints == null) {
             $this->updatedPoints = $this->points;
         }
         $oldPoints = $this->updatedPoints;
@@ -898,9 +822,9 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      */
     public function getPoints()
     {
-        if (null !== $this->actualPoints) {
+        if ($this->actualPoints !== null) {
             return $this->actualPoints;
-        } elseif (null !== $this->updatedPoints) {
+        } elseif ($this->updatedPoints !== null) {
             return $this->updatedPoints;
         }
 
@@ -935,7 +859,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      */
     public function addPointsChangeLogEntry(string $type, string $name, string $action, int $pointChanges, IpAddress $ip, ?Group $group = null): void
     {
-        if (0 === $pointChanges) {
+        if ($pointChanges === 0) {
             // No need to record no change
             return;
         }
@@ -1242,29 +1166,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
     public function wasAnonymous(): bool
     {
-        return null == $this->dateIdentified && false === $this->isAnonymous();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function getFirstSocialIdentity()
-    {
-        if (isset($this->fields['social'])) {
-            foreach ($this->fields['social'] as $social) {
-                if (!empty($social['value'])) {
-                    return $social['value'];
-                }
-            }
-        } elseif (!empty($this->updatedFields)) {
-            foreach ($this->availableSocialFields as $social) {
-                if (!empty($this->updatedFields[$social])) {
-                    return $this->updatedFields[$social];
-                }
-            }
-        }
-
-        return false;
+        return $this->dateIdentified == null && $this->isAnonymous() === false;
     }
 
     /**
@@ -1541,7 +1443,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      */
     public function checkDateAdded(): void
     {
-        if (null === $this->getDateAdded()) {
+        if ($this->getDateAdded() === null) {
             $this->setDateAdded(new \DateTime());
         }
     }
@@ -1896,7 +1798,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      */
     public function getChannelRules()
     {
-        if (null === $this->channelRules) {
+        if ($this->channelRules === null) {
             $frequencyRules = $this->getFrequencyRules()->toArray();
             $dnc            = $this->getDoNotContact();
             $dncChannels    = [];
@@ -2055,7 +1957,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         $this->groupScores = $groupScores;
     }
 
-    public function addGroupScore(GroupContactScore $groupContactScore): Lead
+    public function addGroupScore(GroupContactScore $groupContactScore): self
     {
         $this->groupScores[] = $groupContactScore;
 
@@ -2079,5 +1981,103 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         unset($changes['manipulator']);
 
         return !(bool) count($changes);
+    }
+
+    /**
+     * @param string     $prop
+     * @param mixed      $val
+     * @param mixed|null $oldValue
+     */
+    protected function isChanged($prop, $val, $oldValue = null)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $oldValue ?? $this->{$getter}();
+        if ($prop == 'owner') {
+            if ($current && !$val) {
+                $this->changes['owner'] = [$current->getId(), $val];
+            } elseif (!$current && $val) {
+                $this->changes['owner'] = [$current, $val->getId()];
+            } elseif ($current && $val && $current->getId() != $val->getId()) {
+                $this->changes['owner'] = [$current->getId(), $val->getId()];
+            }
+        } elseif ($prop == 'ipAddresses') {
+            $this->changes['ipAddresses'] = ['', $val->getIpAddress()]; // Kept for BC. Not a good way to track changes on a collection
+
+            if (empty($this->changes['ipAddressList'])) {
+                $this->changes['ipAddressList'] = [];
+            }
+
+            $this->changes['ipAddressList'][$val->getIpAddress()] = $val;
+        } elseif ($prop == 'tags') {
+            if ($val instanceof Tag) {
+                $this->changes['tags']['added'][] = $val->getTag();
+            } else {
+                $this->changes['tags']['removed'][] = $val;
+            }
+        } elseif ($prop == 'utmtags') {
+            if ($val instanceof UtmTag) {
+                if ($val->getUtmContent()) {
+                    $this->changes['utmtags'] = ['utm_content', $val->getUtmContent()];
+                }
+                if ($val->getUtmMedium()) {
+                    $this->changes['utmtags'] = ['utm_medium', $val->getUtmMedium()];
+                }
+                if ($val->getUtmCampaign()) {
+                    $this->changes['utmtags'] = ['utm_campaign', $val->getUtmCampaign()];
+                }
+                if ($val->getUtmTerm()) {
+                    $this->changes['utmtags'] = ['utm_term', $val->getUtmTerm()];
+                }
+                if ($val->getUtmSource()) {
+                    $this->changes['utmtags'] = ['utm_source', $val->getUtmSource()];
+                }
+            }
+        } elseif ($prop == 'frequencyRules') {
+            if (!isset($this->changes['frequencyRules'])) {
+                $this->changes['frequencyRules'] = [];
+            }
+
+            if ($val instanceof FrequencyRule) {
+                $channel = $val->getChannel();
+
+                $this->changes['frequencyRules'][$channel] = $val->getChanges();
+            } else {
+                $this->changes['frequencyRules']['removed'][] = $val;
+            }
+        } elseif ($prop == 'stage') {
+            if ($current && !$val) {
+                $this->changes['stage'] = [$current->getId(), $val];
+            } elseif (!$current && $val) {
+                $this->changes['stage'] = [$current, $val->getId()];
+            } elseif ($current && $val && $current->getId() != $val->getId()) {
+                $this->changes['stage'] = [$current->getId(), $val->getId()];
+            }
+        } elseif ($prop == 'points' && $current != $val) {
+            $this->changes['points'] = [$current, $val];
+        } else {
+            parent::isChanged($prop, $val);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getFirstSocialIdentity()
+    {
+        if (isset($this->fields['social'])) {
+            foreach ($this->fields['social'] as $social) {
+                if (!empty($social['value'])) {
+                    return $social['value'];
+                }
+            }
+        } elseif (!empty($this->updatedFields)) {
+            foreach ($this->availableSocialFields as $social) {
+                if (!empty($this->updatedFields[$social])) {
+                    return $this->updatedFields[$social];
+                }
+            }
+        }
+
+        return false;
     }
 }

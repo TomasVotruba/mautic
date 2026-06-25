@@ -46,6 +46,23 @@ abstract class AbstractStandardFormController extends AbstractFormController
         parent::__construct($managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
+    public function returnOptimizedResponse(Request $request, FormInterface $form, string $link, string $content, string $route, array $data = []): ?JsonResponse
+    {
+        if ($request->request->get('is_optimized_response', false)) {
+            return new JsonResponse(
+                $data + [
+                    'activeLink'      => $link,
+                    'mauticContent'   => $content,
+                    'route'           => $route,
+                    'validationError' => $this->getFormErrorForBuilder($form),
+                    'flashes'         => $this->getFlashContent(),
+                ]
+            );
+        }
+
+        return null;
+    }
+
     /**
      * Get this controller's model name.
      */
@@ -56,7 +73,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
      */
     protected function generateUrl(string $route, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
-        if (false === $route) {
+        if ($route === false) {
             return false;
         }
 
@@ -107,7 +124,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
             ],
         ];
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $model     = $this->getModel($this->getModelName());
             $ids       = json_decode($request->query->get('ids', ''));
             $deleteIds = [];
@@ -116,7 +133,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => $this->getTranslatedString('error.notfound'),
@@ -233,7 +250,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $model  = $this->getModel($this->getModelName());
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->checkActionPermission('clone', $entity)) {
                 $this->throwAccessDenied();
             }
@@ -277,8 +294,8 @@ abstract class AbstractStandardFormController extends AbstractFormController
             'entity' => $entity,
         ];
 
-        if ('POST' == $request->getMethod()) {
-            if (null === $entity) {
+        if ($request->getMethod() == 'POST') {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => $this->getTranslatedString('error.notfound'),
@@ -351,7 +368,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         ];
 
         // form not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 $this->getPostActionRedirectArguments(
                     array_merge(
@@ -381,7 +398,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $action  = $this->generateUrl($this->getActionRoute(), ['objectAction' => 'edit', 'objectId' => $objectId]);
         $form    = $model->createForm($entity, $this->formFactory, $action, $options);
 
-        $isPost = !$ignorePost && 'POST' == $request->getMethod();
+        $isPost = !$ignorePost && $request->getMethod() == 'POST';
         $this->beforeFormProcessed($entity, $form, 'edit', $isPost, $objectId, $isClone);
         $this->setOptimisticLockVersion($entity, $form);
 
@@ -654,7 +671,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
     {
         $base = $this->getModelName();
 
-        if (null !== $objectId) {
+        if ($objectId !== null) {
             $base .= '.'.$objectId;
         }
 
@@ -746,11 +763,11 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $options = [
             'updateSelect' => $updateSelect,
             'id'           => $entity->getId(),
-            'name'         => $entity->$nameMethod(),
+            'name'         => $entity->{$nameMethod}(),
         ];
 
         if ($groupMethod) {
-            $options['group'] = $entity->$groupMethod();
+            $options['group'] = $entity->{$groupMethod}();
         }
 
         return $options;
@@ -764,8 +781,8 @@ abstract class AbstractStandardFormController extends AbstractFormController
     protected function getViewDateRange(Request $request, $objectId, $returnUrl, $timezone = 'local', &$dateRangeForm = null)
     {
         $name            = $this->getSessionBase($objectId).'.view.daterange';
-        $method          = ('POST' === $request->getMethod()) ? 'request' : 'query';
-        $dateRangeValues = $request->$method->all()['daterange'] ?? $request->getSession()->get($name, []);
+        $method          = ($request->getMethod() === 'POST') ? 'request' : 'query';
+        $dateRangeValues = $request->{$method}->all()['daterange'] ?? $request->getSession()->get($name, []);
         $request->getSession()->set($name, $dateRangeValues);
 
         $dateRangeForm = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $returnUrl]);
@@ -774,7 +791,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $dateTo = new \DateTime($dateRangeForm['date_to']->getData());
         $dateTo->setTime(24, 59, 59);
 
-        if ('utc' === $timezone) {
+        if ($timezone === 'utc') {
             $dateFrom = clone $dateFrom;
             $dateFrom->setTimezone(new \DateTimeZone('utc'));
             $dateTo = clone $dateTo;
@@ -824,7 +841,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
 
         // set limits
         $limit = $session->get('mautic.'.$this->getSessionBase().'.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -848,7 +865,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
 
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            $lastPage = (1 === $count) ? 1 : (((ceil($count / $limit)) ?: 1) ?: 1);
+            $lastPage = ($count === 1) ? 1 : (((ceil($count / $limit)) ?: 1) ?: 1);
 
             $session->set('mautic.'.$this->getSessionBase().'.page', $lastPage);
             $returnUrl = $this->generateUrl($this->getIndexRoute(), ['page' => $lastPage]);
@@ -930,7 +947,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $form    = $model->createForm($entity, $this->formFactory, $action, $options);
 
         // /Check for a submitted form and process it
-        $isPost = 'POST' === $request->getMethod();
+        $isPost = $request->getMethod() === 'POST';
         $this->beforeFormProcessed($entity, $form, 'new', $isPost);
 
         if ($isPost) {
@@ -1049,7 +1066,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $model    = $this->getModel($this->getModelName());
         $entity   = $model->getEntity($objectId);
 
-        if (null === $entity) {
+        if ($entity === null) {
             $page = $request->getSession()->get('mautic.'.$this->getSessionBase().'.page', 1);
 
             return $this->postActionRedirect(
@@ -1086,7 +1103,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
             'objectAction' => 'view',
             'objectId'     => $entity->getId(),
         ];
-        if (null !== $listPage) {
+        if ($listPage !== null) {
             $routeVars['listPage'] = $listPage;
         }
         $route = $this->generateUrl($this->getActionRoute(), $routeVars);
@@ -1183,22 +1200,5 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $entity->markForVersionIncrement();
 
         return true;
-    }
-
-    public function returnOptimizedResponse(Request $request, FormInterface $form, string $link, string $content, string $route, array $data = []): ?JsonResponse
-    {
-        if ($request->request->get('is_optimized_response', false)) {
-            return new JsonResponse(
-                $data + [
-                    'activeLink'      => $link,
-                    'mauticContent'   => $content,
-                    'route'           => $route,
-                    'validationError' => $this->getFormErrorForBuilder($form),
-                    'flashes'         => $this->getFlashContent(),
-                ]
-            );
-        }
-
-        return null;
     }
 }

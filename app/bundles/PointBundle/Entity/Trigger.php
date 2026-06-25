@@ -110,17 +110,17 @@ class Trigger extends FormEntity implements UuidInterface
     #[Groups(['trigger:read', 'trigger:write'])]
     private ?Group $group = null;
 
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->id = null;
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->events = new ArrayCollection();
-        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -196,20 +196,6 @@ class Trigger extends FormEntity implements UuidInterface
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'trigger');
-    }
-
-    /**
-     * @param string $prop
-     * @param mixed  $val
-     */
-    protected function isChanged($prop, $val)
-    {
-        if ('events' == $prop) {
-            // changes are already computed so just add them
-            $this->changes[$prop][$val[0] ?? ''] = $val[1];
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     /**
@@ -428,5 +414,19 @@ class Trigger extends FormEntity implements UuidInterface
     public function setGroup(Group $group): void
     {
         $this->group = $group;
+    }
+
+    /**
+     * @param string $prop
+     * @param mixed  $val
+     */
+    protected function isChanged($prop, $val)
+    {
+        if ($prop == 'events') {
+            // changes are already computed so just add them
+            $this->changes[$prop][$val[0] ?? ''] = $val[1];
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

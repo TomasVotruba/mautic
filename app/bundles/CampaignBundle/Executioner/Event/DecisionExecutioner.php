@@ -34,7 +34,7 @@ class DecisionExecutioner implements EventInterface
      */
     public function evaluateForContact(DecisionAccessor $config, Event $event, Lead $contact, $passthrough = null, $channel = null, $channelId = null): void
     {
-        if (Event::TYPE_DECISION !== $event->getEventType()) {
+        if ($event->getEventType() !== Event::TYPE_DECISION) {
             throw new CannotProcessEventException('Cannot process event ID '.$event->getId().' as a decision.');
         }
 
@@ -62,7 +62,7 @@ class DecisionExecutioner implements EventInterface
 
         /** @var LeadEventLog $log */
         foreach ($logs as $log) {
-            if (Event::TYPE_DECISION !== $log->getEvent()->getEventType()) {
+            if ($log->getEvent()->getEventType() !== Event::TYPE_DECISION) {
                 throw new CannotProcessEventException('Event ID '.$log->getEvent()->getId().' is not a decision');
             }
 

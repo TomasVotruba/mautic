@@ -94,17 +94,17 @@ class Stage extends FormEntity implements UuidInterface
     #[Groups(['stage:read', 'stage:write'])]
     private $category;
 
+    public function __construct()
+    {
+        $this->log = new ArrayCollection();
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->id = null;
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->log = new ArrayCollection();
-        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -279,7 +279,7 @@ class Stage extends FormEntity implements UuidInterface
     /**
      * @param \DateTime $publishDown
      */
-    public function setPublishDown($publishDown): Stage
+    public function setPublishDown($publishDown): self
     {
         $this->isChanged('publishDown', $publishDown);
         $this->publishDown = $publishDown;

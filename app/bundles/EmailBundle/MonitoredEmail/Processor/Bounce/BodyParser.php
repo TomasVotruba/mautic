@@ -52,7 +52,7 @@ class BodyParser
         /*
          * Email is already known likely for a x-failed-recipients header; most likely Gmail bounce
          */
-        if ('' !== $knownEmail) {
+        if ($knownEmail !== '') {
             /*
              * rule: mailbox unknown;
              * sample:
@@ -512,7 +512,7 @@ class BodyParser
             $result['email']    = $match[1];
         }
 
-        if (false === $result['bounce_type']) {
+        if ($result['bounce_type'] === false) {
             $categoryObject        = CategoryMapper::map($result['rule_cat']);
             $result['bounce_type'] = $categoryObject->getType();
             $result['remove']      = $categoryObject->isPermanent();

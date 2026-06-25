@@ -51,7 +51,7 @@ final class OptimisticLockService implements OptimisticLockServiceInterface
         $versionField  = $entity->getVersionField();
         $versionColumn = $metadata->fieldNames[$versionField] ?? null;
 
-        if (null === $versionColumn) {
+        if ($versionColumn === null) {
             throw new \LogicException(sprintf('Field "%s::$%s" is not mapped. Did you forget to do so? See "%s::addVersionField()"', $className, $versionField, OptimisticLockTrait::class));
         }
 

@@ -50,6 +50,11 @@ class Client extends BaseClient
 
     protected ?Role $role = null;
 
+    /**
+     * @var array
+     */
+    protected $changes;
+
     public function __construct()
     {
         parent::__construct();
@@ -109,20 +114,6 @@ class Client extends BaseClient
         $metadata->addPropertyConstraint('redirectUris', new Assert\NotBlank(
             ['message' => 'mautic.api.client.redirecturis.notblank']
         ));
-    }
-
-    /**
-     * @var array
-     */
-    protected $changes;
-
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ($current != $val) {
-            $this->changes[$prop] = [$current, $val];
-        }
     }
 
     /**
@@ -231,7 +222,7 @@ class Client extends BaseClient
     /**
      * Add Authorization Grant Type.
      */
-    public function addGrantType(string $grantType): Client
+    public function addGrantType(string $grantType): self
     {
         $this->allowedGrantTypes[] = $grantType;
 
@@ -246,5 +237,14 @@ class Client extends BaseClient
     public function setRole(Role $role): void
     {
         $this->role = $role;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+        if ($current != $val) {
+            $this->changes[$prop] = [$current, $val];
+        }
     }
 }

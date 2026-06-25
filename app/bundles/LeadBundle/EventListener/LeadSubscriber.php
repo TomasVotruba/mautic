@@ -340,7 +340,7 @@ class LeadSubscriber implements EventSubscriberInterface
             $name = $this->translator->trans($label);
             $event->addEventType($type, $name);
 
-            if (!$event->isApplicable($type) || ('lead.utmtagsadded' != $type && !empty($filters['search']))) {
+            if (!$event->isApplicable($type) || ($type != 'lead.utmtagsadded' && !empty($filters['search']))) {
                 continue;
             }
 
@@ -376,6 +376,19 @@ class LeadSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws Exception
+     */
+    public function onLeadCompanyChange(LeadChangeCompanyEvent $event): void
+    {
+        $leadId                 = $event->getLead()->getId();
+        $allowMultipleCompanies = $this->coreParametersHelper->get('contact_allow_multiple_companies');
+
+        if ($leadId && !$allowMultipleCompanies) {
+            $this->companyLeadRepository->removeContactSecondaryCompanies($leadId);
+        }
+    }
+
     private function addTimelineIpAddressEntries(Events\LeadTimelineEvent $event, $eventTypeKey, $eventTypeName): void
     {
         $lead = $event->getLead();
@@ -389,7 +402,7 @@ class LeadSubscriber implements EventSubscriberInterface
             $ipAddresses = ($lead instanceof Lead) ? $lead->getIpAddresses()->toArray() : null;
 
             foreach ($rows['results'] as $row) {
-                if (null !== $ipAddresses && !isset($ipAddresses[$row['ip_address']])) {
+                if ($ipAddresses !== null && !isset($ipAddresses[$row['ip_address']])) {
                     continue;
                 }
 
@@ -439,19 +452,6 @@ class LeadSubscriber implements EventSubscriberInterface
             }
         }
         // Purposively not including this in engagements graph as it's info only
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function onLeadCompanyChange(LeadChangeCompanyEvent $event): void
-    {
-        $leadId                 = $event->getLead()->getId();
-        $allowMultipleCompanies = $this->coreParametersHelper->get('contact_allow_multiple_companies');
-
-        if ($leadId && !$allowMultipleCompanies) {
-            $this->companyLeadRepository->removeContactSecondaryCompanies($leadId);
-        }
     }
 
     private function addTimelineDateIdentifiedEntry(Events\LeadTimelineEvent $event, $eventTypeKey, $eventTypeName): void

@@ -194,7 +194,7 @@ final class ButtonHelper
                 $content .= $this->buildButton($button, $buttonCount);
 
                 $nextButton = $buttonCount + 1;
-                if (self::TYPE_BUTTON_DROPDOWN == $this->groupType && $nextButton === $this->listMarker && $buttonCount !== $this->buttonCount) {
+                if ($this->groupType == self::TYPE_BUTTON_DROPDOWN && $nextButton === $this->listMarker && $buttonCount !== $this->buttonCount) {
                     $content .= $dropdownHtml;
                     $dropdownHtmlAppended = true;
                 }
@@ -267,7 +267,7 @@ final class ButtonHelper
         $buttons = '';
 
         // Wrap links in a <li> tag for dropdowns
-        if (self::TYPE_DROPDOWN == $this->groupType || (self::TYPE_BUTTON_DROPDOWN == $this->groupType && $buttonCount >= $this->listMarker)) {
+        if ($this->groupType == self::TYPE_DROPDOWN || ($this->groupType == self::TYPE_BUTTON_DROPDOWN && $buttonCount >= $this->listMarker)) {
             $this->wrapOpeningTag = "<li>\n";
             $this->wrapClosingTag = "</li>\n";
         }
@@ -277,7 +277,7 @@ final class ButtonHelper
         }
 
         // Add or remove button classes based on group type
-        if (self::TYPE_GROUP == $this->groupType || (self::TYPE_BUTTON_DROPDOWN == $this->groupType && $buttonCount < $this->listMarker)) {
+        if ($this->groupType == self::TYPE_GROUP || ($this->groupType == self::TYPE_BUTTON_DROPDOWN && $buttonCount < $this->listMarker)) {
             $this->addButtonClasses($button);
         } elseif (in_array($this->groupType, [self::TYPE_BUTTON_DROPDOWN, self::TYPE_DROPDOWN])) {
             $this->removeButtonClasses($button);
@@ -301,7 +301,7 @@ final class ButtonHelper
             // Prepare attributes for the `<a>` tag
             $attr = $this->menuLink;
             foreach ($button['attr'] as $k => $v) {
-                $attr .= " $k=".'"'.$v.'"';
+                $attr .= " {$k}=".'"'.$v.'"';
             }
 
             // Add aria-label if btnText is set
@@ -386,7 +386,7 @@ final class ButtonHelper
             }
         );
 
-        if (self::TYPE_BUTTON_DROPDOWN == $this->groupType) {
+        if ($this->groupType == self::TYPE_BUTTON_DROPDOWN) {
             // Find the start of the non-primary buttons
             $counter = 0;
             foreach ($this->buttons as $button) {
@@ -428,7 +428,7 @@ final class ButtonHelper
         $btnTextAttr = '';
         if (isset($button['btnTextAttr'])) {
             foreach ($button['btnTextAttr'] as $k => $v) {
-                $btnTextAttr .= " $k=".'"'.$v.'"';
+                $btnTextAttr .= " {$k}=".'"'.$v.'"';
             }
         }
 
@@ -450,10 +450,10 @@ final class ButtonHelper
             $tooltip .= ' data-toggle="tooltip"';
             if (is_array($button['tooltip'])) {
                 foreach ($button['tooltip'] as $k => $v) {
-                    if ('title' == $k) {
+                    if ($k == 'title') {
                         $v = $this->translator->trans($v);
                     }
-                    $tooltip .= " $k=".'"'.$v.'"';
+                    $tooltip .= " {$k}=".'"'.$v.'"';
                 }
             } else {
                 $tooltip .= ' title="'.$this->translator->trans($button['tooltip']).'" data-placement="left"';
@@ -497,7 +497,7 @@ final class ButtonHelper
             $addTo['attr']['class'] = $addTo['btnClass'];
         } elseif (!isset($button['attr']['class'])) {
             // Conditional check for LOCATION_TOOLBAR_BULK_ACTIONS
-            if (self::LOCATION_TOOLBAR_BULK_ACTIONS === $this->location) {
+            if ($this->location === self::LOCATION_TOOLBAR_BULK_ACTIONS) {
                 $addTo['attr']['class'] = 'btn btn-primary bdr-rds-0';
                 $addTo['attr']['size']  = 'lg';
             } else {
@@ -507,7 +507,7 @@ final class ButtonHelper
             $addTo['attr']['class'] .= ' btn btn-ghost';
         }
 
-        if (self::LOCATION_PAGE_ACTIONS == $this->location) {
+        if ($this->location == self::LOCATION_PAGE_ACTIONS) {
             $this->addMobileResponsiveClasses($addTo);
         }
     }

@@ -155,6 +155,36 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     ) {
     }
 
+    /**
+     * @return array<int, mixed>
+     */
+    public function __serialize(): array
+    {
+        $this->plainPassword   = null;
+        $this->currentPassword = null;
+
+        return [
+            $this->id,
+            $this->username,
+            $this->password,
+            $this->isPublished(),
+        ];
+    }
+
+    /**
+     * @param array<int, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        [
+            $this->id,
+            $this->username,
+            $this->password,
+            $published,
+        ] = $data;
+        $this->setIsPublished($published);
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -308,7 +338,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     {
         $data   = $form->getData();
         $groups = ['User', 'SecondPass'];
-        if ($data instanceof User) {
+        if ($data instanceof self) {
             $isNewUser        = !$data->getId();
             $hasPlainPassword = !empty($data->getPlainPassword());
 
@@ -349,26 +379,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
                 ]
             )
             ->build();
-    }
-
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ('role' == $prop) {
-            if ($current && !$val) {
-                $this->changes['role'] = [$current->getName().' ('.$current->getId().')', $val];
-            } elseif (!$this->role && $val) {
-                $this->changes['role'] = [$current, $val->getName().' ('.$val->getId().')'];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
-                $this->changes['role'] = [
-                    $current->getName().'('.$current->getId().')',
-                    $val->getName().'('.$val->getId().')',
-                ];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     public function getUsername(): ?string
@@ -432,36 +442,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     #[\Deprecated]
     public function eraseCredentials(): void
     {
-    }
-
-    /**
-     * @return array<int, mixed>
-     */
-    public function __serialize(): array
-    {
-        $this->plainPassword   = null;
-        $this->currentPassword = null;
-
-        return [
-            $this->id,
-            $this->username,
-            $this->password,
-            $this->isPublished(),
-        ];
-    }
-
-    /**
-     * @param array<int, mixed> $data
-     */
-    public function __unserialize(array $data): void
-    {
-        [
-            $this->id,
-            $this->username,
-            $this->password,
-            $published,
-        ] = $data;
-        $this->setIsPublished($published);
     }
 
     /**
@@ -733,7 +713,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      */
     public function isAdmin()
     {
-        if (null !== $this->role) {
+        if ($this->role !== null) {
             return $this->role->isAdmin();
         }
 
@@ -854,5 +834,25 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         $user->setRole($invite->getRole());
 
         return $user;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+        if ($prop == 'role') {
+            if ($current && !$val) {
+                $this->changes['role'] = [$current->getName().' ('.$current->getId().')', $val];
+            } elseif (!$this->role && $val) {
+                $this->changes['role'] = [$current, $val->getName().' ('.$val->getId().')'];
+            } elseif ($current && $val && $current->getId() != $val->getId()) {
+                $this->changes['role'] = [
+                    $current->getName().'('.$current->getId().')',
+                    $val->getName().'('.$val->getId().')',
+                ];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

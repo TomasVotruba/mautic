@@ -51,7 +51,7 @@ class KeysType extends AbstractType
                     'label_attr' => ['class' => 'control-label'],
                     'attr'       => [
                         'class'        => 'form-control',
-                        'placeholder'  => (PasswordType::class === $type) ? '**************' : '',
+                        'placeholder'  => ($type === PasswordType::class) ? '**************' : '',
                         'autocomplete' => 'off',
                     ],
                     'required'       => $required,

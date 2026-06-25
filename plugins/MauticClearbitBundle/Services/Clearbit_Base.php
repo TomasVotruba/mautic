@@ -11,7 +11,11 @@ class Clearbit_Base
 
     public const USER_AGENT      = 'mautic/clearbit-php-0.1.0';
 
-    private \DateTime $_next_req_time;
+    public $response_obj;
+
+    public $response_code;
+
+    public $response_json;
 
     protected $_baseUri     = '';
 
@@ -21,35 +25,7 @@ class Clearbit_Base
 
     protected $_webhookId;
 
-    public $response_obj;
-
-    public $response_code;
-
-    public $response_json;
-
-    /**
-     * Slow down calls to the Clearbit API if needed.
-     */
-    private function _wait_for_rate_limit(): void
-    {
-        $now = new \DateTime();
-        if ($this->_next_req_time->getTimestamp() > $now->getTimestamp()) {
-            $t = $this->_next_req_time->getTimestamp() - $now->getTimestamp();
-            sleep($t);
-        }
-    }
-
-    /**
-     * @param mixed[] $hdr
-     */
-    private function _update_rate_limit($hdr): void
-    {
-        $remaining            = (float) $hdr['X-RateLimit-Remaining'];
-        $reset                = (float) $hdr['X-RateLimit-Reset'];
-        $spacing              = $reset / (1.0 + $remaining);
-        $delay                = $spacing - self::REQUEST_LATENCY;
-        $this->_next_req_time = new \DateTime('now + '.$delay.' seconds');
-    }
+    private \DateTime $_next_req_time;
 
     /**
      * The base constructor Sets the API key available from here:
@@ -108,7 +84,7 @@ class Clearbit_Base
         $headers = [];
 
         foreach (explode("\r\n", $response_headers) as $i => $line) {
-            if (0 === $i) {
+            if ($i === 0) {
                 $headers['http_code'] = $line;
             } else {
                 [$key, $value]     = explode(': ', $line);
@@ -122,10 +98,34 @@ class Clearbit_Base
         if (!in_array($this->response_code, [200, 201, 202], true)) {
             throw new \Exception($this->response_obj->error->message);
         }
-        if (200 === $this->response_code) {
+        if ($this->response_code === 200) {
             $this->_update_rate_limit($headers);
         }
 
         return $this->response_obj;
+    }
+
+    /**
+     * Slow down calls to the Clearbit API if needed.
+     */
+    private function _wait_for_rate_limit(): void
+    {
+        $now = new \DateTime();
+        if ($this->_next_req_time->getTimestamp() > $now->getTimestamp()) {
+            $t = $this->_next_req_time->getTimestamp() - $now->getTimestamp();
+            sleep($t);
+        }
+    }
+
+    /**
+     * @param mixed[] $hdr
+     */
+    private function _update_rate_limit($hdr): void
+    {
+        $remaining            = (float) $hdr['X-RateLimit-Remaining'];
+        $reset                = (float) $hdr['X-RateLimit-Reset'];
+        $spacing              = $reset / (1.0 + $remaining);
+        $delay                = $spacing - self::REQUEST_LATENCY;
+        $this->_next_req_time = new \DateTime('now + '.$delay.' seconds');
     }
 }

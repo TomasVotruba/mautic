@@ -33,9 +33,9 @@ final class MauticWriteSubscriber implements EventSubscriberInterface
 
         if (!$entity instanceof FormEntity
             || (
-                Request::METHOD_POST !== $method
-                && Request::METHOD_PATCH !== $method
-                && Request::METHOD_PUT !== $method
+                $method !== Request::METHOD_POST
+                && $method !== Request::METHOD_PATCH
+                && $method !== Request::METHOD_PUT
             )
         ) {
             return;

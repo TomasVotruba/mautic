@@ -160,17 +160,17 @@ class UpdateHelperTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'alpha';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -196,17 +196,17 @@ class UpdateHelperTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -232,17 +232,17 @@ class UpdateHelperTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -269,33 +269,33 @@ class UpdateHelperTest extends TestCase
         $matcher  = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return $statsUrl;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('secret_key', $parameters[0]);
 
                     return 'abc123';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('db_driver', $parameters[0]);
 
                     return 'mysql';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertSame('install_source', $parameters[0]);
                     $this->assertSame('Mautic', $parameters[1]);
 
                     return 'Mautic';
                 }
-                if (6 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 6) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -340,17 +340,17 @@ class UpdateHelperTest extends TestCase
         $matcher  = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return $statsUrl;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -380,33 +380,33 @@ class UpdateHelperTest extends TestCase
         $matcher  = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return $statsUrl;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('secret_key', $parameters[0]);
 
                     return 'abc123';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('db_driver', $parameters[0]);
 
                     return 'mysql';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertSame('install_source', $parameters[0]);
                     $this->assertSame('Mautic', $parameters[1]);
 
                     return 'Mautic';
                 }
-                if (6 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 6) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -449,33 +449,33 @@ class UpdateHelperTest extends TestCase
         $matcher  = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return $statsUrl;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('secret_key', $parameters[0]);
 
                     return 'abc123';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('db_driver', $parameters[0]);
 
                     return 'mysql';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertSame('install_source', $parameters[0]);
                     $this->assertSame('Mautic', $parameters[1]);
 
                     return 'Mautic';
                 }
-                if (6 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 6) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -516,33 +516,33 @@ class UpdateHelperTest extends TestCase
         $matcher  = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return $statsUrl;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('secret_key', $parameters[0]);
 
                     return 'abc123';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('db_driver', $parameters[0]);
 
                     return 'mysql';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertSame('install_source', $parameters[0]);
                     $this->assertSame('Mautic', $parameters[1]);
 
                     return 'Mautic';
                 }
-                if (6 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 6) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -583,17 +583,17 @@ class UpdateHelperTest extends TestCase
         $matcher   = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return $updateUrl;
@@ -639,17 +639,17 @@ class UpdateHelperTest extends TestCase
         $matcher   = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return $updateUrl;
@@ -695,17 +695,17 @@ class UpdateHelperTest extends TestCase
         $matcher   = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return $updateUrl;
@@ -745,17 +745,17 @@ class UpdateHelperTest extends TestCase
         $matcher   = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return $updateUrl;
@@ -797,17 +797,17 @@ class UpdateHelperTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('update_stability', $parameters[0]);
 
                     return 'stable';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('stats_update_url', $parameters[0]);
 
                     return null;
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('system_update_url', $parameters[0]);
 
                     return null;
@@ -877,7 +877,7 @@ class UpdateHelperTest extends TestCase
 
     private function getFailingPreUpdateTest(): AbstractPreUpdateCheck
     {
-        return new class extends AbstractPreUpdateCheck {
+        return new class() extends AbstractPreUpdateCheck {
             public function runCheck(): PreUpdateCheckResult
             {
                 return new PreUpdateCheckResult(false, null, [new PreUpdateCheckError('Dummy')]);
@@ -887,7 +887,7 @@ class UpdateHelperTest extends TestCase
 
     private function getPassingPreUpdateTest(): AbstractPreUpdateCheck
     {
-        return new class extends AbstractPreUpdateCheck {
+        return new class() extends AbstractPreUpdateCheck {
             public function runCheck(): PreUpdateCheckResult
             {
                 return new PreUpdateCheckResult(true, null);

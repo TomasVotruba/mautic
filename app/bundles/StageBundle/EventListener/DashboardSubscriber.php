@@ -47,7 +47,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('stage:stages:viewother');
 
-        if ('stages.in.time' == $event->getType()) {
+        if ($event->getType() == 'stages.in.time') {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 

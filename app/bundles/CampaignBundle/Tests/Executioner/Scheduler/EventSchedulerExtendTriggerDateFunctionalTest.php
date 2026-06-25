@@ -14,26 +14,6 @@ use Mautic\LeadBundle\Entity\Lead;
 
 final class EventSchedulerExtendTriggerDateFunctionalTest extends MauticMysqlTestCase
 {
-    private function createPublishAuditLog(Campaign $campaign, \DateTime $dateAdded, bool $isPublished): void
-    {
-        $auditLog = new AuditLog();
-        $auditLog->setBundle('campaign');
-        $auditLog->setObject('campaign');
-        $auditLog->setObjectId((int) $campaign->getId());
-        $auditLog->setAction('update');
-        $auditLog->setUserName('admin');
-        $auditLog->setUserId(1);
-        $auditLog->setIpAddress('127.0.0.1');
-        $auditLog->setDateAdded($dateAdded);
-        $auditLog->setDetails([
-            'isPublished' => [
-                '0' => !$isPublished,
-                '1' => $isPublished,
-            ],
-        ]);
-
-        $this->em->persist($auditLog);
-    }
 
     public function testCampaignTriggerCommandWithNegativeSecondsDoesNotCrash(): void
     {
@@ -167,5 +147,25 @@ final class EventSchedulerExtendTriggerDateFunctionalTest extends MauticMysqlTes
 
         $this->assertGreaterThan($lowerBound, $updatedLog->getTriggerDate(), 'Event should be scheduled around 7 days from now');
         $this->assertLessThan($upperBound, $updatedLog->getTriggerDate(), 'Event should be scheduled around 7 days from now');
+    }
+    private function createPublishAuditLog(Campaign $campaign, \DateTime $dateAdded, bool $isPublished): void
+    {
+        $auditLog = new AuditLog();
+        $auditLog->setBundle('campaign');
+        $auditLog->setObject('campaign');
+        $auditLog->setObjectId((int) $campaign->getId());
+        $auditLog->setAction('update');
+        $auditLog->setUserName('admin');
+        $auditLog->setUserId(1);
+        $auditLog->setIpAddress('127.0.0.1');
+        $auditLog->setDateAdded($dateAdded);
+        $auditLog->setDetails([
+            'isPublished' => [
+                '0' => !$isPublished,
+                '1' => $isPublished,
+            ],
+        ]);
+
+        $this->em->persist($auditLog);
     }
 }

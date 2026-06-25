@@ -99,7 +99,7 @@ final class EntityExportCommand extends ModeratedCommand
             $resolvedPath = '';
             if ($customPath) {
                 $resolvedPath = $this->resolveAndValidatePath($customPath, $output);
-                if (null === $resolvedPath) {
+                if ($resolvedPath === null) {
                     return self::FAILURE;
                 }
             }

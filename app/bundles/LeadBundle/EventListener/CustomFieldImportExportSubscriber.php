@@ -42,7 +42,7 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
 
     public function onLeadFieldExport(EntityExportEvent $event): void
     {
-        if (LeadField::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== LeadField::ENTITY_NAME) {
             return;
         }
 
@@ -83,7 +83,7 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
 
     public function onLeadFieldImport(EntityImportEvent $event): void
     {
-        if (LeadField::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== LeadField::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -133,7 +133,7 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (LeadField::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== LeadField::ENTITY_NAME) {
             return;
         }
 

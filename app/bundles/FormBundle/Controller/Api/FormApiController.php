@@ -78,7 +78,7 @@ class FormApiController extends CommonApiController
 
         $entity = $this->model->getEntity($formId);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -108,7 +108,7 @@ class FormApiController extends CommonApiController
 
         $entity = $this->model->getEntity($formId);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -123,6 +123,17 @@ class FormApiController extends CommonApiController
         $view = $this->view([$this->entityNameOne => $entity]);
 
         return $this->handleView($view);
+    }
+
+    public function newEntityAction(Request $request): Response
+    {
+        $parameters = $request->request->all();
+
+        if (!isset($parameters['postAction'])) {
+            $request->request->add(['postAction' => 'return']);
+        }
+
+        return parent::newEntityAction($request);
     }
 
     /**
@@ -217,7 +228,7 @@ class FormApiController extends CommonApiController
                 $requestUsedAliases[] = $fieldEntityArray['alias'];
 
                 $fieldForm = $this->createFieldEntityForm($fieldEntityArray);
-                $fieldForm->submit($fieldParams, 'PATCH' !== $method);
+                $fieldForm->submit($fieldParams, $method !== 'PATCH');
 
                 if (!$fieldForm->isValid()) {
                     $formErrors = $this->getFormErrorMessages($fieldForm);
@@ -231,7 +242,7 @@ class FormApiController extends CommonApiController
         }
 
         // Remove fields which weren't in the PUT request
-        if (!$isNew && 'PUT' === $method) {
+        if (!$isNew && $method === 'PUT') {
             $fieldsToDelete = [];
 
             foreach ($currentFields as $currentField) {
@@ -260,7 +271,7 @@ class FormApiController extends CommonApiController
                 $actionEntity->setForm($entity);
 
                 $actionForm = $this->createActionEntityForm($actionEntity, $actionParams);
-                $actionForm->submit($actionParams, 'PATCH' !== $method);
+                $actionForm->submit($actionParams, $method !== 'PATCH');
 
                 if (!$actionForm->isValid()) {
                     $formErrors = $this->getFormErrorMessages($actionForm);
@@ -278,7 +289,7 @@ class FormApiController extends CommonApiController
         }
 
         // Remove actions which weren't in the PUT request
-        if (!$isNew && 'PUT' === $method) {
+        if (!$isNew && $method === 'PUT') {
             $actionsToDelete = [];
 
             foreach ($currentActions as $currentAction) {
@@ -354,16 +365,5 @@ class FormApiController extends CommonApiController
         }
 
         return parent::processForm($request, $entity, $parameters, $method);
-    }
-
-    public function newEntityAction(Request $request): Response
-    {
-        $parameters = $request->request->all();
-
-        if (!isset($parameters['postAction'])) {
-            $request->request->add(['postAction' => 'return']);
-        }
-
-        return parent::newEntityAction($request);
     }
 }

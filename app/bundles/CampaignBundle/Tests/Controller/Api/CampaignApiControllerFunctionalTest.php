@@ -35,73 +35,6 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         parent::setUp();
     }
 
-    /**
-     * Creates and persists common test entities used across multiple tests.
-     *
-     * @return array<string, mixed> Array containing the created entities
-     */
-    private function createTestEntities(): array
-    {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->loginUser($user);
-
-        $segment = new LeadList();
-        $segment->setName('test');
-        $segment->setAlias('test');
-        $segment->setPublicName('test');
-
-        $email = new Email();
-        $email->setName('test');
-        $email->setSubject('Ahoy {contactfield=email}');
-        $email->setCustomHtml('Your email is <b>{contactfield=email}</b>');
-        $email->setUseOwnerAsMailer(true);
-
-        $dwc = new DynamicContent();
-        $dwc->setName('test');
-        $dwc->setSlotName('test');
-        $dwc->setContent('test');
-
-        $company = new Company();
-        $company->setName('test');
-
-        $contact1 = new Lead();
-        $contact1->setEmail('contact@one.email');
-
-        $contact2 = new Lead();
-        $contact2->setEmail('contact@two.email');
-        $contact2->setOwner($user);
-
-        $member1 = new ListLead();
-        $member1->setLead($contact1);
-        $member1->setList($segment);
-        $member1->setDateAdded(new \DateTime());
-
-        $member2 = new ListLead();
-        $member2->setLead($contact2);
-        $member2->setList($segment);
-        $member2->setDateAdded(new \DateTime());
-
-        $this->em->persist($segment);
-        $this->em->persist($email);
-        $this->em->persist($dwc);
-        $this->em->persist($company);
-        $this->em->persist($contact1);
-        $this->em->persist($contact2);
-        $this->em->persist($member1);
-        $this->em->persist($member2);
-        $this->em->flush();
-
-        return [
-            'user'     => $user,
-            'segment'  => $segment,
-            'email'    => $email,
-            'dwc'      => $dwc,
-            'company'  => $company,
-            'contact1' => $contact1,
-            'contact2' => $contact2,
-        ];
-    }
-
     public function testCreateNewCampaign(): void
     {
         $entities = $this->createTestEntities();
@@ -421,7 +354,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
 
         // Debug early exit if something fails
-        if (201 !== $clientResponse->getStatusCode()) {
+        if ($clientResponse->getStatusCode() !== 201) {
             $this->fail('Import failed with error: '.$clientResponse->getContent());
         }
 
@@ -445,7 +378,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $asset = tempnam($systemTempDir, 'mautic_import_asset');
         file_put_contents($asset, 'The test file');
 
-        if (true === $zip->open($zipPath, \ZipArchive::CREATE)) {
+        if ($zip->open($zipPath, \ZipArchive::CREATE) === true) {
             $zip->addFromString('campaign.json', json_encode(FixtureHelper::getPayload(), JSON_PRETTY_PRINT));
             $zip->addFile($asset, 'assets/'.basename($asset));
             $zip->close();
@@ -468,7 +401,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         unlink($zipPath);
         unlink($asset);
 
-        if (201 !== $response->getStatusCode()) {
+        if ($response->getStatusCode() !== 201) {
             $this->fail('Import failed with error: '.$response->getContent());
         }
 
@@ -544,14 +477,6 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($editResponse->getContent());
     }
 
-    private function createTemporaryFile(string $extension): string
-    {
-        $filePath = tempnam(sys_get_temp_dir(), 'mautic_test_').'.'.$extension;
-        file_put_contents($filePath, 'test content');
-
-        return $filePath;
-    }
-
     public function testImportCampaignInvalidFile(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
@@ -602,7 +527,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         // Create a temporary ZIP file with valid structure but malformed JSON
         $zipPath = tempnam(sys_get_temp_dir(), 'mautic_test_').'.zip';
         $zip     = new \ZipArchive();
-        if (true === $zip->open($zipPath, \ZipArchive::CREATE)) {
+        if ($zip->open($zipPath, \ZipArchive::CREATE) === true) {
             // Add a valid JSON file with malformed content
             $zip->addFromString('campaign.json', '{invalid json content}');
             $zip->close();
@@ -625,5 +550,80 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
                 unlink($zipPath);
             }
         }
+    }
+
+    /**
+     * Creates and persists common test entities used across multiple tests.
+     *
+     * @return array<string, mixed> Array containing the created entities
+     */
+    private function createTestEntities(): array
+    {
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->loginUser($user);
+
+        $segment = new LeadList();
+        $segment->setName('test');
+        $segment->setAlias('test');
+        $segment->setPublicName('test');
+
+        $email = new Email();
+        $email->setName('test');
+        $email->setSubject('Ahoy {contactfield=email}');
+        $email->setCustomHtml('Your email is <b>{contactfield=email}</b>');
+        $email->setUseOwnerAsMailer(true);
+
+        $dwc = new DynamicContent();
+        $dwc->setName('test');
+        $dwc->setSlotName('test');
+        $dwc->setContent('test');
+
+        $company = new Company();
+        $company->setName('test');
+
+        $contact1 = new Lead();
+        $contact1->setEmail('contact@one.email');
+
+        $contact2 = new Lead();
+        $contact2->setEmail('contact@two.email');
+        $contact2->setOwner($user);
+
+        $member1 = new ListLead();
+        $member1->setLead($contact1);
+        $member1->setList($segment);
+        $member1->setDateAdded(new \DateTime());
+
+        $member2 = new ListLead();
+        $member2->setLead($contact2);
+        $member2->setList($segment);
+        $member2->setDateAdded(new \DateTime());
+
+        $this->em->persist($segment);
+        $this->em->persist($email);
+        $this->em->persist($dwc);
+        $this->em->persist($company);
+        $this->em->persist($contact1);
+        $this->em->persist($contact2);
+        $this->em->persist($member1);
+        $this->em->persist($member2);
+        $this->em->flush();
+
+        return [
+            'user'     => $user,
+            'segment'  => $segment,
+            'email'    => $email,
+            'dwc'      => $dwc,
+            'company'  => $company,
+            'contact1' => $contact1,
+            'contact2' => $contact2,
+        ];
+    }
+
+    private function createTemporaryFile(string $extension): string
+    {
+        $filePath = tempnam(sys_get_temp_dir(), 'mautic_test_').'.'.$extension;
+        file_put_contents($filePath, 'test content');
+
+        return $filePath;
     }
 }

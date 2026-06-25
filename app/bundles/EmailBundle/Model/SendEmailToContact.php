@@ -93,7 +93,7 @@ class SendEmailToContact
         array $channel = [],
         array $customHeaders = [],
         array $assetAttachments = [],
-    ): SendEmailToContact {
+    ): self {
         // Flush anything that's pending from a previous email
         $this->flush();
 
@@ -229,7 +229,7 @@ class SendEmailToContact
      */
     protected function failContact($hasBadEmail = true, $errorMessages = null)
     {
-        if (null === $errorMessages) {
+        if ($errorMessages === null) {
             // Clear the errors so it doesn't stop the next send
             $errorMessages = implode('; ', (array) $this->mailer->getErrors());
         } elseif (is_array($errorMessages)) {

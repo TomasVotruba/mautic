@@ -88,19 +88,19 @@ class ReportExporterTest extends \PHPUnit\Framework\TestCase
             ->method('getReportData')
             ->willReturnCallback(function (Report $report, ReportExportOptions $exportOptions) use ($reportNow, $report2, $report1, $reportDataResult, $invokedCount): ReportDataResult {
                 $invocationCount = $invokedCount->numberOfInvocations();
-                if (0 < $invocationCount && $invocationCount <= 6) {
+                if ($invocationCount > 0 && $invocationCount <= 6) {
                     self::assertSame($report1, $report);
                     self::assertEquals((new \DateTime())->setTime(0, 0), $exportOptions->getDateFrom());
                     self::assertEquals((new \DateTime('yesterday'))->setTime(23, 59, 59), $exportOptions->getDateTo());
                 }
 
-                if (6 < $invocationCount && $invocationCount <= 12) {
+                if ($invocationCount > 6 && $invocationCount <= 12) {
                     self::assertSame($report2, $report);
                     self::assertEquals((new \DateTime())->setTime(0, 0), $exportOptions->getDateFrom());
                     self::assertEquals((new \DateTime('yesterday'))->setTime(23, 59, 59), $exportOptions->getDateTo());
                 }
 
-                if (12 < $invocationCount && $invocationCount <= 18) {
+                if ($invocationCount > 12 && $invocationCount <= 18) {
                     self::assertSame($reportNow, $report);
                     self::assertEquals((new \DateTime())->setTime(0, 0)->sub(new \DateInterval('P10Y')), $exportOptions->getDateFrom());
                     self::assertEquals((new \DateTime('yesterday'))->setTime(23, 59, 59), $exportOptions->getDateTo());
@@ -125,13 +125,13 @@ class ReportExporterTest extends \PHPUnit\Framework\TestCase
 
                 $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $eventName);
                 Assert::assertSame($event->getFile(), 'my-path');
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     Assert::assertSame($event->getScheduler(), $scheduler1);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     Assert::assertSame($event->getScheduler(), $scheduler2);
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     Assert::assertSame($event->getScheduler(), $schedulerNow);
                 }
 

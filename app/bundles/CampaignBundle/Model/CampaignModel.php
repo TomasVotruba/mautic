@@ -134,7 +134,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?Campaign
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Campaign();
         }
 
@@ -179,49 +179,6 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         $this->dispatchEvent('post_delete', $campaign);
     }
 
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?\Symfony\Contracts\EventDispatcher\Event $event = null): ?\Symfony\Contracts\EventDispatcher\Event
-    {
-        if ($entity instanceof CampaignLead) {
-            return null;
-        }
-
-        if (!$entity instanceof Campaign) {
-            throw new MethodNotAllowedHttpException(['Campaign']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = CampaignEvents::CAMPAIGN_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = CampaignEvents::CAMPAIGN_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = CampaignEvents::CAMPAIGN_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = CampaignEvents::CAMPAIGN_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new Events\CampaignEvent($entity, $isNew);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
     public function setEvents(Campaign $entity, $sessionEvents, $sessionConnections, $deletedEvents): array
     {
         $existingEvents = $entity->getEvents()->toArray();
@@ -233,7 +190,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             $event = !$isNew ? $existingEvents[$properties['id']] : new Event(new \DateTime());
 
             foreach ($properties as $f => $v) {
-                if ('id' == $f && str_starts_with($v, 'new')) {
+                if ($f == 'id' && str_starts_with($v, 'new')) {
                     // set the temp ID used to be able to match up connections
                     $event->setTempId($v);
                 }
@@ -242,14 +199,14 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                     continue;
                 }
 
-                if ('redirectEvent' === $f) {
+                if ($f === 'redirectEvent') {
                     $this->setRedirectEvent($v, $event);
                     continue;
                 }
 
                 $func = 'set'.ucfirst($f);
                 if (method_exists($event, $func)) {
-                    $event->$func($v);
+                    $event->{$func}($v);
                 }
             }
 
@@ -295,7 +252,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                     $sourceDecision = (!empty($connection['anchors'][0])) ? $connection['anchors'][0]['endpoint'] : null;
                 }
 
-                if ('leadsource' == $sourceDecision) {
+                if ($sourceDecision == 'leadsource') {
                     // Lead source connection that does not matter
                     continue;
                 }
@@ -372,7 +329,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function setCanvasSettings($entity, $settings, $persist = true, $events = null)
     {
-        if (null === $events) {
+        if ($events === null) {
             $events = $entity->getEvents();
         }
 
@@ -418,7 +375,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             if (!isset($connection['anchors']['source'])) {
                 $anchors = [];
                 foreach ($connection['anchors'] as $k => $anchor) {
-                    $type           = (0 === $k) ? 'source' : 'target';
+                    $type           = ($k === 0) ? 'source' : 'target';
                     $anchors[$type] = $anchor['endpoint'];
                 }
 
@@ -501,28 +458,6 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         }
     }
 
-    private function getLeadListSource(int|string $identifier): ?LeadList
-    {
-        if (!ctype_digit((string) $identifier)) {
-            return null;
-        }
-
-        $list = $this->em->find(LeadList::class, (int) $identifier);
-
-        return $list instanceof LeadList ? $list : null;
-    }
-
-    private function getFormSource(int|string $identifier): ?Form
-    {
-        if (!ctype_digit((string) $identifier)) {
-            return null;
-        }
-
-        $form = $this->em->find(Form::class, (int) $identifier);
-
-        return $form instanceof Form ? $form : null;
-    }
-
     /**
      * Get a list of source choices.
      *
@@ -564,7 +499,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             asort($typeChoices);
         }
 
-        return (null == $sourceType) ? $choices : $choices[$sourceType];
+        return ($sourceType == null) ? $choices : $choices[$sourceType];
     }
 
     /**
@@ -590,7 +525,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     {
         static $campaigns = [];
 
-        if (null === $lead) {
+        if ($lead === null) {
             $lead = $this->contactTracker->getContact();
         }
 
@@ -774,30 +709,6 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     }
 
     /**
-     * @param Campaign $entity
-     * @param string   $root
-     * @param int      $order
-     */
-    protected function buildOrder($hierarchy, &$events, $entity, $root = 'null', $order = 1)
-    {
-        $count = count($hierarchy);
-        if (1 === $count && 'null' === array_unique(array_values($hierarchy))[0]) {
-            // no parents so leave order as is
-
-            return;
-        }
-        foreach ($hierarchy as $eventId => $parent) {
-            if ($parent == $root || 1 === $count) {
-                $events[$eventId]->setOrder($order);
-                unset($hierarchy[$eventId]);
-                if (count($hierarchy)) {
-                    $this->buildOrder($hierarchy, $events, $entity, $eventId, $order + 1);
-                }
-            }
-        }
-    }
-
-    /**
      * @param int  $limit
      * @param bool $maxLeads
      */
@@ -865,10 +776,10 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         foreach ($entities as $entity) {
             $type       = $entity->getType();
             $properties = $entity->getProperties();
-            if ('lead.changetags' === $type) {
+            if ($type === 'lead.changetags') {
                 $eventTags = array_merge([], $properties['add_tags'], $properties['remove_tags']);
             }
-            if ('lead.tags' === $type) {
+            if ($type === 'lead.tags') {
                 $eventTags = $properties['tags'];
             }
             if (in_array($tagName, $eventTags)) {
@@ -945,6 +856,95 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         $campaign->markForVersionIncrement();
         $this->saveEntity($campaign);
         $this->em->commit();
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?\Symfony\Contracts\EventDispatcher\Event $event = null): ?\Symfony\Contracts\EventDispatcher\Event
+    {
+        if ($entity instanceof CampaignLead) {
+            return null;
+        }
+
+        if (!$entity instanceof Campaign) {
+            throw new MethodNotAllowedHttpException(['Campaign']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = CampaignEvents::CAMPAIGN_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = CampaignEvents::CAMPAIGN_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = CampaignEvents::CAMPAIGN_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = CampaignEvents::CAMPAIGN_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new Events\CampaignEvent($entity, $isNew);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Campaign $entity
+     * @param string   $root
+     * @param int      $order
+     */
+    protected function buildOrder($hierarchy, &$events, $entity, $root = 'null', $order = 1)
+    {
+        $count = count($hierarchy);
+        if ($count === 1 && array_unique(array_values($hierarchy))[0] === 'null') {
+            // no parents so leave order as is
+
+            return;
+        }
+        foreach ($hierarchy as $eventId => $parent) {
+            if ($parent == $root || $count === 1) {
+                $events[$eventId]->setOrder($order);
+                unset($hierarchy[$eventId]);
+                if (count($hierarchy)) {
+                    $this->buildOrder($hierarchy, $events, $entity, $eventId, $order + 1);
+                }
+            }
+        }
+    }
+
+    private function getLeadListSource(int|string $identifier): ?LeadList
+    {
+        if (!ctype_digit((string) $identifier)) {
+            return null;
+        }
+
+        $list = $this->em->find(LeadList::class, (int) $identifier);
+
+        return $list instanceof LeadList ? $list : null;
+    }
+
+    private function getFormSource(int|string $identifier): ?Form
+    {
+        if (!ctype_digit((string) $identifier)) {
+            return null;
+        }
+
+        $form = $this->em->find(Form::class, (int) $identifier);
+
+        return $form instanceof Form ? $form : null;
     }
 
     /**

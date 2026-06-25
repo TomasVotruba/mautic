@@ -42,6 +42,11 @@ abstract class AbstractFormFieldHelper
      */
     protected $translator;
 
+    public function __construct()
+    {
+        $this->setTranslationKeyPrefix();
+    }
+
     /**
      * @return mixed
      */
@@ -51,11 +56,6 @@ abstract class AbstractFormFieldHelper
      * @return mixed
      */
     abstract public function getTypes();
-
-    public function __construct()
-    {
-        $this->setTranslationKeyPrefix();
-    }
 
     public function setTranslator(Translator $translator): void
     {
@@ -200,7 +200,7 @@ abstract class AbstractFormFieldHelper
                 $value = $label['value'];
                 $label = $label['label'];
 
-                if ('' === $value || null === $value) {
+                if ($value === '' || $value === null) {
                     // Value is empty which can't work as a key
                     continue;
                 }
@@ -210,7 +210,7 @@ abstract class AbstractFormFieldHelper
                 continue;
             }
 
-            if (('' === $label || null === $label) && '' === $value) {
+            if (($label === '' || $label === null) && $value === '') {
                 // Both label and value are empty which can't work as choices
                 continue;
             }

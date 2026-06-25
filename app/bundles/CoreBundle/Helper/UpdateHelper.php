@@ -48,7 +48,7 @@ class UpdateHelper
         // GET the update data
         try {
             $response = $this->client->request('GET', $package);
-            if (200 !== $response->getStatusCode()) {
+            if ($response->getStatusCode() !== 200) {
                 throw new \Exception('error code '.$response->getStatusCode());
             }
 
@@ -168,9 +168,9 @@ class UpdateHelper
         $checks       = $this->preUpdateCheckHelper->getChecks();
         $updateData   = $this->fetchData();
 
-        if (true === $updateData['error']) {
+        if ($updateData['error'] === true) {
             $checkResults[] = new PreUpdateCheckResult(false, null, [new PreUpdateCheckError($updateData['message'])]);
-        } elseif (false === $updateData['error'] && 'mautic.core.updater.running.latest.version' === $updateData['message']) {
+        } elseif ($updateData['error'] === false && $updateData['message'] === 'mautic.core.updater.running.latest.version') {
             // If we're already running the latest version, let's consider that an error so that the updater doesn't accidentally continue.
             $checkResults[] = new PreUpdateCheckResult(false, null, [new PreUpdateCheckError('mautic.core.updater.running.latest.version')]);
         } elseif (empty($updateData['metadata'])) {
@@ -291,7 +291,7 @@ class UpdateHelper
 
         // Fetch a new list of data
         $response = $this->client->request('GET', $updateUrl);
-        if (200 !== $response->getStatusCode()) {
+        if ($response->getStatusCode() !== 200) {
             // Log the error
             $this->logger->error(
                 sprintf(

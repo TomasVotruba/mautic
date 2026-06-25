@@ -56,6 +56,18 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
+    public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
+    {
+        $dnc = new DoNotContact();
+        $dnc->setChannel($channel);
+        $dnc->setLead($contact);
+        $dnc->setReason($reason);
+        $dnc->setDateAdded(new \DateTime());
+        $this->em->persist($dnc);
+
+        return $dnc;
+    }
+
     private function createPageHit(Lead $lead, int $times = 1, string $url = 'https://example.com'): void
     {
         for ($i = 0; $i < $times; ++$i) {
@@ -76,17 +88,5 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $this->em->persist($contact);
 
         return $contact;
-    }
-
-    public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
-    {
-        $dnc = new DoNotContact();
-        $dnc->setChannel($channel);
-        $dnc->setLead($contact);
-        $dnc->setReason($reason);
-        $dnc->setDateAdded(new \DateTime());
-        $this->em->persist($dnc);
-
-        return $dnc;
     }
 }

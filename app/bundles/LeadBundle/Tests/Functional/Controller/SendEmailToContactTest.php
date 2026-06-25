@@ -28,23 +28,6 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $this->sMimeHelper = self::getContainer()->get(SMimeHelper::class);
     }
 
-    protected function beforeTearDown(): void
-    {
-        parent::beforeTearDown();
-
-        $certPath = $this->sMimeHelper->getSMimeCertificatePath();
-
-        // Rename the backup back to the original
-        if (file_exists($certPath.'/admin@test-beta.mautibot.com.pem.bak')) {
-            rename($certPath.'/admin@test-beta.mautibot.com.pem.bak', $certPath.'/admin@test-beta.mautibot.com.pem');
-        }
-
-        // Delete the encrypted file
-        if (file_exists($certPath.'/admin@test-beta.mautibot.com.pem.enc')) {
-            unlink($certPath.'/admin@test-beta.mautibot.com.pem.enc');
-        }
-    }
-
     public function testSMimeWithUnecryptedPrivateKey(): void
     {
         $contact = new Lead();
@@ -278,5 +261,22 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $responseContent = $this->client->getResponse()->getContent();
         $this->assertStringNotContainsString($subjectErrorMessage, $responseContent, 'There should be no error after adding the subject line');
         $this->assertStringNotContainsString($bodyErrorMessage, $responseContent, 'There should be no error after adding the body');
+    }
+
+    protected function beforeTearDown(): void
+    {
+        parent::beforeTearDown();
+
+        $certPath = $this->sMimeHelper->getSMimeCertificatePath();
+
+        // Rename the backup back to the original
+        if (file_exists($certPath.'/admin@test-beta.mautibot.com.pem.bak')) {
+            rename($certPath.'/admin@test-beta.mautibot.com.pem.bak', $certPath.'/admin@test-beta.mautibot.com.pem');
+        }
+
+        // Delete the encrypted file
+        if (file_exists($certPath.'/admin@test-beta.mautibot.com.pem.enc')) {
+            unlink($certPath.'/admin@test-beta.mautibot.com.pem.enc');
+        }
     }
 }

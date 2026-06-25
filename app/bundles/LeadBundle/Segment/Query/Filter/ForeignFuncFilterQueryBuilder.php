@@ -52,7 +52,7 @@ class ForeignFuncFilterQueryBuilder extends BaseFilterQueryBuilder
             if ($filterAggr) {
                 // No join needed, it is placed in exist/not exists
             } else {
-                if ('companies' == $filter->getTable()) {
+                if ($filter->getTable() == 'companies') {
                     $relTable = $this->generateRandomParameterName();
                     $queryBuilder->leftJoin($leadsTableAlias, MAUTIC_TABLE_PREFIX.'companies_leads', $relTable, $relTable.'.lead_id = '.$leadsTableAlias.'.id');
                     $queryBuilder->leftJoin($relTable, $filter->getTable(), $tableAlias, $tableAlias.'.id = '.$relTable.'.company_id');
@@ -84,23 +84,23 @@ class ForeignFuncFilterQueryBuilder extends BaseFilterQueryBuilder
                 break;
             default:
                 if ($filterAggr) {
-                    if ('sum' === $filterAggr) {
+                    if ($filterAggr === 'sum') {
                         $expressionArg = $queryBuilder->expr()->func('COALESCE',
                             $queryBuilder->expr()->func('SUM', $tableAlias.'.'.$filter->getField()),
                             0
                         );
-                        $expression = $queryBuilder->expr()->$filterOperator($expressionArg,
+                        $expression = $queryBuilder->expr()->{$filterOperator}($expressionArg,
                             $filterParametersHolder);
                     } else {
                         $expressionArg = sprintf('%s(DISTINCT %s)', $filterAggr, $tableAlias.'.'
                             .$filter->getField());
-                        $expression = $queryBuilder->expr()->$filterOperator(
+                        $expression = $queryBuilder->expr()->{$filterOperator}(
                             $expressionArg,
                             $filterParametersHolder
                         );
                     }
                 } else { // This should never happen
-                    $expression = $queryBuilder->expr()->$filterOperator(
+                    $expression = $queryBuilder->expr()->{$filterOperator}(
                         $tableAlias.'.'.$filter->getField(),
                         $filterParametersHolder
                     );

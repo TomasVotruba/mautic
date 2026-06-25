@@ -83,7 +83,7 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
                 if (isset($data->traits->organization)) {
                     $this->organization = $data->traits->organization;
                 }
-            } elseif (null !== $this->logger) {
+            } elseif ($this->logger !== null) {
                 $this->logger->warning('IP LOOKUP: '.$data->error);
             }
         }

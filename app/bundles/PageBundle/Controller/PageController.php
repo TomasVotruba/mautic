@@ -175,7 +175,7 @@ class PageController extends FormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
 
-        if (null === $activePage) {
+        if ($activePage === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
 
@@ -384,7 +384,7 @@ class PageController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -503,7 +503,7 @@ class PageController extends FormController
         ];
 
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -534,7 +534,7 @@ class PageController extends FormController
         $existingPage = clone $entity;
         $this->restoreNullifiedFieldsDuringClone($existingPage, $entity);
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = ($this->isFormValid($form) && $this->checkOptimisticLockVersion($entity, $form, false))) {
@@ -680,7 +680,7 @@ class PageController extends FormController
     {
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('page:pages:create')
                 || !$this->security->hasEntityAccess(
                     'page:pages:viewown', 'page:pages:viewother', $entity->getCreatedBy()
@@ -727,10 +727,10 @@ class PageController extends FormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.page.error.notfound',
@@ -784,7 +784,7 @@ class PageController extends FormController
             ],
         ];
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             /** @var PageModel $model */
             $model     = $this->getModel('page');
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -794,7 +794,7 @@ class PageController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.page.error.notfound',
@@ -852,7 +852,7 @@ class PageController extends FormController
         } else {
             $isNew  = false;
             $entity = $model->getEntity($objectId);
-            if (null == $entity || !$this->security->hasEntityAccess(
+            if ($entity == null || !$this->security->hasEntityAccess(
                 'page:pages:viewown', 'page:pages:viewother', $entity->getCreatedBy()
             )) {
                 $this->throwAccessDenied();
@@ -938,10 +938,10 @@ class PageController extends FormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.page.error.notfound',
@@ -996,7 +996,7 @@ class PageController extends FormController
         $pageListPage = $session->get('mautic.page.page', 1);
         $returnUrl    = $this->generateUrl('mautic_page_index', ['page' => $pageListPage]);
 
-        if (null === $activePage) {
+        if ($activePage === null) {
             // redirect back to page list
             return $this->postActionRedirect(
                 [
@@ -1025,7 +1025,7 @@ class PageController extends FormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $this->setListFilters($request->query->get('name'));
         }
 
@@ -1047,7 +1047,7 @@ class PageController extends FormController
         if ($request->query->has('result')) {
             // Force ID
             $filters['s.id'] = ['column' => 's.id', 'expr' => 'like', 'value' => (int) $request->query->get('result'), 'strict' => false];
-            $session->set("mautic.pageresult.$objectId.filters", $filters);
+            $session->set("mautic.pageresult.{$objectId}.filters", $filters);
         }
         // get the results
         $entities = $submissionModel->getEntitiesByPage(
@@ -1069,7 +1069,7 @@ class PageController extends FormController
 
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            $lastPage = (1 === $count) ? 1 : (((ceil($count / $limit)) ?: 1) ?: 1);
+            $lastPage = ($count === 1) ? 1 : (((ceil($count / $limit)) ?: 1) ?: 1);
             $session->set('mautic.pageresult.page', $lastPage);
             $returnUrl = $this->generateUrl('mautic_page_results', ['objectId' => $objectId, 'page' => $lastPage]);
 
@@ -1135,7 +1135,7 @@ class PageController extends FormController
         $pageListPage = $session->get('mautic.page.page', 1);
         $returnUrl    = $this->generateUrl('mautic_page_index', ['page' => $pageListPage]);
 
-        if (null === $activePage) {
+        if ($activePage === null) {
             // redirect back to page list
             return $this->postActionRedirect(
                 [

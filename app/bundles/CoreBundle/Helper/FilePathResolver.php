@@ -94,6 +94,6 @@ class FilePathResolver
     {
         $ext = $file->getClientOriginalExtension();
 
-        return ('' === $ext ? '' : '.').$ext;
+        return ($ext === '' ? '' : '.').$ext;
     }
 }

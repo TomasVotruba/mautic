@@ -37,7 +37,7 @@ class PublicController extends FormController
         if (!$request->request->has('body') || !$request->request->has('id')
             || !$request->request->has('type')
             || !$request->request->has('status')
-            || 200 !== $request->request->get('status')
+            || $request->request->get('status') !== 200
         ) {
             $mauticLogger->log('error', 'ERROR on Clearbit callback: Malformed request variables: '.json_encode($request->request->all(), JSON_PRETTY_PRINT));
 
@@ -58,7 +58,7 @@ class PublicController extends FormController
         $notify = $validatedRequest['notify'];
 
         try {
-            if ('person' === $request->request->get('type')) {
+            if ($request->request->get('type') === 'person') {
                 /** @var \Mautic\LeadBundle\Model\LeadModel $model */
                 $model = $this->getModel('lead');
                 /** @var Lead $lead */
@@ -166,7 +166,7 @@ class PublicController extends FormController
             } else {
                 /******************  COMPANY STUFF  *********************/
 
-                if ('company' === $request->request->get('type')) {
+                if ($request->request->get('type') === 'company') {
                     /** @var \Mautic\LeadBundle\Model\CompanyModel $model */
                     $model = $this->getModel('lead.company');
                     /** @var Company $company */

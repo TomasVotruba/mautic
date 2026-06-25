@@ -176,7 +176,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         static $timezones;
 
-        if (null === $timezones) {
+        if ($timezones === null) {
             $timezones = [];
 
             foreach (\DateTimeZone::listIdentifiers() as $timezone) {

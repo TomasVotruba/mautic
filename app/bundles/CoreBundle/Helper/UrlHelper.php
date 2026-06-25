@@ -45,24 +45,24 @@ class UrlHelper
     {
         $path = $host = $scheme = '';
 
-        $ssl    = !empty($_SERVER['HTTPS']) && 'on' == $_SERVER['HTTPS'];
+        $ssl    = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
         $scheme = strtolower($_SERVER['SERVER_PROTOCOL']);
         $scheme = substr($scheme, 0, strpos($scheme, '/')).($ssl ? 's' : '');
         $port   = $_SERVER['SERVER_PORT'];
-        $port   = ((!$ssl && '80' == $port) || ($ssl && '443' == $port)) ? '' : ":$port";
+        $port   = ((!$ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ":{$port}";
         $host   = $_SERVER['HTTP_HOST'] ?? null;
         $host ??= $_SERVER['SERVER_NAME'].$port;
-        $base   = "$scheme://$host".$_SERVER['REQUEST_URI'];
+        $base   = "{$scheme}://{$host}".$_SERVER['REQUEST_URI'];
 
         $base = str_replace('/index.php', '', $base);
 
         /* return if already absolute URL */
-        if ('' != parse_url($rel, PHP_URL_SCHEME)) {
+        if (parse_url($rel, PHP_URL_SCHEME) != '') {
             return $rel;
         }
 
         /* queries and anchors */
-        if ('#' == $rel[0] || '?' == $rel[0]) {
+        if ($rel[0] == '#' || $rel[0] == '?') {
             return $base.$rel;
         }
 
@@ -71,7 +71,7 @@ class UrlHelper
         $urlPartsArray = parse_url($base);
 
         // We should have a valid URL by this point. If not, just return the original value
-        if (false === $urlPartsArray) {
+        if ($urlPartsArray === false) {
             return $rel;
         }
 
@@ -81,15 +81,15 @@ class UrlHelper
         $path = preg_replace('#/[^/]*$#', '', $path);
 
         /* destroy path if relative url points to root */
-        if ('/' == $rel[0]) {
+        if ($rel[0] == '/') {
             $path = '';
         }
 
         /* dirty absolute URL // with port number if exists */
-        if ('' != parse_url($base, PHP_URL_PORT)) {
-            $abs = "$host:".parse_url($base, PHP_URL_PORT)."$path/$rel";
+        if (parse_url($base, PHP_URL_PORT) != '') {
+            $abs = "{$host}:".parse_url($base, PHP_URL_PORT)."{$path}/{$rel}";
         } else {
-            $abs = "$host$path/$rel";
+            $abs = "{$host}{$path}/{$rel}";
         }
         /* replace '//' or '/./' or '/foo/../' with '/' */
         $re = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
@@ -112,8 +112,8 @@ class UrlHelper
         $urls = [];
         // Check if there are any tokens that URL based fields
         foreach ($contactUrlFields as $field) {
-            if (str_contains($text, "{contactfield=$field}")) {
-                $urls[] = "{contactfield=$field}";
+            if (str_contains($text, "{contactfield={$field}}")) {
+                $urls[] = "{contactfield={$field}}";
             }
         }
 
@@ -160,6 +160,65 @@ class UrlHelper
         $url = self::sanitizeUrlPath($url);
 
         return self::sanitizeUrlQuery($url);
+    }
+
+    /**
+     *  This method return true with special characters in URL, for example https://domain.tld/é.pdf
+     * filter_var($url, FILTER_VALIDATE_URL) allow only alphanumerics [0-9a-zA-Z], the special characters "$-_.+!*'()," [not including the quotes - ed].
+     *
+     * @param string $url
+     */
+    public static function isValidUrl($url): bool
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+        if ($path !== null) {
+            $encodedPath = array_map('urlencode', explode('/', $path));
+            $url         = str_replace($path, implode('/', $encodedPath), $url);
+        }
+
+        return (bool) filter_var($url, FILTER_VALIDATE_URL);
+    }
+
+    /**
+     * Decode &amp; (HTML), &#38; (decimal) and &#x26; (hex) ampersands.
+     * This even works with double encoded ampersands.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function decodeAmpersands($url)
+    {
+        while (str_contains($url, '&amp;') || str_contains($url, '&#38;') || str_contains($url, '&#x26;')) {
+            $url = str_replace(['&amp;', '&#38;', '&#x26;'], '&', $url);
+        }
+
+        return $url;
+    }
+
+    /**
+     * This method implements unicode slugs instead of transliteration.
+     */
+    public static function stringURLUnicodeSlug(string $string): string
+    {
+        // Replace double byte whitespaces by single byte (East Asian languages)
+        $str = preg_replace('/\xE3\x80\x80/', ' ', $string);
+
+        // Remove any '-' from the string as they will be used as concatenator.
+        // Would be great to let the spaces in but only Firefox is friendly with this
+        $str = str_replace('-', ' ', $str);
+
+        // Replace forbidden characters by whitespaces
+        $str = preg_replace('#[:\#\*"@+=;!><&\.%()\]\/\'\\\\|\[]#', "\x20", $str);
+
+        // Delete all '?'
+        $str = str_replace('?', '', $str);
+
+        // Trim white spaces at beginning and end of alias and make lowercase
+        $str = trim(strtolower($str));
+
+        // Remove any duplicate whitespace and replace whitespaces by hyphens
+        return preg_replace('#\x20+#', '-', $str);
     }
 
     /**
@@ -270,64 +329,5 @@ class UrlHelper
         }
 
         return $string;
-    }
-
-    /**
-     *  This method return true with special characters in URL, for example https://domain.tld/é.pdf
-     * filter_var($url, FILTER_VALIDATE_URL) allow only alphanumerics [0-9a-zA-Z], the special characters "$-_.+!*'()," [not including the quotes - ed].
-     *
-     * @param string $url
-     */
-    public static function isValidUrl($url): bool
-    {
-        $path = parse_url($url, PHP_URL_PATH);
-        if (null !== $path) {
-            $encodedPath = array_map('urlencode', explode('/', $path));
-            $url         = str_replace($path, implode('/', $encodedPath), $url);
-        }
-
-        return (bool) filter_var($url, FILTER_VALIDATE_URL);
-    }
-
-    /**
-     * Decode &amp; (HTML), &#38; (decimal) and &#x26; (hex) ampersands.
-     * This even works with double encoded ampersands.
-     *
-     * @param string $url
-     *
-     * @return string
-     */
-    public static function decodeAmpersands($url)
-    {
-        while (str_contains($url, '&amp;') || str_contains($url, '&#38;') || str_contains($url, '&#x26;')) {
-            $url = str_replace(['&amp;', '&#38;', '&#x26;'], '&', $url);
-        }
-
-        return $url;
-    }
-
-    /**
-     * This method implements unicode slugs instead of transliteration.
-     */
-    public static function stringURLUnicodeSlug(string $string): string
-    {
-        // Replace double byte whitespaces by single byte (East Asian languages)
-        $str = preg_replace('/\xE3\x80\x80/', ' ', $string);
-
-        // Remove any '-' from the string as they will be used as concatenator.
-        // Would be great to let the spaces in but only Firefox is friendly with this
-        $str = str_replace('-', ' ', $str);
-
-        // Replace forbidden characters by whitespaces
-        $str = preg_replace('#[:\#\*"@+=;!><&\.%()\]\/\'\\\\|\[]#', "\x20", $str);
-
-        // Delete all '?'
-        $str = str_replace('?', '', $str);
-
-        // Trim white spaces at beginning and end of alias and make lowercase
-        $str = trim(strtolower($str));
-
-        // Remove any duplicate whitespace and replace whitespaces by hyphens
-        return preg_replace('#\x20+#', '-', $str);
     }
 }

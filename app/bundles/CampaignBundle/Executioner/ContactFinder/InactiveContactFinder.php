@@ -35,7 +35,7 @@ class InactiveContactFinder
         ContactLimiter $limiter,
         bool $ignoreParentEvent = false,
     ): ArrayCollection {
-        if ($limiter->hasCampaignLimit() && 0 === $limiter->getCampaignLimitRemaining()) {
+        if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() === 0) {
             // Limit was reached but do not trigger the NoContactsFoundException
             return new ArrayCollection();
         }

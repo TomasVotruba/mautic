@@ -233,13 +233,22 @@ class FieldFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
+     * @return iterable<array<mixed>>
+     */
+    public static function provideFieldLength(): iterable
+    {
+        yield [ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH, ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH];
+        yield [64, null];
+    }
+
+    /**
      * @param array<string, mixed> $parameters
      */
     private function createField(string $suffix, string $type = 'text', array $parameters = [], ?int $charLength = null): LeadField
     {
         $field = new LeadField();
-        $field->setName("Field $suffix");
-        $field->setAlias("field_$suffix");
+        $field->setName("Field {$suffix}");
+        $field->setAlias("field_{$suffix}");
         $field->setDateAdded(new \DateTime());
         $field->setDateAdded(new \DateTime());
         $field->setDateModified(new \DateTime());
@@ -251,14 +260,5 @@ class FieldFunctionalTest extends MauticMysqlTestCase
         isset($parameters['properties']) && $field->setProperties($parameters['properties']);
 
         return $field;
-    }
-
-    /**
-     * @return iterable<array<mixed>>
-     */
-    public static function provideFieldLength(): iterable
-    {
-        yield [ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH, ClassMetadataBuilder::MAX_VARCHAR_INDEXED_LENGTH];
-        yield [64, null];
     }
 }

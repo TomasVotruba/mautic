@@ -26,12 +26,12 @@ class LoadEmailData extends AbstractFixture implements OrderedFixtureInterface
             $email->setDateAdded(new \DateTime());
             $key = $count + 1;
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ($val != 'NULL') {
                     $setter = 'set'.ucfirst($col);
                     if (in_array($col, ['content', 'variantSettings'])) {
                         $val = Serializer::decode(stripslashes($val));
                     }
-                    $email->$setter($val);
+                    $email->{$setter}($val);
                 }
             }
             $email->addList($this->getReference('lead-list'));

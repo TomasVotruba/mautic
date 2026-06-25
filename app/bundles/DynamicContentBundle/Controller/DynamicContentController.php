@@ -16,23 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DynamicContentController extends FormController
 {
-    protected function getPermissions(): array
-    {
-        return (array) $this->security->isGranted(
-            [
-                'dynamiccontent:dynamiccontents:viewown',
-                'dynamiccontent:dynamiccontents:viewother',
-                'dynamiccontent:dynamiccontents:create',
-                'dynamiccontent:dynamiccontents:editown',
-                'dynamiccontent:dynamiccontents:editother',
-                'dynamiccontent:dynamiccontents:deleteown',
-                'dynamiccontent:dynamiccontents:deleteother',
-                'dynamiccontent:dynamiccontents:publishown',
-                'dynamiccontent:dynamiccontents:publishother',
-            ],
-            'RETURN_ARRAY'
-        );
-    }
 
     public function indexAction(Request $request, $page = 1): Response
     {
@@ -47,7 +30,7 @@ class DynamicContentController extends FormController
         $this->setListFilters();
 
         $limit = $request->getSession()->get('mautic.dynamicContent.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -126,12 +109,12 @@ class DynamicContentController extends FormController
         $retUrl       = $this->generateUrl('mautic_dynamicContent_index', ['page' => $page]);
         $action       = $this->generateUrl('mautic_dynamicContent_action', ['objectAction' => 'new']);
         $dwc          = $request->request->all()['dwc'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($dwc['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
         $form         = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
-        if (Request::METHOD_POST === $method) {
+        if ($method === Request::METHOD_POST) {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -242,7 +225,7 @@ class DynamicContentController extends FormController
             ],
         ];
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -267,14 +250,14 @@ class DynamicContentController extends FormController
         $action       = $this->generateUrl('mautic_dynamicContent_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $method       = $request->getMethod();
         $dwc          = $request->request->all()['dwc'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($dwc['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $method) {
+        if (!$ignorePost && $method === 'POST') {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -341,7 +324,7 @@ class DynamicContentController extends FormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.dynamicContent.page', 1);
 
-        if (null === $entity) {
+        if ($entity === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_dynamicContent_index', ['page' => $page]);
 
@@ -430,7 +413,7 @@ class DynamicContentController extends FormController
         $model  = $this->getModel('dynamicContent');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('dynamiccontent:dynamiccontents:create')
                 || !$this->security->hasEntityAccess(
                     'dynamiccontent:dynamiccontents:viewown',
@@ -468,12 +451,12 @@ class DynamicContentController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model  = $this->getModel('dynamicContent');
             \assert($model instanceof DynamicContentModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.dynamicContent.error.notfound',
@@ -526,7 +509,7 @@ class DynamicContentController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('dynamicContent');
             \assert($model instanceof DynamicContentModel);
             $ids = json_decode($request->query->get('ids', '{}'));
@@ -537,7 +520,7 @@ class DynamicContentController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.dynamicContent.error.notfound',
@@ -572,5 +555,22 @@ class DynamicContentController extends FormController
         } // else don't do anything
 
         return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+    }
+    protected function getPermissions(): array
+    {
+        return (array) $this->security->isGranted(
+            [
+                'dynamiccontent:dynamiccontents:viewown',
+                'dynamiccontent:dynamiccontents:viewother',
+                'dynamiccontent:dynamiccontents:create',
+                'dynamiccontent:dynamiccontents:editown',
+                'dynamiccontent:dynamiccontents:editother',
+                'dynamiccontent:dynamiccontents:deleteown',
+                'dynamiccontent:dynamiccontents:deleteother',
+                'dynamiccontent:dynamiccontents:publishown',
+                'dynamiccontent:dynamiccontents:publishother',
+            ],
+            'RETURN_ARRAY'
+        );
     }
 }

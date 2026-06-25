@@ -49,25 +49,6 @@ class EmailDraft
         $this->decodeAmpersands($this->html);
     }
 
-    /**
-     * Check all links in content and decode &amp;
-     * This even works with double encoded ampersands.
-     */
-    private function decodeAmpersands(string &$content): void
-    {
-        if (preg_match_all('/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i', $content, $matches)) {
-            foreach ($matches[0] as $url) {
-                $newUrl = $url;
-
-                while (str_contains($newUrl, '&amp;')) {
-                    $newUrl = str_replace('&amp;', '&', $newUrl);
-                }
-
-                $content = str_replace($url, $newUrl, $content);
-            }
-        }
-    }
-
     public function getId(): int
     {
         return $this->id;
@@ -116,5 +97,24 @@ class EmailDraft
     public function setPublicPreview(bool $publicPreview): void
     {
         $this->publicPreview = $publicPreview;
+    }
+
+    /**
+     * Check all links in content and decode &amp;
+     * This even works with double encoded ampersands.
+     */
+    private function decodeAmpersands(string &$content): void
+    {
+        if (preg_match_all('/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i', $content, $matches)) {
+            foreach ($matches[0] as $url) {
+                $newUrl = $url;
+
+                while (str_contains($newUrl, '&amp;')) {
+                    $newUrl = str_replace('&amp;', '&', $newUrl);
+                }
+
+                $content = str_replace($url, $newUrl, $content);
+            }
+        }
     }
 }

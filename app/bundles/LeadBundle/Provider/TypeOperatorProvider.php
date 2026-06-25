@@ -102,6 +102,6 @@ final class TypeOperatorProvider implements TypeOperatorProviderInterface
     {
         $operatorOptions = $this->filterOperatorProvider->getAllOperators();
 
-        return (null === $operator) ? $operatorOptions : $operatorOptions[$operator];
+        return ($operator === null) ? $operatorOptions : $operatorOptions[$operator];
     }
 }

@@ -103,7 +103,7 @@ class RoleModel extends FormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Role
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Role();
         }
 

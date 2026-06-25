@@ -27,7 +27,7 @@ class DynamicFiltersType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         foreach ($options['report']->getFilters() as $filter) {
-            if (isset($filter['dynamic']) && 1 === $filter['dynamic']) {
+            if (isset($filter['dynamic']) && $filter['dynamic'] === 1) {
                 $column     = $filter['column'];
                 $definition = $options['filterDefinitions']->definitions[$column];
 
@@ -74,8 +74,8 @@ class DynamicFiltersType extends AbstractType
                         ];
 
                         if (isset($options['data'][$definition['alias']])) {
-                            $args['data'] = (1 == (int) $options['data'][$definition['alias']]);
-                        } elseif (isset($filter['value']) && '' !== $filter['value']) {
+                            $args['data'] = ((int) $options['data'][$definition['alias']] == 1);
+                        } elseif (isset($filter['value']) && $filter['value'] !== '') {
                             $args['data'] = (int) $filter['value'];
                         }
                         break;

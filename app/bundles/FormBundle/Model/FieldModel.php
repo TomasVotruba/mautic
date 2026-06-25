@@ -44,11 +44,6 @@ class FieldModel extends CommonFormModel
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
-    private function getSession(): SessionInterface
-    {
-        return $this->requestStack->getSession();
-    }
-
     /**
      * @param object|array<mixed> $entity
      * @param string|null         $action
@@ -80,7 +75,7 @@ class FieldModel extends CommonFormModel
 
     public function getEntity($id = null): ?Field
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Field();
         }
 
@@ -129,6 +124,20 @@ class FieldModel extends CommonFormModel
     }
 
     /**
+     * Updates the table structure for form results.
+     */
+    public function removeFieldColumn(Field $field): void
+    {
+        $form = $field->getForm();
+
+        $name = 'form_results_'.$form->getId().'_'.$form->getAlias();
+
+        $schemaHelper = $this->columnSchemaHelper->setName($name);
+        $schemaHelper->dropColumn($field->getAlias());
+        $schemaHelper->executeChanges();
+    }
+
+    /**
      * @throws MethodNotAllowedHttpException
      */
     protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
@@ -167,17 +176,8 @@ class FieldModel extends CommonFormModel
         return null;
     }
 
-    /**
-     * Updates the table structure for form results.
-     */
-    public function removeFieldColumn(Field $field): void
+    private function getSession(): SessionInterface
     {
-        $form = $field->getForm();
-
-        $name = 'form_results_'.$form->getId().'_'.$form->getAlias();
-
-        $schemaHelper = $this->columnSchemaHelper->setName($name);
-        $schemaHelper->dropColumn($field->getAlias());
-        $schemaHelper->executeChanges();
+        return $this->requestStack->getSession();
     }
 }

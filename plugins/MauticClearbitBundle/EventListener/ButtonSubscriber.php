@@ -32,7 +32,7 @@ class ButtonSubscriber implements EventSubscriberInterface
         /** @var ClearbitIntegration $myIntegration */
         $myIntegration = $this->helper->getIntegrationObject('Clearbit');
 
-        if (false === $myIntegration || !$myIntegration->getIntegrationSettings()->getIsPublished()) {
+        if ($myIntegration === false || !$myIntegration->getIntegrationSettings()->getIsPublished()) {
             return;
         }
 

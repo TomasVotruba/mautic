@@ -26,14 +26,14 @@ class Version20250804003400 extends AbstractMauticMigration
             $filters = unserialize($listData['filters'], ['allowed_classes' => false]);
             $changed = false;
             foreach ($filters as $index => $filter) {
-                if ('multiselect' !== $filter['type']) {
+                if ($filter['type'] !== 'multiselect') {
                     continue;
                 }
 
-                if (OperatorOptions::INCLUDING_ANY === $filter['operator']) {
+                if ($filter['operator'] === OperatorOptions::INCLUDING_ANY) {
                     $filters[$index]['operator'] = OperatorOptions::INCLUDING_ALL;
                     $changed                     = true;
-                } elseif (OperatorOptions::EXCLUDING_ANY === $filter['operator']) {
+                } elseif ($filter['operator'] === OperatorOptions::EXCLUDING_ANY) {
                     $filters[$index]['operator'] = OperatorOptions::EXCLUDING_ALL;
                     $changed                     = true;
                 }
@@ -65,14 +65,14 @@ class Version20250804003400 extends AbstractMauticMigration
             $filters = unserialize($listData['filters'], ['allowed_classes' => false]);
             $changed = false;
             foreach ($filters as $index => $filter) {
-                if ('multiselect' !== $filter['type']) {
+                if ($filter['type'] !== 'multiselect') {
                     continue;
                 }
 
-                if (OperatorOptions::INCLUDING_ALL === $filter['operator']) {
+                if ($filter['operator'] === OperatorOptions::INCLUDING_ALL) {
                     $filters[$index]['operator'] = OperatorOptions::INCLUDING_ANY;
                     $changed                     = true;
-                } elseif (OperatorOptions::EXCLUDING_ALL === $filter['operator']) {
+                } elseif ($filter['operator'] === OperatorOptions::EXCLUDING_ALL) {
                     $filters[$index]['operator'] = OperatorOptions::EXCLUDING_ANY;
                     $changed                     = true;
                 }

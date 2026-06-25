@@ -39,7 +39,7 @@ class NoteController extends FormController
             'mautic.lead.'.$lead->getId().'.note.limit',
             $this->coreParametersHelper->get('default_pagelimit')
         );
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -62,7 +62,7 @@ class NoteController extends FormController
 
         $tmpl     = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
         $noteType = InputHelper::clean($request->request->all()['noteTypes'] ?? []);
-        if (empty($noteType) && 'index' === $tmpl) {
+        if (empty($noteType) && $tmpl === 'index') {
             $noteType = $session->get('mautic.lead.'.$lead->getId().'.notetype.filter', []);
         }
         $session->set('mautic.lead.'.$lead->getId().'.notetype.filter', $noteType);
@@ -154,7 +154,7 @@ class NoteController extends FormController
         $closeModal = false;
         $valid      = false;
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $closeModal = true;
@@ -230,7 +230,7 @@ class NoteController extends FormController
         $closeModal = false;
         $valid      = false;
 
-        if (null === $note || !$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
+        if ($note === null || !$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
             $this->throwAccessDenied();
         }
 
@@ -245,7 +245,7 @@ class NoteController extends FormController
         $form = $model->createForm($note, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     // form is valid so process the data
@@ -311,7 +311,7 @@ class NoteController extends FormController
         \assert($model instanceof NoteModel);
         $note = $model->getEntity($objectId);
 
-        if (null === $note) {
+        if ($note === null) {
             return $this->notFound();
         }
 

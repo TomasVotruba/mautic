@@ -65,7 +65,7 @@ class DashboardModel extends FormModel
      */
     public function getEntity($id = null): ?Widget
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Widget();
         }
 
@@ -185,7 +185,7 @@ class DashboardModel extends FormModel
         foreach ($data as $property => $value) {
             $method = 'set'.ucfirst($property);
             if (method_exists($entity, $method)) {
-                $entity->$method($value);
+                $entity->{$method}($value);
             }
             unset($data[$property]);
         }
@@ -213,11 +213,11 @@ class DashboardModel extends FormModel
         $defaultTimeout = $this->coreParametersHelper->get('cached_data_timeout');
 
         // Timeout 0 will be interpreted as endless cache, so we set it to -1 which will be interpreted as no cache
-        if (0 === $defaultTimeout) {
+        if ($defaultTimeout === 0) {
             $defaultTimeout = -1;
         }
 
-        if (null === $widget->getCacheTimeout() || -1 === $widget->getCacheTimeout()) {
+        if ($widget->getCacheTimeout() === null || $widget->getCacheTimeout() === -1) {
             $widget->setCacheTimeout($defaultTimeout);
         }
 

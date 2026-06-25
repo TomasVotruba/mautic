@@ -143,6 +143,14 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     #[Groups(['sms:read'])]
     private int $pendingCount = 0;
 
+    public function __construct()
+    {
+        $this->lists = new ArrayCollection();
+        $this->stats = new ArrayCollection();
+        $this->initializeProjects();
+        $this->translationChildren = new ArrayCollection();
+    }
+
     public function __clone()
     {
         $this->id        = null;
@@ -152,14 +160,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         $this->clearTranslations();
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->lists = new ArrayCollection();
-        $this->stats = new ArrayCollection();
-        $this->initializeProjects();
-        $this->translationChildren = new ArrayCollection();
     }
 
     public function clearStats(): void
@@ -238,7 +238,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
             function (Sms $sms, ExecutionContextInterface $context): void {
                 $type      = $sms->getSmsType();
                 $validator = $context->getValidator();
-                if ('list' == $type) {
+                if ($type == 'list') {
                     $violations = $validator->validate(
                         $sms->getLists(),
                         [
@@ -286,22 +286,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'sms');
-    }
-
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-
-        if ('category' == $prop || 'list' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     /**
@@ -532,5 +516,21 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     public function getIsMms(): bool
     {
         return (bool) $this->isMms;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+
+        if ($prop == 'category' || $prop == 'list') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

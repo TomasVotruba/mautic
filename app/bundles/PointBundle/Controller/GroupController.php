@@ -10,15 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GroupController extends AbstractStandardFormController
 {
-    protected function getTemplateBase(): string
-    {
-        return '@MauticPoint/Group';
-    }
-
-    protected function getModelName(): string
-    {
-        return 'point.group';
-    }
 
     /**
      * @param int $page
@@ -71,5 +62,14 @@ class GroupController extends AbstractStandardFormController
     public function batchDeleteAction(Request $request)
     {
         return parent::batchDeleteStandard($request);
+    }
+    protected function getTemplateBase(): string
+    {
+        return '@MauticPoint/Group';
+    }
+
+    protected function getModelName(): string
+    {
+        return 'point.group';
     }
 }

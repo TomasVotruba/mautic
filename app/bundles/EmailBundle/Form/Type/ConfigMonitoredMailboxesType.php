@@ -27,7 +27,7 @@ class ConfigMonitoredMailboxesType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $monitoredShowOn = ('general' == $options['mailbox']) ? '{}'
+        $monitoredShowOn = ($options['mailbox'] == 'general') ? '{}'
             : '{"config_emailconfig_monitored_email_'.$options['mailbox'].'_override_settings_1": "checked"}';
 
         $builder->add(
@@ -142,7 +142,7 @@ class ConfigMonitoredMailboxesType extends AbstractType
             ]
         );
 
-        if ('general' != $options['mailbox']) {
+        if ($options['mailbox'] != 'general') {
             $builder->add(
                 'override_settings',
                 YesNoButtonGroupType::class,

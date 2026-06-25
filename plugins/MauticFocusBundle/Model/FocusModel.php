@@ -112,7 +112,7 @@ class FocusModel extends FormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?Focus
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Focus();
         }
 
@@ -184,7 +184,7 @@ class FocusModel extends FormModel implements GlobalSearchInterface
      */
     public function getContent(array $focus, $isPreview = false, $url = '#')
     {
-        $form = (!empty($focus['form']) && 'form' === $focus['type']) ? $this->formModel->getEntity($focus['form']) : null;
+        $form = (!empty($focus['form']) && $focus['type'] === 'form') ? $this->formModel->getEntity($focus['form']) : null;
 
         if (isset($focus['html_mode'])) {
             $htmlMode = $focus['htmlMode'] = $focus['html_mode'];
@@ -317,46 +317,6 @@ class FocusModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Focus) {
-            throw new MethodNotAllowedHttpException(['Focus']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = FocusEvents::PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = FocusEvents::POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = FocusEvents::PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = FocusEvents::POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new FocusEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
-    /**
      * @param bool $canViewOthers
      */
     public function getStats(Focus $focus, $unit, \DateTime $dateFrom, \DateTime $dateTo, $dateFormat = null, $canViewOthers = true): array
@@ -371,8 +331,8 @@ class FocusModel extends FormModel implements GlobalSearchInterface
         $data = $query->loadAndBuildTimeData($q);
         $chart->setDataset($this->translator->trans('mautic.focus.graph.views'), $data);
 
-        if ('notification' != $focus->getType()) {
-            if ('link' == $focus->getType()) {
+        if ($focus->getType() != 'notification') {
+            if ($focus->getType() == 'link') {
                 $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', ['type' => Stat::TYPE_CLICK, 'focus_id' => $focus->getId()]);
                 if (!$canViewOthers) {
                     $this->limitQueryToCreator($q);
@@ -417,11 +377,51 @@ class FocusModel extends FormModel implements GlobalSearchInterface
         return $this->getStatRepository()->getClickThroughCount($focus->getId());
     }
 
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Focus) {
+            throw new MethodNotAllowedHttpException(['Focus']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = FocusEvents::PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = FocusEvents::POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = FocusEvents::PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = FocusEvents::POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new FocusEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
     private function generateTrackableUrl(Focus $focus, ?Lead $lead = null): ?string
     {
         $focusArray = $focus->toArray();
 
-        if ('link' != $focusArray['type'] || !($linkUrl = $focusArray['properties']['content']['link_url'])) {
+        if ($focusArray['type'] != 'link' || !($linkUrl = $focusArray['properties']['content']['link_url'])) {
             return null;
         }
 

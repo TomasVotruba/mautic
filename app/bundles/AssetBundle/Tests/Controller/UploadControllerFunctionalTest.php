@@ -31,11 +31,6 @@ final class UploadControllerFunctionalTest extends MauticMysqlTestCase
         $this->cleanupPaths[] = $this->assetPath.'/tmp/'.$this->tempId;
     }
 
-    protected function beforeTearDown(): void
-    {
-        (new Filesystem())->remove($this->cleanupPaths);
-    }
-
     public function testUploadWithWrongClientMimetype(): void
     {
         $filePath = $this->createSourcePath('png');
@@ -96,6 +91,11 @@ final class UploadControllerFunctionalTest extends MauticMysqlTestCase
             $extension,
             $extensions
         ), $content);
+    }
+
+    protected function beforeTearDown(): void
+    {
+        (new Filesystem())->remove($this->cleanupPaths);
     }
 
     private function createSourcePath(string $extension): string

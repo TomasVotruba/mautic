@@ -111,7 +111,7 @@ class FieldHelper
         // Add ID as a read only field
         $this->syncFields[$objectName]['mautic_internal_id'] = $this->translator->trans('mautic.core.id');
 
-        if (Contact::NAME !== $objectName) {
+        if ($objectName !== Contact::NAME) {
             uksort($this->syncFields[$objectName], 'strnatcmp');
 
             return $this->syncFields[$objectName];
@@ -151,7 +151,7 @@ class FieldHelper
         );
 
         // We don't use unique identifier field for companies.
-        if ('company' === $object) {
+        if ($object === 'company') {
             $this->requiredFieldList[$object] = $requiredFields;
 
             return $this->requiredFieldList[$object];

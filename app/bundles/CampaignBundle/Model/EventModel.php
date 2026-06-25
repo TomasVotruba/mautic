@@ -51,7 +51,7 @@ class EventModel extends FormModel
      */
     public function getEntity($id = null): ?Event
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Event();
         }
 

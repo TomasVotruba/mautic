@@ -72,7 +72,7 @@ EOT
     {
         $hasNoErrors = Command::SUCCESS;
         while ($leadField = $this->leadFieldRepository->getFieldThatIsMissingColumn()) {
-            if (Command::FAILURE === $this->addColumn($leadField->getId(), $leadField->getCreatedBy(), $input, $output)) {
+            if ($this->addColumn($leadField->getId(), $leadField->getCreatedBy(), $input, $output) === Command::FAILURE) {
                 $hasNoErrors = Command::FAILURE;
             }
         }

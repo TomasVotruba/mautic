@@ -58,7 +58,7 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
             $properties         = $field->getProperties();
             $properties['type'] = $type;
 
-            if ('boolean' === $type) {
+            if ($type === 'boolean') {
                 $properties['list'] = [
                     $properties['no']  => 0,
                     $properties['yes'] => 1,
@@ -593,6 +593,23 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
         }
     }
 
+    public function onGenerateSegmentFiltersNormalizeOperatorLabels(LeadListFiltersChoicesEvent $event): void
+    {
+        $choices = $event->getChoices();
+
+        foreach ($choices as $groupKey => $group) {
+            foreach ($group as $fieldKey => $field) {
+                if (in_array($field['properties']['type'] ?? '', ['date', 'datetime'])) {
+                    $operators                                  = array_flip($field['operators'] ?? []);
+                    $operators                                  = $this->translateOperators($operators);
+                    $choices[$groupKey][$fieldKey]['operators'] = array_flip($operators);
+                }
+            }
+        }
+
+        $event->setChoices($choices);
+    }
+
     private function setIncludeExcludeOperatorsToTextFilters(LeadListFiltersChoicesEvent $event): void
     {
         $choices = $event->getChoices();
@@ -600,7 +617,7 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
         foreach ($choices as $group => $groups) {
             foreach ($groups as $alias => $choice) {
                 $type = $choice['properties']['type'] ?? null;
-                if ('text' === $type) {
+                if ($type === 'text') {
                     $choices[$group][$alias]['operators'] = $this->typeOperatorProvider->getOperatorsIncluding([
                         OperatorOptions::EQUAL_TO,
                         OperatorOptions::NOT_EQUAL_TO,
@@ -616,23 +633,6 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
                         OperatorOptions::ENDS_WITH,
                         OperatorOptions::CONTAINS,
                     ]);
-                }
-            }
-        }
-
-        $event->setChoices($choices);
-    }
-
-    public function onGenerateSegmentFiltersNormalizeOperatorLabels(LeadListFiltersChoicesEvent $event): void
-    {
-        $choices = $event->getChoices();
-
-        foreach ($choices as $groupKey => $group) {
-            foreach ($group as $fieldKey => $field) {
-                if (in_array($field['properties']['type'] ?? '', ['date', 'datetime'])) {
-                    $operators                                  = array_flip($field['operators'] ?? []);
-                    $operators                                  = $this->translateOperators($operators);
-                    $choices[$groupKey][$fieldKey]['operators'] = array_flip($operators);
                 }
             }
         }

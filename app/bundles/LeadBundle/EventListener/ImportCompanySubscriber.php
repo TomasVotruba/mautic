@@ -89,7 +89,7 @@ final class ImportCompanySubscriber implements EventSubscriberInterface
 
     public function onValidateImport(ImportValidateEvent $event): void
     {
-        if (false === $event->importIsForRouteObject('companies')) {
+        if ($event->importIsForRouteObject('companies') === false) {
             return;
         }
 
@@ -153,7 +153,7 @@ final class ImportCompanySubscriber implements EventSubscriberInterface
                         'mautic.import.missing.required.fields',
                         [
                             '%requiredFields%' => implode(', ', $missingRequiredFields),
-                            '%fieldOrFields%'  => 1 === count($missingRequiredFields) ? 'field' : 'fields',
+                            '%fieldOrFields%'  => count($missingRequiredFields) === 1 ? 'field' : 'fields',
                         ],
                         'validators'
                     )

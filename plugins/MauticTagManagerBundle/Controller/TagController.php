@@ -64,7 +64,7 @@ class TagController extends FormController
 
         // set limits
         $limit = $session->get('mautic.tagmanager.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -95,7 +95,7 @@ class TagController extends FormController
 
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (ceil($count / $limit)) ?: 1;
@@ -171,7 +171,7 @@ class TagController extends FormController
         $form = $model->createForm($tag, $this->formFactory, $action);
 
         $response = $this->handleNewActionPost($request, $tagDependencies, $tag, $model, $form, $returnUrl, $page);
-        if (null === $response) {
+        if ($response === null) {
             $response = $this->delegateView([
                 'viewParameters' => [
                     'form'   => $form->createView(),
@@ -189,9 +189,270 @@ class TagController extends FormController
         return $response;
     }
 
+    /**
+     * Generate's edit form and processes post data.
+     */
+    public function editAction(Request $request, TagDependencies $tagDependencies, int $objectId, bool $ignorePost = false): Response
+    {
+        if (!$this->security->isGranted(self::PERMISSION_EDIT)) {
+            $this->throwAccessDenied();
+        }
+
+        $postActionVars = $this->getPostActionVars($request, $objectId);
+
+        try {
+            return $this->createTagModifyResponse(
+                $request,
+                $this->getTag($objectId),
+                $tagDependencies,
+                $postActionVars,
+                $this->generateUrl('mautic_tagmanager_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
+                $ignorePost
+            );
+        } catch (EntityNotFoundException) {
+            return $this->postActionRedirect(
+                array_merge($postActionVars, [
+                    'flashes' => [
+                        [
+                            'type'    => 'error',
+                            'msg'     => 'mautic.tagmanager.tag.error.notfound',
+                            'msgVars' => ['%id%' => $objectId],
+                        ],
+                    ],
+                ])
+            );
+        }
+    }
+
+    /**
+     * Loads a specific form into the detailed panel.
+     */
+    public function viewAction(Request $request, TagDependencies $tagDependencies, int $objectId): Response
+    {
+        /** @var TagModel $model */
+        $model    = $this->getModel('lead.tag');
+        $security = $this->security;
+
+        $tag = $model->getEntity($objectId);
+
+        // set the page we came from
+        $page = $request->getSession()->get('mautic.tagmanager.page', 1);
+        if ($tag === null) {
+            // set the return URL
+            $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
+
+            return $this->postActionRedirect([
+                'returnUrl'       => $returnUrl,
+                'viewParameters'  => ['page' => $page],
+                'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
+                'passthroughVars' => [
+                    'activeLink'    => '#mautic_tagmanager_index',
+                    'mauticContent' => 'tagmanager',
+                ],
+                'flashes' => [
+                    [
+                        'type'    => 'error',
+                        'msg'     => 'mautic.tagmanager.tag.error.notfound',
+                        'msgVars' => ['%id%' => $objectId],
+                    ],
+                ],
+            ]);
+        } elseif (!$this->security->isGranted(self::PERMISSION_VIEW)) {
+            $this->throwAccessDenied();
+        }
+
+        return $this->delegateView([
+            'returnUrl'      => $this->generateUrl('mautic_tagmanager_action', ['objectAction' => 'view', 'objectId' => $tag->getId()]),
+            'viewParameters' => [
+                'tag'        => $tag,
+                'security'   => $security,
+                'usageStats' => $tagDependencies->getChannelsIds($tag),
+            ],
+            'contentTemplate' => '@MauticTagManager/Tag/details.html.twig',
+            'passthroughVars' => [
+                'activeLink'    => '#mautic_tagmanager_index',
+                'mauticContent' => 'tagmanager',
+            ],
+        ]);
+    }
+
+    /**
+     * Merge two tags together.
+     */
+    public function mergeAction(Request $request, int $objectId): Response
+    {
+        $permissions = $this->security->isGranted(
+            [
+                self::PERMISSION_VIEW,
+                self::PERMISSION_EDIT,
+                self::PERMISSION_DELETE,
+            ],
+            'RETURN_ARRAY'
+        );
+
+        if (!$permissions[self::PERMISSION_VIEW]) {
+            $this->throwAccessDenied();
+        } else {
+            $secondaryTag = $this->leadTagModel->getEntity($objectId);
+
+            if ($secondaryTag === null) {
+                $response = $this->handleTagNotFound($objectId);
+            } else {
+                $postActionVars = $this->getMergePostActionVars($request);
+                $action         = $this->generateUrl('mautic_tagmanager_action', [
+                    'objectAction' => 'merge',
+                    'objectId'     => $secondaryTag->getId(),
+                ]);
+
+                $form = $this->formFactory->create(
+                    \MauticPlugin\MauticTagManagerBundle\Form\Type\TagMergeType::class,
+                    [],
+                    [
+                        'action'      => $action,
+                        'exclude_ids' => [$secondaryTag->getId()],
+                    ]
+                );
+
+                $response = $request->getMethod() === 'POST'
+                    ? $this->handleMergePostRequest($form, $secondaryTag, $permissions, $postActionVars)
+                    : $this->renderMergeForm($request, $action, $form, $secondaryTag);
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * Deletes a tags.
+     */
+    public function deleteAction(Request $request, $objectId): Response
+    {
+        /** @var TagModel $model */
+        $model     = $this->getModel('lead.tag');
+        $page      = $request->getSession()->get('mautic.tagmanager.page', 1);
+        $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
+        $flashes   = [];
+
+        $postActionVars = [
+            'returnUrl'       => $returnUrl,
+            'viewParameters'  => ['page' => $page],
+            'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
+            'passthroughVars' => [
+                'activeLink'    => '#mautic_tagmanager_index',
+                'mauticContent' => 'tagmanager',
+            ],
+        ];
+
+        if ($request->getMethod() === 'POST') {
+            $tag = $model->getEntity($objectId);
+
+            if ($tag === null) {
+                $flashes[] = [
+                    'type'    => 'error',
+                    'msg'     => 'mautic.tagmanager.tag.error.notfound',
+                    'msgVars' => ['%id%' => $objectId],
+                ];
+            } elseif (!$this->security->isGranted(self::PERMISSION_DELETE)) {
+                $this->throwAccessDenied();
+            }
+
+            $model->deleteEntity($tag);
+
+            $flashes[] = [
+                'type'    => 'notice',
+                'msg'     => 'mautic.core.notice.deleted',
+                'msgVars' => [
+                    '%name%' => $tag->getTag(),
+                    '%id%'   => $objectId,
+                ],
+            ];
+        }
+
+        return $this->postActionRedirect(
+            array_merge($postActionVars, [
+                'flashes' => $flashes,
+            ])
+        );
+    }
+
+    /**
+     * Deletes a group of entities.
+     */
+    public function batchDeleteAction(Request $request): Response
+    {
+        $model     = $this->leadTagModel;
+        $page      = $request->getSession()->get('mautic.tagmanager.page', 1);
+        $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
+        $flashes   = [];
+
+        $postActionVars = [
+            'returnUrl'       => $returnUrl,
+            'viewParameters'  => ['page' => $page],
+            'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
+            'passthroughVars' => [
+                'activeLink'    => '#mautic_tagmanager_index',
+                'mauticContent' => 'tagmanager',
+            ],
+        ];
+
+        if ($request->getMethod() === 'POST') {
+            $ids             = json_decode($request->query->get('ids', '{}'));
+            $deleteIds       = [];
+
+            // Loop over the IDs to perform access checks pre-delete
+            foreach ($ids as $objectId) {
+                $entity = $model->getEntity($objectId);
+
+                if ($entity === null) {
+                    $flashes[] = [
+                        'type'    => 'error',
+                        'msg'     => 'mautic.tagmanager.tag.error.notfound',
+                        'msgVars' => ['%id%' => $objectId],
+                    ];
+                } elseif (!$this->security->isGranted(self::PERMISSION_DELETE)) {
+                    $flashes[] = $this->getAccessDeniedFlash();
+                } else {
+                    $deleteIds[] = $objectId;
+                }
+            }
+
+            // Delete everything we are able to
+            if (!empty($deleteIds)) {
+                try {
+                    $entities = $model->deleteEntities($deleteIds);
+                } catch (ForeignKeyConstraintViolationException) {
+                    $flashes[] = [
+                        'type'    => 'notice',
+                        'msg'     => 'mautic.tagmanager.tag.error.cannotbedeleted',
+                    ];
+
+                    return $this->postActionRedirect(
+                        array_merge($postActionVars, [
+                            'flashes' => $flashes,
+                        ])
+                    );
+                }
+
+                $flashes[] = [
+                    'type'    => 'notice',
+                    'msg'     => 'mautic.tagmanager.tag.notice.batch_deleted',
+                    'msgVars' => [
+                        '%count%' => count($entities),
+                    ],
+                ];
+            }
+        } // else don't do anything
+
+        return $this->postActionRedirect(
+            array_merge($postActionVars, [
+                'flashes' => $flashes,
+            ])
+        );
+    }
+
     private function handleNewActionPost(Request $request, TagDependencies $tagDependencies, \MauticPlugin\MauticTagManagerBundle\Entity\Tag $tag, TagManagerModel $model, FormInterface $form, string $returnUrl, int $page): ?Response
     {
-        if (Request::METHOD_POST !== $request->getMethod()) {
+        if ($request->getMethod() !== Request::METHOD_POST) {
             return null;
         }
 
@@ -200,7 +461,7 @@ class TagController extends FormController
             if ($valid = $this->isFormValid($form)) {
                 // form is valid so process the data
                 $found = $model->getRepository()->countOccurrences($tag->getTag());
-                if (0 !== $found) {
+                if ($found !== 0) {
                     $valid = false;
                     $this->addFlashMessage('mautic.core.notice.updated', [
                         '%name%'      => $tag->getTag(),
@@ -248,41 +509,6 @@ class TagController extends FormController
     }
 
     /**
-     * Generate's edit form and processes post data.
-     */
-    public function editAction(Request $request, TagDependencies $tagDependencies, int $objectId, bool $ignorePost = false): Response
-    {
-        if (!$this->security->isGranted(self::PERMISSION_EDIT)) {
-            $this->throwAccessDenied();
-        }
-
-        $postActionVars = $this->getPostActionVars($request, $objectId);
-
-        try {
-            return $this->createTagModifyResponse(
-                $request,
-                $this->getTag($objectId),
-                $tagDependencies,
-                $postActionVars,
-                $this->generateUrl('mautic_tagmanager_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
-                $ignorePost
-            );
-        } catch (EntityNotFoundException) {
-            return $this->postActionRedirect(
-                array_merge($postActionVars, [
-                    'flashes' => [
-                        [
-                            'type'    => 'error',
-                            'msg'     => 'mautic.tagmanager.tag.error.notfound',
-                            'msgVars' => ['%id%' => $objectId],
-                        ],
-                    ],
-                ])
-            );
-        }
-    }
-
-    /**
      * @param array<string, mixed> $postActionVars
      */
     private function createTagModifyResponse(Request $request, Tag $tag, TagDependencies $tagDependencies, array $postActionVars, string $action, bool $ignorePost): Response
@@ -294,9 +520,9 @@ class TagController extends FormController
         $form = $tagModel->createForm($tag, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() === 'POST') {
             $response = $this->handleEditFormPost($request, $tag, $tagDependencies, $tagModel, $form, $postActionVars);
-            if (null !== $response) {
+            if ($response !== null) {
                 return $response;
             }
         }
@@ -447,104 +673,6 @@ class TagController extends FormController
         ];
     }
 
-    /**
-     * Loads a specific form into the detailed panel.
-     */
-    public function viewAction(Request $request, TagDependencies $tagDependencies, int $objectId): Response
-    {
-        /** @var TagModel $model */
-        $model    = $this->getModel('lead.tag');
-        $security = $this->security;
-
-        $tag = $model->getEntity($objectId);
-
-        // set the page we came from
-        $page = $request->getSession()->get('mautic.tagmanager.page', 1);
-        if (null === $tag) {
-            // set the return URL
-            $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
-
-            return $this->postActionRedirect([
-                'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $page],
-                'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
-                'passthroughVars' => [
-                    'activeLink'    => '#mautic_tagmanager_index',
-                    'mauticContent' => 'tagmanager',
-                ],
-                'flashes' => [
-                    [
-                        'type'    => 'error',
-                        'msg'     => 'mautic.tagmanager.tag.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
-                    ],
-                ],
-            ]);
-        } elseif (!$this->security->isGranted(self::PERMISSION_VIEW)) {
-            $this->throwAccessDenied();
-        }
-
-        return $this->delegateView([
-            'returnUrl'      => $this->generateUrl('mautic_tagmanager_action', ['objectAction' => 'view', 'objectId' => $tag->getId()]),
-            'viewParameters' => [
-                'tag'        => $tag,
-                'security'   => $security,
-                'usageStats' => $tagDependencies->getChannelsIds($tag),
-            ],
-            'contentTemplate' => '@MauticTagManager/Tag/details.html.twig',
-            'passthroughVars' => [
-                'activeLink'    => '#mautic_tagmanager_index',
-                'mauticContent' => 'tagmanager',
-            ],
-        ]);
-    }
-
-    /**
-     * Merge two tags together.
-     */
-    public function mergeAction(Request $request, int $objectId): Response
-    {
-        $permissions = $this->security->isGranted(
-            [
-                self::PERMISSION_VIEW,
-                self::PERMISSION_EDIT,
-                self::PERMISSION_DELETE,
-            ],
-            'RETURN_ARRAY'
-        );
-
-        if (!$permissions[self::PERMISSION_VIEW]) {
-            $this->throwAccessDenied();
-        } else {
-            $secondaryTag = $this->leadTagModel->getEntity($objectId);
-
-            if (null === $secondaryTag) {
-                $response = $this->handleTagNotFound($objectId);
-            } else {
-                $postActionVars = $this->getMergePostActionVars($request);
-                $action         = $this->generateUrl('mautic_tagmanager_action', [
-                    'objectAction' => 'merge',
-                    'objectId'     => $secondaryTag->getId(),
-                ]);
-
-                $form = $this->formFactory->create(
-                    \MauticPlugin\MauticTagManagerBundle\Form\Type\TagMergeType::class,
-                    [],
-                    [
-                        'action'      => $action,
-                        'exclude_ids' => [$secondaryTag->getId()],
-                    ]
-                );
-
-                $response = 'POST' === $request->getMethod()
-                    ? $this->handleMergePostRequest($form, $secondaryTag, $permissions, $postActionVars)
-                    : $this->renderMergeForm($request, $action, $form, $secondaryTag);
-            }
-        }
-
-        return $response;
-    }
-
     private function handleTagNotFound(int $objectId): Response
     {
         $postActionVars = $this->getMergePostActionVars($this->getCurrentRequest());
@@ -597,7 +725,7 @@ class TagController extends FormController
             /** @var Tag|null $primaryTag */
             $primaryTag = $data['tag_to_merge'];
 
-            if (null === $primaryTag) {
+            if ($primaryTag === null) {
                 $response = $this->handlePrimaryTagNotFound($postActionVars);
             } elseif (!$permissions[self::PERMISSION_EDIT] || !$permissions[self::PERMISSION_DELETE]) {
                 $this->throwAccessDenied();
@@ -699,136 +827,8 @@ class TagController extends FormController
             'contentTemplate' => '@MauticTagManager/Tag/merge.html.twig',
             'passthroughVars' => [
                 'route'  => false,
-                'target' => ('update' == $tmpl) ? '.tag-merge-options' : null,
+                'target' => ($tmpl == 'update') ? '.tag-merge-options' : null,
             ],
         ]);
-    }
-
-    /**
-     * Deletes a tags.
-     */
-    public function deleteAction(Request $request, $objectId): Response
-    {
-        /** @var TagModel $model */
-        $model     = $this->getModel('lead.tag');
-        $page      = $request->getSession()->get('mautic.tagmanager.page', 1);
-        $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
-        $flashes   = [];
-
-        $postActionVars = [
-            'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
-            'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
-            'passthroughVars' => [
-                'activeLink'    => '#mautic_tagmanager_index',
-                'mauticContent' => 'tagmanager',
-            ],
-        ];
-
-        if ('POST' === $request->getMethod()) {
-            $tag = $model->getEntity($objectId);
-
-            if (null === $tag) {
-                $flashes[] = [
-                    'type'    => 'error',
-                    'msg'     => 'mautic.tagmanager.tag.error.notfound',
-                    'msgVars' => ['%id%' => $objectId],
-                ];
-            } elseif (!$this->security->isGranted(self::PERMISSION_DELETE)) {
-                $this->throwAccessDenied();
-            }
-
-            $model->deleteEntity($tag);
-
-            $flashes[] = [
-                'type'    => 'notice',
-                'msg'     => 'mautic.core.notice.deleted',
-                'msgVars' => [
-                    '%name%' => $tag->getTag(),
-                    '%id%'   => $objectId,
-                ],
-            ];
-        }
-
-        return $this->postActionRedirect(
-            array_merge($postActionVars, [
-                'flashes' => $flashes,
-            ])
-        );
-    }
-
-    /**
-     * Deletes a group of entities.
-     */
-    public function batchDeleteAction(Request $request): Response
-    {
-        $model     = $this->leadTagModel;
-        $page      = $request->getSession()->get('mautic.tagmanager.page', 1);
-        $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
-        $flashes   = [];
-
-        $postActionVars = [
-            'returnUrl'       => $returnUrl,
-            'viewParameters'  => ['page' => $page],
-            'contentTemplate' => 'MauticPlugin\MauticTagManagerBundle\Controller\TagController::indexAction',
-            'passthroughVars' => [
-                'activeLink'    => '#mautic_tagmanager_index',
-                'mauticContent' => 'tagmanager',
-            ],
-        ];
-
-        if ('POST' === $request->getMethod()) {
-            $ids             = json_decode($request->query->get('ids', '{}'));
-            $deleteIds       = [];
-
-            // Loop over the IDs to perform access checks pre-delete
-            foreach ($ids as $objectId) {
-                $entity = $model->getEntity($objectId);
-
-                if (null === $entity) {
-                    $flashes[] = [
-                        'type'    => 'error',
-                        'msg'     => 'mautic.tagmanager.tag.error.notfound',
-                        'msgVars' => ['%id%' => $objectId],
-                    ];
-                } elseif (!$this->security->isGranted(self::PERMISSION_DELETE)) {
-                    $flashes[] = $this->getAccessDeniedFlash();
-                } else {
-                    $deleteIds[] = $objectId;
-                }
-            }
-
-            // Delete everything we are able to
-            if (!empty($deleteIds)) {
-                try {
-                    $entities = $model->deleteEntities($deleteIds);
-                } catch (ForeignKeyConstraintViolationException) {
-                    $flashes[] = [
-                        'type'    => 'notice',
-                        'msg'     => 'mautic.tagmanager.tag.error.cannotbedeleted',
-                    ];
-
-                    return $this->postActionRedirect(
-                        array_merge($postActionVars, [
-                            'flashes' => $flashes,
-                        ])
-                    );
-                }
-
-                $flashes[] = [
-                    'type'    => 'notice',
-                    'msg'     => 'mautic.tagmanager.tag.notice.batch_deleted',
-                    'msgVars' => [
-                        '%count%' => count($entities),
-                    ],
-                ];
-            }
-        } // else don't do anything
-
-        return $this->postActionRedirect(
-            array_merge($postActionVars, [
-                'flashes' => $flashes,
-            ])
-        );
     }
 }

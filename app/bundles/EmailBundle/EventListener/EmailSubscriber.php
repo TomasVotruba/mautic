@@ -117,7 +117,7 @@ class EmailSubscriber implements EventSubscriberInterface
         if (isset($leadIdHash)) {
             $stat = $this->emailModel->getEmailStatus($leadIdHash);
 
-            if (null !== $stat) {
+            if ($stat !== null) {
                 $reason = $this->translator->trans('mautic.email.dnc.failed', [
                     '%subject%' => EmojiHelper::toShort($message->getSubject()),
                 ]);
@@ -165,7 +165,7 @@ class EmailSubscriber implements EventSubscriberInterface
         $editedEmail = $event->getCurrentEmail();
 
         if (
-            ((true === $event->isSaveAndClose()) || (true === $event->isApply()))
+            (($event->isSaveAndClose() === true) || ($event->isApply() === true))
             && $editedEmail->hasDraft()
         ) {
             $emailDraft = $editedEmail->getDraft();
@@ -177,7 +177,7 @@ class EmailSubscriber implements EventSubscriberInterface
             $this->entityManager->persist($editedEmail);
         }
 
-        if (true === $event->isSaveAsDraft()) {
+        if ($event->isSaveAsDraft() === true) {
             $emailDraft = $this
                 ->emailDraftModel
                 ->createDraft($editedEmail, $editedEmail->getCustomHtml(), $editedEmail->getTemplate());
@@ -188,14 +188,14 @@ class EmailSubscriber implements EventSubscriberInterface
             $this->emailModel->saveEntity($editedEmail);
         }
 
-        if (true === $event->isDiscardDraft()) {
+        if ($event->isDiscardDraft() === true) {
             $this->revertEmailModifications($liveEmail, $editedEmail);
             $this->emailDraftModel->deleteDraft($editedEmail);
             $editedEmail->setDraft(null);
             $this->entityManager->persist($editedEmail);
         }
 
-        if (true === $event->isApplyDraft()) {
+        if ($event->isApplyDraft() === true) {
             $this->emailDraftModel->deleteDraft($editedEmail);
             $editedEmail->setDraft(null);
         }

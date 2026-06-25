@@ -547,7 +547,7 @@ class Webhook extends FormEntity implements SkipModifiedInterface
     {
         $dateModified = $this->getDateModified();
 
-        if (null === $dateModified) {
+        if ($dateModified === null) {
             return false;
         }
 
@@ -560,34 +560,12 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         return true;
     }
 
-    /**
-     * @param string $prop
-     */
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ('category' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } elseif ('events' == $prop) {
-            $this->changes[$prop] = [];
-        } elseif ($current != $val) {
-            $this->changes[$prop] = [$current, $val];
-        } else {
-            parent::isChanged($prop, $val);
-        }
-    }
-
     public function getMarkedUnhealthyAt(): ?\DateTimeImmutable
     {
         return $this->markedUnhealthyAt;
     }
 
-    public function setMarkedUnhealthyAt(?\DateTimeImmutable $markedUnhealthyAt): Webhook
+    public function setMarkedUnhealthyAt(?\DateTimeImmutable $markedUnhealthyAt): self
     {
         $this->isChanged('markedUnhealthyAt', $markedUnhealthyAt);
         $this->markedUnhealthyAt = $markedUnhealthyAt;
@@ -631,6 +609,28 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         unset($changes['unHealthySince']);
         unset($changes['lastNotificationSentAt']);
 
-        return 0 === count($changes);
+        return count($changes) === 0;
+    }
+
+    /**
+     * @param string $prop
+     */
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+        if ($prop == 'category') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } elseif ($prop == 'events') {
+            $this->changes[$prop] = [];
+        } elseif ($current != $val) {
+            $this->changes[$prop] = [$current, $val];
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

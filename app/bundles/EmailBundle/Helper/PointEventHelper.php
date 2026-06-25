@@ -13,7 +13,7 @@ class PointEventHelper
 
     public static function validateEmail($eventDetails, $action): bool
     {
-        if (null === $eventDetails) {
+        if ($eventDetails === null) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class PointEventHelper
         $email = $this->emailModel->getEntity($emailId);
 
         // make sure the email still exists and is published
-        if (null != $email && $email->isPublished()) {
+        if ($email != null && $email->isPublished()) {
             $leadFields = $lead->getFields();
             if (isset($leadFields['core']['email']['value']) && $leadFields['core']['email']['value']) {
                 $leadCredentials       = $lead->getProfileFields();

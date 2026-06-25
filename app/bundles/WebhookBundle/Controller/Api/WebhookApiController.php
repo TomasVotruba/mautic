@@ -53,6 +53,17 @@ class WebhookApiController extends CommonApiController
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
+    public function getTriggersAction()
+    {
+        return $this->handleView(
+            $this->view(
+                [
+                    'triggers' => $this->model->getEvents(),
+                ]
+            )
+        );
+    }
+
     /**
      * Gives child controllers opportunity to analyze and do whatever to an entity before going through serializer.
      */
@@ -79,23 +90,12 @@ class WebhookApiController extends CommonApiController
         }
 
         // Remove events missing in the PUT request
-        if ('PUT' === $this->requestStack->getCurrentRequest()->getMethod()) {
+        if ($this->requestStack->getCurrentRequest()->getMethod() === 'PUT') {
             foreach ($entity->getEvents() as $event) {
                 if (!in_array($event->getEventType(), $eventsToKeep)) {
                     $entity->removeEvent($event);
                 }
             }
         }
-    }
-
-    public function getTriggersAction()
-    {
-        return $this->handleView(
-            $this->view(
-                [
-                    'triggers' => $this->model->getEvents(),
-                ]
-            )
-        );
     }
 }

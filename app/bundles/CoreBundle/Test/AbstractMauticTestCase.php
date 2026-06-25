@@ -59,6 +59,12 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected AbstractDatabaseTool $databaseTool;
 
+    protected function setUp(): void
+    {
+        $this->setUpSymfony($this->configParams);
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+    }
+
     /**
      * Overloading the method from MailerAssertionsTrait to get better typehint.
      */
@@ -87,10 +93,14 @@ abstract class AbstractMauticTestCase extends WebTestCase
         );
     }
 
-    protected function setUp(): void
+    public function loginUser(User $user): void
     {
-        $this->setUpSymfony($this->configParams);
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+        $this->client->loginUser($user, 'mautic');
+    }
+
+    public function setCsrfHeader(string $intention = 'mautic_ajax_post'): void
+    {
+        $this->client->setServerParameter('HTTP_X-CSRF-Token', $this->getCsrfToken($intention));
     }
 
     protected function setUpSymfony(array $defaultConfigOptions = []): void
@@ -108,14 +118,9 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $this->connection = $this->em->getConnection();
         $this->router     = static::getContainer()->get('router');
         $scheme           = $this->router->getContext()->getScheme();
-        $secure           = 0 === strcasecmp($scheme, 'https');
+        $secure           = strcasecmp($scheme, 'https') === 0;
 
         $this->client->setServerParameter('HTTPS', (string) $secure);
-    }
-
-    public function loginUser(User $user): void
-    {
-        $this->client->loginUser($user, 'mautic');
     }
 
     protected function logoutUser(): void
@@ -153,11 +158,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
     protected function installDatabaseFixtures(array $classNames = []): void
     {
         $this->loadFixtures($classNames);
-    }
-
-    public function setCsrfHeader(string $intention = 'mautic_ajax_post'): void
-    {
-        $this->client->setServerParameter('HTTP_X-CSRF-Token', $this->getCsrfToken($intention));
     }
 
     /**
@@ -198,7 +198,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $bypassLockingOption = 'bypass-locking';
 
         if ($command->getDefinition()->hasOption($bypassLockingOption)) {
-            $params["--$bypassLockingOption"] = true;
+            $params["--{$bypassLockingOption}"] = true;
         }
 
         $command       = $application->find($name);

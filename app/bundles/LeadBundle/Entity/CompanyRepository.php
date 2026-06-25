@@ -63,7 +63,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             $entity = null;
         }
 
-        if (null === $entity) {
+        if ($entity === null) {
             return null;
         }
 
@@ -147,73 +147,6 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
     public function getTableAlias(): string
     {
         return 'comp';
-    }
-
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        $customFields       = $this->getSearchableFieldAliases($this->getEntityManager()->getRepository(LeadField::class), 'company');
-        $availableForSearch = array_map(fn ($alias): string => 'comp.'.$alias, $customFields);
-
-        $columns = array_merge(
-            [
-                'comp.companyname',
-                'comp.companyemail',
-            ],
-            $availableForSearch,
-        );
-
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            $columns
-        );
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters]     = $this->addStandardSearchCommandWhereClause($q, $filter);
-        $unique                  = $this->generateRandomParameterName();
-        $returnParameter         = true;
-        $command                 = $filter->command;
-
-        if (in_array($command, [
-            $this->translator->trans('mautic.project.searchcommand.name'),
-            $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'),
-        ])) {
-            return $this->handleProjectFilter(
-                $this->_em->getConnection()->createQueryBuilder(),
-                'company_id',
-                'company_projects_xref',
-                $this->getTableAlias(),
-                $filter->string,
-                $filter->not
-            );
-        }
-
-        if (in_array($command, $this->availableSearchFields)) {
-            $expr = $q->expr()->like($this->getTableAlias().".$command", ":$unique");
-        }
-
-        if ($this->dispatcher) {
-            $event = new CompanyBuildSearchEvent($filter->string, $filter->command, $unique, $filter->not, $q);
-            $this->dispatcher->dispatch($event, LeadEvents::COMPANY_BUILD_SEARCH_COMMANDS);
-            if ($event->isSearchDone()) {
-                $returnParameter = $event->getReturnParameters();
-                $filter->strict  = $event->getStrict();
-                $expr            = $event->getSubQuery();
-                $parameters      = array_merge($parameters, $event->getParameters());
-            }
-        }
-
-        if ($returnParameter) {
-            $string              = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters[$unique] = $string;
-        }
-
-        return [
-            $expr,
-            $parameters,
-        ];
     }
 
     /**
@@ -449,7 +382,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         $reflection = new \ReflectionClass(new $class());
 
         // Get the label column if necessary
-        if (null == $labelColumn) {
+        if ($labelColumn == null) {
             if ($reflection->hasMethod('getTitle')) {
                 $labelColumn = 'title';
             } else {
@@ -463,7 +396,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             ->from($tableName, $alias)
             ->orderBy($prefix.$labelColumn);
 
-        if (null !== $expr && $expr->count()) {
+        if ($expr !== null && $expr->count()) {
             $q->where($expr);
         }
 
@@ -519,7 +452,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
 
         // loop through the fields and
         foreach ($uniqueFieldsWithData as $col => $val) {
-            $q->{$this->getUniqueIdentifiersWherePart()}("c.$col = :".$col)
+            $q->{$this->getUniqueIdentifiersWherePart()}("c.{$col} = :".$col)
                 ->setParameter($col, $val);
         }
 
@@ -603,5 +536,72 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         $q->andWhere($q->expr()->isNotNull($this->getTableAlias().'.deleted'));
 
         return $q->getQuery()->getResult();
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        $customFields       = $this->getSearchableFieldAliases($this->getEntityManager()->getRepository(LeadField::class), 'company');
+        $availableForSearch = array_map(fn ($alias): string => 'comp.'.$alias, $customFields);
+
+        $columns = array_merge(
+            [
+                'comp.companyname',
+                'comp.companyemail',
+            ],
+            $availableForSearch,
+        );
+
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            $columns
+        );
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters]     = $this->addStandardSearchCommandWhereClause($q, $filter);
+        $unique                  = $this->generateRandomParameterName();
+        $returnParameter         = true;
+        $command                 = $filter->command;
+
+        if (in_array($command, [
+            $this->translator->trans('mautic.project.searchcommand.name'),
+            $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'),
+        ])) {
+            return $this->handleProjectFilter(
+                $this->_em->getConnection()->createQueryBuilder(),
+                'company_id',
+                'company_projects_xref',
+                $this->getTableAlias(),
+                $filter->string,
+                $filter->not
+            );
+        }
+
+        if (in_array($command, $this->availableSearchFields)) {
+            $expr = $q->expr()->like($this->getTableAlias().".{$command}", ":{$unique}");
+        }
+
+        if ($this->dispatcher) {
+            $event = new CompanyBuildSearchEvent($filter->string, $filter->command, $unique, $filter->not, $q);
+            $this->dispatcher->dispatch($event, LeadEvents::COMPANY_BUILD_SEARCH_COMMANDS);
+            if ($event->isSearchDone()) {
+                $returnParameter = $event->getReturnParameters();
+                $filter->strict  = $event->getStrict();
+                $expr            = $event->getSubQuery();
+                $parameters      = array_merge($parameters, $event->getParameters());
+            }
+        }
+
+        if ($returnParameter) {
+            $string              = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters[$unique] = $string;
+        }
+
+        return [
+            $expr,
+            $parameters,
+        ];
     }
 }

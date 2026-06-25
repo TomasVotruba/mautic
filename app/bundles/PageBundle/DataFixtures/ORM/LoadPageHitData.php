@@ -24,17 +24,17 @@ class LoadPageHitData extends AbstractFixture implements OrderedFixtureInterface
         foreach ($hits as $rows) {
             $hit = new Hit();
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ($val != 'NULL') {
                     $setter = 'set'.ucfirst($col);
                     if (in_array($col, ['page', 'ipAddress'])) {
-                        $hit->$setter($this->getReference($col.'-'.$val));
+                        $hit->{$setter}($this->getReference($col.'-'.$val));
                     } elseif (in_array($col, ['dateHit', 'dateLeft'])) {
-                        $hit->$setter(new \DateTime($val));
-                    } elseif ('browserLanguages' == $col) {
+                        $hit->{$setter}(new \DateTime($val));
+                    } elseif ($col == 'browserLanguages') {
                         $val = Serializer::decode(stripslashes($val));
-                        $hit->$setter($val);
+                        $hit->{$setter}($val);
                     } else {
-                        $hit->$setter($val);
+                        $hit->{$setter}($val);
                     }
                 }
             }

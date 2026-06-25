@@ -46,7 +46,7 @@ class FullContactIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('keys' === $formArea) {
+        if ($formArea === 'keys') {
             $builder->add(
                 'test_api',
                 ButtonType::class,
@@ -101,7 +101,7 @@ class FullContactIntegration extends AbstractIntegration
      */
     public function getFormNotes($section)
     {
-        if ('custom' === $section) {
+        if ($section === 'custom') {
             return [
                 'template'   => '@MauticFullContact/Integration/form.html.twig',
                 'parameters' => [

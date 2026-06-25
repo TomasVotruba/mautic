@@ -43,7 +43,7 @@ class AssetController extends FormController
             $parametersHelper->get('default_assetlimit', $parametersHelper->get('default_pagelimit'))
         );
 
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -74,7 +74,7 @@ class AssetController extends FormController
         $count = count($assets);
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current asset so redirect to the last asset
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (ceil($count / $limit)) ?: 1;
@@ -141,7 +141,7 @@ class AssetController extends FormController
         $action          = $this->generateUrl('mautic_asset_action', ['objectAction' => 'view', 'objectId' => $objectId]);
         $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
 
-        if (null === $activeAsset) {
+        if ($activeAsset === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
 
@@ -223,7 +223,7 @@ class AssetController extends FormController
     {
         $activeAsset = $model->getEntity($objectId);
 
-        if (null === $activeAsset || !$this->security->hasEntityAccess('asset:assets:viewown', 'asset:assets:viewother', $activeAsset->getCreatedBy())) {
+        if ($activeAsset === null || !$this->security->hasEntityAccess('asset:assets:viewown', 'asset:assets:viewother', $activeAsset->getCreatedBy())) {
             return $this->modalAccessDenied();
         }
 
@@ -233,7 +233,7 @@ class AssetController extends FormController
         $defaultStream = in_array($activeAsset->getExtension(), $this->coreParametersHelper->get('streamed_extensions')) ? '1' : null;
         $stream        = $request->query->get('stream', $defaultStream);
 
-        if ('1' === $download || '1' === $stream) {
+        if ($download === '1' || $stream === '1') {
             try {
                 // set the uploadDir
                 $activeAsset->setUploadDir($this->coreParametersHelper->get('upload_dir'));
@@ -244,7 +244,7 @@ class AssetController extends FormController
 
             $response = new Response();
             $response->headers->set('Content-Type', $activeAsset->getFileMimeType());
-            if ('1' === $download) {
+            if ($download === '1') {
                 $response->headers->set('Content-Disposition', 'attachment;filename="'.$activeAsset->getOriginalFileName());
             }
             $response->setContent($contents);
@@ -271,7 +271,7 @@ class AssetController extends FormController
      */
     public function newAction(Request $request, CoreParametersHelper $parametersHelper, UploaderHelper $uploaderHelper, IntegrationHelper $integrationHelper, AssetModel $model, $entity = null)
     {
-        if (null == $entity) {
+        if ($entity == null) {
             $entity = $model->getEntity();
         }
 
@@ -298,7 +298,7 @@ class AssetController extends FormController
 
         // Create temporary asset ID
         $asset  = $request->request->all()['asset'] ?? [];
-        $tempId = 'POST' === $method ? ($asset['tempId'] ?? '') : uniqid('tmp_');
+        $tempId = $method === 'POST' ? ($asset['tempId'] ?? '') : uniqid('tmp_');
         $entity->setTempId($tempId);
 
         // Set the page we came from
@@ -311,7 +311,7 @@ class AssetController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -440,7 +440,7 @@ class AssetController extends FormController
         ];
 
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -464,7 +464,7 @@ class AssetController extends FormController
 
         // Create temporary asset ID
         $asset  = $request->request->all()['asset'] ?? [];
-        $tempId = 'POST' === $method ? ($asset['tempId'] ?? '') : uniqid('tmp_');
+        $tempId = $method === 'POST' ? ($asset['tempId'] ?? '') : uniqid('tmp_');
         $entity->setTempId($tempId);
 
         // Create the form
@@ -472,7 +472,7 @@ class AssetController extends FormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && $method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -567,7 +567,7 @@ class AssetController extends FormController
         $entity = $model->getEntity($objectId);
         $clone  = null;
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('asset:assets:create')
                 || !$this->security->hasEntityAccess(
                     'asset:assets:viewown', 'asset:assets:viewother', $entity->getCreatedBy()
@@ -609,10 +609,10 @@ class AssetController extends FormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.asset.asset.error.notfound',
@@ -668,7 +668,7 @@ class AssetController extends FormController
             ],
         ];
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $ids       = json_decode($request->query->get('ids', '{}'));
             $deleteIds = [];
 
@@ -676,7 +676,7 @@ class AssetController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.asset.asset.error.notfound',

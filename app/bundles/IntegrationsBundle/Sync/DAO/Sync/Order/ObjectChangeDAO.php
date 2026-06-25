@@ -53,7 +53,7 @@ class ObjectChangeDAO
         $this->fields[$fieldDAO->getName()]                = $fieldDAO;
         $this->fieldsByState[$state][$fieldDAO->getName()] = $fieldDAO;
 
-        if (ReportFieldDAO::FIELD_REQUIRED === $state) {
+        if ($state === ReportFieldDAO::FIELD_REQUIRED) {
             // Make this field also available to the unchanged fields array so the integration can get which
             // ever one it wants based on it's implementation (i.e. patch vs put)
             $this->fieldsByState[ReportFieldDAO::FIELD_UNCHANGED][$fieldDAO->getName()] = $fieldDAO;
@@ -171,7 +171,7 @@ class ObjectChangeDAO
      */
     public function setChangeDateTime(?\DateTimeInterface $changeDateTime = null)
     {
-        if (null === $changeDateTime) {
+        if ($changeDateTime === null) {
             $changeDateTime = new \DateTime();
         }
 

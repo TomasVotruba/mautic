@@ -46,7 +46,7 @@ class CategoryRepository extends CommonRepository
             $q->expr()->eq('c.bundle', ':bundle')
         );
 
-        if ($includeGlobal && 'global' !== $bundle) {
+        if ($includeGlobal && $bundle !== 'global') {
             $expr->add(
                 $q->expr()->eq('c.bundle', $q->expr()->literal('global'))
             );
@@ -77,49 +77,6 @@ class CategoryRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause($q, $filter, [
-            'c.title',
-            'c.description',
-        ]);
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        $command                 = $field                 = $filter->command;
-        $unique                  = $this->generateRandomParameterName();
-        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
-
-        switch ($command) {
-            case $this->translator->trans('mautic.core.searchcommand.ispublished'):
-            case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
-                $expr                = $q->expr()->eq('c.isPublished', ":$unique");
-                $parameters[$unique] = true;
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
-            case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
-                $expr                = $q->expr()->eq('c.isPublished', ":$unique");
-                $parameters[$unique] = false;
-                break;
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        return [
-            $expr,
-            $parameters,
-        ];
-    }
-
-    /**
      * @return string[]
      */
     public function getSearchCommands(): array
@@ -130,16 +87,6 @@ class CategoryRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['c.title', 'ASC'],
-        ];
     }
 
     /**
@@ -171,5 +118,58 @@ class CategoryRepository extends CommonRepository
     public function getTableAlias(): string
     {
         return 'c';
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause($q, $filter, [
+            'c.title',
+            'c.description',
+        ]);
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        $command                 = $field                 = $filter->command;
+        $unique                  = $this->generateRandomParameterName();
+        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
+
+        switch ($command) {
+            case $this->translator->trans('mautic.core.searchcommand.ispublished'):
+            case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
+                $expr                = $q->expr()->eq('c.isPublished', ":{$unique}");
+                $parameters[$unique] = true;
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
+            case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
+                $expr                = $q->expr()->eq('c.isPublished', ":{$unique}");
+                $parameters[$unique] = false;
+                break;
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        return [
+            $expr,
+            $parameters,
+        ];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['c.title', 'ASC'],
+        ];
     }
 }

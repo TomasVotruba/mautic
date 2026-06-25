@@ -19,10 +19,10 @@ final class PublishState
 
         if (isset($auditLog->getDetails()['isPublished'][1])) {
             $this->published = $auditLog->getDetails()['isPublished'][1];
-        } elseif ('create' === $auditLog->getAction()) {
+        } elseif ($auditLog->getAction() === 'create') {
             // FormEntity is published by default so it doesn't create the change if published when created.
             $this->published = true;
-        } elseif (null === $this->published) {
+        } elseif ($this->published === null) {
             // The current entity state is the best assumption we can make at this point.
             $this->published = $defaultPublishState;
         }

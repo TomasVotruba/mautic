@@ -32,11 +32,6 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->translator = static::getContainer()->get('translator');
     }
 
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement(['categories']);
-    }
-
     /**
      * @return iterable<array<string|int|null>>
      */
@@ -809,6 +804,11 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $allDetails = implode(' ', array_column(array_column($response['errors'], 'details'), 0));
         Assert::assertStringContainsString($expectedDetailMessage1, $allDetails);
         Assert::assertStringContainsString($expectedDetailMessage2, $allDetails);
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement(['categories']);
     }
 
     /** @param array<int, array<string, mixed>> $filters */

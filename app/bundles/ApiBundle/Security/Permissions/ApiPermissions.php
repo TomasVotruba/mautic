@@ -61,7 +61,7 @@ class ApiPermissions extends AbstractPermissions
 
     protected function getSynonym($name, $level)
     {
-        if ('access' == $name && 'granted' == $level) {
+        if ($name == 'access' && $level == 'granted') {
             return [$name, 'full'];
         }
 

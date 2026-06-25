@@ -83,7 +83,7 @@ final class FieldTemplateTest extends MauticMysqlTestCase
         $field->setAlias('test_field');
         $field->setOrder(1);
 
-        if (null !== $fieldWidth) {
+        if ($fieldWidth !== null) {
             $field->setFieldWidth($fieldWidth);
         }
 

@@ -95,14 +95,14 @@ class MaxMindDoNotSellDownloadHelper
         return $this->listPath;
     }
 
-    private function getUser(): string
-    {
-        return $this->getAuthPart(0);
-    }
-
     protected function getPassword(): string
     {
         return $this->getAuthPart(1);
+    }
+
+    private function getUser(): string
+    {
+        return $this->getAuthPart(0);
     }
 
     /**

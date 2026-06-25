@@ -195,44 +195,6 @@ final class ImportController extends AbstractFormController
         return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'new']);
     }
 
-    private function resetImport(): void
-    {
-        $this->requestStack->getSession()->set('mautic.campaign.import.file', null);
-        $this->requestStack->getSession()->set('mautic.campaign.import.step', self::STEP_UPLOAD_ZIP);
-        $this->requestStack->getSession()->set('mautic.campaign.import.progress', 0);
-        $this->requestStack->getSession()->remove('mautic.campaign.import.analyzeSummary');
-    }
-
-    private function removeImportFile(string $filepath): void
-    {
-        if (file_exists($filepath) && is_readable($filepath)) {
-            unlink($filepath);
-
-            $this->logger->log(LogLevel::WARNING, "File {$filepath} was removed.");
-        }
-    }
-
-    /**
-     * Generates unique import directory name inside the cache dir if not stored in the session.
-     * If it exists in the session, returns that one.
-     */
-    private function getImportFileName(): string
-    {
-        $session  = $this->requestStack->getSession();
-        $fileName = $session->get('mautic.campaign.import.file');
-
-        if ($fileName && !str_contains($fileName, '/')) {
-            return $fileName;
-        }
-
-        $uniqueId = bin2hex(random_bytes(8));
-        $fileName = sprintf('%s_%s.zip', (new DateTimeHelper())->toUtcString('YmdHis'), $uniqueId);
-
-        $session->set('mautic.campaign.import.file', $fileName);
-
-        return $fileName;
-    }
-
     public function progressAction(ImportHelper $importHelper): Response
     {
         $session       = $this->requestStack->getSession();
@@ -242,7 +204,7 @@ final class ImportController extends AbstractFormController
 
         // If there's no valid file, show an error
         if (!$fullPath || !file_exists($fullPath)) {
-            if (self::STEP_UPLOAD_ZIP !== $step) {
+            if ($step !== self::STEP_UPLOAD_ZIP) {
                 $this->addFlashMessage('mautic.campaign.import.nofile', [], FlashBag::LEVEL_ERROR, 'validators');
             }
             $this->resetImport();
@@ -250,7 +212,7 @@ final class ImportController extends AbstractFormController
             return $this->redirectToRoute('mautic_campaign_import_action', ['objectAction' => 'new']);
         }
 
-        if (self::STEP_PROGRESS_BAR === $step) {
+        if ($step === self::STEP_PROGRESS_BAR) {
             $analyzeSummary = $this->analyzeData($importHelper, $fullPath);
 
             if (empty($analyzeSummary)) {
@@ -292,18 +254,18 @@ final class ImportController extends AbstractFormController
                     }
 
                     foreach ($entities as $entityUuid => $action) {
-                        if ('create' !== $action) {
+                        if ($action !== 'create') {
                             continue;
                         }
 
                         foreach ($group[$entityType] as &$item) {
                             if (isset($item['uuid']) && (int) $item['uuid'] === (int) $entityUuid) {
-                                if (Campaign::ENTITY_NAME == $entityType) {
+                                if ($entityType == Campaign::ENTITY_NAME) {
                                     foreach ($group[Event::ENTITY_NAME] as &$eventItem) {
                                         $eventItem['uuid'] = '';
                                     }
                                 }
-                                if (Form::ENTITY_NAME == $entityType) {
+                                if ($entityType == Form::ENTITY_NAME) {
                                     if (isset($group[Field::ENTITY_NAME])) {
                                         foreach ($group[Field::ENTITY_NAME] as &$fieldItem) {
                                             $fieldItem['uuid'] = '';
@@ -375,74 +337,6 @@ final class ImportController extends AbstractFormController
         ]);
     }
 
-    /**
-     * @return array<int|string, array<string, mixed>>
-     */
-    private function analyzeData(ImportHelper $importHelper, string $fullPath): array
-    {
-        try {
-            $fileData = $importHelper->readZipFile($fullPath);
-        } catch (\RuntimeException $e) {
-            $this->logger->error($e->getMessage());
-            $this->removeImportFile($fullPath);
-
-            return [
-                [
-                    'errors' => [
-                        'messages' => [$e->getMessage()],
-                    ],
-                ],
-            ];
-        }
-
-        $allData = [];
-        foreach ($fileData as $entityData) {
-            $mergedSummary = [];
-            foreach ($entityData as $key => $data) {
-                if (empty($data)) {
-                    continue;
-                }
-
-                $event = new EntityImportAnalyzeEvent($key, $data);
-                $this->dispatcher->dispatch($event);
-                $summary = $event->getSummary();
-
-                foreach ($summary as $status => $entities) {
-                    if ('errors' === $status) {
-                        // Accumulate errors into a flat array
-                        $mergedSummary['errors'] = array_merge(
-                            $mergedSummary['errors'] ?? [],
-                            is_array($entities) ? $entities : [$entities]
-                        );
-                        continue;
-                    }
-                    foreach ($entities as $entityName => $info) {
-                        if (!isset($mergedSummary[$status][$entityName])) {
-                            $mergedSummary[$status][$entityName] = [
-                                'names'   => [],
-                                'uuids'   => [],
-                            ];
-                        }
-
-                        $mergedSummary[$status][$entityName]['names'] = array_merge(
-                            $mergedSummary[$status][$entityName]['names'],
-                            $info['names'] ?? []
-                        );
-                        $mergedSummary[$status][$entityName]['uuids'] = array_merge(
-                            $mergedSummary[$status][$entityName]['uuids'],
-                            $info['uuids'] ?? []
-                        );
-                    }
-                }
-            }
-            if (!empty($mergedSummary)) {
-                $allData[] = $mergedSummary;
-            }
-        }
-
-        return $allData;
-    }
-
     public function undoAction(): JsonResponse
     {
         if (!$this->security->isGranted('campaign:imports:delete')) {
@@ -478,5 +372,111 @@ final class ImportController extends AbstractFormController
         }
 
         return new JsonResponse(['flashes' => $this->getFlashContent()]);
+    }
+
+    private function resetImport(): void
+    {
+        $this->requestStack->getSession()->set('mautic.campaign.import.file', null);
+        $this->requestStack->getSession()->set('mautic.campaign.import.step', self::STEP_UPLOAD_ZIP);
+        $this->requestStack->getSession()->set('mautic.campaign.import.progress', 0);
+        $this->requestStack->getSession()->remove('mautic.campaign.import.analyzeSummary');
+    }
+
+    private function removeImportFile(string $filepath): void
+    {
+        if (file_exists($filepath) && is_readable($filepath)) {
+            unlink($filepath);
+
+            $this->logger->log(LogLevel::WARNING, "File {$filepath} was removed.");
+        }
+    }
+
+    /**
+     * Generates unique import directory name inside the cache dir if not stored in the session.
+     * If it exists in the session, returns that one.
+     */
+    private function getImportFileName(): string
+    {
+        $session  = $this->requestStack->getSession();
+        $fileName = $session->get('mautic.campaign.import.file');
+
+        if ($fileName && !str_contains($fileName, '/')) {
+            return $fileName;
+        }
+
+        $uniqueId = bin2hex(random_bytes(8));
+        $fileName = sprintf('%s_%s.zip', (new DateTimeHelper())->toUtcString('YmdHis'), $uniqueId);
+
+        $session->set('mautic.campaign.import.file', $fileName);
+
+        return $fileName;
+    }
+
+    /**
+     * @return array<int|string, array<string, mixed>>
+     */
+    private function analyzeData(ImportHelper $importHelper, string $fullPath): array
+    {
+        try {
+            $fileData = $importHelper->readZipFile($fullPath);
+        } catch (\RuntimeException $e) {
+            $this->logger->error($e->getMessage());
+            $this->removeImportFile($fullPath);
+
+            return [
+                [
+                    'errors' => [
+                        'messages' => [$e->getMessage()],
+                    ],
+                ],
+            ];
+        }
+
+        $allData = [];
+        foreach ($fileData as $entityData) {
+            $mergedSummary = [];
+            foreach ($entityData as $key => $data) {
+                if (empty($data)) {
+                    continue;
+                }
+
+                $event = new EntityImportAnalyzeEvent($key, $data);
+                $this->dispatcher->dispatch($event);
+                $summary = $event->getSummary();
+
+                foreach ($summary as $status => $entities) {
+                    if ($status === 'errors') {
+                        // Accumulate errors into a flat array
+                        $mergedSummary['errors'] = array_merge(
+                            $mergedSummary['errors'] ?? [],
+                            is_array($entities) ? $entities : [$entities]
+                        );
+                        continue;
+                    }
+                    foreach ($entities as $entityName => $info) {
+                        if (!isset($mergedSummary[$status][$entityName])) {
+                            $mergedSummary[$status][$entityName] = [
+                                'names'   => [],
+                                'uuids'   => [],
+                            ];
+                        }
+
+                        $mergedSummary[$status][$entityName]['names'] = array_merge(
+                            $mergedSummary[$status][$entityName]['names'],
+                            $info['names'] ?? []
+                        );
+                        $mergedSummary[$status][$entityName]['uuids'] = array_merge(
+                            $mergedSummary[$status][$entityName]['uuids'],
+                            $info['uuids'] ?? []
+                        );
+                    }
+                }
+            }
+            if (!empty($mergedSummary)) {
+                $allData[] = $mergedSummary;
+            }
+        }
+
+        return $allData;
     }
 }

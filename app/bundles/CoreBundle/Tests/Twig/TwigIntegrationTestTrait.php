@@ -34,22 +34,6 @@ trait TwigIntegrationTestTrait
     }
 
     /**
-     * Helper method to get integration test data
-     * This creates a temporary instance to call the parent's non-static methods.
-     *
-     * @return iterable<array{string, string, string, array<string, string>, string|false, array<array{string|null, string, string|null, string}>, string}>
-     */
-    protected static function getIntegrationTestData(): iterable
-    {
-        // Create a temporary instance of the actual test class
-        $reflection = new \ReflectionClass(static::class);
-        $instance   = $reflection->newInstanceWithoutConstructor();
-
-        // Call the parent's getTests method
-        return $instance->getTests('testIntegration', false);
-    }
-
-    /**
      * @dataProvider integrationTestDataProvider
      *
      * @param string                $file
@@ -80,5 +64,21 @@ trait TwigIntegrationTestTrait
     public function testLegacyIntegration($file = null, $message = null, $condition = null, $templates = null, $exception = null, $outputs = null, $deprecation = ''): void
     {
         $this->markTestSkipped('Legacy Twig tests are not applicable to this project');
+    }
+
+    /**
+     * Helper method to get integration test data
+     * This creates a temporary instance to call the parent's non-static methods.
+     *
+     * @return iterable<array{string, string, string, array<string, string>, string|false, array<array{string|null, string, string|null, string}>, string}>
+     */
+    protected static function getIntegrationTestData(): iterable
+    {
+        // Create a temporary instance of the actual test class
+        $reflection = new \ReflectionClass(static::class);
+        $instance   = $reflection->newInstanceWithoutConstructor();
+
+        // Call the parent's getTests method
+        return $instance->getTests('testIntegration', false);
     }
 }

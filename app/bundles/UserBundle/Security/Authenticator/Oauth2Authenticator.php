@@ -14,7 +14,7 @@ class Oauth2Authenticator extends \FOS\OAuthServerBundle\Security\Authenticator\
     public function supports(Request $request): ?bool
     {
         // needed until the oAuth2 library will not be updated to 4.0.5
-        return null !== $this->serverService->getBearerToken($request);
+        return $this->serverService->getBearerToken($request) !== null;
     }
 
     /**

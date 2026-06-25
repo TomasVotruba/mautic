@@ -150,13 +150,6 @@ class Action implements UuidInterface
         ]));
     }
 
-    private function isChanged($prop, $val): void
-    {
-        if ($this->$prop != $val) {
-            $this->changes[$prop] = [$this->$prop, $val];
-        }
-    }
-
     /**
      * @return array
      */
@@ -332,5 +325,12 @@ class Action implements UuidInterface
     public function getPermissionUser(): mixed
     {
         return $this->getForm()?->getCreatedBy();
+    }
+
+    private function isChanged($prop, $val): void
+    {
+        if ($this->{$prop} != $val) {
+            $this->changes[$prop] = [$this->{$prop}, $val];
+        }
     }
 }

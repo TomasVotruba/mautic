@@ -50,7 +50,7 @@ class ConfigChangeLogger
      */
     public function log(array $postNormData): void
     {
-        if (null === $this->originalNormData) {
+        if ($this->originalNormData === null) {
             throw new \RuntimeException('Set original normalized data at first');
         }
 

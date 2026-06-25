@@ -157,6 +157,13 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
     #[Groups(['notification:read', 'notification:write'])]
     private $mobileSettings;
 
+    public function __construct()
+    {
+        $this->lists               = new ArrayCollection();
+        $this->stats               = new ArrayCollection();
+        $this->translationChildren = new ArrayCollection();
+    }
+
     public function __clone()
     {
         $this->id        = null;
@@ -165,13 +172,6 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
         $this->readCount = 0;
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->lists               = new ArrayCollection();
-        $this->stats               = new ArrayCollection();
-        $this->translationChildren = new ArrayCollection();
     }
 
     /**
@@ -283,7 +283,7 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
         $metadata->addConstraint(new Callback(
             function (Notification $notification, ExecutionContextInterface $context): void {
                 $type = $notification->getNotificationType();
-                if ('list' == $type) {
+                if ($type == 'list') {
                     $validator  = $context->getValidator();
                     $violations = $validator->validate(
                         $notification->getLists(),
@@ -340,22 +340,6 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
                 ]
             )
             ->build();
-    }
-
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-
-        if ('category' == $prop || 'list' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     /**
@@ -669,5 +653,21 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
         $this->mobileSettings = $mobileSettings;
 
         return $this;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+
+        if ($prop == 'category' || $prop == 'list') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

@@ -33,7 +33,7 @@ final class EmailOrEmailTokenListValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, EmailOrEmailTokenList::class);
         }
 
-        if (null === $csv || '' === $csv) {
+        if ($csv === null || $csv === '') {
             return;
         }
 

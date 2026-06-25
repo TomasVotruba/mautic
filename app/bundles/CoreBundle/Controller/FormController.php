@@ -7,6 +7,8 @@ namespace Mautic\CoreBundle\Controller;
  */
 class FormController extends AbstractStandardFormController
 {
+
+    protected $activeLink;
     private string $deprecatedModelName = '';
 
     private ?string $deprecatedPermissionBase = null;
@@ -21,7 +23,13 @@ class FormController extends AbstractStandardFormController
 
     private ?string $deprecatedMauticContent = null;
 
-    protected $activeLink;
+    /**
+     * @return mixed[]
+     */
+    public function getViewArguments(array $args, $action): array
+    {
+        return $args;
+    }
 
     /**
      * @deprecated 2.3 - to be removed in 3.0; extend AbstractStandardFormController instead
@@ -56,14 +64,6 @@ class FormController extends AbstractStandardFormController
         $this->activeLink                = $activeLink;
         $this->deprecatedMauticContent   = $mauticContent;
         $this->deprecatedTemplateBase    = $templateBase;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getViewArguments(array $args, $action): array
-    {
-        return $args;
     }
 
     protected function getModelName(): string

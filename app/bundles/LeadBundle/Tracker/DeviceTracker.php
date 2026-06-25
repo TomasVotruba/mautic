@@ -67,7 +67,7 @@ class DeviceTracker
     {
         $trackedDevice = $this->deviceTrackingService->getTrackedDevice();
 
-        if (null !== $trackedDevice) {
+        if ($trackedDevice !== null) {
             $this->logger->debug("LEAD: Tracking ID for this device is {$trackedDevice->getTrackingId()}");
         }
 

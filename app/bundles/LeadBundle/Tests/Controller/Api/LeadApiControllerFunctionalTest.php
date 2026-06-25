@@ -31,12 +31,12 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         // Disable API just for specific test.
-        $this->configParams['api_enabled'] = 'testDisabledApi' !== $this->name();
+        $this->configParams['api_enabled'] = $this->name() !== 'testDisabledApi';
 
         static::getContainer()->set(
             'session',
             new Session(
-                new class extends FixedMockFileSessionStorage {
+                new class() extends FixedMockFileSessionStorage {
                     public function start(): bool
                     {
                         throw new \RuntimeException('Session cannot be started during API call. It must be stateless.');
@@ -146,40 +146,6 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
                 $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
             }
         );
-    }
-
-    private function doTestSingleEndpointCanHandleMergedContacts(string $method, string $email, int $expectedStatusCode, callable $assertResponse): void
-    {
-        $contact1 = new Lead();
-        $contact1->setEmail('batchemail201@email.com');
-        $contact1->setFirstname('BatchUpdate1');
-
-        $contact2 = new Lead();
-        $contact2->setEmail('batchemail202@email.com');
-        $contact2->setFirstname('BatchUpdate2');
-
-        $this->em->persist($contact1);
-        $this->em->persist($contact2);
-        $this->em->flush();
-
-        /** @var ContactMerger $contactMerger */
-        $contactMerger = static::getContainer()->get('mautic.lead.merger');
-
-        $contactMerger->merge($contact1, $contact2);
-
-        // Update the contact 202 that was merged into 201.
-        $payload = [
-            'id'    => $contact2->deletedId,
-            'email' => $email,
-            'city'  => 'Prčice',
-        ];
-
-        $route = 'POST' === $method ? '/api/contacts/new' : "/api/contacts/{$contact2->deletedId}/edit";
-
-        $this->client->request($method, $route, $payload);
-
-        $this->assertResponseStatusCodeSame($expectedStatusCode);
-        $assertResponse($this->client->getResponse(), $contact1->getId(), $contact2->deletedId);
     }
 
     public function testBatchPutEndpointCanHandleMergedContacts(): void
@@ -806,7 +772,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals($payload['doNotContact'][0]['reason'], $response['contact']['doNotContact'][0]['reason']);
 
         // Remove contact
-        $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
+        $this->client->request(Request::METHOD_DELETE, "/api/contacts/{$contactId}/delete");
         $this->assertResponseIsSuccessful();
     }
 
@@ -1089,7 +1055,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEmpty($response['contacts'][0]['doNotContact']);
 
         // Remove contact
-        $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
+        $this->client->request(Request::METHOD_DELETE, "/api/contacts/{$contactId}/delete");
         $this->assertResponseIsSuccessful();
     }
 
@@ -1151,7 +1117,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $dncPayload = ['reason' => 0];
         $dncChannel = 'email';
 
-        $this->client->request(Request::METHOD_POST, "/api/contacts/$contactId/dnc/$dncChannel/add", $dncPayload);
+        $this->client->request(Request::METHOD_POST, "/api/contacts/{$contactId}/dnc/{$dncChannel}/add", $dncPayload);
         $clientResponse = $this->client->getResponse();
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -1159,7 +1125,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $dncPayload = [];
 
         // Add DNC to the contact.
-        $this->client->request(Request::METHOD_POST, "/api/contacts/$contactId/dnc/$dncChannel/add", $dncPayload);
+        $this->client->request(Request::METHOD_POST, "/api/contacts/{$contactId}/dnc/{$dncChannel}/add", $dncPayload);
         $clientResponse = $this->client->getResponse();
         $dncResponse    = json_decode($clientResponse->getContent(), true);
 
@@ -1173,13 +1139,13 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         self::assertResponseIsSuccessful($clientResponse->getContent());
         $activityResponse = json_decode($clientResponse->getContent(), true);
         Assert::assertCount(2, $activityResponse['events']); // identified and dnc added events
-        $dncEvents = array_values(array_filter($activityResponse['events'], fn ($event) => 'lead.donotcontact' === $event['event']));
+        $dncEvents = array_values(array_filter($activityResponse['events'], fn ($event) => $event['event'] === 'lead.donotcontact'));
         Assert::assertCount(1, $dncEvents);
         Assert::assertSame('Email', $dncEvents[0]['eventLabel']);
         Assert::assertSame('Contact was manually set as do not contact for this channel.', $dncEvents[0]['details']['dnc']['reason']);
 
         // Remove DNC from the contact.
-        $this->client->request(Request::METHOD_POST, "/api/contacts/$contactId/dnc/$dncChannel/remove");
+        $this->client->request(Request::METHOD_POST, "/api/contacts/{$contactId}/dnc/{$dncChannel}/remove");
         $clientResponse    = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         $dncRemoveResponse = json_decode($clientResponse->getContent(), true);
@@ -1188,7 +1154,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertSame([], $dncRemoveResponse['contact']['doNotContact']);
 
         // Remove the contact.
-        $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
+        $this->client->request(Request::METHOD_DELETE, "/api/contacts/{$contactId}/delete");
         $this->assertResponseIsSuccessful();
     }
 
@@ -1370,6 +1336,40 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayHasKey($contact2->getId(), $response['contacts']);
         $this->assertArrayHasKey($contact3->getId(), $response['contacts']);
         $this->assertArrayNotHasKey($contact1->getId(), $response['contacts']);
+    }
+
+    private function doTestSingleEndpointCanHandleMergedContacts(string $method, string $email, int $expectedStatusCode, callable $assertResponse): void
+    {
+        $contact1 = new Lead();
+        $contact1->setEmail('batchemail201@email.com');
+        $contact1->setFirstname('BatchUpdate1');
+
+        $contact2 = new Lead();
+        $contact2->setEmail('batchemail202@email.com');
+        $contact2->setFirstname('BatchUpdate2');
+
+        $this->em->persist($contact1);
+        $this->em->persist($contact2);
+        $this->em->flush();
+
+        /** @var ContactMerger $contactMerger */
+        $contactMerger = static::getContainer()->get('mautic.lead.merger');
+
+        $contactMerger->merge($contact1, $contact2);
+
+        // Update the contact 202 that was merged into 201.
+        $payload = [
+            'id'    => $contact2->deletedId,
+            'email' => $email,
+            'city'  => 'Prčice',
+        ];
+
+        $route = $method === 'POST' ? '/api/contacts/new' : "/api/contacts/{$contact2->deletedId}/edit";
+
+        $this->client->request($method, $route, $payload);
+
+        $this->assertResponseStatusCodeSame($expectedStatusCode);
+        $assertResponse($this->client->getResponse(), $contact1->getId(), $contact2->deletedId);
     }
 
     private function addContactToCampaign(Lead $contact, Campaign $campaign, bool $manuallyRemoved = false): void

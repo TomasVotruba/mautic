@@ -35,6 +35,16 @@ class EventController extends CommonFormController
         Event::TYPE_CONDITION,
     ];
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private array $modifiedEvents = [];
+
+    /**
+     * @var array<int, string>
+     */
+    private array $deletedEvents = [];
+
     public function __construct(
         FormFactoryInterface $formFactory,
         FormFieldHelper $fieldHelper,
@@ -56,16 +66,6 @@ class EventController extends CommonFormController
     }
 
     /**
-     * @var array<string, array<string, mixed>>
-     */
-    private array $modifiedEvents = [];
-
-    /**
-     * @var array<int, string>
-     */
-    private array $deletedEvents = [];
-
-    /**
      * Generates new form and processes post data.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -75,7 +75,7 @@ class EventController extends CommonFormController
         $success = 0;
         $valid   = $cancelled   = false;
         $this->setCampaignElements($request->request);
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             $event                = $request->request->all()['campaignevent'] ?? [];
             $type                 = $event['type'];
             $eventType            = $event['eventType'];
@@ -129,7 +129,7 @@ class EventController extends CommonFormController
         $form->get('campaignId')->setData($campaignId);
 
         // Check for a submitted form and process it
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -179,7 +179,7 @@ class EventController extends CommonFormController
             'route'         => false,
         ];
 
-        if (1 === $success) {
+        if ($success === 1) {
             $passthroughVars['modifiedEvents'] = $modifiedEvents;
         }
 
@@ -214,7 +214,7 @@ class EventController extends CommonFormController
         $valid         = $cancelled = false;
         $method        = $request->getMethod();
         $campaignEvent = $request->request->all()['campaignevent'] ?? [];
-        $campaignId    = 'POST' === $method && !empty($campaignEvent['campaignId'])
+        $campaignId    = $method === 'POST' && !empty($campaignEvent['campaignId'])
             ? $campaignEvent['campaignId']
             : $request->query->get('campaignId');
 
@@ -222,13 +222,13 @@ class EventController extends CommonFormController
         $event = $this->modifiedEvents[$objectId] ?? [];
         if (empty($event)) {
             $eventEntity = $this->getModel('campaign.event')->getEntity($objectId);
-            if (null === $eventEntity) {
+            if ($eventEntity === null) {
                 return $this->modalAccessDenied();
             }
             $event = $eventEntity->convertToArray();
         }
 
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             $event = array_merge($event, [
                 'anchor'          => $campaignEvent['anchor'] ?? '',
                 'anchorEventType' => $campaignEvent['anchorEventType'] ?? '',
@@ -294,7 +294,7 @@ class EventController extends CommonFormController
         $modifiedEvents = $this->getModifiedEvents();
 
         // Check for a submitted form and process it
-        if ('1' === $request->request->get('submit')) {
+        if ($request->request->get('submit') === '1') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $formData = $form->getData();
@@ -381,7 +381,7 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ($request->getMethod() == 'POST' && $event !== null) {
             $events = $this->eventCollector->getEventsArray();
             if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
                 $event['settings'] = $events[$event['eventType']][$event['type']];
@@ -448,7 +448,7 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ($request->getMethod() == 'POST' && $event !== null) {
             $events = $this->eventCollector->getEventsArray();
             if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
                 $event['settings'] = $events[$event['eventType']][$event['type']];
@@ -515,7 +515,7 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ($request->getMethod() == 'POST' && $event !== null) {
             $keyId          = 'new'.hash('sha1', uniqid((string) mt_rand()));
             $event['id']    = $event['tempId']    = $keyId;
             $session->set('mautic.campaign.events.clone.storage', $event);
@@ -594,12 +594,12 @@ class EventController extends CommonFormController
             'id'         => $event['id'],
             'campaignId' => $campaignId,
         ];
-        if ('edit' === $action) {
+        if ($action === 'edit') {
             $templateVars['update']        = true;
         }
 
         // Render the template and store it in the appropriate variable
-        $passThroughKey                   = ('edit' === $action) ? 'updateHtml' : 'eventHtml';
+        $passThroughKey                   = ($action === 'edit') ? 'updateHtml' : 'eventHtml';
         $passThroughVars[$passThroughKey] = $this->renderView($template, $templateVars);
 
         // Pass through event-related variables
@@ -610,10 +610,10 @@ class EventController extends CommonFormController
         ];
 
         // Handle trigger mode interval
-        if (Event::TRIGGER_MODE_INTERVAL === $event['triggerMode']) {
+        if ($event['triggerMode'] === Event::TRIGGER_MODE_INTERVAL) {
             $label = 'mautic.campaign.connection.trigger.interval.label';
 
-            if (Event::PATH_INACTION === $event['anchor']) {
+            if ($event['anchor'] === Event::PATH_INACTION) {
                 $label .= '_inaction';
             }
 
@@ -630,10 +630,10 @@ class EventController extends CommonFormController
         }
 
         // Handle trigger mode date
-        if (Event::TRIGGER_MODE_DATE === $event['triggerMode']) {
+        if ($event['triggerMode'] === Event::TRIGGER_MODE_DATE) {
             $label = 'mautic.campaign.connection.trigger.date.label';
 
-            if (Event::PATH_INACTION === $event['anchor']) {
+            if ($event['anchor'] === Event::PATH_INACTION) {
                 $label .= '_inaction';
             }
 

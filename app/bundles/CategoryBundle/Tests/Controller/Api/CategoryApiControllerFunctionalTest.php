@@ -50,7 +50,7 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         // Find our test category in the results
         $foundCategory = false;
         foreach ($responseData['member'] as $item) {
-            if ('Test Category' === $item['title']) {
+            if ($item['title'] === 'Test Category') {
                 $foundCategory = true;
                 $this->assertSame('contact', $item['bundle']);
                 $this->assertSame('test-category', $item['alias']);
@@ -169,10 +169,10 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         $hasContactCategory = false;
         $hasPageCategory    = false;
         foreach ($responseData['member'] as $item) {
-            if ('contact' === $item['bundle']) {
+            if ($item['bundle'] === 'contact') {
                 $hasContactCategory = true;
             }
-            if ('page' === $item['bundle']) {
+            if ($item['bundle'] === 'page') {
                 $hasPageCategory = true;
             }
         }

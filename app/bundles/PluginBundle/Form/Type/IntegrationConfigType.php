@@ -14,7 +14,7 @@ class IntegrationConfigType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (null != $options['integration']) {
+        if ($options['integration'] != null) {
             $options['integration']->appendToForm($builder, $options['data'], 'integration');
         }
 

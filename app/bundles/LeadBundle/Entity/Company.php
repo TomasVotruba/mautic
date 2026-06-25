@@ -280,33 +280,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
         ];
     }
 
-    protected function isChanged($prop, $val)
-    {
-        $prefix = 'company';
-
-        if (str_starts_with($prop, $prefix)) {
-            $getter  = 'get'.ucfirst(substr($prop, strlen($prefix)));
-            $current = $this->$getter();
-            if ($current !== $val) {
-                $this->addChange($prop, [$current, $val]);
-            }
-        } elseif ('owner' === $prop) {
-            $current = $this->getOwner();
-            if ($current && !$val) {
-                $this->changes['owner'] = [$current->getName().' ('.$current->getId().')', $val];
-            } elseif (!$current && $val) {
-                $this->changes['owner'] = [$current, $val->getName().' ('.$val->getId().')'];
-            } elseif ($current && $current->getId() != $val->getId()) {
-                $this->changes['owner'] = [
-                    $current->getName().'('.$current->getId().')',
-                    $val->getName().'('.$val->getId().')',
-                ];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
-    }
-
     /**
      * @return int
      */
@@ -646,5 +619,32 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
         $this->deleted = $deleted;
 
         return $this;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $prefix = 'company';
+
+        if (str_starts_with($prop, $prefix)) {
+            $getter  = 'get'.ucfirst(substr($prop, strlen($prefix)));
+            $current = $this->{$getter}();
+            if ($current !== $val) {
+                $this->addChange($prop, [$current, $val]);
+            }
+        } elseif ($prop === 'owner') {
+            $current = $this->getOwner();
+            if ($current && !$val) {
+                $this->changes['owner'] = [$current->getName().' ('.$current->getId().')', $val];
+            } elseif (!$current && $val) {
+                $this->changes['owner'] = [$current, $val->getName().' ('.$val->getId().')'];
+            } elseif ($current && $current->getId() != $val->getId()) {
+                $this->changes['owner'] = [
+                    $current->getName().'('.$current->getId().')',
+                    $val->getName().'('.$val->getId().')',
+                ];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

@@ -29,7 +29,7 @@ class TriggerEventModel extends CommonFormModel
 
     public function getEntity($id = null): ?TriggerEvent
     {
-        if (null === $id) {
+        if ($id === null) {
             return new TriggerEvent();
         }
 

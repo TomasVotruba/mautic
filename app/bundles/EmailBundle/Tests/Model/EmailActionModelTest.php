@@ -88,30 +88,6 @@ class EmailActionModelTest extends TestCase
     }
 
     /**
-     * @return array<Email>
-     */
-    private function buildEmailsWithCategory(Category $category, int $quantity): array
-    {
-        $emails = [];
-
-        for ($i = 0; $i < $quantity; ++$i) {
-            $email = new Email();
-            $email->setId($i);
-            $email->setCategory($category);
-            $emails[] = $email;
-        }
-
-        return $emails;
-    }
-
-    private function configurePermissionToAllowEdition(bool $allow): void
-    {
-        $this->corePermissionsMock
-            ->method('hasEntityAccess')
-            ->willReturn($allow);
-    }
-
-    /**
      * @param array<Email> $emails
      */
     protected function configureRepositoryToReturn(array $emails): void
@@ -145,5 +121,29 @@ class EmailActionModelTest extends TestCase
                 array_map(fn (Email $email) => $email->getId(), $emails),
                 $newCategory
             );
+    }
+
+    /**
+     * @return array<Email>
+     */
+    private function buildEmailsWithCategory(Category $category, int $quantity): array
+    {
+        $emails = [];
+
+        for ($i = 0; $i < $quantity; ++$i) {
+            $email = new Email();
+            $email->setId($i);
+            $email->setCategory($category);
+            $emails[] = $email;
+        }
+
+        return $emails;
+    }
+
+    private function configurePermissionToAllowEdition(bool $allow): void
+    {
+        $this->corePermissionsMock
+            ->method('hasEntityAccess')
+            ->willReturn($allow);
     }
 }

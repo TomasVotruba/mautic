@@ -87,10 +87,10 @@ class PageRepository extends CommonRepository
                 ->setParameter('id', $this->currentUser->getId());
         }
 
-        if ('translation' == $topLevel) {
+        if ($topLevel == 'translation') {
             // only get top level pages
             $q->andWhere($q->expr()->isNull('p.translationParent'));
-        } elseif ('variant' == $topLevel) {
+        } elseif ($topLevel == 'variant') {
             $q->andWhere($q->expr()->isNull('p.variantParent'));
         }
 
@@ -113,88 +113,6 @@ class PageRepository extends CommonRepository
         return $q->getQuery()->getArrayResult();
     }
 
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            [
-                'p.title',
-                'p.alias',
-            ]
-        );
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.page.searchcommand.isexpired'):
-            case $this->translator->trans('mautic.page.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(p.isPublished = :%1\$s AND p.publishDown IS NOT NULL AND p.publishDown <> '' AND p.publishDown < CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.page.searchcommand.ispending'):
-            case $this->translator->trans('mautic.page.searchcommand.ispending', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(p.isPublished = :%1\$s AND p.publishUp IS NOT NULL AND p.publishUp <> '' AND p.publishUp > CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.lang'):
-            case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr            = '('.$q->expr()->eq('p.language', ":$unique").' OR '.$q->expr()->like('p.language', ":$langUnique").')';
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.page.searchcommand.isprefcenter'):
-            case $this->translator->trans('mautic.page.searchcommand.isprefcenter', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('p.isPreferenceCenter', ":$unique");
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'page_id',
-                    'page_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [$expr, $parameters];
-    }
-
     /**
      * @return string[]
      */
@@ -214,13 +132,6 @@ class PageRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['p.title', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -273,5 +184,94 @@ class PageRepository extends CommonRepository
         }
 
         $q->executeStatement();
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            [
+                'p.title',
+                'p.alias',
+            ]
+        );
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.page.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.page.searchcommand.isexpired', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(p.isPublished = :%1\$s AND p.publishDown IS NOT NULL AND p.publishDown <> '' AND p.publishDown < CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.page.searchcommand.ispending'):
+            case $this->translator->trans('mautic.page.searchcommand.ispending', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(p.isPublished = :%1\$s AND p.publishUp IS NOT NULL AND p.publishUp <> '' AND p.publishUp > CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.lang'):
+            case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr            = '('.$q->expr()->eq('p.language', ":{$unique}").' OR '.$q->expr()->like('p.language', ":{$langUnique}").')';
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.page.searchcommand.isprefcenter'):
+            case $this->translator->trans('mautic.page.searchcommand.isprefcenter', [], null, 'en_US'):
+                $expr            = $q->expr()->eq('p.isPreferenceCenter', ":{$unique}");
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'page_id',
+                    'page_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [$expr, $parameters];
+    }
+
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['p.title', 'ASC'],
+        ];
     }
 }

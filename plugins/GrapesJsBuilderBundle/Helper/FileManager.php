@@ -66,11 +66,6 @@ class FileManager
         return $uploadDir.$fileName;
     }
 
-    private function getUploadDir(): string
-    {
-        return $this->getGrapesJsImagesPath(true);
-    }
-
     public function getFullUrl($fileName, $separator = '/'): string
     {
         // if a static_url (CDN) is configured use that, otherwise use the site url
@@ -80,17 +75,6 @@ class FileManager
             .$separator
             .$this->getGrapesJsImagesPath(false, $separator)
             .$fileName;
-    }
-
-    /**
-     * @param bool   $fullPath
-     * @param string $separator
-     */
-    private function getGrapesJsImagesPath($fullPath = false, $separator = '/'): string
-    {
-        return $this->pathsHelper->getSystemPath('images', $fullPath)
-            .$separator
-            .self::GRAPESJS_IMAGES_DIRECTORY;
     }
 
     /**
@@ -128,7 +112,7 @@ class FileManager
                     'type'   => 'image',
                     'height' => $size[1],
                 ];
-            } elseif ('svg' === strtolower($file->getExtension())) {
+            } elseif (strtolower($file->getExtension()) === 'svg') {
                 $files[] = $this->getSvgFileInfo($filePath, $file->getRelativePathname());
             } else {
                 $files[] = $this->getFullUrl($file->getRelativePathname());
@@ -208,6 +192,22 @@ class FileManager
         ];
     }
 
+    private function getUploadDir(): string
+    {
+        return $this->getGrapesJsImagesPath(true);
+    }
+
+    /**
+     * @param bool   $fullPath
+     * @param string $separator
+     */
+    private function getGrapesJsImagesPath($fullPath = false, $separator = '/'): string
+    {
+        return $this->pathsHelper->getSystemPath('images', $fullPath)
+            .$separator
+            .self::GRAPESJS_IMAGES_DIRECTORY;
+    }
+
     /**
      * @return array<string, mixed>|null
      */
@@ -224,7 +224,7 @@ class FileManager
                 'height' => $size[1],
                 'type'   => 'image',
             ];
-        } elseif ('svg' === $extension) {
+        } elseif ($extension === 'svg') {
             $info = $this->getSvgFileInfo($filePath, $file->getRelativePathname());
         } elseif (in_array($extension, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])) {
             $info = [
@@ -274,7 +274,7 @@ class FileManager
                 } elseif (isset($svgAttributes->viewBox)) {
                     // Parse the viewBox attribute (format: "x y width height")
                     $viewBox = explode(' ', (string) $svgAttributes->viewBox);
-                    if (4 === count($viewBox)) {
+                    if (count($viewBox) === 4) {
                         $info['width']  = (int) $viewBox[2];
                         $info['height'] = (int) $viewBox[3];
                     }

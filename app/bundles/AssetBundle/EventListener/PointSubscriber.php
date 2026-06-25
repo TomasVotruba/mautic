@@ -45,7 +45,7 @@ class PointSubscriber implements EventSubscriberInterface
     {
         $asset = $event->getRecord()->getAsset();
 
-        if (null !== $asset) {
+        if ($asset !== null) {
             $this->pointModel->triggerAction('asset.download', $asset);
         }
     }

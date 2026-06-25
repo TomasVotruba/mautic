@@ -78,7 +78,7 @@ class TagApiControllerFunctionalTest extends MauticMysqlTestCase
 
             // whitespace before and after tag name should be removed, name should be the same for each tag
             $this->assertEquals($tagName, $response['tag']['tag']);
-            if (null === $tagId) {
+            if ($tagId === null) {
                 $tagId = $response['tag']['id'];
             } else {
                 $this->assertSame($tagId, $response['tag']['id'], 'ID of created tag does not match. Possible duplicates.');

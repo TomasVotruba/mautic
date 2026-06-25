@@ -84,7 +84,7 @@ class InstallController extends CommonController
         // Note if this step is complete
         $complete = false;
 
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 // Post-step processing

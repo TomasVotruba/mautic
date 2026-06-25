@@ -12,14 +12,6 @@ final class Version20250127092203 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = 'user_invites';
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->hasTable($this->getPrefixedTableName(self::TABLE_NAME)),
-            'Table '.self::TABLE_NAME.' already exists'
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $table = $schema->createTable($this->prefix.self::TABLE_NAME);
@@ -48,5 +40,13 @@ final class Version20250127092203 extends PreUpAssertionMigration
     public function down(Schema $schema): void
     {
         $schema->dropTable($this->prefix.self::TABLE_NAME);
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->hasTable($this->getPrefixedTableName(self::TABLE_NAME)),
+            'Table '.self::TABLE_NAME.' already exists'
+        );
     }
 }

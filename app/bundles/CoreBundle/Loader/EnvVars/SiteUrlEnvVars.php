@@ -41,7 +41,7 @@ class SiteUrlEnvVars implements EnvVarsInterface
 
         // Port
         if (!empty($parts['port'])) {
-            $portKey = ('http' === $scheme) ? 'MAUTIC_REQUEST_CONTEXT_HTTP_PORT' : 'MAUTIC_REQUEST_CONTEXT_HTTPS_PORT';
+            $portKey = ($scheme === 'http') ? 'MAUTIC_REQUEST_CONTEXT_HTTP_PORT' : 'MAUTIC_REQUEST_CONTEXT_HTTPS_PORT';
             $envVars->set($portKey, $parts['port']);
         }
     }

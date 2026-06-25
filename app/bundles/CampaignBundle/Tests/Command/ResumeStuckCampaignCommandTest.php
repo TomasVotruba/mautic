@@ -590,7 +590,7 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
             'lead'     => $leadId,
         ];
 
-        if (null !== $eventId) {
+        if ($eventId !== null) {
             $criteria['event'] = $eventId;
         }
 

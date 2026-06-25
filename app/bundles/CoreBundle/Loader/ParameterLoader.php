@@ -73,7 +73,7 @@ class ParameterLoader
         // Load the values into the environment for cache use
         $dotenv = new Dotenv(MAUTIC_ENV);
         foreach ($envVariables->all() as $key => $value) {
-            if (null === $value) {
+            if ($value === null) {
                 $envVariables->set($key, '');
             }
         }
@@ -119,6 +119,34 @@ class ParameterLoader
         }
 
         return $paths['local_config'];
+    }
+
+    public static function getLocalConfigBaseDir(string $root): string
+    {
+        $rootDir         = Path::canonicalize($root);
+        $projectDir      = self::getProjectDirByRoot($rootDir);
+        $localConfigFile = self::getLocalConfigFile($root, false);
+
+        if (Path::isBasePath($rootDir, $localConfigFile)) {
+            return $rootDir;
+        } elseif (Path::isBasePath($projectDir, $localConfigFile)) {
+            return $projectDir;
+        }
+
+        return $root;
+    }
+
+    public static function getProjectDirByRoot(string $root): string
+    {
+        $dir = $rootDir = \dirname($root, 1);
+        while (!is_file($dir.'/composer.json')) {
+            if ($dir === \dirname($dir)) {
+                return $rootDir;
+            }
+            $dir = \dirname($dir);
+        }
+
+        return $dir;
     }
 
     private function loadDefaultParameters(): void
@@ -194,33 +222,5 @@ class ParameterLoader
     {
         // load the local parameter file from the same dir as the local config file.
         return $this->configBaseDir.'/config/parameters_local.php';
-    }
-
-    public static function getLocalConfigBaseDir(string $root): string
-    {
-        $rootDir         = Path::canonicalize($root);
-        $projectDir      = self::getProjectDirByRoot($rootDir);
-        $localConfigFile = self::getLocalConfigFile($root, false);
-
-        if (Path::isBasePath($rootDir, $localConfigFile)) {
-            return $rootDir;
-        } elseif (Path::isBasePath($projectDir, $localConfigFile)) {
-            return $projectDir;
-        }
-
-        return $root;
-    }
-
-    public static function getProjectDirByRoot(string $root): string
-    {
-        $dir = $rootDir = \dirname($root, 1);
-        while (!is_file($dir.'/composer.json')) {
-            if ($dir === \dirname($dir)) {
-                return $rootDir;
-            }
-            $dir = \dirname($dir);
-        }
-
-        return $dir;
     }
 }

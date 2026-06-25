@@ -62,7 +62,7 @@ class AmazonS3Integration extends CloudStorageIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('keys' === $formArea) {
+        if ($formArea === 'keys') {
             $builder->add(
                 'region',
                 TextType::class,

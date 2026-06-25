@@ -29,19 +29,6 @@ final class FormFieldRatingTypeTest extends TypeTestCase
         parent::setUp();
     }
 
-    /**
-     * @return array<FormExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
-        return [
-            new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([
-                FormFieldRatingType::class => new FormFieldRatingType($this->translator),
-            ], []),
-        ];
-    }
-
     public function testDefaultFieldConfiguration(): void
     {
         $form = $this->factory->create(FormFieldRatingType::class, [], [
@@ -122,5 +109,18 @@ final class FormFieldRatingTypeTest extends TypeTestCase
         $this->assertSame('♡', $form->get('symbol')->getData());
         $this->assertSame('#123456', $form->get('star_color')->getData());
         $this->assertSame('#abcdef', $form->get('base_color')->getData());
+    }
+
+    /**
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([
+                FormFieldRatingType::class => new FormFieldRatingType($this->translator),
+            ], []),
+        ];
     }
 }

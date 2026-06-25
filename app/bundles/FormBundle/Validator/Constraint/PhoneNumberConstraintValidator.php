@@ -13,7 +13,7 @@ class PhoneNumberConstraintValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return;
         }
 
@@ -23,7 +23,7 @@ class PhoneNumberConstraintValidator extends ConstraintValidator
 
         $phoneUtil = PhoneNumberUtil::getInstance();
 
-        if (false === $value instanceof PhoneNumber) {
+        if ($value instanceof PhoneNumber === false) {
             $value = (string) $value;
             try {
                 $phoneNumber = $phoneUtil->parse($value, PhoneNumberUtil::UNKNOWN_REGION);
@@ -34,7 +34,7 @@ class PhoneNumberConstraintValidator extends ConstraintValidator
             }
         }
 
-        if (false === $phoneUtil->isValidNumber($phoneNumber)) {
+        if ($phoneUtil->isValidNumber($phoneNumber) === false) {
             $this->addViolation($value, $constraint);
 
             return;

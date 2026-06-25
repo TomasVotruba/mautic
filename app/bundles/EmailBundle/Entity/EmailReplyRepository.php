@@ -29,7 +29,7 @@ final class EmailReplyRepository extends CommonRepository implements EmailReplyR
             ->leftJoin('stat', MAUTIC_TABLE_PREFIX.'emails', 'email', 'stat.email_id = email.id')
             ->leftJoin('stat', MAUTIC_TABLE_PREFIX.'email_copies', 'email_copy', 'stat.copy_id = email_copy.id');
 
-        if (null !== $leadId) {
+        if ($leadId !== null) {
             $qb->andWhere('stat.lead_id = :leadId')
                 ->setParameter('leadId', $leadId);
         }

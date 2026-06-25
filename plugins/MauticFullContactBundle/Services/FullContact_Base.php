@@ -17,7 +17,11 @@ class FullContact_Base
 
     public const USER_AGENT      = 'caseysoftware/fullcontact-php-0.9.0';
 
-    private \DateTime $_next_req_time;
+    public $response_obj;
+
+    public $response_code;
+
+    public $response_json;
 
     //    protected $_baseUri = 'https://requestbin.fullcontact.com/1ailj6d1?';
     protected $_baseUri     = 'https://api.fullcontact.com/';
@@ -34,35 +38,7 @@ class FullContact_Base
 
     protected $_supportedMethods = [];
 
-    public $response_obj;
-
-    public $response_code;
-
-    public $response_json;
-
-    /**
-     * Slow down calls to the FullContact API if needed.
-     */
-    private function _wait_for_rate_limit(): void
-    {
-        $now = new \DateTime();
-        if ($this->_next_req_time->getTimestamp() > $now->getTimestamp()) {
-            $t = $this->_next_req_time->getTimestamp() - $now->getTimestamp();
-            sleep($t);
-        }
-    }
-
-    /**
-     * @param mixed[] $hdr
-     */
-    private function _update_rate_limit($hdr): void
-    {
-        $remaining            = (float) $hdr['X-Rate-Limit-Remaining'];
-        $reset                = (float) $hdr['X-Rate-Limit-Reset'];
-        $spacing              = $reset / (1.0 + $remaining);
-        $delay                = $spacing - self::REQUEST_LATENCY;
-        $this->_next_req_time = new \DateTime('now + '.$delay.' seconds');
-    }
+    private \DateTime $_next_req_time;
 
     /**
      * The base constructor Sets the API key available from here:
@@ -114,7 +90,7 @@ class FullContact_Base
      */
     protected function _execute($params = [], $postData = null)
     {
-        if (null === $postData && !in_array($params['method'], $this->_supportedMethods, true)) {
+        if ($postData === null && !in_array($params['method'], $this->_supportedMethods, true)) {
             throw new NotImplementedException(self::class.' does not support the ['.$params['method'].'] method');
         }
 
@@ -147,7 +123,7 @@ class FullContact_Base
         curl_setopt($connection, CURLOPT_USERAGENT, self::USER_AGENT);
         curl_setopt($connection, CURLOPT_HEADER, true); // return HTTP headers with response
 
-        if (null !== $postData) {
+        if ($postData !== null) {
             curl_setopt($connection, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
             curl_setopt($connection, CURLOPT_POSTFIELDS, json_encode($postData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             curl_setopt($connection, CURLOPT_POST, true);
@@ -163,7 +139,7 @@ class FullContact_Base
         $headers = [];
 
         foreach (explode("\r\n", $response_headers) as $i => $line) {
-            if (0 === $i) {
+            if ($i === 0) {
                 $headers['http_code'] = $line;
             } else {
                 [$key, $value]     = explode(': ', $line);
@@ -174,13 +150,37 @@ class FullContact_Base
         $this->response_code = curl_getinfo($connection, CURLINFO_HTTP_CODE);
         $this->response_obj  = json_decode($this->response_json);
 
-        if ('403' === $this->response_code) {
+        if ($this->response_code === '403') {
             throw new NoCreditException($this->response_obj->message);
         }
-        if ('200' === $this->response_code) {
+        if ($this->response_code === '200') {
             $this->_update_rate_limit($headers);
         }
 
         return $this->response_obj;
+    }
+
+    /**
+     * Slow down calls to the FullContact API if needed.
+     */
+    private function _wait_for_rate_limit(): void
+    {
+        $now = new \DateTime();
+        if ($this->_next_req_time->getTimestamp() > $now->getTimestamp()) {
+            $t = $this->_next_req_time->getTimestamp() - $now->getTimestamp();
+            sleep($t);
+        }
+    }
+
+    /**
+     * @param mixed[] $hdr
+     */
+    private function _update_rate_limit($hdr): void
+    {
+        $remaining            = (float) $hdr['X-Rate-Limit-Remaining'];
+        $reset                = (float) $hdr['X-Rate-Limit-Reset'];
+        $spacing              = $reset / (1.0 + $remaining);
+        $delay                = $spacing - self::REQUEST_LATENCY;
+        $this->_next_req_time = new \DateTime('now + '.$delay.' seconds');
     }
 }

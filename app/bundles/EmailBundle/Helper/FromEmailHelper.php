@@ -119,6 +119,15 @@ class FromEmailHelper
         return $this->replaceSignatureTokens($this->lastOwner);
     }
 
+    public function getFrom(?Email $email): AddressDTO
+    {
+        if ($email && $email->getFromAddress()) {
+            return new AddressDTO($email->getFromAddress(), $email->getFromName());
+        }
+
+        return $this->getDefaultFrom();
+    }
+
     /**
      * @param mixed[] $owner
      */
@@ -133,15 +142,6 @@ class FromEmailHelper
         }
 
         return $signature;
-    }
-
-    public function getFrom(?Email $email): AddressDTO
-    {
-        if ($email && $email->getFromAddress()) {
-            return new AddressDTO($email->getFromAddress(), $email->getFromName());
-        }
-
-        return $this->getDefaultFrom();
     }
 
     /**

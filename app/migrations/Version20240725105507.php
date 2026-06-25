@@ -9,9 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20240725105507 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-    }
 
     public function up(Schema $schema): void
     {
@@ -23,5 +20,8 @@ final class Version20240725105507 extends PreUpAssertionMigration
     {
         $this->addSql("UPDATE {$this->prefix}leads SET `country` = 'Turkey' WHERE `country` = 'Türkiye'");
         $this->addSql("UPDATE {$this->prefix}companies SET `companycountry` = 'Turkey' WHERE `companycountry` = 'Türkiye'");
+    }
+    protected function preUpAssertions(): void
+    {
     }
 }

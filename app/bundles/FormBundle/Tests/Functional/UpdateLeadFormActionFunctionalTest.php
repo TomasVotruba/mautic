@@ -28,7 +28,7 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
         foreach ($leadData as $field => $value) {
             $method = 'set'.ucfirst($field);
             if (method_exists($lead, $method)) {
-                $lead->$method($value);
+                $lead->{$method}($value);
             }
         }
 
@@ -42,14 +42,14 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
         $crawler     = $this->client->request(Request::METHOD_GET, "/form/{$form->getId()}");
         $formCrawler = $crawler->filter('form[id=mauticform_testform]');
 
-        if (0 === $formCrawler->count()) {
+        if ($formCrawler->count() === 0) {
             $this->fail('Form not found: '.$this->client->getResponse()->getContent());
         }
         $formElement = $formCrawler->form();
 
         $formValues = [];
         foreach ($formData as $field => $value) {
-            $formValues["mauticform[$field]"] = $value;
+            $formValues["mauticform[{$field}]"] = $value;
         }
 
         $formElement->setValues($formValues);
@@ -58,12 +58,12 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
         foreach ($expectedLeadData as $field => $value) {
             $leadFieldValue = $lead->getFieldValue($field);
-            if ('{datetime=now}' === $value) {
+            if ($value === '{datetime=now}') {
                 $actualValue = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $leadFieldValue);
                 $diff        = abs($actualValue->getTimestamp() - (new \DateTime())->getTimestamp());
                 $this->assertLessThan(60, $diff, "The {$field} is not within 60 seconds of now.");
             } else {
-                $this->assertEquals($value, $leadFieldValue ?? null, "Field $field does not match");
+                $this->assertEquals($value, $leadFieldValue ?? null, "Field {$field} does not match");
             }
         }
     }

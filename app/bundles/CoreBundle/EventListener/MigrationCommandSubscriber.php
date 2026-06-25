@@ -36,7 +36,7 @@ class MigrationCommandSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
         $output  = $event->getOutput();
 
-        if ('doctrine:migrations:migrate' !== $command->getName()) {
+        if ($command->getName() !== 'doctrine:migrations:migrate') {
             return;
         }
 

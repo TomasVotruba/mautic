@@ -64,11 +64,11 @@ class ExportHelper
             throw new \Exception('No or invalid data given');
         }
 
-        if (self::EXPORT_TYPE_EXCEL === $type) {
+        if ($type === self::EXPORT_TYPE_EXCEL) {
             return $this->exportAsExcel($data, $filename);
         }
 
-        if (self::EXPORT_TYPE_CSV === $type) {
+        if ($type === self::EXPORT_TYPE_CSV) {
             return $this->exportAsCsv($data, $filename);
         }
 
@@ -81,7 +81,7 @@ class ExportHelper
             throw new \Exception('No or invalid data given');
         }
 
-        if (self::EXPORT_TYPE_CSV === $type) {
+        if ($type === self::EXPORT_TYPE_CSV) {
             return $this->exportAsCsvIntoFile($data, $fileName);
         }
 
@@ -93,7 +93,7 @@ class ExportHelper
         $zipFilePath = str_replace('.csv', '.zip', $filePath);
         $zipArchive  = new \ZipArchive();
 
-        if (true === $zipArchive->open($zipFilePath, \ZipArchive::OVERWRITE | \ZipArchive::CREATE)) {
+        if ($zipArchive->open($zipFilePath, \ZipArchive::OVERWRITE | \ZipArchive::CREATE) === true) {
             $zipArchive->addFile($filePath, $fileName);
             $zipArchive->close();
             $this->filePathResolver->delete($filePath);
@@ -101,7 +101,75 @@ class ExportHelper
             return $zipFilePath;
         }
 
-        throw new FilePathException("Could not create zip archive at $zipFilePath.");
+        throw new FilePathException("Could not create zip archive at {$zipFilePath}.");
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function parseLeadToExport(Lead $lead): array
+    {
+        $leadExport = $lead->getProfileFields();
+
+        $stage               = $lead->getStage();
+        $leadExport['stage'] = $stage ? $stage->getName() : null;
+
+        return $leadExport;
+    }
+
+    public function downloadAsZip(string $filePath, string $fileName): BinaryFileResponse
+    {
+        return new BinaryFileResponse(
+            $filePath,
+            Response::HTTP_OK,
+            [
+                'Content-Type'        => 'application/zip',
+                'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
+                'Expires'             => 0,
+                'Cache-Control'       => 'must-revalidate',
+                'Pragma'              => 'public',
+            ]
+        );
+    }
+
+    /**
+     * @param array<string|int, string> $assetList
+     */
+    public function writeToZipFile(string $jsonOutput, array $assetList, string $path): string
+    {
+        if ($path === '') {
+            $tempDir      = sys_get_temp_dir();
+            $jsonFilePath = sprintf('%s/entity_data.json', $tempDir);
+            $zipFilePath  = sprintf('%s/entity_data.zip', $tempDir);
+        } else {
+            $jsonFilePath = sprintf('%s/entity_data.json', $path);
+            $zipFilePath  = sprintf('%s/entity_data.zip', $path);
+        }
+
+        if (file_exists($jsonFilePath)) {
+            unlink($jsonFilePath);
+        }
+
+        if (file_exists($zipFilePath)) {
+            unlink($zipFilePath);
+        }
+
+        file_put_contents($jsonFilePath, $jsonOutput);
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE) === true) {
+            $zip->addFile($jsonFilePath, 'entity_data.json');
+            foreach ($assetList as $assetPath) {
+                if (file_exists($assetPath)) {
+                    $zip->addFile($assetPath, 'assets/'.basename($assetPath));
+                }
+            }
+
+            $zip->close();
+            @unlink($jsonFilePath);
+        }
+
+        return $zipFilePath;
     }
 
     private function exportAsExcel(\Iterator $data, string $filename): StreamedResponse
@@ -134,7 +202,7 @@ class ExportHelper
 
         $rowCount = 2;
         foreach ($data as $key => $row) {
-            if (0 === $key) {
+            if ($key === 0) {
                 // Build the header row from keys in the current row.
                 $spreadsheet->getActiveSheet()->fromArray(array_keys($row), null, 'A1');
             }
@@ -217,73 +285,5 @@ class ExportHelper
         }
 
         return $filePath;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function parseLeadToExport(Lead $lead): array
-    {
-        $leadExport = $lead->getProfileFields();
-
-        $stage               = $lead->getStage();
-        $leadExport['stage'] = $stage ? $stage->getName() : null;
-
-        return $leadExport;
-    }
-
-    public function downloadAsZip(string $filePath, string $fileName): BinaryFileResponse
-    {
-        return new BinaryFileResponse(
-            $filePath,
-            Response::HTTP_OK,
-            [
-                'Content-Type'        => 'application/zip',
-                'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
-                'Expires'             => 0,
-                'Cache-Control'       => 'must-revalidate',
-                'Pragma'              => 'public',
-            ]
-        );
-    }
-
-    /**
-     * @param array<string|int, string> $assetList
-     */
-    public function writeToZipFile(string $jsonOutput, array $assetList, string $path): string
-    {
-        if ('' === $path) {
-            $tempDir      = sys_get_temp_dir();
-            $jsonFilePath = sprintf('%s/entity_data.json', $tempDir);
-            $zipFilePath  = sprintf('%s/entity_data.zip', $tempDir);
-        } else {
-            $jsonFilePath = sprintf('%s/entity_data.json', $path);
-            $zipFilePath  = sprintf('%s/entity_data.zip', $path);
-        }
-
-        if (file_exists($jsonFilePath)) {
-            unlink($jsonFilePath);
-        }
-
-        if (file_exists($zipFilePath)) {
-            unlink($zipFilePath);
-        }
-
-        file_put_contents($jsonFilePath, $jsonOutput);
-
-        $zip = new \ZipArchive();
-        if (true === $zip->open($zipFilePath, \ZipArchive::CREATE)) {
-            $zip->addFile($jsonFilePath, 'entity_data.json');
-            foreach ($assetList as $assetPath) {
-                if (file_exists($assetPath)) {
-                    $zip->addFile($assetPath, 'assets/'.basename($assetPath));
-                }
-            }
-
-            $zip->close();
-            @unlink($jsonFilePath);
-        }
-
-        return $zipFilePath;
     }
 }

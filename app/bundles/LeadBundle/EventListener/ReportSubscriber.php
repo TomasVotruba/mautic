@@ -286,7 +286,7 @@ class ReportSubscriber implements EventSubscriberInterface
                             $qb->expr()->eq('log.is_scheduled', 0),
                             $qb->expr()->isNotNull('l.attribution'),
                             $qb->expr()->neq('l.attribution', 0),
-                            $qb->expr()->lte("DATE($localDateTriggered)", 'DATE(l.attribution_date)')
+                            $qb->expr()->lte("DATE({$localDateTriggered})", 'DATE(l.attribution_date)')
                         )
                     );
 
@@ -330,7 +330,7 @@ class ReportSubscriber implements EventSubscriberInterface
                             }
 
                             $expr = $expr->with(
-                                $expr->{$filter['operator']}($x, ":$filterParam")
+                                $expr->{$filter['operator']}($x, ":{$filterParam}")
                             );
                             $qb->setParameter($filterParam, $filter['value']);
                         }
@@ -342,10 +342,10 @@ class ReportSubscriber implements EventSubscriberInterface
                     ->join("{$alias}e", MAUTIC_TABLE_PREFIX.'campaigns', "{$alias}c", "{$alias}e.campaign_id = {$alias}c.id")
                     ->where($expr);
 
-                if ('multi' != $alias) {
+                if ($alias != 'multi') {
                     // Get the min/max row and group by lead for first touch or last touch events
-                    $func = ('first' == $alias) ? 'min' : 'max';
-                    $subQ->select("$func({$alias}log.date_triggered)")
+                    $func = ($alias == 'first') ? 'min' : 'max';
+                    $subQ->select("{$func}({$alias}log.date_triggered)")
                         ->setMaxResults(1);
                     $qb->andWhere(
                         $qb->expr()->eq('log.date_triggered', sprintf('(%s)', $subQ->getSQL()))
@@ -404,7 +404,7 @@ class ReportSubscriber implements EventSubscriberInterface
 
             $chartQuery->applyDateFilters($queryBuilder, 'date_added', 'l');
 
-            if ('lp' === $queryBuilder->getQueryPart('from')[0]['alias']) {
+            if ($queryBuilder->getQueryPart('from')[0]['alias'] === 'lp') {
                 $join = $queryBuilder->getQueryPart('join');
                 $queryBuilder->resetQueryPart('join');
 
@@ -583,7 +583,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $chart        = new PieChart();
                     $companyCount = 0;
                     foreach ($counts as $count) {
-                        if ('' != $count['companycountry']) {
+                        if ($count['companycountry'] != '') {
                             $chart->setDataset($count['companycountry'], $count['companies']);
                         }
                         $companyCount += $count['companies'];
@@ -612,7 +612,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $chart        = new PieChart();
                     $companyCount = 0;
                     foreach ($counts as $count) {
-                        if ('' != $count['companyindustry']) {
+                        if ($count['companyindustry'] != '') {
                             $chart->setDataset($count['companyindustry'], $count['companies']);
                         }
                         $companyCount += $count['companies'];
@@ -654,7 +654,7 @@ class ReportSubscriber implements EventSubscriberInterface
 
     public function onReportColumnCollect(ColumnCollectEvent $event): void
     {
-        if ('company' === $event->getObject()) {
+        if ($event->getObject() === 'company') {
             $fields = $this->companyReportData->getCompanyData();
             unset($fields['companies_lead.is_primary'], $fields['companies_lead.date_added']);
             $event->addColumns($fields);
@@ -682,6 +682,45 @@ class ReportSubscriber implements EventSubscriberInterface
         ];
 
         $event->addColumns($fields);
+    }
+
+    public function onReportDisplay(ReportDataEvent $event): void
+    {
+        $data = $event->getData();
+
+        if ($event->checkContext([
+            self::CONTEXT_CONTACT_ATTRIBUTION_FIRST,
+            self::CONTEXT_CONTACT_ATTRIBUTION_LAST,
+            self::CONTEXT_CONTACT_ATTRIBUTION_MULTI,
+            self::CONTEXT_CONTACT_MESSAGE_FREQUENCY,
+        ])) {
+            if (isset($data[0]['channel']) || isset($data[0]['channel_action']) || (isset($data[0]['activity_count']) && isset($data[0]['attribution']))) {
+                foreach ($data as &$row) {
+                    if (isset($row['channel'])) {
+                        $row['channel'] = $this->channels[$row['channel']];
+                    }
+
+                    if (isset($row['channel_action'])) {
+                        $row['channel_action'] = $this->channelActions[$row['channel_action']];
+                    }
+
+                    if (isset($row['activity_count']) && isset($row['attribution'])) {
+                        $row['attribution'] = round($row['attribution'] / $row['activity_count'], 2);
+                    }
+
+                    if (isset($row['attribution'])) {
+                        $row['attribution'] = number_format($row['attribution'], 2);
+                    }
+
+                    unset($row);
+                }
+            }
+        } elseif ($event->checkContext([self::CONTEXT_LEADS])) {
+            $data = $this->dncReportService->processDncStatusDisplay($data);
+        }
+
+        $event->setData($data);
+        unset($data);
     }
 
     private function injectPointsReportData(ReportBuilderEvent $event, array $columns, array $filters): void
@@ -891,7 +930,7 @@ class ReportSubscriber implements EventSubscriberInterface
         ];
         unset($stages);
 
-        $context = "contact.attribution.$type";
+        $context = "contact.attribution.{$type}";
         $event
             ->addGraph($context, 'pie', 'mautic.lead.graph.pie.attribution_stages')
             ->addGraph($context, 'pie', 'mautic.lead.graph.pie.attribution_campaigns')
@@ -905,44 +944,5 @@ class ReportSubscriber implements EventSubscriberInterface
         ];
 
         $event->addTable($context, $data, self::GROUP_CONTACTS);
-    }
-
-    public function onReportDisplay(ReportDataEvent $event): void
-    {
-        $data = $event->getData();
-
-        if ($event->checkContext([
-            self::CONTEXT_CONTACT_ATTRIBUTION_FIRST,
-            self::CONTEXT_CONTACT_ATTRIBUTION_LAST,
-            self::CONTEXT_CONTACT_ATTRIBUTION_MULTI,
-            self::CONTEXT_CONTACT_MESSAGE_FREQUENCY,
-        ])) {
-            if (isset($data[0]['channel']) || isset($data[0]['channel_action']) || (isset($data[0]['activity_count']) && isset($data[0]['attribution']))) {
-                foreach ($data as &$row) {
-                    if (isset($row['channel'])) {
-                        $row['channel'] = $this->channels[$row['channel']];
-                    }
-
-                    if (isset($row['channel_action'])) {
-                        $row['channel_action'] = $this->channelActions[$row['channel_action']];
-                    }
-
-                    if (isset($row['activity_count']) && isset($row['attribution'])) {
-                        $row['attribution'] = round($row['attribution'] / $row['activity_count'], 2);
-                    }
-
-                    if (isset($row['attribution'])) {
-                        $row['attribution'] = number_format($row['attribution'], 2);
-                    }
-
-                    unset($row);
-                }
-            }
-        } elseif ($event->checkContext([self::CONTEXT_LEADS])) {
-            $data = $this->dncReportService->processDncStatusDisplay($data);
-        }
-
-        $event->setData($data);
-        unset($data);
     }
 }

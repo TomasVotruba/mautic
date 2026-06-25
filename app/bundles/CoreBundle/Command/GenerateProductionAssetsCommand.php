@@ -75,7 +75,7 @@ EOT
             'importmap:install' => ['--no-interaction' => true],
             'asset-map:compile' => [],
         ] as $commandName => $arguments) {
-            if (Command::SUCCESS !== $this->runConsoleCommand($commandName, $arguments, $output)) {
+            if ($this->runConsoleCommand($commandName, $arguments, $output) !== Command::SUCCESS) {
                 $output->writeln('<error>'.$this->translator->trans("The {$commandName} command failed. Generating production assets was not successful.").'</error>');
 
                 return Command::FAILURE;

@@ -65,7 +65,7 @@ class DoNotContactRepository extends CommonRepository
             if (!$combined) {
                 $q->innerJoin('dnc', MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'cs', 'cs.lead_id = dnc.lead_id');
 
-                if (true === $listId) {
+                if ($listId === true) {
                     $q->addSelect('cs.leadlist_id')
                         ->groupBy('cs.leadlist_id');
                 } elseif (is_array($listId)) {
@@ -101,7 +101,7 @@ class DoNotContactRepository extends CommonRepository
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if ((true === $listId || is_array($listId)) && !$combined) {
+        if (($listId === true || is_array($listId)) && !$combined) {
             // Return list group of counts
             $byList = [];
             foreach ($results as $result) {
@@ -154,7 +154,7 @@ class DoNotContactRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'dnc')
             ->leftJoin('dnc', MAUTIC_TABLE_PREFIX.'leads', 'l', 'l.id = dnc.lead_id');
 
-        if (null === $channel) {
+        if ($channel === null) {
             $q->select('dnc.channel, dnc.reason, l.id as lead_id');
         } else {
             $q->select('l.id, dnc.reason')

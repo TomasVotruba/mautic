@@ -24,7 +24,7 @@ final class UserTokenService implements UserTokenServiceInterface
         do {
             $randomSecret   = $this->randomHelper->generate($secretLength);
             $isSecretUnique = $this->userTokenRepository->isSecretUnique($randomSecret);
-        } while (false === $isSecretUnique);
+        } while ($isSecretUnique === false);
 
         return $token->setSecret($randomSecret);
     }

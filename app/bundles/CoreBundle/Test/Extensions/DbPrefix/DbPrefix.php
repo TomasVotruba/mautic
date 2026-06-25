@@ -21,7 +21,7 @@ class DbPrefix implements Extension
     public function defineDbPrefix(): void
     {
         EnvLoader::load();
-        $prefix = false === getenv('MAUTIC_DB_PREFIX') ? 'test_' : getenv('MAUTIC_DB_PREFIX');
+        $prefix = getenv('MAUTIC_DB_PREFIX') === false ? 'test_' : getenv('MAUTIC_DB_PREFIX');
         define('MAUTIC_TABLE_PREFIX', $prefix);
         echo 'using db prefix "'.$prefix.'"'.PHP_EOL;
     }

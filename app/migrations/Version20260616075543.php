@@ -9,13 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20260616075543 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->hasTable("{$this->prefix}point_insights"),
-            "Table {$this->prefix}point_insights already exists"
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -54,5 +47,12 @@ final class Version20260616075543 extends PreUpAssertionMigration
             }
             $this->addSql("DROP TABLE `{$this->prefix}point_insights`");
         }
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->hasTable("{$this->prefix}point_insights"),
+            "Table {$this->prefix}point_insights already exists"
+        );
     }
 }

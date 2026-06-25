@@ -19,7 +19,7 @@ final class ListControllerTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        if ('testMarketplaceListTableWithNoAllowList' === $this->name()) {
+        if ($this->name() === 'testMarketplaceListTableWithNoAllowList') {
             $this->configParams[Config::MARKETPLACE_ALLOWLIST_URL] = '0'; // Empty string results in null for some reason.
         }
 

@@ -44,12 +44,12 @@ class FieldBuilder
         $this->requestObject = $requestObject;
 
         // Special handling of the ID field
-        if ('mautic_internal_id' === $field) {
+        if ($field === 'mautic_internal_id') {
             return $this->addContactIdField($field);
         }
 
         // Special handling of the owner ID field
-        if ('owner_id' === $field) {
+        if ($field === 'owner_id') {
             return $this->createOwnerIdReportFieldDAO($field, (int) $mauticObject['owner_id']);
         }
 
@@ -59,7 +59,7 @@ class FieldBuilder
         }
 
         // Special handling of timeline URL
-        if ('mautic_internal_contact_timeline' === $field) {
+        if ($field === 'mautic_internal_contact_timeline') {
             return $this->addContactTimelineField($integration, $field);
         }
 

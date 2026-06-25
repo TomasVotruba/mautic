@@ -72,7 +72,7 @@ final class ExampleIntegration extends BasicIntegration implements IntegrationIn
 
             // Sync bidirectionally by default but also can use ObjectMappingDAO::SYNC_TO_MAUTIC or ObjectMappingDAO::SYNC_TO_INTEGRATION
 
-            if ('email' === $mauticField) {
+            if ($mauticField === 'email') {
                 // Set email as a required field so that it maps a value regardless if changed
                 $leadObjectMapping->addFieldMapping($mauticField, $integrationField, ObjectMappingDAO::SYNC_BIDIRECTIONALLY, true);
             } else {

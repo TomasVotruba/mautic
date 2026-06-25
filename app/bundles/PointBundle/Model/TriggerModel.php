@@ -190,50 +190,11 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Trigger
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Trigger();
         }
 
         return parent::getEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Trigger) {
-            throw new MethodNotAllowedHttpException(['Trigger']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = PointEvents::TRIGGER_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = PointEvents::TRIGGER_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = PointEvents::TRIGGER_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = PointEvents::TRIGGER_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new Events\TriggerEvent($entity, $isNew);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -255,7 +216,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
 
                 $func = 'set'.ucfirst($f);
                 if (method_exists($event, $func)) {
-                    $event->$func($v);
+                    $event->{$func}($v);
                 }
             }
             $event->setTrigger($entity);
@@ -317,7 +278,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
             return false;
         }
 
-        if (null === $lead) {
+        if ($lead === null) {
             $lead = $this->contactTracker->getContact();
         }
 
@@ -352,35 +313,6 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
         $this->dispatcher->dispatch($triggerExecutedEvent, $settings['eventName']);
 
         return $triggerExecutedEvent->getResult();
-    }
-
-    private function invokeCallback($event, Lead $lead, array $settings): mixed
-    {
-        $args = [
-            'event'  => $event,
-            'lead'   => $lead,
-            'config' => $event['properties'],
-        ];
-
-        if (is_array($settings['callback'])) {
-            $reflection = new \ReflectionMethod($settings['callback'][0], $settings['callback'][1]);
-        } elseif (str_contains($settings['callback'], '::')) {
-            $parts      = explode('::', $settings['callback']);
-            $reflection = new \ReflectionMethod($parts[0], $parts[1]);
-        } else {
-            $reflection = new \ReflectionMethod(null, $settings['callback']);
-        }
-
-        $pass = [];
-        foreach ($reflection->getParameters() as $param) {
-            if (isset($args[$param->getName()])) {
-                $pass[] = $args[$param->getName()];
-            } else {
-                $pass[] = null;
-            }
-        }
-
-        return $reflection->invokeArgs($this, $pass);
     }
 
     /**
@@ -444,5 +376,73 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         return '';
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Trigger) {
+            throw new MethodNotAllowedHttpException(['Trigger']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = PointEvents::TRIGGER_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = PointEvents::TRIGGER_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = PointEvents::TRIGGER_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = PointEvents::TRIGGER_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new Events\TriggerEvent($entity, $isNew);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    private function invokeCallback($event, Lead $lead, array $settings): mixed
+    {
+        $args = [
+            'event'  => $event,
+            'lead'   => $lead,
+            'config' => $event['properties'],
+        ];
+
+        if (is_array($settings['callback'])) {
+            $reflection = new \ReflectionMethod($settings['callback'][0], $settings['callback'][1]);
+        } elseif (str_contains($settings['callback'], '::')) {
+            $parts      = explode('::', $settings['callback']);
+            $reflection = new \ReflectionMethod($parts[0], $parts[1]);
+        } else {
+            $reflection = new \ReflectionMethod(null, $settings['callback']);
+        }
+
+        $pass = [];
+        foreach ($reflection->getParameters() as $param) {
+            if (isset($args[$param->getName()])) {
+                $pass[] = $args[$param->getName()];
+            } else {
+                $pass[] = null;
+            }
+        }
+
+        return $reflection->invokeArgs($this, $pass);
     }
 }

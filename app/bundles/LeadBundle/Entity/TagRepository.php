@@ -18,20 +18,11 @@ class TagRepository extends CommonRepository
      */
     public function deleteEntity($entity, $flush = true): void
     {
-        if ($entity instanceof Tag && null !== $entity->getId()) {
+        if ($entity instanceof Tag && $entity->getId() !== null) {
             $this->deleteLeadAssociations((int) $entity->getId());
         }
 
         parent::deleteEntity($entity, $flush);
-    }
-
-    private function deleteLeadAssociations(int $tagId): void
-    {
-        $this->_em->getConnection()->createQueryBuilder()
-            ->delete(MAUTIC_TABLE_PREFIX.'lead_tags_xref')
-            ->where('tag_id = :tagId')
-            ->setParameter('tagId', $tagId)
-            ->executeStatement();
     }
 
     /**
@@ -180,7 +171,7 @@ class TagRepository extends CommonRepository
         foreach ($leadIds as $leadId) {
             $lead = $this->_em->find(Lead::class, $leadId);
             foreach ($tags as $tag) {
-                if ('add' === $addOrRemove) {
+                if ($addOrRemove === 'add') {
                     $lead->addTag($tag);
                 } else {
                     $lead->removeTag($tag);
@@ -249,5 +240,14 @@ class TagRepository extends CommonRepository
             $alias.'.tag',
             $alias.'.description',
         ]);
+    }
+
+    private function deleteLeadAssociations(int $tagId): void
+    {
+        $this->_em->getConnection()->createQueryBuilder()
+            ->delete(MAUTIC_TABLE_PREFIX.'lead_tags_xref')
+            ->where('tag_id = :tagId')
+            ->setParameter('tagId', $tagId)
+            ->executeStatement();
     }
 }

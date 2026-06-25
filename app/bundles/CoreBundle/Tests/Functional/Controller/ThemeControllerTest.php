@@ -35,25 +35,6 @@ final class ThemeControllerTest extends MauticMysqlTestCase
         }
     }
 
-    protected function beforeTearDown(): void
-    {
-        parent::beforeTearDown();
-
-        $themePath = $this->pathsHelper->getThemesPath();
-
-        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp') && !$this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT)) {
-            $this->filesystem->rename($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp', $themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT);
-        }
-
-        if ($this->filesystem->exists($themePath.'/blanktest')) {
-            $this->filesystem->remove($themePath.'/blanktest');
-        }
-
-        if ($this->filesystem->exists($themePath.'/auroratest')) {
-            $this->filesystem->remove($themePath.'/auroratest');
-        }
-    }
-
     public function testDeleteTheme(): void
     {
         $this->client->request(Request::METHOD_POST, 's/themes/batchDelete?ids=[%22aurora%22]');
@@ -155,5 +136,24 @@ final class ThemeControllerTest extends MauticMysqlTestCase
         $themePath           = $this->pathsHelper->getThemesPath();
         $hiddenThemesTxtPath = $themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT;
         Assert::assertFileDoesNotExist($hiddenThemesTxtPath);
+    }
+
+    protected function beforeTearDown(): void
+    {
+        parent::beforeTearDown();
+
+        $themePath = $this->pathsHelper->getThemesPath();
+
+        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp') && !$this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT)) {
+            $this->filesystem->rename($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp', $themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT);
+        }
+
+        if ($this->filesystem->exists($themePath.'/blanktest')) {
+            $this->filesystem->remove($themePath.'/blanktest');
+        }
+
+        if ($this->filesystem->exists($themePath.'/auroratest')) {
+            $this->filesystem->remove($themePath.'/auroratest');
+        }
     }
 }

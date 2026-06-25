@@ -37,6 +37,63 @@ class UpdateLeadListsCommandCircularDependencyTest extends MauticMysqlTestCase
         );
     }
 
+    public function testSkippingNonExistentDependentSegment(): void
+    {
+        // Create two segments (A and B)
+        $segmentA = $this->createSegment('Segment A');
+        $segmentB = $this->createSegment('Segment B');
+        $this->em->flush();
+
+        // Add a filter to segment A that includes segment B
+        $this->addSegmentDependency($segmentA, $segmentB);
+
+        // Add a non-existent segment ID as a dependency for segment A
+        $nonExistentSegmentId = 9999; // An ID that doesn't exist
+        $filters              = $segmentA->getFilters();
+        $filters[]            = [
+            'glue'     => 'and',
+            'field'    => 'leadlist',
+            'object'   => 'lead',
+            'type'     => 'leadlist',
+            'filter'   => [$nonExistentSegmentId],
+            'display'  => null,
+            'operator' => 'in',
+        ];
+        $segmentA->setFilters($filters);
+
+        $this->em->persist($segmentA);
+        $this->em->flush();
+
+        $this->segments = [
+            'Segment A' => $segmentA,
+            'Segment B' => $segmentB,
+        ];
+
+        // The command should complete without errors despite the non-existent segment dependency
+        $output = $this->testSymfonyCommand(
+            UpdateLeadListsCommand::NAME,
+            [
+                '-i'    => $segmentA->getId(),
+                '--env' => 'test',
+            ]
+        );
+
+        // Verify that segment B was processed
+        $this->assertStringContainsString(
+            sprintf('Rebuilding contacts for segment %d', $segmentB->getId()),
+            $output->getDisplay()
+        );
+
+        // Verify that segment A was processed after its dependencies
+        $this->assertStringContainsString(
+            sprintf('Rebuilding contacts for segment %d', $segmentA->getId()),
+            $output->getDisplay()
+        );
+
+        // Verify that the command completed successfully
+        $this->assertStringNotContainsString('error', strtolower($output->getDisplay()));
+    }
+
     /**
      * Creates segments with circular dependencies:
      * Segment A includes Segment B
@@ -101,62 +158,5 @@ class UpdateLeadListsCommandCircularDependencyTest extends MauticMysqlTestCase
 
         $segment->setFilters($filters);
         $this->em->persist($segment);
-    }
-
-    public function testSkippingNonExistentDependentSegment(): void
-    {
-        // Create two segments (A and B)
-        $segmentA = $this->createSegment('Segment A');
-        $segmentB = $this->createSegment('Segment B');
-        $this->em->flush();
-
-        // Add a filter to segment A that includes segment B
-        $this->addSegmentDependency($segmentA, $segmentB);
-
-        // Add a non-existent segment ID as a dependency for segment A
-        $nonExistentSegmentId = 9999; // An ID that doesn't exist
-        $filters              = $segmentA->getFilters();
-        $filters[]            = [
-            'glue'     => 'and',
-            'field'    => 'leadlist',
-            'object'   => 'lead',
-            'type'     => 'leadlist',
-            'filter'   => [$nonExistentSegmentId],
-            'display'  => null,
-            'operator' => 'in',
-        ];
-        $segmentA->setFilters($filters);
-
-        $this->em->persist($segmentA);
-        $this->em->flush();
-
-        $this->segments = [
-            'Segment A' => $segmentA,
-            'Segment B' => $segmentB,
-        ];
-
-        // The command should complete without errors despite the non-existent segment dependency
-        $output = $this->testSymfonyCommand(
-            UpdateLeadListsCommand::NAME,
-            [
-                '-i'    => $segmentA->getId(),
-                '--env' => 'test',
-            ]
-        );
-
-        // Verify that segment B was processed
-        $this->assertStringContainsString(
-            sprintf('Rebuilding contacts for segment %d', $segmentB->getId()),
-            $output->getDisplay()
-        );
-
-        // Verify that segment A was processed after its dependencies
-        $this->assertStringContainsString(
-            sprintf('Rebuilding contacts for segment %d', $segmentA->getId()),
-            $output->getDisplay()
-        );
-
-        // Verify that the command completed successfully
-        $this->assertStringNotContainsString('error', strtolower($output->getDisplay()));
     }
 }

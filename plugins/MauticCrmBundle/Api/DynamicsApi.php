@@ -8,57 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class DynamicsApi extends CrmApi
 {
-    private function getUrl(): string
-    {
-        $keys = $this->integration->getKeys();
-
-        return $keys['resource'].'/api/data/v8.2';
-    }
-
-    /**
-     * @param string $method
-     * @param string $moduleobject
-     *
-     * @return array|ResponseInterface
-     *
-     * @throws ApiErrorException
-     */
-    protected function request($operation, array $parameters = [], $method = 'GET', $moduleobject = 'contacts', $settings = [])
-    {
-        if ('company' === $moduleobject) {
-            $moduleobject = 'accounts';
-        }
-
-        if ('' === $operation) {
-            $operation = $moduleobject;
-        }
-
-        $url = sprintf('%s/%s', $this->getUrl(), $operation);
-
-        if (isset($parameters['request_settings'])) {
-            $settings = array_merge($settings, $parameters['request_settings']);
-            unset($parameters['request_settings']);
-        }
-
-        $settings = array_merge($settings, [
-            'encode_parameters' => 'json',
-            'return_raw'        => 'true', // needed to get the HTTP status code in the response
-            'request_timeout'   => 300,
-        ]);
-
-        /** @var ResponseInterface $response */
-        $response = $this->integration->makeRequest($url, $parameters, $method, $settings);
-
-        if ('POST' === $method && (!($response instanceof ResponseInterface) || !in_array($response->getStatusCode(), [200, 204], true))) {
-            throw new ApiErrorException('Dynamics CRM API error: '.json_encode($response->getBody()));
-        }
-
-        if ('GET' === $method && $response instanceof ResponseInterface) {
-            return json_decode($response->getBody(), true);
-        }
-
-        return $response;
-    }
 
     /**
      * List types.
@@ -69,7 +18,7 @@ class DynamicsApi extends CrmApi
      */
     public function getLeadFields($object = 'contacts')
     {
-        if ('company' === $object) {
+        if ($object === 'company') {
             $object = 'accounts'; // Dynamics object name
         }
 
@@ -136,7 +85,7 @@ class DynamicsApi extends CrmApi
      */
     public function createLeads($data, $object = 'contacts', $isUpdate = false): array
     {
-        if (0 === count($data)) {
+        if (count($data) === 0) {
             return [];
         }
 
@@ -210,13 +159,13 @@ class DynamicsApi extends CrmApi
         preg_match('/boundary=(.*)$/', $contentType, $matches);
         $boundary = $matches[1];
         // split content by boundary and get rid of last -- element
-        $a_blocks = preg_split("/-+$boundary/", $input);
+        $a_blocks = preg_split("/-+{$boundary}/", $input);
         array_pop($a_blocks);
         // there is only one batchresponse
         $input                = array_pop($a_blocks);
         [$header, $input]     = explode("\r\n\r\n", $input, 2);
         foreach (explode("\r\n", $header) as $r) {
-            if (0 === stripos($r, 'Content-Type:')) {
+            if (stripos($r, 'Content-Type:') === 0) {
                 [$headername, $contentType] = explode(':', $r, 2);
             }
         }
@@ -224,14 +173,14 @@ class DynamicsApi extends CrmApi
         preg_match('/boundary=(.*)$/', $contentType, $matches);
         $boundary = $matches[1];
         // split content by boundary and get rid of last -- element
-        $a_blocks = preg_split("/-+$boundary/", $input);
+        $a_blocks = preg_split("/-+{$boundary}/", $input);
         array_pop($a_blocks);
         // loop data blocks
         foreach ($a_blocks as $block) {
             if (empty($block)) {
                 continue;
             }
-            if (false !== stripos($block, 'OData-EntityId:')) {
+            if (stripos($block, 'OData-EntityId:') !== false) {
                 preg_match('/Content-ID: (\d+)/', $block, $matches);
                 $leadId = (count($matches) > 1) ? $matches[1] : 0;
                 // OData-EntityId: https://virlatinus.crm.dynamics.com/api/data/v8.2/contacts(2725f27c-2058-e711-8111-c4346bac1938)
@@ -242,5 +191,56 @@ class DynamicsApi extends CrmApi
         }
 
         return $a_data;
+    }
+
+    /**
+     * @param string $method
+     * @param string $moduleobject
+     *
+     * @return array|ResponseInterface
+     *
+     * @throws ApiErrorException
+     */
+    protected function request($operation, array $parameters = [], $method = 'GET', $moduleobject = 'contacts', $settings = [])
+    {
+        if ($moduleobject === 'company') {
+            $moduleobject = 'accounts';
+        }
+
+        if ($operation === '') {
+            $operation = $moduleobject;
+        }
+
+        $url = sprintf('%s/%s', $this->getUrl(), $operation);
+
+        if (isset($parameters['request_settings'])) {
+            $settings = array_merge($settings, $parameters['request_settings']);
+            unset($parameters['request_settings']);
+        }
+
+        $settings = array_merge($settings, [
+            'encode_parameters' => 'json',
+            'return_raw'        => 'true', // needed to get the HTTP status code in the response
+            'request_timeout'   => 300,
+        ]);
+
+        /** @var ResponseInterface $response */
+        $response = $this->integration->makeRequest($url, $parameters, $method, $settings);
+
+        if ($method === 'POST' && (!($response instanceof ResponseInterface) || !in_array($response->getStatusCode(), [200, 204], true))) {
+            throw new ApiErrorException('Dynamics CRM API error: '.json_encode($response->getBody()));
+        }
+
+        if ($method === 'GET' && $response instanceof ResponseInterface) {
+            return json_decode($response->getBody(), true);
+        }
+
+        return $response;
+    }
+    private function getUrl(): string
+    {
+        $keys = $this->integration->getKeys();
+
+        return $keys['resource'].'/api/data/v8.2';
     }
 }

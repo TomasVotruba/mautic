@@ -74,7 +74,7 @@ class DynamicContentTypeTest extends TestCase
 
         $formBuilderInterfaceMock->expects($matcher)
             ->method('create')->willReturnCallback(function (...$parameters) use ($matcher, $tagChoices, $formBuilderInterfaceMock) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('translationParent', $parameters[0]);
                     $this->assertSame(DynamicContentListType::class, $parameters[1]);
                     $this->assertSame([
@@ -91,7 +91,7 @@ class DynamicContentTypeTest extends TestCase
                         'ignore_ids'  => [0 => 0],
                     ], $parameters[2]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('filters', $parameters[0]);
                     $this->assertSame(CollectionType::class, $parameters[1]);
                     $this->assertSame([
@@ -126,33 +126,33 @@ class DynamicContentTypeTest extends TestCase
 
         $formBuilderInterfaceMock->expects($matcher)
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $formBuilderInterfaceMock) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
                     $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
-                        return FormEvent::class === (string) $parameters[0]->getType();
+                        return (string) $parameters[0]->getType() === FormEvent::class;
                     };
                     $this->assertTrue($callback($parameters[1]));
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                     $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
-                        return FormEvent::class === (string) $parameters[0]->getType();
+                        return (string) $parameters[0]->getType() === FormEvent::class;
                     };
                     $this->assertTrue($callback($parameters[1]));
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame(FormEvents::POST_SUBMIT, $parameters[0]);
                     $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
-                        return FormEvent::class === (string) $parameters[0]->getType();
+                        return (string) $parameters[0]->getType() === FormEvent::class;
                     };
                     $this->assertTrue($callback($parameters[1]));
                 }

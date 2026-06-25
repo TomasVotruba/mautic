@@ -80,9 +80,9 @@ class PublicController extends CommonFormController
             // Add subject as title
             if (!empty($subject)) {
                 if (str_contains($content, '<title></title>')) {
-                    $content = str_replace('<title></title>', "<title>$subject</title>", $content);
+                    $content = str_replace('<title></title>', "<title>{$subject}</title>", $content);
                 } elseif (!str_contains($content, '<title>')) {
-                    $content = str_replace('<head>', "<head>\n<title>$subject</title>", $content);
+                    $content = str_replace('<head>', "<head>\n<title>{$subject}</title>", $content);
                 }
             }
 
@@ -125,23 +125,23 @@ class PublicController extends CommonFormController
         $lead                   = null;
         $template               = null;
         $session                = $request->getSession();
-        $isOneClickUnsubscribe  = $request->isMethod(Request::METHOD_POST) && 'One-Click' === $request->get('List-Unsubscribe');
+        $isOneClickUnsubscribe  = $request->isMethod(Request::METHOD_POST) && $request->get('List-Unsubscribe') === 'One-Click';
         $isUnsubscribeAll       = $request->get('unsubscribe_all');
         $showContactPreferences = $this->coreParametersHelper->get('show_contact_preferences');
 
-        if ($request->isMethod(Request::METHOD_POST) && 'One-Click' === $request->get('List-Unsubscribe')) {
+        if ($request->isMethod(Request::METHOD_POST) && $request->get('List-Unsubscribe') === 'One-Click') {
             return $this->oneClickUnsubscribe($model, $stat);
         }
 
         if (!empty($stat) && $email = $stat->getEmail()) {
             $template = $email->getTemplate();
-            if ('mautic_code_mode' === $template) {
+            if ($template === 'mautic_code_mode') {
                 $template = null; // Use system default
             }
 
             /** @var \Mautic\FormBundle\Entity\Form $unsubscribeForm */
             $unsubscribeForm = $email->getUnsubscribeForm();
-            if (null != $unsubscribeForm && $unsubscribeForm->isPublished()) {
+            if ($unsubscribeForm != null && $unsubscribeForm->isPublished()) {
                 $formTemplate = $unsubscribeForm->getTemplate();
                 $formContent  = '<div class="mautic-unsubscribeform">'.$formModel->getContent($unsubscribeForm).'</div>';
             }
@@ -209,7 +209,7 @@ class PublicController extends CommonFormController
                     $viewParameters['successMessage'] = $this->translator->trans('mautic.email.preferences_center_success_message.text');
                 }
 
-                if (true === $form) {
+                if ($form === true) {
                     $session->set($successSessionName, 1);
 
                     return $this->postActionRedirect(
@@ -365,7 +365,7 @@ class PublicController extends CommonFormController
             $message = $this->translator->trans('mautic.email.stat_record.not_found');
         }
 
-        $template = (!empty($email) && 'mautic_code_mode' !== $email->getTemplate()) ? $email->getTemplate() : $this->coreParametersHelper->get('theme');
+        $template = (!empty($email) && $email->getTemplate() !== 'mautic_code_mode') ? $email->getTemplate() : $this->coreParametersHelper->get('theme');
 
         $theme = $themeHelper->getTheme($template);
 
@@ -430,13 +430,13 @@ class PublicController extends CommonFormController
         $contactId   = (int) $request->query->get('contactId');
         $emailEntity = $model->getEntity($objectId);
 
-        if (null === $emailEntity) {
+        if ($emailEntity === null) {
             return $this->notFound();
         }
 
         $publicPreview = $emailEntity->isPublicPreview();
         $draftEnabled  = $emailConfig->isDraftEnabled();
-        if ('draft' === $objectType && $draftEnabled && $emailEntity->hasDraft()) {
+        if ($objectType === 'draft' && $draftEnabled && $emailEntity->hasDraft()) {
             $publicPreview = $emailEntity->getDraft()->isPublicPreview();
         }
 
@@ -468,7 +468,7 @@ class PublicController extends CommonFormController
         $BCcontent = $emailEntity->getContent();
         $content   = $emailEntity->getCustomHtml();
 
-        if ('draft' === $objectType && $draftEnabled && $emailEntity->hasDraft()) {
+        if ($objectType === 'draft' && $draftEnabled && $emailEntity->hasDraft()) {
             $content = $emailEntity->getDraftContent();
         }
 
@@ -526,6 +526,27 @@ class PublicController extends CommonFormController
         }
 
         return new Response($content);
+    }
+
+    public function pluginTrackingGifAction(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, LoggerInterface $mauticLogger, $integration): Response
+    {
+        $this->doTracking($request, $integrationHelper, $mailer, $mauticLogger, $integration);
+
+        return TrackingPixelHelper::getResponse($request); // send gif
+    }
+
+    public function getUnsubscribeMessage($idHash, $model, $stat, $translator): string
+    {
+        $model->setDoNotContact($stat, $translator->trans('mautic.email.dnc.unsubscribed'), DoNotContact::UNSUBSCRIBED);
+
+        return $this->getUnsubscribeText($translator, $stat->getEmailAddress(), $idHash);
+    }
+
+    public function getUnsubscribeMessageLead(string $idHash, EmailModel $model, Lead $lead, TranslatorInterface $translator, string $urlEmail): string
+    {
+        $model->setDoNotContactLead($lead, $translator->trans('mautic.email.dnc.unsubscribed'), DoNotContact::UNSUBSCRIBED);
+
+        return $this->getUnsubscribeText($translator, $urlEmail, $idHash);
     }
 
     /**
@@ -608,9 +629,9 @@ class PublicController extends CommonFormController
 
         foreach ($emails as $email) {
             $lead = $repo->getLeadByEmail($email);
-            if (null === $lead) {
+            if ($lead === null) {
                 $lead = $this->createLead($email, $repo);
-                if (null === $lead) {
+                if ($lead === null) {
                     continue;
                 }
             }
@@ -621,29 +642,22 @@ class PublicController extends CommonFormController
             $stat = $model->getEmailStatus($idHash);
 
             // stat doesn't exist, create one
-            if (null === $stat) {
+            if ($stat === null) {
                 $lead['email'] = $email; // needed for stat
                 $stat          = $this->addStat($mailer, $lead, $email, $query, $idHash);
             }
 
             $stat->setSource('email.client');
 
-            if ($stat || 'Outlook' !== $integration) { // Outlook requests the tracking gif on send
+            if ($stat || $integration !== 'Outlook') { // Outlook requests the tracking gif on send
                 $model->hitEmail($idHash, $request); // add email event
             }
         }
     }
 
-    public function pluginTrackingGifAction(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, LoggerInterface $mauticLogger, $integration): Response
-    {
-        $this->doTracking($request, $integrationHelper, $mailer, $mauticLogger, $integration);
-
-        return TrackingPixelHelper::getResponse($request); // send gif
-    }
-
     private function addStat(MailHelper $mailer, $lead, $email, $query, $idHash): ?Stat
     {
-        if (null !== $lead) {
+        if ($lead !== null) {
             // To lead
             $mailer->addTo($email);
 
@@ -682,20 +696,6 @@ class PublicController extends CommonFormController
 
         // return entity
         return $repo->getLeadByEmail($email);
-    }
-
-    public function getUnsubscribeMessage($idHash, $model, $stat, $translator): string
-    {
-        $model->setDoNotContact($stat, $translator->trans('mautic.email.dnc.unsubscribed'), DoNotContact::UNSUBSCRIBED);
-
-        return $this->getUnsubscribeText($translator, $stat->getEmailAddress(), $idHash);
-    }
-
-    public function getUnsubscribeMessageLead(string $idHash, EmailModel $model, Lead $lead, TranslatorInterface $translator, string $urlEmail): string
-    {
-        $model->setDoNotContactLead($lead, $translator->trans('mautic.email.dnc.unsubscribed'), DoNotContact::UNSUBSCRIBED);
-
-        return $this->getUnsubscribeText($translator, $urlEmail, $idHash);
     }
 
     private function getUnsubscribeText(TranslatorInterface $translator, string $email, string $idHash): string

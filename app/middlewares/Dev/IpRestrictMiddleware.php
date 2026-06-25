@@ -48,7 +48,7 @@ class IpRestrictMiddleware implements HttpKernelInterface, PrioritizedMiddleware
      */
     public function handle(Request $request, $type = self::MAIN_REQUEST, $catch = true): Response
     {
-        if (in_array($request->getClientIp(), $this->allowedIps) || false !== getenv('DDEV_TLD')) {
+        if (in_array($request->getClientIp(), $this->allowedIps) || getenv('DDEV_TLD') !== false) {
             return $this->app->handle($request, $type, $catch);
         }
 

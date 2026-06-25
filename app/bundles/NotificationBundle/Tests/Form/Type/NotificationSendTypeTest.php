@@ -39,20 +39,6 @@ final class NotificationSendTypeTest extends TypeTestCase
         parent::setup();
     }
 
-    /**
-     * @return array<mixed>
-     */
-    protected function getExtensions()
-    {
-        return [
-            new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([
-                new NotificationSendType($this->router),
-                new EntityLookupType($this->modelFactory, $this->translator, $this->connection, $this->router),
-            ], []),
-        ];
-    }
-
     public function testSubmitValidData(): void
     {
         $form = $this->factory->create(NotificationSendType::class);
@@ -70,5 +56,19 @@ final class NotificationSendTypeTest extends TypeTestCase
 
         // check that $model was modified as expected when the form was submitted
         $this->assertEquals($expected, $form->getData());
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    protected function getExtensions()
+    {
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([
+                new NotificationSendType($this->router),
+                new EntityLookupType($this->modelFactory, $this->translator, $this->connection, $this->router),
+            ], []),
+        ];
     }
 }

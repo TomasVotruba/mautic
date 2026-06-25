@@ -84,19 +84,6 @@ class AjaxController extends CommonAjaxController
         return $this->sendJsonResponse($dataArray);
     }
 
-    /**
-     * Called by parent::getBuilderTokensAction().
-     *
-     * @return array
-     */
-    protected function getBuilderTokens($query)
-    {
-        /** @var EmailModel $model */
-        $model = $this->getModel('email');
-
-        return $model->getBuilderComponents(null, ['tokens'], (string) $query);
-    }
-
     public function generatePlaintTextAction(Request $request): JsonResponse
     {
         $custom = $request->request->get('custom');
@@ -148,7 +135,7 @@ class AjaxController extends CommonAjaxController
                 if (!empty($folders)) {
                     $dataArray['folders'] = '';
                     foreach ($folders as $folder) {
-                        $dataArray['folders'] .= "<option value=\"$folder\">$folder</option>\n";
+                        $dataArray['folders'] .= "<option value=\"{$folder}\">{$folder}</option>\n";
                     }
                 }
                 $dataArray['success'] = 1;
@@ -204,7 +191,7 @@ class AjaxController extends CommonAjaxController
 
                 $data[] = [
                     'id'          => $email->getId(),
-                    'pending'     => 'list' === $email->getEmailType() && $pending ? $this->translator->trans(
+                    'pending'     => $email->getEmailType() === 'list' && $pending ? $this->translator->trans(
                         'mautic.email.stat.leadcount',
                         ['%count%' => $pending]
                     ) : 0,
@@ -233,7 +220,7 @@ class AjaxController extends CommonAjaxController
     {
         $emailId = (int) InputHelper::clean($request->query->get('id'));
 
-        if (0 === $emailId) {
+        if ($emailId === 0) {
             return $this->sendJsonResponse([
                 'success' => 0,
                 'message' => $this->translator->trans('mautic.core.error.badrequest'),
@@ -250,7 +237,7 @@ class AjaxController extends CommonAjaxController
             $model = $this->getModel('email');
 
             $email = $model->getEntity($emailId);
-            if (null === $email) {
+            if ($email === null) {
                 return $this->sendJsonResponse([
                     'success' => 0,
                     'message' => $this->translator->trans('mautic.api.call.notfound'),
@@ -273,7 +260,7 @@ class AjaxController extends CommonAjaxController
         $emailId     = (int) $request->query->get('id');
         $email       = $model->getEntity($emailId);
 
-        if (null === $email) {
+        if ($email === null) {
             return $this->sendJsonResponse([
                 'message' => $this->translator->trans('mautic.api.call.notfound'),
             ], 404);
@@ -316,7 +303,7 @@ class AjaxController extends CommonAjaxController
     {
         $emailId = (int) $request->query->get('id');
 
-        if (0 === $emailId) {
+        if ($emailId === 0) {
             return $this->sendJsonResponse([
                 'message' => $this->translator->trans('mautic.core.error.badrequest'),
             ], 400);
@@ -346,5 +333,18 @@ class AjaxController extends CommonAjaxController
         }
 
         return $this->sendJsonResponse($dataArray);
+    }
+
+    /**
+     * Called by parent::getBuilderTokensAction().
+     *
+     * @return array
+     */
+    protected function getBuilderTokens($query)
+    {
+        /** @var EmailModel $model */
+        $model = $this->getModel('email');
+
+        return $model->getBuilderComponents(null, ['tokens'], (string) $query);
     }
 }

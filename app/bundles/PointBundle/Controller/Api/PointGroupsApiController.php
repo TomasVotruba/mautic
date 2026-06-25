@@ -49,7 +49,7 @@ class PointGroupsApiController extends CommonApiController
     {
         $contact = $this->leadModel->getEntity($contactId);
 
-        if (null === $contact) {
+        if ($contact === null) {
             return $this->notFound($this->translator->trans('mautic.lead.event.api.lead.not.found'));
         }
 
@@ -76,7 +76,7 @@ class PointGroupsApiController extends CommonApiController
     {
         $contact = $this->leadModel->getEntity($contactId);
 
-        if (null === $contact) {
+        if ($contact === null) {
             return $this->notFound($this->translator->trans('mautic.lead.event.api.lead.not.found'));
         }
 
@@ -85,7 +85,7 @@ class PointGroupsApiController extends CommonApiController
         }
 
         $pointGroup = $this->model->getEntity($groupId);
-        if (null === $pointGroup) {
+        if ($pointGroup === null) {
             return $this->notFound($this->translator->trans('mautic.lead.event.api.point.group.not.found'));
         }
 
@@ -107,7 +107,7 @@ class PointGroupsApiController extends CommonApiController
     {
         $contact = $this->leadModel->getEntity($contactId);
 
-        if (null === $contact) {
+        if ($contact === null) {
             return $this->notFound($this->translator->trans('mautic.lead.event.api.lead.not.found'));
         }
 
@@ -116,7 +116,7 @@ class PointGroupsApiController extends CommonApiController
         }
 
         $pointGroup = $this->model->getEntity($groupId);
-        if (null === $pointGroup) {
+        if ($pointGroup === null) {
             return $this->notFound($this->translator->trans('mautic.lead.event.api.point.group.not.found'));
         }
 

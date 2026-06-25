@@ -28,7 +28,7 @@ final class DncFormatterHelper
      */
     public function getDncReasons(): array
     {
-        if (null === $this->dncReasons) {
+        if ($this->dncReasons === null) {
             $this->dncReasons = [
                 DoNotContact::IS_CONTACTABLE => $this->translator->trans('mautic.lead.report.dnc_contactable'),
                 DoNotContact::UNSUBSCRIBED   => $this->translator->trans('mautic.lead.report.dnc_unsubscribed'),

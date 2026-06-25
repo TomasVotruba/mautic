@@ -140,20 +140,6 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array<int, string>
-     */
-    private static function getRatingList(Field $field): array
-    {
-        $max  = $field->getProperties()['star_count'] ?? 5;
-        $list = [];
-        for ($i = 1; $i <= $max; ++$i) {
-            $list[$i] = '★';
-        }
-
-        return $list;
-    }
-
-    /**
      * @param string $name
      * @param string $type
      *
@@ -168,6 +154,20 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setType($type);
 
         return $field;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function getRatingList(Field $field): array
+    {
+        $max  = $field->getProperties()['star_count'] ?? 5;
+        $list = [];
+        for ($i = 1; $i <= $max; ++$i) {
+            $list[$i] = '★';
+        }
+
+        return $list;
     }
 
     /**

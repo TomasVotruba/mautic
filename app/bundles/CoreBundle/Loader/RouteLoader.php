@@ -36,7 +36,7 @@ class RouteLoader extends Loader
         $forceSSL = false;
         if (!empty($siteUrl)) {
             $parts    = parse_url($siteUrl);
-            $forceSSL = (!empty($parts['scheme']) && 'https' == $parts['scheme']);
+            $forceSSL = (!empty($parts['scheme']) && $parts['scheme'] == 'https');
         }
 
         if ($forceSSL) {
@@ -91,6 +91,6 @@ class RouteLoader extends Loader
      */
     public function supports($resource, $type = null): bool
     {
-        return 'mautic' === $type;
+        return $type === 'mautic';
     }
 }

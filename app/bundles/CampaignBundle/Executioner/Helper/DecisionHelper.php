@@ -21,7 +21,7 @@ class DecisionHelper
      */
     public function checkIsDecisionApplicableForContact(Event $event, Lead $contact, ?string $channel = null, ?int $channelId = null): void
     {
-        if (Event::TYPE_DECISION !== $event->getEventType()) {
+        if ($event->getEventType() !== Event::TYPE_DECISION) {
             @trigger_error(
                 "{$event->getType()} is not assigned to a decision and no longer supported. ".
                 'Check that you are executing RealTimeExecutioner::execute for an event registered as a decision.',
@@ -33,30 +33,30 @@ class DecisionHelper
 
         // If channels do not match up at all (not even fuzzy logic i.e. page vs page.redirect), there's no need to go further
         if ($channel && $event->getChannel() && !str_contains($channel, $event->getChannel())) {
-            throw new DecisionNotApplicableException("Channels, $channel and {$event->getChannel()}, do not match.");
+            throw new DecisionNotApplicableException("Channels, {$channel} and {$event->getChannel()}, do not match.");
         }
 
         if ($channel && $channelId && $event->getChannelId() && (string) $channelId !== (string) $event->getChannelId()) {
-            throw new DecisionNotApplicableException("Channel IDs, $channelId and {$event->getChannelId()}, do not match for $channel.");
+            throw new DecisionNotApplicableException("Channel IDs, {$channelId} and {$event->getChannelId()}, do not match for {$channel}.");
         }
 
         // Check if parent taken path is the path of this event, otherwise exit
         $parentEvent = $event->getParent();
 
-        if (null !== $parentEvent && !$parentEvent->isDeleted() && null !== $event->getDecisionPath()) {
+        if ($parentEvent !== null && !$parentEvent->isDeleted() && $event->getDecisionPath() !== null) {
             $rotation      = $this->leadRepository->getContactRotations([$contact->getId()], $event->getCampaign()->getId());
             $rotationValue = isset($rotation[$contact->getId()]) ? $rotation[$contact->getId()]['rotation'] : null;
             $log           = $parentEvent->getLogByContactAndRotation($contact, $rotationValue);
 
-            if (null === $log) {
+            if ($log === null) {
                 throw new DecisionNotApplicableException("Parent {$parentEvent->getId()} has not been fired, event {$event->getId()} should not be fired.");
             }
 
             $pathTaken   = (int) $log->getNonActionPathTaken();
 
-            if (1 === $pathTaken && !$parentEvent->getNegativeChildren()->contains($event)) {
+            if ($pathTaken === 1 && !$parentEvent->getNegativeChildren()->contains($event)) {
                 throw new DecisionNotApplicableException("Parent {$parentEvent->getId()} take negative path, event {$event->getId()} is on positive path.");
-            } elseif (0 === $pathTaken && !$parentEvent->getPositiveChildren()->contains($event)) {
+            } elseif ($pathTaken === 0 && !$parentEvent->getPositiveChildren()->contains($event)) {
                 throw new DecisionNotApplicableException("Parent {$parentEvent->getId()} take positive path, event {$event->getId()} is on negative path.");
             }
         }

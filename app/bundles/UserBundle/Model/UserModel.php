@@ -128,7 +128,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?User
     {
-        if (null === $id) {
+        if ($id === null) {
             return new User();
         }
 
@@ -157,45 +157,6 @@ class UserModel extends FormModel implements GlobalSearchInterface
                 'isPublished' => true,
             ]
         );
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof User) {
-            throw new MethodNotAllowedHttpException(['User'], $this->translator->trans('mautic.user.entity.must.be.user', [], 'validators'));
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = UserEvents::USER_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = UserEvents::USER_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = UserEvents::USER_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = UserEvents::USER_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new UserEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -230,20 +191,6 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
         $user->setPassword($hashedPassword);
         $this->saveEntity($user);
-    }
-
-    /**
-     * @return UserToken
-     */
-    protected function getResetToken(User $user)
-    {
-        $userToken = new UserToken();
-        $userToken->setUser($user)
-            ->setAuthorizator(UserTokenAuthorizator::RESET_PASSWORD_AUTHORIZATOR)
-            ->setExpiration((new \DateTime())->add(new \DateInterval('PT24H')))
-            ->setOneTimeOnly();
-
-        return $this->userTokenService->generateSecret($userToken, 64);
     }
 
     /**
@@ -349,24 +296,12 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $mailer->send();
     }
 
-    private function prepareEMail(string $subject, string $content): MailHelper
-    {
-        $mailer  = $this->mailHelper->getMailer();
-        $content = str_replace('\\n', "\n", $content);
-        $html    = nl2br($content);
-        $mailer->setSubject($subject);
-        $mailer->setBody($html);
-        $mailer->setPlainText(strip_tags($content));
-
-        return $mailer;
-    }
-
     /**
      * Set user preference.
      */
     public function setPreference($key, $value = null, ?User $user = null): void
     {
-        if (null == $user) {
+        if ($user == null) {
             $user = $this->userHelper->getUser();
         }
 
@@ -383,7 +318,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function getPreference($key, $default = null, ?User $user = null)
     {
-        if (null == $user) {
+        if ($user == null) {
             $user = $this->userHelper->getUser();
         }
         $preferences = $user->getPreferences();
@@ -401,7 +336,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
     public function hasUserWithEmail(string $email): bool
     {
-        return null !== $this->getRepository()->findOneBy(['email' => $email]);
+        return $this->getRepository()->findOneBy(['email' => $email]) !== null;
     }
 
     public function createInvite(string $email, Role $role): UserInvite
@@ -434,14 +369,14 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function getInvite(string $token): ?UserInvite
     {
         $inviteToken = $this->parseInviteToken($token);
-        if (null === $inviteToken) {
+        if ($inviteToken === null) {
             $this->logInvalidInvite('token format is invalid');
 
             return null;
         }
 
         $invite = $this->getUserInviteRepository()->findOneByTokenSelector($inviteToken['selector']);
-        if (null === $invite) {
+        if ($invite === null) {
             $this->logInvalidInvite('token selector was not found', null, $inviteToken['selector']);
 
             return null;
@@ -473,6 +408,71 @@ class UserModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof User) {
+            throw new MethodNotAllowedHttpException(['User'], $this->translator->trans('mautic.user.entity.must.be.user', [], 'validators'));
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = UserEvents::USER_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = UserEvents::USER_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = UserEvents::USER_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = UserEvents::USER_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new UserEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return UserToken
+     */
+    protected function getResetToken(User $user)
+    {
+        $userToken = new UserToken();
+        $userToken->setUser($user)
+            ->setAuthorizator(UserTokenAuthorizator::RESET_PASSWORD_AUTHORIZATOR)
+            ->setExpiration((new \DateTime())->add(new \DateInterval('PT24H')))
+            ->setOneTimeOnly();
+
+        return $this->userTokenService->generateSecret($userToken, 64);
+    }
+
+    private function prepareEMail(string $subject, string $content): MailHelper
+    {
+        $mailer  = $this->mailHelper->getMailer();
+        $content = str_replace('\\n', "\n", $content);
+        $html    = nl2br($content);
+        $mailer->setSubject($subject);
+        $mailer->setBody($html);
+        $mailer->setPlainText(strip_tags($content));
+
+        return $mailer;
+    }
+
+    /**
      * @return array{selector: string, verifier: string, token: string}
      */
     private function createInviteToken(): array
@@ -493,12 +493,12 @@ class UserModel extends FormModel implements GlobalSearchInterface
     private function parseInviteToken(string $token): ?array
     {
         $tokenParts = explode('.', $token, 2);
-        if (2 !== count($tokenParts)) {
+        if (count($tokenParts) !== 2) {
             return null;
         }
 
         [$selector, $verifier] = $tokenParts;
-        if ('' === $selector || '' === $verifier) {
+        if ($selector === '' || $verifier === '') {
             return null;
         }
 
@@ -523,7 +523,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
                 'invite_id' => $invite->getId(),
                 'email'     => $invite->getEmail(),
             ];
-        } elseif (null !== $selector) {
+        } elseif ($selector !== null) {
             $context = ['selector' => $selector];
         } else {
             $context = [];

@@ -18,7 +18,7 @@ class FileEncodingValidator extends ConstraintValidator
             and the file path will be an empty string "". If that is the case
             no further checks are required. Just return.
         */
-        if (!$field || '' === $field->getPathname() || null === $field->getPathname()) {
+        if (!$field || $field->getPathname() === '' || $field->getPathname() === null) {
             return;
         }
 
@@ -26,7 +26,7 @@ class FileEncodingValidator extends ConstraintValidator
         $fileHandle = fopen($field->getPathname(), 'rb');
 
         // Handler is valid or not
-        if (false === $fileHandle) {
+        if ($fileHandle === false) {
             return;
         }
 

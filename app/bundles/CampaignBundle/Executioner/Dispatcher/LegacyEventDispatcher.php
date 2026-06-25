@@ -132,7 +132,7 @@ class LegacyEventDispatcher
                     $decisionEvent->getEventConfig()->getConfig(),
                     $this->getLegacyEventsArray($log),
                     $this->getLegacyEventsConfigArray($event, $decisionEvent->getEventConfig()),
-                    0 === $event->getOrder(),
+                    $event->getOrder() === 0,
                     [$log]
                 ),
                 CampaignEvents::ON_EVENT_DECISION_TRIGGER
@@ -259,8 +259,8 @@ class LegacyEventDispatcher
     private function isFailed($result): bool
     {
         return
-            false === $result
-            || (is_array($result) && isset($result['result']) && false === $result['result']);
+            $result === false
+            || (is_array($result) && isset($result['result']) && $result['result'] === false);
     }
 
     private function processFailedLog(LeadEventLog $log, PendingEvent $pendingEvent): void

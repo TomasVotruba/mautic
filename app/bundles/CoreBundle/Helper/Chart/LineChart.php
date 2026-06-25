@@ -99,7 +99,7 @@ class LineChart extends AbstractChart implements ChartInterface
             $this->labels[] = $date->format($format);
 
             // Special case for months because PHP behaves weird with February
-            if ('m' === $this->unit) {
+            if ($this->unit === 'm') {
                 $date->modify('first day of next month');
             } else {
                 $date->add($oneUnit);

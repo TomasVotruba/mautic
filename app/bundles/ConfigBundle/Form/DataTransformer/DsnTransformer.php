@@ -71,7 +71,7 @@ class DsnTransformer implements DataTransformerInterface
             $value['options'],
         );
 
-        if (self::PASSWORD_MASK === $dsn->getPassword()) {
+        if ($dsn->getPassword() === self::PASSWORD_MASK) {
             $previousDsn = Dsn::fromString($this->coreParametersHelper->get($this->configKey));
             $dsn         = $dsn->setPassword($previousDsn->getPassword());
         }

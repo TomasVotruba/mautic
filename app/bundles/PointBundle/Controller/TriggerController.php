@@ -111,7 +111,7 @@ class TriggerController extends FormController
             'point:triggers:publish',
         ], 'RETURN_ARRAY');
 
-        if (null === $entity) {
+        if ($entity === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_pointtrigger_index', ['page' => $page]);
 
@@ -191,7 +191,7 @@ class TriggerController extends FormController
         $form->get('sessionId')->setData($sessionId);
 
         // Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -312,7 +312,7 @@ class TriggerController extends FormController
         ];
 
         // form not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -336,7 +336,7 @@ class TriggerController extends FormController
         $form->get('sessionId')->setData($objectId);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && $request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // set added/updated events
@@ -463,7 +463,7 @@ class TriggerController extends FormController
 
         $triggerEvents = [];
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('point:triggers:create')) {
                 $this->throwAccessDenied();
             }
@@ -506,12 +506,12 @@ class TriggerController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('point.trigger');
             \assert($model instanceof TriggerModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.point.trigger.error.notfound',
@@ -562,7 +562,7 @@ class TriggerController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('point.trigger');
             \assert($model instanceof TriggerModel);
             $ids       = json_decode($request->query->get('ids', '{}'));
@@ -572,7 +572,7 @@ class TriggerController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.point.trigger.error.notfound',

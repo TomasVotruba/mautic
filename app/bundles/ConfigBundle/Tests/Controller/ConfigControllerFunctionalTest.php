@@ -14,9 +14,9 @@ class ConfigControllerFunctionalTest extends MauticMysqlTestCase
 {
     private const SUBDOMAIN_URL = 'subdomain_url.com';
 
-    private string $prefix;
-
     protected $useCleanupRollback = false;
+
+    private string $prefix;
 
     protected function setUp(): void
     {
@@ -87,25 +87,6 @@ class ConfigControllerFunctionalTest extends MauticMysqlTestCase
         $form          = $buttonCrawler->form();
         Assert::assertEquals($trackIps, $form['config[coreconfig][do_not_track_ips]']->getValue());
         Assert::assertEquals($googleAnalytics, $form['config[pageconfig][google_analytics]']->getValue());
-    }
-
-    private function getConfigPath(): string
-    {
-        return static::getContainer()->get('kernel')->getLocalConfigFile();
-    }
-
-    /** @return array<string, mixed> */
-    private function getConfigParameters(): array
-    {
-        $parameters = [];
-        include $this->getConfigPath();
-
-        return $parameters;
-    }
-
-    private function escape(string $value): string
-    {
-        return str_replace('%', '%%', $value);
     }
 
     public function testConfigNotFoundPageConfiguration(): void
@@ -316,5 +297,24 @@ class ConfigControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($configForm);
         $this->assertResponseIsSuccessful();
         Assert::assertEquals($availableOptions[1], $configForm['config[userconfig][saml_idp_entity_id]']->getValue());
+    }
+
+    private function getConfigPath(): string
+    {
+        return static::getContainer()->get('kernel')->getLocalConfigFile();
+    }
+
+    /** @return array<string, mixed> */
+    private function getConfigParameters(): array
+    {
+        $parameters = [];
+        include $this->getConfigPath();
+
+        return $parameters;
+    }
+
+    private function escape(string $value): string
+    {
+        return str_replace('%', '%%', $value);
     }
 }

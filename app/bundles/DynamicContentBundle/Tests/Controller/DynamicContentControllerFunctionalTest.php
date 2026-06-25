@@ -114,6 +114,48 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($project->getId(), $savedAsset->getProjects()->first()->getId());
     }
 
+    public function testIndexActionIsSuccessful(): void
+    {
+        $this->client->request(Request::METHOD_GET, '/s/dwc');
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testNewActionIsSuccessful(): void
+    {
+        $this->client->request(Request::METHOD_GET, '/s/dwc/new');
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testEditActionIsSuccessful(): void
+    {
+        $entity = new DynamicContent();
+        $entity->setName('Test Dynamic Content');
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        $this->client->request(Request::METHOD_GET, '/s/dwc/edit/'.$entity->getId());
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testViewActionIsSuccessful(): void
+    {
+        $entity = new DynamicContent();
+        $entity->setName('Test Dynamic Content');
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        $this->client->request(Request::METHOD_GET, '/s/dwc/view/'.$entity->getId());
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
     private function createAndLoginUser(?string $permission = null): User
     {
         // Create non-admin role
@@ -173,48 +215,6 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($user);
 
         return $user;
-    }
-
-    public function testIndexActionIsSuccessful(): void
-    {
-        $this->client->request(Request::METHOD_GET, '/s/dwc');
-        $response = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-    }
-
-    public function testNewActionIsSuccessful(): void
-    {
-        $this->client->request(Request::METHOD_GET, '/s/dwc/new');
-        $response = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-    }
-
-    public function testEditActionIsSuccessful(): void
-    {
-        $entity = new DynamicContent();
-        $entity->setName('Test Dynamic Content');
-        $this->em->persist($entity);
-        $this->em->flush();
-
-        $this->client->request(Request::METHOD_GET, '/s/dwc/edit/'.$entity->getId());
-        $response = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-    }
-
-    public function testViewActionIsSuccessful(): void
-    {
-        $entity = new DynamicContent();
-        $entity->setName('Test Dynamic Content');
-        $this->em->persist($entity);
-        $this->em->flush();
-
-        $this->client->request(Request::METHOD_GET, '/s/dwc/view/'.$entity->getId());
-        $response = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
     private function submitFormAndAssertNoNestingValidation(Crawler $crawler): void

@@ -17,6 +17,13 @@ class ProcessUnsubscribeSubscriber implements EventSubscriberInterface
 
     public const FOLDER_KEY = 'unsubscribes';
 
+    public function __construct(
+        private Unsubscribe $unsubscriber,
+        private FeedbackLoop $looper,
+        private CoreParametersHelper $coreParametersHelper,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -24,13 +31,6 @@ class ProcessUnsubscribeSubscriber implements EventSubscriberInterface
             EmailEvents::EMAIL_PARSE            => ['onEmailParse', 0],
             EmailEvents::EMAIL_ON_SEND          => ['onEmailSend', 0],
         ];
-    }
-
-    public function __construct(
-        private Unsubscribe $unsubscriber,
-        private FeedbackLoop $looper,
-        private CoreParametersHelper $coreParametersHelper,
-    ) {
     }
 
     public function onEmailConfig(MonitoredEmailEvent $event): void
@@ -63,7 +63,7 @@ class ProcessUnsubscribeSubscriber implements EventSubscriberInterface
         if ($helper && $unsubscribeEmail = $helper->generateUnsubscribeEmail()) {
             $headers          = $event->getTextHeaders();
             $existing         = $headers['List-Unsubscribe'] ?? '';
-            $unsubscribeEmail = "<mailto:$unsubscribeEmail>";
+            $unsubscribeEmail = "<mailto:{$unsubscribeEmail}>";
             if ($existing) {
                 if (!str_contains($existing, $unsubscribeEmail)) {
                     $updatedHeader = $existing.', '.$unsubscribeEmail;

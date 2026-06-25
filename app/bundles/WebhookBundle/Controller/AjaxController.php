@@ -30,69 +30,6 @@ class AjaxController extends CommonAjaxController
         }
     }
 
-    private function processWebhookTest(Request $request, Client $client, PathsHelper $pathsHelper): JsonResponse
-    {
-        $url = $this->validateUrl($request);
-
-        if (!$url) {
-            throw new \InvalidArgumentException('mautic.webhook.label.no.url');
-        }
-
-        $selectedTypes = InputHelper::cleanArray($request->request->all()['types'] ?? []);
-
-        if (!$selectedTypes) {
-            throw new \InvalidArgumentException('mautic.webhook.label.no.events');
-        }
-
-        $payloadPaths = $this->getPayloadPaths($selectedTypes, $pathsHelper);
-        $payload      = $this->loadPayloads($payloadPaths);
-        $secret       = InputHelper::string($request->request->get('secret'));
-        $response     = $client->post($url, $payload, $secret);
-
-        return $this->createResponseFromStatusCode($response->getStatusCode());
-    }
-
-    private function validateUrl(Request $request): ?string
-    {
-        $url = InputHelper::url($request->request->get('url'));
-
-        return '' !== $url ? $url : null;
-    }
-
-    private function createResponseFromStatusCode(int $statusCode): JsonResponse
-    {
-        $isSuccess = str_starts_with((string) $statusCode, '2');
-        $message   = $isSuccess
-            ? 'mautic.webhook.label.success'
-            : 'mautic.webhook.label.warning';
-
-        $cssClass = $isSuccess ? 'has-success' : 'has-error';
-
-        return $this->createJsonResponse($message, $cssClass);
-    }
-
-    private function createErrorResponse(string $message): JsonResponse
-    {
-        return $this->createJsonResponse($message, 'has-error', Response::HTTP_BAD_REQUEST);
-    }
-
-    private function createJsonResponse(
-        string $message,
-        string $cssClass,
-        int $status = Response::HTTP_OK,
-    ): JsonResponse {
-        $html = sprintf(
-            '<div class="%s"><span class="help-block">%s</span></div>',
-            $cssClass,
-            $this->translator->trans($message)
-        );
-
-        return $this->sendJsonResponse(
-            ['html' => $html],
-            $status
-        );
-    }
-
     /*
      * Get an array of all the payload paths we need to load
      *
@@ -161,5 +98,68 @@ class AjaxController extends CommonAjaxController
         }
 
         return $payloads;
+    }
+
+    private function processWebhookTest(Request $request, Client $client, PathsHelper $pathsHelper): JsonResponse
+    {
+        $url = $this->validateUrl($request);
+
+        if (!$url) {
+            throw new \InvalidArgumentException('mautic.webhook.label.no.url');
+        }
+
+        $selectedTypes = InputHelper::cleanArray($request->request->all()['types'] ?? []);
+
+        if (!$selectedTypes) {
+            throw new \InvalidArgumentException('mautic.webhook.label.no.events');
+        }
+
+        $payloadPaths = $this->getPayloadPaths($selectedTypes, $pathsHelper);
+        $payload      = $this->loadPayloads($payloadPaths);
+        $secret       = InputHelper::string($request->request->get('secret'));
+        $response     = $client->post($url, $payload, $secret);
+
+        return $this->createResponseFromStatusCode($response->getStatusCode());
+    }
+
+    private function validateUrl(Request $request): ?string
+    {
+        $url = InputHelper::url($request->request->get('url'));
+
+        return $url !== '' ? $url : null;
+    }
+
+    private function createResponseFromStatusCode(int $statusCode): JsonResponse
+    {
+        $isSuccess = str_starts_with((string) $statusCode, '2');
+        $message   = $isSuccess
+            ? 'mautic.webhook.label.success'
+            : 'mautic.webhook.label.warning';
+
+        $cssClass = $isSuccess ? 'has-success' : 'has-error';
+
+        return $this->createJsonResponse($message, $cssClass);
+    }
+
+    private function createErrorResponse(string $message): JsonResponse
+    {
+        return $this->createJsonResponse($message, 'has-error', Response::HTTP_BAD_REQUEST);
+    }
+
+    private function createJsonResponse(
+        string $message,
+        string $cssClass,
+        int $status = Response::HTTP_OK,
+    ): JsonResponse {
+        $html = sprintf(
+            '<div class="%s"><span class="help-block">%s</span></div>',
+            $cssClass,
+            $this->translator->trans($message)
+        );
+
+        return $this->sendJsonResponse(
+            ['html' => $html],
+            $status
+        );
     }
 }

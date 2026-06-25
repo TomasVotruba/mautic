@@ -231,7 +231,7 @@ class ThemeHelperTest extends TestCase
     public function testCopyWithNoNewDirName(): void
     {
         $themeHelper = new ThemeHelper(
-            new class extends PathsHelper {
+            new class() extends PathsHelper {
                 public function __construct()
                 {
                 }
@@ -244,17 +244,17 @@ class ThemeHelperTest extends TestCase
                 }
             },
             new Environment(new FilesystemLoader()),
-            new class extends Translator {
+            new class() extends Translator {
                 public function __construct()
                 {
                 }
             },
-            new class extends CoreParametersHelper {
+            new class() extends CoreParametersHelper {
                 public function __construct()
                 {
                 }
             },
-            new class extends Filesystem {
+            new class() extends Filesystem {
                 public function __construct()
                 {
                 }
@@ -264,7 +264,7 @@ class ThemeHelperTest extends TestCase
                  */
                 public function exists($files): bool
                 {
-                    if ('/path/to/themes/new-theme-name' === $files) {
+                    if ($files === '/path/to/themes/new-theme-name') {
                         return false;
                     }
 
@@ -294,7 +294,7 @@ class ThemeHelperTest extends TestCase
                     Assert::assertSame('{"name":"New Theme Name"}', $content);
                 }
             },
-            new class extends Finder {
+            new class() extends Finder {
                 /** @var SplFileInfo[] */
                 private array $dirs = [];
 
@@ -325,7 +325,7 @@ class ThemeHelperTest extends TestCase
     public function testCopyWithNewDirName(): void
     {
         $themeHelper = new ThemeHelper(
-            new class extends PathsHelper {
+            new class() extends PathsHelper {
                 public function __construct()
                 {
                 }
@@ -338,17 +338,17 @@ class ThemeHelperTest extends TestCase
                 }
             },
             new Environment(new FilesystemLoader()),
-            new class extends Translator {
+            new class() extends Translator {
                 public function __construct()
                 {
                 }
             },
-            new class extends CoreParametersHelper {
+            new class() extends CoreParametersHelper {
                 public function __construct()
                 {
                 }
             },
-            new class extends Filesystem {
+            new class() extends Filesystem {
                 public function __construct()
                 {
                 }
@@ -358,7 +358,7 @@ class ThemeHelperTest extends TestCase
                  */
                 public function exists($files): bool
                 {
-                    if ('/path/to/themes/requested-theme-dir' === $files) {
+                    if ($files === '/path/to/themes/requested-theme-dir') {
                         return false;
                     }
 
@@ -388,7 +388,7 @@ class ThemeHelperTest extends TestCase
                     Assert::assertSame('{"name":"New Theme Name"}', $content);
                 }
             },
-            new class extends Finder {
+            new class() extends Finder {
                 /**
                  * @var SplFileInfo[]
                  */
@@ -508,11 +508,11 @@ class ThemeHelperTest extends TestCase
         $this->pathsHelper
             ->expects($matcher)
             ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('themes', $parameters[0]);
                     $this->assertTrue($parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('themes', $parameters[0]);
                     $this->assertFalse($parameters[1]);
                 }

@@ -184,21 +184,6 @@ class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * Calls a protected method from CommonRepository with provided argumetns.
-     *
-     * @param array<int, mixed> $args
-     *
-     * @throws \ReflectionException
-     */
-    private function callProtectedMethod(string $method, array $args): mixed
-    {
-        $reflection = new \ReflectionClass(CommonRepository::class);
-        $methodRef  = $reflection->getMethod($method);
-
-        return $methodRef->invokeArgs($this->repo, $args);
-    }
-
     public function testArgumentCSVArray(): void
     {
         $qb   = new \Doctrine\DBAL\Query\QueryBuilder($this->connectionMock);
@@ -345,6 +330,21 @@ class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith($args[0]['col'].' <> ', (string) $qb->getQueryPart('where'));
         $parameters = $qb->getParameters();
         $this->assertEquals(trim($args[0]['val'], '"'), array_shift($parameters));
+    }
+
+    /**
+     * Calls a protected method from CommonRepository with provided argumetns.
+     *
+     * @param array<int, mixed> $args
+     *
+     * @throws \ReflectionException
+     */
+    private function callProtectedMethod(string $method, array $args): mixed
+    {
+        $reflection = new \ReflectionClass(CommonRepository::class);
+        $methodRef  = $reflection->getMethod($method);
+
+        return $methodRef->invokeArgs($this->repo, $args);
     }
 
     /** @param array<int, mixed> $args */

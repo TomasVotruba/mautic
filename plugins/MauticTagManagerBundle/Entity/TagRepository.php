@@ -9,15 +9,6 @@ use Mautic\LeadBundle\Entity\TagRepository as BaseTagRepository;
 
 class TagRepository extends BaseTagRepository
 {
-    /**
-     * @return string[][]
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['lt.tag', 'ASC'],
-        ];
-    }
 
     public function getTableAlias(): string
     {
@@ -75,5 +66,14 @@ class TagRepository extends BaseTagRepository
         }
 
         return ($returnArray) ? $return : $return[$tagIds[0]];
+    }
+    /**
+     * @return string[][]
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['lt.tag', 'ASC'],
+        ];
     }
 }

@@ -135,6 +135,20 @@ class LeadList extends FormEntity implements UuidInterface
         $this->initializeProjects();
     }
 
+    /**
+     * Clone entity with empty contact list.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->id    = null;
+        $this->leads = new ArrayCollection();
+        $this->setIsPublished(false);
+        $this->setAlias('');
+        $this->lastBuiltDate = null;
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -283,7 +297,7 @@ class LeadList extends FormEntity implements UuidInterface
         return $this->description;
     }
 
-    public function setCategory(?Category $category = null): LeadList
+    public function setCategory(?Category $category = null): self
     {
         $this->isChanged('category', $category);
         $this->category = $category;
@@ -350,10 +364,10 @@ class LeadList extends FormEntity implements UuidInterface
         }
 
         // A segment with filters requires rebuild if it was changed since the last build date, or was never built
-        if (null === $this->getLastBuiltDate()) {
+        if ($this->getLastBuiltDate() === null) {
             return true;
         }
-        if (null !== $this->getDateModified() && $this->getDateModified()->getTimestamp() >= $this->getLastBuiltDate()->getTimestamp()) {
+        if ($this->getDateModified() !== null && $this->getDateModified()->getTimestamp() >= $this->getLastBuiltDate()->getTimestamp()) {
             return true;
         }
 
@@ -432,20 +446,6 @@ class LeadList extends FormEntity implements UuidInterface
     }
 
     /**
-     * Clone entity with empty contact list.
-     */
-    public function __clone()
-    {
-        parent::__clone();
-
-        $this->id    = null;
-        $this->leads = new ArrayCollection();
-        $this->setIsPublished(false);
-        $this->setAlias('');
-        $this->lastBuiltDate = null;
-    }
-
-    /**
      * @return bool
      */
     public function getIsPreferenceCenter()
@@ -460,34 +460,6 @@ class LeadList extends FormEntity implements UuidInterface
     {
         $this->isChanged('isPreferenceCenter', (bool) $isPreferenceCenter);
         $this->isPreferenceCenter = (bool) $isPreferenceCenter;
-    }
-
-    /**
-     * @deprecated remove after several of years.
-     *
-     * This is needed go keep BC after we moved 'filter' and 'display' params
-     * to the 'properties' array.
-     */
-    private function addLegacyParams(array $filters): array
-    {
-        return array_map(
-            function (array $filter): array {
-                if (isset($filter['properties']) && $filter['properties'] && array_key_exists('filter', $filter['properties'])) {
-                    $filter['filter'] = $filter['properties']['filter'];
-                } else {
-                    $filter['filter'] ??= null;
-                }
-
-                if (isset($filter['properties']) && $filter['properties'] && array_key_exists('display', $filter['properties'])) {
-                    $filter['display'] = $filter['properties']['display'];
-                } else {
-                    $filter['display'] ??= null;
-                }
-
-                return $filter;
-            },
-            $filters
-        );
     }
 
     public function getLastBuiltDate(): ?\DateTimeInterface
@@ -526,6 +498,39 @@ class LeadList extends FormEntity implements UuidInterface
         return $this->deleted;
     }
 
+    public function isDeleted(): bool
+    {
+        return !is_null($this->deleted);
+    }
+
+    /**
+     * @deprecated remove after several of years.
+     *
+     * This is needed go keep BC after we moved 'filter' and 'display' params
+     * to the 'properties' array.
+     */
+    private function addLegacyParams(array $filters): array
+    {
+        return array_map(
+            function (array $filter): array {
+                if (isset($filter['properties']) && $filter['properties'] && array_key_exists('filter', $filter['properties'])) {
+                    $filter['filter'] = $filter['properties']['filter'];
+                } else {
+                    $filter['filter'] ??= null;
+                }
+
+                if (isset($filter['properties']) && $filter['properties'] && array_key_exists('display', $filter['properties'])) {
+                    $filter['display'] = $filter['properties']['display'];
+                } else {
+                    $filter['display'] ??= null;
+                }
+
+                return $filter;
+            },
+            $filters
+        );
+    }
+
     /**
      * @param mixed[] $filters
      *
@@ -539,10 +544,5 @@ class LeadList extends FormEntity implements UuidInterface
         }
 
         return $filters;
-    }
-
-    public function isDeleted(): bool
-    {
-        return !is_null($this->deleted);
     }
 }

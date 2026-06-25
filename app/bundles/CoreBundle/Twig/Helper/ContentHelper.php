@@ -25,7 +25,7 @@ final class ContentHelper
      */
     public function getCustomContent($context = null, array $vars = [], $viewName = null): string
     {
-        if (null === $viewName && isset($vars['mauticTemplate'])) {
+        if ($viewName === null && isset($vars['mauticTemplate'])) {
             $viewName = $vars['mauticTemplate'];
         }
 

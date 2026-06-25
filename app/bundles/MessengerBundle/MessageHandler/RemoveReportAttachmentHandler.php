@@ -34,7 +34,7 @@ class RemoveReportAttachmentHandler
             }
 
             $filename = $headers->getHeaderParameter('Content-Disposition', 'filename');
-            if (null === $filename) {
+            if ($filename === null) {
                 continue;
             }
 

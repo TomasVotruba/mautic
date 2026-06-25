@@ -91,14 +91,14 @@ class TriggerEvent implements UuidInterface
      */
     private $changes;
 
-    public function __clone(): void
-    {
-        $this->id = null;
-    }
-
     public function __construct()
     {
         $this->log = new ArrayCollection();
+    }
+
+    public function __clone(): void
+    {
+        $this->id = null;
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -154,13 +154,6 @@ class TriggerEvent implements UuidInterface
                 ]
             )
             ->build();
-    }
-
-    private function isChanged($prop, $val): void
-    {
-        if ($this->$prop != $val) {
-            $this->changes[$prop] = [$this->$prop, $val];
-        }
     }
 
     /**
@@ -335,5 +328,12 @@ class TriggerEvent implements UuidInterface
     public function getPermissionUser(): mixed
     {
         return $this->getTrigger()->getCreatedBy();
+    }
+
+    private function isChanged($prop, $val): void
+    {
+        if ($this->{$prop} != $val) {
+            $this->changes[$prop] = [$this->{$prop}, $val];
+        }
     }
 }

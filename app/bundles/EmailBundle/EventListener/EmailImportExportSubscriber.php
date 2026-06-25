@@ -47,7 +47,7 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 
     public function onEmailExport(EntityExportEvent $event): void
     {
-        if (Email::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Email::ENTITY_NAME) {
             return;
         }
 
@@ -126,7 +126,7 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 
     public function onEmailImport(EntityImportEvent $event): void
     {
-        if (Email::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== Email::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -178,7 +178,7 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (Email::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Email::ENTITY_NAME) {
             return;
         }
 

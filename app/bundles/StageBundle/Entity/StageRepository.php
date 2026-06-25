@@ -90,29 +90,6 @@ class StageRepository extends CommonRepository
         return $return;
     }
 
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause($q, $filter, [
-            's.name',
-            's.description',
-        ]);
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        return match ($filter->command) {
-            $this->translator->trans('mautic.project.searchcommand.name'), $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US') => $this->handleProjectFilter(
-                $this->_em->getConnection()->createQueryBuilder(),
-                'stage_id',
-                'stage_projects_xref',
-                $this->getTableAlias(),
-                $filter->string,
-                $filter->not
-            ),
-            default => $this->addStandardSearchCommandWhereClause($q, $filter),
-        };
-    }
-
     /**
      * @return string[]
      */
@@ -223,5 +200,28 @@ class StageRepository extends CommonRepository
             ->setParameter('value', $value)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause($q, $filter, [
+            's.name',
+            's.description',
+        ]);
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        return match ($filter->command) {
+            $this->translator->trans('mautic.project.searchcommand.name'), $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US') => $this->handleProjectFilter(
+                $this->_em->getConnection()->createQueryBuilder(),
+                'stage_id',
+                'stage_projects_xref',
+                $this->getTableAlias(),
+                $filter->string,
+                $filter->not
+            ),
+            default => $this->addStandardSearchCommandWhereClause($q, $filter),
+        };
     }
 }

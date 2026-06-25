@@ -67,7 +67,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
     {
         static $commonRepo;
 
-        if (null === $commonRepo) {
+        if ($commonRepo === null) {
             $commonRepo = $this->em->getRepository(FormEntity::class);
         }
 
@@ -109,7 +109,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
      */
     public function getEntity($id = null): ?object
     {
-        if (null !== $id) {
+        if ($id !== null) {
             $repo = $this->getRepository();
             if (method_exists($repo, 'getEntity')) {
                 return $repo->getEntity($id);
@@ -180,12 +180,12 @@ abstract class AbstractCommonModel implements MauticModelInterface
         $locales   = Locales::getNames();
 
         switch (true) {
-            case 3 === $slugCount:
+            case $slugCount === 3:
                 [$lang, $category, $idSlug] = $slugs;
 
                 break;
 
-            case 2 === $slugCount:
+            case $slugCount === 2:
                 [$category, $idSlug] = $slugs;
 
                 // Check if the first slug is actually a locale
@@ -196,7 +196,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
 
                 break;
 
-            case 1 === $slugCount:
+            case $slugCount === 1:
                 $idSlug = $slugs[0];
 
                 break;
@@ -216,7 +216,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
         $entity = false;
         if (str_contains($idSlug, ':')) {
             $parts = explode(':', $idSlug);
-            if (2 == count($parts)) {
+            if (count($parts) == 2) {
                 $entity = $this->getEntity($parts[0]);
             }
         } else {
@@ -243,16 +243,6 @@ abstract class AbstractCommonModel implements MauticModelInterface
         return null;
     }
 
-    /**
-     * @phpstan-param class-string<T> $class
-     *
-     * @return CommonRepository<T>
-     */
-    protected function getServiceRepository(string $class)
-    {
-        return $this->em->getRepository($class);
-    }
-
     public function getEntitiesForGlobalSearch(GlobalSearchFilterDTO $filterDTO): ?Paginator
     {
         $filter = $filterDTO->getFilters();
@@ -276,8 +266,8 @@ abstract class AbstractCommonModel implements MauticModelInterface
 
         $isGranted      = false;
         $permissionBase = $this->getPermissionBase();
-        if ($this->security->checkPermissionExists("$permissionBase:viewown")) {
-            $isGranted = $this->security->isGranted("$permissionBase:viewown");
+        if ($this->security->checkPermissionExists("{$permissionBase}:viewown")) {
+            $isGranted = $this->security->isGranted("{$permissionBase}:viewown");
         }
 
         return $isGranted;
@@ -291,10 +281,20 @@ abstract class AbstractCommonModel implements MauticModelInterface
 
         $isGranted      = false;
         $permissionBase = $this->getPermissionBase();
-        if ($this->security->checkPermissionExists("$permissionBase:viewother")) {
-            $isGranted = $this->security->isGranted(["$permissionBase:viewother"]);
+        if ($this->security->checkPermissionExists("{$permissionBase}:viewother")) {
+            $isGranted = $this->security->isGranted(["{$permissionBase}:viewother"]);
         }
 
         return $isGranted;
+    }
+
+    /**
+     * @phpstan-param class-string<T> $class
+     *
+     * @return CommonRepository<T>
+     */
+    protected function getServiceRepository(string $class)
+    {
+        return $this->em->getRepository($class);
     }
 }

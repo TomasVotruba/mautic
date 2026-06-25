@@ -231,60 +231,17 @@ class PageModel extends FormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Page
     {
-        if (null === $id) {
+        if ($id === null) {
             $entity = new Page();
             $entity->setSessionId('new_'.hash('sha1', uniqid(mt_rand())));
         } else {
             $entity = parent::getEntity($id);
-            if (null !== $entity) {
+            if ($entity !== null) {
                 $entity->setSessionId($entity->getId());
             }
         }
 
         return $entity;
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Page) {
-            throw new MethodNotAllowedHttpException(['Page']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = PageEvents::PAGE_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = PageEvents::PAGE_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = PageEvents::PAGE_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = PageEvents::PAGE_POST_DELETE;
-                break;
-            case 'on_toggle_publish':
-                $name = PageEvents::PAGE_ON_TOGGLE_PUBLISH;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new PageEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -324,7 +281,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
     {
         // If this is a variant, then get the parent's URL
         $parent = $entity->getVariantParent();
-        if (null != $parent) {
+        if ($parent != null) {
             $entity = $parent;
         }
 
@@ -369,25 +326,6 @@ class PageModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * @return array|mixed
-     */
-    protected function generateClickThrough(Hit $hit)
-    {
-        $query = $hit->getQuery();
-
-        // Check for any clickthrough info
-        $clickthrough = [];
-        if (!empty($query['ct'])) {
-            $clickthrough = $query['ct'];
-            if (!is_array($clickthrough)) {
-                $clickthrough = $this->decodeArrayFromUrl($clickthrough);
-            }
-        }
-
-        return $clickthrough;
-    }
-
-    /**
      * @param string|int $code
      * @param array      $query
      *
@@ -418,13 +356,13 @@ class PageModel extends FormModel implements GlobalSearchInterface
         if (array_key_exists('ct', $query) && is_array($query['ct']) && array_key_exists('email', $query['ct']) && array_key_exists('stat', $query['ct'])) {
             /** @var Stat $stat */
             $stat = $this->statRepository->findOneBy(['trackingHash' => $query['ct']['stat']]);
-            if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
+            if ($stat !== null && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
                 return false;
             }
         }
 
         // Get lead if required
-        if (null == $lead) {
+        if ($lead == null) {
             $lead = $this->contactRequestHelper->getContactFromQuery($query);
 
             // company
@@ -443,7 +381,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 $this->leadModel->setPrimaryCompany($companyEntity->getId(), $lead->getId());
             }
 
-            if (null !== $companyChangeLog) {
+            if ($companyChangeLog !== null) {
                 $this->companyModel->getCompanyLeadRepository()->detachEntity($companyChangeLog);
             }
         }
@@ -523,7 +461,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $clickthrough = $this->generateClickThrough($hit);
         if (!empty($clickthrough)) {
             if (!empty($clickthrough['channel'])) {
-                if (1 === count($clickthrough['channel'])) {
+                if (count($clickthrough['channel']) === 1) {
                     $channelId = reset($clickthrough['channel']);
                     $channel   = key($clickthrough['channel']);
                 } else {
@@ -701,8 +639,8 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_HIT);
         }
 
-        if (null !== $hitDate) {
-            if (null === $lead->getLastActive() || $lead->getLastActive() < $hitDate) {
+        if ($hitDate !== null) {
+            if ($lead->getLastActive() === null || $lead->getLastActive() < $hitDate) {
                 try {
                     $this->leadModel->getRepository()->updateLastActive($lead->getId(), $hitDate);
                 } catch (\Exception $e) {
@@ -806,7 +744,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
 
-        if (!$flag || 'total_and_unique' == $flag) {
+        if (!$flag || $flag == 'total_and_unique') {
             $q = $query->prepareTimeDataQuery('page_hits', 'date_hit', $filter);
 
             if (!$canViewOthers) {
@@ -817,7 +755,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $chart->setDataset($this->translator->trans('mautic.page.show.total.visits'), $data);
         }
 
-        if ('unique' == $flag || 'total_and_unique' == $flag) {
+        if ($flag == 'unique' || $flag == 'total_and_unique') {
             $q = $query->prepareTimeDataQuery(
                 'page_hits',
                 'date_hit',
@@ -1018,6 +956,68 @@ class PageModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Page) {
+            throw new MethodNotAllowedHttpException(['Page']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = PageEvents::PAGE_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = PageEvents::PAGE_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = PageEvents::PAGE_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = PageEvents::PAGE_POST_DELETE;
+                break;
+            case 'on_toggle_publish':
+                $name = PageEvents::PAGE_ON_TOGGLE_PUBLISH;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new PageEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    protected function generateClickThrough(Hit $hit)
+    {
+        $query = $hit->getQuery();
+
+        // Check for any clickthrough info
+        $clickthrough = [];
+        if (!empty($query['ct'])) {
+            $clickthrough = $query['ct'];
+            if (!is_array($clickthrough)) {
+                $clickthrough = $this->decodeArrayFromUrl($clickthrough);
+            }
+        }
+
+        return $clickthrough;
+    }
+
+    /**
      * Get all params (e.g. UTM tags) from a url.
      */
     private function getQueryFromUrl(string $pageUrl): array
@@ -1192,7 +1192,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         $pageURL = 'http';
-        if ('on' == $request->server->get('HTTPS')) {
+        if ($request->server->get('HTTPS') == 'on') {
             $pageURL .= 's';
         }
         $pageURL .= '://';
@@ -1238,7 +1238,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             return $value;
         }
 
-        if (self::MAX_FIELD_LENGTH >= mb_strwidth($value, self::STRING_ENCODING)) {
+        if (mb_strwidth($value, self::STRING_ENCODING) <= self::MAX_FIELD_LENGTH) {
             return $value;
         }
 

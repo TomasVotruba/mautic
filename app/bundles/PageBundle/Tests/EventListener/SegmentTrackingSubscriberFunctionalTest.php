@@ -27,7 +27,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['append_segment_id_tracking_url'] = 'testFeatureFlagIsDisabled' !== $this->name();
+        $this->configParams['append_segment_id_tracking_url'] = $this->name() !== 'testFeatureFlagIsDisabled';
         parent::setUp();
         $this->dispatcher = $this->getContainer()->get('event_dispatcher');
     }
@@ -63,7 +63,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $resultUrl, $testCase);
         Assert::assertStringContainsString($expectedSeparator.self::SEGMENT_IDS_PARAM, $resultUrl, $testCase);
 
-        if (null !== $expectedContent) {
+        if ($expectedContent !== null) {
             Assert::assertStringContainsString($expectedContent, $resultUrl, $testCase);
         }
     }

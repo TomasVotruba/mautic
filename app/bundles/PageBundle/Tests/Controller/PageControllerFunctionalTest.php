@@ -39,49 +39,6 @@ class PageControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString('Test Html', $response->getContent());
     }
 
-    private function createSegment(): LeadList
-    {
-        $segment = new LeadList();
-        $segment->setName('Segment 1');
-        $segment->setPublicName('Segment 1');
-        $segment->setAlias('segment_1');
-        $this->em->persist($segment);
-        $this->em->flush();
-
-        return $segment;
-    }
-
-    /**
-     * @param mixed[] $filters
-     */
-    private function createDynamicContentWithSegmentFilter(array $filters = []): DynamicContent
-    {
-        $dynamicContent = new DynamicContent();
-        $dynamicContent->setName('DC 1');
-        $dynamicContent->setDescription('Customised value');
-        $dynamicContent->setFilters($filters);
-        $dynamicContent->setIsCampaignBased(false);
-        $dynamicContent->setSlotName('Segment1_Slot');
-        $this->em->persist($dynamicContent);
-        $this->em->flush();
-
-        return $dynamicContent;
-    }
-
-    private function createPage(string $token = ''): Page
-    {
-        $page = new Page();
-        $page->setIsPublished(true);
-        $page->setTitle('Page Title');
-        $page->setAlias('page-alias');
-        $page->setTemplate('blank');
-        $page->setCustomHtml('Test Html'.$token);
-        $this->em->persist($page);
-        $this->em->flush();
-
-        return $page;
-    }
-
     public function testPageWithProject(): void
     {
         $page = $this->createPage();
@@ -153,6 +110,49 @@ class PageControllerFunctionalTest extends MauticMysqlTestCase
             'The record you are updating has been changed by someone else in the meantime. Please refresh the browser window and re-submit your changes.',
             $crawler->text(), 'There should be an optimistic error as the form was not refreshed after the previous submission.',
         );
+    }
+
+    private function createSegment(): LeadList
+    {
+        $segment = new LeadList();
+        $segment->setName('Segment 1');
+        $segment->setPublicName('Segment 1');
+        $segment->setAlias('segment_1');
+        $this->em->persist($segment);
+        $this->em->flush();
+
+        return $segment;
+    }
+
+    /**
+     * @param mixed[] $filters
+     */
+    private function createDynamicContentWithSegmentFilter(array $filters = []): DynamicContent
+    {
+        $dynamicContent = new DynamicContent();
+        $dynamicContent->setName('DC 1');
+        $dynamicContent->setDescription('Customised value');
+        $dynamicContent->setFilters($filters);
+        $dynamicContent->setIsCampaignBased(false);
+        $dynamicContent->setSlotName('Segment1_Slot');
+        $this->em->persist($dynamicContent);
+        $this->em->flush();
+
+        return $dynamicContent;
+    }
+
+    private function createPage(string $token = ''): Page
+    {
+        $page = new Page();
+        $page->setIsPublished(true);
+        $page->setTitle('Page Title');
+        $page->setAlias('page-alias');
+        $page->setTemplate('blank');
+        $page->setCustomHtml('Test Html'.$token);
+        $this->em->persist($page);
+        $this->em->flush();
+
+        return $page;
     }
 
     private function assertPageVersion(int $id, int $expectedVersion, string $message = ''): void

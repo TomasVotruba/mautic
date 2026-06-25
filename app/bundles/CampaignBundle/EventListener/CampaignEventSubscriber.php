@@ -79,7 +79,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             [$actual, $inMemory] = $changes['isPublished'];
 
             // If we're publishing the campaign
-            if (false === $actual && true === $inMemory) {
+            if ($actual === false && $inMemory === true) {
                 $this->eventRepository->resetFailedCountsForEventsInCampaign($campaign);
             }
         }

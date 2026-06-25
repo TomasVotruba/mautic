@@ -60,7 +60,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionAssetDownload(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('asset.download')) {
+        if ($event->checkContext('asset.download') === false) {
             return;
         }
 
@@ -69,9 +69,9 @@ class FormSubscriber implements EventSubscriberInterface
         $categoryId = $properties['category'] ?? null;
         $asset      = null;
 
-        if (null !== $assetId) {
+        if ($assetId !== null) {
             $asset = $this->assetModel->getEntity($assetId);
-        } elseif (null !== $categoryId) {
+        } elseif ($categoryId !== null) {
             try {
                 $asset = $this->assetModel->getRepository()->getLatestAssetForCategory($categoryId);
             } catch (NoResultException|NonUniqueResultException) {
@@ -91,7 +91,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionDownloadFile(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('asset.download_file')) {
+        if ($event->checkContext('asset.download_file') === false) {
             return;
         }
 

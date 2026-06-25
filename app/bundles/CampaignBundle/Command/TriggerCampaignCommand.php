@@ -37,16 +37,16 @@ class TriggerCampaignCommand extends ModeratedCommand
 {
     use WriteCountTrait;
 
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
     private bool $kickoffOnly  = false;
 
     private bool $inactiveOnly = false;
 
     private bool $scheduleOnly = false;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
 
     private ?ContactLimiter $limiter = null;
 

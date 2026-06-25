@@ -162,7 +162,7 @@ class ImportModel extends FormModel
      */
     public function beginImport(Import $import, Progress $progress, $limit = 0, ?float $start = null): void
     {
-        if (null === $start) {
+        if ($start === null) {
             $start = microtime(true);
         }
 
@@ -291,7 +291,7 @@ class ImportModel extends FormModel
             $import->setLastLineImported($lineNumber);
 
             // Ignore the header row
-            if (1 === $lineNumber) {
+            if ($lineNumber === 1) {
                 ++$lineNumber;
                 continue;
             }
@@ -374,7 +374,7 @@ class ImportModel extends FormModel
             $data     = null;
 
             // Save Import entity once per batch so the user could see the progress
-            if (0 === $batchSize && $import->isBackgroundProcess()) {
+            if ($batchSize === 0 && $import->isBackgroundProcess()) {
                 $isPublished = $this->getRepository()->getValue($import->getId(), 'is_published');
 
                 if (!$isPublished) {
@@ -460,7 +460,7 @@ class ImportModel extends FormModel
             return true;
         }
 
-        if (1 === count($row) && ('' === $row[0] || null === $row[0])) {
+        if (count($row) === 1 && ($row[0] === '' || $row[0] === null)) {
             return true;
         }
 
@@ -591,7 +591,7 @@ class ImportModel extends FormModel
      */
     public function getEntity($id = null): ?Import
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Import();
         }
 

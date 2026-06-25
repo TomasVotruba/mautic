@@ -46,7 +46,7 @@ final class ThemesExtension extends AbstractExtension
 
     public function getTextOnBrandHelperColor(): string
     {
-        return '000000' === $this->getTextOnBrandColor() ? '6d6d6d' : 'b3b3b3';
+        return $this->getTextOnBrandColor() === '000000' ? '6d6d6d' : 'b3b3b3';
     }
 
     public function getRoundedCorners(string $size = 'lg'): int

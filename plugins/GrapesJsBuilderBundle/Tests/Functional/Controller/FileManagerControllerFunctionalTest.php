@@ -20,11 +20,6 @@ final class FileManagerControllerFunctionalTest extends MauticMysqlTestCase
     /** @var array<string> */
     private array $tempFilePaths = [];
 
-    protected function beforeTearDown(): void
-    {
-        $this->cleanupTempFiles();
-    }
-
     public function testAssetsManagerWorkflow(): void
     {
         $initialAssetCount = $this->getAssetCount();
@@ -76,6 +71,11 @@ final class FileManagerControllerFunctionalTest extends MauticMysqlTestCase
         if (\is_file($svgPath)) {
             @\unlink($svgPath);
         }
+    }
+
+    protected function beforeTearDown(): void
+    {
+        $this->cleanupTempFiles();
     }
 
     private function getAssetCount(): int

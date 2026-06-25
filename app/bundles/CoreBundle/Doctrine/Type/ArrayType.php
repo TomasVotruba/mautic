@@ -15,7 +15,7 @@ class ArrayType extends \Doctrine\DBAL\Types\ArrayType
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (!is_array($value)) {
-            return (null === $value) ? 'N;' : 'a:0:{}';
+            return ($value === null) ? 'N;' : 'a:0:{}';
         }
 
         $serialized = serialize($value);
@@ -37,7 +37,7 @@ class ArrayType extends \Doctrine\DBAL\Types\ArrayType
     {
         try {
             $value = parent::convertToPHPValue($value, $platform);
-            if (!is_array($value) || (1 > count($value))) {
+            if (!is_array($value) || (count($value) < 1)) {
                 return $value;
             }
 
@@ -52,7 +52,7 @@ class ArrayType extends \Doctrine\DBAL\Types\ArrayType
                 // Let's check if $value contains objects with private or protected members.
                 // If it contains such objects we have to remove them from $array.
                 // This will "heal" the database. There must be no null bytes.
-                if (0 < count($reflectionProperties)) {
+                if (count($reflectionProperties) > 0) {
                     unset($value[$key]);
                 }
             }

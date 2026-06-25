@@ -85,7 +85,7 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         $assetTitle    = 'Local ZIP asset '.uniqid();
         $tmpUploadFile = tempnam(sys_get_temp_dir(), 'asset_zip_');
 
-        if (false === $tmpUploadFile) {
+        if ($tmpUploadFile === false) {
             self::fail('Unable to create temporary file for ZIP upload test.');
         }
 
@@ -382,38 +382,6 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         }
     }
 
-    private function getUser(string $username): User
-    {
-        $repository = $this->em->getRepository(User::class);
-
-        return $repository->findOneBy(['username' => $username]);
-    }
-
-    /**
-     * @param array<string, array<string, array<string>>> $permissions
-     */
-    private function setPermission(User $user, array $permissions): void
-    {
-        $role = $user->getRole();
-
-        // Delete previous permissions
-        $this->em->createQueryBuilder()
-            ->delete(Permission::class, 'p')
-            ->where('p.bundle = :bundle')
-            ->andWhere('p.role = :role_id')
-            ->setParameters(['bundle' => 'asset', 'role_id' => $role->getId()])
-            ->getQuery()
-            ->execute();
-
-        // Set new permissions
-        $role->setIsAdmin(false);
-        $roleModel = static::getContainer()->get('mautic.user.model.role');
-        \assert($roleModel instanceof RoleModel);
-        $roleModel->setRolePermissions($role, $permissions);
-        $this->em->persist($role);
-        $this->em->flush();
-    }
-
     public function testPostRequestWithWrongTempNameAndOriginalFileNameFileExtension(): void
     {
         $response = $this->client->request(
@@ -530,5 +498,37 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
         } else {
             Assert::assertStringContainsString($message, $content);
         }
+    }
+
+    private function getUser(string $username): User
+    {
+        $repository = $this->em->getRepository(User::class);
+
+        return $repository->findOneBy(['username' => $username]);
+    }
+
+    /**
+     * @param array<string, array<string, array<string>>> $permissions
+     */
+    private function setPermission(User $user, array $permissions): void
+    {
+        $role = $user->getRole();
+
+        // Delete previous permissions
+        $this->em->createQueryBuilder()
+            ->delete(Permission::class, 'p')
+            ->where('p.bundle = :bundle')
+            ->andWhere('p.role = :role_id')
+            ->setParameters(['bundle' => 'asset', 'role_id' => $role->getId()])
+            ->getQuery()
+            ->execute();
+
+        // Set new permissions
+        $role->setIsAdmin(false);
+        $roleModel = static::getContainer()->get('mautic.user.model.role');
+        \assert($roleModel instanceof RoleModel);
+        $roleModel->setRolePermissions($role, $permissions);
+        $this->em->persist($role);
+        $this->em->flush();
     }
 }

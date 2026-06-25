@@ -35,7 +35,7 @@ final class PhpUnitConfigCommand extends Command
         $finder = new Finder();
         $finder->files()->in([__DIR__.'/../../*/Tests', __DIR__.'/../../../../plugins/*/Tests'])->name('*Test.php');
 
-        if (0 === $finder->count()) {
+        if ($finder->count() === 0) {
             return ExitCode::SUCCESS;
         }
 
@@ -70,7 +70,7 @@ final class PhpUnitConfigCommand extends Command
 
     private function isFunctional(\SplFileInfo $file): bool
     {
-        if (1 === preg_match('~/Functional/~', $file->getRealPath())) {
+        if (preg_match('~/Functional/~', $file->getRealPath()) === 1) {
             return true;
         }
 

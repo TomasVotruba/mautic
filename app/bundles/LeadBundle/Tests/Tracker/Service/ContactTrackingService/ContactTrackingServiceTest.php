@@ -105,13 +105,13 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic_session_id', $parameters[0]);
                     $this->assertNull($parameters[1]);
 
                     return $trackingId;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame($trackingId, $parameters[0]);
                     $this->assertNull($parameters[1]);
 
@@ -144,13 +144,13 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic_session_id', $parameters[0]);
                     $this->assertNull($parameters[1]);
 
                     return $trackingId;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame($trackingId, $parameters[0]);
                     $this->assertNull($parameters[1]);
 
@@ -189,13 +189,13 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic_session_id', $parameters[0]);
                     $this->assertNull($parameters[1]);
 
                     return $trackingId;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame($trackingId, $parameters[0]);
                     $this->assertNull($parameters[1]);
 
@@ -239,13 +239,13 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic_session_id', $parameters[0]);
                     $this->assertNull($parameters[1]);
 
                     return $trackingId;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame($trackingId, $parameters[0]);
                     $this->assertNull($parameters[1]);
 
@@ -289,13 +289,13 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $leadId) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic_session_id', $parameters[0]);
                     $this->assertNull($parameters[1]);
 
                     return $trackingId;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame($trackingId, $parameters[0]);
                     $this->assertNull($parameters[1]);
 

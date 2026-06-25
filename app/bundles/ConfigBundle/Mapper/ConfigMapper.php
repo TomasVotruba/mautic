@@ -48,7 +48,7 @@ class ConfigMapper
         foreach ($formParameters as $formKey => $defaultValue) {
             $configValue = $this->parametersHelper->get($formKey);
 
-            if (null === $configValue) {
+            if ($configValue === null) {
                 // Nothing has been locally configured so keep default
                 continue;
             }

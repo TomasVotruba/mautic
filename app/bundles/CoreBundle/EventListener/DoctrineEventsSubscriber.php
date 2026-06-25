@@ -70,7 +70,7 @@ class DoctrineEventsSubscriber
             );
 
             foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
-                if (\Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY == $mapping['type']
+                if ($mapping['type'] == \Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY
                     && isset($classMetadata->associationMappings[$fieldName]['joinTable']['name'])
                 ) {
                     $mappedTableName                                                     = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
@@ -125,7 +125,7 @@ class DoctrineEventsSubscriber
             foreach ($table->getIndexes() as $id => $index) {
                 $index_first_column = $this->trimQuotes(strtolower($index->getColumns()[0]));
 
-                if (!$index->isPrimary() && 1 == count($index->getColumns()) && $index_first_column === $pk_first_column) {
+                if (!$index->isPrimary() && count($index->getColumns()) == 1 && $index_first_column === $pk_first_column) {
                     $table->dropIndex($id);
                 }
             }

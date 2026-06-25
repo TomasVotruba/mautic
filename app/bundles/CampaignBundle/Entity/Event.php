@@ -523,31 +523,6 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param string $prop
-     * @param mixed  $val
-     */
-    private function isChanged($prop, $val): bool
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ('category' == $prop || 'parent' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-
-                return true;
-            }
-        } elseif ($this->$prop != $val) {
-            $this->changes[$prop] = [$this->$prop, $val];
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @return array
      */
     public function getChanges()
@@ -750,7 +725,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return Event
      */
-    public function addChild(Event $children)
+    public function addChild(self $children)
     {
         $this->children[] = $children;
 
@@ -760,7 +735,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Remove children.
      */
-    public function removeChild(Event $children): void
+    public function removeChild(self $children): void
     {
         $this->children->removeElement($children);
     }
@@ -824,7 +799,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return Event
      */
-    public function setParent(?Event $parent = null)
+    public function setParent(?self $parent = null)
     {
         $isChanged = $this->isChanged('parent', $parent);
         if ($isChanged) {
@@ -953,7 +928,7 @@ class Event implements ChannelInterface, UuidInterface
         return $this->triggerWindow;
     }
 
-    public function setTriggerWindow(?int $triggerWindow): Event
+    public function setTriggerWindow(?int $triggerWindow): self
     {
         $this->triggerWindow = $triggerWindow;
 
@@ -1169,7 +1144,7 @@ class Event implements ChannelInterface, UuidInterface
         return $this;
     }
 
-    public function setDeleted(mixed $deleted = 'now'): Event
+    public function setDeleted(mixed $deleted = 'now'): self
     {
         if (is_array($deleted) && array_key_exists('date', $deleted)) {
             $deleted = new \DateTime($deleted['date']);
@@ -1198,19 +1173,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this->failedCount;
     }
 
-    private function convertToDateTime(mixed $triggerDate): mixed
-    {
-        if (empty($triggerDate)) {
-            $triggerDate = null;
-        } elseif (is_array($triggerDate) && array_key_exists('date', $triggerDate)) {
-            $triggerDate = new \DateTime($triggerDate['date']);
-        } elseif (is_string($triggerDate)) {
-            $triggerDate = new \DateTime($triggerDate);
-        }
-
-        return $triggerDate;
-    }
-
     public function getDateLinked(): ?\DateTime
     {
         return $this->dateLinked;
@@ -1222,7 +1184,7 @@ class Event implements ChannelInterface, UuidInterface
         $this->dateLinked = $dateLinked;
     }
 
-    public function setRedirectEvent(?Event $redirectEvent = null): Event
+    public function setRedirectEvent(?self $redirectEvent = null): self
     {
         $this->isChanged('redirectEvent', $redirectEvent);
         $this->redirectEvent = $redirectEvent;
@@ -1230,14 +1192,14 @@ class Event implements ChannelInterface, UuidInterface
         return $this;
     }
 
-    public function getRedirectEvent(): ?Event
+    public function getRedirectEvent(): ?self
     {
         return $this->redirectEvent;
     }
 
     public function shouldBeRedirected(): bool
     {
-        return $this->isDeleted() && null !== $this->redirectEvent;
+        return $this->isDeleted() && $this->redirectEvent !== null;
     }
 
     /**
@@ -1252,5 +1214,43 @@ class Event implements ChannelInterface, UuidInterface
     public function getPermissionUser(): mixed
     {
         return $this->getCampaign()->getCreatedBy();
+    }
+
+    /**
+     * @param string $prop
+     * @param mixed  $val
+     */
+    private function isChanged($prop, $val): bool
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+        if ($prop == 'category' || $prop == 'parent') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+
+                return true;
+            }
+        } elseif ($this->{$prop} != $val) {
+            $this->changes[$prop] = [$this->{$prop}, $val];
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function convertToDateTime(mixed $triggerDate): mixed
+    {
+        if (empty($triggerDate)) {
+            $triggerDate = null;
+        } elseif (is_array($triggerDate) && array_key_exists('date', $triggerDate)) {
+            $triggerDate = new \DateTime($triggerDate['date']);
+        } elseif (is_string($triggerDate)) {
+            $triggerDate = new \DateTime($triggerDate);
+        }
+
+        return $triggerDate;
     }
 }

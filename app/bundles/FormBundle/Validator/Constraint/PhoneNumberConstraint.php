@@ -13,7 +13,7 @@ class PhoneNumberConstraint extends Constraint
 
     public function getMessage()
     {
-        if (null !== $this->message) {
+        if ($this->message !== null) {
             return $this->message;
         }
     }

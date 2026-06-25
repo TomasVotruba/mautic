@@ -9,22 +9,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20240226114528 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->hasTable($this->getTableName());
-        }, sprintf('Table %s already exists', $this->getTableName()));
-
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getTableName())
-                ->hasForeignKey($this->getForeignKeyName('email_id'));
-        }, sprintf('Foreign key %s already exists', $this->getForeignKeyName('email_id')));
-
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getTableName())
-                ->hasForeignKey($this->getForeignKeyName('leadlist_id'));
-        }, sprintf('Foreign key %s already exists', $this->getForeignKeyName('leadlist_id')));
-    }
 
     public function up(Schema $schema): void
     {
@@ -54,6 +38,22 @@ final class Version20240226114528 extends PreUpAssertionMigration
             $this->getForeignKeyName('leadlist_id'),
             $this->prefix
         ));
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->hasTable($this->getTableName());
+        }, sprintf('Table %s already exists', $this->getTableName()));
+
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getTableName())
+                ->hasForeignKey($this->getForeignKeyName('email_id'));
+        }, sprintf('Foreign key %s already exists', $this->getForeignKeyName('email_id')));
+
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getTableName())
+                ->hasForeignKey($this->getForeignKeyName('leadlist_id'));
+        }, sprintf('Foreign key %s already exists', $this->getForeignKeyName('leadlist_id')));
     }
 
     private function getTableName(): string

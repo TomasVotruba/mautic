@@ -106,7 +106,7 @@ trait VariantModelTrait
                 // Reset counters
                 foreach ($resetVariantCounterMethods as $method) {
                     if (method_exists($entity, $method)) {
-                        $entity->$method(0);
+                        $entity->{$method}(0);
                     }
                 }
 
@@ -141,7 +141,7 @@ trait VariantModelTrait
         $repo = $this->getRepository();
 
         if (method_exists($repo, 'resetVariants')) {
-            if (null == $relatedIds) {
+            if ($relatedIds == null) {
                 $relatedIds = $entity->getRelatedEntityIds();
             }
 
@@ -149,7 +149,7 @@ trait VariantModelTrait
                 $relatedIds[] = $entity->getId();
             }
 
-            if (null === $variantStartDate) {
+            if ($variantStartDate === null) {
                 $variantStartDate = new \DateTime();
             }
 

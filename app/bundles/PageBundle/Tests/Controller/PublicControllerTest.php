@@ -127,126 +127,6 @@ class PublicControllerTest extends TestCase
         $this->assertEquals('pageA', $this->getVariantContent(6, 3, 3));
     }
 
-    private function getVariantContent(int $aCount, int $bCount, int $cCount): string
-    {
-        $pageEntityB = $this->createMock(Page::class);
-        $pageEntityB->method('getId')
-            ->willReturn(2);
-        $pageEntityB->method('isPublished')
-            ->willReturn(true);
-        $pageEntityB->method('getVariantHits')
-            ->willReturn($bCount);
-        $pageEntityB->method('getTranslations')
-            ->willReturn([]);
-        $pageEntityB->method('isTranslation')
-            ->willReturn(false);
-        $pageEntityB->method('getContent')
-            ->willReturn(null);
-        $pageEntityB->method('getCustomHtml')
-            ->willReturn('pageB');
-        $pageEntityB->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
-
-        $pageEntityC = $this->createMock(Page::class);
-        $pageEntityC->method('getId')
-            ->willReturn(3);
-        $pageEntityC->method('isPublished')
-            ->willReturn(true);
-        $pageEntityC->method('getVariantHits')
-            ->willReturn($cCount);
-        $pageEntityC->method('getTranslations')
-            ->willReturn([]);
-        $pageEntityC->method('isTranslation')
-            ->willReturn(false);
-        $pageEntityC->method('getContent')
-            ->willReturn(null);
-        $pageEntityC->method('getCustomHtml')
-            ->willReturn('pageC');
-        $pageEntityC->method('getVariantSettings')
-            ->willReturn(['weight' => '25']);
-
-        $pageEntityA = $this->createMock(Page::class);
-        $pageEntityA->method('getId')
-            ->willReturn(1);
-        $pageEntityA->method('isPublished')
-            ->willReturn(true);
-        $pageEntityA->method('getVariants')
-            ->willReturn([$pageEntityA, [2 => $pageEntityB, 3 => $pageEntityC]]);
-        $pageEntityA->method('getVariantHits')
-            ->willReturn($aCount);
-        $pageEntityA->method('getTranslations')
-            ->willReturn([]);
-        $pageEntityA->method('isTranslation')
-            ->willReturn(false);
-        $pageEntityA->method('getContent')
-            ->willReturn(null);
-        $pageEntityA->method('getCustomHtml')
-            ->willReturn('pageA');
-        $pageEntityA->method('getVariantSettings')
-            ->willReturn(['weight' => '50']);
-
-        $cookieHelper = $this->createMock(CookieHelper::class);
-
-        /** @var Packages&MockObject $packagesMock */
-        $packagesMock = $this->createMock(Packages::class);
-
-        /** @var CoreParametersHelper&MockObject $coreParametersHelper */
-        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-
-        $assetHelper = new AssetsHelper($packagesMock);
-
-        $mauticSecurity = $this->createMock(CorePermissions::class);
-        $mauticSecurity->method('hasEntityAccess')
-            ->willReturn(false);
-
-        $analyticsHelper = new AnalyticsHelper($coreParametersHelper);
-
-        $pageModel = $this->createMock(PageModel::class);
-        $pageModel->method('getHitQuery')
-            ->willReturn([]);
-        $pageModel->method('getEntityBySlugs')
-            ->willReturn($pageEntityA);
-        $pageModel->method('hitPage')
-            ->willReturn(true);
-
-        $this->contactRequestHelper->method('getContactFromQuery')
-            ->willReturn(new Lead());
-
-        $this->request->attributes->set('ignore_mismatch', true);
-        $themeHelper = $this->createMock(ThemeHelper::class);
-        $themeHelper->expects(self::never())
-            ->method('checkForTwigTemplate');
-
-        $controller = new PublicController(
-            $this->createMock(ManagerRegistry::class),
-            $this->modelFactory,
-            $this->createMock(UserHelper::class),
-            $this->createMock(CoreParametersHelper::class),
-            new EventDispatcher(),
-            $this->createMock(Translator::class),
-            $this->createMock(FlashBag::class),
-            new RequestStack([$this->request]),
-            $mauticSecurity
-        );
-        $controller->setContainer($this->internalContainer);
-
-        $response = $controller->indexAction(
-            $this->request,
-            $this->contactRequestHelper,
-            $cookieHelper,
-            $analyticsHelper,
-            $assetHelper,
-            $themeHelper,
-            $this->createMock(Tracking404Model::class),
-            $this->router,
-            $this->createMock(DeviceTrackingServiceInterface::class),
-            $pageModel,
-            '/page/a',
-        );
-
-        return $response->getContent();
-    }
-
     public function testThatInvalidClickTroughGetsProcessed(): void
     {
         $redirectId  = 'someRedirectId';
@@ -534,5 +414,125 @@ class PublicControllerTest extends TestCase
             ['success' => 0],
             json_decode($response->getContent(), true)
         );
+    }
+
+    private function getVariantContent(int $aCount, int $bCount, int $cCount): string
+    {
+        $pageEntityB = $this->createMock(Page::class);
+        $pageEntityB->method('getId')
+            ->willReturn(2);
+        $pageEntityB->method('isPublished')
+            ->willReturn(true);
+        $pageEntityB->method('getVariantHits')
+            ->willReturn($bCount);
+        $pageEntityB->method('getTranslations')
+            ->willReturn([]);
+        $pageEntityB->method('isTranslation')
+            ->willReturn(false);
+        $pageEntityB->method('getContent')
+            ->willReturn(null);
+        $pageEntityB->method('getCustomHtml')
+            ->willReturn('pageB');
+        $pageEntityB->method('getVariantSettings')
+            ->willReturn(['weight' => '25']);
+
+        $pageEntityC = $this->createMock(Page::class);
+        $pageEntityC->method('getId')
+            ->willReturn(3);
+        $pageEntityC->method('isPublished')
+            ->willReturn(true);
+        $pageEntityC->method('getVariantHits')
+            ->willReturn($cCount);
+        $pageEntityC->method('getTranslations')
+            ->willReturn([]);
+        $pageEntityC->method('isTranslation')
+            ->willReturn(false);
+        $pageEntityC->method('getContent')
+            ->willReturn(null);
+        $pageEntityC->method('getCustomHtml')
+            ->willReturn('pageC');
+        $pageEntityC->method('getVariantSettings')
+            ->willReturn(['weight' => '25']);
+
+        $pageEntityA = $this->createMock(Page::class);
+        $pageEntityA->method('getId')
+            ->willReturn(1);
+        $pageEntityA->method('isPublished')
+            ->willReturn(true);
+        $pageEntityA->method('getVariants')
+            ->willReturn([$pageEntityA, [2 => $pageEntityB, 3 => $pageEntityC]]);
+        $pageEntityA->method('getVariantHits')
+            ->willReturn($aCount);
+        $pageEntityA->method('getTranslations')
+            ->willReturn([]);
+        $pageEntityA->method('isTranslation')
+            ->willReturn(false);
+        $pageEntityA->method('getContent')
+            ->willReturn(null);
+        $pageEntityA->method('getCustomHtml')
+            ->willReturn('pageA');
+        $pageEntityA->method('getVariantSettings')
+            ->willReturn(['weight' => '50']);
+
+        $cookieHelper = $this->createMock(CookieHelper::class);
+
+        /** @var Packages&MockObject $packagesMock */
+        $packagesMock = $this->createMock(Packages::class);
+
+        /** @var CoreParametersHelper&MockObject $coreParametersHelper */
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+
+        $assetHelper = new AssetsHelper($packagesMock);
+
+        $mauticSecurity = $this->createMock(CorePermissions::class);
+        $mauticSecurity->method('hasEntityAccess')
+            ->willReturn(false);
+
+        $analyticsHelper = new AnalyticsHelper($coreParametersHelper);
+
+        $pageModel = $this->createMock(PageModel::class);
+        $pageModel->method('getHitQuery')
+            ->willReturn([]);
+        $pageModel->method('getEntityBySlugs')
+            ->willReturn($pageEntityA);
+        $pageModel->method('hitPage')
+            ->willReturn(true);
+
+        $this->contactRequestHelper->method('getContactFromQuery')
+            ->willReturn(new Lead());
+
+        $this->request->attributes->set('ignore_mismatch', true);
+        $themeHelper = $this->createMock(ThemeHelper::class);
+        $themeHelper->expects(self::never())
+            ->method('checkForTwigTemplate');
+
+        $controller = new PublicController(
+            $this->createMock(ManagerRegistry::class),
+            $this->modelFactory,
+            $this->createMock(UserHelper::class),
+            $this->createMock(CoreParametersHelper::class),
+            new EventDispatcher(),
+            $this->createMock(Translator::class),
+            $this->createMock(FlashBag::class),
+            new RequestStack([$this->request]),
+            $mauticSecurity
+        );
+        $controller->setContainer($this->internalContainer);
+
+        $response = $controller->indexAction(
+            $this->request,
+            $this->contactRequestHelper,
+            $cookieHelper,
+            $analyticsHelper,
+            $assetHelper,
+            $themeHelper,
+            $this->createMock(Tracking404Model::class),
+            $this->router,
+            $this->createMock(DeviceTrackingServiceInterface::class),
+            $pageModel,
+            '/page/a',
+        );
+
+        return $response->getContent();
     }
 }

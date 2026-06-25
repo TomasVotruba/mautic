@@ -75,7 +75,7 @@ class EmailSubscriber implements EventSubscriberInterface
         }
 
         $tokenFilter = $event->getTokenFilter();
-        $filter      = 'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '';
+        $filter      = $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '';
         $tokens      = $tokenHelper->getTokens(self::$contactFieldRegex, $filter, 'label', 'alias');
         if (!$tokens) {
             return;

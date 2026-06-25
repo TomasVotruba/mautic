@@ -70,7 +70,7 @@ class SMimeHelper
         /** @var Address[] $fromArray */
         $fromArray = $message->getFrom();
 
-        if (!is_array($fromArray) || 1 !== count($fromArray)) {
+        if (!is_array($fromArray) || count($fromArray) !== 1) {
             return $message;
         }
 

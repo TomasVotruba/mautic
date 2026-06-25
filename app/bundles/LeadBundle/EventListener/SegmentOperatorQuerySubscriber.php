@@ -133,10 +133,10 @@ final class SegmentOperatorQuerySubscriber implements EventSubscriberInterface
         $filterArray      = $event->getFilter()->contactSegmentFilterCrate->getArray();
         $originalOperator = $filterArray['operator'];
         $applyIsNull      = in_array($originalOperator, [OperatorOptions::EXCLUDING_ALL, OperatorOptions::EXCLUDING_ANY], true);
-        $applyNot         = OperatorOptions::EXCLUDING_ALL === $originalOperator;
+        $applyNot         = $originalOperator === OperatorOptions::EXCLUDING_ALL;
 
         $operator = 'regexp';
-        if (OperatorOptions::EXCLUDING_ANY === $originalOperator) {
+        if ($originalOperator === OperatorOptions::EXCLUDING_ANY) {
             $operator = 'notRegexp';
         }
 
@@ -147,24 +147,24 @@ final class SegmentOperatorQuerySubscriber implements EventSubscriberInterface
         }
 
         foreach ($event->getParameterHolder() as $parameter) {
-            $expressions[] = $queryBuilder->expr()->$operator($leadsTableAlias.'.'.$event->getFilter()->getField(), $parameter);
+            $expressions[] = $queryBuilder->expr()->{$operator}($leadsTableAlias.'.'.$event->getFilter()->getField(), $parameter);
         }
 
         if ($applyIsNull) {
             if ($applyNot) {
                 $expressions = [$queryBuilder->expr()->or(
-                    (string) new Expr\Func('NOT', (string) $queryBuilder->expr()->$filterGlue(...$expressions)),
+                    (string) new Expr\Func('NOT', (string) $queryBuilder->expr()->{$filterGlue}(...$expressions)),
                     $queryBuilder->expr()->isNull($leadsTableAlias.'.'.$event->getFilter()->getField()),
                 )];
             } else {
                 $expressions = [$queryBuilder->expr()->or(
-                    $queryBuilder->expr()->$filterGlue(...$expressions),
+                    $queryBuilder->expr()->{$filterGlue}(...$expressions),
                     $queryBuilder->expr()->isNull($leadsTableAlias.'.'.$event->getFilter()->getField()),
                 )];
             }
         }
 
-        $event->addExpression($queryBuilder->expr()->$filterGlue(...$expressions));
+        $event->addExpression($queryBuilder->expr()->{$filterGlue}(...$expressions));
         $event->stopPropagation();
     }
 

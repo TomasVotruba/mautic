@@ -61,6 +61,13 @@ abstract class MonitorTwitterBaseCommand extends Command
     }
 
     /**
+     * Used in various areas to set name of the network being searched.
+     *
+     * @return string twitter|facebook etc..
+     */
+    abstract public function getNetworkName();
+
+    /**
      * Command configuration. Set the name, description, and options here.
      */
     protected function configure()
@@ -101,13 +108,6 @@ abstract class MonitorTwitterBaseCommand extends Command
     }
 
     /**
-     * Used in various areas to set name of the network being searched.
-     *
-     * @return string twitter|facebook etc..
-     */
-    abstract public function getNetworkName();
-
-    /**
      * Search for tweets by creating your own search criteria.
      *
      * @param Monitoring $monitor
@@ -127,7 +127,7 @@ abstract class MonitorTwitterBaseCommand extends Command
         $this->queryCount   = $this->input->getOption('query-count');
         $twitterIntegration = $this->integrationHelper->getIntegrationObject('Twitter');
 
-        if (false === $twitterIntegration || false === $twitterIntegration->getIntegrationSettings()->getIsPublished()) {
+        if ($twitterIntegration === false || $twitterIntegration->getIntegrationSettings()->getIsPublished() === false) {
             $this->output->writeln($this->translator->trans('mautic.social.monitoring.twitter.not.published'));
 
             return Command::FAILURE;
@@ -186,7 +186,7 @@ abstract class MonitorTwitterBaseCommand extends Command
     {
         $results = $this->getTweets($monitor);
 
-        if (false === $results || !isset($results['statuses'])) {
+        if ($results === false || !isset($results['statuses'])) {
             $this->output->writeln('No statuses found');
 
             if (!empty($results['errors'])) {

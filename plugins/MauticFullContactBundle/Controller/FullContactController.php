@@ -23,7 +23,7 @@ class FullContactController extends FormController
      */
     public function lookupPersonAction(Request $request, LookupHelper $lookupHelper, $objectId = '')
     {
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $data     = $request->request->all()['fullcontact_lookup'] ?? [];
             $objectId = $data['objectId'];
         }
@@ -51,7 +51,7 @@ class FullContactController extends FormController
             );
         }
 
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $route = $this->generateUrl(
                 'mautic_plugin_fullcontact_action',
                 [
@@ -82,7 +82,7 @@ class FullContactController extends FormController
                 ]
             );
         }
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             try {
                 $lookupHelper->lookupContact($lead, array_key_exists('notify', $data));
                 $this->addFlashMessage(
@@ -119,7 +119,7 @@ class FullContactController extends FormController
     {
         /** @var \Mautic\LeadBundle\Model\LeadModel $model */
         $model = $this->getModel('lead');
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $data = $request->query->all()['fullcontact_batch_lookup'] ?? [];
         } else {
             $data = $request->request->all()['fullcontact_batch_lookup'] ?? [];
@@ -169,7 +169,7 @@ class FullContactController extends FormController
             $count = count($lookupEmails);
         }
 
-        if (0 === $count) {
+        if ($count === 0) {
             $this->addFlashMessage(
                 $this->translator->trans('mautic.plugin.fullcontact.empty'),
                 [],
@@ -198,7 +198,7 @@ class FullContactController extends FormController
             );
         }
 
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $route = $this->generateUrl(
                 'mautic_plugin_fullcontact_action',
                 [
@@ -227,7 +227,7 @@ class FullContactController extends FormController
                 ]
             );
         }
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $notify = array_key_exists('notify', $data);
             foreach ($lookupEmails as $id => $lookupEmail) {
                 if ($lead = $model->getEntity($id)) {
@@ -275,7 +275,7 @@ class FullContactController extends FormController
      */
     public function lookupCompanyAction(Request $request, LookupHelper $lookupHelper, $objectId = '')
     {
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $data     = $request->request->all()['fullcontact_lookup'] ?? [];
             $objectId = $data['objectId'];
         }
@@ -284,7 +284,7 @@ class FullContactController extends FormController
         /** @var Company $company */
         $company = $model->getEntity($objectId);
 
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $route = $this->generateUrl(
                 'mautic_plugin_fullcontact_action',
                 [
@@ -333,7 +333,7 @@ class FullContactController extends FormController
                 ]
             );
         }
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             try {
                 $lookupHelper->lookupCompany($company, array_key_exists('notify', $data));
                 $this->addFlashMessage(
@@ -370,7 +370,7 @@ class FullContactController extends FormController
     {
         /** @var \Mautic\LeadBundle\Model\CompanyModel $model */
         $model = $this->getModel('lead.company');
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $data = $request->query->all()['fullcontact_batch_lookup'] ?? [];
         } else {
             $data = $request->request->all()['fullcontact_batch_lookup'] ?? [];
@@ -419,7 +419,7 @@ class FullContactController extends FormController
             $count = count($lookupWebsites);
         }
 
-        if (0 === $count) {
+        if ($count === 0) {
             $this->addFlashMessage(
                 $this->translator->trans('mautic.plugin.fullcontact.compempty'),
                 [],
@@ -448,7 +448,7 @@ class FullContactController extends FormController
             );
         }
 
-        if ('GET' === $request->getMethod()) {
+        if ($request->getMethod() === 'GET') {
             $route = $this->generateUrl(
                 'mautic_plugin_fullcontact_action',
                 [
@@ -477,7 +477,7 @@ class FullContactController extends FormController
                 ]
             );
         }
-        if ('POST' === $request->getMethod()) {
+        if ($request->getMethod() === 'POST') {
             $notify = array_key_exists('notify', $data);
             foreach ($lookupWebsites as $id => $lookupWebsite) {
                 if ($company = $model->getEntity($id)) {

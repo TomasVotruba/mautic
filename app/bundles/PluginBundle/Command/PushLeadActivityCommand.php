@@ -74,7 +74,7 @@ class PushLeadActivityCommand extends Command
         if ($integration) {
             $integrationObject = $this->integrationHelper->getIntegrationObject($integration);
 
-            if (null !== $integrationObject && method_exists($integrationObject, 'pushLeadActivity')) {
+            if ($integrationObject !== null && method_exists($integrationObject, 'pushLeadActivity')) {
                 $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.push.leads.activity', ['%integration%' => $integration]).'</info>');
 
                 $params['start'] = $startDate;

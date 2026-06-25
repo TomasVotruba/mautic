@@ -41,13 +41,6 @@ class HSTSMiddlewareTest extends AbstractMauticTestCase
         $this->preload = $this->middlewareReflection->getProperty('preload');
     }
 
-    protected function testResponseHeaders(): void
-    {
-        $response = $this->getMiddlewareResponse();
-
-        Assert::assertNotEmpty($response->headers);
-    }
-
     public function testHSTSEnabled(): void
     {
         $this->setHSTS(true);
@@ -146,6 +139,13 @@ class HSTSMiddlewareTest extends AbstractMauticTestCase
             $this->getHSTSValue($response),
             'Expire time does not match the configuration'
         );
+    }
+
+    protected function testResponseHeaders(): void
+    {
+        $response = $this->getMiddlewareResponse();
+
+        Assert::assertNotEmpty($response->headers);
     }
 
     private function setHSTS(bool $value): void

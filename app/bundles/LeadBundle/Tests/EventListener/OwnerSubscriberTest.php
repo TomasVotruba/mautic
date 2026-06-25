@@ -202,6 +202,24 @@ class OwnerSubscriberTest extends TestCase
         $this->assertEquals('', $tokens['{ownerfield=lastname}']);
     }
 
+    public function testOnSmsTokenReplacement(): void
+    {
+        foreach ($this->onSmsTokenReplacementProvider() as $data) {
+            [$content, $expected, $lead] = $data;
+
+            $leadModel      = $this->createMock(LeadModel::class);
+            $leadRepository = $this->createMock(LeadRepository::class);
+            $leadRepository->method('getLeadOwner')->willReturn(['first_name' => 'John', 'last_name' => 'Doe']);
+            $leadModel->method('getRepository')->willReturn($leadRepository);
+            $translator = $this->createMock(TranslatorInterface::class);
+            $subscriber = new OwnerSubscriber($leadModel, $translator);
+
+            $event = new TokenReplacementEvent($content, $lead);
+            $subscriber->onSmsTokenReplacement($event);
+            $this->assertEquals($expected, $event->getContent());
+        }
+    }
+
     protected function getMockLeadModel(): LeadModel&MockObject
     {
         $mockLeadRepository = $this->createMock(LeadRepository::class);
@@ -225,29 +243,6 @@ class OwnerSubscriberTest extends TestCase
             ->willReturn(false);
 
         return $mockLeadModel;
-    }
-
-    /**
-     * @param mixed[] $parameterMap
-     */
-    private function getMockParametersHelper(bool $mailIsOwner = true, array $parameterMap = []): MockObject&CoreParametersHelper
-    {
-        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-
-        $parameterMap = array_merge(
-            [
-                ['mailer_return_path', false, null],
-                ['mailer_is_owner', false, $mailIsOwner],
-            ],
-            $parameterMap
-        );
-
-        $coreParametersHelper->method('get')
-            ->willReturnMap(
-                $parameterMap
-            );
-
-        return $coreParametersHelper;
     }
 
     /**
@@ -333,27 +328,9 @@ class OwnerSubscriberTest extends TestCase
         return $translator;
     }
 
-    public function testOnSmsTokenReplacement(): void
-    {
-        foreach ($this->onSmsTokenReplacementProvider() as $data) {
-            [$content, $expected, $lead] = $data;
-
-            $leadModel      = $this->createMock(LeadModel::class);
-            $leadRepository = $this->createMock(LeadRepository::class);
-            $leadRepository->method('getLeadOwner')->willReturn(['first_name' => 'John', 'last_name' => 'Doe']);
-            $leadModel->method('getRepository')->willReturn($leadRepository);
-            $translator = $this->createMock(TranslatorInterface::class);
-            $subscriber = new OwnerSubscriber($leadModel, $translator);
-
-            $event = new TokenReplacementEvent($content, $lead);
-            $subscriber->onSmsTokenReplacement($event);
-            $this->assertEquals($expected, $event->getContent());
-        }
-    }
-
     protected function getUser(): User
     {
-        $user = new class extends User {
+        $user = new class() extends User {
             public function setId(int $id): void
             {
                 $this->id = $id;
@@ -364,6 +341,37 @@ class OwnerSubscriberTest extends TestCase
         $user->setLastName('Doe');
 
         return $user;
+    }
+
+    protected function getEmailSendEvent(MailHelper $mailer): EmailSendEvent
+    {
+        $event = new EmailSendEvent($mailer);
+        $event->setContent('<html><body>{ownerfield=firstname} {ownerfield=lastname}</body></html>');
+
+        return $event;
+    }
+
+    /**
+     * @param mixed[] $parameterMap
+     */
+    private function getMockParametersHelper(bool $mailIsOwner = true, array $parameterMap = []): MockObject&CoreParametersHelper
+    {
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+
+        $parameterMap = array_merge(
+            [
+                ['mailer_return_path', false, null],
+                ['mailer_is_owner', false, $mailIsOwner],
+            ],
+            $parameterMap
+        );
+
+        $coreParametersHelper->method('get')
+            ->willReturnMap(
+                $parameterMap
+            );
+
+        return $coreParametersHelper;
     }
 
     /**
@@ -405,13 +413,5 @@ class OwnerSubscriberTest extends TestCase
             $validOwner,
             $noOwner,
         ];
-    }
-
-    protected function getEmailSendEvent(MailHelper $mailer): EmailSendEvent
-    {
-        $event = new EmailSendEvent($mailer);
-        $event->setContent('<html><body>{ownerfield=firstname} {ownerfield=lastname}</body></html>');
-
-        return $event;
     }
 }

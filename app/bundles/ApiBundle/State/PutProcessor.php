@@ -34,7 +34,7 @@ final class PutProcessor implements ProcessorInterface
         // Load the existing entity from the database
         $existingEntity = $this->entityManager->find($data::class, $uriVariables['id']);
 
-        if (null === $existingEntity) {
+        if ($existingEntity === null) {
             // Entity doesn't exist, let the default processor create it
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
@@ -90,9 +90,9 @@ final class PutProcessor implements ProcessorInterface
         $setter = 'set'.ucfirst($fieldName);
 
         if (method_exists($sourceEntity, $getter) && method_exists($targetEntity, $setter)) {
-            $value = $sourceEntity->$getter();
+            $value = $sourceEntity->{$getter}();
             // For PUT, we replace the entire resource, so set the value even if it's null
-            $targetEntity->$setter($value);
+            $targetEntity->{$setter}($value);
         }
     }
 }

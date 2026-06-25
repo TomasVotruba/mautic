@@ -16,15 +16,6 @@ final class Version20250904111834 extends PreUpAssertionMigration
      */
     protected const TABLE_NAME = Event::TABLE_NAME;
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $this->hasColumn($schema, 'date_linked')
-                && $this->hasColumn($schema, 'date_added'),
-            "Table {$this->getPrefixedTableName()} already has 'date_linked' and 'date_added' column"
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName());
@@ -44,6 +35,15 @@ final class Version20250904111834 extends PreUpAssertionMigration
         $table = $schema->getTable($this->getPrefixedTableName());
         $table->dropColumn('date_linked')
             ->dropColumn('date_added');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $this->hasColumn($schema, 'date_linked')
+                && $this->hasColumn($schema, 'date_added'),
+            "Table {$this->getPrefixedTableName()} already has 'date_linked' and 'date_added' column"
+        );
     }
 
     private function hasColumn(Schema $schema, string $column): bool

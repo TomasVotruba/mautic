@@ -24,29 +24,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AjaxController extends CommonController
 {
-    /**
-     * @param array $dataArray
-     * @param int   $statusCode
-     * @param bool  $addIgnoreWdt
-     *
-     * @throws \Exception
-     */
-    protected function sendJsonResponse($dataArray, $statusCode = null, $addIgnoreWdt = true): JsonResponse
-    {
-        $response = new JsonResponse();
-
-        if ('dev' == $this->getParameter('kernel.environment') && $addIgnoreWdt) {
-            $dataArray['ignore_wdt'] = 1;
-        }
-
-        if (null !== $statusCode) {
-            $response->setStatusCode($statusCode);
-        }
-
-        $response->setData($dataArray);
-
-        return $response;
-    }
 
     /**
      * Executes an action requested via ajax.
@@ -71,12 +48,12 @@ class AjaxController extends CommonController
                 $parts     = explode(':', $action);
                 $namespace = 'Mautic';
 
-                if (3 == count($parts) && 'plugin' == $parts['0']) {
+                if (count($parts) == 3 && $parts['0'] == 'plugin') {
                     $namespace = 'MauticPlugin';
                     array_shift($parts);
                 }
 
-                if (2 == count($parts)) {
+                if (count($parts) == 2) {
                     $bundleName = $parts[0];
                     $bundle     = ucfirst($bundleName);
                     $action     = $parts[1];
@@ -231,7 +208,7 @@ class AjaxController extends CommonController
         }
 
         $entity = $model->getEntity($id);
-        if (null !== $entity) {
+        if ($entity !== null) {
             $permissionBase = $model->getPermissionBase();
 
             $security  = $this->security;
@@ -426,6 +403,29 @@ class AjaxController extends CommonController
         }
 
         return $this->sendJsonResponse($dataArray);
+    }
+    /**
+     * @param array $dataArray
+     * @param int   $statusCode
+     * @param bool  $addIgnoreWdt
+     *
+     * @throws \Exception
+     */
+    protected function sendJsonResponse($dataArray, $statusCode = null, $addIgnoreWdt = true): JsonResponse
+    {
+        $response = new JsonResponse();
+
+        if ($this->getParameter('kernel.environment') == 'dev' && $addIgnoreWdt) {
+            $dataArray['ignore_wdt'] = 1;
+        }
+
+        if ($statusCode !== null) {
+            $response->setStatusCode($statusCode);
+        }
+
+        $response->setData($dataArray);
+
+        return $response;
     }
 
     /**

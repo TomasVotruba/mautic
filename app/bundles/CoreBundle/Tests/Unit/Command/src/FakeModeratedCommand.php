@@ -9,19 +9,6 @@ use Symfony\Component\Lock\LockInterface;
 
 class FakeModeratedCommand extends ModeratedCommand
 {
-    protected function configure()
-    {
-        $this->setName('mautic:fake:command');
-
-        parent::configure();
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->checkRunStatus($input, $output);
-
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
-    }
 
     public function forceCompleteRun(): void
     {
@@ -44,5 +31,18 @@ class FakeModeratedCommand extends ModeratedCommand
     public function setLockFile(string $lockFilePath): void
     {
         $this->lockFile = $lockFilePath;
+    }
+    protected function configure()
+    {
+        $this->setName('mautic:fake:command');
+
+        parent::configure();
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->checkRunStatus($input, $output);
+
+        return \Symfony\Component\Console\Command\Command::SUCCESS;
     }
 }

@@ -43,7 +43,7 @@ final class AssetExportListEventSubscriber implements EventSubscriberInterface
                 $location = $asset['storage_location'] ?? null;
                 $path     = $asset['path'] ?? null;
 
-                if ('local' === $location && !empty($path)) {
+                if ($location === 'local' && !empty($path)) {
                     $assetPath = $this->pathsHelper->getSystemPath('media').'/files/'.$path;
                     $event->setList($assetPath);
                 }

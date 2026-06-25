@@ -3,20 +3,20 @@
 $formatArgs = function ($args) use (&$formatArgs) {
     $result = [];
     foreach ($args as $key => $item) {
-        if (is_array($item) && isset($item[0]) && is_string($item[0]) && 2 === count($item)) {
-            if ('object' === $item[0]) {
+        if (is_array($item) && isset($item[0]) && is_string($item[0]) && count($item) === 2) {
+            if ($item[0] === 'object') {
                 $parts          = explode('\\', $item[1]);
                 $short          = array_pop($parts);
                 $formattedValue = sprintf('<em>object</em>(<abbr title="%s">%s</abbr>)', $item[1], $short);
-            } elseif ('array' === $item[0]) {
+            } elseif ($item[0] === 'array') {
                 $formattedValue = sprintf('<em>array</em>(%s)', is_array($item[1]) ? $formatArgs($item[1]) : $item[1]);
-            } elseif ('string' === $item[0]) {
+            } elseif ($item[0] === 'string') {
                 $formattedValue = sprintf("'%s'", htmlspecialchars($item[1]));
-            } elseif ('null' === $item[0]) {
+            } elseif ($item[0] === 'null') {
                 $formattedValue = '<em>null</em>';
-            } elseif ('boolean' === $item[0]) {
+            } elseif ($item[0] === 'boolean') {
                 $formattedValue = '<em>'.strtolower(var_export($item[1], true)).'</em>';
-            } elseif ('resource' === $item[0]) {
+            } elseif ($item[0] === 'resource') {
                 $formattedValue = '<em>resource</em>';
             } else {
                 $formattedValue = str_replace("\n", '', var_export(htmlspecialchars((string) $item[1]), true));

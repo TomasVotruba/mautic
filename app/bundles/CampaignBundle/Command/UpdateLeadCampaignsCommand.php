@@ -160,7 +160,7 @@ class UpdateLeadCampaignsCommand extends ModeratedCommand
 
         if ($id) {
             $campaign = $this->campaignRepository->getEntity($id);
-            if (null === $campaign) {
+            if ($campaign === null) {
                 $output->writeln('<error>'.$this->translator->trans('mautic.campaign.rebuild.not_found', ['%id%' => $id]).'</error>');
 
                 return \Symfony\Component\Console\Command\Command::FAILURE;

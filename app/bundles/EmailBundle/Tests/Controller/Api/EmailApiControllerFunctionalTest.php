@@ -39,29 +39,6 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->setUpMailer();
     }
 
-    private function setUpMailer(): void
-    {
-        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
-        $transport  = new SmtpTransport();
-        $mailer     = new Mailer($transport);
-        $this->setPrivateProperty($mailHelper, 'mailer', $mailer);
-        $this->setPrivateProperty($mailHelper, 'transport', $transport);
-
-        $this->transport  = $transport;
-    }
-
-    protected function beforeTearDown(): void
-    {
-        // Clear owners cache (to leave a clean environment for future tests):
-        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
-        $this->setPrivateProperty($mailHelper, 'leadOwners', []);
-    }
-
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement(['categories', 'emails']);
-    }
-
     public function testCreateWithDynamicContent(): void
     {
         $segment = new LeadList();
@@ -701,15 +678,6 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $testCustomReplyTo();
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function setPrivateProperty(object $object, string $property, $value): void
-    {
-        $reflector = new \ReflectionProperty($object::class, $property);
-        $reflector->setValue($object, $value);
-    }
-
     public function testGetEmails(): void
     {
         $segment1 = $this->createSegment('Segment A', 'segment-a');
@@ -739,36 +707,6 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertCount(3, $responseData['emails']);
         $this->assertSame([$email1->getId(), $email2->getId(), $email3->getId()], array_keys($responseData['emails']));
-    }
-
-    private function createSegment(string $name, string $alias): LeadList
-    {
-        $segment = new LeadList();
-        $segment->setName($name);
-        $segment->setPublicName($name);
-        $segment->setAlias($alias);
-        $this->em->persist($segment);
-
-        return $segment;
-    }
-
-    /**
-     * @param array<int, mixed> $segments
-     *
-     * @throws \Doctrine\ORM\ORMException
-     */
-    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, array $segments = []): Email
-    {
-        $email = new Email();
-        $email->setName($name);
-        $email->setSubject($subject);
-        $email->setEmailType($emailType);
-        $email->setTemplate($template);
-        $email->setCustomHtml($customHtml);
-        $email->setLists($segments);
-        $this->em->persist($email);
-
-        return $email;
     }
 
     /**
@@ -824,6 +762,68 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
                 'name' => 'Updated Child Email',
             ],
         ];
+    }
+
+    protected function beforeTearDown(): void
+    {
+        // Clear owners cache (to leave a clean environment for future tests):
+        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
+        $this->setPrivateProperty($mailHelper, 'leadOwners', []);
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement(['categories', 'emails']);
+    }
+
+    private function setUpMailer(): void
+    {
+        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
+        $transport  = new SmtpTransport();
+        $mailer     = new Mailer($transport);
+        $this->setPrivateProperty($mailHelper, 'mailer', $mailer);
+        $this->setPrivateProperty($mailHelper, 'transport', $transport);
+
+        $this->transport  = $transport;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    private function setPrivateProperty(object $object, string $property, $value): void
+    {
+        $reflector = new \ReflectionProperty($object::class, $property);
+        $reflector->setValue($object, $value);
+    }
+
+    private function createSegment(string $name, string $alias): LeadList
+    {
+        $segment = new LeadList();
+        $segment->setName($name);
+        $segment->setPublicName($name);
+        $segment->setAlias($alias);
+        $this->em->persist($segment);
+
+        return $segment;
+    }
+
+    /**
+     * @param array<int, mixed> $segments
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
+    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, array $segments = []): Email
+    {
+        $email = new Email();
+        $email->setName($name);
+        $email->setSubject($subject);
+        $email->setEmailType($emailType);
+        $email->setTemplate($template);
+        $email->setCustomHtml($customHtml);
+        $email->setLists($segments);
+        $this->em->persist($email);
+
+        return $email;
     }
 
     private function getUser(string $userName): ?User

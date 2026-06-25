@@ -56,7 +56,7 @@ class SsoAuthenticatorTest extends TestCase
         $request = new Request();
         $request->server->set('REQUEST_METHOD', $method);
 
-        if (true === $expected) {
+        if ($expected === true) {
             $httpUtils->method('checkRequestPath')
                 ->with($request, $path)
                 ->willReturn(true);
@@ -188,7 +188,7 @@ class SsoAuthenticatorTest extends TestCase
         $request = new Request();
         $request->server->set('REQUEST_METHOD', Request::METHOD_POST);
 
-        if (null !== $addToPost) {
+        if ($addToPost !== null) {
             if ($addToPost) {
                 $request->request->set('integration', 'integration');
             } else {

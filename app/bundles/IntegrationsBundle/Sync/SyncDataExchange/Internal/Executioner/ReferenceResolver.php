@@ -26,7 +26,7 @@ final class ReferenceResolver implements ReferenceResolverInterface
      */
     public function resolveReferences(string $objectName, array $changedObjects): void
     {
-        if (Contact::NAME !== $objectName) {
+        if ($objectName !== Contact::NAME) {
             DebugLogger::log(
                 'N/A',
                 sprintf(
@@ -66,7 +66,7 @@ final class ReferenceResolver implements ReferenceResolverInterface
      */
     private function resolveReference(ReferenceValueDAO $value): ?string
     {
-        if (MauticSyncDataExchange::OBJECT_COMPANY === $value->getType() && 0 < $value->getValue()) {
+        if ($value->getType() === MauticSyncDataExchange::OBJECT_COMPANY && $value->getValue() > 0) {
             return $this->getCompanyNameById($value->getValue());
         }
 
@@ -86,7 +86,7 @@ final class ReferenceResolver implements ReferenceResolverInterface
 
         $name = $qb->executeQuery()->fetchOne();
 
-        if (false === $name) {
+        if ($name === false) {
             throw new ReferenceNotFoundException(sprintf('Company reference for ID "%d" not found', $id));
         }
 

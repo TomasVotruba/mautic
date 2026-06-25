@@ -401,9 +401,9 @@ class ReportType extends AbstractType
                 function (FormEvent $event): void {
                     $data = $event->getData();
 
-                    if (SchedulerEnum::UNIT_NOW === $data['scheduleUnit'] || SchedulerEnum::UNIT_DAILY === $data['scheduleUnit']) {
+                    if ($data['scheduleUnit'] === SchedulerEnum::UNIT_NOW || $data['scheduleUnit'] === SchedulerEnum::UNIT_DAILY) {
                         unset($data['scheduleDay'], $data['scheduleMonthFrequency']);
-                    } elseif (SchedulerEnum::UNIT_WEEKLY === $data['scheduleUnit']) {
+                    } elseif ($data['scheduleUnit'] === SchedulerEnum::UNIT_WEEKLY) {
                         unset($data['scheduleMonthFrequency']);
                     }
 

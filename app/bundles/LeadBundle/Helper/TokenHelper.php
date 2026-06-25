@@ -107,13 +107,13 @@ class TokenHelper
             $value = $lead[$alias];
         } elseif (!empty($lead['companies'])) {
             foreach ($lead['companies'] as $company) {
-                if (isset($company['is_primary'], $company[$alias]) && 1 === (int) $company['is_primary']) {
+                if (isset($company['is_primary'], $company[$alias]) && (int) $company['is_primary'] === 1) {
                     $value = $company[$alias];
                     break;
                 }
             }
         }
-        if ('' !== $value) {
+        if ($value !== '') {
             switch ($defaultValue) {
                 case 'label':
                     $value = self::getNormalizeValue($alias, $value);
@@ -149,7 +149,7 @@ class TokenHelper
             return $value;
         }
 
-        return '' !== $value ? $value : $defaultValue;
+        return $value !== '' ? $value : $defaultValue;
     }
 
     private static function getTokenDefaultValue($match): string
@@ -176,7 +176,7 @@ class TokenHelper
      */
     private static function getParameter($parameter)
     {
-        if (null === self::$parameters) {
+        if (self::$parameters === null) {
             self::$parameters = (new ParamsLoaderHelper())->getParameters();
         }
 

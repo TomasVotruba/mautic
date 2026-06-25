@@ -58,7 +58,7 @@ class EmailPermissions extends AbstractPermissions
         }
 
         $builder->add(
-            "$bundle:$level",
+            "{$bundle}:{$level}",
             PermissionListType::class,
             [
                 'choices'           => $choices,

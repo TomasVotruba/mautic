@@ -11,13 +11,6 @@ use Mautic\ProjectBundle\Entity\Project;
 
 final class Version20250409150440 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->hasTable($this->getPrefixedTableName(Project::TABLE_NAME)),
-            'Table '.Project::TABLE_NAME.' already exists'
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -46,5 +39,12 @@ final class Version20250409150440 extends PreUpAssertionMigration
     public function down(Schema $schema): void
     {
         $schema->dropTable($this->getPrefixedTableName(Project::TABLE_NAME));
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->hasTable($this->getPrefixedTableName(Project::TABLE_NAME)),
+            'Table '.Project::TABLE_NAME.' already exists'
+        );
     }
 }

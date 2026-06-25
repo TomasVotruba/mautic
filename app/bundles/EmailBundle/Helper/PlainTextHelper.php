@@ -328,7 +328,7 @@ class PlainTextHelper
     protected function buildlinkList($link, $display, ?string $linkOverride = null)
     {
         $linkMethod = $linkOverride ?: $this->options['do_links'];
-        if ('none' == $linkMethod) {
+        if ($linkMethod == 'none') {
             return $display;
         }
 
@@ -347,14 +347,14 @@ class PlainTextHelper
             $url .= $link;
         }
 
-        if ('table' == $linkMethod) {
+        if ($linkMethod == 'table') {
             if (false === ($index = array_search($url, $this->linkList))) {
                 $index            = count($this->linkList);
                 $this->linkList[] = $url;
             }
 
             return $display.' ['.($index + 1).']';
-        } elseif ('nextline' == $linkMethod) {
+        } elseif ($linkMethod == 'nextline') {
             return $display."\n[".$url.']';
         }   // link_method defaults to inline
 
@@ -406,7 +406,7 @@ class PlainTextHelper
             $level  = 0;
             $diff   = 0;
             foreach ($matches[0] as $m) {
-                if ('<' == $m[0][0] && '/' == $m[0][1]) {
+                if ($m[0][0] == '<' && $m[0][1] == '/') {
                     --$level;
                     if ($level < 0) {
                         $level = 0; // malformed HTML: go to next blockquote
@@ -439,7 +439,7 @@ class PlainTextHelper
                         unset($body);
                     }
                 } else {
-                    if (0 == $level) {
+                    if ($level == 0) {
                         $start  = $m[1];
                         $taglen = strlen($m[0]);
                     }
@@ -507,7 +507,7 @@ class PlainTextHelper
 
         // convert toupper only the text between HTML tags
         foreach ($chunks as $i => $chunk) {
-            if ('<' != $chunk[0]) {
+            if ($chunk[0] != '<') {
                 $chunks[$i] = $this->strtoupper($chunk);
             }
         }

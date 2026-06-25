@@ -46,7 +46,7 @@ class LeadListSubscriber implements EventSubscriberInterface
                 if ($integrationChoices) {
                     $integrationName = $integration->getName();
                     // Keep BC with pre-2.11.0 that only supported SF campaigns
-                    if ('Salesforce' !== $integrationName) {
+                    if ($integrationName !== 'Salesforce') {
                         array_walk(
                             $integrationChoices,
                             function (&$choice) use ($integrationName): void {
@@ -92,7 +92,7 @@ class LeadListSubscriber implements EventSubscriberInterface
         $filters = ($list instanceof LeadList) ? $list->getFilters() : $list['filters'];
 
         foreach ($filters as $filter) {
-            if ('integration_campaigns' == $filter['field']) {
+            if ($filter['field'] == 'integration_campaigns') {
                 if (str_contains($filter['filter'], '::')) {
                     [$integrationName, $campaignId] = explode('::', $filter['filter']);
                 } else {

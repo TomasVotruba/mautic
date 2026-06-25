@@ -54,7 +54,7 @@ class ExampleSendTypeTest extends TestCase
         $matcher = self::exactly(2);
         $builder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('emails', $parameters[0]);
                     $this->assertSame(SortableListType::class, $parameters[1]);
                     $this->assertSame([
@@ -64,7 +64,7 @@ class ExampleSendTypeTest extends TestCase
                         'option_notblank'  => false,
                     ], $parameters[2]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('buttons', $parameters[0]);
                     $this->assertSame(FormButtonsType::class, $parameters[1]);
                     $this->assertSame([
@@ -104,12 +104,12 @@ class ExampleSendTypeTest extends TestCase
         $matcher = self::exactly(2);
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('mautic.lead.list.form.startTyping', $parameters[0]);
 
                     return 'startTyping';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('mautic.core.form.nomatches', $parameters[0]);
 
                     return 'nomatches';
@@ -120,7 +120,7 @@ class ExampleSendTypeTest extends TestCase
         $matcher = self::exactly(4);
         $builder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('emails', $parameters[0]);
                     $this->assertSame(SortableListType::class, $parameters[1]);
                     $this->assertSame([
@@ -130,7 +130,7 @@ class ExampleSendTypeTest extends TestCase
                         'option_notblank'  => false,
                     ], $parameters[2]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('contact', $parameters[0]);
                     $this->assertSame(LookupType::class, $parameters[1]);
                     $this->assertSame([
@@ -146,11 +146,11 @@ class ExampleSendTypeTest extends TestCase
                         'required' => false,
                     ], $parameters[2]);
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertSame('contact_id', $parameters[0]);
                     $this->assertSame(HiddenType::class, $parameters[1]);
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertSame('buttons', $parameters[0]);
                     $this->assertSame(FormButtonsType::class, $parameters[1]);
                     $this->assertSame([

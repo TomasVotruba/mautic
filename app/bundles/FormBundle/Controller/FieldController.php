@@ -64,7 +64,7 @@ class FieldController extends CommonFormController
         $method  = $request->getMethod();
         $session = $request->getSession();
 
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             $formField = $request->request->all()['formfield'] ?? [];
             $fieldType = $formField['type'];
             $formId    = $formField['formId'];
@@ -97,7 +97,7 @@ class FieldController extends CommonFormController
         }
 
         // Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ($method == 'POST') {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -124,7 +124,7 @@ class FieldController extends CommonFormController
                     $formField['alias'] = $formFieldModel->generateAlias($alias, $aliases);
 
                     // Force required for captcha if not a honeypot
-                    if ('captcha' == $formField['type']) {
+                    if ($formField['type'] == 'captcha') {
                         $formField['isRequired'] = !empty($formField['properties']['captcha']);
                     }
 
@@ -134,7 +134,7 @@ class FieldController extends CommonFormController
                         $submitField = null;
 
                         foreach ($fields as $key => $field) {
-                            if (isset($field['type']) && 'button' === $field['type']) {
+                            if (isset($field['type']) && $field['type'] === 'button') {
                                 $submitKey   = $key;
                                 $submitField = $field;
                                 break;
@@ -201,7 +201,7 @@ class FieldController extends CommonFormController
                     'field'                => $formField,
                     'id'                   => $keyId,
                     'formId'               => $formId,
-                    'formName'             => null === $formEntity ? 'newform' : $formEntity->generateFormName(),
+                    'formName'             => $formEntity === null ? 'newform' : $formEntity->generateFormName(),
                     'mappedFields'         => $this->mappedObjectCollector->buildCollection((string) $formField['mappedObject']),
                     'inBuilder'            => true,
                     'fields'               => $this->fieldHelper->getChoiceList($customComponents['fields']),
@@ -237,7 +237,7 @@ class FieldController extends CommonFormController
         $session   = $request->getSession();
         $method    = $request->getMethod();
         $formfield = $request->request->all()['formfield'] ?? [];
-        $formId    = 'POST' === $method ? ($formfield['formId'] ?? '') : $request->query->get('formId');
+        $formId    = $method === 'POST' ? ($formfield['formId'] ?? '') : $request->query->get('formId');
         $fields    = $session->get('mautic.form.'.$formId.'.fields.modified', []);
         $success   = 0;
         $valid     = $cancelled = false;
@@ -258,7 +258,7 @@ class FieldController extends CommonFormController
             $form = $this->getFieldForm($formId, $formField);
 
             // Check for a submitted form and process it
-            if ('POST' == $method) {
+            if ($method == 'POST') {
                 if (!$cancelled = $this->isFormCancelled($form)) {
                     if ($valid = $this->isFormValid($form)) {
                         $success = 1;
@@ -288,7 +288,7 @@ class FieldController extends CommonFormController
                         }
 
                         // Force required for captcha if not a honeypot
-                        if ('captcha' == $formField['type']) {
+                        if ($formField['type'] == 'captcha') {
                             $formField['isRequired'] = !empty($formField['properties']['captcha']);
                         }
 
@@ -398,7 +398,7 @@ class FieldController extends CommonFormController
 
         $formField = (array_key_exists($objectId, $fields)) ? $fields[$objectId] : null;
 
-        if ('POST' === $request->getMethod() && null !== $formField) {
+        if ($request->getMethod() === 'POST' && $formField !== null) {
             if ($formField['mappedObject'] && $formField['mappedField']) {
                 // Allow to select the lead field from the delete field again
                 $this->alreadyMappedFieldCollector->removeField($formId, $formField['mappedObject'], $formField['mappedField']);

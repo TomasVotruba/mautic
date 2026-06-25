@@ -53,13 +53,13 @@ class FormModel extends AbstractCommonModel
                 $maxLockTime      = $this->coreParametersHelper->get('max_entity_lock_time', 0);
                 $lockValidityDate = false;
 
-                if (0 != $maxLockTime && is_numeric($maxLockTime)) {
+                if ($maxLockTime != 0 && is_numeric($maxLockTime)) {
                     $lockValidityDate = clone $checkedOut;
                     $lockValidityDate->add(new \DateInterval('PT'.$maxLockTime.'S'));
                 }
 
                 // is lock expired ?
-                if (false !== $lockValidityDate && (new \DateTime()) > $lockValidityDate) {
+                if ($lockValidityDate !== false && (new \DateTime()) > $lockValidityDate) {
                     return false;
                 }
 
@@ -155,11 +155,11 @@ class FormModel extends AbstractCommonModel
         $loops = 0;
         foreach ($entitiesPreSaveParams as $entityPreSaveParams) {
             $this->getRepository()->saveEntity($entityPreSaveParams['entity'], false);
-            if (0 === ++$loops % $batchSize) {
+            if (++$loops % $batchSize === 0) {
                 $this->em->flush();
             }
         }
-        if (0 !== $loops % $batchSize) {
+        if ($loops % $batchSize !== 0) {
             $this->em->flush();
         }
 
@@ -192,7 +192,7 @@ class FormModel extends AbstractCommonModel
             return !$entity->getId();
         }
 
-        return UnitOfWork::STATE_NEW === $this->em->getUnitOfWork()->getEntityState($entity);
+        return $this->em->getUnitOfWork()->getEntityState($entity) === UnitOfWork::STATE_NEW;
     }
 
     /**
@@ -277,23 +277,6 @@ class FormModel extends AbstractCommonModel
         }
     }
 
-    private function setModifiedData(object $entity): void
-    {
-        if (method_exists($entity, 'setDateModified') && method_exists($entity, 'getDateModified') && !$entity->getDateModified()) {
-            $entity->setDateModified(
-                defined('MAUTIC_DATE_MODIFIED_OVERRIDE') ? \DateTime::createFromFormat('U', MAUTIC_DATE_MODIFIED_OVERRIDE) : new \DateTime()
-            );
-        }
-
-        if (($user = $this->userHelper->getUser()) instanceof User) {
-            if (method_exists($entity, 'setModifiedBy')) {
-                $entity->setModifiedBy($user);
-            } elseif (method_exists($entity, 'setModifiedByUser')) {
-                $entity->setModifiedByUser($user->getName());
-            }
-        }
-    }
-
     /**
      * Delete an entity.
      *
@@ -332,7 +315,7 @@ class FormModel extends AbstractCommonModel
         $batchSize = 20;
         foreach ($ids as $k => $id) {
             $entity        = $this->getEntity($id);
-            if (null !== $entity) {
+            if ($entity !== null) {
                 $event = $this->dispatchEvent('pre_delete', $entity);
 
                 if ($event instanceof DependencyErrorEventInterface && $event->getDependencyErrors()) {
@@ -377,38 +360,6 @@ class FormModel extends AbstractCommonModel
     }
 
     /**
-     * Dispatches events for child classes.
-     *
-     * @param string $action
-     * @param object $entity
-     * @param bool   $isNew
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        // ...
-
-        return $event;
-    }
-
-    /**
-     * Dispatches events for child classes.
-     */
-    protected function dispatchEventFromBatch(string $action, object &$entity, bool $isNew = false, ?Event $event = null): ?Event
-    {
-        return $this->dispatchEvent($action, $entity, $isNew, $event);
-    }
-
-    /**
-     * Dispatches batch events for child classes.
-     *
-     * @param mixed[] $entitiesBatchParams
-     */
-    protected function dispatchBatchEvent(string $action, array &$entitiesBatchParams, ?Event $event = null): ?Event
-    {
-        return $event;
-    }
-
-    /**
      * Set default subject for user contact form.
      *
      * @param string $subject
@@ -424,7 +375,7 @@ class FormModel extends AbstractCommonModel
         $nameGetter = $this->getNameGetter();
 
         return $this->translator->trans($msg, [
-            '%entityName%' => $entity->$nameGetter(),
+            '%entityName%' => $entity->{$nameGetter}(),
             '%entityId%'   => $entity->getId(),
         ]);
     }
@@ -487,6 +438,38 @@ class FormModel extends AbstractCommonModel
     }
 
     /**
+     * Dispatches events for child classes.
+     *
+     * @param string $action
+     * @param object $entity
+     * @param bool   $isNew
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        // ...
+
+        return $event;
+    }
+
+    /**
+     * Dispatches events for child classes.
+     */
+    protected function dispatchEventFromBatch(string $action, object &$entity, bool $isNew = false, ?Event $event = null): ?Event
+    {
+        return $this->dispatchEvent($action, $entity, $isNew, $event);
+    }
+
+    /**
+     * Dispatches batch events for child classes.
+     *
+     * @param mixed[] $entitiesBatchParams
+     */
+    protected function dispatchBatchEvent(string $action, array &$entitiesBatchParams, ?Event $event = null): ?Event
+    {
+        return $event;
+    }
+
+    /**
      * Catch the exception in production and log the error.
      * Throw the exception in the dev mode only.
      */
@@ -503,6 +486,23 @@ class FormModel extends AbstractCommonModel
                 $ex->getMessage(),
                 ['exception' => $ex]
             );
+        }
+    }
+
+    private function setModifiedData(object $entity): void
+    {
+        if (method_exists($entity, 'setDateModified') && method_exists($entity, 'getDateModified') && !$entity->getDateModified()) {
+            $entity->setDateModified(
+                defined('MAUTIC_DATE_MODIFIED_OVERRIDE') ? \DateTime::createFromFormat('U', MAUTIC_DATE_MODIFIED_OVERRIDE) : new \DateTime()
+            );
+        }
+
+        if (($user = $this->userHelper->getUser()) instanceof User) {
+            if (method_exists($entity, 'setModifiedBy')) {
+                $entity->setModifiedBy($user);
+            } elseif (method_exists($entity, 'setModifiedByUser')) {
+                $entity->setModifiedByUser($user->getName());
+            }
         }
     }
 }

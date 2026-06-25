@@ -30,15 +30,6 @@ class LeadControllerTest extends MauticMysqlTestCase
         parent::setUp();
     }
 
-    protected function beforeTearDown(): void
-    {
-        foreach ($this->filePaths as $filePath) {
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-        }
-    }
-
     public function testContactExportIsScheduledForCsvFileType(): void
     {
         $this->createContacts();
@@ -77,6 +68,43 @@ class LeadControllerTest extends MauticMysqlTestCase
         Assert::assertTrue($this->client->getResponse()->isNotFound());
     }
 
+    public function testAccessContactQuickAddWithPermission(): void
+    {
+        $this->setAdminUser();
+        $this->client->request(Request::METHOD_GET, '/s/contacts/quickAdd');
+        $this->assertResponseStatusCodeSame(200, (string) $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testAccessContactQuickAddWithNoPermission(): void
+    {
+        $this->createAndLoginUser();
+        $this->client->request(Request::METHOD_GET, '/s/contacts/quickAdd');
+        $this->assertResponseStatusCodeSame(403, (string) $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testAccessContactBatchOwnersNoPermission(): void
+    {
+        $this->createAndLoginUser();
+        $this->client->request(Request::METHOD_GET, '/s/contacts/batchOwners');
+        $this->assertResponseStatusCodeSame(403, (string) $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testAccessContactBatchOwnersPermission(): void
+    {
+        $this->setAdminUser();
+        $this->client->request(Request::METHOD_GET, '/s/contacts/batchOwners');
+        $this->assertResponseStatusCodeSame(200, (string) $this->client->getResponse()->getStatusCode());
+    }
+
+    protected function beforeTearDown(): void
+    {
+        foreach ($this->filePaths as $filePath) {
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+    }
+
     private function createContacts(): void
     {
         $contacts = [];
@@ -106,40 +134,12 @@ class LeadControllerTest extends MauticMysqlTestCase
         return $allRows;
     }
 
-    public function testAccessContactQuickAddWithPermission(): void
-    {
-        $this->setAdminUser();
-        $this->client->request(Request::METHOD_GET, '/s/contacts/quickAdd');
-        $this->assertResponseStatusCodeSame(200, (string) $this->client->getResponse()->getStatusCode());
-    }
-
     private function setAdminUser(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'admin');
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
-    }
-
-    public function testAccessContactQuickAddWithNoPermission(): void
-    {
-        $this->createAndLoginUser();
-        $this->client->request(Request::METHOD_GET, '/s/contacts/quickAdd');
-        $this->assertResponseStatusCodeSame(403, (string) $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testAccessContactBatchOwnersNoPermission(): void
-    {
-        $this->createAndLoginUser();
-        $this->client->request(Request::METHOD_GET, '/s/contacts/batchOwners');
-        $this->assertResponseStatusCodeSame(403, (string) $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testAccessContactBatchOwnersPermission(): void
-    {
-        $this->setAdminUser();
-        $this->client->request(Request::METHOD_GET, '/s/contacts/batchOwners');
-        $this->assertResponseStatusCodeSame(200, (string) $this->client->getResponse()->getStatusCode());
     }
 
     private function createAndLoginUser(): User

@@ -49,6 +49,11 @@ class BcInterfaceTokenTransport implements TransportInterface
         $this->transports['main'] = $this;
     }
 
+    public function __toString(): string
+    {
+        return 'BcInterface';
+    }
+
     public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
     {
         if ($message instanceof Email) {
@@ -89,10 +94,5 @@ class BcInterfaceTokenTransport implements TransportInterface
     public function getMetadata(): array
     {
         return ($this->message instanceof MauticMessage) ? $this->message->getMetadata() : [];
-    }
-
-    public function __toString(): string
-    {
-        return 'BcInterface';
     }
 }

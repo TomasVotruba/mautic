@@ -54,51 +54,6 @@ class NotificationRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.core.searchcommand.lang'):
-            case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('e.language', ":$unique"),
-                    $q->expr()->like('e.language', ":$langUnique")
-                );
-                $returnParameter = true;
-                break;
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [$expr, $parameters];
-    }
-
-    /**
      * @return string[]
      */
     public function getSearchCommands(): array
@@ -113,16 +68,6 @@ class NotificationRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['e.name', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -232,7 +177,7 @@ class NotificationRepository extends CommonRepository
             );
         }
 
-        if (!empty($options['top_level']) && 'translation' === $options['top_level']) {
+        if (!empty($options['top_level']) && $options['top_level'] === 'translation') {
             $q->andWhere($q->expr()->isNull('e.translationParent'));
         }
 
@@ -250,5 +195,60 @@ class NotificationRepository extends CommonRepository
         }
 
         return $q->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.core.searchcommand.lang'):
+            case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr = $q->expr()->or(
+                    $q->expr()->eq('e.language', ":{$unique}"),
+                    $q->expr()->like('e.language', ":{$langUnique}")
+                );
+                $returnParameter = true;
+                break;
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [$expr, $parameters];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['e.name', 'ASC'],
+        ];
     }
 }

@@ -47,9 +47,9 @@ class WebhookModel extends FormModel
 
     public const IMMEDIATE_PROCESS = 'immediate_process';
 
-    private const DELETE_BATCH_LIMIT = 5000;
-
     public const WEBHOOK_LOG_MAX = 1000;
+
+    private const DELETE_BATCH_LIMIT = 5000;
 
     /**
      * Whet queue mode is turned on.
@@ -74,11 +74,6 @@ class WebhookModel extends FormModel
      * Sets max webhook queue ID to get/process.
      */
     protected ?int $maxQueueId = null;
-
-    /**
-     * How long the webhook processing can run in seconds.
-     */
-    private int $webhookTimeLimit;
 
     /**
      * How many responses in 1 row can fail until the webhook disables itself.
@@ -117,6 +112,11 @@ class WebhookModel extends FormModel
     protected $eventsOrderByDir;
 
     /**
+     * How long the webhook processing can run in seconds.
+     */
+    private int $webhookTimeLimit;
+
+    /**
      * Timestamp when the webhook processing starts.
      */
     private ?float $startTime = null;
@@ -146,7 +146,7 @@ class WebhookModel extends FormModel
      */
     public function saveEntity($entity, $unlock = true): void
     {
-        if (null === $entity->getSecret()) {
+        if ($entity->getSecret() === null) {
             $entity->setSecret(EncryptionHelper::generateKey());
         }
 
@@ -176,7 +176,7 @@ class WebhookModel extends FormModel
 
     public function getEntity($id = null): ?Webhook
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Webhook();
         }
 
@@ -243,7 +243,7 @@ class WebhookModel extends FormModel
             $webhook = $event->getWebhook();
             $queue   = $this->queueWebhook($webhook, $event, $payload, $serializationGroups);
 
-            if (self::COMMAND_PROCESS === $this->queueMode) {
+            if ($this->queueMode === self::COMMAND_PROCESS) {
                 // Queue to the database to process later
                 $this->getQueueRepository()->saveEntity($queue);
             } else {
@@ -332,7 +332,7 @@ class WebhookModel extends FormModel
             // throw an error exception if we don't get a 200 back
             if ($responseStatusCode >= 300 || $responseStatusCode < 200) {
                 // The receiver of the webhook is telling us to stop bothering him with our requests by code 410
-                if (410 === $responseStatusCode) {
+                if ($responseStatusCode === 410) {
                     $this->killWebhook($webhook, 'mautic.webhook.stopped.reason.410');
                 }
 
@@ -390,7 +390,7 @@ class WebhookModel extends FormModel
         $successRadio = $this->getLogRepository()->getSuccessVsErrorStatusCodeRatio($webhook->getId(), $this->disableLimit);
 
         // If there are no log rows yet, consider it healthy
-        if (null === $successRadio) {
+        if ($successRadio === null) {
             return false;
         }
 
@@ -423,7 +423,7 @@ class WebhookModel extends FormModel
 
     public function markWebhookHealthy(Webhook $webhook): void
     {
-        if (null === $webhook->getMarkedUnhealthyAt()) {
+        if ($webhook->getMarkedUnhealthyAt() === null) {
             return;
         }
         $webhook->setMarkedUnhealthyAt(null);
@@ -497,10 +497,10 @@ class WebhookModel extends FormModel
 
         $payload = [];
 
-        if (self::COMMAND_PROCESS === $this->queueMode) {
+        if ($this->queueMode === self::COMMAND_PROCESS) {
             $queuesArray = $this->getWebhookQueues($webhook);
         } else {
-            $queuesArray = null !== $queue ? [$queue] : [];
+            $queuesArray = $queue !== null ? [$queue] : [];
         }
         $this->webhookQueueIdList = [];
         /* @var WebhookQueue $queueItem */
@@ -632,45 +632,6 @@ class WebhookModel extends FormModel
     }
 
     /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?SymfonyEvent $event = null): ?SymfonyEvent
-    {
-        if (!$entity instanceof Webhook) {
-            throw new MethodNotAllowedHttpException(['Webhook'], 'Entity must be of class Webhook()');
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = WebhookEvents::WEBHOOK_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = WebhookEvents::WEBHOOK_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = WebhookEvents::WEBHOOK_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = WebhookEvents::WEBHOOK_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new WebhookEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
-    }
-
-    /**
      * @param array $groups
      */
     public function serializeData($payload, $groups = [], array $customExclusionStrategies = []): string
@@ -718,6 +679,45 @@ class WebhookModel extends FormModel
         $this->maxQueueId = $maxQueueId;
 
         return $this;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?SymfonyEvent $event = null): ?SymfonyEvent
+    {
+        if (!$entity instanceof Webhook) {
+            throw new MethodNotAllowedHttpException(['Webhook'], 'Entity must be of class Webhook()');
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = WebhookEvents::WEBHOOK_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = WebhookEvents::WEBHOOK_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = WebhookEvents::WEBHOOK_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = WebhookEvents::WEBHOOK_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new WebhookEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 
     private function isProcessingExpired(): bool

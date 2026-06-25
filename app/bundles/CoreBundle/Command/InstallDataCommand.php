@@ -77,7 +77,7 @@ EOT
         ]);
         $returnCode = $command->run($input, $output);
 
-        if (0 !== $returnCode) {
+        if ($returnCode !== 0) {
             return (int) $returnCode;
         }
 
@@ -89,7 +89,7 @@ EOT
             '--quiet' => true,
         ]);
         $returnCode = $command->run($input, $output);
-        if (0 !== $returnCode) {
+        if ($returnCode !== 0) {
             return (int) $returnCode;
         }
 
@@ -106,7 +106,7 @@ EOT
         $input      = new ArrayInput($args);
         $returnCode = $command->run($input, $output);
 
-        if (0 !== $returnCode) {
+        if ($returnCode !== 0) {
             return (int) $returnCode;
         }
 

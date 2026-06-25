@@ -33,7 +33,7 @@ class FormSubmitActionUserEmailTypeTest extends \PHPUnit\Framework\TestCase
 
         $this->formBuilder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('useremail', $parameters[0]);
                     $this->assertSame(EmailSendType::class, $parameters[1]);
                     $this->assertSame([
@@ -45,7 +45,7 @@ class FormSubmitActionUserEmailTypeTest extends \PHPUnit\Framework\TestCase
                         'update_select' => 'formaction_properties_useremail_email',
                     ], $parameters[2]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('user_id', $parameters[0]);
                     $this->assertSame(UserListType::class, $parameters[1]);
                     $this->assertEquals([

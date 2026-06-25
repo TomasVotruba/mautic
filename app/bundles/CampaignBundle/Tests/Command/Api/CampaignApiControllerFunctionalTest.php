@@ -39,7 +39,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $response = json_decode($clientResponse->getContent(), true);
         Assert::assertArrayHasKey('campaigns', $response);
         Assert::assertArrayHasKey($campaign->getId(), $response['campaigns']);
-        if ('true' === $withContactCounts) {
+        if ($withContactCounts === 'true') {
             Assert::assertArrayHasKey(
                 'contactCount',
                 $response['campaigns'][$campaign->getId()],

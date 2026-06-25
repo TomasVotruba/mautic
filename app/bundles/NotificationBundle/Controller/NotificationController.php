@@ -47,14 +47,14 @@ class NotificationController extends AbstractFormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $this->setListFilters();
         }
 
         $session = $request->getSession();
 
         $limit = $session->get('mautic.notification.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -94,7 +94,7 @@ class NotificationController extends AbstractFormController
         $count = count($notifications);
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (floor($count / $limit)) ?: 1;
@@ -154,7 +154,7 @@ class NotificationController extends AbstractFormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.notification.page', 1);
 
-        if (null === $notification) {
+        if ($notification === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
 
@@ -270,7 +270,7 @@ class NotificationController extends AbstractFormController
         $page         = $session->get('mautic.notification.page', 1);
         $action       = $this->generateUrl('mautic_notification_action', ['objectAction' => 'new']);
         $notification = $request->request->all()['notification'] ?? [];
-        $updateSelect = ('POST' == $method)
+        $updateSelect = ($method == 'POST')
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
@@ -282,7 +282,7 @@ class NotificationController extends AbstractFormController
         $form = $model->createForm($entity, $formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if ('POST' === $method) {
+        if ($method === 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -406,7 +406,7 @@ class NotificationController extends AbstractFormController
         ];
 
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -436,14 +436,14 @@ class NotificationController extends AbstractFormController
         // Create the form
         $action       = $this->generateUrl('mautic_notification_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $notification = $request->request->all()['notification'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
         $form = $model->createForm($entity, $formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' === $method) {
+        if (!$ignorePost && $method === 'POST') {
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
@@ -551,7 +551,7 @@ class NotificationController extends AbstractFormController
         $model  = $this->getModel('notification');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('notification:notifications:create')
                 || !$this->security->hasEntityAccess(
                     'notification:notifications:viewown',
@@ -593,12 +593,12 @@ class NotificationController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('notification');
             \assert($model instanceof NotificationModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.notification.error.notfound',
@@ -656,7 +656,7 @@ class NotificationController extends AbstractFormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('notification');
             \assert($model instanceof NotificationModel);
             $ids = json_decode($request->query->get('ids', '{}'));
@@ -667,7 +667,7 @@ class NotificationController extends AbstractFormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.notification.error.notfound',

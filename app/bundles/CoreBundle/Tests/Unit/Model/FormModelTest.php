@@ -130,11 +130,11 @@ final class FormModelTest extends TestCase
         foreach ($actionsSent as $action) {
             if ($countDispatch < 30) {
                 $this->assertSame('pre_save', $action);
-            } elseif (30 === $countDispatch) {
+            } elseif ($countDispatch === 30) {
                 $this->assertSame('pre_batch_save', $action);
             } elseif ($countDispatch < 61) {
                 $this->assertSame('post_save', $action);
-            } elseif (61 === $countDispatch) {
+            } elseif ($countDispatch === 61) {
                 $this->assertSame('post_batch_save', $action);
             }
             ++$countDispatch;

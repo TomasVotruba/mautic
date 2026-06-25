@@ -15,11 +15,6 @@ abstract class PreUpAssertionMigration extends AbstractMauticMigration
     private array $skipAssertions = [];
 
     /**
-     * Implement this method to add skip assertions via `PreUpAssertionMigration::skipAssertion()`.
-     */
-    abstract protected function preUpAssertions(): void;
-
-    /**
      * A template method that addresses partially executed migrations.
      * It skips the migration only if all of skip assertions return true.
      */
@@ -43,6 +38,11 @@ abstract class PreUpAssertionMigration extends AbstractMauticMigration
 
         throw new SkipMigration('Schema includes this migration');
     }
+
+    /**
+     * Implement this method to add skip assertions via `PreUpAssertionMigration::skipAssertion()`.
+     */
+    abstract protected function preUpAssertions(): void;
 
     final protected function skipAssertion(callable $assertion, string $message): void
     {

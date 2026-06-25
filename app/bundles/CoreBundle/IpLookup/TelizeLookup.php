@@ -41,11 +41,11 @@ class TelizeLookup extends AbstractRemoteDataLookup
 
         if ($data) {
             foreach ($data as $key => $value) {
-                if ('postal_code' == $key) {
+                if ($key == 'postal_code') {
                     $key = 'zipcode';
                 }
 
-                $this->$key = $value;
+                $this->{$key} = $value;
             }
         }
     }

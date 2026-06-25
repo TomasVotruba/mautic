@@ -65,6 +65,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     private array $choiceFieldsCache = [];
 
+    /**
+     * Used by addLead and removeLead functions.
+     */
+    private array $leadChangeLists = [];
+
     public function __construct(
         protected CategoryModel $categoryModel,
         CoreParametersHelper $coreParametersHelper,
@@ -83,11 +88,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
-
-    /**
-     * Used by addLead and removeLead functions.
-     */
-    private array $leadChangeLists = [];
 
     /**
      * @return LeadListRepository
@@ -244,7 +244,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?LeadList
     {
-        if (null === $id) {
+        if ($id === null) {
             return new LeadList();
         }
 
@@ -254,51 +254,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
     public function getSoftDeletedEntity(int $id): ?LeadList
     {
         return $this->getRepository()->getSoftDeletedEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof LeadList) {
-            throw new MethodNotAllowedHttpException(['LeadList'], 'Entity must be of class LeadList()');
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = LeadEvents::LIST_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = LeadEvents::LIST_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = LeadEvents::LIST_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = LeadEvents::LIST_POST_DELETE;
-                break;
-            case 'pre_unpublish':
-                $name = LeadEvents::LIST_PRE_UNPUBLISH;
-                break;
-            case 'on_list_delete':
-                $name = LeadEvents::ON_LIST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new LeadListEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -605,7 +560,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     public function addLead($lead, $lists, $manuallyAdded = false, $batchProcess = false, $searchListLead = 1, $dateManipulated = null): void
     {
-        if (null == $dateManipulated) {
+        if ($dateManipulated == null) {
             $dateManipulated = new \DateTime();
         }
 
@@ -664,7 +619,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                 continue;
             }
 
-            if (-1 == $searchListLead) {
+            if ($searchListLead == -1) {
                 $listLead = null;
             } elseif ($searchListLead) {
                 $listLead = $this->getListLeadRepository()->findOneBy(
@@ -682,7 +637,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                 );
             }
 
-            if (null != $listLead) {
+            if ($listLead != null) {
                 if ($manuallyAdded && $listLead->wasManuallyRemoved()) {
                     $listLead->setManuallyRemoved(false);
                     $listLead->setManuallyAdded($manuallyAdded);
@@ -812,7 +767,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                     'list' => $listId,
                 ]);
 
-            if (null == $listLead) {
+            if ($listLead == null) {
                 // Lead is not part of this list
                 continue;
             }
@@ -867,27 +822,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
     public function removeLeadsByListId(int $listId): void
     {
         $this->getListLeadRepository()->removeLeadsByListId($listId);
-    }
-
-    /**
-     * Batch sleep according to settings.
-     */
-    protected function batchSleep()
-    {
-        $leadSleepTime = $this->coreParametersHelper->get('batch_lead_sleep_time', false);
-        if (false === $leadSleepTime) {
-            $leadSleepTime = $this->coreParametersHelper->get('batch_sleep_time', 1);
-        }
-
-        if (empty($leadSleepTime)) {
-            return;
-        }
-
-        if ($leadSleepTime < 1) {
-            usleep($leadSleepTime * 1_000_000);
-        } else {
-            sleep($leadSleepTime);
-        }
     }
 
     /**
@@ -1171,7 +1105,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     public function isFieldUsed(LeadField $field): bool
     {
-        return 0 < $this->getFieldSegments($field)->count();
+        return $this->getFieldSegments($field)->count() > 0;
     }
 
     public function getFieldSegments(LeadField $field)
@@ -1211,7 +1145,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             foreach ($retrFilters as $eachFilter) {
                 // BC support for old filters where the field existed outside of properties.
                 $filter = $eachFilter['properties']['filter'] ?? $eachFilter['filter'];
-                if ($filter && 'leadlist' === $eachFilter['type'] && in_array($segmentId, $filter)) {
+                if ($filter && $eachFilter['type'] === 'leadlist' && in_array($segmentId, $filter)) {
                     if ($returnProperty && $value = $accessor->getValue($entity, $returnProperty)) {
                         $dependents[] = $value;
                     } else {
@@ -1285,7 +1219,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             foreach ($entity->getFilters() as $entityFilter) {
                 // BC support for old filters where the field existed outside of properties.
                 $filter = $entityFilter['properties']['filter'] ?? $entityFilter['filter'];
-                if ($filter && 'tags' === $entityFilter['type'] && in_array($tagId, $filter)) {
+                if ($filter && $entityFilter['type'] === 'tags' && in_array($tagId, $filter)) {
                     $dependents[] = $entity->getId();
                     break;
                 }
@@ -1319,7 +1253,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
         foreach ($entities as $entity) {
             $retrFilters = $entity->getFilters();
             foreach ($retrFilters as $eachFilter) {
-                if ('leadlist' !== $eachFilter['type']) {
+                if ($eachFilter['type'] !== 'leadlist') {
                     continue;
                 }
 
@@ -1371,7 +1305,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             asort($typeChoices);
         }
 
-        return (null == $sourceType) ? $choices : $choices[$sourceType];
+        return ($sourceType == null) ? $choices : $choices[$sourceType];
     }
 
     /**
@@ -1447,5 +1381,71 @@ class ListModel extends FormModel implements GlobalSearchInterface
         }
 
         return $this->getRepository()->findBy($criteria, ['lastBuiltTime' => $order], $limit);
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof LeadList) {
+            throw new MethodNotAllowedHttpException(['LeadList'], 'Entity must be of class LeadList()');
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = LeadEvents::LIST_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = LeadEvents::LIST_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = LeadEvents::LIST_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = LeadEvents::LIST_POST_DELETE;
+                break;
+            case 'pre_unpublish':
+                $name = LeadEvents::LIST_PRE_UNPUBLISH;
+                break;
+            case 'on_list_delete':
+                $name = LeadEvents::ON_LIST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new LeadListEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    /**
+     * Batch sleep according to settings.
+     */
+    protected function batchSleep()
+    {
+        $leadSleepTime = $this->coreParametersHelper->get('batch_lead_sleep_time', false);
+        if ($leadSleepTime === false) {
+            $leadSleepTime = $this->coreParametersHelper->get('batch_sleep_time', 1);
+        }
+
+        if (empty($leadSleepTime)) {
+            return;
+        }
+
+        if ($leadSleepTime < 1) {
+            usleep($leadSleepTime * 1_000_000);
+        } else {
+            sleep($leadSleepTime);
+        }
     }
 }

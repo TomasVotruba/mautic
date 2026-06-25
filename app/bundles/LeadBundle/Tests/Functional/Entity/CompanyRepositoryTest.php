@@ -26,13 +26,6 @@ final class CompanyRepositoryTest extends MauticMysqlTestCase
         $this->setUpMailer();
     }
 
-    protected function beforeTearDown(): void
-    {
-        // Clear owners cache (to leave a clean environment for future tests):
-        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
-        $this->setPrivateProperty($mailHelper, 'leadOwners', []);
-    }
-
     public function testEmailSendWithCompanyTokens(): void
     {
         $suffix   = random_int(10, 100);
@@ -55,6 +48,13 @@ final class CompanyRepositoryTest extends MauticMysqlTestCase
             Assert::assertStringContainsString('Second Street'.$suffix, $messageBody);
         };
         $testEmail();
+    }
+
+    protected function beforeTearDown(): void
+    {
+        // Clear owners cache (to leave a clean environment for future tests):
+        $mailHelper = static::getContainer()->get('mautic.helper.mailer');
+        $this->setPrivateProperty($mailHelper, 'leadOwners', []);
     }
 
     private function createCompany(string $name, string $address1 = ''): Company
@@ -144,7 +144,7 @@ final class CompanyRepositoryTest extends MauticMysqlTestCase
             'customHtml' => '{contactfield=email} {contactfield=companyname} {contactfield=companyaddress1}',
         ];
 
-        if ('list' === $emailType) {
+        if ($emailType === 'list') {
             $payload['lists'] = [$segmentId];
         }
 

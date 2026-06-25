@@ -46,7 +46,7 @@ class FoursquareIntegration extends SocialIntegration
      */
     public function getApiUrl($endpoint, $m = 'foursquare'): string
     {
-        return "https://api.foursquare.com/v2/$endpoint?v=20140806&m={$m}";
+        return "https://api.foursquare.com/v2/{$endpoint}?v=20140806&m={$m}";
     }
 
     /**
@@ -215,7 +215,7 @@ class FoursquareIntegration extends SocialIntegration
 
     public function matchFieldName($field, $subfield = '')
     {
-        if ('contact' == $field && in_array($subfield, ['facebook', 'twitter'])) {
+        if ($field == 'contact' && in_array($subfield, ['facebook', 'twitter'])) {
             return $subfield.'ProfileHandle';
         }
 
@@ -250,6 +250,11 @@ class FoursquareIntegration extends SocialIntegration
         ];
     }
 
+    public function getFormType(): null
+    {
+        return null;
+    }
+
     /**
      * @return bool
      */
@@ -279,10 +284,5 @@ class FoursquareIntegration extends SocialIntegration
         }
 
         return false;
-    }
-
-    public function getFormType(): null
-    {
-        return null;
     }
 }

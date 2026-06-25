@@ -74,13 +74,13 @@ final class ImportUrlValidationSubscriber implements EventSubscriberInterface
     ): void {
         $new_alias = array_search($alias, $mappedData, true);
 
-        if (false === $new_alias) {
+        if ($new_alias === false) {
             return;
         }
 
         $value = trim((string) $rowData[$new_alias]);
 
-        if ('' === $value) {
+        if ($value === '') {
             return;
         }
 
@@ -106,7 +106,7 @@ final class ImportUrlValidationSubscriber implements EventSubscriberInterface
      */
     private function getUrlFields(): array
     {
-        if (null !== $this->urlFields) {
+        if ($this->urlFields !== null) {
             return $this->urlFields;
         }
 

@@ -30,7 +30,7 @@ trait LoggerTrait
     {
         $this->testHandler->clear();
 
-        if (null !== $this->originalHandlers) {
+        if ($this->originalHandlers !== null) {
             $this->logger->setHandlers($this->originalHandlers);
         }
     }

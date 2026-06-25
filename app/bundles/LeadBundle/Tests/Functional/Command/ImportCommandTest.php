@@ -29,15 +29,6 @@ class ImportCommandTest extends MauticMysqlTestCase
      */
     private array $csvFiles = [];
 
-    protected function beforeTearDown(): void
-    {
-        foreach ($this->csvFiles as $file) {
-            if (file_exists($file)) {
-                unlink($file);
-            }
-        }
-    }
-
     public function testImportNotification(): void
     {
         // Create contact import for ghosting.
@@ -54,6 +45,15 @@ class ImportCommandTest extends MauticMysqlTestCase
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/import');
         $html    = $crawler->filterXPath('//div[contains(@id, "notifications")]')->html();
         $this->assertStringContainsString('Import failed. Reason: The import hasn\'t been updated in 2 hours by the background job. It\'s considered failed', $html, $html);
+    }
+
+    protected function beforeTearDown(): void
+    {
+        foreach ($this->csvFiles as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
     }
 
     private function generateSmallCSV(): string

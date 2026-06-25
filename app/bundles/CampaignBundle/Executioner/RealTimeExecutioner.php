@@ -195,7 +195,7 @@ class RealTimeExecutioner
         // to fail resulting in the decision never being evaluated. Therefore we are going to self heal these decisions.
         /** @var Event $event */
         foreach ($this->events as $event) {
-            if ('1' === $event->getChannelId()) {
+            if ($event->getChannelId() === '1') {
                 ChannelExtractor::setChannel($event, $event, $this->collector->getEventConfig($event));
 
                 $this->eventRepository->saveEntity($event);

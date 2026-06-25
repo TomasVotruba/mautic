@@ -59,7 +59,7 @@ final class AvatarHelper
         $socialData = $lead->getSocialCache();
         $leadEmail  = $lead->getEmail();
 
-        if ('custom' == $preferred) {
+        if ($preferred == 'custom') {
             $avatarPath = $this->getAvatarPath(true).'/avatar'.$lead->getId();
             if (file_exists($avatarPath) && $fmtime = filemtime($avatarPath)) {
                 // Append file modified time to ensure the latest is used by browser

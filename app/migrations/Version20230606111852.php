@@ -15,16 +15,6 @@ final class Version20230606111852 extends PreUpAssertionMigration
 
     protected const TABLE_NAME = 'campaign_events';
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            $sql         = sprintf("select id from %s where properties like '%s' limit 1", $this->getPrefixedTableName(), '%'.self::OLD_STRING.'%');
-            $recordCount = $this->connection->executeQuery($sql)->fetchAllAssociative();
-
-            return !$recordCount;
-        }, 'Migration is not required.');
-    }
-
     public function up(Schema $schema): void
     {
         $sql            = sprintf("select id, properties from %s where properties like '%s'", $this->getPrefixedTableName(), '%'.self::OLD_STRING.'%');
@@ -42,5 +32,15 @@ final class Version20230606111852 extends PreUpAssertionMigration
             $updatedRecords += $stmt->executeStatement();
         }
         $this->write(sprintf('<comment>%s record(s) have been updated successfully.</comment>', $updatedRecords));
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            $sql         = sprintf("select id from %s where properties like '%s' limit 1", $this->getPrefixedTableName(), '%'.self::OLD_STRING.'%');
+            $recordCount = $this->connection->executeQuery($sql)->fetchAllAssociative();
+
+            return !$recordCount;
+        }, 'Migration is not required.');
     }
 }

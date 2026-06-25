@@ -11,14 +11,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
 class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, FixtureGroupInterface
 {
-    public static function getGroups(): array
-    {
-        return ['group_mautic_install_data'];
-    }
 
     public function __construct(
         private UserPasswordHasher $hasher,
     ) {
+    }
+    public static function getGroups(): array
+    {
+        return ['group_mautic_install_data'];
     }
 
     public function load(ObjectManager $manager): void

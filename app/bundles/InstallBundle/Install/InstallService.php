@@ -84,14 +84,6 @@ class InstallService
     }
 
     /**
-     * Get local config file location.
-     */
-    private function localConfig(): string
-    {
-        return ParameterLoader::getLocalConfigFile($this->pathsHelper->getSystemPath('root').'/app');
-    }
-
-    /**
      * Get local config parameters.
      */
     public function localConfigParameters(): array
@@ -133,22 +125,6 @@ class InstallService
         }
 
         return true;
-    }
-
-    /**
-     * Translation messages array.
-     */
-    private function translateMessages(array $messages): array
-    {
-        if (empty($messages)) {
-            return $messages;
-        }
-
-        foreach ($messages as $key => $value) {
-            $messages[$key] = $this->translator->trans($value);
-        }
-
-        return $messages;
     }
 
     /**
@@ -382,7 +358,7 @@ class InstallService
             $existingUser = null;
         }
 
-        if (null !== $existingUser) {
+        if ($existingUser !== null) {
             $user = $existingUser;
         } else {
             $user = new User();
@@ -497,5 +473,29 @@ class InstallService
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
         $application->run($input, $output);
+    }
+
+    /**
+     * Get local config file location.
+     */
+    private function localConfig(): string
+    {
+        return ParameterLoader::getLocalConfigFile($this->pathsHelper->getSystemPath('root').'/app');
+    }
+
+    /**
+     * Translation messages array.
+     */
+    private function translateMessages(array $messages): array
+    {
+        if (empty($messages)) {
+            return $messages;
+        }
+
+        foreach ($messages as $key => $value) {
+            $messages[$key] = $this->translator->trans($value);
+        }
+
+        return $messages;
     }
 }

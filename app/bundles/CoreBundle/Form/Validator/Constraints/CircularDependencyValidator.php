@@ -54,7 +54,7 @@ class CircularDependencyValidator extends ConstraintValidator
 
     private function reduceToSegmentIds(array $filters): array
     {
-        $segmentFilters = array_filter($filters, fn (array $filter): bool => 'leadlist' === $filter['type']
+        $segmentFilters = array_filter($filters, fn (array $filter): bool => $filter['type'] === 'leadlist'
             && in_array($filter['operator'], [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY, OperatorOptions::EXCLUDING_ALL, OperatorOptions::INCLUDING_ALL]));
 
         $segentIdsInFilter = array_map(function (array $filter) {

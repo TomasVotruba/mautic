@@ -60,7 +60,7 @@ class TagEntityModelTransformer implements DataTransformerInterface
                 ->getRepository($this->repository)
                 ->findOneBy([$column => $id]);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 throw new TransformationFailedException(sprintf('Tag with "%s" does not exist!', $id));
             }
 

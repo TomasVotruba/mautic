@@ -15,13 +15,49 @@ trait LeadDetailsTrait
     private ?RequestStack $requestStack = null;
 
     /**
+     * Makes sure that the event filter array is in the right format.
+     *
+     * @param mixed $filters
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException if not an array
+     */
+    public function sanitizeEventFilter($filters)
+    {
+        if (!is_array($filters)) {
+            throw new \InvalidArgumentException('filters parameter must be an array');
+        }
+
+        if (!isset($filters['search'])) {
+            $filters['search'] = '';
+        }
+
+        if (!isset($filters['includeEvents'])) {
+            $filters['includeEvents'] = [];
+        }
+
+        if (!isset($filters['excludeEvents'])) {
+            $filters['excludeEvents'] = [];
+        }
+
+        return $filters;
+    }
+
+    #[\Symfony\Contracts\Service\Attribute\Required]
+    public function setRequestStackLeadDetailsTrait(?RequestStack $requestStack): void
+    {
+        $this->requestStack = $requestStack;
+    }
+
+    /**
      * @param int $page
      */
     protected function getAllEngagements(array $leads, ?array $filters = null, ?array $orderBy = null, $page = 1, $limit = 25): array
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if ($filters == null) {
             $filters = $session->get(
                 'mautic.plugin.timeline.filters',
                 [
@@ -32,7 +68,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if ($orderBy == null) {
             if (!$session->has('mautic.plugin.timeline.orderby')) {
                 $session->set('mautic.plugin.timeline.orderby', 'timestamp');
                 $session->set('mautic.plugin.timeline.orderbydir', 'DESC');
@@ -91,41 +127,6 @@ trait LeadDetailsTrait
     }
 
     /**
-     * Makes sure that the event filter array is in the right format.
-     *
-     * @param mixed $filters
-     *
-     * @return array
-     *
-     * @throws \InvalidArgumentException if not an array
-     */
-    public function sanitizeEventFilter($filters)
-    {
-        if (!is_array($filters)) {
-            throw new \InvalidArgumentException('filters parameter must be an array');
-        }
-
-        if (!isset($filters['search'])) {
-            $filters['search'] = '';
-        }
-
-        if (!isset($filters['includeEvents'])) {
-            $filters['includeEvents'] = [];
-        }
-
-        if (!isset($filters['excludeEvents'])) {
-            $filters['excludeEvents'] = [];
-        }
-
-        return $filters;
-    }
-
-    private function cmp($a, $b): int
-    {
-        return $b['timestamp'] <=> $a['timestamp'];
-    }
-
-    /**
      * Get a list of places for the lead based on IP location.
      */
     protected function getPlaces(Lead $lead): array
@@ -162,11 +163,11 @@ trait LeadDetailsTrait
     {
         $translator = $this->translator;
 
-        if (null == $fromDate) {
+        if ($fromDate == null) {
             $fromDate = new \DateTime('first day of this month 00:00:00');
             $fromDate->modify('-6 months');
         }
-        if (null == $toDate) {
+        if ($toDate == null) {
             $toDate = new \DateTime();
         }
 
@@ -191,7 +192,7 @@ trait LeadDetailsTrait
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if ($filters == null) {
             $filters = $session->get(
                 'mautic.lead.'.$lead->getId().'.auditlog.filters',
                 [
@@ -202,7 +203,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if ($orderBy == null) {
             if (!$session->has('mautic.lead.'.$lead->getId().'.auditlog.orderby')) {
                 $session->set('mautic.lead.'.$lead->getId().'.auditlog.orderby', 'al.dateAdded');
                 $session->set('mautic.lead.'.$lead->getId().'.auditlog.orderbydir', 'DESC');
@@ -259,7 +260,7 @@ trait LeadDetailsTrait
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if ($filters == null) {
             $filters = $session->get(
                 'mautic.lead.'.$lead->getId().'.timeline.filters',
                 [
@@ -270,7 +271,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if ($orderBy == null) {
             if (!$session->has('mautic.lead.'.$lead->getId().'.timeline.orderby')) {
                 $session->set('mautic.lead.'.$lead->getId().'.timeline.orderby', 'timestamp');
                 $session->set('mautic.lead.'.$lead->getId().'.timeline.orderbydir', 'DESC');
@@ -292,11 +293,11 @@ trait LeadDetailsTrait
      */
     protected function getStatsCount(Lead $lead, ?\DateTime $fromDate = null, ?\DateTime $toDate = null): array
     {
-        if (null == $fromDate) {
+        if ($fromDate == null) {
             $fromDate = new \DateTime('first day of this month 00:00:00');
             $fromDate->modify('-6 months');
         }
-        if (null == $toDate) {
+        if ($toDate == null) {
             $toDate = new \DateTime();
         }
 
@@ -386,9 +387,8 @@ trait LeadDetailsTrait
         );
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
-    public function setRequestStackLeadDetailsTrait(?RequestStack $requestStack): void
+    private function cmp($a, $b): int
     {
-        $this->requestStack = $requestStack;
+        return $b['timestamp'] <=> $a['timestamp'];
     }
 }

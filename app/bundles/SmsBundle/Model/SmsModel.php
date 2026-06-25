@@ -127,7 +127,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                 $this->dispatchEvent('post_save', $entity, $isNew, $event);
             }
 
-            if (0 === ++$i % $batchSize) {
+            if (++$i % $batchSize === 0) {
                 $this->em->flush();
             }
         }
@@ -156,7 +156,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
      */
     public function getEntity($id = null): ?Sms
     {
-        if (null === $id) {
+        if ($id === null) {
             $entity = new Sms();
         } else {
             $entity = parent::getEntity($id);
@@ -179,7 +179,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         foreach ($entities as $entity) {
             $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'sms', $entity->getId(), 'pending'));
 
-            if (false !== $pending) {
+            if ($pending !== false) {
                 $entity->setPendingCount($pending);
             }
         }
@@ -350,7 +350,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
             foreach ($recipientCollection as $recipient) {
                 $defaultSendResult['content'] = $recipient->getFinalMessage();
-                if (true !== $recipient->getResult()) {
+                if ($recipient->getResult() !== true) {
                     $defaultSendResult['sent']   = false;
                     $defaultSendResult['status'] = $recipient->getResult();
                     unset($stats[$recipient->getKey()]);
@@ -397,7 +397,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         $stat->setDateSent(new \DateTime());
         $stat->setLead($lead);
         $stat->setSms($sms);
-        if (null !== $listId) {
+        if ($listId !== null) {
             $stat->setList($this->leadModel->getLeadListRepository()->getEntity($listId));
         }
         if (is_array($source)) {
@@ -412,46 +412,6 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         }
 
         return $stat;
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Sms) {
-            throw new MethodNotAllowedHttpException(['Sms']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = SmsEvents::SMS_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = SmsEvents::SMS_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = SmsEvents::SMS_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = SmsEvents::SMS_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new SmsEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -484,7 +444,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
 
-        if (!$flag || 'total_and_unique' === $flag) {
+        if (!$flag || $flag === 'total_and_unique') {
             $filter['is_failed'] = 0;
             $q                   = $query->prepareTimeDataQuery('sms_message_stats', 'date_sent', $filter);
 
@@ -496,7 +456,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             $chart->setDataset($this->translator->trans('mautic.sms.show.total.sent'), $data);
         }
 
-        if (!$flag || 'failed' === $flag) {
+        if (!$flag || $flag === 'failed') {
             $filter['is_failed'] = 1;
             $q                   = $query->prepareTimeDataQuery('sms_message_stats', 'date_sent', $filter);
             if (!$canViewOthers) {
@@ -576,5 +536,45 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         }
 
         return $results;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Sms) {
+            throw new MethodNotAllowedHttpException(['Sms']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = SmsEvents::SMS_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = SmsEvents::SMS_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = SmsEvents::SMS_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = SmsEvents::SMS_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new SmsEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

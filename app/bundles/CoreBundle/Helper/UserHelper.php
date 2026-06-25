@@ -22,7 +22,7 @@ class UserHelper
         $user  = null;
         $token = $this->tokenStorage->getToken();
 
-        if (null !== $token) {
+        if ($token !== null) {
             $user = $token->getUser();
         }
 

@@ -28,7 +28,7 @@ final class FormatterHelper
      */
     public function _($val, $type = 'html', $textOnly = false, $round = 1)
     {
-        if (empty($val) && 'bool' !== $type && 'float' !== $type) {
+        if (empty($val) && $type !== 'bool' && $type !== 'float') {
             return $val;
         }
 
@@ -50,7 +50,7 @@ final class FormatterHelper
                         $stringParts[] = InputHelper::clean($v);
                     }
                 }
-                if (1 === $round) {
+                if ($round === 1) {
                     $string = implode('; ', $stringParts);
                 } else {
                     $string = implode(', ', $stringParts);
@@ -77,7 +77,7 @@ final class FormatterHelper
                 $string = strval((int) $val);
                 break;
             case 'float':
-                $string = number_format((float) $val, FormatterHelper::FLOAT_PRECISION);
+                $string = number_format((float) $val, self::FLOAT_PRECISION);
                 break;
             case 'html':
                 $string = InputHelper::strict_html($val);
@@ -132,7 +132,7 @@ final class FormatterHelper
     {
         $pairs = [];
         foreach ($array as $key => $value) {
-            $pairs[] = "$key: $value";
+            $pairs[] = "{$key}: {$value}";
         }
 
         return implode($delimeter, $pairs);

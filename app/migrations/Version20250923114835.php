@@ -12,14 +12,6 @@ final class Version20250923114835 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = 'campaign_lead_event_log';
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('date_queued'),
-            "Table {$this->getPrefixedTableName()} already has 'date_queued' column"
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName());
@@ -30,5 +22,13 @@ final class Version20250923114835 extends PreUpAssertionMigration
     {
         $table = $schema->getTable($this->getPrefixedTableName());
         $table->dropColumn('date_queued');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn('date_queued'),
+            "Table {$this->getPrefixedTableName()} already has 'date_queued' column"
+        );
     }
 }

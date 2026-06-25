@@ -31,7 +31,7 @@ final class SortableValueLabelListTypeTest extends TestCase
                 return in_array($name, $expected[0], true);
             }),
                 $this->callback(function ($type) {
-                    return TextType::class === $type;
+                    return $type === TextType::class;
                 }),
                 $this->callback(function ($options) use (&$call) {
                     $expectedOptions = [
@@ -101,26 +101,6 @@ final class SortableValueLabelListTypeTest extends TestCase
         $this->assertEquals([], $view->vars['postaddonAttr']);
         $this->assertEquals([], $view->vars['preaddon']);
         $this->assertEquals([], $view->vars['postaddon']);
-    }
-
-    private function getEventListenerFromBuildForm(SortableValueLabelListType $type, FormBuilderInterface $builder): callable
-    {
-        $eventListener = null;
-        // @phpstan-ignore-next-line
-        $builder->expects($this->exactly(2))
-            ->method('add');
-        // @phpstan-ignore-next-line
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
-                $eventListener = $callback;
-
-                return true;
-            }));
-        $type->buildForm($builder, []);
-        $this->assertNotNull($eventListener, 'Event listener should be set');
-
-        return $eventListener;
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('eventListenerDataProvider')]
@@ -249,5 +229,25 @@ final class SortableValueLabelListTypeTest extends TestCase
             ['주소', 'juso'],
             ['전화번호', 'jeonhwabeonho'],
         ];
+    }
+
+    private function getEventListenerFromBuildForm(SortableValueLabelListType $type, FormBuilderInterface $builder): callable
+    {
+        $eventListener = null;
+        // @phpstan-ignore-next-line
+        $builder->expects($this->exactly(2))
+            ->method('add');
+        // @phpstan-ignore-next-line
+        $builder->expects($this->once())
+            ->method('addEventListener')
+            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
+                $eventListener = $callback;
+
+                return true;
+            }));
+        $type->buildForm($builder, []);
+        $this->assertNotNull($eventListener, 'Event listener should be set');
+
+        return $eventListener;
     }
 }

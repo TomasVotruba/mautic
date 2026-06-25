@@ -73,7 +73,7 @@ class PublicController extends AbstractFormController
             // Make sure the page is published or deny access if not
             if (!$published && !$userAccess) {
                 // If the page has a redirect type, handle it
-                if (null != $entity->getRedirectType()) {
+                if ($entity->getRedirectType() != null) {
                     $model->hitPage($entity, $request, $entity->getRedirectType());
 
                     if ($entity->getRedirectUrl()) {
@@ -304,7 +304,7 @@ class PublicController extends AbstractFormController
             return $response;
         }
 
-        if (false !== $entity && $tracking404Model->isTrackable()) {
+        if ($entity !== false && $tracking404Model->isTrackable()) {
             $tracking404Model->hitPage($entity, $request);
         }
 
@@ -335,7 +335,7 @@ class PublicController extends AbstractFormController
         $content       = $page->getCustomHtml();
         $publicPreview = $page->isPublicPreview();
 
-        if ('draft' === $objectType && $draftEnabled && $page->hasDraft()) {
+        if ($objectType === 'draft' && $draftEnabled && $page->hasDraft()) {
             $content       = $page->getDraftContent();
             $publicPreview = $page->getDraft()->isPublicPreview();
         }
@@ -429,7 +429,7 @@ class PublicController extends AbstractFormController
 
         $lead          = $contactTracker->getContact();
         $trackedDevice = $deviceTrackingService->getTrackedDevice();
-        $trackingId    = (null === $trackedDevice ? null : $trackedDevice->getTrackingId());
+        $trackingId    = ($trackedDevice === null ? null : $trackedDevice->getTrackingId());
 
         $sessionValue   = $trackingHelper->getCacheItem(true);
 
@@ -465,7 +465,7 @@ class PublicController extends AbstractFormController
 
         $logger->debug('Executing Redirect: '.$redirect);
 
-        if (null === $redirect || !$redirect->isPublished(false)) {
+        if ($redirect === null || !$redirect->isPublished(false)) {
             $logger->debug('Redirect with tracking_id of '.$redirectId.' not found');
 
             $url = ($redirect) ? $redirect->getUrl() : 'n/a';
@@ -496,7 +496,7 @@ class PublicController extends AbstractFormController
         $ipAddress = $ipLookupHelper->getIpAddress();
 
         $isHitTrackable = false;
-        if (null !== $ct && '' !== $ct) {
+        if ($ct !== null && $ct !== '') {
             if ($ipAddress->isTrackable()) {
                 // Search replace lead fields in the URL
                 try {
@@ -576,7 +576,7 @@ class PublicController extends AbstractFormController
         if ($this->security->isAnonymous()) {
             $lead          = $contactTracker->getContact();
             $trackedDevice = $trackedDeviceService->getTrackedDevice();
-            $trackingId    = (null === $trackedDevice ? null : $trackedDevice->getTrackingId());
+            $trackingId    = ($trackedDevice === null ? null : $trackedDevice->getTrackingId());
             $data          = [
                 'id'        => ($lead) ? $lead->getId() : null,
                 'sid'       => $trackingId,

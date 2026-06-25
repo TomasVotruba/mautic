@@ -62,7 +62,7 @@ final class ServicePass implements CompilerPassInterface
 
                     foreach ($services as $name => $details) {
                         if (isset($serviceNames[$name])) {
-                            throw new \InvalidArgumentException("$name is already registered");
+                            throw new \InvalidArgumentException("{$name} is already registered");
                         }
                         $serviceNames[$name] = true;
 
@@ -73,7 +73,7 @@ final class ServicePass implements CompilerPassInterface
                         }
 
                         // Setup default menu details
-                        if ('menus' == $type) {
+                        if ($type == 'menus') {
                             $details = array_merge(
                                 [
                                     'class'   => \Knp\Menu\MenuItem::class,
@@ -156,7 +156,7 @@ final class ServicePass implements CompilerPassInterface
                                 $definition->addTag($tag, $tagArguments);
                             }
 
-                            if ('events' == $type) {
+                            if ($type == 'events') {
                                 $definition->addTag('mautic.event_subscriber');
                             }
                         }
@@ -274,7 +274,7 @@ final class ServicePass implements CompilerPassInterface
      */
     private function processArgument($argument, ContainerBuilder $container, &$definitionArguments): void
     {
-        if ('' === $argument) {
+        if ($argument === '') {
             // To be added during compilation
             $definitionArguments[] = '';
         } elseif (is_array($argument) || is_object($argument)) {

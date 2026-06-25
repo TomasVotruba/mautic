@@ -76,10 +76,10 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('lead:leads:viewother', $parameters[0]);
                 }
 
@@ -89,12 +89,12 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
 
                     return false;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('lead:leads:viewother', $parameters[0]);
 
                     return true;
@@ -205,10 +205,10 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('lead:leads:viewother', $parameters[0]);
                 }
 
@@ -218,10 +218,10 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('lead:leads:viewother', $parameters[0]);
                 }
 

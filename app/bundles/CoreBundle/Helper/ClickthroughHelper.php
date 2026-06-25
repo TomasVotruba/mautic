@@ -30,7 +30,7 @@ class ClickthroughHelper
             return [];
         }
 
-        if (0 !== stripos($decoded, 'a')) {
+        if (stripos($decoded, 'a') !== 0) {
             throw new InvalidDecodedStringException($decoded);
         }
 

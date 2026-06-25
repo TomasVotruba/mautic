@@ -28,7 +28,7 @@ class CategoryListType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (true === $options['return_entity']) {
+        if ($options['return_entity'] === true) {
             $transformer = new IdToEntityModelTransformer($this->em, \Mautic\CategoryBundle\Entity\Category::class, 'id');
             $builder->addModelTransformer($transformer);
         }

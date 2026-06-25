@@ -116,28 +116,6 @@ class CampaignController extends AbstractStandardFormController
         parent::__construct($formFactory, $fieldHelper, $managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
-    protected function getPermissions(): array
-    {
-        // set some permissions
-        return (array) $this->security->isGranted(
-            [
-                'campaign:campaigns:viewown',
-                'campaign:campaigns:viewother',
-                'campaign:campaigns:create',
-                'campaign:campaigns:editown',
-                'campaign:campaigns:editother',
-                'campaign:campaigns:cloneown',
-                'campaign:campaigns:cloneother',
-                'campaign:campaigns:deleteown',
-                'campaign:campaigns:deleteother',
-                'campaign:campaigns:publishown',
-                'campaign:campaigns:publishother',
-                'campaign:imports:create',
-            ],
-            'RETURN_ARRAY'
-        );
-    }
-
     public function batchDeleteAction(Request $request): JsonResponse|RedirectResponse
     {
         return $this->batchDeleteStandard($request);
@@ -146,29 +124,6 @@ class CampaignController extends AbstractStandardFormController
     public function cloneAction(Request $request, $objectId): JsonResponse|RedirectResponse|Response
     {
         return $this->cloneStandard($request, $objectId);
-    }
-
-    /**
-     * @param array<int, mixed> $assetList
-     */
-    private function handleExportDownload(
-        ExportHelper $exportHelper,
-        string $jsonOutput,
-        array $assetList,
-        string $exportFileName,
-    ): JsonResponse|BinaryFileResponse {
-        $filePath = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
-        if (!file_exists($filePath)) {
-            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
-            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
-
-            return new JsonResponse([
-                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
-                'flashes' => $this->getFlashContent(),
-            ], 400);
-        }
-
-        return $exportHelper->downloadAsZip($filePath, $exportFileName);
     }
 
     public function exportAction(ExportHelper $exportHelper, CampaignModel $campaignModel, int $objectId): JsonResponse|BinaryFileResponse|Response
@@ -427,16 +382,6 @@ class CampaignController extends AbstractStandardFormController
         return $this->indexStandard($request, $page);
     }
 
-    protected function getDefaultOrderColumn(): string
-    {
-        return 'dateModified';
-    }
-
-    protected function getDefaultOrderDirection(): string
-    {
-        return 'DESC';
-    }
-
     /**
      * Generates new form and processes post data.
      */
@@ -458,7 +403,7 @@ class CampaignController extends AbstractStandardFormController
         $form    = $model->createForm($campaign, $this->formFactory, $action, $options);
 
         // /Check for a submitted form and process it
-        $isPost = 'POST' === $request->getMethod();
+        $isPost = $request->getMethod() === 'POST';
         $this->beforeFormProcessed($campaign, $form, 'new', $isPost);
 
         if ($isPost) {
@@ -574,6 +519,38 @@ class CampaignController extends AbstractStandardFormController
         return $result;
     }
 
+    protected function getPermissions(): array
+    {
+        // set some permissions
+        return (array) $this->security->isGranted(
+            [
+                'campaign:campaigns:viewown',
+                'campaign:campaigns:viewother',
+                'campaign:campaigns:create',
+                'campaign:campaigns:editown',
+                'campaign:campaigns:editother',
+                'campaign:campaigns:cloneown',
+                'campaign:campaigns:cloneother',
+                'campaign:campaigns:deleteown',
+                'campaign:campaigns:deleteother',
+                'campaign:campaigns:publishown',
+                'campaign:campaigns:publishother',
+                'campaign:imports:create',
+            ],
+            'RETURN_ARRAY'
+        );
+    }
+
+    protected function getDefaultOrderColumn(): string
+    {
+        return 'dateModified';
+    }
+
+    protected function getDefaultOrderDirection(): string
+    {
+        return 'DESC';
+    }
+
     /**
      * @param Campaign $campaign
      * @param Campaign $oldCampaign
@@ -601,7 +578,7 @@ class CampaignController extends AbstractStandardFormController
             // Just wipe out the parent as it'll be generated when the cloned entity is saved
             $clone->setParent();
 
-            if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $clone->getType()) {
+            if ($clone->getType() === CampaignActionJumpToEventSubscriber::EVENT_NAME) {
                 // Update properties to point to the new temp ID
                 $properties                = $clone->getProperties();
                 $properties['jumpToEvent'] = 'new'.$properties['jumpToEvent'];
@@ -724,28 +701,6 @@ class CampaignController extends AbstractStandardFormController
     }
 
     /**
-     * Method to take JSON string or array of campaignElements and set all global variables.
-     *
-     * @param string|array<string, mixed> $campaignElements
-     */
-    private function setCampaignElements(string|array $campaignElements, bool $isClone = false): void
-    {
-        // sets the global campaignElements
-        if (is_string($campaignElements)) {
-            $this->campaignElements = json_decode($campaignElements, true);
-        } else {
-            $this->campaignElements = $campaignElements;
-        }
-
-        // set added/updated events - comes from global campaignElements which was set above
-        $this->setCampaignEvents();
-        // set added/updated sources - comes from global campaignElements which was set above
-        $this->setCampaignSources($isClone);
-
-        $this->connections = $this->campaignElements['canvasSettings'] ?? [];
-    }
-
-    /**
      * @param Campaign $entity
      * @param bool     $isClone
      */
@@ -789,7 +744,7 @@ class CampaignController extends AbstractStandardFormController
         // Build and set Event entities
         $this->getCampaignModel()->setEvents($entity, $this->campaignEvents, $this->connections, $this->deletedEvents);
 
-        if ('edit' === $action && null !== $this->connections) {
+        if ($action === 'edit' && $this->connections !== null) {
             if (!empty($this->deletedEvents)) {
                 /** @var EventModel $eventModel */
                 $eventModel = $this->getModel('campaign.event');
@@ -826,13 +781,13 @@ class CampaignController extends AbstractStandardFormController
         $sessionId = null;
         if ($objectId) {
             $sessionId = $objectId;
-        } elseif ('new' === $action) {
+        } elseif ($action === 'new') {
             $sessionId = 'mautic_'.sha1(uniqid(mt_rand(), true));
             if ($this->requestStack->getCurrentRequest()->request->has('campaign')) {
                 $campaign  = $this->requestStack->getCurrentRequest()->request->all()['campaign'] ?? [];
                 $sessionId = $campaign['sessionId'] ?? $sessionId;
             }
-        } elseif ('edit' === $action) {
+        } elseif ($action === 'edit') {
             $sessionId = $campaign->getId();
         }
 
@@ -898,7 +853,7 @@ class CampaignController extends AbstractStandardFormController
                 $listFilters['filters']['groups']['mautic.campaign.leadsource.'.$type]['values'] = $typeFilters;
 
                 foreach ($typeFilters as $fltr) {
-                    if ('list' == $type) {
+                    if ($type == 'list') {
                         $listIds[] = (int) $fltr;
                     } else {
                         $formIds[] = (int) $fltr;
@@ -936,84 +891,6 @@ class CampaignController extends AbstractStandardFormController
     protected function getModelName(): string
     {
         return 'campaign';
-    }
-
-    /**
-     * Set events from form data.
-     */
-    private function setCampaignEvents(): void
-    {
-        $this->modifiedEvents = (array) ($this->campaignElements['modifiedEvents'] ?? []);
-        $this->deletedEvents  = (array) ($this->campaignElements['deletedEvents'] ?? []);
-
-        // Extract IDs from deleted events and use as keys for filtering
-        $deletedEventIds = array_column($this->deletedEvents, 'id');
-        $deletedEventIds = $deletedEventIds ? array_fill_keys($deletedEventIds, true) : [];
-
-        $this->campaignEvents = array_diff_key($this->modifiedEvents, $deletedEventIds);
-    }
-
-    /**
-     * Set sources from form data.
-     */
-    private function setCampaignSources(bool $isClone = false): void
-    {
-        $campaignSources = $this->normalizeCampaignSources((array) ($this->campaignElements['campaignSources'] ?? []));
-        $modifiedSources = $this->normalizeCampaignSources((array) ($this->campaignElements['modifiedSources'] ?? []));
-
-        if ($campaignSources === $modifiedSources) {
-            if ($isClone) {
-                // Clone hasn't saved the sources yet so return the current list as added
-                $this->addedSources = $this->campaignSources = $campaignSources;
-            } else {
-                $this->campaignSources = $campaignSources;
-            }
-        } else {
-            // Deleted sources
-            foreach ($campaignSources as $type => $sources) {
-                if (isset($modifiedSources[$type])) {
-                    $this->deletedSources[$type] = array_diff_key($sources, $modifiedSources[$type]);
-                } else {
-                    $this->deletedSources[$type] = $sources;
-                }
-            }
-
-            // Added sources
-            foreach ($modifiedSources as $type => $sources) {
-                if (isset($campaignSources[$type])) {
-                    $this->addedSources[$type] = array_diff_key($sources, $campaignSources[$type]);
-                } else {
-                    $this->addedSources[$type] = $sources;
-                }
-            }
-            $this->campaignSources = $modifiedSources;
-        }
-    }
-
-    /**
-     * @param array<string, array<int|string, mixed>> $sources
-     *
-     * @return array<string, array<int, mixed>>
-     */
-    private function normalizeCampaignSources(array $sources): array
-    {
-        $normalizedSources = [];
-
-        foreach ($sources as $type => $typeSources) {
-            if (!is_array($typeSources)) {
-                continue;
-            }
-
-            foreach ($typeSources as $sourceId => $label) {
-                if (!ctype_digit((string) $sourceId)) {
-                    continue;
-                }
-
-                $normalizedSources[$type][(int) $sourceId] = $label;
-            }
-        }
-
-        return $normalizedSources;
     }
 
     /**
@@ -1105,7 +982,7 @@ class CampaignController extends AbstractStandardFormController
             unset($event['log']);
 
             $label = $this->getSchedulingLabel($event);
-            if (null !== $label) {
+            if ($label !== null) {
                 $event['label'] = $label;
             }
 
@@ -1142,6 +1019,129 @@ class CampaignController extends AbstractStandardFormController
             $this->campaignElements['campaignSources']  = $campaignSources;
             $this->campaignElements['modifiedSources']  = $campaignSources;
         }
+    }
+
+    /**
+     * @param array<int, mixed> $assetList
+     */
+    private function handleExportDownload(
+        ExportHelper $exportHelper,
+        string $jsonOutput,
+        array $assetList,
+        string $exportFileName,
+    ): JsonResponse|BinaryFileResponse {
+        $filePath = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
+        if (!file_exists($filePath)) {
+            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
+            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
+
+            return new JsonResponse([
+                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
+                'flashes' => $this->getFlashContent(),
+            ], 400);
+        }
+
+        return $exportHelper->downloadAsZip($filePath, $exportFileName);
+    }
+
+    /**
+     * Method to take JSON string or array of campaignElements and set all global variables.
+     *
+     * @param string|array<string, mixed> $campaignElements
+     */
+    private function setCampaignElements(string|array $campaignElements, bool $isClone = false): void
+    {
+        // sets the global campaignElements
+        if (is_string($campaignElements)) {
+            $this->campaignElements = json_decode($campaignElements, true);
+        } else {
+            $this->campaignElements = $campaignElements;
+        }
+
+        // set added/updated events - comes from global campaignElements which was set above
+        $this->setCampaignEvents();
+        // set added/updated sources - comes from global campaignElements which was set above
+        $this->setCampaignSources($isClone);
+
+        $this->connections = $this->campaignElements['canvasSettings'] ?? [];
+    }
+
+    /**
+     * Set events from form data.
+     */
+    private function setCampaignEvents(): void
+    {
+        $this->modifiedEvents = (array) ($this->campaignElements['modifiedEvents'] ?? []);
+        $this->deletedEvents  = (array) ($this->campaignElements['deletedEvents'] ?? []);
+
+        // Extract IDs from deleted events and use as keys for filtering
+        $deletedEventIds = array_column($this->deletedEvents, 'id');
+        $deletedEventIds = $deletedEventIds ? array_fill_keys($deletedEventIds, true) : [];
+
+        $this->campaignEvents = array_diff_key($this->modifiedEvents, $deletedEventIds);
+    }
+
+    /**
+     * Set sources from form data.
+     */
+    private function setCampaignSources(bool $isClone = false): void
+    {
+        $campaignSources = $this->normalizeCampaignSources((array) ($this->campaignElements['campaignSources'] ?? []));
+        $modifiedSources = $this->normalizeCampaignSources((array) ($this->campaignElements['modifiedSources'] ?? []));
+
+        if ($campaignSources === $modifiedSources) {
+            if ($isClone) {
+                // Clone hasn't saved the sources yet so return the current list as added
+                $this->addedSources = $this->campaignSources = $campaignSources;
+            } else {
+                $this->campaignSources = $campaignSources;
+            }
+        } else {
+            // Deleted sources
+            foreach ($campaignSources as $type => $sources) {
+                if (isset($modifiedSources[$type])) {
+                    $this->deletedSources[$type] = array_diff_key($sources, $modifiedSources[$type]);
+                } else {
+                    $this->deletedSources[$type] = $sources;
+                }
+            }
+
+            // Added sources
+            foreach ($modifiedSources as $type => $sources) {
+                if (isset($campaignSources[$type])) {
+                    $this->addedSources[$type] = array_diff_key($sources, $campaignSources[$type]);
+                } else {
+                    $this->addedSources[$type] = $sources;
+                }
+            }
+            $this->campaignSources = $modifiedSources;
+        }
+    }
+
+    /**
+     * @param array<string, array<int|string, mixed>> $sources
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    private function normalizeCampaignSources(array $sources): array
+    {
+        $normalizedSources = [];
+
+        foreach ($sources as $type => $typeSources) {
+            if (!is_array($typeSources)) {
+                continue;
+            }
+
+            foreach ($typeSources as $sourceId => $label) {
+                if (!ctype_digit((string) $sourceId)) {
+                    continue;
+                }
+
+                $normalizedSources[$type][(int) $sourceId] = $label;
+            }
+        }
+
+        return $normalizedSources;
     }
 
     /**
@@ -1224,12 +1224,12 @@ class CampaignController extends AbstractStandardFormController
             if (!empty($event['decisionPath'])
                 && !empty($event['parent_id'])
                 && isset($events[$event['parent_id']])
-                && 'condition' !== $event['eventType']) {
+                && $event['eventType'] !== 'condition') {
                 $parentEvent                 = $events[$event['parent_id']];
                 $event['percent']            = $parentEvent['percent'];
                 $event['yesPercent']         = $parentEvent['yesPercent'];
                 $event['noPercent']          = $parentEvent['noPercent'];
-                if ('yes' === $event['decisionPath']) {
+                if ($event['decisionPath'] === 'yes') {
                     $event['noPercent'] = 0;
                 } else {
                     $event['yesPercent'] = 0;
@@ -1248,7 +1248,7 @@ class CampaignController extends AbstractStandardFormController
     {
         foreach ($events as &$event) {
             $label = $this->getSchedulingLabel($event);
-            if (null !== $label) {
+            if ($label !== null) {
                 $event['label'] = $label;
             }
         }
@@ -1263,7 +1263,7 @@ class CampaignController extends AbstractStandardFormController
             case 'interval':
                 if (!empty($event['triggerInterval']) && !empty($event['triggerIntervalUnit'])) {
                     return $this->translator->trans(
-                        'mautic.campaign.connection.trigger.interval.label'.('no' == $event['decisionPath'] ? '_inaction' : ''),
+                        'mautic.campaign.connection.trigger.interval.label'.($event['decisionPath'] == 'no' ? '_inaction' : ''),
                         [
                             '%number%' => $event['triggerInterval'],
                             '%unit%'   => $this->translator->trans(
@@ -1277,7 +1277,7 @@ class CampaignController extends AbstractStandardFormController
             case 'date':
                 if (!empty($event['triggerDate'])) {
                     return $this->translator->trans(
-                        'mautic.campaign.connection.trigger.date.label'.('no' == $event['decisionPath'] ? '_inaction' : ''),
+                        'mautic.campaign.connection.trigger.date.label'.($event['decisionPath'] == 'no' ? '_inaction' : ''),
                         [
                             '%full%' => $this->dateHelper->toFull($event['triggerDate']),
                             '%time%' => $this->dateHelper->toTime($event['triggerDate']),

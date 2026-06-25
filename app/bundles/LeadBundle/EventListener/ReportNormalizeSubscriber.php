@@ -35,7 +35,7 @@ class ReportNormalizeSubscriber implements EventSubscriberInterface
                 if (isset($fields[$alias])) {
                     $type               = $fields[$alias]['type'] ?? null;
                     $rows[$key][$alias] = CustomFieldValueHelper::normalize($value, $type, $fields[$alias]['properties'] ?? []);
-                    if ('boolean' === $type) {
+                    if ($type === 'boolean') {
                         $event->updateColumnType($alias, 'normalized_bool');
                     }
                 }

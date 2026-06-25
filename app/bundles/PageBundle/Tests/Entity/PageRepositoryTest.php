@@ -15,22 +15,6 @@ class PageRepositoryTest extends TestCase
 {
     use RepositoryConfiguratorTrait;
 
-    private function getRepository(): PageRepository
-    {
-        $repository = $this->configureRepository(Page::class);
-        $this->connection->method('createQueryBuilder')->willReturnCallback(fn () => new QueryBuilder($this->connection));
-
-        $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnCallback(fn ($id) => match ($id) {
-            'mautic.page.searchcommand.isexpired' => 'is:expired',
-            'mautic.page.searchcommand.ispending' => 'is:pending',
-            default                               => $id,
-        });
-        $repository->setTranslator($translator);
-
-        return $repository;
-    }
-
     #[\PHPUnit\Framework\Attributes\DataProvider('dataExpirationFilters')]
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(string $command, string $expected): void
     {
@@ -61,5 +45,21 @@ class PageRepositoryTest extends TestCase
         $commands   = $repository->getSearchCommands();
         self::assertContains('mautic.page.searchcommand.isexpired', $commands);
         self::assertContains('mautic.page.searchcommand.ispending', $commands);
+    }
+
+    private function getRepository(): PageRepository
+    {
+        $repository = $this->configureRepository(Page::class);
+        $this->connection->method('createQueryBuilder')->willReturnCallback(fn () => new QueryBuilder($this->connection));
+
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(fn ($id) => match ($id) {
+            'mautic.page.searchcommand.isexpired' => 'is:expired',
+            'mautic.page.searchcommand.ispending' => 'is:pending',
+            default                               => $id,
+        });
+        $repository->setTranslator($translator);
+
+        return $repository;
     }
 }

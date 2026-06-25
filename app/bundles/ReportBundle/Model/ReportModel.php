@@ -50,14 +50,14 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     public const CHANNEL_FEATURE = 'reporting';
 
     /**
-     * @var array
-     */
-    private $reportBuilderData;
-
-    /**
      * @var mixed
      */
     protected $defaultPageLimit;
+
+    /**
+     * @var array
+     */
+    private $reportBuilderData;
 
     public function __construct(
         CoreParametersHelper $coreParametersHelper,
@@ -94,15 +94,6 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         return 'report:reports';
     }
 
-    protected function getSession(): SessionInterface
-    {
-        try {
-            return $this->requestStack->getSession();
-        } catch (SessionNotFoundException) {
-            return new Session(); // in case of CLI
-        }
-    }
-
     /**
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -132,51 +123,11 @@ class ReportModel extends FormModel implements GlobalSearchInterface
 
     public function getEntity($id = null): ?Report
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Report();
         }
 
         return parent::getEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Report) {
-            throw new MethodNotAllowedHttpException(['Report']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = ReportEvents::REPORT_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = ReportEvents::REPORT_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = ReportEvents::REPORT_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = ReportEvents::REPORT_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new ReportEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -193,7 +144,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                 $this->reportBuilderData[$context]['graphs'] = $this->reportBuilderData['all']['graphs'][$context] ?? [];
             } else {
                 // build them
-                $eventContext = ('all' == $context) ? '' : $context;
+                $eventContext = ($context == 'all') ? '' : $context;
 
                 $event = new ReportBuilderEvent($this->translator, $this->channelListHelper, $eventContext, $this->fieldModel->getPublishedFieldArrays(), $this->reportHelper, $reportSource);
                 $this->dispatcher->dispatch($event, ReportEvents::REPORT_ON_BUILD);
@@ -201,7 +152,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                 $tables = $event->getTables();
                 $graphs = $event->getGraphs();
 
-                if ('all' == $context) {
+                if ($context == 'all') {
                     $this->reportBuilderData[$context]['tables'] = $tables;
                     $this->reportBuilderData[$context]['graphs'] = $graphs;
                 } else {
@@ -244,32 +195,6 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * Prevent same aliases using numeric suffixes for each alias.
-     */
-    private function preventSameAliases(array $columns): array
-    {
-        $existingAliases = [];
-
-        foreach ($columns as $key => $column) {
-            $alias = $column['alias'];
-
-            // Count suffixes
-            if (!array_key_exists($alias, $existingAliases)) {
-                $existingAliases[$alias] = 0;
-            } else {
-                ++$existingAliases[$alias];
-            }
-
-            // Add numeric suffix
-            if ($existingAliases[$alias] > 0) {
-                $columns[$key]['alias'] = $alias.$existingAliases[$alias];
-            }
-        }
-
-        return $columns;
-    }
-
-    /**
      * @param string $context
      *
      * @return mixed
@@ -296,11 +221,11 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $return->definitions = [];
 
         foreach ($columns as $column => $data) {
-            if ($isGroupBy && ('unsubscribed' == $column || 'unsubscribed_ratio' == $column || 'unique_ratio' == $column)) {
+            if ($isGroupBy && ($column == 'unsubscribed' || $column == 'unsubscribed_ratio' || $column == 'unique_ratio')) {
                 continue;
             }
             if (isset($data['label'])) {
-                $return->choiceHtml .= "<option value=\"$column\">{$data['label']}</option>\n";
+                $return->choiceHtml .= "<option value=\"{$column}\">{$data['label']}</option>\n";
                 $return->choices[$column]     = $data['label'];
                 $return->definitions[$column] = $data;
             }
@@ -330,13 +255,13 @@ class ReportModel extends FormModel implements GlobalSearchInterface
             if (isset($data['label'])) {
                 $return->definitions[$filter] = $data;
                 $return->choices[$filter]     = $data['label'];
-                $return->choiceHtml .= "<option value=\"$filter\">{$data['label']}</option>\n";
+                $return->choiceHtml .= "<option value=\"{$filter}\">{$data['label']}</option>\n";
 
                 $return->operatorChoices[$filter] = $this->getOperatorOptions($data);
                 $return->operatorHtml[$filter]    = '';
 
                 foreach ($return->operatorChoices[$filter] as $value => $label) {
-                    $return->operatorHtml[$filter] .= "<option value=\"$value\">$label</option>\n";
+                    $return->operatorHtml[$filter] .= "<option value=\"{$value}\">{$label}</option>\n";
                 }
             }
         }
@@ -589,7 +514,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                     $limit      = $options['limit'];
                     $reportPage = $options['page'];
                 }
-                $start = (1 === $reportPage) ? 0 : (($reportPage - 1) * $limit);
+                $start = ($reportPage === 1) ? 0 : (($reportPage - 1) * $limit);
                 if ($start < 0) {
                     $start = 0;
                 }
@@ -637,7 +562,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                 if (is_array($param)) {
                     $param = implode("','", $param);
                 }
-                $debugData['query'] = str_replace(":$name", "'$param'", $debugData['query']);
+                $debugData['query'] = str_replace(":{$name}", "'{$param}'", $debugData['query']);
             }
 
             $debugData['query_time'] = $queryTime ?? 'N/A';
@@ -666,92 +591,6 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * Sanitize order by array comparing it to the allowed columns.
-     *
-     * @param iterable<mixed> $orderBys
-     *
-     * @return iterable<mixed>
-     */
-    private function getOrderBySanitized(iterable $orderBys, \stdClass $allowedColumns): iterable
-    {
-        $hasOrderBy  = false;
-        $definitions = $allowedColumns->definitions ?? [];
-
-        foreach ($orderBys as $key => $orderBy) {
-            $order = $this->parseOrderBy((string) $orderBy);
-
-            if (null !== $order && $this->orderByIsValid($order['column'], $order['direction'], $allowedColumns->choices)) {
-                $orderBys[$key] = $this->getOrderByExpression($order['column'], $order['direction'], $definitions);
-                $hasOrderBy     = true;
-                continue;
-            }
-
-            $orderBys[$key] = '';
-        }
-
-        return [
-            'orderBy'    => $orderBys,
-            'hasOrderBy' => $hasOrderBy,
-        ];
-    }
-
-    /**
-     * @return array{column: string, direction: string}|null
-     */
-    private function parseOrderBy(string $order): ?array
-    {
-        $order = trim($order);
-
-        if (empty($order)) {
-            return null;
-        }
-
-        $direction = '';
-
-        if (preg_match('/\s+(ASC|DESC)$/i', $order, $matches)) {
-            $direction = strtoupper($matches[1]);
-            $order     = trim(substr($order, 0, -strlen($matches[0])));
-        }
-
-        return [
-            'column'    => trim($order, '`'),
-            'direction' => $direction,
-        ];
-    }
-
-    /**
-     * Check if order by is valid.
-     *
-     * @param array<string, string> $allowedColumns
-     */
-    private function orderByIsValid(string $orderBy, string $orderByDirection, array $allowedColumns): bool
-    {
-        if (!array_key_exists($orderBy, $allowedColumns) || !in_array($orderByDirection, ['ASC', 'DESC', ''], true)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param array<string, array<string, mixed>> $definitions
-     */
-    private function getOrderByExpression(string $orderBy, string $orderByDirection, array $definitions): string
-    {
-        $expression = $orderBy;
-
-        if (!empty($definitions[$orderBy]['formula'])) {
-            $expression = $definitions[$orderBy]['formula'];
-
-            if (!empty($definitions[$orderBy]['prefix']) || !empty($definitions[$orderBy]['suffix'])) {
-                $expression = sprintf('(%s) + 0', $expression);
-            }
-        }
-
-        return trim($expression.' '.$orderByDirection);
-    }
-
-    /**
      * @return mixed[]
      */
     public function getReportsWithGraphs(): array
@@ -759,48 +598,6 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $ownedBy = $this->security->isGranted('report:reports:viewother') ? null : $this->userHelper->getUser()->getId();
 
         return $this->getRepository()->findReportsWithGraphs($ownedBy);
-    }
-
-    /**
-     * Determine what operators should be used for the filter type.
-     *
-     * @return mixed|string
-     */
-    private function getOperatorOptions(array $data)
-    {
-        if (isset($data['operators'])) {
-            // Custom operators
-            $options = $data['operators'];
-        } else {
-            $operator = $data['operatorGroup'] ?? $data['type'];
-
-            if (!array_key_exists($operator, MauticReportBuilder::OPERATORS)) {
-                $operator = 'default';
-            }
-
-            $options = MauticReportBuilder::OPERATORS[$operator];
-        }
-
-        foreach ($options as &$label) {
-            $label = $this->translator->trans($label);
-        }
-
-        return $options;
-    }
-
-    private function getTotalCount(QueryBuilder $qb, array &$debugData): int
-    {
-        $countQb = clone $qb;
-        $countQb->resetQueryParts();
-
-        $countQb->select('count(*)')
-            ->from('('.$qb->getSQL().')', 'c');
-
-        if ($this->isDebugMode()) {
-            $debugData['count_query'] = $countQb->getSQL();
-        }
-
-        return (int) $countQb->executeQuery()->fetchOne();
     }
 
     /**
@@ -891,6 +688,214 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         return array_unique($dependents);
     }
 
+    protected function getSession(): SessionInterface
+    {
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException) {
+            return new Session(); // in case of CLI
+        }
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Report) {
+            throw new MethodNotAllowedHttpException(['Report']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = ReportEvents::REPORT_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = ReportEvents::REPORT_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = ReportEvents::REPORT_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = ReportEvents::REPORT_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new ReportEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    protected function isDebugMode(): bool
+    {
+        return MAUTIC_ENV == 'dev' || $this->coreParametersHelper->get('debug');
+    }
+
+    /**
+     * Prevent same aliases using numeric suffixes for each alias.
+     */
+    private function preventSameAliases(array $columns): array
+    {
+        $existingAliases = [];
+
+        foreach ($columns as $key => $column) {
+            $alias = $column['alias'];
+
+            // Count suffixes
+            if (!array_key_exists($alias, $existingAliases)) {
+                $existingAliases[$alias] = 0;
+            } else {
+                ++$existingAliases[$alias];
+            }
+
+            // Add numeric suffix
+            if ($existingAliases[$alias] > 0) {
+                $columns[$key]['alias'] = $alias.$existingAliases[$alias];
+            }
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Sanitize order by array comparing it to the allowed columns.
+     *
+     * @param iterable<mixed> $orderBys
+     *
+     * @return iterable<mixed>
+     */
+    private function getOrderBySanitized(iterable $orderBys, \stdClass $allowedColumns): iterable
+    {
+        $hasOrderBy  = false;
+        $definitions = $allowedColumns->definitions ?? [];
+
+        foreach ($orderBys as $key => $orderBy) {
+            $order = $this->parseOrderBy((string) $orderBy);
+
+            if ($order !== null && $this->orderByIsValid($order['column'], $order['direction'], $allowedColumns->choices)) {
+                $orderBys[$key] = $this->getOrderByExpression($order['column'], $order['direction'], $definitions);
+                $hasOrderBy     = true;
+                continue;
+            }
+
+            $orderBys[$key] = '';
+        }
+
+        return [
+            'orderBy'    => $orderBys,
+            'hasOrderBy' => $hasOrderBy,
+        ];
+    }
+
+    /**
+     * @return array{column: string, direction: string}|null
+     */
+    private function parseOrderBy(string $order): ?array
+    {
+        $order = trim($order);
+
+        if (empty($order)) {
+            return null;
+        }
+
+        $direction = '';
+
+        if (preg_match('/\s+(ASC|DESC)$/i', $order, $matches)) {
+            $direction = strtoupper($matches[1]);
+            $order     = trim(substr($order, 0, -strlen($matches[0])));
+        }
+
+        return [
+            'column'    => trim($order, '`'),
+            'direction' => $direction,
+        ];
+    }
+
+    /**
+     * Check if order by is valid.
+     *
+     * @param array<string, string> $allowedColumns
+     */
+    private function orderByIsValid(string $orderBy, string $orderByDirection, array $allowedColumns): bool
+    {
+        if (!array_key_exists($orderBy, $allowedColumns) || !in_array($orderByDirection, ['ASC', 'DESC', ''], true)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array<string, array<string, mixed>> $definitions
+     */
+    private function getOrderByExpression(string $orderBy, string $orderByDirection, array $definitions): string
+    {
+        $expression = $orderBy;
+
+        if (!empty($definitions[$orderBy]['formula'])) {
+            $expression = $definitions[$orderBy]['formula'];
+
+            if (!empty($definitions[$orderBy]['prefix']) || !empty($definitions[$orderBy]['suffix'])) {
+                $expression = sprintf('(%s) + 0', $expression);
+            }
+        }
+
+        return trim($expression.' '.$orderByDirection);
+    }
+
+    /**
+     * Determine what operators should be used for the filter type.
+     *
+     * @return mixed|string
+     */
+    private function getOperatorOptions(array $data)
+    {
+        if (isset($data['operators'])) {
+            // Custom operators
+            $options = $data['operators'];
+        } else {
+            $operator = $data['operatorGroup'] ?? $data['type'];
+
+            if (!array_key_exists($operator, MauticReportBuilder::OPERATORS)) {
+                $operator = 'default';
+            }
+
+            $options = MauticReportBuilder::OPERATORS[$operator];
+        }
+
+        foreach ($options as &$label) {
+            $label = $this->translator->trans($label);
+        }
+
+        return $options;
+    }
+
+    private function getTotalCount(QueryBuilder $qb, array &$debugData): int
+    {
+        $countQb = clone $qb;
+        $countQb->resetQueryParts();
+
+        $countQb->select('count(*)')
+            ->from('('.$qb->getSQL().')', 'c');
+
+        if ($this->isDebugMode()) {
+            $debugData['count_query'] = $countQb->getSQL();
+        }
+
+        return (int) $countQb->executeQuery()->fetchOne();
+    }
+
     /**
      * @return \Doctrine\DBAL\Connection
      */
@@ -902,10 +907,5 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         }
 
         return $connection;
-    }
-
-    protected function isDebugMode(): bool
-    {
-        return MAUTIC_ENV == 'dev' || $this->coreParametersHelper->get('debug');
     }
 }

@@ -37,15 +37,15 @@ class SearchStringHelper
 
     public function __construct(?array $needsParsing = null, ?array $needsClosing = null, ?array $closingChars = null)
     {
-        if (null !== $needsParsing) {
+        if ($needsParsing !== null) {
             $this->needsParsing = $needsParsing;
         }
 
-        if (null !== $needsClosing) {
+        if ($needsClosing !== null) {
             $this->needsClosing = $needsClosing;
         }
 
-        if (null !== $closingChars) {
+        if ($closingChars !== null) {
             $this->closingChars = $closingChars;
         }
     }
@@ -91,7 +91,7 @@ class SearchStringHelper
     protected function addFilterCommand(&$filters, $mergeFilter)
     {
         $command = $mergeFilter->command;
-        if ('is' === $command) {
+        if ($command === 'is') {
             // Special case
             $command = $command.':'.$mergeFilter->string;
         }
@@ -99,7 +99,7 @@ class SearchStringHelper
             if (!isset($filters->commands[$command])) {
                 $filters->commands[$command] = ($mergeFilter->not) ? self::COMMAND_NEGATE : self::COMMAND_POSIT;
             } else {
-                if (($mergeFilter->not && self::COMMAND_POSIT === $filters->commands[$command]) || !$mergeFilter->not && self::COMMAND_NEGATE === $filters->commands[$command]) {
+                if (($mergeFilter->not && $filters->commands[$command] === self::COMMAND_POSIT) || !$mergeFilter->not && $filters->commands[$command] === self::COMMAND_NEGATE) {
                     $filters->commands[$command] = self::COMMAND_NEUTRAL;
                 }
             }
@@ -139,7 +139,7 @@ class SearchStringHelper
             unset($chars[$pos]);
             ++$pos;
 
-            if (':' == $char) {
+            if ($char == ':') {
                 // the string is a command
                 $command = trim(substr($string, 0, -1));
                 // does this have a negative?
@@ -155,11 +155,11 @@ class SearchStringHelper
                     $filters->{$baseName}[$keyCount]->command = $command;
                     $string                                   = '';
                 }
-            } elseif (' ' == $char) {
+            } elseif ($char == ' ') {
                 // arrived at the end of a single word that is not within a quote or parenthesis so add it as standalone
-                if (' ' != $string) {
+                if ($string != ' ') {
                     $string = trim($string);
-                    $type   = ('OR' === $string || 'AND' === $string) ? $string : '';
+                    $type   = ($string === 'OR' || $string === 'AND') ? $string : '';
                     $this->setFilter($filters, $baseName, $keyCount, $string, $command, $overrideCommand, true, $type, !empty($chars));
                 }
                 continue;
@@ -194,7 +194,7 @@ class SearchStringHelper
 
                         // handle characters that support nesting
                         $neededParsing = false;
-                        if ('"' !== $c) {
+                        if ($c !== '"') {
                             // check to see if the nested string needs to be parsed as well
                             foreach ($this->needsParsing as $parseMe) {
                                 if (str_contains($string, $parseMe)) {
@@ -232,7 +232,7 @@ class SearchStringHelper
         $setUpNext = true): void
     {
         if (!empty($type)) {
-            $filters->{$baseName}[$keyCount]->type = ('OR' === $type || 'AND' === $type) ? strtolower($type) : 'and';
+            $filters->{$baseName}[$keyCount]->type = ($type === 'OR' || $type === 'AND') ? strtolower($type) : 'and';
         } elseif ($setFilter) {
             $string = trim($string);
 
@@ -257,18 +257,18 @@ class SearchStringHelper
 
             $strictPos = strpos($string, '+');
             $notPos    = strpos($string, '!');
-            if (0 === $strictPos || 1 === $strictPos || 0 === $notPos || 1 === $notPos) {
-                if (false !== $strictPos && false !== $notPos) {
+            if ($strictPos === 0 || $strictPos === 1 || $notPos === 0 || $notPos === 1) {
+                if ($strictPos !== false && $notPos !== false) {
                     // +! or !+
                     $filters->{$baseName}[$keyCount]->strict = 1;
                     $filters->{$baseName}[$keyCount]->not    = 1;
                     $string                                  = substr($string, 2);
-                } elseif (0 === $strictPos && false === $notPos) {
+                } elseif ($strictPos === 0 && $notPos === false) {
                     // +
                     $filters->{$baseName}[$keyCount]->strict = 1;
                     $filters->{$baseName}[$keyCount]->not    = 0;
                     $string                                  = substr($string, 1);
-                } elseif (false === $strictPos && 0 === $notPos) {
+                } elseif ($strictPos === false && $notPos === 0) {
                     // !
                     $filters->{$baseName}[$keyCount]->strict = 0;
                     $filters->{$baseName}[$keyCount]->not    = 1;

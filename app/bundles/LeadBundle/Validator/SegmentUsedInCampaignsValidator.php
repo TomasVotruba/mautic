@@ -23,7 +23,7 @@ class SegmentUsedInCampaignsValidator
         }
 
         $campaignNames = $this->leadListRepository->getSegmentCampaigns($segment->getId());
-        if (1 > count($campaignNames)) {
+        if (count($campaignNames) < 1) {
             return false;
         }
 

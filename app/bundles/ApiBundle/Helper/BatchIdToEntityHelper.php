@@ -92,6 +92,11 @@ class BatchIdToEntityHelper
         return $orderedEntities;
     }
 
+    public function setIsAssociative(bool $isAssociative): void
+    {
+        $this->isAssociative = $isAssociative;
+    }
+
     private function extractIds(array $parameters): void
     {
         $this->ids = [];
@@ -166,11 +171,6 @@ class BatchIdToEntityHelper
         }
         $firstKey = array_key_first($array);
 
-        return array_keys($array) !== range(0, count($array) - 1) && 0 !== $firstKey;
-    }
-
-    public function setIsAssociative(bool $isAssociative): void
-    {
-        $this->isAssociative = $isAssociative;
+        return array_keys($array) !== range(0, count($array) - 1) && $firstKey !== 0;
     }
 }

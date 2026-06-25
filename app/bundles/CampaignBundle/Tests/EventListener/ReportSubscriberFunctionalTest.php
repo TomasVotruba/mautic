@@ -63,15 +63,6 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
-    private function createContact(string $email): Lead
-    {
-        $contact = new Lead();
-        $contact->setEmail($email);
-        $this->em->persist($contact);
-
-        return $contact;
-    }
-
     public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
     {
         $dnc = new DoNotContact();
@@ -82,5 +73,14 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $this->em->persist($dnc);
 
         return $dnc;
+    }
+
+    private function createContact(string $email): Lead
+    {
+        $contact = new Lead();
+        $contact->setEmail($email);
+        $this->em->persist($contact);
+
+        return $contact;
     }
 }

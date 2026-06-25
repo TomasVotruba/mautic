@@ -83,7 +83,7 @@ class MauticSocialMonitoringCommand extends Command
         /** @var MonitoringRepository $repository */
         $repository = $this->monitoringModel->getRepository();
 
-        if (null !== $id) {
+        if ($id !== null) {
             $filter['filter'] = [
                 'force' => [
                     [
@@ -109,16 +109,16 @@ class MauticSocialMonitoringCommand extends Command
         $commandName = '';
 
         // hashtag command
-        if ('twitter_hashtag' == $networkType) {
+        if ($networkType == 'twitter_hashtag') {
             $commandName = 'social:monitor:twitter:hashtags';
         }
 
         // mention command
-        if ('twitter_handle' == $networkType) {
+        if ($networkType == 'twitter_handle') {
             $commandName = 'social:monitor:twitter:mentions';
         }
 
-        if ('' == $commandName) {
+        if ($commandName == '') {
             $output->writeln('Matching command not found.');
 
             return 1;

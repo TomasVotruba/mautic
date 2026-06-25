@@ -77,7 +77,7 @@ final class TokenSorter
             }
 
             // prioritize firstname, lastname, title in contact category
-            if (self::CATEGORY_CONTACT === $catA) {
+            if ($catA === self::CATEGORY_CONTACT) {
                 $prioA = self::CONTACT_PRIORITY[$keyA] ?? PHP_INT_MAX;
                 $prioB = self::CONTACT_PRIORITY[$keyB] ?? PHP_INT_MAX;
 

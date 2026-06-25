@@ -78,7 +78,7 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
             case 'neq':
                 $expression = $queryBuilder->expr()->or(
                     $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField()),
-                    $queryBuilder->expr()->$filterOperator(
+                    $queryBuilder->expr()->{$filterOperator}(
                         $tableAlias.'.'.$filter->getField(),
                         $filterParametersHolder
                     )
@@ -96,7 +96,7 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
             case 'between':   // Used only for date with week combination (EQUAL [this week, next week, last week])
             case 'regexp':
             case 'notRegexp': // Different behaviour from 'notLike' because of BC (do not use condition for NULL). Could be changed in Mautic 3.
-                $expression = $queryBuilder->expr()->$filterOperator(
+                $expression = $queryBuilder->expr()->{$filterOperator}(
                     $tableAlias.'.'.$filter->getField(),
                     $filterParametersHolder
                 );
@@ -105,7 +105,7 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
             case 'notBetween': // Used only for date with week combination (NOT EQUAL [this week, next week, last week])
             case 'notIn':
                 $expression = $queryBuilder->expr()->or(
-                    $queryBuilder->expr()->$filterOperator($tableAlias.'.'.$filter->getField(), $filterParametersHolder),
+                    $queryBuilder->expr()->{$filterOperator}($tableAlias.'.'.$filter->getField(), $filterParametersHolder),
                     $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField())
                 );
                 break;
@@ -121,10 +121,10 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
                 $filterArray      = $filter->contactSegmentFilterCrate->getArray();
                 $originalOperator = $filterArray['operator'];
                 $applyIsNull      = in_array($originalOperator, [OperatorOptions::EXCLUDING_ALL, OperatorOptions::EXCLUDING_ANY], true);
-                $applyNot         = OperatorOptions::EXCLUDING_ALL === $originalOperator;
+                $applyNot         = $originalOperator === OperatorOptions::EXCLUDING_ALL;
 
                 $operator = 'regexp';
-                if (OperatorOptions::EXCLUDING_ANY === $originalOperator) {
+                if ($originalOperator === OperatorOptions::EXCLUDING_ANY) {
                     $operator = 'notRegexp';
                 }
 
@@ -136,7 +136,7 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
 
                 $expressions = [];
                 foreach ($filterParametersHolder as $parameter) {
-                    $expressions[] = $queryBuilder->expr()->$operator($tableAlias.'.'.$filter->getField(), $parameter);
+                    $expressions[] = $queryBuilder->expr()->{$operator}($tableAlias.'.'.$filter->getField(), $parameter);
                 }
 
                 if (empty($expressions)) {
@@ -147,17 +147,17 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
                 if ($applyIsNull) {
                     if ($applyNot) {
                         $expression = $queryBuilder->expr()->or(
-                            'NOT('.$queryBuilder->expr()->$filterGlue(...$expressions).')',
+                            'NOT('.$queryBuilder->expr()->{$filterGlue}(...$expressions).')',
                             $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField())
                         );
                     } else {
                         $expression = $queryBuilder->expr()->or(
-                            $queryBuilder->expr()->$filterGlue(...$expressions),
+                            $queryBuilder->expr()->{$filterGlue}(...$expressions),
                             $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField())
                         );
                     }
                 } else {
-                    $expression = $queryBuilder->expr()->$filterGlue(...$expressions);
+                    $expression = $queryBuilder->expr()->{$filterGlue}(...$expressions);
                 }
                 break;
             case OperatorOptions::INCLUDING_ALL:

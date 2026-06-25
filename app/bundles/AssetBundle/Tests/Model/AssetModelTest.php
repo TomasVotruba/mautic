@@ -176,32 +176,32 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
 
         $request->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertEquals('utm_campaign', $parameters[0]);
 
                     return 'test_utm_campaign';
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertEquals('utm_content', $parameters[0]);
 
                     return 'test_utm_content';
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $this->assertEquals('utm_medium', $parameters[0]);
 
                     return 'test_utm_medium';
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 4) {
                     $this->assertEquals('utm_source', $parameters[0]);
 
                     return 'test_utm_source';
                 }
-                if (5 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 5) {
                     $this->assertEquals('utm_term', $parameters[0]);
 
                     return 'test_utm_term';
                 }
-                if (6 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 6) {
                     $this->assertEquals('ct', $parameters[0]);
 
                     return false;

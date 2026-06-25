@@ -225,7 +225,7 @@ class MessageQueueModel extends FormModel
         // Group queue by channel and channel ID - this make it possible for processing listeners to batch process such as
         // sending emails in batches to 3rd party transactional services via HTTP APIs
         foreach ($queue as $key => $message) {
-            if (MessageQueue::STATUS_SENT == $message->getStatus()) {
+            if ($message->getStatus() == MessageQueue::STATUS_SENT) {
                 unset($queue[$key]);
                 continue;
             }

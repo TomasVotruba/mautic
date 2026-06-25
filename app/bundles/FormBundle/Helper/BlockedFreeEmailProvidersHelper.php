@@ -28,9 +28,9 @@ final class BlockedFreeEmailProvidersHelper
         $decoded = null;
         if (file_exists(self::JSON_FILE_PATH) && is_readable(self::JSON_FILE_PATH)) {
             $content = file_get_contents(self::JSON_FILE_PATH);
-            if (false !== $content) {
+            if ($content !== false) {
                 $decoded = json_decode($content, true);
-                if (JSON_ERROR_NONE !== json_last_error() || !is_array($decoded)) {
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
                     $decoded = null;
                 }
             }

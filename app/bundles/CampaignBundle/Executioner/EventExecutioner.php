@@ -162,7 +162,7 @@ class EventExecutioner
         $executeThese = $this->scheduleEvents($events, $contacts, $childrenCounter, $isInactive);
 
         // Execute non jump-to events normally
-        $otherEvents = $executeThese->filter(fn (Event $event): bool => CampaignActionJumpToEventSubscriber::EVENT_NAME !== $event->getType());
+        $otherEvents = $executeThese->filter(fn (Event $event): bool => $event->getType() !== CampaignActionJumpToEventSubscriber::EVENT_NAME);
 
         if ($otherEvents->count()) {
             foreach ($otherEvents as $event) {
@@ -171,7 +171,7 @@ class EventExecutioner
         }
 
         // Now execute jump to events
-        $jumpEvents = $executeThese->filter(fn (Event $event): bool => CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType());
+        $jumpEvents = $executeThese->filter(fn (Event $event): bool => $event->getType() === CampaignActionJumpToEventSubscriber::EVENT_NAME);
         if ($jumpEvents->count()) {
             $jumpLogs = [];
 
@@ -232,6 +232,15 @@ class EventExecutioner
     }
 
     /**
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function persistSummaries(): void
+    {
+        $this->eventLogger->getSummaryModel()->persistSummaries();
+    }
+
+    /**
      * @param bool $isInactive
      *
      * @return ArrayCollection
@@ -244,7 +253,7 @@ class EventExecutioner
 
         foreach ($events as $key => $event) {
             // Ignore decisions
-            if (Event::TYPE_DECISION == $event->getEventType()) {
+            if ($event->getEventType() == Event::TYPE_DECISION) {
                 $this->logger->debug('CAMPAIGN: Ignoring child event ID '.$event->getId().' as a decision');
                 continue;
             }
@@ -300,7 +309,7 @@ class EventExecutioner
             $campaignId = $log->getCampaign()->getId();
 
             if ($this->removedContactTracker->wasContactRemoved($campaignId, $contactId)) {
-                $this->logger->debug("CAMPAIGN: Contact ID# $contactId has been removed from campaign ID $campaignId");
+                $this->logger->debug("CAMPAIGN: Contact ID# {$contactId} has been removed from campaign ID {$campaignId}");
                 $logs->remove($key);
 
                 // Clear out removed contacts to prevent a memory leak
@@ -409,14 +418,5 @@ class EventExecutioner
         $counter->advanceEvaluated($children->count());
 
         $this->executeEventsForContacts($children, $contacts, $counter);
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function persistSummaries(): void
-    {
-        $this->eventLogger->getSummaryModel()->persistSummaries();
     }
 }

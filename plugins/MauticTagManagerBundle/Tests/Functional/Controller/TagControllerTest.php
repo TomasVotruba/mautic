@@ -149,17 +149,6 @@ class TagControllerTest extends MauticMysqlTestCase
         $this->assertTrue($clientResponse->isRedirection(), 'Must be redirect response.');
     }
 
-    private function countLeadTagAssociations(int $tagId): int
-    {
-        return (int) $this->em->getConnection()->createQueryBuilder()
-            ->select('COUNT(*)')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref')
-            ->where('tag_id = :tagId')
-            ->setParameter('tagId', $tagId)
-            ->executeQuery()
-            ->fetchOne();
-    }
-
     /**
      * Get tag's edit page.
      */
@@ -424,6 +413,17 @@ class TagControllerTest extends MauticMysqlTestCase
         \assert($report instanceof Report);
         Assert::assertSame([$primaryTagId], $report->getFilters()[0]['value']);
         Assert::assertNull($this->tagRepository->find($secondaryTagId));
+    }
+
+    private function countLeadTagAssociations(int $tagId): int
+    {
+        return (int) $this->em->getConnection()->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref')
+            ->where('tag_id = :tagId')
+            ->setParameter('tagId', $tagId)
+            ->executeQuery()
+            ->fetchOne();
     }
 
     private function createCampaignEventWithChangeTags(Tag $primaryTag, Tag $secondaryTag): Event

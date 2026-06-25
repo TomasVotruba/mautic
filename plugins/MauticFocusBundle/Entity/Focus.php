@@ -140,6 +140,13 @@ class Focus extends FormEntity implements UuidInterface
         $this->initializeProjects();
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+
+        parent::__clone();
+    }
+
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint(
@@ -164,13 +171,6 @@ class Focus extends FormEntity implements UuidInterface
                 ['message' => 'mautic.focus.error.select_style']
             )
         );
-    }
-
-    public function __clone()
-    {
-        $this->id = null;
-
-        parent::__clone();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void

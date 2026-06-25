@@ -85,7 +85,7 @@ class DBALMocker
 
     public function getMockEm()
     {
-        if (null === $this->mockEm) {
+        if ($this->mockEm === null) {
             $mock = $this->testCase->getMockBuilder(EntityManager::class)
                 ->disableOriginalConstructor()
                 ->onlyMethods(
@@ -122,7 +122,7 @@ class DBALMocker
 
     public function getMockConnection()
     {
-        if (null === $this->mockConnection) {
+        if ($this->mockConnection === null) {
             $mock = $this->testCase->getMockBuilder(Connection::class)
                 ->disableOriginalConstructor()
                 ->onlyMethods([
@@ -161,7 +161,7 @@ class DBALMocker
 
     public function getMockQueryBuilder()
     {
-        if (null === $this->mockQueryBuilder) {
+        if ($this->mockQueryBuilder === null) {
             $mock = $this->testCase->getMockBuilder(QueryBuilder::class)
                 ->disableOriginalConstructor()
                 ->onlyMethods(

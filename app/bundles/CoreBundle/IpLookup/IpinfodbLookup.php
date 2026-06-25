@@ -43,7 +43,7 @@ class IpinfodbLookup extends AbstractRemoteDataLookup
                         break;
                 }
 
-                $this->$key = ucfirst($value);
+                $this->{$key} = ucfirst($value);
             }
         }
     }

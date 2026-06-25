@@ -90,33 +90,33 @@ class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
             ->method('dispatch')
             ->willReturnCallback(
                 function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName) use ($logs, &$dispatcCounter, $matcher) {
-                    if (1 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 1) {
                     }
-                    if (2 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 2) {
                         $this->assertTrue($event instanceof ExecutedEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
                     }
-                    if (3 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 3) {
                         $this->assertTrue($event instanceof ExecutedBatchEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
                     }
-                    if (4 === $matcher->numberOfInvocations()) {
+                    if ($matcher->numberOfInvocations() === 4) {
                         $this->assertTrue($event instanceof FailedEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
                     }
                     ++$dispatcCounter;
-                    if (1 === $dispatcCounter) {
+                    if ($dispatcCounter === 1) {
                         Assert::assertInstanceOf(PendingEvent::class, $event);
                         \assert($event instanceof PendingEvent);
                         $event->pass($logs->get(1));
                         $event->fail($logs->get(2), 'just because');
-                    } elseif (2 === $dispatcCounter) {
+                    } elseif ($dispatcCounter === 2) {
                         self::assertInstanceOf(ExecutedEvent::class, $event);
                         self::assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
-                    } elseif (3 === $dispatcCounter) {
+                    } elseif ($dispatcCounter === 3) {
                         self::assertInstanceOf(ExecutedBatchEvent::class, $event);
                         self::assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
-                    } elseif (4 === $dispatcCounter) {
+                    } elseif ($dispatcCounter === 4) {
                         self::assertInstanceOf(FailedEvent::class, $event);
                         self::assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
                     } else {

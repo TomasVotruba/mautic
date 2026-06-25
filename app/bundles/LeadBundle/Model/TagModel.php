@@ -76,6 +76,34 @@ class TagModel extends FormModel
         return $formFactory->create(TagEntityType::class, $entity, $options);
     }
 
+    public function tagMerge(Tag $primaryTag, Tag $secondaryTag): Tag
+    {
+        $this->logger->debug('TAG: Merging tags');
+
+        if ($primaryTag->getId() === $secondaryTag->getId()) {
+            return $primaryTag;
+        }
+
+        $event = new TagMergeEvent($primaryTag, $secondaryTag);
+        $this->em->beginTransaction();
+
+        try {
+            $this->dispatcher->dispatch($event, LeadEvents::TAG_PRE_MERGE);
+            $this->replaceLeadTagAssociations($primaryTag, $secondaryTag);
+            $this->replaceMergedTagReferences($primaryTag, $secondaryTag);
+            $this->saveEntity($primaryTag, false);
+            $this->deleteEntity($secondaryTag);
+            $this->dispatcher->dispatch($event, LeadEvents::TAG_POST_MERGE);
+            $this->em->commit();
+        } catch (\Throwable $exception) {
+            $this->em->rollback();
+
+            throw $exception;
+        }
+
+        return $primaryTag;
+    }
+
     /**
      * @throws MethodNotAllowedHttpException
      */
@@ -114,34 +142,6 @@ class TagModel extends FormModel
         }
 
         return null;
-    }
-
-    public function tagMerge(Tag $primaryTag, Tag $secondaryTag): Tag
-    {
-        $this->logger->debug('TAG: Merging tags');
-
-        if ($primaryTag->getId() === $secondaryTag->getId()) {
-            return $primaryTag;
-        }
-
-        $event = new TagMergeEvent($primaryTag, $secondaryTag);
-        $this->em->beginTransaction();
-
-        try {
-            $this->dispatcher->dispatch($event, LeadEvents::TAG_PRE_MERGE);
-            $this->replaceLeadTagAssociations($primaryTag, $secondaryTag);
-            $this->replaceMergedTagReferences($primaryTag, $secondaryTag);
-            $this->saveEntity($primaryTag, false);
-            $this->deleteEntity($secondaryTag);
-            $this->dispatcher->dispatch($event, LeadEvents::TAG_POST_MERGE);
-            $this->em->commit();
-        } catch (\Throwable $exception) {
-            $this->em->rollback();
-
-            throw $exception;
-        }
-
-        return $primaryTag;
     }
 
     private function replaceLeadTagAssociations(Tag $primaryTag, Tag $secondaryTag): void
@@ -259,7 +259,7 @@ class TagModel extends FormModel
     private function replaceTagValuesInConfiguredProperties(array $properties, int|string $oldValue, int|string $newValue): array
     {
         foreach ($properties as $key => $value) {
-            if ('properties' === $key) {
+            if ($key === 'properties') {
                 continue;
             }
 

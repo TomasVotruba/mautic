@@ -36,8 +36,8 @@ class TrackingPixelHelper
         $response->headers->set('Content-Encoding', 'none');
 
         // check to ses if request is a POST
-        if ('GET' == $request->getMethod()) {
-            if ('HTTP/1.1' == $request->getProtocolVersion()) {
+        if ($request->getMethod() == 'GET') {
+            if ($request->getProtocolVersion() == 'HTTP/1.1') {
                 $response->headers->set('Connection', 'close');
             }
 

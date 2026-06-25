@@ -13,13 +13,6 @@ final class Version20260521114026 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = Company::TABLE_NAME;
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getPrefixedTableName())->hasColumn('deleted');
-        }, 'Deleted column already added in '.self::TABLE_NAME);
-    }
-
     public function up(Schema $schema): void
     {
         $schema->getTable($this->getPrefixedTableName())
@@ -30,5 +23,12 @@ final class Version20260521114026 extends PreUpAssertionMigration
     {
         $schema->getTable($this->getPrefixedTableName())
             ->dropColumn('deleted');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(function (Schema $schema) {
+            return $schema->getTable($this->getPrefixedTableName())->hasColumn('deleted');
+        }, 'Deleted column already added in '.self::TABLE_NAME);
     }
 }

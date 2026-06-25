@@ -63,11 +63,11 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
 
     public function getPermissionBase(?string $bundle = null): string
     {
-        if (null === $bundle) {
+        if ($bundle === null) {
             $bundle = $this->requestStack->getCurrentRequest()->get('bundle');
         }
 
-        if ('global' === $bundle || empty($bundle)) {
+        if ($bundle === 'global' || empty($bundle)) {
             $bundle = 'category';
         }
 
@@ -123,51 +123,11 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
      */
     public function getEntity($id = null): ?Category
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Category();
         }
 
         return parent::getEntity($id);
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Category) {
-            throw new MethodNotAllowedHttpException(['Category']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = CategoryEvents::CATEGORY_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = CategoryEvents::CATEGORY_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = CategoryEvents::CATEGORY_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = CategoryEvents::CATEGORY_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new CategoryEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -236,5 +196,45 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Category) {
+            throw new MethodNotAllowedHttpException(['Category']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = CategoryEvents::CATEGORY_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = CategoryEvents::CATEGORY_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = CategoryEvents::CATEGORY_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = CategoryEvents::CATEGORY_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new CategoryEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

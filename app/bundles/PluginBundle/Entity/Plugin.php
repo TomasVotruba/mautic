@@ -68,6 +68,11 @@ class Plugin extends CommonEntity implements CacheInvalidateInterface
         $this->integrations = new ArrayCollection();
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -99,11 +104,6 @@ class Plugin extends CommonEntity implements CacheInvalidateInterface
             ->mappedBy('plugin')
             ->fetchExtraLazy()
             ->build();
-    }
-
-    public function __clone()
-    {
-        $this->id = null;
     }
 
     /**

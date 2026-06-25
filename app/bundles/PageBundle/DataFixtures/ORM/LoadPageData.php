@@ -24,17 +24,17 @@ class LoadPageData extends AbstractFixture implements OrderedFixtureInterface
             $page = new Page();
             $key  = $count + 1;
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ($val != 'NULL') {
                     $setter = 'set'.ucfirst($col);
                     if (in_array($col, ['translationParent', 'variantParent'])) {
-                        $page->$setter($this->getReference('page-'.$val));
+                        $page->{$setter}($this->getReference('page-'.$val));
                     } elseif (in_array($col, ['dateAdded', 'variantStartDate'])) {
-                        $page->$setter(new \DateTime($val));
+                        $page->{$setter}(new \DateTime($val));
                     } elseif (in_array($col, ['content', 'variantSettings'])) {
                         $val = Serializer::decode(stripslashes($val));
-                        $page->$setter($val);
+                        $page->{$setter}($val);
                     } else {
-                        $page->$setter($val);
+                        $page->{$setter}($val);
                     }
                 }
             }

@@ -19,11 +19,6 @@ class ContactExportSchedulerTest extends MauticMysqlTestCase
         parent::setUp();
     }
 
-    protected function beforeTearDown(): void
-    {
-        date_default_timezone_set($this->previousTimeZone);
-    }
-
     public function testScheduledDateTimeIsPersistedAndHydratedProperly(): void
     {
         $timezone = 'Asia/Taipei';
@@ -49,6 +44,11 @@ class ContactExportSchedulerTest extends MauticMysqlTestCase
         $localDate       = $this->convertDateTimezone($this->fetchScheduledDate($id), 'UTC', $timezone);
         Assert::assertSame($timezone, $exportScheduler->getScheduledDateTime()->getTimezone()->getName(), sprintf('Timezone should be %s.', $timezone));
         Assert::assertSame($localDate, $exportScheduler->getScheduledDateTime()->format(DateTimeHelper::FORMAT_DB), sprintf('PHP value should be converted to %s.', $timezone));
+    }
+
+    protected function beforeTearDown(): void
+    {
+        date_default_timezone_set($this->previousTimeZone);
     }
 
     private function convertDateTimezone(string $date, string $timezoneFrom, string $timezoneTo): string

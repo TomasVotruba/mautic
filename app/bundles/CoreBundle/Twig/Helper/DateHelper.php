@@ -40,26 +40,6 @@ final class DateHelper
     }
 
     /**
-     * @param string           $type
-     * @param \DateTime|string $datetime
-     * @param string           $timezone
-     * @param string           $fromFormat
-     *
-     * @return string
-     */
-    private function format($type, $datetime, $timezone, $fromFormat)
-    {
-        if (empty($datetime)) {
-            return '';
-        }
-        $this->helper->setDateTime($datetime, $fromFormat, $timezone);
-
-        return $this->helper->toLocalString(
-            $this->formats[$type]
-        );
-    }
-
-    /**
      * Returns full date. eg. October 8, 2014 21:19.
      *
      * @param \DateTime|string $datetime
@@ -244,7 +224,7 @@ final class DateHelper
         $date = $this->helper->getDateTime();
 
         // Use default timezone if 'local' is provided
-        $nowTimezone = ('local' === $timezone) ? date_default_timezone_get() : $timezone;
+        $nowTimezone = ($timezone === 'local') ? date_default_timezone_get() : $timezone;
         $now         = new \DateTime('now', new \DateTimeZone($nowTimezone));
 
         $diff = $now->diff($date);
@@ -290,5 +270,25 @@ final class DateHelper
 
         // For other dates, return a formatted date
         return $this->format('date', $datetime, $timezone, $fromFormat);
+    }
+
+    /**
+     * @param string           $type
+     * @param \DateTime|string $datetime
+     * @param string           $timezone
+     * @param string           $fromFormat
+     *
+     * @return string
+     */
+    private function format($type, $datetime, $timezone, $fromFormat)
+    {
+        if (empty($datetime)) {
+            return '';
+        }
+        $this->helper->setDateTime($datetime, $fromFormat, $timezone);
+
+        return $this->helper->toLocalString(
+            $this->formats[$type]
+        );
     }
 }

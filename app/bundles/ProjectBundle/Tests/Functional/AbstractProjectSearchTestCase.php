@@ -73,7 +73,7 @@ abstract class AbstractProjectSearchTestCase extends MauticMysqlTestCase
     {
         $projectData = $this->getProjectData($data);
 
-        if (null === $projectData) {
+        if ($projectData === null) {
             return;
         }
 
@@ -93,13 +93,13 @@ abstract class AbstractProjectSearchTestCase extends MauticMysqlTestCase
                 continue;
             }
 
-            if ('projects' === $key && $item) {
+            if ($key === 'projects' && $item) {
                 return $item;
             }
 
             $projectData = $this->getProjectData($item);
 
-            if (null !== $projectData) {
+            if ($projectData !== null) {
                 return $projectData;
             }
         }

@@ -31,7 +31,7 @@ class CoreParametersHelper
     {
         $name = $this->stripMauticPrefix($name);
 
-        if ('db_table_prefix' === $name && defined('MAUTIC_TABLE_PREFIX')) {
+        if ($name === 'db_table_prefix' && defined('MAUTIC_TABLE_PREFIX')) {
             // use the constant in case in the installer
             return MAUTIC_TABLE_PREFIX;
         }
@@ -58,6 +58,15 @@ class CoreParametersHelper
         return $this->resolvedParameters;
     }
 
+    public function getDefaultTimezone(): string
+    {
+        if (!empty($this->get('default_timezone'))) {
+            return $this->get('default_timezone');
+        }
+
+        return 'UTC';
+    }
+
     private function stripMauticPrefix(string $name): string
     {
         return str_replace('mautic.', '', $name);
@@ -70,14 +79,5 @@ class CoreParametersHelper
         foreach ($all as $key => $value) {
             $this->resolvedParameters[$key] = $this->get($key, $value);
         }
-    }
-
-    public function getDefaultTimezone(): string
-    {
-        if (!empty($this->get('default_timezone'))) {
-            return $this->get('default_timezone');
-        }
-
-        return 'UTC';
     }
 }

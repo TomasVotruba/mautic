@@ -46,7 +46,7 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
      */
     public function __construct(array $options, private HttpUtils $httpUtils, private UserProviderInterface $userProvider, private AuthenticationSuccessHandlerInterface $successHandler, private AuthenticationFailureHandlerInterface $failureHandler, private IntegrationHelper $integrationHelper, private EventDispatcherInterface $dispatcher)
     {
-        if ([] === $options) {
+        if ($options === []) {
             throw new \RuntimeException('$options parameter is empty. Did you forgot to configure?');
         }
 
@@ -63,7 +63,7 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
 
     public function supports(Request $request): bool
     {
-        if (true === $this->options['post_only'] && !$request->isMethod(Request::METHOD_POST)) {
+        if ($this->options['post_only'] === true && !$request->isMethod(Request::METHOD_POST)) {
             return false;
         }
 
@@ -71,11 +71,11 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
             return false;
         }
 
-        if (true === $this->options['form_only'] && 'form' !== $request->getContentTypeFormat()) {
+        if ($this->options['form_only'] === true && $request->getContentTypeFormat() !== 'form') {
             return false;
         }
 
-        if (true === $this->options['post_only']) {
+        if ($this->options['post_only'] === true) {
             return $request->request->has($this->options['integration_parameter']);
         }
 
@@ -106,8 +106,8 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
                     null,
                     $authenticatingService,
                     $userIdentifier,
-                    null !== $user ? ($credentials['password'] ?? null) : '',
-                    null !== $user ? $user->getRoles() : [],
+                    $user !== null ? ($credentials['password'] ?? null) : '',
+                    $user !== null ? $user->getRoles() : [],
                 );
 
                 $authEvent = new AuthenticationEvent(
@@ -128,7 +128,7 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
                     $user = $authEvent->getUser();
 
                     // This line is most likely will never happen. Keep it until this is thoroughly tested manually.
-                    if (null !== $user && !$user instanceof User) {
+                    if ($user !== null && !$user instanceof User) {
                         return null;
                     }
 
@@ -166,6 +166,11 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
         return $this->failureHandler->onAuthenticationFailure($request, $exception);
     }
 
+    public function isInteractive(): bool
+    {
+        return true;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -194,7 +199,7 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
             throw new BadCredentialsException('Invalid username.');
         }
 
-        if (null !== $credentials['integration'] && !\is_string($credentials['integration'])) {
+        if ($credentials['integration'] !== null && !\is_string($credentials['integration'])) {
             throw new BadRequestHttpException(sprintf('The key "%s" must be a string or null, "%s" given.', $this->options['integration_parameter'], \gettype($credentials['integration'])));
         }
 
@@ -205,10 +210,5 @@ final class SsoAuthenticator extends AbstractAuthenticator implements Interactiv
         }
 
         return $credentials;
-    }
-
-    public function isInteractive(): bool
-    {
-        return true;
     }
 }

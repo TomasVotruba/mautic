@@ -96,7 +96,7 @@ class LeadListFiltersChoicesEvent extends AbstractCustomRequestEvent
         $route = (string) $this->getRoute();
 
         // segment form
-        if ('mautic_segment_action' === $route) {
+        if ($route === 'mautic_segment_action') {
             return true;
         }
 
@@ -107,7 +107,7 @@ class LeadListFiltersChoicesEvent extends AbstractCustomRequestEvent
 
         // ajax request to load the filter's value fields
         $request = $this->getRequest();
-        if ('loadSegmentFilterForm' === $request->attributes->get('action')) {
+        if ($request->attributes->get('action') === 'loadSegmentFilterForm') {
             return true;
         }
 

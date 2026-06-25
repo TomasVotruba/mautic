@@ -27,7 +27,7 @@ class RelationsHelper
     {
         $this->objectsToSynchronize = [];
         foreach ($syncReport->getRelations() as $relationObject) {
-            if (0 < $relationObject->getRelObjectInternalId()) {
+            if ($relationObject->getRelObjectInternalId() > 0) {
                 continue;
             }
 

@@ -38,30 +38,6 @@ trait VariantEntityTrait
     #[Groups(['email:read', 'email:write', 'download:read'])]
     private $variantStartDate;
 
-    protected static function addVariantMetadata(ClassMetadataBuilder $builder, string $entityClass): void
-    {
-        $builder->createManyToOne('variantParent', $entityClass)
-            ->inversedBy('variantChildren')
-            ->addJoinColumn('variant_parent_id', 'id', true, false, 'CASCADE')
-            ->build();
-
-        $builder->createOneToMany('variantChildren', $entityClass)
-            ->setIndexBy('id')
-            ->setOrderBy(['isPublished' => 'DESC'])
-            ->mappedBy('variantParent')
-            ->build();
-
-        $builder->createField('variantSettings', 'array')
-            ->columnName('variant_settings')
-            ->nullable()
-            ->build();
-
-        $builder->createField('variantStartDate', 'datetime')
-            ->columnName('variant_start_date')
-            ->nullable()
-            ->build();
-    }
-
     /**
      * Add variant.
      *
@@ -169,7 +145,7 @@ trait VariantEntityTrait
         $children = $this->getVariantChildren();
 
         if ($isChild) {
-            return (null === $parent) ? false : true;
+            return ($parent === null) ? false : true;
         }
 
         return !empty($parent) || count($children);
@@ -247,10 +223,34 @@ trait VariantEntityTrait
         return array_unique($ids);
     }
 
+    protected static function addVariantMetadata(ClassMetadataBuilder $builder, string $entityClass): void
+    {
+        $builder->createManyToOne('variantParent', $entityClass)
+            ->inversedBy('variantChildren')
+            ->addJoinColumn('variant_parent_id', 'id', true, false, 'CASCADE')
+            ->build();
+
+        $builder->createOneToMany('variantChildren', $entityClass)
+            ->setIndexBy('id')
+            ->setOrderBy(['isPublished' => 'DESC'])
+            ->mappedBy('variantParent')
+            ->build();
+
+        $builder->createField('variantSettings', 'array')
+            ->columnName('variant_settings')
+            ->nullable()
+            ->build();
+
+        $builder->createField('variantStartDate', 'datetime')
+            ->columnName('variant_start_date')
+            ->nullable()
+            ->build();
+    }
+
     protected function getAccumulativeVariantCount(string $getter): mixed
     {
         [$parent, $children]     = $this->getVariants();
-        $count                   = $parent->$getter();
+        $count                   = $parent->{$getter}();
 
         if ($checkTranslations = method_exists($parent, 'getAccumulativeTranslationCount')) {
             // Append translations for this variant if applicable
@@ -258,7 +258,7 @@ trait VariantEntityTrait
         }
 
         foreach ($children as $variant) {
-            $count += $variant->$getter();
+            $count += $variant->{$getter}();
 
             if ($checkTranslations) {
                 // Append translations for this variant if applicable

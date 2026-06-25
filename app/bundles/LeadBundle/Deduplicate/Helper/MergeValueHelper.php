@@ -23,11 +23,11 @@ class MergeValueHelper
             throw new ValueNotMergeableException($newerValue, $olderValue);
         }
 
-        if (null !== $currentValue && $newerValue === $currentValue) {
+        if ($currentValue !== null && $newerValue === $currentValue) {
             throw new ValueNotMergeableException($newerValue, $olderValue);
         }
 
-        $isDefaultValue = null !== $defaultValue && $newerValue === $defaultValue;
+        $isDefaultValue = $defaultValue !== null && $newerValue === $defaultValue;
 
         if (self::isNotEmpty($newerValue) && !($newIsAnonymous && $isDefaultValue)) {
             return $newerValue;
@@ -42,6 +42,6 @@ class MergeValueHelper
 
     public static function isNotEmpty($value): bool
     {
-        return null !== $value && '' !== $value;
+        return $value !== null && $value !== '';
     }
 }

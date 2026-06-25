@@ -29,30 +29,30 @@ class TokenParser
             foreach ($parts as $part) {
                 $options = $this->trimArrayElements(explode('=', $part));
 
-                if (2 !== count($options)) {
+                if (count($options) !== 2) {
                     continue;
                 }
 
                 $keyword = $options[0];
                 $value   = $options[1];
 
-                if ('mapped-integration-object' === $keyword) {
+                if ($keyword === 'mapped-integration-object') {
                     $token->setObjectName($value);
                 }
 
-                if ('integration' === $keyword) {
+                if ($keyword === 'integration') {
                     $token->setIntegration($value);
                 }
 
-                if ('default' === $keyword) {
+                if ($keyword === 'default') {
                     $token->setDefaultValue($value);
                 }
 
-                if ('link-text' == $keyword) {
+                if ($keyword == 'link-text') {
                     $token->setLinkText($value);
                 }
 
-                if ('base-url' == $keyword) {
+                if ($keyword == 'base-url') {
                     $token->setBaseURL($value);
                 }
             }

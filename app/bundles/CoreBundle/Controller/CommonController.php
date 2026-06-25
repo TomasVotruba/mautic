@@ -53,46 +53,6 @@ class CommonController extends AbstractController implements MauticController
         $this->user = $userHelper->getUser();
     }
 
-    protected function getCurrentRequest(): Request
-    {
-        $request = null !== $this->requestStack ? $this->requestStack->getCurrentRequest() : null;
-
-        if (null === $request) {
-            throw new \RuntimeException('Request is not set.');
-        }
-
-        return $request;
-    }
-
-    /**
-     * Check if a security level is granted.
-     */
-    protected function accessGranted($level): bool
-    {
-        return in_array($level, $this->getPermissions());
-    }
-
-    /**
-     * Override this method in your controller
-     * for easy access to the permissions.
-     */
-    protected function getPermissions(): array
-    {
-        return [];
-    }
-
-    /**
-     * Get a model instance from the service container.
-     *
-     * @param string $modelNameKey
-     *
-     * @return AbstractCommonModel<object>
-     */
-    protected function getModel($modelNameKey): \Mautic\CoreBundle\Model\MauticModelInterface
-    {
-        return $this->modelFactory->getModel($modelNameKey);
-    }
-
     /**
      * Forwards the request to another controller and include the POST.
      *
@@ -372,7 +332,7 @@ class CommonController extends AbstractController implements MauticController
         }
 
         $tmpl = $parameters['tmpl'] ?? $request->get('tmpl', 'index');
-        if ('index' == $tmpl) {
+        if ($tmpl == 'index') {
             $updatedContent = [];
             if (!empty($newContent)) {
                 $updatedContent['newContent'] = $newContent;
@@ -535,98 +495,6 @@ class CommonController extends AbstractController implements MauticController
     }
 
     /**
-     * Updates list filters, order, limit.
-     *
-     * @param string|null $name
-     */
-    protected function setListFilters($name = null)
-    {
-        $request = $this->getCurrentRequest();
-
-        $session = $request->getSession();
-
-        if (empty($name)) {
-            $name = InputHelper::clean($request->query->get('name'));
-        }
-        $name = 'mautic.'.$name;
-
-        if (false === $request->query->has('orderby') && false === $session->has("$name.orderbydir")) {
-            $session->set("$name.orderbydir", $this->getDefaultOrderDirection());
-        }
-
-        if ($request->query->has('orderby')) {
-            $orderBy = InputHelper::clean($request->query->get('orderby'), true);
-            $dir     = $session->get("$name.orderbydir", 'ASC');
-            $dir     = $orderBy === $session->get("$name.orderby") || false == $session->has("$name.orderby") ? (('ASC' == $dir) ? 'DESC' : 'ASC') : $dir;
-            $session->set("$name.orderby", $orderBy);
-            $session->set("$name.orderbydir", $dir);
-        }
-
-        if ($request->query->has('limit')) {
-            $limit = (int) $request->query->get('limit');
-            $session->set("$name.limit", $limit);
-        }
-
-        if ($request->query->has('filterby')) {
-            $filter  = InputHelper::clean($request->query->get('filterby'), true);
-            $value   = InputHelper::clean($request->query->get('value'), true);
-            $filters = $session->get("$name.filters", []);
-
-            if ('' == $value) {
-                if (isset($filters[$filter])) {
-                    unset($filters[$filter]);
-                }
-            } else {
-                $filters[$filter] = [
-                    'column' => $filter,
-                    'expr'   => 'like',
-                    'value'  => $value,
-                    'strict' => false,
-                ];
-            }
-
-            $session->set("$name.filters", $filters);
-        }
-    }
-
-    /**
-     * Renders flashes' HTML.
-     */
-    protected function getFlashContent(): string
-    {
-        return $this->renderView('@MauticCore/Notification/flash_messages.html.twig');
-    }
-
-    /**
-     * Renders notification info for ajax.
-     */
-    protected function getNotificationContent(?Request $request = null): array
-    {
-        if (null === $request) {
-            $request = $this->getCurrentRequest();
-        }
-
-        $afterId = $request->get('mauticLastNotificationId');
-
-        /** @var \Mautic\CoreBundle\Model\NotificationModel $model */
-        $model = $this->getModel('core.notification');
-
-        [$notifications, $showNewIndicator, $updateMessage] = $model->getNotificationContent($afterId, false, 200);
-
-        $lastNotification = reset($notifications);
-
-        return [
-            'content' => ($notifications || $updateMessage) ? $this->renderView('@MauticCore/Notification/notification_messages.html.twig', [
-                'notifications' => $notifications,
-                'updateMessage' => $updateMessage,
-            ]) : '',
-            'lastId'              => (!empty($lastNotification)) ? $lastNotification['id'] : $afterId,
-            'hasNewNotifications' => $showNewIndicator,
-            'updateAvailable'     => (!empty($updateMessage)),
-        ];
-    }
-
-    /**
      * @param string       $message
      * @param array<mixed> $messageVars
      * @param string|null  $level
@@ -655,6 +523,138 @@ class CommonController extends AbstractController implements MauticController
         }
 
         return $exportHelper->exportDataAs($toExport, $type, $filename);
+    }
+
+    protected function getCurrentRequest(): Request
+    {
+        $request = $this->requestStack !== null ? $this->requestStack->getCurrentRequest() : null;
+
+        if ($request === null) {
+            throw new \RuntimeException('Request is not set.');
+        }
+
+        return $request;
+    }
+
+    /**
+     * Check if a security level is granted.
+     */
+    protected function accessGranted($level): bool
+    {
+        return in_array($level, $this->getPermissions());
+    }
+
+    /**
+     * Override this method in your controller
+     * for easy access to the permissions.
+     */
+    protected function getPermissions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get a model instance from the service container.
+     *
+     * @param string $modelNameKey
+     *
+     * @return AbstractCommonModel<object>
+     */
+    protected function getModel($modelNameKey): \Mautic\CoreBundle\Model\MauticModelInterface
+    {
+        return $this->modelFactory->getModel($modelNameKey);
+    }
+
+    /**
+     * Updates list filters, order, limit.
+     *
+     * @param string|null $name
+     */
+    protected function setListFilters($name = null)
+    {
+        $request = $this->getCurrentRequest();
+
+        $session = $request->getSession();
+
+        if (empty($name)) {
+            $name = InputHelper::clean($request->query->get('name'));
+        }
+        $name = 'mautic.'.$name;
+
+        if ($request->query->has('orderby') === false && $session->has("{$name}.orderbydir") === false) {
+            $session->set("{$name}.orderbydir", $this->getDefaultOrderDirection());
+        }
+
+        if ($request->query->has('orderby')) {
+            $orderBy = InputHelper::clean($request->query->get('orderby'), true);
+            $dir     = $session->get("{$name}.orderbydir", 'ASC');
+            $dir     = $orderBy === $session->get("{$name}.orderby") || $session->has("{$name}.orderby") == false ? (($dir == 'ASC') ? 'DESC' : 'ASC') : $dir;
+            $session->set("{$name}.orderby", $orderBy);
+            $session->set("{$name}.orderbydir", $dir);
+        }
+
+        if ($request->query->has('limit')) {
+            $limit = (int) $request->query->get('limit');
+            $session->set("{$name}.limit", $limit);
+        }
+
+        if ($request->query->has('filterby')) {
+            $filter  = InputHelper::clean($request->query->get('filterby'), true);
+            $value   = InputHelper::clean($request->query->get('value'), true);
+            $filters = $session->get("{$name}.filters", []);
+
+            if ($value == '') {
+                if (isset($filters[$filter])) {
+                    unset($filters[$filter]);
+                }
+            } else {
+                $filters[$filter] = [
+                    'column' => $filter,
+                    'expr'   => 'like',
+                    'value'  => $value,
+                    'strict' => false,
+                ];
+            }
+
+            $session->set("{$name}.filters", $filters);
+        }
+    }
+
+    /**
+     * Renders flashes' HTML.
+     */
+    protected function getFlashContent(): string
+    {
+        return $this->renderView('@MauticCore/Notification/flash_messages.html.twig');
+    }
+
+    /**
+     * Renders notification info for ajax.
+     */
+    protected function getNotificationContent(?Request $request = null): array
+    {
+        if ($request === null) {
+            $request = $this->getCurrentRequest();
+        }
+
+        $afterId = $request->get('mauticLastNotificationId');
+
+        /** @var \Mautic\CoreBundle\Model\NotificationModel $model */
+        $model = $this->getModel('core.notification');
+
+        [$notifications, $showNewIndicator, $updateMessage] = $model->getNotificationContent($afterId, false, 200);
+
+        $lastNotification = reset($notifications);
+
+        return [
+            'content' => ($notifications || $updateMessage) ? $this->renderView('@MauticCore/Notification/notification_messages.html.twig', [
+                'notifications' => $notifications,
+                'updateMessage' => $updateMessage,
+            ]) : '',
+            'lastId'              => (!empty($lastNotification)) ? $lastNotification['id'] : $afterId,
+            'hasNewNotifications' => $showNewIndicator,
+            'updateAvailable'     => (!empty($updateMessage)),
+        ];
     }
 
     /**

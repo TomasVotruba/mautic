@@ -64,7 +64,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $integration = $this->integrationHelper->getIntegrationObject('OneSignal');
 
-        if (!$integration || false === $integration->getIntegrationSettings()->getIsPublished()) {
+        if (!$integration || $integration->getIntegrationSettings()->getIsPublished() === false) {
             return;
         }
 
@@ -177,7 +177,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
     private function isLeadContactable(PendingEvent $event, LeadEventLog $log): bool
     {
-        $contactable = DoNotContact::IS_CONTACTABLE === $this->doNotContact->isContactable($log->getLead(), 'notification');
+        $contactable = $this->doNotContact->isContactable($log->getLead(), 'notification') === DoNotContact::IS_CONTACTABLE;
 
         if (!$contactable) {
             $event->passWithError($log, $this->translator->trans('mautic.notification.campaign.failed.not_contactable'));
@@ -258,7 +258,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     private function processResponse(ResponseInterface $response, PendingEvent $event, LeadEventLog $log, Notification $notification, Notification $sendNotification): void
     {
         // if for some reason the call failed, tell mautic to try again
-        if (200 !== $response->getStatusCode()) {
+        if ($response->getStatusCode() !== 200) {
             $event->fail($log, sprintf('%s (%s)', (string) $response->getBody(), $response->getStatusCode()));
 
             return;

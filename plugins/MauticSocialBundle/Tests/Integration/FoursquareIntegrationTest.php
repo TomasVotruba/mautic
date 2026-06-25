@@ -11,7 +11,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 #[\PHPUnit\Framework\Attributes\CoversClass(FoursquareIntegration::class)]
 class FoursquareIntegrationTest extends AbstractIntegrationTestCase
 {
-    private FoursquareIntegration $integration;
 
     /**
      * @var Translator&MockObject
@@ -22,6 +21,7 @@ class FoursquareIntegrationTest extends AbstractIntegrationTestCase
      * @var IntegrationHelper&MockObject
      */
     protected $integrationHelper;
+    private FoursquareIntegration $integration;
 
     protected function setUp(): void
     {

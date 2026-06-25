@@ -29,9 +29,9 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class ImportControllerTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
 
     private const IMPORT_CANCELED_MESSAGE = 'Import canceled for file test.csv';
+    protected $useCleanupRollback = false;
 
     public function testImportWithoutFile(): void
     {
@@ -332,7 +332,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         // fetch company name mapping value
         $primaryCompanyOptions = $crawler->filter("#lead_field_import_company > optgroup[label='Primary company']")->filter('option');
         $optionValues          = $primaryCompanyOptions->each(function ($node) {
-            if ('Company Name' === $node->text()) {
+            if ($node->text() === 'Company Name') {
                 return $node->attr('value');
             }
         });
@@ -369,6 +369,15 @@ final class ImportControllerTest extends MauticMysqlTestCase
                 Assert::assertCount(2, $contacts);
             }
         );
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public static function validateDataProvider(): iterable
+    {
+        yield ['0', 'John'];
+        yield ['1', 'Johny'];
     }
 
     private function setPhoneFieldIsRequired(bool $required): void
@@ -424,7 +433,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertSame($updatedCount, $importEntity->getUpdatedCount());
         Assert::assertSame(Import::IMPORTED, $importEntity->getStatus());
 
-        if (null !== $afterAssertions) {
+        if ($afterAssertions !== null) {
             $afterAssertions();
         }
     }
@@ -591,15 +600,6 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $this->em->persist($companyLead);
     }
 
-    /**
-     * @return mixed[]
-     */
-    public static function validateDataProvider(): iterable
-    {
-        yield ['0', 'John'];
-        yield ['1', 'Johny'];
-    }
-
     private function assertInsufficientPermissionError(LeadEventLog $log, User $user): void
     {
         Assert::assertSame('failed', $log->getAction(), 'The insertion should fail as the user does not have permission to create contacts.');
@@ -610,7 +610,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
     {
         $options = $crawler->filter("#lead_field_import_company > optgroup[label='Primary company']")->filter('option');
         $values  = array_filter($options->each(function ($node) {
-            if ('Company Name' === $node->text()) {
+            if ($node->text() === 'Company Name') {
                 return $node->attr('value');
             }
         }));

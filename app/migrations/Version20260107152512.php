@@ -12,16 +12,8 @@ use Mautic\PageBundle\Entity\Page;
 
 final class Version20260107152512 extends PreUpAssertionMigration
 {
-    private const COLUMN_NAME  = 'version';
     protected const TABLE_NAME = Page::TABLE_NAME;
-
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn(self::COLUMN_NAME),
-            sprintf('Column %s.%s already exists', self::TABLE_NAME, self::COLUMN_NAME)
-        );
-    }
+    private const COLUMN_NAME  = 'version';
 
     public function up(Schema $schema): void
     {
@@ -35,5 +27,13 @@ final class Version20260107152512 extends PreUpAssertionMigration
     {
         $schema->getTable($this->getPrefixedTableName())
             ->dropColumn(self::COLUMN_NAME);
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn(self::COLUMN_NAME),
+            sprintf('Column %s.%s already exists', self::TABLE_NAME, self::COLUMN_NAME)
+        );
     }
 }

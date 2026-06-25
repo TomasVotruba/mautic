@@ -18,6 +18,11 @@ class ProcessSignalState implements \Stringable
     {
     }
 
+    public function __toString(): string
+    {
+        return sprintf(self::START_TAG.'%s'.self::END_TAG, json_encode($this->data));
+    }
+
     /**
      * @throws InvalidStateException
      */
@@ -36,11 +41,6 @@ class ProcessSignalState implements \Stringable
         }
 
         return new self($data);
-    }
-
-    public function __toString(): string
-    {
-        return sprintf(self::START_TAG.'%s'.self::END_TAG, json_encode($this->data));
     }
 
     /**

@@ -25,7 +25,7 @@ final class IsPostActionRedirectUrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, IsPostActionRedirectUrl::class);
         }
 
-        if (null === $value || '' === $value) {
+        if ($value === null || $value === '') {
             return;
         }
 
@@ -43,7 +43,7 @@ final class IsPostActionRedirectUrlValidator extends ConstraintValidator
         $urlConstraint = new Url(message: $invalidUrlMessage);
         $violationList = $this->validator->validate($url, $urlConstraint);
 
-        if (0 === $violationList->count()) {
+        if ($violationList->count() === 0) {
             return;
         }
 

@@ -154,43 +154,6 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         yield [Response::HTTP_CREATED, 'Qwertee@123'];
     }
 
-    private function createRole(bool $isAdmin = false): Role
-    {
-        $role = new Role();
-        $role->setName('Role');
-        $role->setIsAdmin($isAdmin);
-        $this->em->persist($role);
-
-        return $role;
-    }
-
-    private function createPermission(string $rawPermission, Role $role, int $bitwise): void
-    {
-        $parts      = explode(':', $rawPermission);
-        $permission = new Permission();
-        $permission->setBundle($parts[0]);
-        $permission->setName($parts[1]);
-        $permission->setRole($role);
-        $permission->setBitwise($bitwise);
-        $this->em->persist($permission);
-    }
-
-    private function createUser(Role $role, string $password = 'Maut1cR0cks!'): User
-    {
-        $user = new User();
-        $user->setFirstName('John');
-        $user->setLastName('Doe');
-        $user->setUsername('john.doe');
-        $user->setEmail('john.doe@email.com');
-        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
-        \assert($hasher instanceof PasswordHasherInterface);
-        $user->setPassword($hasher->hash($password));
-        $user->setRole($role);
-        $this->em->persist($user);
-
-        return $user;
-    }
-
     /**
      * Test creating a user via API Platform v2 endpoint.
      *
@@ -224,7 +187,7 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
 
-        if (Response::HTTP_CREATED === $expectedStatusCode) {
+        if ($expectedStatusCode === Response::HTTP_CREATED) {
             $responseData = json_decode($response->getContent(), true);
 
             $this->assertIsArray($responseData);
@@ -276,5 +239,42 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
                 'expectedStatusCode' => Response::HTTP_CREATED,
             ],
         ];
+    }
+
+    private function createRole(bool $isAdmin = false): Role
+    {
+        $role = new Role();
+        $role->setName('Role');
+        $role->setIsAdmin($isAdmin);
+        $this->em->persist($role);
+
+        return $role;
+    }
+
+    private function createPermission(string $rawPermission, Role $role, int $bitwise): void
+    {
+        $parts      = explode(':', $rawPermission);
+        $permission = new Permission();
+        $permission->setBundle($parts[0]);
+        $permission->setName($parts[1]);
+        $permission->setRole($role);
+        $permission->setBitwise($bitwise);
+        $this->em->persist($permission);
+    }
+
+    private function createUser(Role $role, string $password = 'Maut1cR0cks!'): User
+    {
+        $user = new User();
+        $user->setFirstName('John');
+        $user->setLastName('Doe');
+        $user->setUsername('john.doe');
+        $user->setEmail('john.doe@email.com');
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash($password));
+        $user->setRole($role);
+        $this->em->persist($user);
+
+        return $user;
     }
 }

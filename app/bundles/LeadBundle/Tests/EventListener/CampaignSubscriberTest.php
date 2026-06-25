@@ -47,51 +47,6 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     ];
 
     /**
-     * @return array<int, array<string, array<int, string>|bool|int|null>>
-     */
-    public static function provideFormDNC(): array
-    {
-        return [
-            [
-                'reason'   => 1,
-                'channels' => ['email'],
-                'expected' => true,
-                'dncLead'  => 1,
-            ],
-            [
-                'reason'   => 2,
-                'channels' => ['email'],
-                'expected' => false,
-                'dncLead'  => 1,
-            ],
-            [
-                'reason'   => 3,
-                'channels' => ['email'],
-                'expected' => false,
-                'dncLead'  => 1,
-            ],
-            [
-                'reason'   => 2,
-                'channels' => ['email'],
-                'expected' => true,
-                'dncLead'  => 2,
-            ],
-            [
-                'reason'   => null,
-                'channels' => ['email'],
-                'expected' => true,
-                'dncLead'  => 2,
-            ],
-            [
-                'reason'   => null,
-                'channels' => ['email'],
-                'expected' => false,
-                'dncLead'  => 0,
-            ],
-        ];
-    }
-
-    /**
      * @var array<string, string>
      */
     private $configPageHit = [
@@ -176,6 +131,51 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             $mockGroupModel,
             $this->filterOperatorProvider
         );
+    }
+
+    /**
+     * @return array<int, array<string, array<int, string>|bool|int|null>>
+     */
+    public static function provideFormDNC(): array
+    {
+        return [
+            [
+                'reason'   => 1,
+                'channels' => ['email'],
+                'expected' => true,
+                'dncLead'  => 1,
+            ],
+            [
+                'reason'   => 2,
+                'channels' => ['email'],
+                'expected' => false,
+                'dncLead'  => 1,
+            ],
+            [
+                'reason'   => 3,
+                'channels' => ['email'],
+                'expected' => false,
+                'dncLead'  => 1,
+            ],
+            [
+                'reason'   => 2,
+                'channels' => ['email'],
+                'expected' => true,
+                'dncLead'  => 2,
+            ],
+            [
+                'reason'   => null,
+                'channels' => ['email'],
+                'expected' => true,
+                'dncLead'  => 2,
+            ],
+            [
+                'reason'   => null,
+                'channels' => ['email'],
+                'expected' => false,
+                'dncLead'  => 0,
+            ],
+        ];
     }
 
     public function testOnCampaignTriggerActiononUpdateCompany(): void

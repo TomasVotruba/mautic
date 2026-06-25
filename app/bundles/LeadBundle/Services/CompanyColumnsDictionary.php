@@ -49,7 +49,7 @@ final class CompanyColumnsDictionary
      */
     public function getFields(): array
     {
-        if ([] === $this->cachedChoices) {
+        if ($this->cachedChoices === []) {
             $this->cachedChoices = [
                 'companyname'    => $this->translator->trans('mautic.company.name'),
                 'companyemail'   => $this->translator->trans('mautic.company.email'),

@@ -42,7 +42,7 @@ class InjectCustomContentSubscriber implements EventSubscriberInterface
         $passParams = [];
         $parameters = $customContentEvent->getVars();
 
-        if ('email.settings.advanced' === $customContentEvent->getContext()) {
+        if ($customContentEvent->getContext() === 'email.settings.advanced') {
             // Inject MJML form within mail page
             if (empty($parameters['email']) || !$parameters['email'] instanceof Email) {
                 return;
@@ -60,7 +60,7 @@ class InjectCustomContentSubscriber implements EventSubscriberInterface
             }
 
             $grapesJsBuilder = $this->grapesJsBuilderModel->getRepository()->findOneBy(['email' => $parameters['email']]);
-            if ('POST' !== $this->requestStack->getCurrentRequest()->getMethod()) {
+            if ($this->requestStack->getCurrentRequest()->getMethod() !== 'POST') {
                 if (!$grapesJsBuilder instanceof GrapesJsBuilder && $parameters['email']->getIsClone()) {
                     $grapesJsBuilder = $this->grapesJsBuilderModel->getGrapesJsFromEmailId(
                         $parameters['email']->getClonedId()
@@ -78,7 +78,7 @@ class InjectCustomContentSubscriber implements EventSubscriberInterface
             );
 
             $customContentEvent->addContent($content);
-        } elseif ('page.header.left' === $customContentEvent->getContext()) {
+        } elseif ($customContentEvent->getContext() === 'page.header.left') {
             // Inject fileManager URL
             $passParams['dataAssets'] = $this->router->generate('grapesjsbuilder_assets', [], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
             $passParams['dataUpload'] = $this->router->generate('grapesjsbuilder_upload', [], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);

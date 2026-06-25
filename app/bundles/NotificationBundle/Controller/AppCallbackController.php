@@ -24,7 +24,7 @@ class AppCallbackController extends CommonController
         /** @var Lead $contact */
         $contact = $contactRepo->findOneBy($matchData);
 
-        if (null === $contact) {
+        if ($contact === null) {
             $contact = new Lead();
             $contact->setEmail($requestBody['email']);
             $contact->setLastActive(new \DateTime());
@@ -46,7 +46,7 @@ class AppCallbackController extends CommonController
 
             $notification     = $notificationRepo->getEntity($stat['notification_id']);
 
-            if (null !== $notification) {
+            if ($notification !== null) {
                 $statCreated       = true;
                 $notificationModel = $this->getModel('notification');
                 \assert($notificationModel instanceof NotificationModel);

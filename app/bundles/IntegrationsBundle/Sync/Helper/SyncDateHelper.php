@@ -50,7 +50,7 @@ class SyncDateHelper
             return $this->lastObjectSyncDates[$key];
         }
 
-        if (MauticSyncDataExchange::NAME !== $integration && $lastSync = $this->getLastSyncDateForObject($integration, $object)) {
+        if ($integration !== MauticSyncDataExchange::NAME && $lastSync = $this->getLastSyncDateForObject($integration, $object)) {
             // Use the latest sync date recorded
             $this->lastObjectSyncDates[$key] = $lastSync;
         } else {

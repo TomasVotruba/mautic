@@ -46,29 +46,6 @@ class BatchTransport extends AbstractTransport implements TokenTransportInterfac
         return 'batch://';
     }
 
-    protected function doSend(SentMessage $message): void
-    {
-        $message = $message->getOriginalMessage();
-
-        if (!$message instanceof MauticMessage) {
-            return;
-        }
-
-        $this->metadatas[] = $message->getMetadata();
-
-        if ($this->validate && $this->numberToFail) {
-            --$this->numberToFail;
-
-            if (!$message->getSubject()) {
-                throw new TransportException('Subject empty');
-            }
-        }
-
-        $this->fromAddresses[] = !empty($message->getFrom()) ? $message->getFrom()[0]->getAddress() : null;
-        $this->fromNames[]     = !empty($message->getFrom()) ? $message->getFrom()[0]->getName() : null;
-        $this->message         = $message;
-    }
-
     public function getMaxBatchLimit(): int
     {
         return $this->maxRecipients;
@@ -98,5 +75,28 @@ class BatchTransport extends AbstractTransport implements TokenTransportInterfac
     public function getMessage(): ?MauticMessage
     {
         return $this->message;
+    }
+
+    protected function doSend(SentMessage $message): void
+    {
+        $message = $message->getOriginalMessage();
+
+        if (!$message instanceof MauticMessage) {
+            return;
+        }
+
+        $this->metadatas[] = $message->getMetadata();
+
+        if ($this->validate && $this->numberToFail) {
+            --$this->numberToFail;
+
+            if (!$message->getSubject()) {
+                throw new TransportException('Subject empty');
+            }
+        }
+
+        $this->fromAddresses[] = !empty($message->getFrom()) ? $message->getFrom()[0]->getAddress() : null;
+        $this->fromNames[]     = !empty($message->getFrom()) ? $message->getFrom()[0]->getName() : null;
+        $this->message         = $message;
     }
 }

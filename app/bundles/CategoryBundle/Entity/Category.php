@@ -77,6 +77,13 @@ class Category extends FormEntity implements UuidInterface
     #[Groups(['category:read', 'category:write', 'stage:read', 'asset:read', 'download:read', 'event:read', 'leadcategory:read', 'notification:read', 'dynamicContent:read', 'webhook:read', 'sms:read', 'page:read', 'campaign:read', 'email:read', 'point:read', 'trigger:read', 'message:read', 'focus:read', 'form:read', 'beeFreeRow:read', 'segment:read'])]
     private $bundle;
 
+    public function __clone()
+    {
+        $this->id = null;
+
+        parent::__clone();
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -139,13 +146,6 @@ class Category extends FormEntity implements UuidInterface
                 ]
             )
             ->build();
-    }
-
-    public function __clone()
-    {
-        $this->id = null;
-
-        parent::__clone();
     }
 
     /**

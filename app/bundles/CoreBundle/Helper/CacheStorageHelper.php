@@ -79,7 +79,7 @@ class CacheStorageHelper
     {
         $cacheItem = $this->cacheAdaptor->getItem($name);
 
-        if (null !== $expiration) {
+        if ($expiration !== null) {
             $cacheItem->expiresAfter((int) $expiration);
         } elseif ($data === $cacheItem->get()) {
             // Exact same data so don't update the cache unless expiration is set
@@ -101,7 +101,7 @@ class CacheStorageHelper
      */
     public function get($name, $maxAge = null)
     {
-        if (0 === $maxAge) {
+        if ($maxAge === 0) {
             return false;
         }
 
@@ -143,7 +143,7 @@ class CacheStorageHelper
             return $this;
         }
 
-        if (null === $defaultExpiration) {
+        if ($defaultExpiration === null) {
             $defaultExpiration = $this->defaultExpiration;
         }
 
@@ -152,6 +152,15 @@ class CacheStorageHelper
         }
 
         return $this->cache[$namespace];
+    }
+
+    /**
+     * Kept since it was public prior to deprecation.
+     *
+     * @deprecated 2.6.0 to be removed in 3.0
+     */
+    public function touchDir(): void
+    {
     }
 
     /**
@@ -175,14 +184,5 @@ class CacheStorageHelper
             default:
                 throw new \InvalidArgumentException('Cache adaptor not supported.');
         }
-    }
-
-    /**
-     * Kept since it was public prior to deprecation.
-     *
-     * @deprecated 2.6.0 to be removed in 3.0
-     */
-    public function touchDir(): void
-    {
     }
 }

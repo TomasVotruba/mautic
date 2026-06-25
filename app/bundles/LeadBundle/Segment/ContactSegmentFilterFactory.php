@@ -43,7 +43,7 @@ class ContactSegmentFilterFactory
         $filters = $event->getFilters();
 
         foreach ($filters as $filter) {
-            if (self::CUSTOM_OPERATOR === $filter['operator']) {
+            if ($filter['operator'] === self::CUSTOM_OPERATOR) {
                 $mergedProperty      = $filter['merged_property'];
                 $factorSegmentFilter = null;
                 foreach ($filter['properties'] as $index => $nestedFilter) {
@@ -118,7 +118,7 @@ class ContactSegmentFilterFactory
                 $filter['operator'],
             ]);
 
-            if ('or' === strtolower($filter['glue']) && '=' === $filter['operator']) {
+            if (strtolower($filter['glue']) === 'or' && $filter['operator'] === '=') {
                 // Don't group date/datetime type filters - they require special processing
                 // by DateOptionFactory and don't support IN operator with arrays
                 if (isset($filter['type']) && in_array($filter['type'], ['date', 'datetime'], true)) {

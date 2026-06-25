@@ -93,7 +93,7 @@ class ContactMerger
          * Alternatively, if the winner's date identified is null,
          * use the loser's date identified (doesn't matter if it is null).
          */
-        if ((null !== $loser->getDateIdentified() && $loser->getDateIdentified() < $winner->getDateIdentified()) || null === $winner->getDateIdentified()) {
+        if (($loser->getDateIdentified() !== null && $loser->getDateIdentified() < $winner->getDateIdentified()) || $winner->getDateIdentified() === null) {
             $winner->setDateIdentified($loser->getDateIdentified());
         }
 
@@ -155,7 +155,7 @@ class ContactMerger
                 $fromValue    = empty($oldestFields[$field]) ? 'empty' : $oldestFields[$field];
                 $fieldDetails = $winner->getField($field);
 
-                if (false === $fieldDetails) {
+                if ($fieldDetails === false) {
                     throw new ValueNotMergeableException($fromValue, false);
                 }
 
@@ -188,7 +188,7 @@ class ContactMerger
         $oldOwner = $winner->getOwner();
         $newOwner = $loser->getOwner();
 
-        if (null === $oldOwner && null !== $newOwner) {
+        if ($oldOwner === null && $newOwner !== null) {
             $winner->setOwner($newOwner);
 
             $this->logger->debug("CONTACT: New owner of {$winner->getId()} is {$newOwner->getId()}");

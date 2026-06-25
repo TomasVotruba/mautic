@@ -23,13 +23,6 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
     private string $csvFile;
 
-    protected function beforeTearDown(): void
-    {
-        if (isset($this->csvFile) && file_exists($this->csvFile)) {
-            unlink($this->csvFile);
-        }
-    }
-
     public function testScheduleImport(): void
     {
         $this->generateSmallCSV();
@@ -333,6 +326,13 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertInstanceOf(Lead::class, $validLead);
         $this->assertInstanceOf(User::class, $validLead->getOwner());
         $this->assertSame('admin', $validLead->getOwner()->getUsername());
+    }
+
+    protected function beforeTearDown(): void
+    {
+        if (isset($this->csvFile) && file_exists($this->csvFile)) {
+            unlink($this->csvFile);
+        }
     }
 
     /**

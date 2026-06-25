@@ -64,7 +64,7 @@ class IndexSchemaHelper
     public function setName($name)
     {
         if (!$this->sm->tablesExist([$this->prefix.$name])) {
-            throw new SchemaException("Table $name does not exist!");
+            throw new SchemaException("Table {$name} does not exist!");
         }
 
         $this->table = $this->sm->introspectTable($this->prefix.$name);

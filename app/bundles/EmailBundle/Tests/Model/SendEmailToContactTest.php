@@ -181,7 +181,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->willReturn(true);
         $this->mailHelper->method('addTo')
             ->willReturnCallback(
-                fn ($email) => '@bad.com' !== $email
+                fn ($email) => $email !== '@bad.com'
             );
         $this->mailHelper->method('queue')
             ->willReturn([true, []]);
@@ -364,7 +364,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
                     $tokens = [];
                     foreach ($lead as $field => $value) {
-                        $tokens["{contactfield=$field}"] = $value;
+                        $tokens["{contactfield={$field}}"] = $value;
                     }
                     $tokens['{hash}'] = $event->getIdHash();
 

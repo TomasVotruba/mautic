@@ -233,7 +233,7 @@ class LeadEventLogRepository extends CommonRepository
 
         $q = $this->_em->getConnection()->createQueryBuilder();
         $q->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'o');
-        $q->$join(
+        $q->{$join}(
             'o',
             MAUTIC_TABLE_PREFIX.'campaign_leads',
             'l',
@@ -413,7 +413,7 @@ class LeadEventLogRepository extends CommonRepository
      */
     public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
     {
-        if ($limiter->hasCampaignLimit() && 0 === $limiter->getCampaignLimitRemaining()) {
+        if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() === 0) {
             return new ArrayCollection();
         }
 
@@ -534,7 +534,7 @@ class LeadEventLogRepository extends CommonRepository
         $dates = [];
         foreach ($results as $result) {
             $dates[$result['lead_id']] = new \DateTime($result['date_triggered'], new \DateTimeZone('UTC'));
-            if (1 === (int) $result['is_scheduled']) {
+            if ((int) $result['is_scheduled'] === 1) {
                 unset($dates[$result['lead_id']]);
             }
         }
@@ -653,7 +653,7 @@ SQL;
         /** @var LeadEventLog $log */
         $log = $this->findOneBy(['lead' => $leadId, 'event' => $eventId], ['dateTriggered' => 'DESC']);
 
-        if (null !== $log && null !== $log->getFailedLog()) {
+        if ($log !== null && $log->getFailedLog() !== null) {
             return true;
         }
 
@@ -720,7 +720,7 @@ SQL;
 
         $result = $qb->executeQuery()->fetchAssociative();
 
-        if (false === $result) {
+        if ($result === false) {
             return new EventLogStatsDto();
         }
 

@@ -71,7 +71,7 @@ class QueryBuilder extends BaseQueryBuilder
         $sql   = &$this->parentProperty('sql');
         $state = &$this->parentProperty('state');
 
-        if (null !== $sql && 1 /* self::STATE_CLEAN */ === $state) {
+        if ($sql !== null && $state /* self::STATE_CLEAN */ === 1) {
             return $sql;
         }
 
@@ -85,66 +85,6 @@ class QueryBuilder extends BaseQueryBuilder
         $state = 1 /* self::STATE_CLEAN */;
 
         return $sql;
-    }
-
-    private function getSQLForSelect(): string
-    {
-        $sqlParts = $this->getQueryParts();
-
-        $query = 'SELECT '.($sqlParts['distinct'] ? 'DISTINCT ' : '').
-            implode(', ', $sqlParts['select']);
-
-        $query .= ($sqlParts['from'] ? ' FROM '.implode(', ', $this->getFromClauses()) : '')
-            .(null !== $sqlParts['where'] ? ' WHERE '.($sqlParts['where']) : '')
-            .($sqlParts['groupBy'] ? ' GROUP BY '.implode(', ', $sqlParts['groupBy']) : '')
-            .(null !== $sqlParts['having'] ? ' HAVING '.($sqlParts['having']) : '')
-            .($sqlParts['orderBy'] ? ' ORDER BY '.implode(', ', $sqlParts['orderBy']) : '');
-
-        if ($this->parentMethod('isLimitQuery')) {
-            return $this->connection->getDatabasePlatform()->modifyLimitQuery(
-                $query,
-                $this->getMaxResults(),
-                $this->getFirstResult()
-            );
-        }
-
-        return $query;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getFromClauses(): array
-    {
-        $fromClauses  = [];
-        $knownAliases = [];
-
-        // Loop through all FROM clauses
-        foreach ($this->getQueryParts()['from'] as $from) {
-            if (null === $from['alias']) {
-                $tableSql       = $from['table'];
-                $tableReference = $from['table'];
-            } else {
-                $tableSql       = $from['table'].' '.$from['alias'];
-                $tableReference = $from['alias'];
-            }
-
-            if (isset($from['hint'])) {
-                $tableSql .= ' '.$from['hint'];
-            }
-
-            $knownAliases[$tableReference] = true;
-
-            $fromClauses[$tableReference] = $tableSql.\Closure::bind(
-                fn ($tableReference, &$knownAliases): string => $this->{'getSQLForJoins'}($tableReference, $knownAliases),
-                $this,
-                parent::class
-            )($tableReference, $knownAliases);
-        }
-
-        $this->parentMethod('verifyAllAliasesAreKnown', $knownAliases);
-
-        return $fromClauses;
     }
 
     /**
@@ -274,7 +214,7 @@ class QueryBuilder extends BaseQueryBuilder
         $parts     = $this->getQueryParts();
         $leadTable = $parts['from'][0]['alias'];
 
-        if ('orp' === $leadTable) {
+        if ($leadTable === 'orp') {
             return 'orp.lead_id';
         }
 
@@ -285,7 +225,7 @@ class QueryBuilder extends BaseQueryBuilder
         $joins     = $parts['join'][$leadTable];
 
         foreach ($joins as $join) {
-            if ('right' == $join['joinType']) {
+            if ($join['joinType'] == 'right') {
                 $matches = null;
                 if (preg_match('/'.$leadTable.'\.id \= ([^\ ]+)/i', $join['joinCondition'], $matches)) {
                     return $matches[1];
@@ -348,10 +288,10 @@ class QueryBuilder extends BaseQueryBuilder
         $sql    = $this->getSQL();
         foreach ($params as $key=>$val) {
             if (!is_int($val) && !is_float($val) && !is_array($val)) {
-                $val = "'$val'";
+                $val = "'{$val}'";
             } elseif (is_array($val)) {
-                if (ArrayParameterType::STRING === $this->getParameterType($key)) {
-                    $val = array_map(static fn ($value): string => "'$value'", $val);
+                if ($this->getParameterType($key) === ArrayParameterType::STRING) {
+                    $val = array_map(static fn ($value): string => "'{$value}'", $val);
                 }
                 $val = implode(', ', $val);
             }
@@ -383,16 +323,6 @@ class QueryBuilder extends BaseQueryBuilder
     }
 
     /**
-     * @return $this
-     */
-    private function addLogicStack($expression)
-    {
-        $this->logicStack[] = $expression;
-
-        return $this;
-    }
-
-    /**
      * This function assembles correct logic for segment processing, this is to replace andWhere and orWhere (virtualy
      *  as they need to be kept). You may not use andWhere in filters!!!
      */
@@ -402,7 +332,7 @@ class QueryBuilder extends BaseQueryBuilder
         $glue = strtolower($glue);
 
         //  Different handling
-        if ('or' == $glue) {
+        if ($glue == 'or') {
             //  Is this the first condition in query builder?
             if (!is_null($this->getQueryPart('where'))) {
                 // Are the any queued conditions?
@@ -440,9 +370,79 @@ class QueryBuilder extends BaseQueryBuilder
         return $this;
     }
 
-    public function createQueryBuilder(?Connection $connection = null): QueryBuilder
+    public function createQueryBuilder(?Connection $connection = null): self
     {
         return new self($connection ?: $this->connection);
+    }
+
+    private function getSQLForSelect(): string
+    {
+        $sqlParts = $this->getQueryParts();
+
+        $query = 'SELECT '.($sqlParts['distinct'] ? 'DISTINCT ' : '').
+            implode(', ', $sqlParts['select']);
+
+        $query .= ($sqlParts['from'] ? ' FROM '.implode(', ', $this->getFromClauses()) : '')
+            .($sqlParts['where'] !== null ? ' WHERE '.($sqlParts['where']) : '')
+            .($sqlParts['groupBy'] ? ' GROUP BY '.implode(', ', $sqlParts['groupBy']) : '')
+            .($sqlParts['having'] !== null ? ' HAVING '.($sqlParts['having']) : '')
+            .($sqlParts['orderBy'] ? ' ORDER BY '.implode(', ', $sqlParts['orderBy']) : '');
+
+        if ($this->parentMethod('isLimitQuery')) {
+            return $this->connection->getDatabasePlatform()->modifyLimitQuery(
+                $query,
+                $this->getMaxResults(),
+                $this->getFirstResult()
+            );
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getFromClauses(): array
+    {
+        $fromClauses  = [];
+        $knownAliases = [];
+
+        // Loop through all FROM clauses
+        foreach ($this->getQueryParts()['from'] as $from) {
+            if ($from['alias'] === null) {
+                $tableSql       = $from['table'];
+                $tableReference = $from['table'];
+            } else {
+                $tableSql       = $from['table'].' '.$from['alias'];
+                $tableReference = $from['alias'];
+            }
+
+            if (isset($from['hint'])) {
+                $tableSql .= ' '.$from['hint'];
+            }
+
+            $knownAliases[$tableReference] = true;
+
+            $fromClauses[$tableReference] = $tableSql.\Closure::bind(
+                fn ($tableReference, &$knownAliases): string => $this->{'getSQLForJoins'}($tableReference, $knownAliases),
+                $this,
+                parent::class
+            )($tableReference, $knownAliases);
+        }
+
+        $this->parentMethod('verifyAllAliasesAreKnown', $knownAliases);
+
+        return $fromClauses;
+    }
+
+    /**
+     * @return $this
+     */
+    private function addLogicStack($expression)
+    {
+        $this->logicStack[] = $expression;
+
+        return $this;
     }
 
     /**
@@ -452,7 +452,7 @@ class QueryBuilder extends BaseQueryBuilder
      */
     private function &parentProperty(string $property)
     {
-        return \Closure::bind(fn &() => $this->$property, $this, parent::class)();
+        return \Closure::bind(fn &() => $this->{$property}, $this, parent::class)();
     }
 
     /**
@@ -462,6 +462,6 @@ class QueryBuilder extends BaseQueryBuilder
      */
     private function parentMethod(string $method, ...$arguments)
     {
-        return \Closure::bind(fn () => $this->$method(...$arguments), $this, parent::class)();
+        return \Closure::bind(fn () => $this->{$method}(...$arguments), $this, parent::class)();
     }
 }

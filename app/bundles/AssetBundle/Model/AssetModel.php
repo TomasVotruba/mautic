@@ -96,7 +96,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
             return;
         }
 
-        if (null == $request) {
+        if ($request == null) {
             $request = $this->requestStack->getCurrentRequest();
         }
 
@@ -130,7 +130,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
 
                 if (!empty($clickthrough['lead'])) {
                     $lead = $this->leadModel->getEntity($clickthrough['lead']);
-                    if (null !== $lead) {
+                    if ($lead !== null) {
                         $wasTrackedAlready                    = $this->deviceTrackingService->isTracked();
                         $deviceDetector                       = $this->deviceDetectorFactory->create($request->server->get('HTTP_USER_AGENT'));
                         $deviceDetector->parse();
@@ -144,7 +144,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
                     }
                 }
                 if (!empty($clickthrough['channel'])) {
-                    if (1 === count($clickthrough['channel'])) {
+                    if (count($clickthrough['channel']) === 1) {
                         $channelId = reset($clickthrough['channel']);
                         $channel   = key($clickthrough['channel']);
                     } else {
@@ -172,7 +172,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
                 $trackedDevice             = $this->deviceTrackingService->getTrackedDevice();
                 $trackingId                = null;
                 $trackingNewlyGenerated    = false;
-                if (null !== $trackedDevice) {
+                if ($trackedDevice !== null) {
                     $trackingId             = $trackedDevice->getTrackingId();
                     $trackingNewlyGenerated = !$wasTrackedAlready;
                 }
@@ -324,53 +324,13 @@ class AssetModel extends FormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?Asset
     {
-        if (null === $id) {
+        if ($id === null) {
             $entity = new Asset();
         } else {
             $entity = parent::getEntity($id);
         }
 
         return $entity;
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Asset) {
-            throw new MethodNotAllowedHttpException(['Asset']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = AssetEvents::ASSET_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = AssetEvents::ASSET_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = AssetEvents::ASSET_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = AssetEvents::ASSET_POST_DELETE;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new AssetEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -388,8 +348,8 @@ class AssetModel extends FormModel implements GlobalSearchInterface
                 $repo      = $this->getRepository();
                 $repo->setCurrentUser($this->userHelper->getUser());
                 // During the form submit & edit, make sure that the data is checked against available assets
-                if ('mautic_segment_action' === $request->get('_route')
-                    && (Request::METHOD_POST === $request->getMethod() || 'edit' === $request->get('objectAction'))
+                if ($request->get('_route') === 'mautic_segment_action'
+                    && ($request->getMethod() === Request::METHOD_POST || $request->get('objectAction') === 'edit')
                 ) {
                     $limit = 0;
                 }
@@ -423,7 +383,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         }
 
         $ct        = $this->encodeArrayForUrl($clickthrough);
-        $separator = (null !== parse_url($url, PHP_URL_QUERY)) ? '&' : '?';
+        $separator = (parse_url($url, PHP_URL_QUERY) !== null) ? '&' : '?';
 
         return $url.$separator.'ct='.$ct;
     }
@@ -439,7 +399,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     public function getMaxUploadSize($unit = 'M', $humanReadable = false)
     {
         $maxAssetSize  = $this->maxAssetSize;
-        $maxAssetSize  = (-1 == $maxAssetSize || 0 === $maxAssetSize) ? PHP_INT_MAX : FileHelper::convertMegabytesToBytes($maxAssetSize);
+        $maxAssetSize  = ($maxAssetSize == -1 || $maxAssetSize === 0) ? PHP_INT_MAX : FileHelper::convertMegabytesToBytes($maxAssetSize);
         $maxPostSize   = Asset::getIniValue('post_max_size');
         $maxUploadSize = Asset::getIniValue('upload_max_filesize');
         $memoryLimit   = Asset::getIniValue('memory_limit');
@@ -630,10 +590,50 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         }
 
         $entity = $this->getEntity((int) $id);
-        if ($entity && null !== $entity->getAlias()) {
+        if ($entity && $entity->getAlias() !== null) {
             return $entity;
         }
 
         return false;
+    }
+
+    /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Asset) {
+            throw new MethodNotAllowedHttpException(['Asset']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = AssetEvents::ASSET_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = AssetEvents::ASSET_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = AssetEvents::ASSET_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = AssetEvents::ASSET_POST_DELETE;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new AssetEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
     }
 }

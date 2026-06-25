@@ -17,29 +17,6 @@ final class Version20211020114811 extends PreUpAssertionMigration
     private const INDEX_INTEGRATION_OBJECT    = MAUTIC_TABLE_PREFIX.'integration_object';
     private const INDEX_INTEGRATION_REFERENCE = MAUTIC_TABLE_PREFIX.'integration_reference';
 
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::COMPANIES_TABLE))->hasIndex(self::INDEX_COMPANY_MATCH),
-            sprintf('The index %s does not exist in the %s table.', self::INDEX_COMPANY_MATCH, $this->getPrefixedTableName(self::COMPANIES_TABLE))
-        );
-
-        $this->skipAssertion(
-            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))->hasIndex(self::INDEX_INTEGRATION_OBJECT),
-            sprintf('The index %s does not exist in the %s table.', self::INDEX_INTEGRATION_OBJECT, $this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))
-        );
-
-        $this->skipAssertion(
-            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))->hasIndex(self::INDEX_INTEGRATION_REFERENCE),
-            sprintf('The index %s does not exist in the %s table.', self::INDEX_INTEGRATION_REFERENCE, $this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))
-        );
-
-        $this->skipAssertion(
-            fn () => empty($this->getTables()),
-            'No tables require character set conversion.'
-        );
-    }
-
     public function up(Schema $schema): void
     {
         $this->addSql('SET FOREIGN_KEY_CHECKS=0;');
@@ -110,6 +87,29 @@ final class Version20211020114811 extends PreUpAssertionMigration
             );
         }
         $this->addSql('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::COMPANIES_TABLE))->hasIndex(self::INDEX_COMPANY_MATCH),
+            sprintf('The index %s does not exist in the %s table.', self::INDEX_COMPANY_MATCH, $this->getPrefixedTableName(self::COMPANIES_TABLE))
+        );
+
+        $this->skipAssertion(
+            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))->hasIndex(self::INDEX_INTEGRATION_OBJECT),
+            sprintf('The index %s does not exist in the %s table.', self::INDEX_INTEGRATION_OBJECT, $this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))
+        );
+
+        $this->skipAssertion(
+            fn (Schema $schema) => !$schema->getTable($this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))->hasIndex(self::INDEX_INTEGRATION_REFERENCE),
+            sprintf('The index %s does not exist in the %s table.', self::INDEX_INTEGRATION_REFERENCE, $this->getPrefixedTableName(self::SYNC_OBJECT_MAPPING_TABLE))
+        );
+
+        $this->skipAssertion(
+            fn () => empty($this->getTables()),
+            'No tables require character set conversion.'
+        );
     }
 
     /**

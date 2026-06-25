@@ -39,15 +39,15 @@ class PluginRepository extends CommonRepository
         return parent::getEntities($args);
     }
 
+    public function getTableAlias(): string
+    {
+        return 'p';
+    }
+
     protected function getDefaultOrder(): array
     {
         return [
             ['p.name', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'p';
     }
 }

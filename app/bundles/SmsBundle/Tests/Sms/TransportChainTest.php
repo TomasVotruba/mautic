@@ -22,6 +22,22 @@ final class TransportChainTest extends MauticMysqlTestCase
 
     private MockObject&TransportInterface $twilioTransport;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->transportChain = new TransportChain(
+            'mautic.test.twilio.mock',
+            static::getContainer()->get('mautic.helper.integration')
+        );
+
+        $this->twilioTransport = $this->createMock(TwilioTransport::class);
+
+        $this->twilioTransport
+            ->method('sendSMS')
+            ->willReturn('lol');
+    }
+
     /**
      * Call protected/private method of a class.
      *
@@ -39,22 +55,6 @@ final class TransportChainTest extends MauticMysqlTestCase
         $method     = $reflection->getMethod($methodName);
 
         return $method->invokeArgs($object, $parameters);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->transportChain = new TransportChain(
-            'mautic.test.twilio.mock',
-            static::getContainer()->get('mautic.helper.integration')
-        );
-
-        $this->twilioTransport = $this->createMock(TwilioTransport::class);
-
-        $this->twilioTransport
-            ->method('sendSMS')
-            ->willReturn('lol');
     }
 
     public function testAddTransport(): void
@@ -85,7 +85,7 @@ final class TransportChainTest extends MauticMysqlTestCase
 
     public function testSendBatchSms(): void
     {
-        $bulkSmsTransport = new class implements BulkTransportInterface {
+        $bulkSmsTransport = new class() implements BulkTransportInterface {
             public function sendBatchSms(RecipientCollection $collection, string $content): RecipientCollection
             {
                 foreach ($collection as &$recipient) {
@@ -105,7 +105,7 @@ final class TransportChainTest extends MauticMysqlTestCase
 
     public function testSendMessage(): void
     {
-        $mmsTransport = new class implements TransportInterface, MMSTransportInterface {
+        $mmsTransport = new class() implements TransportInterface, MMSTransportInterface {
             public function sendMms(Lead $lead, string $content, array $media): bool|string
             {
                 return true;

@@ -10,14 +10,6 @@ use Mautic\PageBundle\Entity\Page;
 
 final class Version20210330075323 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $tableName = $this->getPrefixedTableName(Page::TABLE_NAME);
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($tableName)->hasColumn('public_preview'),
-            sprintf('Column %s already exists in table %s', 'public_preview', $tableName)
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -29,5 +21,13 @@ final class Version20210330075323 extends PreUpAssertionMigration
     {
         $tableName = $this->getPrefixedTableName(Page::TABLE_NAME);
         $this->addSql("ALTER TABLE {$tableName} DROP public_preview;");
+    }
+    protected function preUpAssertions(): void
+    {
+        $tableName = $this->getPrefixedTableName(Page::TABLE_NAME);
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($tableName)->hasColumn('public_preview'),
+            sprintf('Column %s already exists in table %s', 'public_preview', $tableName)
+        );
     }
 }

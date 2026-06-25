@@ -413,7 +413,7 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $dnc->setLead($contact);
         $dnc->setReason($reason);
         $dnc->setDateAdded(new \DateTime());
-        if (null !== $channelId) {
+        if ($channelId !== null) {
             $dnc->setChannelId($channelId);
         }
         $this->em->persist($dnc);

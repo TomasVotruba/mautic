@@ -21,7 +21,7 @@ final class Version
     ) {
     }
 
-    public static function fromArray(array $array): Version
+    public static function fromArray(array $array): self
     {
         return new self(
             $array['version'],
@@ -43,7 +43,7 @@ final class Version
      */
     public function isStable(): bool
     {
-        return 1 === preg_match('/^(\d+\.)?(\d+\.)?(\*|\d+)$/', $this->version);
+        return preg_match('/^(\d+\.)?(\d+\.)?(\*|\d+)$/', $this->version) === 1;
     }
 
     /**
@@ -51,6 +51,6 @@ final class Version
      */
     public function isPreRelease(): bool
     {
-        return 1 === preg_match('#^(\d+\.)?(\d+\.)?(\d+)(-[a-z0-9]+)?$#i', $this->version);
+        return preg_match('#^(\d+\.)?(\d+\.)?(\d+)(-[a-z0-9]+)?$#i', $this->version) === 1;
     }
 }

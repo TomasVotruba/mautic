@@ -99,7 +99,7 @@ EOT
 
                     foreach ($languageStats['data'] as $stats) {
                         $language = ltrim($stats['relationships']['language']['data']['id'], 'l:');
-                        if ('en' === $language) {
+                        if ($language === 'en') {
                             continue;
                         }
 

@@ -20,6 +20,16 @@ class InputHelper
     private static ?InputFilter $strictHtmlFilter = null;
 
     /**
+     * Wrapper to InputHelper.
+     *
+     * @return mixed
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        return self::getFilter()->clean($arguments[0], $name);
+    }
+
+    /**
      * Adjust the boolean values from text to boolean.
      * Do not convert null to false.
      * Do not convert invalid values to false, but return null.
@@ -35,74 +45,6 @@ class InputHelper
             'F', 'N' => false,
             default => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
         };
-    }
-
-    /**
-     * @param bool $html
-     * @param bool $strict
-     *
-     * @return InputFilter
-     */
-    private static function getFilter($html = false, $strict = false)
-    {
-        if (empty(self::$htmlFilter)) {
-            // Most of Mautic's HTML uses include full HTML documents so use blacklist method
-            self::$htmlFilter               = new InputFilter([], [], 1, 1);
-            self::$htmlFilter->blockedTags  = [
-                'applet',
-                'bgsound',
-                'base',
-                'basefont',
-                'embed',
-                'frame',
-                'frameset',
-                'ilayer',
-                'layer',
-                'object',
-            ];
-
-            self::$htmlFilter->blockedAttributes = [
-                'codebase',
-                'dynsrc',
-                'lowsrc',
-            ];
-
-            // Strict HTML - basic one liner formating really
-            self::$strictHtmlFilter = new InputFilter(
-                [
-                    'b',
-                    'i',
-                    'u',
-                    'em',
-                    'strong',
-                    'a',
-                    'span',
-                ], [], 0, 1);
-
-            self::$strictHtmlFilter->blockedAttributes = [
-                'codebase',
-                'dynsrc',
-                'lowsrc',
-            ];
-
-            // Standard behavior if HTML is not specifically used
-            self::$stringFilter = new InputFilter();
-        }
-
-        return match (true) {
-            $html   => ($strict) ? self::$strictHtmlFilter : self::$htmlFilter,
-            default => self::$stringFilter,
-        };
-    }
-
-    /**
-     * Wrapper to InputHelper.
-     *
-     * @return mixed
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        return self::getFilter()->clean($arguments[0], $name);
     }
 
     /**
@@ -137,15 +79,15 @@ class InputHelper
 
                 if (is_array($v)) {
                     $v = self::_($v, $useMask, $urldecode);
-                } elseif ('filter' === $useMask) {
+                } elseif ($useMask === 'filter') {
                     $v = self::getFilter()->clean($v, $useMask);
-                } elseif (null !== $v) {
+                } elseif ($v !== null) {
                     $v = self::$useMask($v, $urldecode);
                 }
             }
 
             return $value;
-        } elseif (null === $value) {
+        } elseif ($value === null) {
             return $value;
         } elseif (is_string($mask) && method_exists(self::class, $mask)) {
             return self::$mask($value, $urldecode);
@@ -231,7 +173,7 @@ class InputHelper
         $sanitized = preg_replace("/[^a-z0-9\.\_-]/", '', strtolower($value));
         $sanitized = preg_replace("/^\.\./", '', strtolower($sanitized));
 
-        if (null === $extension) {
+        if ($extension === null) {
             return $sanitized;
         }
 
@@ -425,8 +367,8 @@ class InputHelper
             $value = $hasUnicode ? rawurldecode($value) : $value;
 
             // Was a doctype found?
-            if ($doctypeFound && false === $hasUnicode) {
-                $value = "$doctype[0]$value";
+            if ($doctypeFound && $hasUnicode === false) {
+                $value = "{$doctype[0]}{$value}";
             }
 
             if ($cdataCount) {
@@ -504,7 +446,7 @@ class InputHelper
 
     public static function minifyHTML(string $html): string
     {
-        if ('' === trim($html)) {
+        if (trim($html) === '') {
             return $html;
         }
         // Remove extra white-space(s) between HTML attribute(s)
@@ -559,6 +501,76 @@ class InputHelper
         return str_replace(["\r", "\n"], ' ', $html);
     }
 
+    /**
+     * Strip disallowed HTML tags from a string.
+     *
+     * @param string[] $allowedTags
+     */
+    public static function stripTags(string $input, array $allowedTags = []): string
+    {
+        $allowed = implode('', array_map(fn ($tag): string => "<{$tag}>", $allowedTags));
+
+        return strip_tags($input, $allowed);
+    }
+
+    /**
+     * @param bool $html
+     * @param bool $strict
+     *
+     * @return InputFilter
+     */
+    private static function getFilter($html = false, $strict = false)
+    {
+        if (empty(self::$htmlFilter)) {
+            // Most of Mautic's HTML uses include full HTML documents so use blacklist method
+            self::$htmlFilter               = new InputFilter([], [], 1, 1);
+            self::$htmlFilter->blockedTags  = [
+                'applet',
+                'bgsound',
+                'base',
+                'basefont',
+                'embed',
+                'frame',
+                'frameset',
+                'ilayer',
+                'layer',
+                'object',
+            ];
+
+            self::$htmlFilter->blockedAttributes = [
+                'codebase',
+                'dynsrc',
+                'lowsrc',
+            ];
+
+            // Strict HTML - basic one liner formating really
+            self::$strictHtmlFilter = new InputFilter(
+                [
+                    'b',
+                    'i',
+                    'u',
+                    'em',
+                    'strong',
+                    'a',
+                    'span',
+                ], [], 0, 1);
+
+            self::$strictHtmlFilter->blockedAttributes = [
+                'codebase',
+                'dynsrc',
+                'lowsrc',
+            ];
+
+            // Standard behavior if HTML is not specifically used
+            self::$stringFilter = new InputFilter();
+        }
+
+        return match (true) {
+            $html   => ($strict) ? self::$strictHtmlFilter : self::$htmlFilter,
+            default => self::$stringFilter,
+        };
+    }
+
     private static function minifyCss(string $css): string
     {
         $css = preg_replace('/\s*([:;{}])\s*/', '$1', preg_replace('/\s+/', ' ', $css));
@@ -586,17 +598,5 @@ class InputHelper
     private static function filter_string_polyfill(string $string): string
     {
         return preg_replace('/\x00|<[^>]*>?/', '', $string);
-    }
-
-    /**
-     * Strip disallowed HTML tags from a string.
-     *
-     * @param string[] $allowedTags
-     */
-    public static function stripTags(string $input, array $allowedTags = []): string
-    {
-        $allowed = implode('', array_map(fn ($tag): string => "<$tag>", $allowedTags));
-
-        return strip_tags($input, $allowed);
     }
 }

@@ -61,11 +61,48 @@ class PointGroupModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getEntity($id = null): ?Group
     {
-        if (null === $id) {
+        if ($id === null) {
             return new Group();
         }
 
         return parent::getEntity($id);
+    }
+
+    public function adjustPoints(Lead $contact, Group $group, int $points, string $operator = Lead::POINTS_ADD): Lead
+    {
+        $contactScore = $contact->getGroupScore($group);
+
+        if (empty($contactScore)) {
+            $contactScore = new GroupContactScore();
+            $contactScore->setContact($contact);
+            $contactScore->setGroup($group);
+            $contactScore->setScore(0);
+            $contact->addGroupScore($contactScore);
+        }
+        $oldScore = $contactScore->getScore();
+        $newScore = $oldScore;
+
+        match ($operator) {
+            Lead::POINTS_ADD      => $newScore += $points,
+            Lead::POINTS_SUBTRACT => $newScore -= $points,
+            Lead::POINTS_MULTIPLY => $newScore *= $points,
+            Lead::POINTS_DIVIDE   => $newScore /= $points,
+            Lead::POINTS_SET      => $newScore = $points,
+            default               => throw new \UnexpectedValueException('Invalid operator'),
+        };
+        $contactScore->setScore($newScore);
+        $this->em->persist($contactScore);
+        $this->em->flush();
+
+        $scoreChangeEvent = new Events\GroupScoreChangeEvent($contactScore, $oldScore, $newScore);
+        $this->dispatcher->dispatch($scoreChangeEvent, PointGroupEvents::SCORE_CHANGE);
+
+        return $contact;
+    }
+
+    public static function isAllowedPointOperation(string $operator): bool
+    {
+        return in_array($operator, [Lead::POINTS_ADD, Lead::POINTS_SUBTRACT, Lead::POINTS_MULTIPLY, Lead::POINTS_DIVIDE, Lead::POINTS_SET]);
     }
 
     /**
@@ -104,42 +141,5 @@ class PointGroupModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         return null;
-    }
-
-    public function adjustPoints(Lead $contact, Group $group, int $points, string $operator = Lead::POINTS_ADD): Lead
-    {
-        $contactScore = $contact->getGroupScore($group);
-
-        if (empty($contactScore)) {
-            $contactScore = new GroupContactScore();
-            $contactScore->setContact($contact);
-            $contactScore->setGroup($group);
-            $contactScore->setScore(0);
-            $contact->addGroupScore($contactScore);
-        }
-        $oldScore = $contactScore->getScore();
-        $newScore = $oldScore;
-
-        match ($operator) {
-            Lead::POINTS_ADD      => $newScore += $points,
-            Lead::POINTS_SUBTRACT => $newScore -= $points,
-            Lead::POINTS_MULTIPLY => $newScore *= $points,
-            Lead::POINTS_DIVIDE   => $newScore /= $points,
-            Lead::POINTS_SET      => $newScore = $points,
-            default               => throw new \UnexpectedValueException('Invalid operator'),
-        };
-        $contactScore->setScore($newScore);
-        $this->em->persist($contactScore);
-        $this->em->flush();
-
-        $scoreChangeEvent = new Events\GroupScoreChangeEvent($contactScore, $oldScore, $newScore);
-        $this->dispatcher->dispatch($scoreChangeEvent, PointGroupEvents::SCORE_CHANGE);
-
-        return $contact;
-    }
-
-    public static function isAllowedPointOperation(string $operator): bool
-    {
-        return in_array($operator, [Lead::POINTS_ADD, Lead::POINTS_SUBTRACT, Lead::POINTS_MULTIPLY, Lead::POINTS_DIVIDE, Lead::POINTS_SET]);
     }
 }

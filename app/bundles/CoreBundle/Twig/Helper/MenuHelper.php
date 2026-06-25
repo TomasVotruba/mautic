@@ -40,9 +40,9 @@ final class MenuHelper
             $name  = trim($name);
             $value = trim($value);
             if ($name == $value) {
-                $string .= " $name";
+                $string .= " {$name}";
             } else {
-                $string .= " $name=\"$value\"";
+                $string .= " {$name}=\"{$value}\"";
             }
         }
 
@@ -105,7 +105,7 @@ final class MenuHelper
      */
     public function render($menu, array $options = [], $renderer = null): string
     {
-        if (null === $renderer) {
+        if ($renderer === null) {
             $renderer = $menu;
         }
         $options['menu'] = $menu;

@@ -27,12 +27,12 @@ class ModelFactory
 
         // Shortcut for models with the same name as the bundle
         if (!str_contains($modelNameKey, '.')) {
-            $modelNameKey = "$modelNameKey.$modelNameKey";
+            $modelNameKey = "{$modelNameKey}.{$modelNameKey}";
         }
 
         $parts = explode('.', $modelNameKey);
 
-        if (2 !== count($parts)) {
+        if (count($parts) !== 2) {
             throw new \InvalidArgumentException($modelNameKey.' is not a valid model key.');
         }
 

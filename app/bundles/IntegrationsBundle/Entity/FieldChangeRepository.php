@@ -52,7 +52,7 @@ class FieldChangeRepository extends CommonRepository
             $qb->setParameter('integration', $integration);
         }
 
-        if (null !== $toDateTime) {
+        if ($toDateTime !== null) {
             $expr = $expr->with($qb->expr()->lte('modified_at', ':toDateTime'));
             $qb->setParameter('toDateTime', $toDateTime->format('Y-m-d H:i:s'));
         }
@@ -84,7 +84,7 @@ class FieldChangeRepository extends CommonRepository
                     $qb->expr()->lte('f.modified_at', ':toDateTime')
                 )
             );
-        if (Lead::class === $objectType) {
+        if ($objectType === Lead::class) {
             $qb->join('f', MAUTIC_TABLE_PREFIX.'leads', 'l', 'l.id = f.object_id');
         }
         $qb->setParameter('integration', $integration)

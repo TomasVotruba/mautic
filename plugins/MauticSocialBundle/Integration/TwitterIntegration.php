@@ -67,7 +67,7 @@ class TwitterIntegration extends SocialIntegration
         // Prevent SSL issues
         $settings['ssl_verifypeer'] = false;
 
-        if (empty($settings['authorize_session']) && 'access_token' != $authType) {
+        if (empty($settings['authorize_session']) && $authType != 'access_token') {
             // Twitter requires oauth_token_secret to be part of composite key
             if (isset($this->keys['oauth_token_secret'])) {
                 $settings['token_secret'] = $this->keys['oauth_token_secret'];
@@ -82,7 +82,7 @@ class TwitterIntegration extends SocialIntegration
 
     public function getApiUrl($endpoint): string
     {
-        return "https://api.twitter.com/1.1/$endpoint.json";
+        return "https://api.twitter.com/1.1/{$endpoint}.json";
     }
 
     public function getUserData($identifier, &$socialCache)
@@ -167,7 +167,7 @@ class TwitterIntegration extends SocialIntegration
             ];
 
             foreach ($data as $k => $d) {
-                if (10 == $k) {
+                if ($k == 10) {
                     break;
                 }
 
@@ -183,7 +183,7 @@ class TwitterIntegration extends SocialIntegration
                 // images
                 if (isset($d['entities']['media'])) {
                     foreach ($d['entities']['media'] as $m) {
-                        if ('photo' == $m['type']) {
+                        if ($m['type'] == 'photo') {
                             $photo = [
                                 'url' => ($m['media_url_https'] ?? $m['media_url']),
                             ];

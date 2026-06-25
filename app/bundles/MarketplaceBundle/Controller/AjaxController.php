@@ -78,7 +78,7 @@ class AjaxController extends CommonAjaxController
         try {
             $installResult = $this->composer->install($packageName);
 
-            if (Command::SUCCESS !== $installResult->exitCode) {
+            if ($installResult->exitCode !== Command::SUCCESS) {
                 return $this->installError(new \Exception($installResult->output));
             }
         } catch (\Exception $e) {
@@ -88,7 +88,7 @@ class AjaxController extends CommonAjaxController
         // Note: do not do anything except returning a response after clearing the cache to prevent errors
         $clearCacheResult = $this->clearCacheOrReturnError();
 
-        if (null !== $clearCacheResult) {
+        if ($clearCacheResult !== null) {
             return $clearCacheResult;
         }
 
@@ -129,7 +129,7 @@ class AjaxController extends CommonAjaxController
         try {
             $removeResult = $this->composer->remove($packageName);
 
-            if (0 !== $removeResult->exitCode) {
+            if ($removeResult->exitCode !== 0) {
                 return $this->removeError(new \Exception($removeResult->output));
             }
         } catch (\Exception $e) {
@@ -139,7 +139,7 @@ class AjaxController extends CommonAjaxController
         // Note: do not do anything except returning a response after clearing the cache to prevent errors
         $clearCacheResult = $this->clearCacheOrReturnError();
 
-        if (null !== $clearCacheResult) {
+        if ($clearCacheResult !== null) {
             return $clearCacheResult;
         }
 
@@ -151,7 +151,7 @@ class AjaxController extends CommonAjaxController
         try {
             $exitCode = $this->cacheHelper->clearSymfonyCache();
 
-            if (0 !== $exitCode) {
+            if ($exitCode !== 0) {
                 $this->logger->error('Could not clear Mautic\'s cache. Please try again.');
 
                 return $this->sendJsonResponse([

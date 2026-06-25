@@ -42,7 +42,7 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
 
     public function onAssetExport(EntityExportEvent $event): void
     {
-        if (Asset::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Asset::ENTITY_NAME) {
             return;
         }
 
@@ -86,7 +86,7 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
 
     public function onAssetImport(EntityImportEvent $event): void
     {
-        if (Asset::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== Asset::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -129,7 +129,7 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (Asset::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Asset::ENTITY_NAME) {
             return;
         }
 

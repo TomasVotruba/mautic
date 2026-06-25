@@ -43,7 +43,7 @@ class SysinfoModel
             return $this->phpInfo;
         }
 
-        if (function_exists('phpinfo') && 'cli' !== php_sapi_name()) {
+        if (function_exists('phpinfo') && 'cli' !== PHP_SAPI) {
             ob_start();
             $currentTz = date_default_timezone_get();
             date_default_timezone_set('UTC');
@@ -62,7 +62,7 @@ class SysinfoModel
             // ensure TZ is set back to default
             date_default_timezone_set($currentTz);
         } elseif (function_exists('phpversion')) {
-            $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.phpversion', ['%phpversion%' => phpversion()]);
+            $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.phpversion', ['%phpversion%' => PHP_VERSION]);
         } else {
             $this->phpInfo = $this->translator->trans('mautic.sysinfo.phpinfo.missing');
         }
@@ -155,7 +155,7 @@ class SysinfoModel
 
         fseek($f, -1, SEEK_END);
 
-        if ("\n" != fread($f, 1)) {
+        if (fread($f, 1) != "\n") {
             --$lines;
         }
 

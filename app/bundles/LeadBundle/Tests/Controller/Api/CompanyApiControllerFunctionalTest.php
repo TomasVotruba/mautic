@@ -21,7 +21,7 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         // Disable API just for specific test.
-        $this->configParams['api_enabled']                               = 'testDisabledApi' !== $this->name();
+        $this->configParams['api_enabled']                               = $this->name() !== 'testDisabledApi';
         $this->configParams['company_unique_identifiers_operator']       = 'AND';
         $this->configParams['update_company_mapping_data_in_background'] = !str_ends_with($this->name(), 'InHttpRequest');
 
@@ -160,7 +160,7 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
         $response = $this->client->getResponse();
         $this->assertResponseStatusCodeSame($expectedStatusCode);
 
-        if (Response::HTTP_CREATED === $expectedStatusCode) {
+        if ($expectedStatusCode === Response::HTTP_CREATED) {
             $responseData = json_decode($response->getContent(), true);
 
             $this->assertIsArray($responseData);

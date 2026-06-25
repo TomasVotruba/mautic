@@ -51,7 +51,7 @@ class MobileNotificationController extends FormController
 
         // set limits
         $limit = $session->get('mautic.mobile_notification.limit', $this->coreParametersHelper->get('default_pagelimit'));
-        $start = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -95,7 +95,7 @@ class MobileNotificationController extends FormController
         $count = count($notifications);
         if ($count && $count < ($start + 1)) {
             // the number of entities are now less then the current page so redirect to the last page
-            if (1 === $count) {
+            if ($count === 1) {
                 $lastPage = 1;
             } else {
                 $lastPage = (floor($count / $limit)) ?: 1;
@@ -155,7 +155,7 @@ class MobileNotificationController extends FormController
         // set the page we came from
         $page = $request->getSession()->get('mautic.mobile_notification.page', 1);
 
-        if (null === $notification) {
+        if ($notification === null) {
             // set the return URL
             $returnUrl = $this->generateUrl('mautic_mobile_notification_index', ['page' => $page]);
 
@@ -277,7 +277,7 @@ class MobileNotificationController extends FormController
         $page         = $session->get('mautic.mobile_notification.page', 1);
         $action       = $this->generateUrl('mautic_mobile_notification_action', ['objectAction' => 'new']);
         $notification = $request->request->all()['notification'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
@@ -289,7 +289,7 @@ class MobileNotificationController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if ('POST' === $method) {
+        if ($method === 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -416,7 +416,7 @@ class MobileNotificationController extends FormController
         ];
 
         // not found
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->postActionRedirect(
                 array_merge(
                     $postActionVars,
@@ -446,14 +446,14 @@ class MobileNotificationController extends FormController
         // Create the form
         $action       = $this->generateUrl('mautic_mobile_notification_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $notification = $request->request->all()['notification'] ?? [];
-        $updateSelect = 'POST' === $method
+        $updateSelect = $method === 'POST'
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && $method == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -563,7 +563,7 @@ class MobileNotificationController extends FormController
         $model  = $this->getModel('notification');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if ($entity != null) {
             if (!$this->security->isGranted('notification:mobile_notifications:create')
                 || !$this->security->hasEntityAccess(
                     'notification:mobile_notifications:viewown',
@@ -605,12 +605,12 @@ class MobileNotificationController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('notification');
             \assert($model instanceof NotificationModel);
             $entity = $model->getEntity($objectId);
 
-            if (null === $entity) {
+            if ($entity === null) {
                 $flashes[] = [
                     'type'    => 'error',
                     'msg'     => 'mautic.notification.error.notfound',
@@ -668,7 +668,7 @@ class MobileNotificationController extends FormController
             ],
         ];
 
-        if (Request::METHOD_POST === $request->getMethod()) {
+        if ($request->getMethod() === Request::METHOD_POST) {
             $model = $this->getModel('notification');
             \assert($model instanceof NotificationModel);
             $ids = json_decode($request->query->get('ids', '{}'));
@@ -679,7 +679,7 @@ class MobileNotificationController extends FormController
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
-                if (null === $entity) {
+                if ($entity === null) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.notification.error.notfound',

@@ -18,7 +18,7 @@ class CustomTemplateEvent extends AbstractCustomRequestEvent
     ) {
         parent::__construct($request);
 
-        if ('' === $template) {
+        if ($template === '') {
             throw new \InvalidArgumentException('$template is required');
         }
 

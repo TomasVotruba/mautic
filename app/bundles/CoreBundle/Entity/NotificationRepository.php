@@ -58,7 +58,7 @@ class NotificationRepository extends CommonRepository
             if ($limit) {
                 // Doctrine API doesn't support updates with limits
                 $this->getEntityManager()->getConnection()->executeStatement(
-                    $qb->getSQL()." LIMIT $limit"
+                    $qb->getSQL()." LIMIT {$limit}"
                 );
             } else {
                 $qb->executeStatement();
@@ -80,7 +80,7 @@ class NotificationRepository extends CommonRepository
         /** @var Notification $result */
         $result = $qb->getQuery()->getOneOrNullResult();
 
-        return null === $result ? null : $result->getDateAdded();
+        return $result === null ? null : $result->getDateAdded();
     }
 
     /**
@@ -110,7 +110,7 @@ class NotificationRepository extends CommonRepository
             );
         }
 
-        if (null !== $type) {
+        if ($type !== null) {
             $expr->add(
                 $qb->expr()->eq('n.type', ':type')
             );

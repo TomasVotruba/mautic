@@ -106,7 +106,7 @@ class ContactChannelsType extends AbstractType
                     ]
                 );
 
-                if (false == $options['public_view']) {
+                if ($options['public_view'] == false) {
                     $attributes = array_merge(
                         $attr,
                         [
@@ -150,7 +150,7 @@ class ContactChannelsType extends AbstractType
             }
         }
 
-        if (isset($options['save_button']) && true === $options['save_button']) {
+        if (isset($options['save_button']) && $options['save_button'] === true) {
             $builder->add(
                 'ids',
                 HiddenType::class

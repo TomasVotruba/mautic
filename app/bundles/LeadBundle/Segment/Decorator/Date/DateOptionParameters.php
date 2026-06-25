@@ -76,7 +76,7 @@ class DateOptionParameters
     {
         $key = array_search($leadSegmentFilterCrate->getFilter(), $relativeDateStrings, true);
 
-        if (false === $key) {
+        if ($key === false) {
             // Time frame does not match any option from $relativeDateStrings, so return original value
             return $leadSegmentFilterCrate->getFilter();
         }

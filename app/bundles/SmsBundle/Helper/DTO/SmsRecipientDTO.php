@@ -52,7 +52,7 @@ final class SmsRecipientDTO implements \JsonSerializable
             'result' => $this->result,
         ];
 
-        if (0 === count($this->substitutionData)) {
+        if (count($this->substitutionData) === 0) {
             // `substitution_data` is required but Sparkpost will return the following error with empty arrays:
             // field 'substitution_data' is of type 'json_array', but needs to be of type 'json_object'
             $json['substitution_data'] = new \stdClass();

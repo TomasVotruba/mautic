@@ -24,7 +24,7 @@ class PluginToken extends AbstractToken
     ) {
         parent::__construct($roles);
 
-        if ('' === $providerKey) {
+        if ($providerKey === '') {
             throw new \InvalidArgumentException('$providerKey must not be empty.');
         }
 
@@ -32,11 +32,28 @@ class PluginToken extends AbstractToken
             $user = null;
         }
 
-        if (null !== $user) {
+        if ($user !== null) {
             $this->setUser($user);
         }
 
         $this->providerKey = $providerKey;
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function __serialize(): array
+    {
+        return array_merge([$this->authenticatingService, $this->credentials, $this->providerKey, parent::__serialize()]);
+    }
+
+    /**
+     * @param array<int, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        [$this->authenticatingService, $this->credentials, $this->providerKey, $parentArray] = $data;
+        parent::__unserialize($parentArray);
     }
 
     public function getCredentials(): string
@@ -57,22 +74,5 @@ class PluginToken extends AbstractToken
     public function getResponse(): ?Response
     {
         return $this->response;
-    }
-
-    /**
-     * @return array<int, mixed>
-     */
-    public function __serialize(): array
-    {
-        return array_merge([$this->authenticatingService, $this->credentials, $this->providerKey, parent::__serialize()]);
-    }
-
-    /**
-     * @param array<int, mixed> $data
-     */
-    public function __unserialize(array $data): void
-    {
-        [$this->authenticatingService, $this->credentials, $this->providerKey, $parentArray] = $data;
-        parent::__unserialize($parentArray);
     }
 }

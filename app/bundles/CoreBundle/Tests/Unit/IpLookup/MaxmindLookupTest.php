@@ -16,11 +16,11 @@ use PHPUnit\Framework\MockObject\MockObject;
  */
 class MaxmindLookupTest extends \PHPUnit\Framework\TestCase
 {
-    private string $cacheDir = __DIR__.'/../../../../../../var/cache/test';
 
     protected MockObject $mockHttp;
 
     protected MockObject $mockCoreParamsHelper;
+    private string $cacheDir = __DIR__.'/../../../../../../var/cache/test';
 
     protected function setUp(): void
     {

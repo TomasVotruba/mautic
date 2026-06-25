@@ -38,7 +38,7 @@ final class MauticDenyAccessListener
         $operation        = $resourceMetadata->getOperation($attributes['operation_name']);
         $isGranted        = $operation->getSecurity() ?? null;
 
-        if (null === $isGranted) {
+        if ($isGranted === null) {
             return;
         }
 
@@ -71,17 +71,17 @@ final class MauticDenyAccessListener
             } else {
                 $requestObject = $request->attributes->get('data');
                 $property      = 'get'.$objectIdProperty;
-                $objectId      = $requestObject->$property()->getId();
+                $objectId      = $requestObject->{$property}()->getId();
             }
             $isGranted = substr($isGranted, 0, $startParenthesis).$objectId.substr($isGranted, $stopParenthesis + 1);
         }
 
         // Get the object to check the security
         $requestObject = $request->attributes->get('data');
-        if (null !== $objectProperty) {
+        if ($objectProperty !== null) {
             $objectPropertyList = explode('.', $objectProperty);
             foreach ($objectPropertyList as $property) {
-                $requestObject = $requestObject->$property();
+                $requestObject = $requestObject->{$property}();
             }
         }
 

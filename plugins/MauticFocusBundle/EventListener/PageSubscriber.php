@@ -43,7 +43,7 @@ class PageSubscriber implements EventSubscriberInterface
             $tokens      = $tokenHelper->getFormattedTokens(
                 $this->regex,
                 TokenFormatOptions::simplePrefix('mautic.focus.focus_item'),
-                'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '',
+                $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '',
             );
             if ($tokens) {
                 $event->addTokens($tokens);
@@ -61,7 +61,7 @@ class PageSubscriber implements EventSubscriberInterface
         if (count($matches[0])) {
             foreach ($matches[1] as $id) {
                 $focus = $this->model->getEntity((int) $id);
-                if (null !== $focus
+                if ($focus !== null
                     && (
                         $focus->isPublished()
                         || $this->security->hasEntityAccess(

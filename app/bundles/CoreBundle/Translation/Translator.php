@@ -86,7 +86,7 @@ class Translator implements TranslatorInterface, WarmableInterface, TranslatorBa
      */
     public function hasId(string $id, ?string $domain = null, ?string $locale = null): bool
     {
-        if (null === $domain) {
+        if ($domain === null) {
             $domain = 'messages';
         }
 

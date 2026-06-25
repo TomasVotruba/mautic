@@ -44,7 +44,7 @@ class CategoryTypesEvent extends CommonEvent
             $type = $label;
         }
 
-        if (null === $label) {
+        if ($label === null) {
             $label = 'mautic.'.$type.'.'.$type;
         }
 

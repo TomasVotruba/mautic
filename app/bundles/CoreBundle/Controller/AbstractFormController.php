@@ -22,7 +22,7 @@ abstract class AbstractFormController extends CommonController
         $this->permissionBase = $model->getPermissionBase();
 
         if ($this->canEdit($entity)) {
-            if (null !== $entity && null !== $entity->getCheckedOutBy()) {
+            if ($entity !== null && $entity->getCheckedOutBy() !== null) {
                 $model->unlockEntity($entity);
             }
 
@@ -85,7 +85,7 @@ abstract class AbstractFormController extends CommonController
                             'objectModel'  => $model,
                             'objectId'     => $entity->getId(),
                             'returnUrl'    => $returnUrl,
-                            'name'         => urlencode($entity->$nameFunction()),
+                            'name'         => urlencode($entity->{$nameFunction}()),
                         ]
                     ),
                 ]
@@ -96,7 +96,7 @@ abstract class AbstractFormController extends CommonController
             'type'    => 'error',
             'msg'     => 'mautic.core.error.locked',
             'msgVars' => [
-                '%name%'       => $entity->$nameFunction(),
+                '%name%'       => $entity->{$nameFunction}(),
                 '%user%'       => $entity->getCheckedOutByUser(),
                 '%contactUrl%' => $this->generateUrl(
                     'mautic_user_action',

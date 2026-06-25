@@ -107,7 +107,7 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         for ($eventIndex = 0;; ++$eventIndex) {
             $crawlerFilter = $crawler->filter('.campaign-event-list')->filter('span');
             $node          = $crawlerFilter->eq($eventIndex * 3);
-            if (1 > $node->count()) {
+            if ($node->count() < 1) {
                 break;
             }
             $events[] = [

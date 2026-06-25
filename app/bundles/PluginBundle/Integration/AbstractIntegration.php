@@ -413,7 +413,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         $serialized = serialize($keys);
         if (empty($decryptedKeys[$serialized])) {
             $decrypted = $this->decryptApiKeys($keys, true);
-            if (0 !== count($keys) && 0 === count($decrypted)) {
+            if (count($keys) !== 0 && count($decrypted) === 0) {
                 $decrypted = $this->decryptApiKeys($keys);
                 $this->encryptAndSetApiKeys($decrypted, $entity);
                 $this->em->flush($entity);
@@ -457,7 +457,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
         foreach ($keys as $name => $key) {
             $key = $this->encryptionHelper->decrypt($key, $mainDecryptOnly);
-            if (false === $key) {
+            if ($key === false) {
                 continue;
             }
             $decrypted[$name] = $key;
@@ -688,7 +688,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             ];
         }
 
-        if ('GET' == $method && !empty($parameters)) {
+        if ($method == 'GET' && !empty($parameters)) {
             $parameters = array_merge($settings['query'], $parameters);
             $query      = http_build_query($parameters);
             $url .= (!str_contains($url, '?')) ? '?'.$query : '&'.$query;
@@ -707,13 +707,13 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             $headers[]                        = "Content-Type: {$settings['content_type']}";
         }
 
-        if ('GET' !== $method) {
+        if ($method !== 'GET') {
             if (!empty($parameters)) {
-                if ('oauth1a' == $authType) {
+                if ($authType == 'oauth1a') {
                     $parameters = http_build_query($parameters);
                 }
                 if (!empty($settings['encode_parameters'])) {
-                    if ('json' == $settings['encode_parameters']) {
+                    if ($settings['encode_parameters'] == 'json') {
                         // encode the arguments as JSON
                         $parameters = json_encode($parameters);
                         if (empty($settings['encoding_headers_set'])) {
@@ -917,7 +917,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                             $parameters[$settings['refresh_token']] = $this->keys[$settings['refresh_token']];
                         }
 
-                        if ('authorization_code' === $grantType) {
+                        if ($grantType === 'authorization_code') {
                             $parameters['code'] = $this->request->get('code');
                         }
                         if (empty($settings['ignore_redirecturi'])) {
@@ -955,7 +955,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                         }
 
                         $headers = [
-                            "oauth-token: $authTokenKey",
+                            "oauth-token: {$authTokenKey}",
                             "Authorization: OAuth {$authToken}",
                         ];
                     }
@@ -979,7 +979,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         $authType = $this->getAuthenticationType();
 
-        if ('oauth2' == $authType) {
+        if ($authType == 'oauth2') {
             $callback    = $this->getAuthCallbackUrl();
             $clientIdKey = $this->getClientIdKey();
             $state       = $this->getAuthLoginState();
@@ -1114,7 +1114,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         // check to see if an entity exists
         $entity = $this->getIntegrationSettings();
-        if (null == $entity) {
+        if ($entity == null) {
             $entity = new Integration();
             $entity->setName($this->getName());
         }
@@ -1328,24 +1328,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     }
 
     /**
-     * Generates current URL to set as referer for curl calls.
-     */
-    protected function getRefererUrl(): ?string
-    {
-        return ($this->request) ? $this->request->getRequestUri() : null;
-    }
-
-    /**
-     * Generate a user agent string.
-     *
-     * @return string
-     */
-    protected function getUserAgent()
-    {
-        return ($this->request) ? $this->request->server->get('HTTP_USER_AGENT') : null;
-    }
-
-    /**
      * Get a list of available fields from the connecting API.
      *
      * @param mixed[] $settings
@@ -1395,7 +1377,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
          * @param $fieldType
          */
         $cleanup = function (&$mappedFields, $integrationFields, $mauticFields, $fieldType) use (&$missingRequiredFields, &$featureSettings): void {
-            $updateKey    = ('companyFields' === $fieldType) ? 'update_mautic_company' : 'update_mautic';
+            $updateKey    = ($fieldType === 'companyFields') ? 'update_mautic_company' : 'update_mautic';
             $removeFields = array_keys(array_diff_key($mappedFields, $integrationFields));
 
             // Find all the mapped fields that no longer exist in Mautic
@@ -1474,12 +1456,12 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         // if any other fieldType use integrations own field types
         $requiredFields = [];
         foreach ($fields as $field => $details) {
-            if ('leadFields' === $fieldType) {
-                if ((is_array($details) && !empty($details['required'])) || 'email' === $field
+            if ($fieldType === 'leadFields') {
+                if ((is_array($details) && !empty($details['required'])) || $field === 'email'
                     || (isset($details['optionLabel'])
-                        && 'email' == strtolower(
+                        && strtolower(
                             $details['optionLabel']
-                        ))
+                        ) == 'email')
                 ) {
                     $requiredFields[$field] = $field;
                 }
@@ -1540,22 +1522,22 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             }
 
             if (isset($leadFields[$integrationKey])) {
-                if ('mauticContactTimelineLink' === $leadFields[$integrationKey]) {
+                if ($leadFields[$integrationKey] === 'mauticContactTimelineLink') {
                     $matched[$integrationKey] = $this->getContactTimelineLink($leadId);
 
                     continue;
                 }
-                if ('mauticContactIsContactableByEmail' === $leadFields[$integrationKey]) {
+                if ($leadFields[$integrationKey] === 'mauticContactIsContactableByEmail') {
                     $matched[$integrationKey] = $this->getLeadDoNotContact($leadId);
 
                     continue;
                 }
-                if ('mauticContactId' === $leadFields[$integrationKey]) {
+                if ($leadFields[$integrationKey] === 'mauticContactId') {
                     $matched[$integrationKey] = $lead->getId();
                     continue;
                 }
                 $mauticKey = $leadFields[$integrationKey];
-                if (isset($fields[$mauticKey]) && '' !== $fields[$mauticKey]) {
+                if (isset($fields[$mauticKey]) && $fields[$mauticKey] !== '') {
                     $matched[$matchIntegrationKey] = $this->cleanPushData(
                         $fields[$mauticKey],
                         $field['type'] ?? 'string'
@@ -1628,10 +1610,10 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         // Glean supported fields from what was returned by the integration
         $gleanedData = $data;
 
-        if (null == $object) {
+        if ($object == null) {
             $object = 'lead';
         }
-        if ('company' == $object) {
+        if ($object == 'company') {
             if (!isset($config['companyFields'])) {
                 $config = $this->mergeConfigToFeatureSettings($config);
 
@@ -1642,7 +1624,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
             $fields = $config['companyFields'];
         }
-        if ('lead' == $object) {
+        if ($object == 'lead') {
             if (!isset($config['leadFields'])) {
                 $config = $this->mergeConfigToFeatureSettings($config);
 
@@ -1724,12 +1706,12 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             $leadSocialCache[$this->getName()] = [];
         }
 
-        if (null !== $socialCache) {
+        if ($socialCache !== null) {
             $leadSocialCache[$this->getName()] = array_merge($leadSocialCache[$this->getName()], $socialCache);
         }
 
         // Check for activity while here
-        if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures())) {
+        if ($identifiers !== null && in_array('public_activity', $this->getSupportedFeatures())) {
             $this->getPublicActivity($identifiers, $leadSocialCache[$this->getName()]);
         }
 
@@ -1818,69 +1800,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     }
 
     /**
-     * Convert and assign the data to assignable fields.
-     *
-     * @param mixed $data
-     *
-     * @return array
-     */
-    protected function matchUpData($data)
-    {
-        $info      = [];
-        $available = $this->getAvailableLeadFields();
-
-        foreach ($available as $field => $fieldDetails) {
-            if (is_array($data)) {
-                if (!isset($data[$field])) {
-                    $info[$field] = '';
-                    continue;
-                }
-                $values = $data[$field];
-            } else {
-                if (!isset($data->$field)) {
-                    $info[$field] = '';
-                    continue;
-                }
-                $values = $data->$field;
-            }
-
-            switch ($fieldDetails['type']) {
-                case 'string':
-                case 'boolean':
-                    $info[$field] = $values;
-                    break;
-                case 'object':
-                    foreach ($fieldDetails['fields'] as $f) {
-                        if (isset($values->$f)) {
-                            $fn = $this->matchFieldName($field, $f);
-
-                            $info[$fn] = $values->$f;
-                        }
-                    }
-                    break;
-                case 'array_object':
-                    $objects = [];
-                    if (!empty($values)) {
-                        foreach ($values as $v) {
-                            if (isset($v->value)) {
-                                $objects[] = $v->value;
-                            }
-                        }
-                    }
-                    $fn = (isset($fieldDetails['fields'][0])) ? $this->matchFieldName(
-                        $field,
-                        $fieldDetails['fields'][0]
-                    ) : $field;
-                    $info[$fn] = implode('; ', $objects);
-
-                    break;
-            }
-        }
-
-        return $info;
-    }
-
-    /**
      * Get the path to the profile templates for this integration.
      */
     public function getSocialProfileTemplate()
@@ -1906,7 +1825,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return 200 == $retcode;
+        return $retcode == 200;
     }
 
     /**
@@ -1922,7 +1841,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         $logger = $this->logger;
 
         if ($e instanceof ApiErrorException) {
-            if (null === $this->adminUsers) {
+            if ($this->adminUsers === null) {
                 $this->adminUsers = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->getEntities(
                     [
                         'filter' => [
@@ -2015,7 +1934,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
      */
     public function getFormNotes($section)
     {
-        if ('leadfield_match' == $section) {
+        if ($section == 'leadfield_match') {
             return ['mautic.integration.form.field_match_notes', 'info'];
         }
 
@@ -2145,6 +2064,212 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     }
 
     /**
+     * @param string $fieldType
+     *
+     * @return bool|float|string
+     */
+    public function cleanPushData($value, $fieldType = self::FIELD_TYPE_STRING)
+    {
+        return Cleaner::clean($value, $fieldType);
+    }
+
+    /**
+     * @return \Monolog\Logger|LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function prepareFieldsForSync($fields, $keys, $object = null)
+    {
+        return $fields;
+    }
+
+    /**
+     * Function used to format unformated fields coming from FieldsTypeTrait
+     * (usually used in campaign actions).
+     *
+     * @return array
+     */
+    public function formatMatchedFields($fields)
+    {
+        $formattedFields = [];
+
+        if (isset($fields['m_1'])) {
+            $xfields = count($fields) / 3;
+            for ($i = 1; $i < $xfields; ++$i) {
+                if (isset($fields['i_'.$i]) && isset($fields['m_'.$i])) {
+                    $formattedFields[$fields['i_'.$i]] = $fields['m_'.$i];
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        if (!empty($formattedFields)) {
+            $fields = $formattedFields;
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @param string $channel
+     *
+     * @return int
+     */
+    public function getLeadDoNotContact($leadId, $channel = 'email')
+    {
+        $isDoNotContact = 0;
+        if ($lead = $this->leadModel->getEntity($leadId)) {
+            $isContactableReason = $this->doNotContact->isContactable($lead, $channel);
+            if ($isContactableReason !== DoNotContact::IS_CONTACTABLE) {
+                $isDoNotContact = 1;
+            }
+        }
+
+        return $isDoNotContact;
+    }
+
+    /**
+     * Get pseudo fields from mautic, these are lead properties we want to map to integration fields.
+     *
+     * @return mixed
+     */
+    public function getCompoundMauticFields($lead)
+    {
+        if ($lead['internal_entity_id']) {
+            $lead['mauticContactId']                   = $lead['internal_entity_id'];
+            $lead['mauticContactTimelineLink']         = $this->getContactTimelineLink($lead['internal_entity_id']);
+            $lead['mauticContactIsContactableByEmail'] = $this->getLeadDoNotContact($lead['internal_entity_id']);
+        }
+
+        return $lead;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompoundMauticField($fieldName)
+    {
+        $compoundFields = [
+            'mauticContactTimelineLink' => 'mauticContactTimelineLink',
+            'mauticContactId'           => 'mauticContactId',
+        ];
+
+        if ($this->updateDncByDate() === true) {
+            $compoundFields['mauticContactIsContactableByEmail'] = 'mauticContactIsContactableByEmail';
+        }
+
+        return isset($compoundFields[$fieldName]);
+    }
+
+    /**
+     * Update the record in each system taking the last modified record.
+     *
+     * @param string $channel
+     *
+     * @return int
+     */
+    public function getLeadDoNotContactByDate($channel, $records, $object, $lead, $integrationData, $params = [])
+    {
+        return $records;
+    }
+
+    /**
+     * @param callable(mixed[]): Client $clientFactory
+     */
+    public function setClientFactory(callable $clientFactory): void
+    {
+        $this->clientFactory = \Closure::fromCallable($clientFactory);
+    }
+
+    /**
+     * Generates current URL to set as referer for curl calls.
+     */
+    protected function getRefererUrl(): ?string
+    {
+        return ($this->request) ? $this->request->getRequestUri() : null;
+    }
+
+    /**
+     * Generate a user agent string.
+     *
+     * @return string
+     */
+    protected function getUserAgent()
+    {
+        return ($this->request) ? $this->request->server->get('HTTP_USER_AGENT') : null;
+    }
+
+    /**
+     * Convert and assign the data to assignable fields.
+     *
+     * @param mixed $data
+     *
+     * @return array
+     */
+    protected function matchUpData($data)
+    {
+        $info      = [];
+        $available = $this->getAvailableLeadFields();
+
+        foreach ($available as $field => $fieldDetails) {
+            if (is_array($data)) {
+                if (!isset($data[$field])) {
+                    $info[$field] = '';
+                    continue;
+                }
+                $values = $data[$field];
+            } else {
+                if (!isset($data->{$field})) {
+                    $info[$field] = '';
+                    continue;
+                }
+                $values = $data->{$field};
+            }
+
+            switch ($fieldDetails['type']) {
+                case 'string':
+                case 'boolean':
+                    $info[$field] = $values;
+                    break;
+                case 'object':
+                    foreach ($fieldDetails['fields'] as $f) {
+                        if (isset($values->{$f})) {
+                            $fn = $this->matchFieldName($field, $f);
+
+                            $info[$fn] = $values->{$f};
+                        }
+                    }
+                    break;
+                case 'array_object':
+                    $objects = [];
+                    if (!empty($values)) {
+                        foreach ($values as $v) {
+                            if (isset($v->value)) {
+                                $objects[] = $v->value;
+                            }
+                        }
+                    }
+                    $fn = (isset($fieldDetails['fields'][0])) ? $this->matchFieldName(
+                        $field,
+                        $fieldDetails['fields'][0]
+                    ) : $field;
+                    $info[$fn] = implode('; ', $objects);
+
+                    break;
+            }
+        }
+
+        return $info;
+    }
+
+    /**
      * @param array $keys
      *
      * @return array
@@ -2178,24 +2303,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         }
 
         return $identifier;
-    }
-
-    /**
-     * @param string $fieldType
-     *
-     * @return bool|float|string
-     */
-    public function cleanPushData($value, $fieldType = self::FIELD_TYPE_STRING)
-    {
-        return Cleaner::clean($value, $fieldType);
-    }
-
-    /**
-     * @return \Monolog\Logger|LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 
     /**
@@ -2332,113 +2439,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
         return (defined('MAUTIC_DATE_MODIFIED_OVERRIDE')) ? \DateTime::createFromFormat('U', MAUTIC_DATE_MODIFIED_OVERRIDE)
             : new \DateTime();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function prepareFieldsForSync($fields, $keys, $object = null)
-    {
-        return $fields;
-    }
-
-    /**
-     * Function used to format unformated fields coming from FieldsTypeTrait
-     * (usually used in campaign actions).
-     *
-     * @return array
-     */
-    public function formatMatchedFields($fields)
-    {
-        $formattedFields = [];
-
-        if (isset($fields['m_1'])) {
-            $xfields = count($fields) / 3;
-            for ($i = 1; $i < $xfields; ++$i) {
-                if (isset($fields['i_'.$i]) && isset($fields['m_'.$i])) {
-                    $formattedFields[$fields['i_'.$i]] = $fields['m_'.$i];
-                } else {
-                    continue;
-                }
-            }
-        }
-
-        if (!empty($formattedFields)) {
-            $fields = $formattedFields;
-        }
-
-        return $fields;
-    }
-
-    /**
-     * @param string $channel
-     *
-     * @return int
-     */
-    public function getLeadDoNotContact($leadId, $channel = 'email')
-    {
-        $isDoNotContact = 0;
-        if ($lead = $this->leadModel->getEntity($leadId)) {
-            $isContactableReason = $this->doNotContact->isContactable($lead, $channel);
-            if (DoNotContact::IS_CONTACTABLE !== $isContactableReason) {
-                $isDoNotContact = 1;
-            }
-        }
-
-        return $isDoNotContact;
-    }
-
-    /**
-     * Get pseudo fields from mautic, these are lead properties we want to map to integration fields.
-     *
-     * @return mixed
-     */
-    public function getCompoundMauticFields($lead)
-    {
-        if ($lead['internal_entity_id']) {
-            $lead['mauticContactId']                   = $lead['internal_entity_id'];
-            $lead['mauticContactTimelineLink']         = $this->getContactTimelineLink($lead['internal_entity_id']);
-            $lead['mauticContactIsContactableByEmail'] = $this->getLeadDoNotContact($lead['internal_entity_id']);
-        }
-
-        return $lead;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCompoundMauticField($fieldName)
-    {
-        $compoundFields = [
-            'mauticContactTimelineLink' => 'mauticContactTimelineLink',
-            'mauticContactId'           => 'mauticContactId',
-        ];
-
-        if (true === $this->updateDncByDate()) {
-            $compoundFields['mauticContactIsContactableByEmail'] = 'mauticContactIsContactableByEmail';
-        }
-
-        return isset($compoundFields[$fieldName]);
-    }
-
-    /**
-     * Update the record in each system taking the last modified record.
-     *
-     * @param string $channel
-     *
-     * @return int
-     */
-    public function getLeadDoNotContactByDate($channel, $records, $object, $lead, $integrationData, $params = [])
-    {
-        return $records;
-    }
-
-    /**
-     * @param callable(mixed[]): Client $clientFactory
-     */
-    public function setClientFactory(callable $clientFactory): void
-    {
-        $this->clientFactory = \Closure::fromCallable($clientFactory);
     }
 
     /**

@@ -204,6 +204,13 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     #[Groups(['page:read', 'page:write', 'download:read', 'email:read'])]
     private bool $isDuplicate = false;
 
+    public function __construct()
+    {
+        $this->translationChildren = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->variantChildren     = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->cloneObjectId = (int) $this->id;
@@ -215,13 +222,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         $this->setDraft(null);
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->translationChildren = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->variantChildren     = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -747,7 +747,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      */
     public function setIsPreferenceCenter($isPreferenceCenter)
     {
-        $sanitizedValue = null === $isPreferenceCenter ? null : (bool) $isPreferenceCenter;
+        $sanitizedValue = $isPreferenceCenter === null ? null : (bool) $isPreferenceCenter;
         $this->isChanged('isPreferenceCenter', $sanitizedValue);
         $this->isPreferenceCenter = $sanitizedValue;
 
@@ -767,7 +767,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      */
     public function setNoIndex($noIndex): void
     {
-        $sanitizedValue = null === $noIndex ? null : (bool) $noIndex;
+        $sanitizedValue = $noIndex === null ? null : (bool) $noIndex;
         $this->isChanged('noIndex', $sanitizedValue);
         $this->noIndex = $sanitizedValue;
     }
@@ -827,22 +827,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     public function getTemplate()
     {
         return $this->template;
-    }
-
-    protected function isChanged($prop, $val)
-    {
-        $getter  = 'get'.ucfirst($prop);
-        $current = $this->$getter();
-
-        if ('translationParent' == $prop || 'variantParent' == $prop || 'category' == $prop) {
-            $currentId = ($current) ? $current->getId() : '';
-            $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
-                $this->changes[$prop] = [$currentId, $newId];
-            }
-        } else {
-            parent::isChanged($prop, $val);
-        }
     }
 
     /**
@@ -959,5 +943,21 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     public function setIsDuplicate(bool $isDuplicate): void
     {
         $this->isDuplicate = $isDuplicate;
+    }
+
+    protected function isChanged($prop, $val)
+    {
+        $getter  = 'get'.ucfirst($prop);
+        $current = $this->{$getter}();
+
+        if ($prop == 'translationParent' || $prop == 'variantParent' || $prop == 'category') {
+            $currentId = ($current) ? $current->getId() : '';
+            $newId     = ($val) ? $val->getId() : null;
+            if ($currentId != $newId) {
+                $this->changes[$prop] = [$currentId, $newId];
+            }
+        } else {
+            parent::isChanged($prop, $val);
+        }
     }
 }

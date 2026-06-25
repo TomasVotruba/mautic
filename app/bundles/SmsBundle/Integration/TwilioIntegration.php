@@ -51,7 +51,7 @@ class TwilioIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ($formArea == 'features') {
             $builder->add(
                 'messaging_service_sid',
                 TextType::class,

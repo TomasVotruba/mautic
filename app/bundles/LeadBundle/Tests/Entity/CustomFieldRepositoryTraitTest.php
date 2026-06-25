@@ -7,6 +7,27 @@ use Mautic\LeadBundle\Tests\StandardImportTestHelper;
 
 class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
 {
+
+    /** @var array<string, string> */
+    protected array $fixedFields = [
+        'firstname' => 'firstname',
+        'lastname'  => 'lastname',
+    ];
+
+    /** @var array<int, string> */
+    protected array $baseColumns = [
+        'preferred_profile_image',
+        'firstname',
+        'lastname',
+    ];
+
+    /** @var array<int, string> */
+    protected array $fieldGroups = [
+        'core',
+        'social',
+        'personal',
+        'professional',
+    ];
     /** @var array<string, array<string, mixed>> */
     private array $fields = [
         'firstname' => [
@@ -44,27 +65,6 @@ class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
         'firstname'               => 'John',
         'lastname'                => 'Doe',
         'twitter'                 => 'johndoe',
-    ];
-
-    /** @var array<string, string> */
-    protected array $fixedFields = [
-        'firstname' => 'firstname',
-        'lastname'  => 'lastname',
-    ];
-
-    /** @var array<int, string> */
-    protected array $baseColumns = [
-        'preferred_profile_image',
-        'firstname',
-        'lastname',
-    ];
-
-    /** @var array<int, string> */
-    protected array $fieldGroups = [
-        'core',
-        'social',
-        'personal',
-        'professional',
     ];
 
     public function testFormatFieldValues(): void

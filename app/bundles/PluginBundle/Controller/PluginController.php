@@ -148,9 +148,9 @@ class PluginController extends FormController
             throw $this->createNotFoundException($this->translator->trans('mautic.core.url.error.404'));
         }
 
-        $object = ('leadFieldsContainer' === $activeTab) ? 'lead' : 'company';
+        $object = ($activeTab === 'leadFieldsContainer') ? 'lead' : 'company';
         $limit  = $this->coreParametersHelper->get('default_pagelimit');
-        $start  = (1 === $page) ? 0 : (($page - 1) * $limit);
+        $start  = ($page === 1) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
@@ -176,7 +176,7 @@ class PluginController extends FormController
             ]
         );
 
-        if ('POST' == $request->getMethod()) {
+        if ($request->getMethod() == 'POST') {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 $currentKeys            = $integrationObject->getDecryptedApiKeys($entity);
@@ -320,7 +320,7 @@ class PluginController extends FormController
         $formNotes    = [];
         $noteSections = ['authorization', 'features', 'feature_settings', 'custom'];
         foreach ($noteSections as $section) {
-            if ('custom' === $section) {
+            if ($section === 'custom') {
                 $formNotes[$section] = $integrationObject->getFormNotes($section);
             } else {
                 [$specialInstructions, $alertType] = $integrationObject->getFormNotes($section);

@@ -45,7 +45,7 @@ class BuilderSubscriber implements EventSubscriberInterface
             $tokens      = $tokenHelper->getFormattedTokens(
                 $this->assetToken,
                 TokenFormatOptions::linkWithId('mautic.asset.asset', $this->assetToken),
-                'label' === $tokenFilter['target'] ? $tokenFilter['filter'] : '',
+                $tokenFilter['target'] === 'label' ? $tokenFilter['filter'] : '',
                 'title'
             );
             if ($tokens) {
@@ -57,9 +57,9 @@ class BuilderSubscriber implements EventSubscriberInterface
     public function onEmailGenerate(EmailSendEvent $event): void
     {
         $lead   = $event->getLead();
-        $leadId = (int) (null !== $lead ? $lead['id'] : null);
+        $leadId = (int) ($lead !== null ? $lead['id'] : null);
         $email  = $event->getEmail();
-        $tokens = $this->generateTokensFromContent($event, $leadId, $event->getSource(), null === $email ? null : $email->getId());
+        $tokens = $this->generateTokensFromContent($event, $leadId, $event->getSource(), $email === null ? null : $email->getId());
         $event->addTokens($tokens);
     }
 
@@ -74,7 +74,7 @@ class BuilderSubscriber implements EventSubscriberInterface
         $tokens  = $this->generateTokensFromContent($event, $leadId, ['page', $page->getId()]);
         $content = $event->getContent();
 
-        if ([] !== $tokens) {
+        if ($tokens !== []) {
             $content = str_ireplace(array_keys($tokens), $tokens, $content);
         }
         $event->setContent($content);

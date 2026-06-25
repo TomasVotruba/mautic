@@ -141,7 +141,7 @@ class ConfigType extends AbstractType
                         function ($hourEnd, ExecutionContextInterface $context): void {
                             $data      = $context->getRoot()->getData();
                             $hourStart = $data['campaignconfig']['peak_interaction_timer_best_default_hour_start'] ?? null;
-                            if (null !== $hourStart && null !== $hourEnd && $hourStart >= $hourEnd) {
+                            if ($hourStart !== null && $hourEnd !== null && $hourStart >= $hourEnd) {
                                 $context->buildViolation('mautic.config.peak_interaction_timer.best_default_hour.validation.range')->addViolation();
                             }
                         }

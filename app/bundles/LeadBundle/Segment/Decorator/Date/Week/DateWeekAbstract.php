@@ -30,6 +30,6 @@ abstract class DateWeekAbstract extends DateOptionAbstract
 
     protected function getOperatorForBetweenRange(ContactSegmentFilterCrate $leadSegmentFilterCrate)
     {
-        return '!=' === $leadSegmentFilterCrate->getOperator() ? 'notBetween' : 'between';
+        return $leadSegmentFilterCrate->getOperator() === '!=' ? 'notBetween' : 'between';
     }
 }

@@ -74,7 +74,7 @@ class RedirectRepository extends CommonRepository
             ->addSelect('e.id AS email_id')
             ->addSelect('e.name AS email_name');
 
-        if (null !== $createdByUserId) {
+        if ($createdByUserId !== null) {
             $q->andWhere('e.created_by = :userId')
                 ->setParameter('userId', $createdByUserId);
         }
@@ -88,7 +88,7 @@ class RedirectRepository extends CommonRepository
             ->addSelect('campaign.id AS campaign_id')
             ->addSelect('campaign.name AS campaign_name');
 
-        if (null !== $campaignId) {
+        if ($campaignId !== null) {
             $q->andWhere('ce.campaign_id = :campaignId')
                 ->setParameter('campaignId', $campaignId);
         }
@@ -111,7 +111,7 @@ class RedirectRepository extends CommonRepository
                 ->setParameter('companyId', $companyId);
         }
 
-        if (null !== $segmentId) {
+        if ($segmentId !== null) {
             $sb = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
             $sb->select('null')

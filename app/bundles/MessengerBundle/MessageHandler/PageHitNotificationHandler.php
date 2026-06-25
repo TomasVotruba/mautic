@@ -49,7 +49,7 @@ class PageHitNotificationHandler
         $hit = $message->getHitId() > 0 ? $this->hitRepository->find($message->getHitId()) : null;
 
         $pageObject = null;
-        if (null !== $message->getPageId()) {
+        if ($message->getPageId() !== null) {
             try {
                 $pageObject = $message->isRedirect()
                     ? $this->redirectRepository->find($message->getPageId())
@@ -62,7 +62,7 @@ class PageHitNotificationHandler
                 throw $exception;
             }
 
-            if (null === $pageObject) {
+            if ($pageObject === null) {
                 $this->logger->error(
                     sprintf('Invalid page/redirect, id not found. #%s', $message->getPageId())
                 );

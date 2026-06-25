@@ -87,7 +87,7 @@ class CampaignApiController extends CommonApiController
         $response = parent::getEntitiesAction($request, $userHelper);
 
         $withCounts = $request->query->has('withContactCounts')
-            && 'false' !== strtolower((string) $request->query->get('withContactCounts', 'true'));
+            && strtolower((string) $request->query->get('withContactCounts', 'true')) !== 'false';
         if (!$withCounts) {
             return $response;
         }
@@ -125,11 +125,11 @@ class CampaignApiController extends CommonApiController
     public function addLeadAction($id, $leadId)
     {
         $entity = $this->model->getEntity($id);
-        if (null !== $entity) {
+        if ($entity !== null) {
             $leadModel = $this->getModel('lead');
             $lead      = $leadModel->getEntity($leadId);
 
-            if (null == $lead) {
+            if ($lead == null) {
                 return $this->notFound();
             } elseif (!$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getOwner())) {
                 return $this->accessDenied();
@@ -158,7 +158,7 @@ class CampaignApiController extends CommonApiController
     public function removeLeadAction($id, $leadId)
     {
         $entity = $this->model->getEntity($id);
-        if (null !== $entity) {
+        if ($entity !== null) {
             $lead = $this->checkLeadAccess($leadId, 'edit');
             if ($lead instanceof Response) {
                 return $lead;
@@ -175,6 +175,200 @@ class CampaignApiController extends CommonApiController
     }
 
     /**
+     * Change the array structure.
+     *
+     * @param array $events
+     */
+    public function modifyCampaignEventArray($events): array
+    {
+        $updatedEvents = [];
+
+        if ($events && is_array($events)) {
+            foreach ($events as $event) {
+                if (!empty($event['id'])) {
+                    $updatedEvents[$event['id']] = 'ignore';
+                }
+            }
+        }
+
+        return $updatedEvents;
+    }
+
+    /**
+     * Obtains a list of campaign contacts.
+     *
+     * @return Response
+     */
+    public function getContactsAction(Request $request, $id)
+    {
+        $entity = $this->model->getEntity($id);
+
+        if ($entity === null) {
+            return $this->notFound();
+        }
+
+        if (!$this->checkEntityAccess($entity)) {
+            return $this->accessDenied();
+        }
+
+        $where = InputHelper::clean($request->query->get('where') ?? []);
+        $order = InputHelper::clean($request->query->get('order') ?? []);
+        $start = (int) $request->query->get('start', 0);
+        $limit = (int) $request->query->get('limit', 100);
+
+        $where[] = [
+            'col'  => 'campaign_id',
+            'expr' => 'eq',
+            'val'  => $id,
+        ];
+
+        $where[] = [
+            'col'  => 'manually_removed',
+            'expr' => 'eq',
+            'val'  => 0,
+        ];
+
+        return $this->forward(
+            'Mautic\CoreBundle\Controller\Api\StatsApiController::listAction',
+            [
+                'table'     => 'campaign_leads',
+                'itemsName' => 'contacts',
+                'order'     => $order,
+                'where'     => $where,
+                'start'     => $start,
+                'limit'     => $limit,
+            ]
+        );
+    }
+
+    public function cloneCampaignAction($campaignId)
+    {
+        if (empty($campaignId) || intval($campaignId) == false) {
+            return $this->notFound();
+        }
+
+        $original = $this->model->getEntity($campaignId);
+        if (empty($original)) {
+            return $this->notFound();
+        }
+        $entity = clone $original;
+
+        if (!$this->checkEntityAccess($entity, 'create')) {
+            return $this->accessDenied();
+        }
+
+        $this->model->saveEntity($entity);
+
+        $headers = [];
+        // return the newly created entities location if applicable
+
+        $route               = 'mautic_api_campaigns_getone';
+        $headers['Location'] = $this->generateUrl(
+            $route,
+            array_merge(['id' => $entity->getId()], $this->routeParams),
+            true
+        );
+
+        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK, $headers);
+
+        $this->setSerializationContext($view);
+
+        return $this->handleView($view);
+    }
+
+    /**
+     * Get a list of events.
+     */
+    public function exportCampaignAction(Request $request, int $campaignId): Response
+    {
+        // Check if the campaign exists
+        $campaign = $this->model->getEntity($campaignId);
+        if (!$campaign) {
+            return $this->notFound();
+        }
+
+        // Check if user has permission to export campaigns
+        if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
+            return $this->accessDenied();
+        }
+
+        // Dispatch event to collect campaign data for export
+        $event = new EntityExportEvent(Campaign::ENTITY_NAME, $campaignId);
+        $this->dispatcher->dispatch($event);
+        $data = $event->getEntities();
+
+        // Prepare response
+        $view = $this->view([$data], Response::HTTP_OK);
+        $this->setSerializationContext($view);
+
+        return $this->handleView($view);
+    }
+
+    public function importCampaignAction(Request $request, UserHelper $userHelper, ImportHelper $importHelper): Response
+    {
+        // Check if user has permission to import campaigns
+        if (!$this->security->isGranted('campaign:imports:create')) {
+            return $this->accessDenied();
+        }
+
+        // Decode request JSON
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data || !isset($data[0][Campaign::ENTITY_NAME])) {
+            $files = $request->files->all();
+
+            if (count($files) !== 1) {
+                return $this->handleView(
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_zip_file', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                );
+            }
+
+            $uploadedFile = array_values($files)[0];
+
+            if (!$uploadedFile->isValid()) {
+                return $this->handleView(
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.upload_failed', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                );
+            }
+
+            if (strtolower($uploadedFile->getClientOriginalExtension()) !== 'zip') {
+                return $this->handleView(
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages')], Response::HTTP_BAD_REQUEST)
+                );
+            }
+
+            $zipPath = $uploadedFile->getPathname();
+
+            if (!file_exists($zipPath)) {
+                return $this->handleView(
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.uploaded_file_no_exist', [], 'messages')], Response::HTTP_INTERNAL_SERVER_ERROR)
+                );
+            }
+
+            try {
+                $data = $importHelper->readZipFile($zipPath);
+            } catch (\RuntimeException $e) {
+                unlink($zipPath);
+
+                return $this->handleView(
+                    $this->view(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST)
+                );
+            }
+        }
+        $importHelper->recursiveRemoveEmailaddress($data);
+        $userId = $userHelper->getUser()->getId();
+
+        foreach ($data as $entity) {
+            $event  = new EntityImportEvent(Campaign::ENTITY_NAME, $entity, $userId);
+            $this->dispatcher->dispatch($event);
+        }
+        $view = $this->view([$this->translator->trans('mautic.campaign.campaign.import.finished', [], 'messages')], Response::HTTP_CREATED);
+        $this->setSerializationContext($view);
+
+        return $this->handleView($view);
+    }
+
+    /**
      * @param Campaign             &$entity
      * @param FormInterface<mixed> $form
      * @param array<mixed>         $parameters
@@ -184,7 +378,7 @@ class CampaignApiController extends CommonApiController
     {
         $method = $this->requestStack->getCurrentRequest()->getMethod();
 
-        if ('POST' === $method || 'PUT' === $method) {
+        if ($method === 'POST' || $method === 'PUT') {
             if (empty($parameters['events'])) {
                 $msg = $this->translator->trans('mautic.campaign.form.events.notempty', [], 'validators');
 
@@ -204,7 +398,7 @@ class CampaignApiController extends CommonApiController
         ];
 
         // delete events and sources which does not exist in the PUT request
-        if ('PUT' === $method) {
+        if ($method === 'PUT') {
             $requestEventIds   = [];
             $requestSegmentIds = [];
             $requestFormIds    = [];
@@ -297,202 +491,8 @@ class CampaignApiController extends CommonApiController
             $this->model->setCanvasSettings($entity, $parameters['canvasSettings']);
         }
 
-        if (Request::METHOD_PUT === $method && !empty($deletedEvents)) {
+        if ($method === Request::METHOD_PUT && !empty($deletedEvents)) {
             $this->eventModel->deleteEvents($entity->getEvents()->toArray(), $deletedEvents);
         }
-    }
-
-    /**
-     * Change the array structure.
-     *
-     * @param array $events
-     */
-    public function modifyCampaignEventArray($events): array
-    {
-        $updatedEvents = [];
-
-        if ($events && is_array($events)) {
-            foreach ($events as $event) {
-                if (!empty($event['id'])) {
-                    $updatedEvents[$event['id']] = 'ignore';
-                }
-            }
-        }
-
-        return $updatedEvents;
-    }
-
-    /**
-     * Obtains a list of campaign contacts.
-     *
-     * @return Response
-     */
-    public function getContactsAction(Request $request, $id)
-    {
-        $entity = $this->model->getEntity($id);
-
-        if (null === $entity) {
-            return $this->notFound();
-        }
-
-        if (!$this->checkEntityAccess($entity)) {
-            return $this->accessDenied();
-        }
-
-        $where = InputHelper::clean($request->query->get('where') ?? []);
-        $order = InputHelper::clean($request->query->get('order') ?? []);
-        $start = (int) $request->query->get('start', 0);
-        $limit = (int) $request->query->get('limit', 100);
-
-        $where[] = [
-            'col'  => 'campaign_id',
-            'expr' => 'eq',
-            'val'  => $id,
-        ];
-
-        $where[] = [
-            'col'  => 'manually_removed',
-            'expr' => 'eq',
-            'val'  => 0,
-        ];
-
-        return $this->forward(
-            'Mautic\CoreBundle\Controller\Api\StatsApiController::listAction',
-            [
-                'table'     => 'campaign_leads',
-                'itemsName' => 'contacts',
-                'order'     => $order,
-                'where'     => $where,
-                'start'     => $start,
-                'limit'     => $limit,
-            ]
-        );
-    }
-
-    public function cloneCampaignAction($campaignId)
-    {
-        if (empty($campaignId) || false == intval($campaignId)) {
-            return $this->notFound();
-        }
-
-        $original = $this->model->getEntity($campaignId);
-        if (empty($original)) {
-            return $this->notFound();
-        }
-        $entity = clone $original;
-
-        if (!$this->checkEntityAccess($entity, 'create')) {
-            return $this->accessDenied();
-        }
-
-        $this->model->saveEntity($entity);
-
-        $headers = [];
-        // return the newly created entities location if applicable
-
-        $route               = 'mautic_api_campaigns_getone';
-        $headers['Location'] = $this->generateUrl(
-            $route,
-            array_merge(['id' => $entity->getId()], $this->routeParams),
-            true
-        );
-
-        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK, $headers);
-
-        $this->setSerializationContext($view);
-
-        return $this->handleView($view);
-    }
-
-    /**
-     * Get a list of events.
-     */
-    public function exportCampaignAction(Request $request, int $campaignId): Response
-    {
-        // Check if the campaign exists
-        $campaign = $this->model->getEntity($campaignId);
-        if (!$campaign) {
-            return $this->notFound();
-        }
-
-        // Check if user has permission to export campaigns
-        if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
-            return $this->accessDenied();
-        }
-
-        // Dispatch event to collect campaign data for export
-        $event = new EntityExportEvent(Campaign::ENTITY_NAME, $campaignId);
-        $this->dispatcher->dispatch($event);
-        $data = $event->getEntities();
-
-        // Prepare response
-        $view = $this->view([$data], Response::HTTP_OK);
-        $this->setSerializationContext($view);
-
-        return $this->handleView($view);
-    }
-
-    public function importCampaignAction(Request $request, UserHelper $userHelper, ImportHelper $importHelper): Response
-    {
-        // Check if user has permission to import campaigns
-        if (!$this->security->isGranted('campaign:imports:create')) {
-            return $this->accessDenied();
-        }
-
-        // Decode request JSON
-        $data = json_decode($request->getContent(), true);
-
-        if (!$data || !isset($data[0][Campaign::ENTITY_NAME])) {
-            $files = $request->files->all();
-
-            if (1 !== count($files)) {
-                return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_zip_file', [], 'messages')], Response::HTTP_BAD_REQUEST)
-                );
-            }
-
-            $uploadedFile = array_values($files)[0];
-
-            if (!$uploadedFile->isValid()) {
-                return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.upload_failed', [], 'messages')], Response::HTTP_BAD_REQUEST)
-                );
-            }
-
-            if ('zip' !== strtolower($uploadedFile->getClientOriginalExtension())) {
-                return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages')], Response::HTTP_BAD_REQUEST)
-                );
-            }
-
-            $zipPath = $uploadedFile->getPathname();
-
-            if (!file_exists($zipPath)) {
-                return $this->handleView(
-                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.uploaded_file_no_exist', [], 'messages')], Response::HTTP_INTERNAL_SERVER_ERROR)
-                );
-            }
-
-            try {
-                $data = $importHelper->readZipFile($zipPath);
-            } catch (\RuntimeException $e) {
-                unlink($zipPath);
-
-                return $this->handleView(
-                    $this->view(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST)
-                );
-            }
-        }
-        $importHelper->recursiveRemoveEmailaddress($data);
-        $userId = $userHelper->getUser()->getId();
-
-        foreach ($data as $entity) {
-            $event  = new EntityImportEvent(Campaign::ENTITY_NAME, $entity, $userId);
-            $this->dispatcher->dispatch($event);
-        }
-        $view = $this->view([$this->translator->trans('mautic.campaign.campaign.import.finished', [], 'messages')], Response::HTTP_CREATED);
-        $this->setSerializationContext($view);
-
-        return $this->handleView($view);
     }
 }

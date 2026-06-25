@@ -124,7 +124,7 @@ final class TriggerModelTest extends \PHPUnit\Framework\TestCase
             ->willReturnCallback(function ($event, $eventName) use ($dispatchCalls, $contact, $triggerEvent) {
                 $dispatchCalls->append($eventName);
 
-                if (PointEvents::TRIGGER_ON_BUILD === $eventName) {
+                if ($eventName === PointEvents::TRIGGER_ON_BUILD) {
                     // Emulate a subscriber:
                     $event->addEvent(
                         'email.send_to_user',
@@ -139,13 +139,13 @@ final class TriggerModelTest extends \PHPUnit\Framework\TestCase
                     );
 
                     return $event;
-                } elseif (EmailEvents::ON_SENT_EMAIL_TO_USER === $eventName) {
+                } elseif ($eventName === EmailEvents::ON_SENT_EMAIL_TO_USER) {
                     Assert::assertSame($contact, $event->getLead());
                     Assert::assertSame($triggerEvent, $event->getTriggerEvent());
 
                     return $event;
                 }
-                $this->fail("Unexpected event name: $eventName");
+                $this->fail("Unexpected event name: {$eventName}");
             });
 
         $this->triggerModel->triggerEvent($triggerEvent->convertToArray(), $contact, true);

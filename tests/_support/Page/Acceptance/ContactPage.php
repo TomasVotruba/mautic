@@ -82,16 +82,6 @@ class ContactPage
     public static $doNotContactSaveButton    = '//*[@id="MauticSharedModal"]/div/div/div[3]/div/button[1]';
 
     /**
-     * Basic route example for your current URL
-     * You can append any additional parameter to URL
-     * and use it in tests like: Page\Edit::route('/123-post');.
-     */
-    public static function route($param)
-    {
-        return static::$URL.$param;
-    }
-
-    /**
      * @var \AcceptanceTester;
      */
     protected $acceptanceTester;
@@ -99,5 +89,15 @@ class ContactPage
     public function __construct(\AcceptanceTester $I)
     {
         $this->acceptanceTester = $I;
+    }
+
+    /**
+     * Basic route example for your current URL
+     * You can append any additional parameter to URL
+     * and use it in tests like: Page\Edit::route('/123-post');.
+     */
+    public static function route($param)
+    {
+        return static::$URL.$param;
     }
 }

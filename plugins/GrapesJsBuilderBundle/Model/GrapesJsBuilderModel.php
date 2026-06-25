@@ -79,6 +79,13 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         $this->handlePageEntity($page, $data);
     }
 
+    public function getGrapesJsFromEmailId(?int $emailId)
+    {
+        if ($email = $this->emailModel->getEntity($emailId)) {
+            return $this->getRepository()->findOneBy(['email' => $email]);
+        }
+    }
+
     /**
      * @param array<string, mixed> $data
      */
@@ -104,7 +111,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
 
         $emailForm  = $request->request->all('emailform');
         $customHtml = is_array($emailForm) ? ($emailForm['customHtml'] ?? null) : null;
-        if (null === $customHtml) {
+        if ($customHtml === null) {
             $customHtml = $request->request->get('customHtml') ?? null;
         }
 
@@ -142,12 +149,12 @@ class GrapesJsBuilderModel extends AbstractCommonModel
             return $editorState;
         }
 
-        if (!is_string($editorState) || '' === trim($editorState)) {
+        if (!is_string($editorState) || trim($editorState) === '') {
             return null;
         }
 
         $decoded = json_decode($editorState, true);
-        if (JSON_ERROR_NONE === json_last_error() && is_array($decoded)) {
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
             return $decoded;
         }
 
@@ -165,7 +172,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
             $normalizedContent = $content;
         } elseif (is_string($content)) {
             $decodedContent = json_decode($content, true);
-            if (JSON_ERROR_NONE === json_last_error() && is_array($decodedContent)) {
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decodedContent)) {
                 $normalizedContent = $decodedContent;
             }
         }
@@ -206,12 +213,5 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         $entity->setContent($this->mergeEditorStateIntoContent($content, $editorState));
 
         return true;
-    }
-
-    public function getGrapesJsFromEmailId(?int $emailId)
-    {
-        if ($email = $this->emailModel->getEntity($emailId)) {
-            return $this->getRepository()->findOneBy(['email' => $email]);
-        }
     }
 }

@@ -385,7 +385,7 @@ class InstallCommand extends Command
                     // Set all step fields based on parameters
                     foreach ($step as $key => $value) {
                         if (isset($params[$key])) {
-                            $step->$key = $params[$key];
+                            $step->{$key} = $params[$key];
                         }
                     }
                 }
@@ -436,7 +436,7 @@ class InstallCommand extends Command
     private function handleInstallerErrors(OutputInterface $output, array $messages): void
     {
         foreach ($messages as $type => $message) {
-            $output->writeln("  - [$type] $message");
+            $output->writeln("  - [{$type}] {$message}");
         }
     }
 }

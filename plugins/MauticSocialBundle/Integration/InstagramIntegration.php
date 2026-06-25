@@ -34,7 +34,7 @@ class InstagramIntegration extends SocialIntegration
 
     public function getApiUrl($endpoint): string
     {
-        return "https://api.instagram.com/v1/$endpoint";
+        return "https://api.instagram.com/v1/{$endpoint}";
     }
 
     public function getUserData($identifier, &$socialCache): void
@@ -58,7 +58,7 @@ class InstagramIntegration extends SocialIntegration
         $socialCache['has']['activity'] = false;
         if ($id = $this->getContactUserId($identifier, $socialCache)) {
             // get more than 10 so we can weed out videos
-            $data = $this->makeRequest($this->getApiUrl("users/$id/media/recent"), ['count' => 20]);
+            $data = $this->makeRequest($this->getApiUrl("users/{$id}/media/recent"), ['count' => 20]);
 
             $socialCache['activity'] = [
                 'photos' => [],
@@ -73,7 +73,7 @@ class InstagramIntegration extends SocialIntegration
                         break;
                     }
 
-                    if ('image' == $m->type) {
+                    if ($m->type == 'image') {
                         $socialCache['activity']['photos'][] = [
                             'url' => $m->images->standard_resolution->url,
                         ];
@@ -107,6 +107,11 @@ class InstagramIntegration extends SocialIntegration
         ];
     }
 
+    public function getFormType(): null
+    {
+        return null;
+    }
+
     private function getContactUserId(&$identifier, &$socialCache)
     {
         if (!empty($socialCache['id'])) {
@@ -131,10 +136,5 @@ class InstagramIntegration extends SocialIntegration
         }
 
         return false;
-    }
-
-    public function getFormType(): null
-    {
-        return null;
     }
 }

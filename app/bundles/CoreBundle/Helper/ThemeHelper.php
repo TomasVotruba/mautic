@@ -21,35 +21,6 @@ class ThemeHelper implements ThemeHelperInterface
     public const HIDDEN_THEMES_TXT = 'hidden-themes.txt';
 
     /**
-     * @var array<string, mixed[]>
-     */
-    private array $themes = [];
-
-    /**
-     * @var array<string, mixed[]>
-     */
-    private array $themesInfo = [];
-
-    private array $steps = [];
-
-    /**
-     * @var string
-     */
-    private $defaultTheme;
-
-    /**
-     * @var twigThemeHelper[]
-     */
-    private array $themeHelpers = [];
-
-    private Filesystem $filesystem;
-
-    private Finder $finder;
-
-    private bool $themesLoadedFromFilesystem = false;
-    private ?Environment $sandboxEnv         = null;
-
-    /**
      * Default themes which cannot be deleted.
      *
      * @var string[]
@@ -99,6 +70,35 @@ class ThemeHelper implements ThemeHelperInterface
     ];
 
     /**
+     * @var array<string, mixed[]>
+     */
+    private array $themes = [];
+
+    /**
+     * @var array<string, mixed[]>
+     */
+    private array $themesInfo = [];
+
+    private array $steps = [];
+
+    /**
+     * @var string
+     */
+    private $defaultTheme;
+
+    /**
+     * @var twigThemeHelper[]
+     */
+    private array $themeHelpers = [];
+
+    private Filesystem $filesystem;
+
+    private Finder $finder;
+
+    private bool $themesLoadedFromFilesystem = false;
+    private ?Environment $sandboxEnv         = null;
+
+    /**
      * @var array<int, string>
      */
     private array $hiddenThemes = [];
@@ -136,21 +136,11 @@ class ThemeHelper implements ThemeHelperInterface
 
     public function createThemeHelper($themeName): twigThemeHelper
     {
-        if ('current' === $themeName) {
+        if ($themeName === 'current') {
             $themeName = $this->defaultTheme;
         }
 
         return new twigThemeHelper($this->pathsHelper, $themeName);
-    }
-
-    /**
-     * @param string $newName
-     *
-     * @return string
-     */
-    private function getDirectoryName($newName)
-    {
-        return InputHelper::filename(str_replace(' ', '-', $newName));
     }
 
     public function exists($theme): bool
@@ -174,7 +164,7 @@ class ThemeHelper implements ThemeHelperInterface
         $dirName = $this->getDirectoryName($newDirName ?? $newName);
 
         if ($this->filesystem->exists($root.$dirName)) {
-            throw new FileExistsException("$dirName already exists");
+            throw new FileExistsException("{$dirName} already exists");
         }
 
         $this->filesystem->mirror($root.$theme, $root.$dirName);
@@ -195,7 +185,7 @@ class ThemeHelper implements ThemeHelperInterface
         $dirName = $this->getDirectoryName($newName);
 
         if ($this->filesystem->exists($root.$dirName)) {
-            throw new FileExistsException("$dirName already exists");
+            throw new FileExistsException("{$dirName} already exists");
         }
 
         $this->filesystem->rename($root.$theme, $root.$dirName);
@@ -220,25 +210,6 @@ class ThemeHelper implements ThemeHelperInterface
         }
 
         $this->filesystem->remove($root.$theme);
-    }
-
-    /**
-     * Updates the theme configuration and converts
-     * it to json if still using php array.
-     */
-    private function updateConfig(string $themePath, string $newName): void
-    {
-        $configJsonPath = "{$themePath}/config.json";
-
-        if ($this->filesystem->exists($configJsonPath)) {
-            $config = json_decode($this->filesystem->readFile($configJsonPath), true);
-        } else {
-            throw new FileNotFoundException("File {$configJsonPath} was not found and so the theme config cannot be updated with new name of {$newName}");
-        }
-
-        $config['name'] = $newName;
-
-        $this->filesystem->dumpFile($configJsonPath, json_encode($config));
     }
 
     /**
@@ -321,11 +292,11 @@ class ThemeHelper implements ThemeHelperInterface
 
     public function install($zipFile): bool
     {
-        if (false === $this->filesystem->exists($zipFile)) {
+        if ($this->filesystem->exists($zipFile) === false) {
             throw new FileNotFoundException();
         }
 
-        if (false === class_exists('ZipArchive')) {
+        if (class_exists('ZipArchive') === false) {
             throw new \Exception('mautic.core.ziparchive.not.installed');
         }
 
@@ -339,7 +310,7 @@ class ThemeHelper implements ThemeHelperInterface
         $zipper    = new \ZipArchive();
         $archive   = $zipper->open($zipFile);
 
-        if (true !== $archive) {
+        if ($archive !== true) {
             throw new \Exception($this->getExtractError($archive));
         }
 
@@ -367,7 +338,7 @@ class ThemeHelper implements ThemeHelperInterface
                 $allowedFiles[] = $entry;
             }
 
-            if ('config.json' === $entry) {
+            if ($entry === 'config.json') {
                 $config = json_decode($zipper->getFromName($entry), true);
             }
         }
@@ -417,7 +388,7 @@ class ThemeHelper implements ThemeHelperInterface
             return $this->twig->render($template, $params);
         }
 
-        if (null === $this->sandboxEnv) {
+        if ($this->sandboxEnv === null) {
             $this->sandboxEnv = new Environment($this->twig->getLoader(), [
                 'debug'            => $this->twig->isDebug(),
                 'strict_variables' => $this->twig->isStrictVariables(),
@@ -466,7 +437,7 @@ class ThemeHelper implements ThemeHelperInterface
 
         $this->finder->files()->in($themePath);
 
-        if (true !== $archive) {
+        if ($archive !== true) {
             throw new \Exception($this->getExtractError($archive));
         }
         foreach ($this->finder as $file) {
@@ -477,6 +448,63 @@ class ThemeHelper implements ThemeHelperInterface
         $zipper->close();
 
         return $tmpPath;
+    }
+
+    public function getCurrentTheme(string $template, string $specificFeature): string
+    {
+        if ($template !== 'mautic_code_mode' && !in_array($template, array_keys($this->getInstalledThemes($specificFeature)))) {
+            return $this->coreParametersHelper->get('theme_email_default');
+        }
+
+        return $template;
+    }
+
+    /**
+     * @throws IOException
+     */
+    public function toggleVisibility(string $themeName): void
+    {
+        if (!in_array($themeName, $this->getDefaultThemes(), true)) {
+            return;
+        }
+
+        $hidden       = $this->createHiddenTxtIfNotExists();
+        $hiddenThemes = array_values(array_filter(array_unique(explode('|', $this->filesystem->readFile($hidden)))));
+
+        if (in_array($themeName, $hiddenThemes, true)) {
+            $this->removeFromHidden($themeName, $hiddenThemes);
+        } else {
+            $this->addToHidden($themeName);
+        }
+    }
+
+    /**
+     * @param string $newName
+     *
+     * @return string
+     */
+    private function getDirectoryName($newName)
+    {
+        return InputHelper::filename(str_replace(' ', '-', $newName));
+    }
+
+    /**
+     * Updates the theme configuration and converts
+     * it to json if still using php array.
+     */
+    private function updateConfig(string $themePath, string $newName): void
+    {
+        $configJsonPath = "{$themePath}/config.json";
+
+        if ($this->filesystem->exists($configJsonPath)) {
+            $config = json_decode($this->filesystem->readFile($configJsonPath), true);
+        } else {
+            throw new FileNotFoundException("File {$configJsonPath} was not found and so the theme config cannot be updated with new name of {$newName}");
+        }
+
+        $config['name'] = $newName;
+
+        $this->filesystem->dumpFile($configJsonPath, json_encode($config));
     }
 
     /**
@@ -573,7 +601,7 @@ class ThemeHelper implements ThemeHelperInterface
 
     private function shouldLoadTheme(array $config, string $featureRequested): bool
     {
-        if ('all' === $featureRequested) {
+        if ($featureRequested === 'all') {
             return true;
         }
 
@@ -601,15 +629,6 @@ class ThemeHelper implements ThemeHelperInterface
         }
 
         return in_array($builderName, $builderRequested);
-    }
-
-    public function getCurrentTheme(string $template, string $specificFeature): string
-    {
-        if ('mautic_code_mode' !== $template && !in_array($template, array_keys($this->getInstalledThemes($specificFeature)))) {
-            return $this->coreParametersHelper->get('theme_email_default');
-        }
-
-        return $template;
     }
 
     /**
@@ -651,25 +670,6 @@ class ThemeHelper implements ThemeHelperInterface
         return ['hidden' => in_array($themeName, $this->getHiddenThemes(), true)];
     }
 
-    /**
-     * @throws IOException
-     */
-    public function toggleVisibility(string $themeName): void
-    {
-        if (!in_array($themeName, $this->getDefaultThemes(), true)) {
-            return;
-        }
-
-        $hidden       = $this->createHiddenTxtIfNotExists();
-        $hiddenThemes = array_values(array_filter(array_unique(explode('|', $this->filesystem->readFile($hidden)))));
-
-        if (in_array($themeName, $hiddenThemes, true)) {
-            $this->removeFromHidden($themeName, $hiddenThemes);
-        } else {
-            $this->addToHidden($themeName);
-        }
-    }
-
     private function sortThemesInfo(string $key): void
     {
         $hiddenThemes = [];
@@ -705,7 +705,7 @@ class ThemeHelper implements ThemeHelperInterface
         $hidden      = $this->createHiddenTxtIfNotExists();
         $keyToRemove = array_search($themeName, $hiddenThemes, true);
 
-        if (false !== $keyToRemove) {
+        if ($keyToRemove !== false) {
             unset($hiddenThemes[$keyToRemove]);
 
             if (empty($hiddenThemes)) {

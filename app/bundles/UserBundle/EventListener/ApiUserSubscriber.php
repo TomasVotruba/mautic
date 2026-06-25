@@ -34,7 +34,7 @@ class ApiUserSubscriber implements EventSubscriberInterface
 
         $badge = $passport->getBadge(UserBadge::class);
         \assert($badge instanceof UserBadge);
-        if (null !== $badge->getUserLoader()) {
+        if ($badge->getUserLoader() !== null) {
             return;
         }
 
@@ -55,11 +55,11 @@ class ApiUserSubscriber implements EventSubscriberInterface
             }
 
             $accessToken = $accessTokenBadge->getAccessToken();
-            if (null === $user) {
+            if ($user === null) {
                 $user = $this->tokenPermissions->setActivePermissionsOnAuthToken($accessToken);
             }
 
-            if (null === $user) {
+            if ($user === null) {
                 return null;
             }
 
@@ -87,7 +87,7 @@ class ApiUserSubscriber implements EventSubscriberInterface
         $authenticatedToken = $event->getAuthenticatedToken();
         \assert($authenticatedToken instanceof OAuthToken);
 
-        if (null !== $authenticatedToken->getUser()) {
+        if ($authenticatedToken->getUser() !== null) {
             return;
         }
 

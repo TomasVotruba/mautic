@@ -29,7 +29,7 @@ class ControllerSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ('Mautic\PluginBundle\Controller\PluginController::configAction' === $request->get('_controller')) {
+        if ($request->get('_controller') === 'Mautic\PluginBundle\Controller\PluginController::configAction') {
             $integrationName = $request->get('name');
             $page            = $request->get('page');
 

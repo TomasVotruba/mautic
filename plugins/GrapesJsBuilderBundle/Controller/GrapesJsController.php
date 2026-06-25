@@ -19,6 +19,131 @@ class GrapesJsController extends CommonController
 {
     public const OBJECT_TYPE = ['email', 'page'];
 
+    public function builderAction(
+        Request $request,
+        LoggerInterface $mauticLogger,
+        ThemeHelper $themeHelper,
+        string $objectType,
+        string $objectId,
+    ): Response {
+        if (!$this->isAuthorizedObjectType($objectType)) {
+            throw new ConflictHttpException('Object not authorized to load custom builder');
+        }
+
+        /** @var \Mautic\EmailBundle\Model\EmailModel|\Mautic\PageBundle\Model\PageModel $model */
+        $model      = $this->getModel($objectType);
+        $aclToCheck = $this->getAclPrefix($objectType);
+
+        // permission check
+        if (str_contains((string) $objectId, 'new')) {
+            $isNew = true;
+
+            if (!$this->security->isGranted($aclToCheck.'create')) {
+                $this->throwAccessDenied();
+            }
+
+            /** @var Email|Page $entity */
+            $entity = $model->getEntity();
+            $entity->setSessionId($objectId);
+        } else {
+            /** @var Email|Page $entity */
+            $entity = $model->getEntity((int) $objectId);
+            $isNew  = false;
+
+            if ($entity == null
+                || !$this->security->hasEntityAccess(
+                    $aclToCheck.'viewown',
+                    $aclToCheck.'viewother',
+                    $entity->getCreatedBy()
+                )
+            ) {
+                $this->throwAccessDenied();
+            }
+        }
+
+        $type             = 'html';
+        $template         = InputHelper::clean($request->query->get('template'));
+        $resetEditorState = $request->query->getBoolean('resetEditorState', false);
+        if (!$template) {
+            $mauticLogger->warning('Grapesjs: no template in query');
+
+            return $this->json(false);
+        }
+        $templateName = '@themes/'.$template.'/html/'.$objectType;
+        $content      = $resetEditorState ? [] : $entity->getContent();
+
+        // Check for MJML template
+        // @deprecated - use mjml directly in email.html.twig
+        if ($logicalName = $this->checkForMjmlTemplate($templateName.'.mjml.twig')) {
+            $type        = 'mjml';
+        } else {
+            $logicalName = $themeHelper->checkForTwigTemplate($templateName.'.html.twig');
+        }
+
+        // Replace short codes to emoji
+        $content = array_map(fn ($text): string => EmojiHelper::toEmoji($text, 'short'), $content);
+
+        $renderedTemplate =  $themeHelper->renderThemeTemplate(
+            $logicalName,
+            [
+                'isNew'     => $isNew,
+                'content'   => $content,
+                $objectType => $entity,
+                'template'  => $template,
+                'basePath'  => $request->getBasePath(),
+            ]
+        );
+
+        if (str_contains($renderedTemplate, '<mjml>')) {
+            $type = 'mjml';
+        }
+
+        $renderedTemplateHtml = ($type === 'html') ? $renderedTemplate : '';
+        $renderedTemplateMjml = ($type === 'mjml') ? $renderedTemplate : '';
+
+        return $this->render(
+            '@GrapesJsBuilder/Builder/template.html.twig',
+            [
+                'templateHtml' => $renderedTemplateHtml,
+                'templateMjml' => $renderedTemplateMjml,
+            ]
+        );
+    }
+
+    public function editorStateAction(
+        string $objectType,
+        string $objectId,
+    ): Response {
+        if (!$this->isAuthorizedObjectType($objectType)) {
+            throw new ConflictHttpException('Object not authorized to load custom builder');
+        }
+
+        if (str_contains($objectId, 'new')) {
+            return $this->json(['editorState' => null]);
+        }
+
+        $model      = $this->getModel($objectType);
+        $aclToCheck = $this->getAclPrefix($objectType);
+
+        /** @var Email|Page|null $entity */
+        $entity = $model->getEntity((int) $objectId);
+
+        if ($entity === null
+            || !$this->security->hasEntityAccess(
+                $aclToCheck.'viewown',
+                $aclToCheck.'viewother',
+                $entity->getCreatedBy()
+            )
+        ) {
+            $this->throwAccessDenied();
+        }
+
+        $content     = $this->normalizeContentToArray($entity->getContent());
+        $editorState = $this->extractEditorStateFromContent($content);
+
+        return $this->json(['editorState' => $editorState]);
+    }
+
     private function isAuthorizedObjectType(string $objectType): bool
     {
         return in_array($objectType, self::OBJECT_TYPE, true);
@@ -26,7 +151,7 @@ class GrapesJsController extends CommonController
 
     private function getAclPrefix(string $objectType): string
     {
-        return 'page' === $objectType ? 'page:pages:' : 'email:emails:';
+        return $objectType === 'page' ? 'page:pages:' : 'email:emails:';
     }
 
     /**
@@ -38,7 +163,7 @@ class GrapesJsController extends CommonController
             return $content;
         }
 
-        if (!is_string($content) || '' === $content) {
+        if (!is_string($content) || $content === '') {
             return [];
         }
 
@@ -88,7 +213,7 @@ class GrapesJsController extends CommonController
             return $editorState;
         }
 
-        if (!is_string($editorState) || '' === trim($editorState)) {
+        if (!is_string($editorState) || trim($editorState) === '') {
             return null;
         }
 
@@ -99,131 +224,6 @@ class GrapesJsController extends CommonController
         }
 
         return is_array($decodedEditorState) ? $decodedEditorState : null;
-    }
-
-    public function builderAction(
-        Request $request,
-        LoggerInterface $mauticLogger,
-        ThemeHelper $themeHelper,
-        string $objectType,
-        string $objectId,
-    ): Response {
-        if (!$this->isAuthorizedObjectType($objectType)) {
-            throw new ConflictHttpException('Object not authorized to load custom builder');
-        }
-
-        /** @var \Mautic\EmailBundle\Model\EmailModel|\Mautic\PageBundle\Model\PageModel $model */
-        $model      = $this->getModel($objectType);
-        $aclToCheck = $this->getAclPrefix($objectType);
-
-        // permission check
-        if (str_contains((string) $objectId, 'new')) {
-            $isNew = true;
-
-            if (!$this->security->isGranted($aclToCheck.'create')) {
-                $this->throwAccessDenied();
-            }
-
-            /** @var Email|Page $entity */
-            $entity = $model->getEntity();
-            $entity->setSessionId($objectId);
-        } else {
-            /** @var Email|Page $entity */
-            $entity = $model->getEntity((int) $objectId);
-            $isNew  = false;
-
-            if (null == $entity
-                || !$this->security->hasEntityAccess(
-                    $aclToCheck.'viewown',
-                    $aclToCheck.'viewother',
-                    $entity->getCreatedBy()
-                )
-            ) {
-                $this->throwAccessDenied();
-            }
-        }
-
-        $type             = 'html';
-        $template         = InputHelper::clean($request->query->get('template'));
-        $resetEditorState = $request->query->getBoolean('resetEditorState', false);
-        if (!$template) {
-            $mauticLogger->warning('Grapesjs: no template in query');
-
-            return $this->json(false);
-        }
-        $templateName = '@themes/'.$template.'/html/'.$objectType;
-        $content      = $resetEditorState ? [] : $entity->getContent();
-
-        // Check for MJML template
-        // @deprecated - use mjml directly in email.html.twig
-        if ($logicalName = $this->checkForMjmlTemplate($templateName.'.mjml.twig')) {
-            $type        = 'mjml';
-        } else {
-            $logicalName = $themeHelper->checkForTwigTemplate($templateName.'.html.twig');
-        }
-
-        // Replace short codes to emoji
-        $content = array_map(fn ($text): string => EmojiHelper::toEmoji($text, 'short'), $content);
-
-        $renderedTemplate =  $themeHelper->renderThemeTemplate(
-            $logicalName,
-            [
-                'isNew'     => $isNew,
-                'content'   => $content,
-                $objectType => $entity,
-                'template'  => $template,
-                'basePath'  => $request->getBasePath(),
-            ]
-        );
-
-        if (str_contains($renderedTemplate, '<mjml>')) {
-            $type = 'mjml';
-        }
-
-        $renderedTemplateHtml = ('html' === $type) ? $renderedTemplate : '';
-        $renderedTemplateMjml = ('mjml' === $type) ? $renderedTemplate : '';
-
-        return $this->render(
-            '@GrapesJsBuilder/Builder/template.html.twig',
-            [
-                'templateHtml' => $renderedTemplateHtml,
-                'templateMjml' => $renderedTemplateMjml,
-            ]
-        );
-    }
-
-    public function editorStateAction(
-        string $objectType,
-        string $objectId,
-    ): Response {
-        if (!$this->isAuthorizedObjectType($objectType)) {
-            throw new ConflictHttpException('Object not authorized to load custom builder');
-        }
-
-        if (str_contains($objectId, 'new')) {
-            return $this->json(['editorState' => null]);
-        }
-
-        $model      = $this->getModel($objectType);
-        $aclToCheck = $this->getAclPrefix($objectType);
-
-        /** @var Email|Page|null $entity */
-        $entity = $model->getEntity((int) $objectId);
-
-        if (null === $entity
-            || !$this->security->hasEntityAccess(
-                $aclToCheck.'viewown',
-                $aclToCheck.'viewother',
-                $entity->getCreatedBy()
-            )
-        ) {
-            $this->throwAccessDenied();
-        }
-
-        $content     = $this->normalizeContentToArray($entity->getContent());
-        $editorState = $this->extractEditorStateFromContent($content);
-
-        return $this->json(['editorState' => $editorState]);
     }
 
     /**

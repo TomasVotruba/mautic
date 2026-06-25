@@ -56,18 +56,18 @@ class DetailsTypeTest extends TestCase
         $builder->expects(self::atLeastOnce())
             ->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use (&$calls, $builder): FormBuilderInterface {
-                if ('apiKeys' === $key) {
+                if ($key === 'apiKeys') {
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
                     self::assertSame(['key2' => 'value2', 'key4' => 'value4'], $options['integration_keys']);
                 }
 
-                if ('authButton' === $key) {
+                if ($key === 'authButton') {
                     ++$calls;
                 }
 
-                if ('supportedFeatures' === $key) {
+                if ($key === 'supportedFeatures') {
                     ++$calls;
                 }
 
@@ -126,21 +126,21 @@ class DetailsTypeTest extends TestCase
         $builder->expects(self::atLeastOnce())
             ->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($label, &$calls, $builder): FormBuilderInterface {
-                if ('apiKeys' === $key) {
+                if ($key === 'apiKeys') {
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
                     self::assertSame(['key1' => 'value1', 'key2' => 'value2', 'key4' => 'value4'], $options['integration_keys']);
                 }
 
-                if ('authButton' === $key) {
+                if ($key === 'authButton') {
                     ++$calls;
                     self::assertSame(StandAloneButtonType::class, $fieldFQCN);
                     self::assertArrayHasKey('label', $options);
                     self::assertSame('mautic.integration.form.'.$label, $options['label']);
                 }
 
-                if ('supportedFeatures' === $key) {
+                if ($key === 'supportedFeatures') {
                     ++$calls;
                 }
 
@@ -209,14 +209,14 @@ class DetailsTypeTest extends TestCase
         $builder->expects(self::atLeastOnce())
             ->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($expectedFeatures, &$calls, $builder): FormBuilderInterface {
-                if ('apiKeys' === $key) {
+                if ($key === 'apiKeys') {
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
                     self::assertSame(['key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4'], $options['integration_keys']);
                 }
 
-                if ('supportedFeatures' === $key) {
+                if ($key === 'supportedFeatures') {
                     ++$calls;
                     self::assertSame(ChoiceType::class, $fieldFQCN);
                     self::assertArrayHasKey('choices', $options);
@@ -225,7 +225,7 @@ class DetailsTypeTest extends TestCase
                     self::assertSame($expectedFeatures, $options['data']);
                 }
 
-                if ('authButton' === $key) {
+                if ($key === 'authButton') {
                     ++$calls;
                 }
 
@@ -290,18 +290,18 @@ class DetailsTypeTest extends TestCase
         $builder->expects(self::atLeastOnce())
             ->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use (&$calls, $builder): FormBuilderInterface {
-                if ('apiKeys' === $key) {
+                if ($key === 'apiKeys') {
                     ++$calls;
                     self::assertSame(KeysType::class, $fieldFQCN);
                     self::assertArrayHasKey('integration_keys', $options);
                     self::assertSame(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3', 'key4' => 'value4'], $options['integration_keys']);
                 }
 
-                if ('supportedFeatures' === $key) {
+                if ($key === 'supportedFeatures') {
                     ++$calls;
                 }
 
-                if ('authButton' === $key) {
+                if ($key === 'authButton') {
                     ++$calls;
                 }
 

@@ -56,34 +56,6 @@ class ListApiController extends CommonApiController
     }
 
     /**
-     * @deprecated This conversion won't be needed in couple of years.
-     *
-     * The 'filter' and 'display' fields used to be part of each segment filter root array.
-     * Those fields were moved to 'properties' subarray. We have to ensure BC and remove them
-     * from filter root array so Symfony forms would not fail with unknown field error.
-     */
-    protected function prepareParametersForBinding(Request $request, $parameters, $entity, $action)
-    {
-        if (empty($parameters['filters']) || !is_array($parameters['filters'])) {
-            return $parameters;
-        }
-
-        foreach ($parameters['filters'] as $key => $filter) {
-            $bcFilterValue                                       = $filter['filter'] ?? null;
-            $filterValue                                         = $filter['properties']['filter'] ?? $bcFilterValue;
-            $parameters['filters'][$key]['properties']['filter'] = $filterValue;
-
-            if (!empty($filter['display']) && !isset($filter['properties']['display'])) {
-                $parameters['filters'][$key]['properties']['display'] = $filter['display'];
-            }
-
-            unset($parameters['filters'][$key]['filter'], $parameters['filters'][$key]['display']);
-        }
-
-        return $parameters;
-    }
-
-    /**
      * Obtains a list of entities.
      */
     public function getEntitiesAction(Request $request, UserHelper $userHelper): Response
@@ -91,7 +63,7 @@ class ListApiController extends CommonApiController
         $withCounts = $request->query->has('withCounts');
         $response   = parent::getEntitiesAction($request, $userHelper);
 
-        if ($withCounts && $response instanceof Response && 200 === $response->getStatusCode()) {
+        if ($withCounts && $response instanceof Response && $response->getStatusCode() === 200) {
             $content = json_decode($response->getContent(), true);
 
             if (isset($content['lists']) && is_array($content['lists'])) {
@@ -148,7 +120,7 @@ class ListApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -184,13 +156,13 @@ class ListApiController extends CommonApiController
     public function addLeadsAction(Request $request, $id)
     {
         $contactIds = $request->request->all()['ids'] ?? null;
-        if (null === $contactIds) {
+        if ($contactIds === null) {
             return $this->returnError('mautic.core.error.badrequest', Response::HTTP_BAD_REQUEST);
         }
 
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -233,7 +205,7 @@ class ListApiController extends CommonApiController
     {
         $entity = $this->model->getEntity($id);
 
-        if (null === $entity) {
+        if ($entity === null) {
             return $this->notFound();
         }
 
@@ -258,6 +230,34 @@ class ListApiController extends CommonApiController
     }
 
     /**
+     * @deprecated This conversion won't be needed in couple of years.
+     *
+     * The 'filter' and 'display' fields used to be part of each segment filter root array.
+     * Those fields were moved to 'properties' subarray. We have to ensure BC and remove them
+     * from filter root array so Symfony forms would not fail with unknown field error.
+     */
+    protected function prepareParametersForBinding(Request $request, $parameters, $entity, $action)
+    {
+        if (empty($parameters['filters']) || !is_array($parameters['filters'])) {
+            return $parameters;
+        }
+
+        foreach ($parameters['filters'] as $key => $filter) {
+            $bcFilterValue                                       = $filter['filter'] ?? null;
+            $filterValue                                         = $filter['properties']['filter'] ?? $bcFilterValue;
+            $parameters['filters'][$key]['properties']['filter'] = $filterValue;
+
+            if (!empty($filter['display']) && !isset($filter['properties']['display'])) {
+                $parameters['filters'][$key]['properties']['display'] = $filter['display'];
+            }
+
+            unset($parameters['filters'][$key]['filter'], $parameters['filters'][$key]['display']);
+        }
+
+        return $parameters;
+    }
+
+    /**
      * Checks if user has permission to access retrieved entity.
      *
      * @param mixed  $entity
@@ -267,9 +267,9 @@ class ListApiController extends CommonApiController
      */
     protected function checkEntityAccess($entity, $action = 'view')
     {
-        if ('create' == $action || 'edit' == $action || 'view' == $action) {
+        if ($action == 'create' || $action == 'edit' || $action == 'view') {
             return $this->security->isGranted(LeadPermissions::LISTS_VIEW_OWN);
-        } elseif ('delete' == $action) {
+        } elseif ($action == 'delete') {
             return $this->security->hasEntityAccess(
                 true, LeadPermissions::LISTS_DELETE_OTHER, $entity->getCreatedBy()
             );

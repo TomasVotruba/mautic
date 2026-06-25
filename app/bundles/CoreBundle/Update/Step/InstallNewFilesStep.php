@@ -94,7 +94,7 @@ final class InstallNewFilesStep implements StepInterface
         // Fetch the update package
         $package = $this->updateHelper->fetchPackage($update['package']);
 
-        if (isset($package['error']) && true === $package['error']) {
+        if (isset($package['error']) && $package['error'] === true) {
             throw new UpdateFailedException($this->translator->trans($package['message']));
         }
 
@@ -108,7 +108,7 @@ final class InstallNewFilesStep implements StepInterface
      */
     private function validateArchive($opened): void
     {
-        if (true === $opened) {
+        if ($opened === true) {
             return;
         }
 

@@ -68,7 +68,7 @@ class Reply implements ProcessorInterface
         $this->createReply($stat, $message->id);
         $this->dispatchEvent($stat);
 
-        if (null !== $stat->getLead()) {
+        if ($stat->getLead() !== null) {
             $this->leadModel->getRepository()->detachEntity($stat->getLead());
         }
         $this->emailStatModel->getRepository()->detachEntity($stat);
@@ -83,13 +83,13 @@ class Reply implements ProcessorInterface
         /** @var Stat|null $stat */
         $stat = $this->emailStatModel->getRepository()->findOneBy(['trackingHash' => $trackingHash]);
 
-        if (null === $stat) {
+        if ($stat === null) {
             throw new EntityNotFoundException("Email Stat with tracking hash {$trackingHash} was not found");
         }
 
         $stat->setIsRead(true);
 
-        if (null === $stat->getDateRead()) {
+        if ($stat->getDateRead() === null) {
             $stat->setDateRead(new \DateTime());
         }
 

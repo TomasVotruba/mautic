@@ -22,7 +22,7 @@ class DsnParser
         // Try parsing the report
         $report = $this->parse($dsnMessage, $dsnReport);
 
-        if (!$report['email'] || Category::UNRECOGNIZED === $report['rule_cat']) {
+        if (!$report['email'] || $report['rule_cat'] === Category::UNRECOGNIZED) {
             throw new BounceNotFound();
         }
 

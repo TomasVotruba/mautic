@@ -185,7 +185,7 @@ class FieldType extends AbstractType
             $hasNoLabel = empty($data['label']);
             $type       = $data['type'] ?? null;
 
-            if ($isNew && $hasNoLabel && is_string($type) && '' !== $type) {
+            if ($isNew && $hasNoLabel && is_string($type) && $type !== '') {
                 $translated = $this->translator->trans('mautic.form.field.type.'.$type);
                 if ($translated === 'mautic.form.field.type.'.$type) {
                     $translated = ucfirst($type);
@@ -243,7 +243,7 @@ class FieldType extends AbstractType
         if ($addDefaultValue) {
             $builder->add(
                 'defaultValue',
-                ('textarea' == $type) ? TextareaType::class : TextType::class,
+                ($type == 'textarea') ? TextareaType::class : TextType::class,
                 [
                     'label'      => 'mautic.core.defaultvalue',
                     'label_attr' => ['class' => 'control-label'],

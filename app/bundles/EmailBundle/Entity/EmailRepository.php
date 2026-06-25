@@ -82,7 +82,7 @@ class EmailRepository extends CommonRepository
 
         $dnc     = count($results) ? $results[0] : null;
 
-        if (null === $dnc) {
+        if ($dnc === null) {
             return false;
         }
 
@@ -90,9 +90,9 @@ class EmailRepository extends CommonRepository
 
         return [
             'id'           => $dnc['id'],
-            'unsubscribed' => (DoNotContact::UNSUBSCRIBED === $dnc['reason']),
-            'bounced'      => (DoNotContact::BOUNCED === $dnc['reason']),
-            'manual'       => (DoNotContact::MANUAL === $dnc['reason']),
+            'unsubscribed' => ($dnc['reason'] === DoNotContact::UNSUBSCRIBED),
+            'bounced'      => ($dnc['reason'] === DoNotContact::BOUNCED),
+            'manual'       => ($dnc['reason'] === DoNotContact::MANUAL),
             'comments'     => $dnc['comments'],
         ];
     }
@@ -121,7 +121,7 @@ class EmailRepository extends CommonRepository
         if (empty($args['iterable_mode'])) {
             $q->leftJoin('e.category', 'c');
 
-            if (empty($args['ignoreListJoin']) && (!isset($args['email_type']) || 'list' == $args['email_type'])) {
+            if (empty($args['ignoreListJoin']) && (!isset($args['email_type']) || $args['email_type'] == 'list')) {
                 $q->leftJoin('e.lists', 'l');
             }
         }
@@ -260,7 +260,7 @@ class EmailRepository extends CommonRepository
             ->setParameter('listIds', $listIds, ArrayParameterType::INTEGER)
             ->setParameter('false', false, Types::BOOLEAN);
 
-        if (null !== $maxDate) {
+        if ($maxDate !== null) {
             $segmentQb->andWhere($segmentQb->expr()->lte('ll.date_added', ':max_date'));
             $segmentQb->setParameter('max_date', $maxDate, Types::DATETIME_MUTABLE);
         }
@@ -427,7 +427,7 @@ class EmailRepository extends CommonRepository
 
         if ($topLevel) {
             // BC layer
-            if (true === $topLevel || '1' === $topLevel) {
+            if ($topLevel === true || $topLevel === '1') {
                 $topLevel = ['variant', 'translation'];
             } elseif (is_string($topLevel)) {
                 $topLevel = [$topLevel];
@@ -513,143 +513,6 @@ class EmailRepository extends CommonRepository
         return (int) $queryBuilder->executeQuery()->fetchOne();
     }
 
-    private function addTrackableTablesForEmailStats(QueryBuilder $qb): void
-    {
-        $trTable = MAUTIC_TABLE_PREFIX.'channel_url_trackables';
-        $prTable = MAUTIC_TABLE_PREFIX.'page_redirects';
-
-        if (!$this->isJoined($qb, $trTable, self::EMAILS_PREFIX, self::TRACKABLE_PREFIX)) {
-            $qb->leftJoin(
-                self::EMAILS_PREFIX,
-                $trTable,
-                self::TRACKABLE_PREFIX,
-                'e.id = tr.channel_id AND tr.channel = \'email\''
-            );
-        }
-        if (!$this->isJoined($qb, $prTable, self::TRACKABLE_PREFIX, self::REDIRECT_PREFIX)) {
-            $qb->leftJoin(
-                self::TRACKABLE_PREFIX,
-                $prTable,
-                self::REDIRECT_PREFIX,
-                'tr.redirect_id = pr.id'
-            );
-        }
-    }
-
-    /**
-     * Add the Do Not Contact table to the query builder.
-     */
-    private function addDNCTableForEmails(QueryBuilder $qb): void
-    {
-        $table = MAUTIC_TABLE_PREFIX.'lead_donotcontact';
-
-        if (!$this->isJoined($qb, $table, self::EMAILS_PREFIX, self::DNC_PREFIX)) {
-            $qb->leftJoin(
-                self::EMAILS_PREFIX,
-                $table,
-                self::DNC_PREFIX,
-                'e.id = dnc.channel_id AND dnc.channel=\'email\''
-            );
-        }
-    }
-
-    private function isJoined(QueryBuilder $query, string $table, string $fromAlias, string $alias): bool
-    {
-        $joins = $query->getQueryParts()['join'][$fromAlias] ?? null;
-
-        if (empty($joins)) {
-            return false;
-        }
-
-        foreach ($joins[$fromAlias] as $join) {
-            if ($join['joinTable'] == $table && $join['joinAlias'] == $alias) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
-     * @param object                                  $filter
-     */
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause($q, $filter, [
-            'e.name',
-            'e.subject',
-        ]);
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
-     * @param object                                  $filter
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
-            case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(e.isPublished = :%1\$s AND e.publishDown IS NOT NULL AND e.publishDown <> '' AND e.publishDown < CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
-            case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(e.isPublished = :%1\$s AND e.publishUp IS NOT NULL AND e.publishUp <> '' AND e.publishUp > CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.lang'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr            = '('.$q->expr()->eq('e.language', ":$unique").' OR '.$q->expr()->like('e.language', ":$langUnique").')';
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'email_id',
-                    'email_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [$expr, $parameters];
-    }
-
     /**
      * @return string[]
      */
@@ -668,16 +531,6 @@ class EmailRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['e.name', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -740,7 +593,7 @@ class EmailRepository extends CommonRepository
                 return;
             } catch (Exception $e) {
                 --$retrialLimit;
-                if (0 === $retrialLimit) {
+                if ($retrialLimit === 0) {
                     throw $e;
                 }
             }
@@ -781,7 +634,7 @@ class EmailRepository extends CommonRepository
                 return;
             } catch (Exception $e) {
                 --$retrialLimit;
-                if (0 === $retrialLimit) {
+                if ($retrialLimit === 0) {
                     throw $e;
                 }
             }
@@ -796,6 +649,153 @@ class EmailRepository extends CommonRepository
         return $this->getPublishedBroadcastsQuery($id)->toIterable();
     }
 
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
+     * @param object                                  $filter
+     */
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause($q, $filter, [
+            'e.name',
+            'e.subject',
+        ]);
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|QueryBuilder $q
+     * @param object                                  $filter
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishDown IS NOT NULL AND e.publishDown <> '' AND e.publishDown < CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishUp IS NOT NULL AND e.publishUp <> '' AND e.publishUp > CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.lang'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr            = '('.$q->expr()->eq('e.language', ":{$unique}").' OR '.$q->expr()->like('e.language', ":{$langUnique}").')';
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'email_id',
+                    'email_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [$expr, $parameters];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['e.name', 'ASC'],
+        ];
+    }
+
+    private function addTrackableTablesForEmailStats(QueryBuilder $qb): void
+    {
+        $trTable = MAUTIC_TABLE_PREFIX.'channel_url_trackables';
+        $prTable = MAUTIC_TABLE_PREFIX.'page_redirects';
+
+        if (!$this->isJoined($qb, $trTable, self::EMAILS_PREFIX, self::TRACKABLE_PREFIX)) {
+            $qb->leftJoin(
+                self::EMAILS_PREFIX,
+                $trTable,
+                self::TRACKABLE_PREFIX,
+                'e.id = tr.channel_id AND tr.channel = \'email\''
+            );
+        }
+        if (!$this->isJoined($qb, $prTable, self::TRACKABLE_PREFIX, self::REDIRECT_PREFIX)) {
+            $qb->leftJoin(
+                self::TRACKABLE_PREFIX,
+                $prTable,
+                self::REDIRECT_PREFIX,
+                'tr.redirect_id = pr.id'
+            );
+        }
+    }
+
+    /**
+     * Add the Do Not Contact table to the query builder.
+     */
+    private function addDNCTableForEmails(QueryBuilder $qb): void
+    {
+        $table = MAUTIC_TABLE_PREFIX.'lead_donotcontact';
+
+        if (!$this->isJoined($qb, $table, self::EMAILS_PREFIX, self::DNC_PREFIX)) {
+            $qb->leftJoin(
+                self::EMAILS_PREFIX,
+                $table,
+                self::DNC_PREFIX,
+                'e.id = dnc.channel_id AND dnc.channel=\'email\''
+            );
+        }
+    }
+
+    private function isJoined(QueryBuilder $query, string $table, string $fromAlias, string $alias): bool
+    {
+        $joins = $query->getQueryParts()['join'][$fromAlias] ?? null;
+
+        if (empty($joins)) {
+            return false;
+        }
+
+        foreach ($joins[$fromAlias] as $join) {
+            if ($join['joinTable'] == $table && $join['joinAlias'] == $alias) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function getPublishedBroadcastsQuery(?int $id = null): Query
     {
         $qb   = $this->createQueryBuilder($this->getTableAlias());
@@ -805,7 +805,7 @@ class EmailRepository extends CommonRepository
             $qb->expr()->eq($this->getTableAlias().'.emailType', $qb->expr()->literal('list'))
         );
 
-        if (null !== $id && 0 !== $id) {
+        if ($id !== null && $id !== 0) {
             $expr->add(
                 $qb->expr()->eq($this->getTableAlias().'.id', (int) $id)
             );

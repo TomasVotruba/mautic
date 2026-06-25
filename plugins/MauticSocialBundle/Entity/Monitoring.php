@@ -410,7 +410,7 @@ class Monitoring extends FormEntity implements UuidInterface
         }
 
         // clean up property array for the twitter handle
-        if ('twitter_handle' == $this->getNetworkType()) {
+        if ($this->getNetworkType() == 'twitter_handle') {
             $this->setProperties(
                 [
                     'handle'     => $property['handle'],
@@ -420,7 +420,7 @@ class Monitoring extends FormEntity implements UuidInterface
         }
 
         // clean up property array for the hashtag
-        if ('twitter_hashtag' == $this->getNetworkType()) {
+        if ($this->getNetworkType() == 'twitter_hashtag') {
             $this->setProperties(
                 [
                     'hashtag'    => $property['hashtag'],
@@ -430,7 +430,7 @@ class Monitoring extends FormEntity implements UuidInterface
         }
 
         // clean up clean up property array for the custom action
-        if ('twitter_custom' == $this->getNetworkType()) {
+        if ($this->getNetworkType() == 'twitter_custom') {
             $this->setProperties(
                 [
                     'custom' => $property['custom'],

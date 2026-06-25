@@ -10,16 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class NoteControllerTest extends MauticMysqlTestCase
 {
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement([
-            'leads',
-            'companies',
-            'campaigns',
-            'categories',
-            'lead_lists',
-        ]);
-    }
 
     /**
      * Quick smoke test to ensure the route is successful.
@@ -43,5 +33,15 @@ final class NoteControllerTest extends MauticMysqlTestCase
 
         $this->client->request('GET', '/s/contacts/notes/'.$contact->getId().'/new');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement([
+            'leads',
+            'companies',
+            'campaigns',
+            'categories',
+            'lead_lists',
+        ]);
     }
 }

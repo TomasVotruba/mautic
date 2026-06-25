@@ -52,7 +52,7 @@ final class Version20210211081531 extends AbstractMauticMigration
 
     public function up(Schema $schema): void
     {
-        if (0 === count($this->tableList)) {
+        if (count($this->tableList) === 0) {
             return;
         }
 

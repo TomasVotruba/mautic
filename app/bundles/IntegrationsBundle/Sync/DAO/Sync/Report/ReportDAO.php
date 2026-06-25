@@ -57,7 +57,7 @@ class ReportDAO
      */
     public function remapObject($oldObjectName, $oldObjectId, $newObjectName, $newObjectId = null): void
     {
-        if (null === $newObjectId) {
+        if ($newObjectId === null) {
             $newObjectId = $oldObjectId;
         }
 
@@ -97,7 +97,7 @@ class ReportDAO
     public function getObjects(?string $objectName)
     {
         $returnedObjects = [];
-        if (null === $objectName) {
+        if ($objectName === null) {
             foreach ($this->objects as $objects) {
                 foreach ($objects as $object) {
                     $returnedObjects[] = $object;

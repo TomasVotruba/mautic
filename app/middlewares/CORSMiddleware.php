@@ -56,7 +56,7 @@ class CORSMiddleware implements HttpKernelInterface, PrioritizedMiddlewareInterf
         $this->corsHeaders['Access-Control-Allow-Origin'] = $this->getAllowOriginHeaderValue($request);
 
         // Capture all OPTIONS requests
-        if ('OPTIONS' === $request->getMethod()) {
+        if ($request->getMethod() === 'OPTIONS') {
             $response = new Response('', Response::HTTP_NO_CONTENT);
 
             // If this is a valid OPTIONS request, set the CORS headers on the Response and exit.
@@ -85,6 +85,11 @@ class CORSMiddleware implements HttpKernelInterface, PrioritizedMiddlewareInterf
         return $response;
     }
 
+    public function getPriority()
+    {
+        return self::PRIORITY;
+    }
+
     /**
      * Get the value for the Access-Control-Allow-Origin header
      * based on the Request and local configuration options.
@@ -104,7 +109,7 @@ class CORSMiddleware implements HttpKernelInterface, PrioritizedMiddlewareInterf
 
         // Check the domains using shell wildcard patterns
         $validCorsDomainFilter = function ($validCorsDomain) use ($origin) {
-            if (null === $origin) {
+            if ($origin === null) {
                 return null;
             }
 
@@ -121,10 +126,5 @@ class CORSMiddleware implements HttpKernelInterface, PrioritizedMiddlewareInterf
         $this->requestOriginIsValid = false;
 
         return null;
-    }
-
-    public function getPriority()
-    {
-        return self::PRIORITY;
     }
 }

@@ -49,7 +49,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function updateCompanies(InternalObjectUpdateEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Company::NAME) {
             return;
         }
 
@@ -64,7 +64,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function createCompanies(InternalObjectCreateEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Company::NAME) {
             return;
         }
 
@@ -74,7 +74,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function findCompaniesByIds(InternalObjectFindEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName() || empty($event->getIds())) {
+        if ($event->getObject()->getName() !== Company::NAME || empty($event->getIds())) {
             return;
         }
 
@@ -84,7 +84,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function findCompaniesByDateRange(InternalObjectFindEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName() || empty($event->getDateRange())) {
+        if ($event->getObject()->getName() !== Company::NAME || empty($event->getDateRange())) {
             return;
         }
 
@@ -101,7 +101,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function findCompaniesByFieldValues(InternalObjectFindEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName() || empty($event->getFieldValues())) {
+        if ($event->getObject()->getName() !== Company::NAME || empty($event->getFieldValues())) {
             return;
         }
 
@@ -115,7 +115,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function findOwnerIdsForCompanies(InternalObjectOwnerEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Company::NAME) {
             return;
         }
 
@@ -129,7 +129,7 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function buildCompanyRoute(InternalObjectRouteEvent $event): void
     {
-        if (Company::NAME !== $event->getObject()->getName()) {
+        if ($event->getObject()->getName() !== Company::NAME) {
             return;
         }
 
@@ -147,13 +147,13 @@ class CompanyObjectSubscriber implements EventSubscriberInterface
 
     public function findCompanyById(InternalObjectFindByIdEvent $event): void
     {
-        if (null === $event->getId() || Company::NAME !== $event->getObject()->getName()) {
+        if ($event->getId() === null || $event->getObject()->getName() !== Company::NAME) {
             return;
         }
 
         $company = $this->companyObjectHelper->findObjectById($event->getId());
 
-        if (null === $company) {
+        if ($company === null) {
             return;
         }
 

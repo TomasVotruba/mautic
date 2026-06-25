@@ -12,7 +12,7 @@ class MauticPluginBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
-        if ('test' === $container->getParameter('kernel.environment')) {
+        if ($container->getParameter('kernel.environment') === 'test') {
             $container->addCompilerPass(new TestPass());
         }
     }

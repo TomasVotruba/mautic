@@ -21,22 +21,32 @@ use Mautic\LeadBundle\Model\LeadModel;
 
 trait CampaignEntitiesTrait
 {
-    /**
-     * @param array<mixed> $fieldDetails
-     */
-    private function makeField(array $fieldDetails): void
-    {
-        $field = new LeadField();
-        $field->setLabel($fieldDetails['alias']);
-        $field->setType($fieldDetails['type']);
-        $field->setObject($fieldDetails['object'] ?? 'lead');
-        $field->setGroup($fieldDetails['group'] ?? 'core');
-        $field->setAlias($fieldDetails['alias']);
-        $field->setProperties($fieldDetails['properties']);
 
-        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
-        \assert($fieldModel instanceof FieldModel);
-        $fieldModel->saveEntity($field);
+    /**
+     * @param array<mixed> $customField
+     */
+    public function createCompany(string $name, array $customField = []): Company
+    {
+        $companyRepo = $this->em->getRepository(Company::class);
+        \assert($companyRepo instanceof CompanyRepository);
+        $company = new Company();
+        $company->setName($name);
+        if (!empty($customField)) {
+            $company->setFields([
+                $customField['group'] => [
+                    $customField['alias'] => [
+                        'value' => '',
+                        'type'  => $customField['type'],
+                    ],
+                ],
+            ]);
+            $companyModel = self::getContainer()->get('mautic.lead.model.company');
+            \assert($companyModel instanceof CompanyModel);
+            $companyModel->setFieldValues($company, [$customField['alias'] => $customField['value']]);
+        }
+        $companyRepo->saveEntity($company);
+
+        return $company;
     }
 
     /**
@@ -54,30 +64,6 @@ trait CampaignEntitiesTrait
         $this->em->persist($segment);
 
         return $segment;
-    }
-
-    /**
-     * @param array<mixed> $fieldDetails
-     * @param array<mixed> $additionalValue
-     */
-    private function createLeadData(
-        LeadList $segment,
-        string $object,
-        array $fieldDetails,
-        array $additionalValue,
-        int $index,
-    ): Lead {
-        $fieldValue      = !empty($fieldDetails) ?
-            array_merge($fieldDetails, ['value' => array_merge(['v'.$index], $additionalValue)]) : [];
-        $leadFieldValue  = 'lead' === $object ? $fieldValue : [];
-        $lead            = $this->createLead('l'.$index, $leadFieldValue);
-        if ('company' === $object) {
-            $company = $this->createCompany('c'.$index, $fieldValue);
-            $this->createCompanyLeadRelation($company, $lead);
-        }
-        $this->createSegmentMember($segment, $lead);
-
-        return $lead;
     }
 
     /**
@@ -109,30 +95,73 @@ trait CampaignEntitiesTrait
     }
 
     /**
-     * @param array<mixed> $customField
+     * @param array<mixed> $property
+     *
+     * @throws ORMException
      */
-    public function createCompany(string $name, array $customField = []): Company
-    {
-        $companyRepo = $this->em->getRepository(Company::class);
-        \assert($companyRepo instanceof CompanyRepository);
-        $company = new Company();
-        $company->setName($name);
-        if (!empty($customField)) {
-            $company->setFields([
-                $customField['group'] => [
-                    $customField['alias'] => [
-                        'value' => '',
-                        'type'  => $customField['type'],
-                    ],
-                ],
-            ]);
-            $companyModel = self::getContainer()->get('mautic.lead.model.company');
-            \assert($companyModel instanceof CompanyModel);
-            $companyModel->setFieldValues($company, [$customField['alias'] => $customField['value']]);
-        }
-        $companyRepo->saveEntity($company);
+    protected function createEvent(
+        string $name,
+        Campaign $campaign,
+        string $type,
+        string $eventType,
+        ?array $property = null,
+        string $decisionPath = '',
+        ?Event $parentEvent = null,
+    ): Event {
+        $event = new Event();
+        $event->setName($name);
+        $event->setCampaign($campaign);
+        $event->setType($type);
+        $event->setEventType($eventType);
+        $event->setTriggerInterval(1);
+        $event->setProperties($property);
+        $event->setTriggerMode('immediate');
+        $event->setDecisionPath($decisionPath);
+        $event->setParent($parentEvent);
+        $this->em->persist($event);
 
-        return $company;
+        return $event;
+    }
+    /**
+     * @param array<mixed> $fieldDetails
+     */
+    private function makeField(array $fieldDetails): void
+    {
+        $field = new LeadField();
+        $field->setLabel($fieldDetails['alias']);
+        $field->setType($fieldDetails['type']);
+        $field->setObject($fieldDetails['object'] ?? 'lead');
+        $field->setGroup($fieldDetails['group'] ?? 'core');
+        $field->setAlias($fieldDetails['alias']);
+        $field->setProperties($fieldDetails['properties']);
+
+        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
+        \assert($fieldModel instanceof FieldModel);
+        $fieldModel->saveEntity($field);
+    }
+
+    /**
+     * @param array<mixed> $fieldDetails
+     * @param array<mixed> $additionalValue
+     */
+    private function createLeadData(
+        LeadList $segment,
+        string $object,
+        array $fieldDetails,
+        array $additionalValue,
+        int $index,
+    ): Lead {
+        $fieldValue      = !empty($fieldDetails) ?
+            array_merge($fieldDetails, ['value' => array_merge(['v'.$index], $additionalValue)]) : [];
+        $leadFieldValue  = $object === 'lead' ? $fieldValue : [];
+        $lead            = $this->createLead('l'.$index, $leadFieldValue);
+        if ($object === 'company') {
+            $company = $this->createCompany('c'.$index, $fieldValue);
+            $this->createCompanyLeadRelation($company, $lead);
+        }
+        $this->createSegmentMember($segment, $lead);
+
+        return $lead;
     }
 
     private function createCompanyLeadRelation(Company $company, Lead $lead): void
@@ -169,34 +198,5 @@ trait CampaignEntitiesTrait
         $this->em->persist($campaign);
 
         return $campaign;
-    }
-
-    /**
-     * @param array<mixed> $property
-     *
-     * @throws ORMException
-     */
-    protected function createEvent(
-        string $name,
-        Campaign $campaign,
-        string $type,
-        string $eventType,
-        ?array $property = null,
-        string $decisionPath = '',
-        ?Event $parentEvent = null,
-    ): Event {
-        $event = new Event();
-        $event->setName($name);
-        $event->setCampaign($campaign);
-        $event->setType($type);
-        $event->setEventType($eventType);
-        $event->setTriggerInterval(1);
-        $event->setProperties($property);
-        $event->setTriggerMode('immediate');
-        $event->setDecisionPath($decisionPath);
-        $event->setParent($parentEvent);
-        $this->em->persist($event);
-
-        return $event;
     }
 }

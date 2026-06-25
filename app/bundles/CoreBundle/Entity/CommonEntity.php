@@ -18,13 +18,6 @@ class CommonEntity implements \Stringable
      */
     protected $pastChanges = [];
 
-    public static function loadMetadata(ORM\ClassMetadata $metadata): void
-    {
-        $builder = new ClassMetadataBuilder($metadata);
-
-        $builder->setMappedSuperClass();
-    }
-
     /**
      * Wrapper function for isProperty methods.
      *
@@ -36,7 +29,7 @@ class CommonEntity implements \Stringable
     {
         if (str_starts_with($name, 'is') && method_exists($this, 'get'.ucfirst($name))) {
             return $this->{'get'.ucfirst($name)}();
-        } elseif ('getName' == $name && method_exists($this, 'getTitle')) {
+        } elseif ($name == 'getName' && method_exists($this, 'getTitle')) {
             return $this->getTitle();
         }
 
@@ -53,6 +46,38 @@ class CommonEntity implements \Stringable
         return $string;
     }
 
+    public static function loadMetadata(ORM\ClassMetadata $metadata): void
+    {
+        $builder = new ClassMetadataBuilder($metadata);
+
+        $builder->setMappedSuperClass();
+    }
+
+    /**
+     * @param bool $includePast
+     *
+     * @return mixed[]
+     */
+    public function getChanges($includePast = false)
+    {
+        if ($includePast && empty($this->changes) && !empty($this->pastChanges)) {
+            return $this->pastChanges;
+        }
+
+        return $this->changes;
+    }
+
+    public function resetChanges(): void
+    {
+        $this->pastChanges = $this->changes;
+        $this->changes     = [];
+    }
+
+    public function setChanges(array $changes): void
+    {
+        $this->changes = $changes;
+    }
+
     /**
      * @param string $prop
      * @param mixed  $val
@@ -62,8 +87,8 @@ class CommonEntity implements \Stringable
     protected function isChanged($prop, $val)
     {
         $getter  = (method_exists($this, $prop)) ? $prop : 'get'.ucfirst($prop);
-        $current = $this->$getter();
-        if ('category' == $prop) {
+        $current = $this->{$getter}();
+        if ($prop == 'category') {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
             if ($currentId != $newId) {
@@ -90,7 +115,7 @@ class CommonEntity implements \Stringable
                     $current = $current->format('c');
                 } elseif (is_object($current)) {
                     $current = (method_exists($current, 'getId')) ? $current->getId() : (string) $current;
-                } elseif (('' === $current && null === $val) || (null === $current && '' === $val)) {
+                } elseif (($current === '' && $val === null) || ($current === null && $val === '')) {
                     // Ingore empty conversion (but allow 0 to '' or null)
                     return;
                 }
@@ -113,30 +138,5 @@ class CommonEntity implements \Stringable
         } else {
             $this->changes[$key] = $value;
         }
-    }
-
-    /**
-     * @param bool $includePast
-     *
-     * @return mixed[]
-     */
-    public function getChanges($includePast = false)
-    {
-        if ($includePast && empty($this->changes) && !empty($this->pastChanges)) {
-            return $this->pastChanges;
-        }
-
-        return $this->changes;
-    }
-
-    public function resetChanges(): void
-    {
-        $this->pastChanges = $this->changes;
-        $this->changes     = [];
-    }
-
-    public function setChanges(array $changes): void
-    {
-        $this->changes = $changes;
     }
 }

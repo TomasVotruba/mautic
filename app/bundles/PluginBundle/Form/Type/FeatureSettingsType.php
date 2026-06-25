@@ -50,7 +50,7 @@ class FeatureSettingsType extends AbstractType
             $settings    = [
                 'silence_exceptions' => false,
                 'feature_settings'   => $data,
-                'ignore_field_cache' => 1 == $page && 'POST' !== strtoupper($method),
+                'ignore_field_cache' => $page == 1 && strtoupper($method) !== 'POST',
             ];
 
             try {
@@ -118,7 +118,7 @@ class FeatureSettingsType extends AbstractType
                     ]
                 );
             }
-            if ('get' == $method && $error) {
+            if ($method == 'get' && $error) {
                 $form->addError(new FormError($error));
             }
         };

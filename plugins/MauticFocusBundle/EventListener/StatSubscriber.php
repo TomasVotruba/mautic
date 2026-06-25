@@ -32,7 +32,7 @@ class StatSubscriber implements EventSubscriberInterface
         $hit    = $event->getHit();
         $source = $hit->getSource();
 
-        if ('focus' == $source || 'focus.focus' == $source) {
+        if ($source == 'focus' || $source == 'focus.focus') {
             $sourceId = $hit->getSourceId();
             $focus    = $this->model->getEntity($sourceId);
 

@@ -13,10 +13,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
 {
-    private LeadField $field;
-    private ColumnSchemaHelper $schemaHelper;
 
     protected $useCleanupRollback = false;
+    private LeadField $field;
+    private ColumnSchemaHelper $schemaHelper;
 
     protected function setUp(): void
     {

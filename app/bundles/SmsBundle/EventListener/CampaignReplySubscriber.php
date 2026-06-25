@@ -34,7 +34,7 @@ class CampaignReplySubscriber implements EventSubscriberInterface
 
     public function onCampaignBuild(CampaignBuilderEvent $event): void
     {
-        if (0 === count($this->transportChain->getEnabledTransports())) {
+        if (count($this->transportChain->getEnabledTransports()) === 0) {
             return;
         }
 

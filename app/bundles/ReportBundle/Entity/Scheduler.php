@@ -13,6 +13,12 @@ class Scheduler
      */
     private $id;
 
+    public function __construct(
+        private Report $report,
+        private \DateTimeInterface $scheduleDate,
+    ) {
+    }
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -30,12 +36,6 @@ class Scheduler
             ->columnName('schedule_date')
             ->nullable(false)
             ->build();
-    }
-
-    public function __construct(
-        private Report $report,
-        private \DateTimeInterface $scheduleDate,
-    ) {
     }
 
     /**

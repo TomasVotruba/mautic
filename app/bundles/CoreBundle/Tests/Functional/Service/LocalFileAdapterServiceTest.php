@@ -19,16 +19,6 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
      */
     private $folderName;
 
-    protected function beforeTearDown(): void
-    {
-        $pathsHelper = static::getContainer()->get('mautic.helper.paths');
-        $folderPath  = "{$pathsHelper->getImagePath()}/$this->folderName";
-
-        if (is_dir($folderPath)) {
-            rmdir($folderPath);
-        }
-    }
-
     public function testElfinderCreateFolderPermissions(): void
     {
         $elFinderLoader = new class(static::getContainer()) extends ElFinderLoader {
@@ -45,7 +35,7 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
             {
                 $connector = new ElFinderConnector($this->bridge);
                 $result    = $connector->execute($request->query->all());
-                if (null === $result) {
+                if ($result === null) {
                     return []; // Can't return null, so return an empty array instead
                 }
 
@@ -61,13 +51,23 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
         $_SERVER['REQUEST_METHOD'] = Request::METHOD_POST;
         $this->client->request(
             Request::METHOD_POST,
-            "efconnect?cmd=mkdir&name=$this->folderName&target=fls1_Lw"
+            "efconnect?cmd=mkdir&name={$this->folderName}&target=fls1_Lw"
         );
         self::assertResponseIsSuccessful();
         /** @var PathsHelper $pathsHelper */
         $pathsHelper = static::getContainer()->get('mautic.helper.paths');
-        $folderPath  = "{$pathsHelper->getImagePath()}/$this->folderName";
+        $folderPath  = "{$pathsHelper->getImagePath()}/{$this->folderName}";
         self::assertDirectoryExists($folderPath);
         self::assertSame('777', substr(sprintf('%o', fileperms($folderPath)), -3));
+    }
+
+    protected function beforeTearDown(): void
+    {
+        $pathsHelper = static::getContainer()->get('mautic.helper.paths');
+        $folderPath  = "{$pathsHelper->getImagePath()}/{$this->folderName}";
+
+        if (is_dir($folderPath)) {
+            rmdir($folderPath);
+        }
     }
 }

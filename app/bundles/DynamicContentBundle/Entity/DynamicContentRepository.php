@@ -36,60 +36,6 @@ class DynamicContentRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        [$expr, $parameters] = parent::addSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-
-        switch ($command) {
-            case $this->translator->trans('mautic.core.searchcommand.lang'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('e.language', ":$unique"),
-                    $q->expr()->like('e.language', ":$langUnique")
-                );
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'dynamic_content_id',
-                    'dynamic_content_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        }
-
-        return [$expr, $parameters];
-    }
-
-    /**
      * @return string[]
      */
     public function getSearchCommands(): array
@@ -105,16 +51,6 @@ class DynamicContentRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['e.name', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -170,10 +106,10 @@ class DynamicContentRepository extends CommonRepository
                 ->setParameter('id', $this->currentUser->getId());
         }
 
-        if ('translation' == $topLevel) {
+        if ($topLevel == 'translation') {
             // only get top level pages
             $q->andWhere($q->expr()->isNull('e.translationParent'));
-        } elseif ('variant' == $topLevel) {
+        } elseif ($topLevel == 'variant') {
             $q->andWhere($q->expr()->isNull('e.variantParent'));
         }
 
@@ -226,5 +162,69 @@ class DynamicContentRepository extends CommonRepository
         }
 
         return false;
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        [$expr, $parameters] = parent::addSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+
+        switch ($command) {
+            case $this->translator->trans('mautic.core.searchcommand.lang'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr = $q->expr()->or(
+                    $q->expr()->eq('e.language', ":{$unique}"),
+                    $q->expr()->like('e.language', ":{$langUnique}")
+                );
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'dynamic_content_id',
+                    'dynamic_content_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        }
+
+        return [$expr, $parameters];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['e.name', 'ASC'],
+        ];
     }
 }

@@ -139,7 +139,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFieldCollect(FieldCollectEvent $event): void
     {
-        $object = 'contact' === $event->getObject() ? 'lead' : $event->getObject(); // BC conversion.
+        $object = $event->getObject() === 'contact' ? 'lead' : $event->getObject(); // BC conversion.
         $fields = $this->leadFieldRepository->getFieldsForObject($object);
 
         foreach ($fields as $field) {
@@ -154,7 +154,7 @@ class FormSubscriber implements EventSubscriberInterface
         }
 
         // Add the owner and stage fields to the form
-        if ('lead' === $object) {
+        if ($object === 'lead') {
             $event->appendField(new FieldCrate('ownerbyemail', 'mautic.lead.field.ownerbyemail', 'email', []));
             $event->appendField(new FieldCrate('ownerbyid', 'mautic.lead.field.ownerbyid', 'text', []));
             $event->appendField(new FieldCrate('stagebyname', 'mautic.lead.field.stagebyname', 'text', []));
@@ -163,7 +163,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionChangePoints(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.pointschange')) {
+        if ($event->checkContext('lead.pointschange') === false) {
             return;
         }
 
@@ -207,7 +207,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionChangeList(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.changelist')) {
+        if ($event->checkContext('lead.changelist') === false) {
             return;
         }
 
@@ -230,7 +230,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionChangeTags(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.changetags')) {
+        if ($event->checkContext('lead.changetags') === false) {
             return;
         }
 
@@ -247,7 +247,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionAddUtmTags(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.addutmtags')) {
+        if ($event->checkContext('lead.addutmtags') === false) {
             return;
         }
 
@@ -287,7 +287,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionScoreContactsCompanies(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.scorecontactscompanies')) {
+        if ($event->checkContext('lead.scorecontactscompanies') === false) {
             return;
         }
 
@@ -304,7 +304,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionRemoveFromDoNotContact(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.remove_do_not_contact')) {
+        if ($event->checkContext('lead.remove_do_not_contact') === false) {
             return;
         }
 
@@ -332,7 +332,7 @@ class FormSubscriber implements EventSubscriberInterface
 
     public function onFormSubmitActionUpdateLead(SubmissionEvent $event): void
     {
-        if (false === $event->checkContext('lead.updatelead')) {
+        if ($event->checkContext('lead.updatelead') === false) {
             return;
         }
 
@@ -346,12 +346,12 @@ class FormSubscriber implements EventSubscriberInterface
 
         $mergedValues = array_merge($actionValues, array_filter(
             $contactFieldMatches,
-            static fn ($value): bool => '' !== $value && null !== $value
+            static fn ($value): bool => $value !== '' && $value !== null
         ));
 
         $processedValues = [];
         foreach ($mergedValues as $alias => $value) {
-            if (isset($fields[$alias]) && 'boolean' === $fields[$alias]['type'] && 0 === $value) {
+            if (isset($fields[$alias]) && $fields[$alias]['type'] === 'boolean' && $value === 0) {
                 // 0 is interpreted as 'don't change the bool field' instead of setting it to false, so we change the field manually in this step
                 $lead->addUpdatedField($alias, 0);
             }

@@ -118,11 +118,11 @@ class PageTestAbstract extends TestCase
             ->method('get')
             ->with($this->anything())
             ->willReturnCallback(function ($parameter) use ($transliterationEnabled, $validatePageHitRequiredData) {
-                if ('transliterate_page_title' === $parameter) {
+                if ($parameter === 'transliterate_page_title') {
                     return $transliterationEnabled;
                 }
 
-                if ('validate_page_hit_required_data' === $parameter) {
+                if ($parameter === 'validate_page_hit_required_data') {
                     return $validatePageHitRequiredData;
                 }
             });

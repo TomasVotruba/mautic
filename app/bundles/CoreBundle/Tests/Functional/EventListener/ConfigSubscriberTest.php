@@ -38,22 +38,6 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
         }
     }
 
-    protected function beforeTearDown(): void
-    {
-        if (file_exists($this->getConfigPath().'.backup')) {
-            // restore original local.php
-            rename($this->getConfigPath().'.backup', $this->getConfigPath());
-        } else {
-            // local.php didn't exist to start with so delete
-            unlink($this->getConfigPath());
-        }
-    }
-
-    private function getConfigPath(): string
-    {
-        return self::getContainer()->get('kernel')->getLocalConfigFile();
-    }
-
     public function testFailConfigMediaPathWithDots(): void
     {
         $crawler = $this->setImagePathRequest('media/..');
@@ -145,6 +129,22 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
         if (is_dir($newFolder)) {
             rmdir($newFolder);
         }
+    }
+
+    protected function beforeTearDown(): void
+    {
+        if (file_exists($this->getConfigPath().'.backup')) {
+            // restore original local.php
+            rename($this->getConfigPath().'.backup', $this->getConfigPath());
+        } else {
+            // local.php didn't exist to start with so delete
+            unlink($this->getConfigPath());
+        }
+    }
+
+    private function getConfigPath(): string
+    {
+        return self::getContainer()->get('kernel')->getLocalConfigFile();
     }
 
     private function setImagePathRequest(string $value): Crawler

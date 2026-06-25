@@ -136,7 +136,7 @@ EOT
 
         foreach ($processQueue->getProcessed() as $process) {
             $output->writeln("<comment>{$process->getCommandLine()}</comment>");
-            if (0 === $process->getExitCode()) {
+            if ($process->getExitCode() === 0) {
                 $output->writeln("<info>{$process->getOutput()}</info>");
             } else {
                 $output->writeln("<error>{$process->getErrorOutput()}</error>");

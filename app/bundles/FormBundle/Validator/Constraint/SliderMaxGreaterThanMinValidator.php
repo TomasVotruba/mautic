@@ -23,7 +23,7 @@ final class SliderMaxGreaterThanMinValidator extends ConstraintValidator
         }
 
         $min = $form->has('min') ? $form->get('min')->getData() : null;
-        if (null === $min || '' === $min) {
+        if ($min === null || $min === '') {
             return;
         }
 

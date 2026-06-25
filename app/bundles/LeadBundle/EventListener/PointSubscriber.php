@@ -51,7 +51,7 @@ class PointSubscriber implements EventSubscriberInterface
 
     public function onTriggerExecute(TriggerExecutedEvent $event): void
     {
-        if ('lead.changetags' !== $event->getTriggerEvent()->getType()) {
+        if ($event->getTriggerEvent()->getType() !== 'lead.changetags') {
             return;
         }
 

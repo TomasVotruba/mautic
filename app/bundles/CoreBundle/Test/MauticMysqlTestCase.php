@@ -13,9 +13,6 @@ use Symfony\Component\Process\Process;
 
 abstract class MauticMysqlTestCase extends AbstractMauticTestCase
 {
-    private bool $databaseInstalled = false;
-
-    private bool $setUpInvoked      = false;
 
     /**
      * Use transaction rollback for cleanup. Sometimes it is not possible to use it because of the following:
@@ -25,6 +22,9 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
      * @var bool
      */
     protected $useCleanupRollback = true;
+    private bool $databaseInstalled = false;
+
+    private bool $setUpInvoked      = false;
 
     public function __construct(?string $name = null)
     {
@@ -161,6 +161,22 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
             $this->connection->executeQuery("TRUNCATE TABLE `{$prefix}{$table}`");
             $this->connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1');
         }
+    }
+
+    /**
+     * Helper method to ensure booleans are strings in HTTP payloads.
+     *
+     * this ensures the payload is compatible with a change in Symfony 5.2
+     *
+     * @see https://github.com/symfony/browser-kit/commit/1d033e7dccc9978dd7a2bde778d06ebbbf196392
+     */
+    protected function generateTypeSafePayload(mixed $payload): mixed
+    {
+        array_walk_recursive($payload, function (&$value): void {
+            $value = is_bool($value) ? ($value ? '1' : '0') : $value;
+        });
+
+        return $payload;
     }
 
     /**
@@ -316,7 +332,7 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
         $result = $this->connection->fetchAllAssociative(sprintf('SELECT alias, object FROM %slead_fields WHERE date_added IS NOT NULL', $prefix));
 
         foreach ($result as $data) {
-            $table = 'company' === $data['object'] ? 'companies' : 'leads';
+            $table = $data['object'] === 'company' ? 'companies' : 'leads';
             try {
                 $this->connection->executeStatement(sprintf('ALTER TABLE %s%s DROP COLUMN %s', $prefix, $table, $data['alias']));
             } catch (\Exception) {
@@ -367,7 +383,7 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
 
     private function wasRollbackSuccessful(): bool
     {
-        return false === $this->connection->fetchOne("SELECT 1 FROM {$this->getTablePrefix()}ip_addresses LIMIT 1");
+        return $this->connection->fetchOne("SELECT 1 FROM {$this->getTablePrefix()}ip_addresses LIMIT 1") === false;
     }
 
     private function getTablePrefix(): string
@@ -390,21 +406,5 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
         $cacheProvider = static::getContainer()->get('mautic.cache.provider');
         \assert($cacheProvider instanceof CacheItemPoolInterface);
         $cacheProvider->clear();
-    }
-
-    /**
-     * Helper method to ensure booleans are strings in HTTP payloads.
-     *
-     * this ensures the payload is compatible with a change in Symfony 5.2
-     *
-     * @see https://github.com/symfony/browser-kit/commit/1d033e7dccc9978dd7a2bde778d06ebbbf196392
-     */
-    protected function generateTypeSafePayload(mixed $payload): mixed
-    {
-        array_walk_recursive($payload, function (&$value): void {
-            $value = is_bool($value) ? ($value ? '1' : '0') : $value;
-        });
-
-        return $payload;
     }
 }

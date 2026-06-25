@@ -174,27 +174,6 @@ class PageControllerTest extends MauticMysqlTestCase
         }
     }
 
-    /** @param array<string, mixed> $pageParams */
-    protected function createTestPage(array $pageParams = []): Page
-    {
-        $page        = new Page();
-        $title       = $pageParams['title'] ?? 'Page:Page:LandingPageTracking';
-        $alias       = $pageParams['alias'] ?? 'page-page-landingPageTracking';
-        $isPublished = $pageParams['isPublished'] ?? true;
-        $template    = $pageParams['template'] ?? 'blank';
-
-        $page->setTitle($title);
-        $page->setAlias($alias);
-        $page->setIsPublished($isPublished);
-        $page->setTemplate($template);
-        $page->setCustomHtml('some content');
-
-        $this->em->persist($page);
-        $this->em->flush();
-
-        return $page;
-    }
-
     /*
      * Get page's view.
      */
@@ -287,5 +266,26 @@ class PageControllerTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, '/this_is_my_page');
         self::assertResponseIsSuccessful();
+    }
+
+    /** @param array<string, mixed> $pageParams */
+    protected function createTestPage(array $pageParams = []): Page
+    {
+        $page        = new Page();
+        $title       = $pageParams['title'] ?? 'Page:Page:LandingPageTracking';
+        $alias       = $pageParams['alias'] ?? 'page-page-landingPageTracking';
+        $isPublished = $pageParams['isPublished'] ?? true;
+        $template    = $pageParams['template'] ?? 'blank';
+
+        $page->setTitle($title);
+        $page->setAlias($alias);
+        $page->setIsPublished($isPublished);
+        $page->setTemplate($template);
+        $page->setCustomHtml('some content');
+
+        $this->em->persist($page);
+        $this->em->flush();
+
+        return $page;
     }
 }

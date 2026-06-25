@@ -51,7 +51,7 @@ class DashboardBestHoursSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('email:emails:viewother');
 
-        if ('emails.best.hours' == $event->getType()) {
+        if ($event->getType() == 'emails.best.hours') {
             $widget     = $event->getWidget();
             $params     = $widget->getParams();
             $filterKeys = ['companyId', 'campaignId', 'segmentId'];

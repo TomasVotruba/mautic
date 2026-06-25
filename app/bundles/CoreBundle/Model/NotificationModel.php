@@ -46,14 +46,6 @@ class NotificationModel extends FormModel
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
-    private function getSession(): Session
-    {
-        $session = $this->requestStack->getSession();
-        \assert($session instanceof Session);
-
-        return $session;
-    }
-
     /**
      * @param bool $disableUpdates
      */
@@ -95,16 +87,16 @@ class NotificationModel extends FormModel
         ?string $deduplicateValue = null,
         ?\DateTime $deduplicateDateTimeFrom = null,
     ): void {
-        if (null === $user) {
+        if ($user === null) {
             $user = $this->userHelper->getUser();
         }
 
-        if (null === $user || !$user->getId()) {
+        if ($user === null || !$user->getId()) {
             // ensure notifications aren't written for non users
             return;
         }
 
-        if (null !== $deduplicateValue) {
+        if ($deduplicateValue !== null) {
             $deduplicateValue = md5($deduplicateValue);
 
             if ($this->isDuplicate($user->getId(), $deduplicateValue, $deduplicateDateTimeFrom)) {
@@ -119,7 +111,7 @@ class NotificationModel extends FormModel
         $notification->setMessage(EmojiHelper::toHtml(InputHelper::strict_html($message)));
         $notification->setIconClass($iconClass);
         $notification->setUser($user);
-        if (null == $datetime) {
+        if ($datetime == null) {
             $datetime = new \DateTime();
         }
         $notification->setDateAdded($datetime);
@@ -212,6 +204,14 @@ class NotificationModel extends FormModel
         }
 
         return [$notifications, $showNewIndicator, ['isNew' => $newUpdate, 'message' => $updateMessage]];
+    }
+
+    private function getSession(): Session
+    {
+        $session = $this->requestStack->getSession();
+        \assert($session instanceof Session);
+
+        return $session;
     }
 
     private function isDuplicate(int $userId, string $deduplicate, ?\DateTime $from = null): bool

@@ -42,7 +42,7 @@ class AjaxController extends CommonAjaxController
                     $object = $settings['object'] ?? 'lead';
                 }
 
-                $isLead            = ('lead' === $object);
+                $isLead            = ($object === 'lead');
                 $integrationFields = ($isLead)
                     ? $integrationObject->getFormLeadFields($settings)
                     : $integrationObject->getFormCompanyFields(
@@ -227,8 +227,8 @@ class AjaxController extends CommonAjaxController
         $integration_object = $integrationHelper->getIntegrationObject($integration);
         $entity             = $integration_object->getIntegrationSettings();
         $featureSettings    = $entity->getFeatureSettings();
-        $doNotMatchField    = ('-1' === $mautic_field || '' === $mautic_field);
-        if ('lead' == $object) {
+        $doNotMatchField    = ($mautic_field === '-1' || $mautic_field === '');
+        if ($object == 'lead') {
             $fields       = 'leadFields';
             $updateFields = 'update_mautic';
         } else {

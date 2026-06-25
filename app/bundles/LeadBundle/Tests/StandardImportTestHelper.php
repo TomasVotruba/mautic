@@ -68,6 +68,13 @@ abstract class StandardImportTestHelper extends CommonMocks
         parent::tearDownAfterClass();
     }
 
+    public function setUp(): void
+    {
+        defined('MAUTIC_ENV') or define('MAUTIC_ENV', 'test');
+
+        $this->eventEntities = [];
+    }
+
     public static function generateSmallCSV(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'mautic_import_test_');
@@ -95,13 +102,6 @@ abstract class StandardImportTestHelper extends CommonMocks
 
         fclose($file);
         self::$largeCsvPath = $tmpFile;
-    }
-
-    public function setUp(): void
-    {
-        defined('MAUTIC_ENV') or define('MAUTIC_ENV', 'test');
-
-        $this->eventEntities = [];
     }
 
     /**

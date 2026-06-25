@@ -109,7 +109,7 @@ class StatRepository extends CommonRepository
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = \'email\' and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
             ->addSelect('COUNT(ph.id) AS link_hits');
 
-        if (null !== $createdByUserId) {
+        if ($createdByUserId !== null) {
             $q->andWhere('e.created_by = :userId')
                 ->setParameter('userId', $createdByUserId);
         }
@@ -135,14 +135,14 @@ class StatRepository extends CommonRepository
         $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'campaign_events', 'ce', 's.source = "campaign.event" and s.source_id = ce.id')
             ->leftJoin('ce', MAUTIC_TABLE_PREFIX.'campaigns', 'campaign', 'ce.campaign_id = campaign.id');
 
-        if (null !== $campaignId) {
+        if ($campaignId !== null) {
             $q->andWhere('ce.campaign_id = :campaignId')
                 ->setParameter('campaignId', $campaignId);
         }
 
         $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'lead_lists', 'll', 's.list_id = ll.id');
 
-        if (null !== $segmentId) {
+        if ($segmentId !== null) {
             $sb = $this->getEntityManager()->getConnection()->createQueryBuilder();
             $sb->select('null')
                 ->from(MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'lll')
@@ -272,7 +272,7 @@ class StatRepository extends CommonRepository
 
         if ($listId) {
             if (!$combined) {
-                if (true === $listId) {
+                if ($listId === true) {
                     $q->addSelect('s.list_id')
                         ->groupBy('s.list_id');
                 } elseif (is_array($listId)) {
@@ -303,7 +303,7 @@ class StatRepository extends CommonRepository
             }
         }
 
-        if ('is_sent' === $column) {
+        if ($column === 'is_sent') {
             $q->andWhere('s.is_failed = :false')
                 ->setParameter('false', false, 'boolean');
         } else {
@@ -312,7 +312,7 @@ class StatRepository extends CommonRepository
         }
 
         if ($chartQuery) {
-            if ('is_read' === $column) {
+            if ($column === 'is_read') {
                 $chartQuery->applyDateFilters($q, 'date_read', 's');
             } else {
                 $chartQuery->applyDateFilters($q, 'date_sent', 's');
@@ -321,7 +321,7 @@ class StatRepository extends CommonRepository
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if ((true === $listId || is_array($listId)) && !$combined) {
+        if (($listId === true || is_array($listId)) && !$combined) {
             // Return list group of counts
             $byList = [];
             foreach ($results as $result) {
@@ -352,7 +352,7 @@ class StatRepository extends CommonRepository
             )->setParameter('false', false, 'boolean')
             ->setParameter('inIds', $inIds, ArrayParameterType::INTEGER);
 
-        if (null !== $fromDate) {
+        if ($fromDate !== null) {
             // make sure the date is UTC
             $dt = new DateTimeHelper($fromDate);
             $sq->andWhere(
@@ -374,7 +374,7 @@ class StatRepository extends CommonRepository
         }
 
         foreach ($totalCounts as $t) {
-            if (null != $t['email_id']) {
+            if ($t['email_id'] != null) {
                 $return[$t['email_id']]['totalCount'] = (int) $t['the_count'];
             }
         }
@@ -462,12 +462,12 @@ class StatRepository extends CommonRepository
 
         if (isset($options['state'])) {
             $state = $options['state'];
-            if ('read' == $state) {
+            if ($state == 'read') {
                 $timestampColumn = 's.date_read';
                 $query->andWhere(
                     $query->expr()->eq('s.is_read', 1)
                 );
-            } elseif ('failed' == $state) {
+            } elseif ($state == 'failed') {
                 $query->andWhere(
                     $query->expr()->eq('s.is_failed', 1)
                 );
@@ -573,7 +573,7 @@ class StatRepository extends CommonRepository
             )->setParameter('false', false, 'boolean')
             ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
 
-        if (null !== $fromDate) {
+        if ($fromDate !== null) {
             // make sure the date is UTC
             $dt = new DateTimeHelper($fromDate);
             $q->andWhere(

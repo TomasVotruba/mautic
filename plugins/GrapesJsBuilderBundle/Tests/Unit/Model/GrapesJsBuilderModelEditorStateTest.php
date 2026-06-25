@@ -55,7 +55,7 @@ final class GrapesJsBuilderModelEditorStateTest extends TestCase
         $grapesRepository->expects(self::once())
             ->method('saveEntity')
             ->with(self::callback(static function ($entity): bool {
-                return $entity instanceof GrapesJsBuilder && '<mjml/>' === $entity->getCustomMjml();
+                return $entity instanceof GrapesJsBuilder && $entity->getCustomMjml() === '<mjml/>';
             }));
 
         /** @var MockObject&EntityManager $entityManager */

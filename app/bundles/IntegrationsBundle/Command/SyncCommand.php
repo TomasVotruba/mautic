@@ -114,7 +114,7 @@ class SyncCommand extends Command
 
             $this->syncService->processIntegrationSync($inputOptions);
         } catch (\Throwable $e) {
-            if ('dev' === $input->getOption('env') || (defined('MAUTIC_ENV') && MAUTIC_ENV === 'dev')) {
+            if ($input->getOption('env') === 'dev' || (defined('MAUTIC_ENV') && MAUTIC_ENV === 'dev')) {
                 throw $e;
             }
 

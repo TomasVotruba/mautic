@@ -68,85 +68,6 @@ class AssetRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause($q, $filter, [
-            'a.title',
-            'a.alias',
-        ]);
-    }
-
-    /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $field         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-        switch ($command) {
-            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired'):
-            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(a.isPublished = :%1\$s AND a.publishDown IS NOT NULL AND a.publishDown <> '' AND a.publishDown < CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending'):
-            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending', [], null, 'en_US'):
-                $expr = sprintf(
-                    "(a.isPublished = :%1\$s AND a.publishUp IS NOT NULL AND a.publishUp <> '' AND a.publishUp > CURRENT_TIMESTAMP())",
-                    $unique
-                );
-                $forceParameters = [$unique => true];
-                break;
-            case $this->translator->trans('mautic.asset.asset.searchcommand.lang'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr            = '('.$q->expr()->eq('a.language', ":$unique").' OR '.$q->expr()->like('a.language', ":$langUnique").')';
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'asset_id',
-                    'asset_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif (!$returnParameter) {
-            $parameters = [];
-        } else {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [$expr, $parameters];
-    }
-
-    /**
      * @return string[]
      */
     public function getSearchCommands(): array
@@ -164,16 +85,6 @@ class AssetRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['a.title', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -255,5 +166,94 @@ class AssetRepository extends CommonRepository
         }
 
         return $asset;
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause($q, $filter, [
+            'a.title',
+            'a.alias',
+        ]);
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $field         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+        switch ($command) {
+            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(a.isPublished = :%1\$s AND a.publishDown IS NOT NULL AND a.publishDown <> '' AND a.publishDown < CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending'):
+            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(a.isPublished = :%1\$s AND a.publishUp IS NOT NULL AND a.publishUp <> '' AND a.publishUp > CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.asset.asset.searchcommand.lang'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr            = '('.$q->expr()->eq('a.language', ":{$unique}").' OR '.$q->expr()->like('a.language', ":{$langUnique}").')';
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'asset_id',
+                    'asset_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif (!$returnParameter) {
+            $parameters = [];
+        } else {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [$expr, $parameters];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['a.title', 'ASC'],
+        ];
     }
 }

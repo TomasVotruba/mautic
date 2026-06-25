@@ -11,13 +11,6 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20250722150225 extends PreUpAssertionMigration
 {
-    protected function preUpAssertions(): void
-    {
-        $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(Campaign::TABLE_NAME))->hasColumn('republish_behavior'),
-            'Column republish_behavior already exists'
-        );
-    }
 
     public function up(Schema $schema): void
     {
@@ -29,5 +22,12 @@ final class Version20250722150225 extends PreUpAssertionMigration
     {
         $table = $schema->getTable($this->getPrefixedTableName(Campaign::TABLE_NAME));
         $table->dropColumn('republish_behavior');
+    }
+    protected function preUpAssertions(): void
+    {
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(Campaign::TABLE_NAME))->hasColumn('republish_behavior'),
+            'Column republish_behavior already exists'
+        );
     }
 }

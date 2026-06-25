@@ -39,6 +39,26 @@ class DisplayManager
         return false;
     }
 
+    public function useProgressiveProfilingLimit(): bool
+    {
+        return $this->form->getProgressiveProfilingLimit() != '';
+    }
+
+    /**
+     * @return DisplayCounter
+     */
+    public function getDisplayCounter()
+    {
+        return $this->displayCounter;
+    }
+
+    public function increaseDisplayedFields(Field $field): void
+    {
+        if (!in_array($field->getType(), $this->viewOnlyFields)) {
+            $this->displayCounter->increaseDisplayedFields();
+        }
+    }
+
     private function shouldDisplayNotAlwaysDisplayField(Field $field): bool
     {
         $fields = $this->form->getFields()->toArray();
@@ -56,25 +76,5 @@ class DisplayManager
         }
 
         return true;
-    }
-
-    public function useProgressiveProfilingLimit(): bool
-    {
-        return '' != $this->form->getProgressiveProfilingLimit();
-    }
-
-    /**
-     * @return DisplayCounter
-     */
-    public function getDisplayCounter()
-    {
-        return $this->displayCounter;
-    }
-
-    public function increaseDisplayedFields(Field $field): void
-    {
-        if (!in_array($field->getType(), $this->viewOnlyFields)) {
-            $this->displayCounter->increaseDisplayedFields();
-        }
     }
 }

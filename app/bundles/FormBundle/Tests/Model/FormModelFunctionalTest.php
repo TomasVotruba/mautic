@@ -65,22 +65,6 @@ class FormModelFunctionalTest extends MauticMysqlTestCase
         $formModel->deleteEntity($savedAgain);
     }
 
-    /**
-     * @return string[]
-     */
-    private function getConditionalChildLabels(Form $form): array
-    {
-        $labels = [];
-
-        foreach ($form->getFields() as $field) {
-            if ($field->getParent()) {
-                $labels[] = $field->getLabel();
-            }
-        }
-
-        return $labels;
-    }
-
     public function testPopulateValuesWithGetParameters(): void
     {
         $formId     = $this->createForm();
@@ -109,6 +93,55 @@ class FormModelFunctionalTest extends MauticMysqlTestCase
         self::assertSame('test+page@test.com', $inputValue);
         $inputValue = $crawler->filter('input[type=text]')->attr('value');
         self::assertSame('test', $inputValue);
+    }
+
+    public function testLeadPopulateValuesWithLeadFields(): void
+    {
+        $multiselectFieldId = $this->createMultiselectLeadField();
+
+        $fieldModel       = $this->getContainer()->get('mautic.lead.model.field');
+        $multiselectField = $fieldModel->getEntity($multiselectFieldId);
+        $fieldAlias       = $multiselectField->getAlias();
+
+        $form   = $this->createFormWithMultiselect($fieldAlias);
+        $formId = $form->getId();
+
+        $lead = new Lead();
+        $lead->setEmail('test@example.com');
+        $lead->addUpdatedField($fieldAlias, 'a|b');
+        $this->em->persist($lead);
+        $this->em->flush();
+
+        $this->logoutUser();
+
+        $contactTracker = $this->getContainer()->get('mautic.tracker.contact');
+        $contactTracker->setTrackedContact($lead);
+
+        $this->client->request('GET', "/form/{$formId}");
+        $formCrawler = $this->client->getCrawler();
+        $checkboxA   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_a0"]')->attr('checked');
+        $checkboxB   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_b1"]')->attr('checked');
+        $checkboxC   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_c2"]')->attr('checked');
+
+        $this->assertNotNull($checkboxA, 'Checkbox A should be preselected.');
+        $this->assertNotNull($checkboxB, 'Checkbox B should be preselected.');
+        $this->assertNull($checkboxC, 'Checkbox C should NOT be preselected.');
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getConditionalChildLabels(Form $form): array
+    {
+        $labels = [];
+
+        foreach ($form->getFields() as $field) {
+            if ($field->getParent()) {
+                $labels[] = $field->getLabel();
+            }
+        }
+
+        return $labels;
     }
 
     private function createForm(): int
@@ -200,39 +233,6 @@ class FormModelFunctionalTest extends MauticMysqlTestCase
         $this->client->request('POST', '/api/pages/new', $pagePayload);
         $clientResponse = $this->client->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
-    }
-
-    public function testLeadPopulateValuesWithLeadFields(): void
-    {
-        $multiselectFieldId = $this->createMultiselectLeadField();
-
-        $fieldModel       = $this->getContainer()->get('mautic.lead.model.field');
-        $multiselectField = $fieldModel->getEntity($multiselectFieldId);
-        $fieldAlias       = $multiselectField->getAlias();
-
-        $form   = $this->createFormWithMultiselect($fieldAlias);
-        $formId = $form->getId();
-
-        $lead = new Lead();
-        $lead->setEmail('test@example.com');
-        $lead->addUpdatedField($fieldAlias, 'a|b');
-        $this->em->persist($lead);
-        $this->em->flush();
-
-        $this->logoutUser();
-
-        $contactTracker = $this->getContainer()->get('mautic.tracker.contact');
-        $contactTracker->setTrackedContact($lead);
-
-        $this->client->request('GET', "/form/{$formId}");
-        $formCrawler = $this->client->getCrawler();
-        $checkboxA   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_a0"]')->attr('checked');
-        $checkboxB   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_b1"]')->attr('checked');
-        $checkboxC   = $formCrawler->filter('[id*="mauticform_checkboxgrp_checkbox_"][id$="_c2"]')->attr('checked');
-
-        $this->assertNotNull($checkboxA, 'Checkbox A should be preselected.');
-        $this->assertNotNull($checkboxB, 'Checkbox B should be preselected.');
-        $this->assertNull($checkboxC, 'Checkbox C should NOT be preselected.');
     }
 
     private function createFormWithMultiselect(string $leadFieldAlias): Form

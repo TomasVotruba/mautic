@@ -42,6 +42,28 @@ class IpAddressModel
     }
 
     /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function deleteUnusedIpAddresses(int $limit): int
+    {
+        /** @var IpAddressRepository $ipAddressRepo */
+        $ipAddressRepo = $this->entityManager->getRepository(IpAddress::class);
+        $ipIds         = $ipAddressRepo->getUnusedIpAddressesIds($limit);
+
+        $chunkedIds = array_chunk($ipIds, self::DELETE_SIZE);
+        $count      = 0;
+
+        foreach ($chunkedIds as $ids) {
+            $count += $ipAddressRepo->deleteUnusedIpAddresses($ids);
+
+            // Use sleep to recover from any potential table locks.
+            usleep(50000);
+        }
+
+        return $count;
+    }
+
+    /**
      * Tries to insert the Lead/IP relation and continues even if UniqueConstraintViolationException is thrown.
      */
     private function insertIpAddressReference(Lead $contact, IpAddress $ipAddress): void
@@ -71,27 +93,5 @@ class IpAddressModel
         }
 
         $this->entityManager->detach($ipAddress);
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function deleteUnusedIpAddresses(int $limit): int
-    {
-        /** @var IpAddressRepository $ipAddressRepo */
-        $ipAddressRepo = $this->entityManager->getRepository(IpAddress::class);
-        $ipIds         = $ipAddressRepo->getUnusedIpAddressesIds($limit);
-
-        $chunkedIds = array_chunk($ipIds, self::DELETE_SIZE);
-        $count      = 0;
-
-        foreach ($chunkedIds as $ids) {
-            $count += $ipAddressRepo->deleteUnusedIpAddresses($ids);
-
-            // Use sleep to recover from any potential table locks.
-            usleep(50000);
-        }
-
-        return $count;
     }
 }

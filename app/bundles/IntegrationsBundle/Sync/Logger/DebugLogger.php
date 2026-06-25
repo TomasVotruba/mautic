@@ -28,10 +28,10 @@ class DebugLogger
             return;
         }
 
-        if (null !== $loggedFrom) {
+        if ($loggedFrom !== null) {
             $context['logged from'] = $loggedFrom;
         }
 
-        static::$logger->$urgency(strtoupper($integration).' SYNC: '.$message, $context);
+        static::$logger->{$urgency}(strtoupper($integration).' SYNC: '.$message, $context);
     }
 }

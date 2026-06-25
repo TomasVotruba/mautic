@@ -67,7 +67,7 @@ trait FieldsTypeTrait
                         $optionalFields[$groupName] = [];
                     }
 
-                    if (is_array($details) && (!empty($details['required']) || 'Email' == $choices[$field])) {
+                    if (is_array($details) && (!empty($details['required']) || $choices[$field] == 'Email')) {
                         $requiredFields[$groupName][$field] = $details;
                     } else {
                         $optionalFields[$groupName][$field] = $details;
@@ -107,7 +107,7 @@ trait FieldsTypeTrait
                 }
 
                 // Ensure that fields aren't hidden
-                if ($start > count($fields) || 0 == $options['page']) {
+                if ($start > count($fields) || $options['page'] == 0) {
                     $start = 0;
                 }
 
@@ -122,7 +122,7 @@ trait FieldsTypeTrait
 
                 foreach ($paginatedFields as $field => $details) {
                     $matched  = isset($fieldData[$fieldsName][$field]);
-                    $required = (int) (!empty($integrationFields[$field]['required']) || 'Email' == $choices[$field]);
+                    $required = (int) (!empty($integrationFields[$field]['required']) || $choices[$field] == 'Email');
                     ++$index;
                     $form->add(
                         'label_'.$index,
@@ -233,7 +233,7 @@ trait FieldsTypeTrait
     protected function configureFieldOptions(OptionsResolver $resolver, $object)
     {
         $resolver->setRequired(['integration_fields', 'mautic_fields', 'integration', 'integration_object', 'page']);
-        $resolver->setDefined([('lead' === $object) ? 'update_mautic' : 'update_mautic_company']);
+        $resolver->setDefined([($object === 'lead') ? 'update_mautic' : 'update_mautic_company']);
         $resolver->setDefaults(
             [
                 'special_instructions' => function (Options $options) {
@@ -251,7 +251,7 @@ trait FieldsTypeTrait
                 'totalFields'          => fn (Options $options): int => count($options['integration_fields']),
                 'fixedPageNum'         => fn (Options $options): float => ceil($options['totalFields'] / $options['limit']),
                 'limit'                => 10,
-                'start'                => fn (Options $options): int => (1 === (int) $options['page']) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'],
+                'start'                => fn (Options $options): int => ((int) $options['page'] === 1) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'],
             ]
         );
     }

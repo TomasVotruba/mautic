@@ -47,13 +47,13 @@ final class DeviceTrackingServiceClearCookiesTest extends MauticMysqlTestCase
 
         foreach ($this->client->getResponse()->headers->getCookies() as $cookie) {
             // Check if tracking cookies are being deleted (empty value + past expiration)
-            $cookieIsDeleted = '' === $cookie->getValue() && $cookie->getExpiresTime() < time();
+            $cookieIsDeleted = $cookie->getValue() === '' && $cookie->getExpiresTime() < time();
 
-            if ('mautic_device_id' === $cookie->getName() && $cookieIsDeleted) {
+            if ($cookie->getName() === 'mautic_device_id' && $cookieIsDeleted) {
                 $deviceIdCookieCleared = true;
             }
 
-            if ('mtc_id' === $cookie->getName() && $cookieIsDeleted) {
+            if ($cookie->getName() === 'mtc_id' && $cookieIsDeleted) {
                 $mtcIdCookieCleared = true;
             }
         }

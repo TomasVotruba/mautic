@@ -34,15 +34,15 @@ class WidgetRepository extends CommonRepository
         $this->saveEntities($widgets);
     }
 
+    public function getTableAlias(): string
+    {
+        return 'w';
+    }
+
     protected function getDefaultOrder(): array
     {
         return [
             ['w.ordering', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'w';
     }
 }

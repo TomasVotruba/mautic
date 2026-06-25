@@ -89,7 +89,7 @@ class PRedisConnectionHelper
     {
         $replication = $inputOptions['replication'] ?? null;
 
-        if ('sentinel' === $replication) {
+        if ($replication === 'sentinel') {
             $inputOptions['aggregate'] = fn ($sentinels, $options): SentinelReplication => new SentinelReplication(
                 $options->service,
                 $sentinels,
@@ -106,7 +106,7 @@ class PRedisConnectionHelper
         // Convert single-endpoint array to string to avoid Predis 3 aggregate connection error
         // This is to maintain compatibility with Predis 3 which expects a string for single endpoint
         // or an array of endpoints for multiple connections.
-        if (1 === count($endpoints) && is_string(reset($endpoints))) {
+        if (count($endpoints) === 1 && is_string(reset($endpoints))) {
             $endpoints = reset($endpoints);
         }
 

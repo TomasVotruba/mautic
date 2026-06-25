@@ -69,7 +69,7 @@ class LeadRepository extends CommonRepository
             ->setParameter('false', false, 'boolean')
             ->setParameter('campaign', $campaignId);
 
-        if (null != $eventId) {
+        if ($eventId != null) {
             $dq = $this->getEntityManager()->createQueryBuilder();
             $dq->select('el.id')
                 ->from(LeadEventLog::class, 'ell')
@@ -507,6 +507,77 @@ class LeadRepository extends CommonRepository
             ->executeStatement();
     }
 
+    /**
+     * @return array{}|array<int, array<string, string|null>>
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getCampaignMembersGroupByCountry(Campaign $campaign, \DateTimeImmutable $dateFromObject, \DateTimeImmutable $dateToObject): array
+    {
+        $queryBuilder      = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $leadCampaignAlias = 'lc';
+        $leadAlias         = 'l';
+
+        $queryBuilder->select(
+            "{$leadAlias}.country",
+            'count(id) AS contacts'
+        )
+        ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', $leadCampaignAlias)
+        ->leftJoin(
+            $leadCampaignAlias,
+            MAUTIC_TABLE_PREFIX.'leads',
+            $leadAlias,
+            "{$leadAlias}.id = {$leadCampaignAlias}.lead_id"
+        )
+        ->andWhere("{$leadCampaignAlias}.campaign_id = :campaign")
+        ->andWhere("{$leadCampaignAlias}.manually_removed = :false")
+        ->andWhere("{$leadCampaignAlias}.date_added BETWEEN :dateFrom AND :dateTo")
+        ->groupBy("{$leadAlias}.country")
+        ->orderBy("{$leadAlias}.country", 'ASC')
+        ->setParameter('campaign', $campaign->getId())
+        ->setParameter('false', false)
+        ->setParameter('dateFrom', $dateFromObject->format('Y-m-d H:i:s'))
+        ->setParameter('dateTo', $dateToObject->setTime(23, 59, 59)->format('Y-m-d H:i:s'));
+
+        return $queryBuilder->executeQuery()->fetchAllAssociative();
+    }
+
+    public function deleteAnonymousContacts(): int
+    {
+        $conn           = $this->getEntityManager()->getConnection();
+        $tableName      = $this->getTableName();
+        $leadsTableName = MAUTIC_TABLE_PREFIX.'leads';
+        $tempTableName  = 'to_delete';
+        $conn->executeQuery(sprintf('DROP TEMPORARY TABLE IF EXISTS %s', $tempTableName));
+        $conn->executeQuery(sprintf('CREATE TEMPORARY TABLE %s select DISTINCT lll.lead_id from %s lll join %s l on l.id = lll.lead_id where l.date_identified is null;', $tempTableName, $tableName, $leadsTableName));
+        $deleteQuery       = sprintf('DELETE lll FROM %s lll JOIN (SELECT lead_id FROM %s LIMIT %d) d USING (lead_id); ', $tableName, $tempTableName, self::DELETE_BATCH_SIZE);
+        $deletedRecordCount= 0;
+        while ($deletedRows = $conn->executeQuery($deleteQuery)->rowCount()) {
+            $deletedRecordCount += $deletedRows;
+        }
+
+        return $deletedRecordCount;
+    }
+
+    /**
+     * @param array<int> $campaignIds
+     *
+     * @return array<mixed>
+     */
+    public function getCampaignContactCounts(array $campaignIds): array
+    {
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $qb->select('cl.campaign_id, COUNT(DISTINCT cl.lead_id) as contact_count')
+            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
+            ->where('cl.campaign_id IN (:campaignIds)')
+            ->andWhere('cl.manually_removed = :manuallyRemoved')
+            ->setParameter('campaignIds', $campaignIds, ArrayParameterType::INTEGER)
+            ->setParameter('manuallyRemoved', 0)
+            ->groupBy('cl.campaign_id');
+
+        return $qb->executeQuery()->fetchAllAssociative();
+    }
+
     private function getCampaignSegments($campaignId): array
     {
         // Get published segments for this campaign
@@ -565,7 +636,7 @@ class LeadRepository extends CommonRepository
 
     private function updateQueryWithSegmentMembershipExclusion(array $segments, QueryBuilder $qb): void
     {
-        if (0 === count($segments)) {
+        if (count($segments) === 0) {
             // No segments so nothing to exclude
             return;
         }
@@ -606,76 +677,5 @@ class LeadRepository extends CommonRepository
         $qb->andWhere(
             sprintf('NOT EXISTS (%s)', $subq->getSQL())
         );
-    }
-
-    /**
-     * @return array{}|array<int, array<string, string|null>>
-     *
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function getCampaignMembersGroupByCountry(Campaign $campaign, \DateTimeImmutable $dateFromObject, \DateTimeImmutable $dateToObject): array
-    {
-        $queryBuilder      = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $leadCampaignAlias = 'lc';
-        $leadAlias         = 'l';
-
-        $queryBuilder->select(
-            "$leadAlias.country",
-            'count(id) AS contacts'
-        )
-        ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', $leadCampaignAlias)
-        ->leftJoin(
-            $leadCampaignAlias,
-            MAUTIC_TABLE_PREFIX.'leads',
-            $leadAlias,
-            "$leadAlias.id = $leadCampaignAlias.lead_id"
-        )
-        ->andWhere("$leadCampaignAlias.campaign_id = :campaign")
-        ->andWhere("$leadCampaignAlias.manually_removed = :false")
-        ->andWhere("$leadCampaignAlias.date_added BETWEEN :dateFrom AND :dateTo")
-        ->groupBy("$leadAlias.country")
-        ->orderBy("$leadAlias.country", 'ASC')
-        ->setParameter('campaign', $campaign->getId())
-        ->setParameter('false', false)
-        ->setParameter('dateFrom', $dateFromObject->format('Y-m-d H:i:s'))
-        ->setParameter('dateTo', $dateToObject->setTime(23, 59, 59)->format('Y-m-d H:i:s'));
-
-        return $queryBuilder->executeQuery()->fetchAllAssociative();
-    }
-
-    public function deleteAnonymousContacts(): int
-    {
-        $conn           = $this->getEntityManager()->getConnection();
-        $tableName      = $this->getTableName();
-        $leadsTableName = MAUTIC_TABLE_PREFIX.'leads';
-        $tempTableName  = 'to_delete';
-        $conn->executeQuery(sprintf('DROP TEMPORARY TABLE IF EXISTS %s', $tempTableName));
-        $conn->executeQuery(sprintf('CREATE TEMPORARY TABLE %s select DISTINCT lll.lead_id from %s lll join %s l on l.id = lll.lead_id where l.date_identified is null;', $tempTableName, $tableName, $leadsTableName));
-        $deleteQuery       = sprintf('DELETE lll FROM %s lll JOIN (SELECT lead_id FROM %s LIMIT %d) d USING (lead_id); ', $tableName, $tempTableName, self::DELETE_BATCH_SIZE);
-        $deletedRecordCount= 0;
-        while ($deletedRows = $conn->executeQuery($deleteQuery)->rowCount()) {
-            $deletedRecordCount += $deletedRows;
-        }
-
-        return $deletedRecordCount;
-    }
-
-    /**
-     * @param array<int> $campaignIds
-     *
-     * @return array<mixed>
-     */
-    public function getCampaignContactCounts(array $campaignIds): array
-    {
-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $qb->select('cl.campaign_id, COUNT(DISTINCT cl.lead_id) as contact_count')
-            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
-            ->where('cl.campaign_id IN (:campaignIds)')
-            ->andWhere('cl.manually_removed = :manuallyRemoved')
-            ->setParameter('campaignIds', $campaignIds, ArrayParameterType::INTEGER)
-            ->setParameter('manuallyRemoved', 0)
-            ->groupBy('cl.campaign_id');
-
-        return $qb->executeQuery()->fetchAllAssociative();
     }
 }

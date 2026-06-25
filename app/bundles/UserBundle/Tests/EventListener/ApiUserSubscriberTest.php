@@ -106,11 +106,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('hasBadge')
             ->willReturnCallback(static function (string $className): bool {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return true;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return false;
                 }
 
@@ -155,11 +155,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('hasBadge')
             ->willReturnCallback(static function (string $className): bool {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return true;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return true;
                 }
 
@@ -168,11 +168,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('getBadge')
             ->willReturnCallback(function (string $className) use ($accessTokenBadge, $userBadge): BadgeInterface {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return $userBadge;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return $accessTokenBadge;
                 }
 
@@ -229,11 +229,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('hasBadge')
             ->willReturnCallback(static function (string $className): bool {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return true;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return true;
                 }
 
@@ -242,11 +242,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('getBadge')
             ->willReturnCallback(function (string $className) use ($accessTokenBadge, $userBadge): BadgeInterface {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return $userBadge;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return $accessTokenBadge;
                 }
 
@@ -303,11 +303,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('hasBadge')
             ->willReturnCallback(static function (string $className): bool {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return true;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return true;
                 }
 
@@ -316,11 +316,11 @@ class ApiUserSubscriberTest extends TestCase
         $passport->expects(self::exactly(2))
             ->method('getBadge')
             ->willReturnCallback(function (string $className) use ($accessTokenBadge, $userBadge): BadgeInterface {
-                if (UserBadge::class === $className) {
+                if ($className === UserBadge::class) {
                     return $userBadge;
                 }
 
-                if (AccessTokenBadge::class === $className) {
+                if ($className === AccessTokenBadge::class) {
                     return $accessTokenBadge;
                 }
 

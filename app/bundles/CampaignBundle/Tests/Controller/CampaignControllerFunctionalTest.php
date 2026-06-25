@@ -163,6 +163,49 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         $this->getCountAndDetails(true, true, true, ['100%', '100%'], ['4', '2'], ['0', '1']);
     }
 
+    public function testDeleteCampaign(): void
+    {
+        $lead              = $this->createLead();
+        $campaign          = $this->createCampaign();
+        $event             = $this->createEvent('Event 1', $campaign);
+        $this->createEventLog($lead, $event, $campaign);
+
+        $this->client->request(Request::METHOD_POST, '/s/campaigns/delete/'.$campaign->getId());
+
+        $response = $this->client->getResponse();
+        self::assertResponseIsSuccessful($response->getContent());
+
+        $eventLogs = $this->em->getRepository(LeadEventLog::class)->findAll();
+        Assert::assertCount(0, $eventLogs);
+    }
+
+    public function testCampaignView(): void
+    {
+        $campaign = $this->saveSomeCampaignLeadEventLogs();
+        $crawler  = $this->client->request('GET', sprintf('/s/campaigns/view/%d', $campaign->getId()));
+        $response = $this->client->getResponse();
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Campaign ABC', $response->getContent());
+        self::assertSame('', trim($crawler->filter('#decisions-container')->text()));
+        self::assertSame('', trim($crawler->filter('#actions-container')->text()));
+        self::assertSame('', trim($crawler->filter('#conditions-container')->text()));
+        self::assertSame('', trim($crawler->filter('#campaign-graph-div')->text()));
+    }
+
+    public function testCampaignViewEvents(): void
+    {
+        $from     = date('Y-m-d', strtotime('-2 months'));
+        $to       = date('Y-m-d', strtotime('-1 month'));
+        $campaign = $this->saveSomeCampaignLeadEventLogs();
+        $this->client->request('GET', sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $from, $to));
+        $response = $this->client->getResponse();
+        self::assertResponseIsSuccessful();
+        $body     = json_decode($response->getContent(), true);
+        self::assertCount(2, $body);
+        self::arrayHasKey('actions');
+        self::assertStringContainsString('100% 2 0 Event A mautic.campaign.type.a 100% 2 0 Event B mautic.campaign.type.b', preg_replace('/\s+/', ' ', strip_tags($body['actions'])));
+    }
+
     private function getStatTotalContacts(int $campaignId): int
     {
         $from = date('Y-m-d', strtotime('-2 months'));
@@ -298,22 +341,6 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         Assert::assertSame($expectedPending, $actionCounts['pending']);
     }
 
-    public function testDeleteCampaign(): void
-    {
-        $lead              = $this->createLead();
-        $campaign          = $this->createCampaign();
-        $event             = $this->createEvent('Event 1', $campaign);
-        $this->createEventLog($lead, $event, $campaign);
-
-        $this->client->request(Request::METHOD_POST, '/s/campaigns/delete/'.$campaign->getId());
-
-        $response = $this->client->getResponse();
-        self::assertResponseIsSuccessful($response->getContent());
-
-        $eventLogs = $this->em->getRepository(LeadEventLog::class)->findAll();
-        Assert::assertCount(0, $eventLogs);
-    }
-
     private function createLead(): Lead
     {
         $lead = new Lead();
@@ -357,32 +384,5 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         $this->em->flush();
 
         return $leadEventLog;
-    }
-
-    public function testCampaignView(): void
-    {
-        $campaign = $this->saveSomeCampaignLeadEventLogs();
-        $crawler  = $this->client->request('GET', sprintf('/s/campaigns/view/%d', $campaign->getId()));
-        $response = $this->client->getResponse();
-        self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Campaign ABC', $response->getContent());
-        self::assertSame('', trim($crawler->filter('#decisions-container')->text()));
-        self::assertSame('', trim($crawler->filter('#actions-container')->text()));
-        self::assertSame('', trim($crawler->filter('#conditions-container')->text()));
-        self::assertSame('', trim($crawler->filter('#campaign-graph-div')->text()));
-    }
-
-    public function testCampaignViewEvents(): void
-    {
-        $from     = date('Y-m-d', strtotime('-2 months'));
-        $to       = date('Y-m-d', strtotime('-1 month'));
-        $campaign = $this->saveSomeCampaignLeadEventLogs();
-        $this->client->request('GET', sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $from, $to));
-        $response = $this->client->getResponse();
-        self::assertResponseIsSuccessful();
-        $body     = json_decode($response->getContent(), true);
-        self::assertCount(2, $body);
-        self::arrayHasKey('actions');
-        self::assertStringContainsString('100% 2 0 Event A mautic.campaign.type.a 100% 2 0 Event B mautic.campaign.type.b', preg_replace('/\s+/', ' ', strip_tags($body['actions'])));
     }
 }

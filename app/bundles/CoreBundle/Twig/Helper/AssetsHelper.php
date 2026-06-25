@@ -185,7 +185,7 @@ final class AssetsHelper
         $addScripts = function ($s) use ($location, &$assets, $async, $name): void {
             $name = $name ?: 'script_'.hash('sha1', uniqid((string) mt_rand()));
 
-            if ('head' == $location) {
+            if ($location == 'head') {
                 // special place for these so that declarations and scripts can be mingled
                 $assets['headDeclarations'][$name] = ['script' => [$s, $async]];
             } else {
@@ -220,7 +220,7 @@ final class AssetsHelper
      */
     public function addScriptDeclaration($script, $location = 'head')
     {
-        if ('head' == $location) {
+        if ($location == 'head') {
             // special place for these so that declarations and scripts can be mingled
             $this->assets[$this->context]['headDeclarations'][] = ['declaration' => $script];
         } else {
@@ -296,7 +296,7 @@ final class AssetsHelper
      */
     public function addCustomDeclaration($declaration, $location = 'head')
     {
-        if ('head' == $location) {
+        if ($location == 'head') {
             $this->assets[$this->context]['headDeclarations'][] = ['custom' => $declaration];
         } else {
             if (!isset($this->assets[$this->context]['customDeclarations'][$location])) {
@@ -334,7 +334,7 @@ final class AssetsHelper
         if (isset($this->assets[$this->context]['styleDeclarations'])) {
             $styles .= "<style data-source=\"mautic\">\n";
             foreach (array_reverse($this->assets[$this->context]['styleDeclarations']) as $d) {
-                $styles .= "$d\n";
+                $styles .= "{$d}\n";
             }
             $styles .= "</style>\n";
         }
@@ -359,14 +359,14 @@ final class AssetsHelper
         if (isset($this->assets[$this->context]['scriptDeclarations'][$location])) {
             echo "<script data-source=\"mautic\">\n";
             foreach (array_reverse($this->assets[$this->context]['scriptDeclarations'][$location]) as $d) {
-                echo "$d\n";
+                echo "{$d}\n";
             }
             echo "</script>\n";
         }
 
         if (isset($this->assets[$this->context]['customDeclarations'][$location])) {
             foreach (array_reverse($this->assets[$this->context]['customDeclarations'][$location]) as $d) {
-                echo "$d\n";
+                echo "{$d}\n";
             }
         }
     }
@@ -404,14 +404,14 @@ final class AssetsHelper
                         break;
                     case 'custom':
                     case 'declaration':
-                        if ('custom' == $type && $scriptOpen) {
+                        if ($type == 'custom' && $scriptOpen) {
                             $headOutput .= "\n</script>";
                             $scriptOpen = false;
-                        } elseif ('declaration' == $type && !$scriptOpen) {
+                        } elseif ($type == 'declaration' && !$scriptOpen) {
                             $headOutput .= "\n<script data-source=\"mautic\">";
                             $scriptOpen = true;
                         }
-                        $headOutput .= "\n$output";
+                        $headOutput .= "\n{$output}";
                         break;
                 }
             }
@@ -504,20 +504,6 @@ final class AssetsHelper
     }
 
     /**
-     * Load CKEditor JS source files.
-     *
-     * @return array<string>
-     */
-    private function getCKEditorScripts(): array
-    {
-        $base    = 'media/libraries/ckeditor/';
-
-        return [
-            $base.'ckeditor.js?v'.$this->version,
-        ];
-    }
-
-    /**
      * Loads an addon script.
      *
      * @param string $assetFilePath         The path to the file location. Can use full path or relative to mautic web root
@@ -526,7 +512,7 @@ final class AssetsHelper
      */
     public function includeScript($assetFilePath, $onLoadCallback = '', $alreadyLoadedCallback = ''): string
     {
-        return '<script async="async" type="text/javascript" data-source="mautic">Mautic.loadScript(\''.$this->getUrl($assetFilePath)."', '$onLoadCallback', '$alreadyLoadedCallback');</script>";
+        return '<script async="async" type="text/javascript" data-source="mautic">Mautic.loadScript(\''.$this->getUrl($assetFilePath)."', '{$onLoadCallback}', '{$alreadyLoadedCallback}');</script>";
     }
 
     /**
@@ -575,23 +561,23 @@ final class AssetsHelper
                     }
                     $link = $this->escape($match[2] ?: $match[3]);
 
-                    return '<'.array_push($links, "<a $attr href=\"$protocol://$link\">$link</a>").'>';
+                    return '<'.array_push($links, "<a {$attr} href=\"{$protocol}://{$link}\">{$link}</a>").'>';
                 }, $text),
                 'mail' => preg_replace_callback('~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~', function ($match) use (&$links, $attr): string {
                     $match[1] = $this->escape($match[1]);
 
-                    return '<'.array_push($links, "<a $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>").'>';
+                    return '<'.array_push($links, "<a {$attr} href=\"mailto:{$match[1]}\">{$match[1]}</a>").'>';
                 }, $text),
                 'twitter' => preg_replace_callback('~(?<!\w)[@#](\w++)~', function ($match) use (&$links, $attr): string {
                     $match[0] = $this->escape($match[0]);
                     $match[1] = $this->escape($match[1]);
 
-                    return '<'.array_push($links, "<a $attr href=\"https://twitter.com/".('@' == $match[0][0] ? '' : 'search/%23').$match[1]."\">{$match[0]}</a>").'>';
+                    return '<'.array_push($links, "<a {$attr} href=\"https://twitter.com/".($match[0][0] == '@' ? '' : 'search/%23').$match[1]."\">{$match[0]}</a>").'>';
                 }, $text),
                 default => preg_replace_callback('~'.preg_quote($protocol, '~').'://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr): string {
                     $match[1] = $this->escape($match[1]);
 
-                    return '<'.array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>").'>';
+                    return '<'.array_push($links, "<a {$attr} href=\"{$protocol}://{$match[1]}\">{$match[1]}</a>").'>';
                 }, $text),
             };
         }
@@ -688,6 +674,20 @@ final class AssetsHelper
     public function setInstallService(InstallService $installService): void
     {
         $this->installService = $installService;
+    }
+
+    /**
+     * Load CKEditor JS source files.
+     *
+     * @return array<string>
+     */
+    private function getCKEditorScripts(): array
+    {
+        $base    = 'media/libraries/ckeditor/';
+
+        return [
+            $base.'ckeditor.js?v'.$this->version,
+        ];
     }
 
     private function escape(string $string): string

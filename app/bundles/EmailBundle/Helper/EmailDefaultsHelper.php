@@ -36,7 +36,7 @@ class EmailDefaultsHelper
 
     private function applyPreferenceCenterDefault(Email $email): void
     {
-        if (null !== $email->getPreferenceCenter()) {
+        if ($email->getPreferenceCenter() !== null) {
             return;
         }
 
@@ -53,7 +53,7 @@ class EmailDefaultsHelper
 
     private function applyUtmTagDefaults(Email $email): void
     {
-        $existingTags = array_filter($email->getUtmTags(), static fn ($tag): bool => null !== $tag && '' !== $tag);
+        $existingTags = array_filter($email->getUtmTags(), static fn ($tag): bool => $tag !== null && $tag !== '');
         if (!empty($existingTags)) {
             return;
         }
@@ -65,7 +65,7 @@ class EmailDefaultsHelper
             'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
         ];
 
-        $filtered = array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag);
+        $filtered = array_filter($utmTags, static fn ($tag): bool => $tag !== null && $tag !== '');
         if ($filtered) {
             $email->setUtmTags($filtered);
         }

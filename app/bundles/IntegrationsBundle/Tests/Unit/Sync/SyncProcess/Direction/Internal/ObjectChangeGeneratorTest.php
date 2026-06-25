@@ -215,7 +215,7 @@ class ObjectChangeGeneratorTest extends TestCase
 
         $this->bulkNotification->expects($matcher)
             ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-email', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);
                     $this->assertSame($integrationName, $parameters[2]);
@@ -224,7 +224,7 @@ class ObjectChangeGeneratorTest extends TestCase
                     $this->assertSame(0, $parameters[5]);
                     $this->assertSame("Field 'email' for object ID '2' mapped to internal 'email' with value 'test@test.com'", $parameters[6]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-first_name', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);
                     $this->assertSame($integrationName, $parameters[2]);
@@ -282,7 +282,7 @@ class ObjectChangeGeneratorTest extends TestCase
 
         $this->bulkNotification->expects($matcher)
             ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-email', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);
                     $this->assertSame($integrationName, $parameters[2]);
@@ -291,7 +291,7 @@ class ObjectChangeGeneratorTest extends TestCase
                     $this->assertSame(0, $parameters[5]);
                     $this->assertSame("Field 'email' for object ID '2' mapped to internal 'email' with value 'test@test.com'", $parameters[6]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-first_name', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);
                     $this->assertSame($integrationName, $parameters[2]);
@@ -366,7 +366,7 @@ class ObjectChangeGeneratorTest extends TestCase
     public function testFieldsWithDirectionToIntegrationAreSkipped(): void
     {
         $objectChangeGenerator = new ObjectChangeGenerator(
-            new class implements SyncJudgeInterface {
+            new class() implements SyncJudgeInterface {
                 public function adjudicate(
                     $mode,
                     InformationChangeRequestDAO $leftChangeRequest,
@@ -375,9 +375,9 @@ class ObjectChangeGeneratorTest extends TestCase
                     return $leftChangeRequest;
                 }
             },
-            new class extends ValueHelper {
+            new class() extends ValueHelper {
             },
-            new class extends FieldHelper {
+            new class() extends FieldHelper {
                 public function __construct()
                 {
                 }
@@ -389,7 +389,7 @@ class ObjectChangeGeneratorTest extends TestCase
                     return ['email' => []];
                 }
             },
-            new class extends BulkNotification {
+            new class() extends BulkNotification {
                 public function __construct()
                 {
                 }

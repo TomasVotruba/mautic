@@ -30,7 +30,7 @@ trait SortableListTrait
             ),
         ];
 
-        if (null !== $listData) {
+        if ($listData !== null) {
             $listOptions['data'] = $listData;
         }
 

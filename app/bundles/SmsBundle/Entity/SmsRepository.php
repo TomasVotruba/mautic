@@ -43,25 +43,6 @@ class SmsRepository extends CommonRepository
         return $this->getPublishedBroadcastsQuery($id)->toIterable();
     }
 
-    private function getPublishedBroadcastsQuery(?int $id = null): Query
-    {
-        $qb   = $this->createQueryBuilder($this->getTableAlias());
-        $expr = $this->getPublishedByDateExpression($qb, null, true, true, false);
-
-        $expr->add(
-            $qb->expr()->eq($this->getTableAlias().'.smsType', $qb->expr()->literal('list'))
-        );
-
-        if (null !== $id && 0 !== $id) {
-            $expr->add(
-                $qb->expr()->eq($this->getTableAlias().'.id', (int) $id)
-            );
-        }
-        $qb->where($expr);
-
-        return $qb->getQuery();
-    }
-
     /**
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
@@ -105,60 +86,6 @@ class SmsRepository extends CommonRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
-     */
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
-        if ($expr) {
-            return [$expr, $parameters];
-        }
-
-        $command         = $filter->command;
-        $unique          = $this->generateRandomParameterName();
-        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
-
-        switch ($command) {
-            case $this->translator->trans('mautic.core.searchcommand.lang'):
-                $langUnique      = $this->generateRandomParameterName();
-                $langValue       = $filter->string.'_%';
-                $forceParameters = [
-                    $langUnique => $langValue,
-                    $unique     => $filter->string,
-                ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('e.language', ":$unique"),
-                    $q->expr()->like('e.language', ":$langUnique")
-                );
-                $returnParameter = true;
-                break;
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'sms_id',
-                    'sms_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        } elseif ($returnParameter) {
-            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
-            $parameters = ["$unique" => $string];
-        }
-
-        return [$expr, $parameters];
-    }
-
-    /**
      * @return string[]
      */
     public function getSearchCommands(): array
@@ -174,16 +101,6 @@ class SmsRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['e.name', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -251,7 +168,7 @@ class SmsRepository extends CommonRepository
             );
         }
 
-        if ('translation' === $topLevel) {
+        if ($topLevel === 'translation') {
             $q->andWhere($q->expr()->isNull('e.translationParent'));
         }
 
@@ -268,5 +185,88 @@ class SmsRepository extends CommonRepository
         }
 
         return $q->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
+     */
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
+        if ($expr) {
+            return [$expr, $parameters];
+        }
+
+        $command         = $filter->command;
+        $unique          = $this->generateRandomParameterName();
+        $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
+
+        switch ($command) {
+            case $this->translator->trans('mautic.core.searchcommand.lang'):
+                $langUnique      = $this->generateRandomParameterName();
+                $langValue       = $filter->string.'_%';
+                $forceParameters = [
+                    $langUnique => $langValue,
+                    $unique     => $filter->string,
+                ];
+                $expr = $q->expr()->or(
+                    $q->expr()->eq('e.language', ":{$unique}"),
+                    $q->expr()->like('e.language', ":{$langUnique}")
+                );
+                $returnParameter = true;
+                break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'sms_id',
+                    'sms_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        } elseif ($returnParameter) {
+            $string     = ($filter->strict) ? $filter->string : "%{$filter->string}%";
+            $parameters = ["{$unique}" => $string];
+        }
+
+        return [$expr, $parameters];
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['e.name', 'ASC'],
+        ];
+    }
+
+    private function getPublishedBroadcastsQuery(?int $id = null): Query
+    {
+        $qb   = $this->createQueryBuilder($this->getTableAlias());
+        $expr = $this->getPublishedByDateExpression($qb, null, true, true, false);
+
+        $expr->add(
+            $qb->expr()->eq($this->getTableAlias().'.smsType', $qb->expr()->literal('list'))
+        );
+
+        if ($id !== null && $id !== 0) {
+            $expr->add(
+                $qb->expr()->eq($this->getTableAlias().'.id', (int) $id)
+            );
+        }
+        $qb->where($expr);
+
+        return $qb->getQuery();
     }
 }

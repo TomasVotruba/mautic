@@ -102,18 +102,6 @@ class MessageQueueModelTest extends \PHPUnit\Framework\TestCase
         $this->prepareRescheduleMessageIntervalTest($interval);
     }
 
-    protected function prepareRescheduleMessageIntervalTest(\DateInterval $interval): void
-    {
-        $oldScheduleDate = $this->message->getScheduledDate();
-        $this->messageQueue->reschedule($this->message, $interval);
-        $scheduleDate = $this->message->getScheduledDate();
-        /** @var \DateTime $oldScheduleDate */
-        $oldScheduleDate->add($interval);
-
-        $this->assertEquals($oldScheduleDate, $scheduleDate);
-        $this->assertNotSame($oldScheduleDate, $scheduleDate);
-    }
-
     public function testSendMessagesWithNullEvent(): void
     {
         $queue = $this->message;
@@ -162,5 +150,17 @@ class MessageQueueModelTest extends \PHPUnit\Framework\TestCase
 
         $this->messageQueue->processMessageQueue($queue);
         $this->assertArrayNotHasKey('companies', $queue->getLead()->getFields());
+    }
+
+    protected function prepareRescheduleMessageIntervalTest(\DateInterval $interval): void
+    {
+        $oldScheduleDate = $this->message->getScheduledDate();
+        $this->messageQueue->reschedule($this->message, $interval);
+        $scheduleDate = $this->message->getScheduledDate();
+        /** @var \DateTime $oldScheduleDate */
+        $oldScheduleDate->add($interval);
+
+        $this->assertEquals($oldScheduleDate, $scheduleDate);
+        $this->assertNotSame($oldScheduleDate, $scheduleDate);
     }
 }

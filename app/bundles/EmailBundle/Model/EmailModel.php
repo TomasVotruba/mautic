@@ -211,7 +211,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         // Ensure that list emails are published
-        if ('list' == $entity->getEmailType()) {
+        if ($entity->getEmailType() == 'list') {
             // Ensure that this email has the same lists assigned as the translated parent if applicable
             if ($translationParent = $entity->getTranslationParent()) {
                 \assert($translationParent instanceof Email);
@@ -247,7 +247,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $this->postTranslationEntitySave($entity);
 
             // Force translations for this entity to use the same segments
-            if ('list' == $entity->getEmailType() && $entity->hasTranslations()) {
+            if ($entity->getEmailType() == 'list' && $entity->hasTranslations()) {
                 $translations                      = $entity->getTranslationChildren()->toArray();
                 $this->updatingTranslationChildren = true;
                 foreach ($translations as $translation) {
@@ -284,7 +284,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $this->dispatchEvent('post_save', $entity, $isNew, $event);
             }
 
-            if (0 === ++$i % $batchSize) {
+            if (++$i % $batchSize === 0) {
                 $this->em->flush();
             }
         }
@@ -326,12 +326,12 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEntity($id = null): ?Email
     {
-        if (null === $id) {
+        if ($id === null) {
             $entity = new Email();
             $entity->setSessionId('new_'.hash('sha1', uniqid(mt_rand())));
         } else {
             $entity = parent::getEntity($id);
-            if (null !== $entity) {
+            if ($entity !== null) {
                 $entity->setSessionId($entity->getId());
                 $this->setCachedCount($entity);
             }
@@ -356,49 +356,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         return $entities;
-    }
-
-    /**
-     * @throws MethodNotAllowedHttpException
-     */
-    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
-    {
-        if (!$entity instanceof Email) {
-            throw new MethodNotAllowedHttpException(['Email']);
-        }
-
-        switch ($action) {
-            case 'pre_save':
-                $name = EmailEvents::EMAIL_PRE_SAVE;
-                break;
-            case 'post_save':
-                $name = EmailEvents::EMAIL_POST_SAVE;
-                break;
-            case 'pre_delete':
-                $name = EmailEvents::EMAIL_PRE_DELETE;
-                break;
-            case 'post_delete':
-                $name = EmailEvents::EMAIL_POST_DELETE;
-                break;
-            case 'on_toggle_publish':
-                $name = EmailEvents::EMAIL_ON_TOGGLE_PUBLISH;
-                break;
-            default:
-                return null;
-        }
-
-        if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
-                $event = new EmailEvent($entity, $isNew);
-                $event->setEntityManager($this->em);
-            }
-
-            $this->dispatcher->dispatch($event, $name);
-
-            return $event;
-        }
-
-        return null;
     }
 
     /**
@@ -449,7 +406,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $stat->setLastOpened($readDateTime->getDateTime());
 
         $lead = $stat->getLead();
-        if (null !== $lead) {
+        if ($lead !== null) {
             // Set the lead as current lead
             if ($activeRequest) {
                 $this->contactTracker->setTrackedContact($lead);
@@ -529,7 +486,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $this->flushAndCatch();
             }
 
-            if (null !== $hitDateTime && $lead->getLastActive() < $hitDateTime) { // We need to perform the update after all is saved
+            if ($hitDateTime !== null && $lead->getLastActive() < $hitDateTime) { // We need to perform the update after all is saved
                 $this->leadModel->getRepository()->updateLastActive($lead->getId(), $hitDateTime);
             }
         }
@@ -802,7 +759,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         $emailIds      = ($includeVariants) ? $email->getRelatedEntityIds() : [$email->getId()];
-        $templateEmail = 'template' === $email->getEmailType();
+        $templateEmail = $email->getEmailType() === 'template';
         $results       = $this->getStatDeviceRepository()->getDeviceStats($emailIds, $dateFrom, $dateTo);
 
         // Organize by list_id (if a segment email) and/or device
@@ -819,7 +776,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             if ($templateEmail) {
                 // List doesn't matter
                 $stats[$result['device']] = $result['count'];
-            } elseif (null !== $result['list_id']) {
+            } elseif ($result['list_id'] !== null) {
                 if (!isset($stats[$result['list_id']])) {
                     $stats[$result['list_id']] = [];
                 }
@@ -953,18 +910,18 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     {
         $stats = $this->pageTrackableModel->getTrackableList('email', $emailId);
 
-        if ('t.hits' !== $orderBy) {
+        if ($orderBy !== 't.hits') {
             return $stats;
         }
 
-        $direction = 'DESC' === strtoupper((string) $orderByDir) ? -1 : 1;
+        $direction = strtoupper((string) $orderByDir) === 'DESC' ? -1 : 1;
 
         usort(
             $stats,
             static function (array $first, array $second) use ($direction): int {
                 $comparison = (int) $first['hits'] <=> (int) $second['hits'];
 
-                if (0 === $comparison) {
+                if ($comparison === 0) {
                     $comparison = strcmp((string) $first['url'], (string) $second['url']);
                 }
 
@@ -1095,7 +1052,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         // Safety check
-        if ('list' !== $email->getEmailType()) {
+        if ($email->getEmailType() !== 'list') {
             return [0, 0, []];
         }
 
@@ -1132,7 +1089,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         foreach ($lists as $list) {
-            if (!$batch && null !== $limit && $limit <= 0) {
+            if (!$batch && $limit !== null && $limit <= 0) {
                 // Hit the max for this batch
                 break;
             }
@@ -1142,7 +1099,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $leadCount         = count($leads);
 
             while ($leadCount) {
-                if (null != $limit) {
+                if ($limit != null) {
                     // Only retrieve the difference between what has already been sent and the limit
                     $limit -= $leadCount;
 
@@ -1167,7 +1124,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                     $failedRecipientsByList[$options['listId']] = $listErrors;
                 }
 
-                if (null !== $limit && 0 == $limit) {
+                if ($limit !== null && $limit == 0) {
                     break;
                 }
 
@@ -1210,7 +1167,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                     'template'     => $email->getTemplate(),
                     'sentCount'    => $email->getSentCount(),
                     'variantCount' => $email->getVariantSentCount(),
-                    'isVariant'    => null !== $email->getVariantStartDate(),
+                    'isVariant'    => $email->getVariantStartDate() !== null,
                     'entity'       => $email,
                     'translations' => $email->getTranslations(true),
                     'languages'    => ['default' => $email->getId()],
@@ -1253,7 +1210,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                                 'template'     => $child->getTemplate(),
                                 'sentCount'    => $child->getSentCount(),
                                 'variantCount' => $child->getVariantSentCount(),
-                                'isVariant'    => null !== $email->getVariantStartDate(),
+                                'isVariant'    => $email->getVariantStartDate() !== null,
                                 'weight'       => ($variantSettings['weight'] / 100),
                                 'entity'       => $child,
                                 'translations' => $child->getTranslations(true),
@@ -1406,7 +1363,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         // Process frequency rules for email
         if (!$email->getSendToDnc() && count($sendTo)) {
-            $campaignEventId = (is_array($channel) && !empty($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1]
+            $campaignEventId = (is_array($channel) && !empty($channel) && $channel[0] === 'campaign.event' && !empty($channel[1])) ? $channel[1]
                 : null;
 
             $this->messageQueueModel->processFrequencyRules(
@@ -1499,7 +1456,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
                 foreach ($contacts as $contact) {
                     try {
-                        if ('list' === $email->getEmailType()
+                        if ($email->getEmailType() === 'list'
                             && $this->getStatRepository()->checkContactSentEmail(
                                 $contact['id'],
                                 $email->getId(),
@@ -1637,7 +1594,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
 
             // If this is the first message, flush the queue. This process clears the cc and bcc.
-            if (true === $firstMail) {
+            if ($firstMail === true) {
                 try {
                     $this->flushQueue($mailer);
                 } catch (EmailCouldNotBeSentException $e) {
@@ -1661,7 +1618,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             if (!isset($user['email'])) {
                 $userEntity = $this->userModel->getEntity($id);
 
-                if (null === $userEntity) {
+                if ($userEntity === null) {
                     continue;
                 }
 
@@ -1686,7 +1643,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
 
             // If this is the first message, flush the queue. This process clears the cc and bcc.
-            if (true === $firstMail) {
+            if ($firstMail === true) {
                 try {
                     $this->flushQueue($mailer);
                 } catch (EmailCouldNotBeSentException $e) {
@@ -1710,19 +1667,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         unset($mailer);
 
         return $errors;
-    }
-
-    /**
-     * @throws EmailCouldNotBeSentException
-     */
-    private function flushQueue(MailHelper $mailer): void
-    {
-        if (!$mailer->flushQueue()) {
-            $errorArray = $mailer->getErrors();
-            unset($errorArray['failures']);
-
-            throw new EmailCouldNotBeSentException(implode('; ', $errorArray));
-        }
     }
 
     /**
@@ -1807,7 +1751,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         /** @var \Mautic\LeadBundle\Entity\LeadRepository $leadRepo */
         $leadRepo = $this->em->getRepository(Lead::class);
 
-        if (null === $leadId) {
+        if ($leadId === null) {
             $leadId = (array) $leadRepo->getLeadByEmail($email, true);
         } elseif (!is_array($leadId)) {
             $leadId = [$leadId];
@@ -1868,7 +1812,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $segmentId  = ArrayHelper::pickValue('segmentId', $filter);
 
         $format = '%H:00';
-        if (12 == $timeFormat) {
+        if ($timeFormat == 12) {
             $format = '%h %p';
         }
 
@@ -1877,7 +1821,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $q                     = $query->prepareTimeDataQuery('email_stats', $column, $filter);
         $columnWithTimezone    = 't.'.$column;
         $defaultTimezoneOffset = (new DateTimeHelper())->getLocalTimezoneOffset();
-        $columnName            = "CONVERT_TZ($columnWithTimezone, '+00:00', '{$defaultTimezoneOffset}')";
+        $columnName            = "CONVERT_TZ({$columnWithTimezone}, '+00:00', '{$defaultTimezoneOffset}')";
         $q->select('CONCAT(TIME_FORMAT('.$columnName.', \''.$format.'\'),\'-\',TIME_FORMAT('.$columnName.' + INTERVAL 1 HOUR, \''.$format.'\'),\'\') as hour, COUNT(t.id) AS count')
         ->groupBy('hour')
         ->orderBy('count', 'DESC')
@@ -2090,11 +2034,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $chartQuery = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
         $chartQuery->applyFilters($q, $filters);
 
-        if (isset($options['groupBy']) && 'sends' == $options['groupBy']) {
+        if (isset($options['groupBy']) && $options['groupBy'] == 'sends') {
             $chartQuery->applyDateFilters($q, 'date_sent');
         }
 
-        if (isset($options['groupBy']) && 'reads' == $options['groupBy']) {
+        if (isset($options['groupBy']) && $options['groupBy'] == 'reads') {
             $chartQuery->applyDateFilters($q, 'date_read');
         }
 
@@ -2209,13 +2153,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $contact['companies'] = $companies[$contact['id']] ?? [];
 
         return $contact;
-    }
-
-    private function getContactCompanies(array &$sendTo): void
-    {
-        foreach ($sendTo as $key => $contact) {
-            $sendTo[$key] = $this->enrichedContactWithCompanies($contact);
-        }
     }
 
     /**
@@ -2354,27 +2291,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         return $this->updatingTranslationChildren;
     }
 
-    private function cloneEmailForRelatedClone(Email $email): Email
-    {
-        $clonedEmail = clone $email;
-        $clonedEmail->setEmailType($email->getEmailType());
-        $clonedEmail->setName($this->getRelatedCloneName($email->getName()));
-
-        return $clonedEmail;
-    }
-
-    private function getRelatedCloneName(?string $name): ?string
-    {
-        if (null === $name) {
-            return null;
-        }
-
-        $suffix    = $this->translator->trans('mautic.email.clone.copy_suffix');
-        $maxLength = Email::MAX_NAME_SUBJECT_LENGTH - mb_strlen($suffix);
-
-        return mb_substr($name, 0, $maxLength).$suffix;
-    }
-
     /**
      * @param string                                   $route
      * @param array<string, string>|array<string, int> $routeParams
@@ -2407,6 +2323,49 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     }
 
     /**
+     * @throws MethodNotAllowedHttpException
+     */
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
+    {
+        if (!$entity instanceof Email) {
+            throw new MethodNotAllowedHttpException(['Email']);
+        }
+
+        switch ($action) {
+            case 'pre_save':
+                $name = EmailEvents::EMAIL_PRE_SAVE;
+                break;
+            case 'post_save':
+                $name = EmailEvents::EMAIL_POST_SAVE;
+                break;
+            case 'pre_delete':
+                $name = EmailEvents::EMAIL_PRE_DELETE;
+                break;
+            case 'post_delete':
+                $name = EmailEvents::EMAIL_POST_DELETE;
+                break;
+            case 'on_toggle_publish':
+                $name = EmailEvents::EMAIL_ON_TOGGLE_PUBLISH;
+                break;
+            default:
+                return null;
+        }
+
+        if ($this->dispatcher->hasListeners($name)) {
+            if (empty($event)) {
+                $event = new EmailEvent($entity, $isNew);
+                $event->setEntityManager($this->em);
+            }
+
+            $this->dispatcher->dispatch($event, $name);
+
+            return $event;
+        }
+
+        return null;
+    }
+
+    /**
      * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function setCachedCount(mixed $entity): void
@@ -2414,13 +2373,54 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
         $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'pending'));
 
-        if (false !== $queued) {
+        if ($queued !== false) {
             $entity->setQueuedCount($queued);
         }
 
-        if (false !== $pending) {
+        if ($pending !== false) {
             $entity->setPendingCount($pending);
         }
+    }
+
+    /**
+     * @throws EmailCouldNotBeSentException
+     */
+    private function flushQueue(MailHelper $mailer): void
+    {
+        if (!$mailer->flushQueue()) {
+            $errorArray = $mailer->getErrors();
+            unset($errorArray['failures']);
+
+            throw new EmailCouldNotBeSentException(implode('; ', $errorArray));
+        }
+    }
+
+    private function getContactCompanies(array &$sendTo): void
+    {
+        foreach ($sendTo as $key => $contact) {
+            $sendTo[$key] = $this->enrichedContactWithCompanies($contact);
+        }
+    }
+
+    private function cloneEmailForRelatedClone(Email $email): Email
+    {
+        $clonedEmail = clone $email;
+        $clonedEmail->setEmailType($email->getEmailType());
+        $clonedEmail->setName($this->getRelatedCloneName($email->getName()));
+
+        return $clonedEmail;
+    }
+
+    private function getRelatedCloneName(?string $name): ?string
+    {
+        if ($name === null) {
+            return null;
+        }
+
+        $suffix    = $this->translator->trans('mautic.email.clone.copy_suffix');
+        $maxLength = Email::MAX_NAME_SUBJECT_LENGTH - mb_strlen($suffix);
+
+        return mb_substr($name, 0, $maxLength).$suffix;
     }
 
     /**

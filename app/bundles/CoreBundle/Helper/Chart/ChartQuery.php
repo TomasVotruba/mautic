@@ -14,9 +14,6 @@ use Mautic\CoreBundle\Helper\DateTimeHelper;
  */
 class ChartQuery extends AbstractChart
 {
-    private DateTimeHelper $dateTimeHelper;
-
-    private ?GeneratedColumnsProviderInterface $generatedColumnProvider = null;
 
     /**
      * Match date/time unit to a SQL datetime format
@@ -54,6 +51,9 @@ class ChartQuery extends AbstractChart
         'M' => '%Y-%m', // ('M' is BC. Can be removed when all charts use this class)
         'Y' => '%Y',
     ];
+    private DateTimeHelper $dateTimeHelper;
+
+    private ?GeneratedColumnsProviderInterface $generatedColumnProvider = null;
 
     /**
      * Possible values are 'd'/'H'/'i'/'i'/'W'/'m'/'Y'.
@@ -92,7 +92,7 @@ class ChartQuery extends AbstractChart
                 $valId = $column.'_val';
 
                 // Special case: Lead list filter
-                if ('leadlist_id' === $column) {
+                if ($column === 'leadlist_id') {
                     $query->join('t', MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'lll', 'lll.lead_id = '.$value['list_column_name']);
                     $query->andWhere('lll.leadlist_id = :'.$valId);
                     $query->setParameter($valId, $value['value']);
@@ -189,7 +189,7 @@ class ChartQuery extends AbstractChart
      */
     public function translateTimeUnit($unit = null)
     {
-        if (null === $unit) {
+        if ($unit === null) {
             $unit = $this->unit;
         }
 
@@ -236,9 +236,9 @@ class ChartQuery extends AbstractChart
         $limit         = $this->countAmountFromDateRange();
         $dateConstruct = $this->getDateConstruct($query, $tablePrefix, $column);
 
-        if (true === $isEnumerable) {
+        if ($isEnumerable === true) {
             $count = 'COUNT('.$countColumn.') AS count';
-        } elseif ('sum' == $isEnumerable) {
+        } elseif ($isEnumerable == 'sum') {
             $count = 'SUM('.$countColumn.') AS count';
         } else {
             $count = $countColumn.' AS count';
@@ -310,11 +310,11 @@ class ChartQuery extends AbstractChart
         // Do not let hours to mess with date comparisions.
         $previousDate->setTime(0, 0, 0);
 
-        if ('Y' === $this->unit) {
+        if ($this->unit === 'Y') {
             $previousDate->modify('first day of January');
-        } elseif ('m' == $this->unit) {
+        } elseif ($this->unit == 'm') {
             $previousDate->modify('first day of this month');
-        } elseif ('W' === $this->unit) {
+        } elseif ($this->unit === 'W') {
             $previousDate->modify('Monday this week');
         }
 
@@ -322,9 +322,9 @@ class ChartQuery extends AbstractChart
         for ($i = 0; $i < $limit; ++$i) {
             $nextDate = clone $previousDate;
 
-            if ('m' === $this->unit) {
+            if ($this->unit === 'm') {
                 $nextDate->modify('first day of next month');
-            } elseif ('W' === $this->unit) {
+            } elseif ($this->unit === 'W') {
                 $nextDate->modify('Monday next week');
             } else {
                 $nextDate->add($oneUnit);
@@ -337,7 +337,7 @@ class ChartQuery extends AbstractChart
                          * PHP DateTime cannot parse the Y W (ex 2016 09)
                          * format, so we transform it into d-M-Y.
                          */
-                        if ('W' === $this->unit && isset($item['date'])) {
+                        if ($this->unit === 'W' && isset($item['date'])) {
                             [$year, $week]     = explode(' ', $item['date']);
                             $newDate           = new \DateTime();
                             $newDate->setISODate($year, $week);
@@ -583,7 +583,7 @@ class ChartQuery extends AbstractChart
         $dbUnit                = $this->translateTimeUnit($this->unit);
         $columnName            = $tablePrefix.'.'.$column;
         $defaultTimezoneOffset = $this->dateTimeHelper->getLocalTimezoneOffset();
-        $columnName            = "CONVERT_TZ($columnName, '+00:00', '{$defaultTimezoneOffset}')";
+        $columnName            = "CONVERT_TZ({$columnName}, '+00:00', '{$defaultTimezoneOffset}')";
 
         return 'DATE_FORMAT('.$columnName.', \''.$dbUnit.'\')';
     }
@@ -610,7 +610,7 @@ class ChartQuery extends AbstractChart
             $fromAlias = $from['alias'] ?? null;
             $fromTable = $from['table'] ?? null;
 
-            if ($alias === $fromAlias && null !== $fromTable) {
+            if ($alias === $fromAlias && $fromTable !== null) {
                 return $fromTable;
             }
         }
@@ -620,7 +620,7 @@ class ChartQuery extends AbstractChart
                 $joinAlias = $join['joinAlias'] ?? null;
                 $joinTable = $join['joinTable'] ?? null;
 
-                if ($alias === $joinAlias && null !== $joinTable) {
+                if ($alias === $joinAlias && $joinTable !== null) {
                     return $joinTable;
                 }
             }

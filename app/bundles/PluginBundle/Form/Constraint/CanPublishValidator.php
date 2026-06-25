@@ -18,7 +18,7 @@ class CanPublishValidator extends ConstraintValidator
 
     public function validate(mixed $value, Constraint $constraint): void
     {
-        if (1 !== $value) {
+        if ($value !== 1) {
             return;
         }
         if (!$constraint instanceof CanPublish) {

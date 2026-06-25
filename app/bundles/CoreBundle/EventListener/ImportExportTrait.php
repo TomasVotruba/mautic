@@ -63,7 +63,7 @@ trait ImportExportTrait
         }
 
         foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
+            if ($type === 'errors') {
                 if (count($data) > 0) {
                     $event->setSummary('errors', ['messages' => $data]);
                 }

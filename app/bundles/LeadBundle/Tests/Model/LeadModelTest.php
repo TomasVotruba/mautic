@@ -485,12 +485,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManagerMock->expects($matcher)
             ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(StagesChangeLog::class, $parameters[0]);
 
                     return $stagesChangeLogRepo;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(Stage::class, $parameters[0]);
 
                     return $stageRepositoryMock;
@@ -525,12 +525,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManagerMock->expects($matcher)
             ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $this->assertSame(StagesChangeLog::class, $parameters[0]);
 
                     return $stagesChangeLogRepo;
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $this->assertSame(Stage::class, $parameters[0]);
 
                     return $stageRepositoryMock;
@@ -630,31 +630,6 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->leadModel->import($fields, $data);
     }
 
-    /**
-     * Set protected property to an object.
-     *
-     * @param object $object
-     * @param string $class
-     * @param string $property
-     * @param mixed  $value
-     */
-    private function setProperty($object, $class, $property, $value): void
-    {
-        $reflectedProp = new \ReflectionProperty($class, $property);
-        $reflectedProp->setValue($object, $value);
-    }
-
-    private function mockGetLeadRepository(): void
-    {
-        $this->entityManagerMock->expects($this->any())
-            ->method('getRepository')
-            ->willReturnMap(
-                [
-                    [Lead::class, $this->leadRepositoryMock],
-                ]
-            );
-    }
-
     public function testModifiedCompanies(): void
     {
         $lead          = $this->getLead(1);
@@ -685,45 +660,6 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->with([$companies[0], $companies[1]], $lead);
 
         $this->leadModel->modifyCompanies($lead, $companies);
-    }
-
-    private function getLead(int $id): Lead
-    {
-        return new class($id) extends Lead {
-            public function __construct(
-                private int $id,
-            ) {
-                parent::__construct();
-            }
-
-            public function getId(): int
-            {
-                return $this->id;
-            }
-        };
-    }
-
-    /**
-     * @return Paginator<mixed[]>
-     */
-    private function getFieldPaginatorFake(): Paginator
-    {
-        return new class extends Paginator {
-            public function __construct()
-            {
-            }
-
-            /**
-             * @return \ArrayIterator<int,array{label: string, alias: string, isPublished: bool, id: int, object: string, group: string, type: string}>
-             */
-            public function getIterator()
-            {
-                return new \ArrayIterator([
-                    4 => ['label' => 'Email', 'alias' => 'email', 'isPublished' => true, 'id' => 4, 'object' => 'lead', 'group' => 'basic', 'type' => 'email'],
-                    5 => ['label' => 'First Name', 'alias' => 'firstname', 'isPublished' => true, 'id' => 5, 'object' => 'lead', 'group' => 'basic', 'type' => 'text'],
-                ]);
-            }
-        };
     }
 
     public function testDispatchBatchEvent(): void
@@ -768,6 +704,163 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn($event);
 
         $leadModel->dispatchBatchEventForTest($action, $leadsParams);
+    }
+
+    /**
+     * Test that email validation is triggered for invalid values like 0, "0".
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('emailValidationDuringImportProvider')]
+    public function testEmailValidationDuringImport(
+        mixed $emailValue,
+        bool $shouldValidate,
+        bool $shouldThrowException,
+    ): void {
+        $this->mockGetLeadRepository();
+
+        $emailField = new LeadField();
+        $emailField->setAlias('email');
+        $emailField->setLabel('Email');
+        $emailField->setType('email');
+        $emailField->setGroup('core');
+        $emailField->setObject('lead');
+
+        $fields = ['email' => 'email'];
+        $data   = ['email' => $emailValue];
+
+        $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
+            ->willReturn(['email' => 'Email']);
+        $this->fieldModelMock->method('getFieldListWithProperties')
+            ->willReturn([]);
+
+        $this->userHelperMock->method('getUser')
+            ->willReturn(new User());
+
+        $this->fieldModelMock->method('getFieldList')
+            ->willReturn([]);
+
+        $this->fieldModelMock->expects($this->atLeastOnce())
+            ->method('getEntities')
+            ->willReturn($this->getFieldPaginatorFake());
+
+        $this->companyModelMock->method('extractCompanyDataFromImport')
+            ->willReturn([[], []]);
+
+        if ($shouldValidate) {
+            $this->emailValidatorMock->expects($this->once())
+                ->method('validate')
+                ->with($emailValue, false)
+                ->willThrowException(new \Exception('Invalid email address'));
+        } else {
+            $this->emailValidatorMock->expects($this->never())
+                ->method('validate');
+        }
+
+        if ($shouldThrowException) {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('email: Invalid email address');
+        }
+
+        $this->leadModel->import($fields, $data);
+    }
+
+    /**
+     * Data provider for email validation during import test.
+     *
+     * @return array<string, array{emailValue: mixed, shouldValidate: bool, shouldThrowException: bool}>
+     */
+    public static function emailValidationDuringImportProvider(): array
+    {
+        return [
+            'integer zero should be validated and rejected' => [
+                'emailValue'           => 0,
+                'shouldValidate'       => true,
+                'shouldThrowException' => true,
+            ],
+            'boolean false filtered by getCleanedFieldData before validation' => [
+                'emailValue'           => false,
+                'shouldValidate'       => false,
+                'shouldThrowException' => false,
+            ],
+            'string zero should be validated and rejected' => [
+                'emailValue'           => '0',
+                'shouldValidate'       => true,
+                'shouldThrowException' => true,
+            ],
+            'empty string should skip validation' => [
+                'emailValue'           => '',
+                'shouldValidate'       => false,
+                'shouldThrowException' => false,
+            ],
+            'null should skip validation' => [
+                'emailValue'           => null,
+                'shouldValidate'       => false,
+                'shouldThrowException' => false,
+            ],
+        ];
+    }
+
+    /**
+     * Set protected property to an object.
+     *
+     * @param object $object
+     * @param string $class
+     * @param string $property
+     * @param mixed  $value
+     */
+    private function setProperty($object, $class, $property, $value): void
+    {
+        $reflectedProp = new \ReflectionProperty($class, $property);
+        $reflectedProp->setValue($object, $value);
+    }
+
+    private function mockGetLeadRepository(): void
+    {
+        $this->entityManagerMock->expects($this->any())
+            ->method('getRepository')
+            ->willReturnMap(
+                [
+                    [Lead::class, $this->leadRepositoryMock],
+                ]
+            );
+    }
+
+    private function getLead(int $id): Lead
+    {
+        return new class($id) extends Lead {
+            public function __construct(
+                private int $id,
+            ) {
+                parent::__construct();
+            }
+
+            public function getId(): int
+            {
+                return $this->id;
+            }
+        };
+    }
+
+    /**
+     * @return Paginator<mixed[]>
+     */
+    private function getFieldPaginatorFake(): Paginator
+    {
+        return new class() extends Paginator {
+            public function __construct()
+            {
+            }
+
+            /**
+             * @return \ArrayIterator<int,array{label: string, alias: string, isPublished: bool, id: int, object: string, group: string, type: string}>
+             */
+            public function getIterator()
+            {
+                return new \ArrayIterator([
+                    4 => ['label' => 'Email', 'alias' => 'email', 'isPublished' => true, 'id' => 4, 'object' => 'lead', 'group' => 'basic', 'type' => 'email'],
+                    5 => ['label' => 'First Name', 'alias' => 'firstname', 'isPublished' => true, 'id' => 5, 'object' => 'lead', 'group' => 'basic', 'type' => 'text'],
+                ]);
+            }
+        };
     }
 
     private function setSecurity(LeadModel $companyModel): void
@@ -862,99 +955,6 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             'fieldsWithUniqueIdentifier', $this->fieldsWithUniqueIdentifier);
 
         return $mockLeadModel;
-    }
-
-    /**
-     * Test that email validation is triggered for invalid values like 0, "0".
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('emailValidationDuringImportProvider')]
-    public function testEmailValidationDuringImport(
-        mixed $emailValue,
-        bool $shouldValidate,
-        bool $shouldThrowException,
-    ): void {
-        $this->mockGetLeadRepository();
-
-        $emailField = new LeadField();
-        $emailField->setAlias('email');
-        $emailField->setLabel('Email');
-        $emailField->setType('email');
-        $emailField->setGroup('core');
-        $emailField->setObject('lead');
-
-        $fields = ['email' => 'email'];
-        $data   = ['email' => $emailValue];
-
-        $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
-            ->willReturn(['email' => 'Email']);
-        $this->fieldModelMock->method('getFieldListWithProperties')
-            ->willReturn([]);
-
-        $this->userHelperMock->method('getUser')
-            ->willReturn(new User());
-
-        $this->fieldModelMock->method('getFieldList')
-            ->willReturn([]);
-
-        $this->fieldModelMock->expects($this->atLeastOnce())
-            ->method('getEntities')
-            ->willReturn($this->getFieldPaginatorFake());
-
-        $this->companyModelMock->method('extractCompanyDataFromImport')
-            ->willReturn([[], []]);
-
-        if ($shouldValidate) {
-            $this->emailValidatorMock->expects($this->once())
-                ->method('validate')
-                ->with($emailValue, false)
-                ->willThrowException(new \Exception('Invalid email address'));
-        } else {
-            $this->emailValidatorMock->expects($this->never())
-                ->method('validate');
-        }
-
-        if ($shouldThrowException) {
-            $this->expectException(\Exception::class);
-            $this->expectExceptionMessage('email: Invalid email address');
-        }
-
-        $this->leadModel->import($fields, $data);
-    }
-
-    /**
-     * Data provider for email validation during import test.
-     *
-     * @return array<string, array{emailValue: mixed, shouldValidate: bool, shouldThrowException: bool}>
-     */
-    public static function emailValidationDuringImportProvider(): array
-    {
-        return [
-            'integer zero should be validated and rejected' => [
-                'emailValue'           => 0,
-                'shouldValidate'       => true,
-                'shouldThrowException' => true,
-            ],
-            'boolean false filtered by getCleanedFieldData before validation' => [
-                'emailValue'           => false,
-                'shouldValidate'       => false,
-                'shouldThrowException' => false,
-            ],
-            'string zero should be validated and rejected' => [
-                'emailValue'           => '0',
-                'shouldValidate'       => true,
-                'shouldThrowException' => true,
-            ],
-            'empty string should skip validation' => [
-                'emailValue'           => '',
-                'shouldValidate'       => false,
-                'shouldThrowException' => false,
-            ],
-            'null should skip validation' => [
-                'emailValue'           => null,
-                'shouldValidate'       => false,
-                'shouldThrowException' => false,
-            ],
-        ];
     }
 
     /**

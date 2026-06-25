@@ -83,7 +83,7 @@ abstract class AbstractCacheProvider implements CacheProviderInterface
 
     protected function cacheAdapterFactory(string $parameter): AdapterInterface
     {
-        if (null === $this->adapter) {
+        if ($this->adapter === null) {
             $service       = $this->coreParametersHelper->get($parameter);
             $this->adapter = $this->container->get($service);
         }

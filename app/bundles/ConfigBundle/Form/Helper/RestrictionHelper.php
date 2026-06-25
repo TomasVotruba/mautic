@@ -31,7 +31,7 @@ class RestrictionHelper
      */
     public function applyRestrictions(FormInterface $childType, FormInterface $parentType, ?array $restrictedFields = null): void
     {
-        if (null === $restrictedFields) {
+        if ($restrictedFields === null) {
             $restrictedFields = $this->restrictedFields;
         }
 

@@ -145,7 +145,7 @@ final class AssetDownloadFunctionalTest extends MauticMysqlTestCase
         $assetDownload->setTrackingId(13);
         $assetDownload->setIpAddress($ipAddress);
 
-        if ('email' === $type) {
+        if ($type === 'email') {
             $assetDownload->setEmail($entity);
         }
 

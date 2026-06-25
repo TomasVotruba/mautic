@@ -59,10 +59,10 @@ class ReportBuilderEvent extends AbstractReportEvent
      */
     public function addTable($context, array $data, $group = null)
     {
-        $data['group'] = (null == $group) ? $context : $group;
+        $data['group'] = ($group == null) ? $context : $group;
 
         foreach ($data['columns'] as $column => &$d) {
-            $d['label'] = null !== $d['label'] ? $this->translator->trans($d['label']) : '';
+            $d['label'] = $d['label'] !== null ? $this->translator->trans($d['label']) : '';
             if (!isset($d['alias'])) {
                 $d['alias'] = substr(
                     $column,

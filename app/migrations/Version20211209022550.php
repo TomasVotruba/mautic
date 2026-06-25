@@ -110,7 +110,7 @@ final class Version20211209022550 extends AbstractMauticMigration
         $isPresent = false;
         /** @var Permission $permission */
         foreach ($role->getPermissions()->getIterator() as $permission) {
-            if ('lists' !== $permission->getName()) {
+            if ($permission->getName() !== 'lists') {
                 continue;
             }
             $isPresent = true;

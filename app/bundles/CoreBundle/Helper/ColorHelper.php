@@ -53,12 +53,12 @@ class ColorHelper
      */
     public function setHex(string $hex): self
     {
-        if (4 === strlen($hex)) {
+        if (strlen($hex) === 4) {
             $format          = '#%1s%1s%1s';
             [$r, $g, $b]     = sscanf($hex, $format);
-            $this->red       = hexdec("$r$r");
-            $this->green     = hexdec("$g$g");
-            $this->blue      = hexdec("$b$b");
+            $this->red       = hexdec("{$r}{$r}");
+            $this->green     = hexdec("{$g}{$g}");
+            $this->blue      = hexdec("{$b}{$b}");
         } else {
             $format                                     = '#%2x%2x%2x';
             [$this->red, $this->green, $this->blue]     = sscanf($hex, $format);

@@ -116,17 +116,17 @@ class Point extends FormEntity implements UuidInterface
     #[Groups(['point:read', 'point:write'])]
     private ?Group $group = null;
 
+    public function __construct()
+    {
+        $this->log = new ArrayCollection();
+        $this->initializeProjects();
+    }
+
     public function __clone()
     {
         $this->id = null;
 
         parent::__clone();
-    }
-
-    public function __construct()
-    {
-        $this->log = new ArrayCollection();
-        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void

@@ -156,6 +156,19 @@ final class MobileNotificationTranslationFunctionalTest extends MauticMysqlTestC
         $this->assertCount(2, $crawler->filterXPath("//td[contains(@class, 'col-stats')]"));
     }
 
+    public function createStatEntry(Notification $notification, Lead $lead): void
+    {
+        $stat = new Stat();
+        $stat->setDateSent(new \DateTime());
+        $stat->setLead($lead);
+        $stat->setNotification($notification);
+        $stat->setSource(null);
+        $stat->setSourceId(null);
+
+        $this->em->persist($stat);
+        $this->em->flush();
+    }
+
     private function createANotification(string $name, string $message, bool $isPublished = true, string $locale = 'en'): Notification
     {
         $notification = new Notification();
@@ -176,19 +189,6 @@ final class MobileNotificationTranslationFunctionalTest extends MauticMysqlTestC
         $this->em->flush();
 
         return $notification;
-    }
-
-    public function createStatEntry(Notification $notification, Lead $lead): void
-    {
-        $stat = new Stat();
-        $stat->setDateSent(new \DateTime());
-        $stat->setLead($lead);
-        $stat->setNotification($notification);
-        $stat->setSource(null);
-        $stat->setSourceId(null);
-
-        $this->em->persist($stat);
-        $this->em->flush();
     }
 
     private function createContact(string $firstname, string $lastname): Lead

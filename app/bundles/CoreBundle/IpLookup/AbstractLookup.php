@@ -33,18 +33,6 @@ abstract class AbstractLookup
      */
     protected $ip;
 
-    /**
-     * Return attribution HTML displayed in the configuration UI.
-     *
-     * @return string
-     */
-    abstract public function getAttribution();
-
-    /**
-     * Executes the lookup of the IP address.
-     */
-    abstract protected function lookup();
-
     public function __construct(
         protected ?string $auth = null,
         protected $config = null,
@@ -54,6 +42,13 @@ abstract class AbstractLookup
         protected ?CoreParametersHelper $coreParametersHelper = null,
     ) {
     }
+
+    /**
+     * Return attribution HTML displayed in the configuration UI.
+     *
+     * @return string
+     */
+    abstract public function getAttribution();
 
     /**
      * @return $this
@@ -90,6 +85,11 @@ abstract class AbstractLookup
             'extra'        => $this->extra,
         ];
     }
+
+    /**
+     * Executes the lookup of the IP address.
+     */
+    abstract protected function lookup();
 
     protected function shouldPerformLookup(): bool
     {

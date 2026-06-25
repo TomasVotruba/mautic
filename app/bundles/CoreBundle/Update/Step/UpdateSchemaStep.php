@@ -51,7 +51,7 @@ final class UpdateSchemaStep implements StepInterface
         $migrateExitCode = $migrationApplication->run($migrationCommandArgs, new NullOutput());
 
         // Output the error (if exists) from the migrate command after we've finished the progress bar
-        if (0 !== $migrateExitCode) {
+        if ($migrateExitCode !== 0) {
             throw new UpdateFailedException($this->translator->trans('mautic.core.update.error_performing_migration'));
         }
     }

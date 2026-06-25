@@ -47,7 +47,7 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
 
     public function onExport(EntityExportEvent $event): void
     {
-        if (Action::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Action::ENTITY_NAME) {
             return;
         }
 
@@ -95,7 +95,7 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
 
     public function onImport(EntityImportEvent $event): void
     {
-        if (Action::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== Action::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -149,7 +149,7 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (Action::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== Action::ENTITY_NAME) {
             return;
         }
 
@@ -172,7 +172,7 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
 
     public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
     {
-        if (Action::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
+        if ($event->getEntityName() !== Action::ENTITY_NAME || empty($event->getEntityData())) {
             return;
         }
 
@@ -198,7 +198,7 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         }
 
         foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
+            if ($type === 'errors') {
                 if (count($data) > 0) {
                     $event->setSummary('errors', ['messages' => $data]);
                 }

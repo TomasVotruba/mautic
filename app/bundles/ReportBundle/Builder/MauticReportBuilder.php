@@ -116,6 +116,97 @@ final class MauticReportBuilder implements ReportBuilderInterface
     }
 
     /**
+     * @param array<string, mixed> $filter
+     */
+    public function getTagCondition(array $filter): ?string
+    {
+        if ($filter['column'] !== 'tag') {
+            return null;
+        }
+
+        $tagSubQuery = $this->db->createQueryBuilder();
+        $tagSubQuery->select('DISTINCT lead_id')
+            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx');
+
+        if (in_array($filter['condition'], ['in', 'notIn']) && !empty($filter['value'])) {
+            $tagSubQuery->where($tagSubQuery->expr()->in('ltx.tag_id', $filter['value']));
+        }
+
+        if (in_array($filter['condition'], ['in', 'notEmpty'])) {
+            return $tagSubQuery->expr()->in('l.id', $tagSubQuery->getSQL());
+        } elseif (in_array($filter['condition'], ['notIn', 'empty'])) {
+            return $tagSubQuery->expr()->notIn('l.id', $tagSubQuery->getSQL());
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the Do Not Contact (DNC) condition for a query based on the provided filter.
+     *
+     * @param array{
+     *     column: string,
+     *     condition: string,
+     *     value: string[]
+     * } $filter The filter array containing 'column', 'condition', and 'value' keys
+     */
+    public function getDncCondition(array $filter): ?string
+    {
+        if ($filter['column'] !== 'dnc_preferences') {
+            return null;
+        }
+
+        // Handle empty/notEmpty conditions early to avoid unnecessary processing
+        if (in_array($filter['condition'], ['empty', 'notEmpty'], true)) {
+            $operator = $filter['condition'] === 'empty' ? 'NOT IN' : 'IN';
+
+            return sprintf(
+                'l.id %s (SELECT DISTINCT lead_id FROM %slead_donotcontact)',
+                $operator,
+                MAUTIC_TABLE_PREFIX
+            );
+        }
+
+        // Parse and validate filter values
+        $conditions = array_map(
+            function (string $item) {
+                $parts = explode(':', $item);
+                if (count($parts) !== 2) {
+                    throw new \InvalidArgumentException('Invalid DNC filter format');
+                }
+
+                return [
+                    'channel' => $this->db->quote($parts[0]),
+                    'reason'  => (int) $parts[1],
+                ];
+            },
+            $filter['value']
+        );
+
+        if (empty($conditions)) {
+            return null;
+        }
+
+        // Build the subquery
+        $dncSubQuery = $this->db->createQueryBuilder()
+            ->select('DISTINCT lead_id')
+            ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'ldnc')
+            ->where(implode(' OR ', array_map(
+                fn ($condition): string => sprintf(
+                    '(ldnc.channel = %s AND ldnc.reason = %d)',
+                    $condition['channel'],
+                    $condition['reason']
+                ),
+                $conditions
+            )));
+
+        // Generate final condition
+        $operator = $filter['condition'] === 'in' ? 'IN' : 'NOT IN';
+
+        return sprintf('l.id %s (%s)', $operator, $dncSubQuery->getSQL());
+    }
+
+    /**
      * This method configures the ReportBuilder. It has to return a configured Doctrine DBAL QueryBuilder.
      *
      * @param array $options Options array
@@ -156,7 +247,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
                             case 'like':
                             case 'notLike':
                             case 'contains':
-                                if ('notLike' === $condition) {
+                                if ($condition === 'notLike') {
                                     $dynamicFilter['expr'] = 'notLike';
                                 }
 
@@ -353,12 +444,12 @@ final class MauticReportBuilder implements ReportBuilderInterface
                 $exprFunction = $filter['expr'] ?? $filter['condition'];
                 $paramName    = sprintf('i%dc%s', $i, InputHelper::alphanum($filter['column']));
 
-                if (!$this->isEmptyValueSupportedCondition($exprFunction) && !is_array($filter['value']) && '' == trim((string) $filter['value'])) {
+                if (!$this->isEmptyValueSupportedCondition($exprFunction) && !is_array($filter['value']) && trim((string) $filter['value']) == '') {
                     // Ignore empty values before applying glue so they do not create empty OR groups.
                     continue;
                 }
 
-                if (array_key_exists('glue', $filter) && 'or' === $filter['glue']) {
+                if (array_key_exists('glue', $filter) && $filter['glue'] === 'or') {
                     if ($andGroup) {
                         $orGroups[] = CompositeExpression::and(...$andGroup);
                         $andGroup   = [];
@@ -397,16 +488,16 @@ final class MauticReportBuilder implements ReportBuilderInterface
                         $andGroup[] = $expression;
                         break;
                     case 'neq':
-                        $columnValue = ":$paramName";
+                        $columnValue = ":{$paramName}";
                         $expression  = $queryBuilder->expr()->or(
                             $queryBuilder->expr()->isNull($filter['column']),
-                            $queryBuilder->expr()->$exprFunction($filter['column'], $columnValue)
+                            $queryBuilder->expr()->{$exprFunction}($filter['column'], $columnValue)
                         );
                         $queryBuilder->setParameter($paramName, $filter['value']);
                         $andGroup[] = $expression;
                         break;
                     default:
-                        $columnValue = ":$paramName";
+                        $columnValue = ":{$paramName}";
                         $type        = $filterDefinitions[$filter['column']]['type'];
                         if (isset($filterDefinitions[$filter['column']]['formula'])) {
                             $filter['column'] = $filterDefinitions[$filter['column']]['formula'];
@@ -473,7 +564,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
                 $orGroups[] = CompositeExpression::and(...$andGroup);
             }
 
-            if (1 === count($orGroups)) {
+            if (count($orGroups) === 1) {
                 $queryBuilder->andWhere($orGroups[0]);
             } else {
                 $queryBuilder->andWhere(CompositeExpression::or(...$orGroups));
@@ -481,97 +572,6 @@ final class MauticReportBuilder implements ReportBuilderInterface
         } elseif ($andGroup) {
             $queryBuilder->andWhere(CompositeExpression::and(...$andGroup));
         }
-    }
-
-    /**
-     * @param array<string, mixed> $filter
-     */
-    public function getTagCondition(array $filter): ?string
-    {
-        if ('tag' !== $filter['column']) {
-            return null;
-        }
-
-        $tagSubQuery = $this->db->createQueryBuilder();
-        $tagSubQuery->select('DISTINCT lead_id')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx');
-
-        if (in_array($filter['condition'], ['in', 'notIn']) && !empty($filter['value'])) {
-            $tagSubQuery->where($tagSubQuery->expr()->in('ltx.tag_id', $filter['value']));
-        }
-
-        if (in_array($filter['condition'], ['in', 'notEmpty'])) {
-            return $tagSubQuery->expr()->in('l.id', $tagSubQuery->getSQL());
-        } elseif (in_array($filter['condition'], ['notIn', 'empty'])) {
-            return $tagSubQuery->expr()->notIn('l.id', $tagSubQuery->getSQL());
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the Do Not Contact (DNC) condition for a query based on the provided filter.
-     *
-     * @param array{
-     *     column: string,
-     *     condition: string,
-     *     value: string[]
-     * } $filter The filter array containing 'column', 'condition', and 'value' keys
-     */
-    public function getDncCondition(array $filter): ?string
-    {
-        if ('dnc_preferences' !== $filter['column']) {
-            return null;
-        }
-
-        // Handle empty/notEmpty conditions early to avoid unnecessary processing
-        if (in_array($filter['condition'], ['empty', 'notEmpty'], true)) {
-            $operator = 'empty' === $filter['condition'] ? 'NOT IN' : 'IN';
-
-            return sprintf(
-                'l.id %s (SELECT DISTINCT lead_id FROM %slead_donotcontact)',
-                $operator,
-                MAUTIC_TABLE_PREFIX
-            );
-        }
-
-        // Parse and validate filter values
-        $conditions = array_map(
-            function (string $item) {
-                $parts = explode(':', $item);
-                if (2 !== count($parts)) {
-                    throw new \InvalidArgumentException('Invalid DNC filter format');
-                }
-
-                return [
-                    'channel' => $this->db->quote($parts[0]),
-                    'reason'  => (int) $parts[1],
-                ];
-            },
-            $filter['value']
-        );
-
-        if (empty($conditions)) {
-            return null;
-        }
-
-        // Build the subquery
-        $dncSubQuery = $this->db->createQueryBuilder()
-            ->select('DISTINCT lead_id')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'ldnc')
-            ->where(implode(' OR ', array_map(
-                fn ($condition): string => sprintf(
-                    '(ldnc.channel = %s AND ldnc.reason = %d)',
-                    $condition['channel'],
-                    $condition['reason']
-                ),
-                $conditions
-            )));
-
-        // Generate final condition
-        $operator = 'in' === $filter['condition'] ? 'IN' : 'NOT IN';
-
-        return sprintf('l.id %s (%s)', $operator, $dncSubQuery->getSQL());
     }
 
     /**

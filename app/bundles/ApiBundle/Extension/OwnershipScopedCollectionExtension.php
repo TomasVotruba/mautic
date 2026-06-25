@@ -36,17 +36,17 @@ final class OwnershipScopedCollectionExtension implements QueryCollectionExtensi
         ?Operation $operation = null,
         array $context = [],
     ): void {
-        if (null === $operation) {
+        if ($operation === null) {
             return;
         }
 
         $securityExpression = $operation->getSecurity();
-        if (null === $securityExpression || !is_string($securityExpression)) {
+        if ($securityExpression === null || !is_string($securityExpression)) {
             return;
         }
 
         $ownPermission = $this->getOwnPermissionFromExpression($securityExpression);
-        if (null === $ownPermission) {
+        if ($ownPermission === null) {
             return;
         }
 
@@ -65,18 +65,18 @@ final class OwnershipScopedCollectionExtension implements QueryCollectionExtensi
         }
 
         $userId = $user->getId();
-        if (null === $userId) {
+        if ($userId === null) {
             return;
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0] ?? null;
-        if (null === $rootAlias) {
+        if ($rootAlias === null) {
             return;
         }
 
         // Determine how to filter based on ownership
         $ownershipInfo = $this->getOwnershipFilterField($resourceClass, $rootAlias, $queryBuilder);
-        if (null === $ownershipInfo) {
+        if ($ownershipInfo === null) {
             // Cannot determine ownership for this entity, skip filtering
             return;
         }

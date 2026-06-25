@@ -24,6 +24,11 @@ class ClientRepository extends CommonRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getTableAlias(): string
+    {
+        return 'c';
+    }
+
     protected function addCatchAllWhereClause($q, $filter): array
     {
         return $this->addStandardCatchAllWhereClause($q, $filter, [
@@ -37,10 +42,5 @@ class ClientRepository extends CommonRepository
         return [
             ['c.name', 'ASC'],
         ];
-    }
-
-    public function getTableAlias(): string
-    {
-        return 'c';
     }
 }

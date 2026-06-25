@@ -10,7 +10,7 @@ class IntNullableProcessor implements EnvVarProcessorInterface
     {
         $env = $getEnv($name);
 
-        return null === $env ? null : (int) $env;
+        return $env === null ? null : (int) $env;
     }
 
     public static function getProvidedTypes(): array

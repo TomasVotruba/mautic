@@ -38,10 +38,10 @@ class DateRelativeInterval implements FilterDecoratorInterface
      */
     public function getOperator(ContactSegmentFilterCrate $contactSegmentFilterCrate)
     {
-        if ('=' === $contactSegmentFilterCrate->getOperator()) {
+        if ($contactSegmentFilterCrate->getOperator() === '=') {
             return 'like';
         }
-        if ('!=' === $contactSegmentFilterCrate->getOperator()) {
+        if ($contactSegmentFilterCrate->getOperator() === '!=') {
             return 'notLike';
         }
 
@@ -69,14 +69,14 @@ class DateRelativeInterval implements FilterDecoratorInterface
         $operator = $this->getOperator($contactSegmentFilterCrate);
         $format   = 'Y-m-d';
 
-        $isLikeOperator = 'like' === $operator || 'notLike' === $operator;
+        $isLikeOperator = $operator === 'like' || $operator === 'notLike';
         if (!$isLikeOperator && $contactSegmentFilterCrate->hasTimeParts()) {
             $format .= ' H:i:s';
         }
         if ($isLikeOperator) {
             $format .= '%';
         }
-        if (!$contactSegmentFilterCrate->hasTimeParts() && 'gt' === $operator) {
+        if (!$contactSegmentFilterCrate->hasTimeParts() && $operator === 'gt') {
             $format .= ' 23:59:59';
         }
 

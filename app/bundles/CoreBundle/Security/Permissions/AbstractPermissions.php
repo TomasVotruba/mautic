@@ -134,53 +134,6 @@ abstract class AbstractPermissions
     }
 
     /**
-     * Allows the bundle permission class to utilize synonyms for permissions.
-     *
-     * @param string $name
-     * @param string $level
-     *
-     * @return array
-     */
-    protected function getSynonym($name, $level)
-    {
-        if (in_array($level, ['viewown', 'viewother'])) {
-            if (isset($this->permissions[$name]['view'])) {
-                $level = 'view';
-            }
-        } elseif ('view' == $level) {
-            if (isset($this->permissions[$name]['viewown'])) {
-                $level = 'viewown';
-            }
-        } elseif (in_array($level, ['editown', 'editother'])) {
-            if (isset($this->permissions[$name]['edit'])) {
-                $level = 'edit';
-            }
-        } elseif ('edit' == $level) {
-            if (isset($this->permissions[$name]['editown'])) {
-                $level = 'editown';
-            }
-        } elseif (in_array($level, ['deleteown', 'deleteother'])) {
-            if (isset($this->permissions[$name]['delete'])) {
-                $level = 'delete';
-            }
-        } elseif ('delete' == $level) {
-            if (isset($this->permissions[$name]['deleteown'])) {
-                $level = 'deleteown';
-            }
-        } elseif (in_array($level, ['publishown', 'publishother'])) {
-            if (isset($this->permissions[$name]['publish'])) {
-                $level = 'publish';
-            }
-        } elseif ('publish' == $level) {
-            if (isset($this->permissions[$name]['publishown'])) {
-                $level = 'publishown';
-            }
-        }
-
-        return [$name, $level];
-    }
-
-    /**
      * Determines if the user has access to the specified permission.
      *
      * @param array  $userPermissions
@@ -268,7 +221,7 @@ abstract class AbstractPermissions
             $totalAvailable += count($perms);
 
             if (in_array('full', $perms)) {
-                if (1 === count($perms)) {
+                if (count($perms) === 1) {
                     // full is the only permission so count as 1
                     if (!empty($data[$level]) && !in_array('full', $data[$level])) {
                         ++$totalGranted;
@@ -301,6 +254,53 @@ abstract class AbstractPermissions
     }
 
     /**
+     * Allows the bundle permission class to utilize synonyms for permissions.
+     *
+     * @param string $name
+     * @param string $level
+     *
+     * @return array
+     */
+    protected function getSynonym($name, $level)
+    {
+        if (in_array($level, ['viewown', 'viewother'])) {
+            if (isset($this->permissions[$name]['view'])) {
+                $level = 'view';
+            }
+        } elseif ($level == 'view') {
+            if (isset($this->permissions[$name]['viewown'])) {
+                $level = 'viewown';
+            }
+        } elseif (in_array($level, ['editown', 'editother'])) {
+            if (isset($this->permissions[$name]['edit'])) {
+                $level = 'edit';
+            }
+        } elseif ($level == 'edit') {
+            if (isset($this->permissions[$name]['editown'])) {
+                $level = 'editown';
+            }
+        } elseif (in_array($level, ['deleteown', 'deleteother'])) {
+            if (isset($this->permissions[$name]['delete'])) {
+                $level = 'delete';
+            }
+        } elseif ($level == 'delete') {
+            if (isset($this->permissions[$name]['deleteown'])) {
+                $level = 'deleteown';
+            }
+        } elseif (in_array($level, ['publishown', 'publishother'])) {
+            if (isset($this->permissions[$name]['publish'])) {
+                $level = 'publish';
+            }
+        } elseif ($level == 'publish') {
+            if (isset($this->permissions[$name]['publishown'])) {
+                $level = 'publishown';
+            }
+        }
+
+        return [$name, $level];
+    }
+
+    /**
      * @param array<int|string> $permissions
      */
     protected function addCustomPermission(string $level, array $permissions): void
@@ -316,7 +316,7 @@ abstract class AbstractPermissions
      */
     protected function addCustomFormFields(string $bundle, string $level, FormBuilderInterface &$builder, string $label, array $choices, array $data): void
     {
-        $builder->add("$bundle:$level", PermissionListType::class, [
+        $builder->add("{$bundle}:{$level}", PermissionListType::class, [
             'choices' => $choices,
             'label'   => $label,
             'data'    => (!empty($data[$level]) ? $data[$level] : []),
@@ -375,9 +375,9 @@ abstract class AbstractPermissions
 
         $choices['mautic.core.permissions.full'] = 'full';
 
-        $label = ('categories' == $level) ? 'mautic.category.permissions.categories' : "mautic.$bundle.permissions.$level";
+        $label = ($level == 'categories') ? 'mautic.category.permissions.categories' : "mautic.{$bundle}.permissions.{$level}";
         $builder->add(
-            "$bundle:$level",
+            "{$bundle}:{$level}",
             PermissionListType::class,
             [
                 'choices'           => $choices,
@@ -397,7 +397,7 @@ abstract class AbstractPermissions
      */
     protected function getLabel($bundle, $level)
     {
-        return ('categories' === $level) ? 'mautic.category.permissions.categories' : "mautic.{$bundle}.permissions.{$level}";
+        return ($level === 'categories') ? 'mautic.category.permissions.categories' : "mautic.{$bundle}.permissions.{$level}";
     }
 
     /**
@@ -433,11 +433,11 @@ abstract class AbstractPermissions
         ];
 
         $builder->add(
-            "$bundle:$level",
+            "{$bundle}:{$level}",
             PermissionListType::class,
             [
                 'choices'           => $choices,
-                'label'             => "mautic.$bundle.permissions.$level",
+                'label'             => "mautic.{$bundle}.permissions.{$level}",
                 'data'              => (!empty($data[$level]) ? $data[$level] : []),
                 'bundle'            => $bundle,
                 'level'             => $level,
@@ -505,7 +505,7 @@ abstract class AbstractPermissions
         }
 
         $builder->add(
-            "$bundle:$level",
+            "{$bundle}:{$level}",
             PermissionListType::class,
             [
                 'choices'           => $choices,

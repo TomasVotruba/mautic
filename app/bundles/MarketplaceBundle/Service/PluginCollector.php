@@ -85,7 +85,7 @@ class PluginCollector
         $total   = count($this->allowlistedPackages);
         $results = [];
 
-        if (0 === $total) {
+        if ($total === 0) {
             return [
                 'total'   => 0,
                 'results' => [],

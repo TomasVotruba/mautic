@@ -55,7 +55,7 @@ class StageApiController extends CommonApiController
     {
         $stage = $this->model->getEntity($id);
 
-        if (null === $stage) {
+        if ($stage === null) {
             return $this->notFound();
         }
 
@@ -90,7 +90,7 @@ class StageApiController extends CommonApiController
     {
         $stage = $this->model->getEntity($id);
 
-        if (null === $stage) {
+        if ($stage === null) {
             return $this->notFound();
         }
 

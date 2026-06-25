@@ -10,26 +10,6 @@ class ReferenceValueDAO implements \Stringable
 
     private ?string $type = null;
 
-    public function getValue(): ?int
-    {
-        return $this->value;
-    }
-
-    public function setValue(int $value): void
-    {
-        $this->value = $value;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
     public function __toString(): string
     {
         return (string) $this->value;
@@ -49,5 +29,25 @@ class ReferenceValueDAO implements \Stringable
     {
         $this->value = $data['value'] ?? null;
         $this->type  = $data['type'] ?? null;
+    }
+
+    public function getValue(): ?int
+    {
+        return $this->value;
+    }
+
+    public function setValue(int $value): void
+    {
+        $this->value = $value;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 }

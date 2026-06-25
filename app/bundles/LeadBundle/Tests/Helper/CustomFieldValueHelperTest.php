@@ -7,25 +7,6 @@ use PHPUnit\Framework\Assert;
 
 class CustomFieldValueHelperTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @param array<int|string> $fieldParams
-     */
-    private function runNormalizeValueBooleans(array $fieldParams): void
-    {
-        $fields['core']['test'] = $fieldParams;
-
-        $fieldParams['value']    = 0;
-        $fields['core']['test2'] = $fieldParams;
-
-        $fieldParams['value']    = null;
-        $fields['core']['test3'] = $fieldParams;
-
-        $normalizedFields = CustomFieldValueHelper::normalizeValues($fields);
-
-        $this->assertEquals('Yes', $normalizedFields['core']['test']['normalizedValue']);
-        $this->assertEquals('No', $normalizedFields['core']['test2']['normalizedValue']);
-        $this->assertEquals('', $normalizedFields['core']['test3']['normalizedValue']);
-    }
 
     public function testNormalizeValueBooleans(): void
     {
@@ -129,5 +110,24 @@ class CustomFieldValueHelperTest extends \PHPUnit\Framework\TestCase
                 'value_1'
             )
         );
+    }
+    /**
+     * @param array<int|string> $fieldParams
+     */
+    private function runNormalizeValueBooleans(array $fieldParams): void
+    {
+        $fields['core']['test'] = $fieldParams;
+
+        $fieldParams['value']    = 0;
+        $fields['core']['test2'] = $fieldParams;
+
+        $fieldParams['value']    = null;
+        $fields['core']['test3'] = $fieldParams;
+
+        $normalizedFields = CustomFieldValueHelper::normalizeValues($fields);
+
+        $this->assertEquals('Yes', $normalizedFields['core']['test']['normalizedValue']);
+        $this->assertEquals('No', $normalizedFields['core']['test2']['normalizedValue']);
+        $this->assertEquals('', $normalizedFields['core']['test3']['normalizedValue']);
     }
 }

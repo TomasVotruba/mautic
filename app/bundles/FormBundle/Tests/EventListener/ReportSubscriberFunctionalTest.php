@@ -129,6 +129,18 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
+    public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
+    {
+        $dnc = new DoNotContact();
+        $dnc->setChannel($channel);
+        $dnc->setLead($contact);
+        $dnc->setReason($reason);
+        $dnc->setDateAdded(new \DateTime());
+        $this->em->persist($dnc);
+
+        return $dnc;
+    }
+
     private function createFormThroughApi(): int
     {
         $formPayload = [
@@ -190,18 +202,6 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         $form->setValues($formData);
 
         return $this->client->submit($form);
-    }
-
-    public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
-    {
-        $dnc = new DoNotContact();
-        $dnc->setChannel($channel);
-        $dnc->setLead($contact);
-        $dnc->setReason($reason);
-        $dnc->setDateAdded(new \DateTime());
-        $this->em->persist($dnc);
-
-        return $dnc;
     }
 
     private function createContact(string $email): Lead

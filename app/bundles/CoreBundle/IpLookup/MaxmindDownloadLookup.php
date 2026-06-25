@@ -33,16 +33,6 @@ class MaxmindDownloadLookup extends AbstractLocalDataLookup
         $this->logger->warning('MaxMind license key is required.');
     }
 
-    private function getLicenceKey(): string
-    {
-        $auth = explode(':', $this->auth, 2);
-        if (array_key_exists(1, $auth)) {
-            return $auth[1];
-        }
-
-        return '';
-    }
-
     /**
      * Extract the IP from the local database.
      */
@@ -71,5 +61,15 @@ class MaxmindDownloadLookup extends AbstractLocalDataLookup
             $this->zipcode   = $record->location->postalCode;
         } catch (\Exception) {
         }
+    }
+
+    private function getLicenceKey(): string
+    {
+        $auth = explode(':', $this->auth, 2);
+        if (array_key_exists(1, $auth)) {
+            return $auth[1];
+        }
+
+        return '';
     }
 }

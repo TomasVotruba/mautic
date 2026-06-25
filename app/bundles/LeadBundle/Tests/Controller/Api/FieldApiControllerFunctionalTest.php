@@ -22,7 +22,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['create_custom_field_in_background'] = 'testFieldApiEndpointsWithBackgroundProcessingEnabled' === $this->name();
+        $this->configParams['create_custom_field_in_background'] = $this->name() === 'testFieldApiEndpointsWithBackgroundProcessingEnabled';
 
         parent::setUp();
     }
@@ -404,7 +404,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         foreach ($payload as $key => $value) {
             $this->assertTrue(isset($response['field'][$key]));
 
-            if (Response::HTTP_ACCEPTED === $expectedStatusCode && 'isPublished' === $key) {
+            if ($expectedStatusCode === Response::HTTP_ACCEPTED && $key === 'isPublished') {
                 // This should be false because the background job publishes once ready
                 $this->assertEquals(false, $response['field'][$key]);
                 continue;

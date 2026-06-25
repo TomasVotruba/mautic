@@ -132,7 +132,7 @@ class InputOptionsDAO
         try {
             return is_string($input[$optionName]) ? new \DateTimeImmutable($input[$optionName], new \DateTimeZone('UTC')) : null;
         } catch (\Throwable) {
-            throw new InvalidValueException("'$input[$optionName]' is not valid. Use 'Y-m-d H:i:s' format like '2018-12-24 20:30:00' or something like '-10 minutes'");
+            throw new InvalidValueException("'{$input[$optionName]}' is not valid. Use 'Y-m-d H:i:s' format like '2018-12-24 20:30:00' or something like '-10 minutes'");
         }
     }
 
@@ -171,7 +171,7 @@ class InputOptionsDAO
             $input['mautic-object-id'][$key] = preg_replace(
                 '/^contact:/',
                 Contact::NAME.':',
-                "$mauticObjectId"
+                "{$mauticObjectId}"
             );
         }
 
@@ -189,7 +189,7 @@ class InputOptionsDAO
         if (is_array($input['option'] ?? null)) {
             foreach ($input['option'] as $option) {
                 $parsedOption = explode(':', $option);
-                if (2 === count($parsedOption)) {
+                if (count($parsedOption) === 2) {
                     $options[$parsedOption[0]] = $parsedOption[1];
                 }
             }

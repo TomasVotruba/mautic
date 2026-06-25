@@ -151,10 +151,10 @@ class WebhookModelTest extends TestCase
 
         $this->parametersHelperMock->method('get')
             ->willReturnCallback(function ($param) {
-                if ('queue_mode' === $param) {
+                if ($param === 'queue_mode') {
                     return WebhookModel::COMMAND_PROCESS;
                 }
-                if ('webhook_retry_delay' === $param) {
+                if ($param === 'webhook_retry_delay') {
                     return 3600;
                 }
 
@@ -198,7 +198,7 @@ class WebhookModelTest extends TestCase
 
         $this->parametersHelperMock->method('get')
             ->willReturnCallback(function ($param) {
-                if ('queue_mode' === $param) {
+                if ($param === 'queue_mode') {
                     return WebhookModel::IMMEDIATE_PROCESS;
                 }
 
@@ -219,7 +219,7 @@ class WebhookModelTest extends TestCase
 
     public function testProcessWebhook(): void
     {
-        $webhook = new class extends Webhook {
+        $webhook = new class() extends Webhook {
             public function getId(): int
             {
                 return 1;
@@ -230,7 +230,7 @@ class WebhookModelTest extends TestCase
         $event = new Event();
         $event->setEventType('mautic.email_on_send');
 
-        $queue = new class extends WebhookQueue {
+        $queue = new class() extends WebhookQueue {
             public function getId(): string
             {
                 return '1';
@@ -273,7 +273,7 @@ class WebhookModelTest extends TestCase
 
     public function testMinAndMaxQueueIdWhenNoneIsSet(): void
     {
-        $webhook = new class extends Webhook {
+        $webhook = new class() extends Webhook {
             public function getId(): int
             {
                 return 1;
@@ -348,7 +348,7 @@ class WebhookModelTest extends TestCase
 
     public function testMinAndMaxQueueIdWhenBothSet(): void
     {
-        $webhook = new class extends Webhook {
+        $webhook = new class() extends Webhook {
             public function getId(): int
             {
                 return 1;

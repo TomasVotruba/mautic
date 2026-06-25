@@ -17,21 +17,21 @@ trait ExpressionHelperTrait
     {
         // in/notIn for dbal will use a raw array
         if (!is_array($parameter) && !str_starts_with($parameter, ':')) {
-            $parameter = ":$parameter";
+            $parameter = ":{$parameter}";
         }
 
-        if (null === $includeIsNull) {
+        if ($includeIsNull === null) {
             // Auto determine based on negate operators
             $includeIsNull = in_array($operator, ['neq', 'notLike', 'notIn']);
         }
 
         if ($includeIsNull) {
             $expr = $q->expr()->or(
-                $q->expr()->$operator($column, $parameter),
+                $q->expr()->{$operator}($column, $parameter),
                 $q->expr()->isNull($column)
             );
         } else {
-            $expr = $q->expr()->$operator($column, $parameter);
+            $expr = $q->expr()->{$operator}($column, $parameter);
         }
 
         if ($appendTo) {

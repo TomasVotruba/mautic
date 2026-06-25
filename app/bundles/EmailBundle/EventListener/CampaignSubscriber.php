@@ -168,7 +168,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $email = $event->getEmail();
 
-        if (null !== $email) {
+        if ($email !== null) {
             $this->realTimeExecutioner->execute('email.open', $email, 'email', $email->getId());
         }
     }
@@ -184,7 +184,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     public function onEmailReply(EmailReplyEvent $event): void
     {
         $email = $event->getEmail();
-        if (null !== $email) {
+        if ($email !== null) {
             $this->realTimeExecutioner->execute('email.reply', $email, 'email', $email->getId());
         }
     }
@@ -196,12 +196,12 @@ class CampaignSubscriber implements EventSubscriberInterface
         $eventParent  = $event->getEvent()['parent'];
         $eventConfig  = $event->getConfig();
 
-        if (null == $eventDetails) {
+        if ($eventDetails == null) {
             return $event->setResult(false);
         }
 
         // check to see if the parent event is a "send email" event and that it matches the current email opened or clicked
-        if (!empty($eventParent) && 'email.send' === $eventParent['type']) {
+        if (!empty($eventParent) && $eventParent['type'] === 'email.send') {
             // click decision
             if ($event->checkContext('email.click')) {
                 /** @var Hit $hit */
@@ -321,7 +321,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             $credentialArray[$logId] = $leadCredentials;
         }
 
-        if (MailHelper::EMAIL_TYPE_MARKETING == $type) {
+        if ($type == MailHelper::EMAIL_TYPE_MARKETING) {
             $statRepository = $this->emailModel->getStatRepository();
             // Determine if this lead has received the email before and if so, don't send it again
             $stats = $statRepository->getSentCountForContacts($contactIds, $emailId);

@@ -23,6 +23,6 @@ abstract class DateYearAbstract extends DateOptionAbstract
 
     protected function getOperatorForBetweenRange(ContactSegmentFilterCrate $leadSegmentFilterCrate)
     {
-        return '!=' === $leadSegmentFilterCrate->getOperator() ? 'notLike' : 'like';
+        return $leadSegmentFilterCrate->getOperator() === '!=' ? 'notLike' : 'like';
     }
 }

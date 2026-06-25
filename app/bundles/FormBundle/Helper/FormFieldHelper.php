@@ -77,7 +77,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         $this->translator = $translator;
 
-        if (null === $validator) {
+        if ($validator === null) {
             $validator = $validator = Validation::createValidator();
         }
         $this->validator = $validator;
@@ -112,20 +112,20 @@ class FormFieldHelper extends AbstractFormFieldHelper
         if (isset($this->types[$type]['constraints'])) {
             foreach ($this->types[$type]['constraints'] as $constraint => $opts) {
                 // don't check empty values unless the constraint is NotBlank
-                if (NotBlank::class === $constraint && empty($value)) {
+                if ($constraint === NotBlank::class && empty($value)) {
                     continue;
                 }
 
-                if ('captcha' == $type) {
+                if ($type == 'captcha') {
                     $captcha = $f->getProperties()['captcha'];
-                    if (empty($captcha) && Blank::class !== $constraint) {
+                    if (empty($captcha) && $constraint !== Blank::class) {
                         // Used as a honeypot
                         $captcha = '';
-                    } elseif (Blank::class === $constraint) {
+                    } elseif ($constraint === Blank::class) {
                         continue;
                     }
 
-                    if (EqualTo::class == $constraint) {
+                    if ($constraint == EqualTo::class) {
                         $opts['value'] = $captcha;
                     }
                 }
@@ -138,7 +138,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                     foreach ($violations as $v) {
                         $transParameters = $v->getParameters();
 
-                        if (null !== $f) {
+                        if ($f !== null) {
                             $transParameters['%label%'] = '&quot;'.$f->getLabel().'&quot;';
                         }
 
@@ -174,7 +174,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
             case 'url':
             case 'date':
             case 'datetime':
-                if ('tel' === $field->getType()) {
+                if ($field->getType() === 'tel') {
                     $sanitizedValue = InputHelper::clean($value);
                 } else {
                     $sanitizedValue = $this->sanitizeValue($value);
@@ -261,7 +261,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
         $valueType = gettype($value);
         $value     = str_replace(['"', '>', '<'], ['&quot;', '&gt;', '&lt;'], strip_tags(rawurldecode($value)));
         // for boolean expect 0 or 1
-        if ('boolean' === $valueType) {
+        if ($valueType === 'boolean') {
             return (int) $value;
         }
 

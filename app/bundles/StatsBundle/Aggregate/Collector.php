@@ -22,7 +22,7 @@ class Collector
      */
     public function fetchStats($statName, \DateTime $fromDateTime, \DateTime $toDateTime, ?FetchOptions $fetchOptions = null)
     {
-        if (null === $fetchOptions) {
+        if ($fetchOptions === null) {
             $fetchOptions = new FetchOptions();
         }
 

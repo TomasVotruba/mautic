@@ -62,9 +62,9 @@ class EventType extends AbstractType
             }
 
             if (isset($options['data']['anchor']) && isset($options['data']['anchorEventType'])
-                && 'no' === $options['data']['anchor']
-                && 'condition' !== $options['data']['anchorEventType']
-                && 'condition' !== $options['data']['eventType']) {
+                && $options['data']['anchor'] === 'no'
+                && $options['data']['anchorEventType'] !== 'condition'
+                && $options['data']['eventType'] !== 'condition') {
                 $label .= '_inaction';
 
                 unset($choices['immediate']);
@@ -110,7 +110,7 @@ class EventType extends AbstractType
                 ]
             );
 
-            $data = (!isset($options['data']['triggerInterval']) || '' === $options['data']['triggerInterval']) ? 1 : (int) $options['data']['triggerInterval'];
+            $data = (!isset($options['data']['triggerInterval']) || $options['data']['triggerInterval'] === '') ? 1 : (int) $options['data']['triggerInterval'];
             $builder->add(
                 'triggerInterval',
                 IntegerType::class,
@@ -243,7 +243,7 @@ class EventType extends AbstractType
                 $triggerMode = $data['triggerMode'] ?? 'immediate';
 
                 // Do not set any trigger window when optimized mode is not used
-                if ('optimized' !== $triggerMode) {
+                if ($triggerMode !== 'optimized') {
                     $data['triggerWindow'] = null;
                     $event->setData($data);
                 }
@@ -315,6 +315,11 @@ class EventType extends AbstractType
         $resolver->setRequired(['settings']);
     }
 
+    public function getBlockPrefix(): string
+    {
+        return 'campaignevent';
+    }
+
     private function getTimeValue(array $data, string $name): ?\DateTime
     {
         if (empty($data[$name])) {
@@ -340,23 +345,18 @@ class EventType extends AbstractType
 
         if (preg_match('/^\d{1,2}$/', $trimmedValue)) {
             $parsed = \DateTime::createFromFormat('!H', $trimmedValue);
-            if (false !== $parsed) {
+            if ($parsed !== false) {
                 return $parsed;
             }
         }
 
         if (preg_match('/^\d{1,2}:\d{2}$/', $trimmedValue)) {
             $parsed = \DateTime::createFromFormat('!H:i', $trimmedValue);
-            if (false !== $parsed) {
+            if ($parsed !== false) {
                 return $parsed;
             }
         }
 
         return new \DateTime($trimmedValue);
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'campaignevent';
     }
 }

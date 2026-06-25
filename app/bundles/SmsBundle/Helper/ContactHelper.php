@@ -44,7 +44,7 @@ class ContactHelper
             ->fetchAllAssociative();
 
         $ids = array_column($foundContacts, 'id');
-        if (0 === count($ids)) {
+        if (count($ids) === 0) {
             throw new NumberNotFoundException($number);
         }
 

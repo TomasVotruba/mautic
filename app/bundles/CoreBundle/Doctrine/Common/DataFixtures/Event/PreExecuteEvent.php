@@ -23,11 +23,11 @@ class PreExecuteEvent extends Event
 
     public function isDelete(): bool
     {
-        return ORMPurger::PURGE_MODE_DELETE === $this->purgeMode;
+        return $this->purgeMode === ORMPurger::PURGE_MODE_DELETE;
     }
 
     public function isTruncate(): bool
     {
-        return ORMPurger::PURGE_MODE_TRUNCATE === $this->purgeMode;
+        return $this->purgeMode === ORMPurger::PURGE_MODE_TRUNCATE;
     }
 }

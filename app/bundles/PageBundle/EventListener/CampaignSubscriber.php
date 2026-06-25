@@ -161,7 +161,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             return false;
         }
 
-        if (null == $eventDetails) {
+        if ($eventDetails == null) {
             return true;
         }
 

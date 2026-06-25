@@ -16,13 +16,13 @@ class Serializer
      */
     public static function decode($serializedString, array $options = ['allowed_classes' => false]): mixed
     {
-        if (1 === preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $serializedString)) {
+        if (preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $serializedString) === 1) {
             throw new \InvalidArgumentException(sprintf('The string %s contains an object.', $serializedString));
         }
 
         $result = @unserialize($serializedString, $options);
 
-        if (false === $result && 'b:0;' !== $serializedString) {
+        if ($result === false && $serializedString !== 'b:0;') {
             throw new \ErrorException('The serialized string is invalid: '.$serializedString);
         }
 

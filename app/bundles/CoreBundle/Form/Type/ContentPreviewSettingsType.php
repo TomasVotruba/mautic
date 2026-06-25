@@ -131,7 +131,7 @@ class ContentPreviewSettingsType extends AbstractType
     {
         $identifier = '';
 
-        if (self::CHOICE_TYPE_TRANSLATION === $type) {
+        if ($type === self::CHOICE_TYPE_TRANSLATION) {
             // Add localised translation name
             $identifier .= ' - '.Locales::getName($email->getLanguage());
         }

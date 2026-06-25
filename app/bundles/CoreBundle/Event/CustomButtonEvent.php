@@ -104,7 +104,7 @@ class CustomButtonEvent extends AbstractCustomRequestEvent
 
     public function checkLocationContext($location): bool
     {
-        if (null !== $location) {
+        if ($location !== null) {
             if ((is_array($location) && !in_array($this->location, $location)) || (is_string($location) && $location !== $this->location)) {
                 return false;
             }
@@ -144,7 +144,7 @@ class CustomButtonEvent extends AbstractCustomRequestEvent
             $buttonKey = uniqid(time());
         }
 
-        if (ButtonHelper::LOCATION_NAVBAR !== $this->location) {
+        if ($this->location !== ButtonHelper::LOCATION_NAVBAR) {
             // Include the request
             [$currentRoute, $routeParams] = $this->getRoute(true);
 

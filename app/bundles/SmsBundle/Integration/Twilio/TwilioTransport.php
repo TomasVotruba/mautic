@@ -51,7 +51,7 @@ class TwilioTransport implements TransportInterface, MMSTransportInterface
     {
         $number = $lead->getLeadPhoneNumber();
 
-        if (null === $number) {
+        if ($number === null) {
             return false;
         }
 

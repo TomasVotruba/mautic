@@ -172,7 +172,7 @@ class ContactSegmentQueryBuilder
             );
 
         $existingQueryWherePart = $existsQueryBuilder->getQueryPart('where');
-        $existsQueryBuilder->where("$leadsTableAlias.id = $tableAlias.lead_id");
+        $existsQueryBuilder->where("{$leadsTableAlias}.id = {$tableAlias}.lead_id");
         $existsQueryBuilder->andWhere($existingQueryWherePart);
 
         $queryBuilder->orWhere(
@@ -280,7 +280,7 @@ class ContactSegmentQueryBuilder
     private function getSegmentEdges($segmentId): array
     {
         $segment = $this->entityManager->getRepository(LeadList::class)->find($segmentId);
-        if (null === $segment) {
+        if ($segment === null) {
             return [];
         }
 
@@ -288,7 +288,7 @@ class ContactSegmentQueryBuilder
         $segmentEdges   = [];
 
         foreach ($segmentFilters as $segmentFilter) {
-            if (isset($segmentFilter['field']) && 'leadlist' === $segmentFilter['field']) {
+            if (isset($segmentFilter['field']) && $segmentFilter['field'] === 'leadlist') {
                 $bcFilter     = $segmentFilter['filter'] ?? [];
                 $filterEdges  = $segmentFilter['properties']['filter'] ?? $bcFilter;
                 $segmentEdges = array_merge($segmentEdges, $filterEdges);

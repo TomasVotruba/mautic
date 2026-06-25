@@ -126,7 +126,7 @@ class SubmissionModel extends CommonFormModel
         // set the landing page the form was submitted from if applicable
         if (!empty($post['mauticpage'])) {
             $page = $this->pageModel->getEntity((int) $post['mauticpage']);
-            if (null != $page) {
+            if ($page != null) {
                 $submission->setPage($page);
             }
         }
@@ -197,9 +197,9 @@ class SubmissionModel extends CommonFormModel
                 continue;
             }
 
-            if ('' === $value && $f->isRequired()) {
+            if ($value === '' && $f->isRequired()) {
                 // field is required, but hidden from form because of 'ShowWhenValueExists'
-                if (false === $f->getShowWhenValueExists() && !isset($post[$alias])) {
+                if ($f->getShowWhenValueExists() === false && !isset($post[$alias])) {
                     continue;
                 }
 
@@ -250,14 +250,14 @@ class SubmissionModel extends CommonFormModel
                 $value  = InputHelper::_($value, $filter);
 
                 $isValid = $this->validateFieldValue($f, $value);
-                if (true !== $isValid) {
+                if ($isValid !== true) {
                     $validationErrors[$alias] = is_array($isValid) ? implode('<br />', $isValid) : $isValid;
                 }
             }
 
             // Check for custom validators
             $isValid = $this->validateFieldValue($f, $value);
-            if (true !== $isValid) {
+            if ($isValid !== true) {
                 $validationErrors[$alias] = $isValid;
             }
 
@@ -268,7 +268,7 @@ class SubmissionModel extends CommonFormModel
                 $leadFieldMatches[$mappedField] = $leadValue;
             }
 
-            if ('companyLookup' === $f->getType() && !empty($value)) {
+            if ($f->getType() === 'companyLookup' && !empty($value)) {
                 $company = $this->companyModel->getEntity($value);
                 if ($company instanceof Company) {
                     $value = $company->getName();
@@ -283,7 +283,7 @@ class SubmissionModel extends CommonFormModel
             }
 
             // save the result
-            if (false !== $f->getSaveResult()) {
+            if ($f->getSaveResult() !== false) {
                 $results[$alias] = $value;
             }
         }
@@ -324,7 +324,7 @@ class SubmissionModel extends CommonFormModel
         }
 
         $trackedDevice = $this->deviceTrackingService->getTrackedDevice();
-        $trackingId    = (null === $trackedDevice ? null : $trackedDevice->getTrackingId());
+        $trackingId    = ($trackedDevice === null ? null : $trackedDevice->getTrackingId());
 
         // set tracking ID for stats purposes to determine unique hits
         $submission->setTrackingId($trackingId)
@@ -663,128 +663,6 @@ class SubmissionModel extends CommonFormModel
             default:
                 return new Response();
         }
-    }
-
-    /**
-     * @param array<string> $contentType
-     */
-    private function setResponseHeaders(StreamedResponse $response, string $filename, array $contentType): void
-    {
-        foreach ($contentType as $ct) {
-            $response->headers->set('Content-Type', $ct);
-        }
-
-        $response->headers->set('Content-Disposition', 'attachment; filename="'.$filename.'"');
-        $response->headers->set('Expires', '0');
-        $response->headers->set('Cache-Control', 'must-revalidate');
-        $response->headers->set('Pragma', 'public');
-    }
-
-    /**
-     * @param resource     $handle
-     * @param array<mixed> $row
-     */
-    private function putCsvExportRow($handle, array $row): bool|int
-    {
-        return CsvHelper::putCsv($handle, $row);
-    }
-
-    /**
-     * @param array<mixed> $values
-     *
-     * @return array<mixed>
-     */
-    private function getExportRowForPage(array $values, string $format = 'csv'): array
-    {
-        $row = [
-            $values['id'],
-            $values['leadId'],
-            $this->dateHelper->toFull($values['dateSubmitted'], 'UTC'),
-            $values['ipAddress'],
-            $values['referer'],
-        ];
-
-        if ('csv' === $format) {
-            array_splice($row, 2, 0, $values['formId']);
-        }
-
-        return $row;
-    }
-
-    /**
-     * @param array<mixed> $values
-     * @param array<mixed> $viewOnlyFields
-     *
-     * @return array<mixed>
-     */
-    private function getExportRow(array $values, array $viewOnlyFields = []): array
-    {
-        $row = [
-            $values['id'],
-            $values['leadId'],
-            $this->dateHelper->toFull($values['dateSubmitted'], 'UTC'),
-            $values['ipAddress'],
-            $values['referer'],
-        ];
-
-        foreach ($values['results'] as $k2 => $r) {
-            if (in_array($r['type'], $viewOnlyFields)) {
-                continue;
-            }
-
-            $row[] = htmlspecialchars_decode($r['value'], ENT_QUOTES);
-            // free memory
-            unset($values['results'][$k2]);
-        }
-
-        return $row;
-    }
-
-    /**
-     * @return array<string>
-     */
-    private function getExportHeaderForPage(string $format = 'csv'): array
-    {
-        $header = [
-            $this->translator->trans('mautic.form.report.submission.id'),
-            $this->translator->trans('mautic.lead.report.contact_id'),
-            $this->translator->trans('mautic.form.result.thead.date'),
-            $this->translator->trans('mautic.core.ipaddress'),
-            $this->translator->trans('mautic.form.result.thead.referrer'),
-        ];
-
-        if ('csv' === $format) {
-            array_splice($header, 2, 0, $this->translator->trans('mautic.form.report.form_id'));
-        }
-
-        return $header;
-    }
-
-    /**
-     * @param array<mixed> $viewOnlyFields
-     *
-     * @return array<string>
-     */
-    private function getExportHeader(Form $form, $viewOnlyFields): array
-    {
-        $fields = $form->getFields();
-
-        $header = [
-            $this->translator->trans('mautic.form.report.submission.id'),
-            $this->translator->trans('mautic.lead.report.contact_id'),
-            $this->translator->trans('mautic.form.result.thead.date'),
-            $this->translator->trans('mautic.core.ipaddress'),
-            $this->translator->trans('mautic.form.result.thead.referrer'),
-        ];
-
-        foreach ($fields as $f) {
-            if (in_array($f->getType(), $viewOnlyFields) || false === $f->getSaveResult()) {
-                continue;
-            }
-            $header[] = $f->getLabel();
-        }
-
-        return $header;
     }
 
     /**
@@ -1168,7 +1046,7 @@ class SubmissionModel extends CommonFormModel
                 $this->companyModel->addLeadToCompany($companyEntity, $lead);
                 $this->leadModel->setPrimaryCompany($companyEntity->getId(), $lead->getId());
             }
-            if (null !== $companyChangeLog) {
+            if ($companyChangeLog !== null) {
                 $this->companyModel->getCompanyLeadRepository()->detachEntity($companyChangeLog);
             }
         }
@@ -1207,6 +1085,128 @@ class SubmissionModel extends CommonFormModel
         }
 
         return true;
+    }
+
+    /**
+     * @param array<string> $contentType
+     */
+    private function setResponseHeaders(StreamedResponse $response, string $filename, array $contentType): void
+    {
+        foreach ($contentType as $ct) {
+            $response->headers->set('Content-Type', $ct);
+        }
+
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.$filename.'"');
+        $response->headers->set('Expires', '0');
+        $response->headers->set('Cache-Control', 'must-revalidate');
+        $response->headers->set('Pragma', 'public');
+    }
+
+    /**
+     * @param resource     $handle
+     * @param array<mixed> $row
+     */
+    private function putCsvExportRow($handle, array $row): bool|int
+    {
+        return CsvHelper::putCsv($handle, $row);
+    }
+
+    /**
+     * @param array<mixed> $values
+     *
+     * @return array<mixed>
+     */
+    private function getExportRowForPage(array $values, string $format = 'csv'): array
+    {
+        $row = [
+            $values['id'],
+            $values['leadId'],
+            $this->dateHelper->toFull($values['dateSubmitted'], 'UTC'),
+            $values['ipAddress'],
+            $values['referer'],
+        ];
+
+        if ($format === 'csv') {
+            array_splice($row, 2, 0, $values['formId']);
+        }
+
+        return $row;
+    }
+
+    /**
+     * @param array<mixed> $values
+     * @param array<mixed> $viewOnlyFields
+     *
+     * @return array<mixed>
+     */
+    private function getExportRow(array $values, array $viewOnlyFields = []): array
+    {
+        $row = [
+            $values['id'],
+            $values['leadId'],
+            $this->dateHelper->toFull($values['dateSubmitted'], 'UTC'),
+            $values['ipAddress'],
+            $values['referer'],
+        ];
+
+        foreach ($values['results'] as $k2 => $r) {
+            if (in_array($r['type'], $viewOnlyFields)) {
+                continue;
+            }
+
+            $row[] = htmlspecialchars_decode($r['value'], ENT_QUOTES);
+            // free memory
+            unset($values['results'][$k2]);
+        }
+
+        return $row;
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function getExportHeaderForPage(string $format = 'csv'): array
+    {
+        $header = [
+            $this->translator->trans('mautic.form.report.submission.id'),
+            $this->translator->trans('mautic.lead.report.contact_id'),
+            $this->translator->trans('mautic.form.result.thead.date'),
+            $this->translator->trans('mautic.core.ipaddress'),
+            $this->translator->trans('mautic.form.result.thead.referrer'),
+        ];
+
+        if ($format === 'csv') {
+            array_splice($header, 2, 0, $this->translator->trans('mautic.form.report.form_id'));
+        }
+
+        return $header;
+    }
+
+    /**
+     * @param array<mixed> $viewOnlyFields
+     *
+     * @return array<string>
+     */
+    private function getExportHeader(Form $form, $viewOnlyFields): array
+    {
+        $fields = $form->getFields();
+
+        $header = [
+            $this->translator->trans('mautic.form.report.submission.id'),
+            $this->translator->trans('mautic.lead.report.contact_id'),
+            $this->translator->trans('mautic.form.result.thead.date'),
+            $this->translator->trans('mautic.core.ipaddress'),
+            $this->translator->trans('mautic.form.result.thead.referrer'),
+        ];
+
+        foreach ($fields as $f) {
+            if (in_array($f->getType(), $viewOnlyFields) || $f->getSaveResult() === false) {
+                continue;
+            }
+            $header[] = $f->getLabel();
+        }
+
+        return $header;
     }
 
     private function normalizeValue($value, Field $f): string

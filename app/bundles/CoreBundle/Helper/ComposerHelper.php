@@ -36,7 +36,7 @@ class ComposerHelper
             'packages' => [$packageName],
         ];
 
-        if (true === $dryRun) {
+        if ($dryRun === true) {
             $input['--dry-run'] = null;
         }
 
@@ -63,13 +63,13 @@ class ComposerHelper
             '--no-update' => null,
         ];
 
-        if (true === $dryRun) {
+        if ($dryRun === true) {
             $input['--dry-run'] = null;
         }
 
         $firstOutput = $this->runCommand($input);
 
-        if (0 === $firstOutput->exitCode) {
+        if ($firstOutput->exitCode === 0) {
             /**
              * Triggering an update of the package we just removed from composer.json
              * will remove it from composer.lock and actually delete the plugin folder
@@ -80,7 +80,7 @@ class ComposerHelper
                 'packages'    => [$packageName],
             ];
 
-            if (true === $dryRun) {
+            if ($dryRun === true) {
                 $input['--dry-run'] = null;
             }
 
@@ -129,7 +129,7 @@ class ComposerHelper
             $input['packages'] = [$packageName];
         }
 
-        if (true === $dryRun) {
+        if ($dryRun === true) {
             $input['--dry-run'] = null;
         }
 

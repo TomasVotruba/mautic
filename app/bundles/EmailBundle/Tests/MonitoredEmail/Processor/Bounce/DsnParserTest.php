@@ -30,7 +30,7 @@ class DsnParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedCategory, $bounce->getRuleCategory());
         $this->assertEquals($expectedType, $bounce->getType());
         $this->assertEquals($expectedFinal, $bounce->isFinal());
-        if (null !== $expectedRuleNumber) {
+        if ($expectedRuleNumber !== null) {
             $this->assertEquals($expectedRuleNumber, $bounce->getRuleNumber());
         }
     }

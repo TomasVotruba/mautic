@@ -115,7 +115,7 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
 
     public function onSegmentFilterFormHandleTags(FormAdjustmentEvent $event): void
     {
-        if ('tags' !== $event->getFieldAlias()) {
+        if ($event->getFieldAlias() !== 'tags') {
             return;
         }
 
@@ -354,7 +354,7 @@ final class TypeOperatorSubscriber implements EventSubscriberInterface
                 return;
         }
 
-        if (self::EMAIL_ALIAS === $event->getFieldAlias()) {
+        if ($event->getFieldAlias() === self::EMAIL_ALIAS) {
             $alertText .= ' '.$this->translator->trans('mautic.lead_list.filter.alert.email');
         }
 

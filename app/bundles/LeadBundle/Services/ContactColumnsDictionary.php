@@ -35,7 +35,7 @@ class ContactColumnsDictionary
 
     public function getFields(): array
     {
-        if ([] === $this->fieldList) {
+        if ($this->fieldList === []) {
             $this->fieldList['name']        = sprintf(
                 '%s %s',
                 $this->translator->trans('mautic.core.firstname'),

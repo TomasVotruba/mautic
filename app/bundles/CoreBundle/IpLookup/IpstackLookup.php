@@ -43,7 +43,7 @@ class IpstackLookup extends AbstractRemoteDataLookup
                         break;
                 }
 
-                $this->$key = $value;
+                $this->{$key} = $value;
             }
         }
     }

@@ -40,7 +40,7 @@ class DoNotContactFilterQueryBuilder extends BaseFilterQueryBuilder
 
         $this->addLeadAndMinMaxLimiters($filterQueryBuilder, $batchLimiters, 'lead_donotcontact');
 
-        if ('eq' === $filter->getOperator() xor !$filter->getParameterValue()) {
+        if ($filter->getOperator() === 'eq' xor !$filter->getParameterValue()) {
             $expression = $expr->in($leadsTableAlias.'.id', $filterQueryBuilder->getSQL());
         } else {
             $expression = $expr->notIn($leadsTableAlias.'.id', $filterQueryBuilder->getSQL());

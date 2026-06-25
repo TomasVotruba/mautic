@@ -22,6 +22,12 @@ trait CustomFieldsApiControllerTrait
      */
     private $fieldCache = [];
 
+    #[\Symfony\Contracts\Service\Attribute\Required]
+    public function setRequestStack(RequestStack $requestStack): void
+    {
+        $this->requestStack = $requestStack;
+    }
+
     /**
      * Remove IpAddress and lastActive as it'll be handled outside the form.
      *
@@ -33,7 +39,7 @@ trait CustomFieldsApiControllerTrait
      */
     protected function prepareParametersForBinding(Request $request, $parameters, $entity, $action)
     {
-        if ('company' === $this->entityNameOne) {
+        if ($this->entityNameOne === 'company') {
             $object = 'company';
         } else {
             $object = 'lead';
@@ -51,7 +57,7 @@ trait CustomFieldsApiControllerTrait
             foreach ($fields as $alias => $field) {
                 // Set the default value if the parameter is not included in the request, there is no value for the given entity, and a default is defined
                 $currentValue = $entity->getFieldValue($alias);
-                if (!isset($parameters[$alias]) && ('' === $currentValue || null == $currentValue) && '' !== $field['defaultValue'] && null !== $field['defaultValue']) {
+                if (!isset($parameters[$alias]) && ($currentValue === '' || $currentValue == null) && $field['defaultValue'] !== '' && $field['defaultValue'] !== null) {
                     $parameters[$alias] = $field['defaultValue'];
                 }
             }
@@ -79,55 +85,11 @@ trait CustomFieldsApiControllerTrait
     }
 
     /**
-     * @param mixed[] $fields
-     *
-     * @return mixed[]
-     */
-    private function fixNumbers(array $fields): array
-    {
-        $numberFields = [];
-        foreach ($fields as $group => $groupFields) {
-            if ('all' === $group) {
-                continue;
-            }
-
-            foreach ($groupFields as $field => $fieldDefinition) {
-                if ('points' === $field) {
-                    // Points were always a number in M2
-                    $numberFields[$field] = (int) $fields[$group][$field]['value'];
-                }
-
-                if ('number' !== $fieldDefinition['type'] || null === $fields[$group][$field]['value']) {
-                    continue;
-                }
-
-                // Some requests don't seem to have properties unserialized by default (even in M2)
-                if (!isset($fieldDefinition['properties'])) {
-                    $fieldDefinition['properties'] = [];
-                }
-                $properties = is_string($fieldDefinition['properties']) ? \Mautic\CoreBundle\Helper\Serializer::decode($fieldDefinition['properties']) : $fieldDefinition['properties'];
-
-                $fields[$group][$field]['value']           = empty($properties['scale']) ? (int) $fields[$group][$field]['value']
-                    : (float) $fields[$group][$field]['value'];
-                $fields[$group][$field]['normalizedValue'] = empty($properties['scale']) ? (int) $fields[$group][$field]['normalizedValue']
-                    : (float) $fields[$group][$field]['normalizedValue'];
-
-                $numberFields[$field] = $fields[$group][$field]['value'];
-            }
-        }
-
-        // Fix "all" fields
-        $fields['all'] = array_merge($fields['all'], $numberFields);
-
-        return $fields;
-    }
-
-    /**
      * @return array<string, mixed>
      */
     protected function getEntityFormOptions(): array
     {
-        $object = ('company' === $this->entityNameOne) ? 'company' : 'lead';
+        $object = ($this->entityNameOne === 'company') ? 'company' : 'lead';
 
         if (!empty($this->fieldCache[$object])) {
             return $this->fieldCache[$object];
@@ -191,7 +153,7 @@ trait CustomFieldsApiControllerTrait
                 $parameters,
                 function ($value): bool {
                     if (is_numeric($value)) {
-                        return 0 !== (int) $value;
+                        return (int) $value !== 0;
                     }
 
                     return true;
@@ -208,9 +170,47 @@ trait CustomFieldsApiControllerTrait
         $this->model->setFieldValues($entity, $parameters, $overwriteWithBlank);
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
-    public function setRequestStack(RequestStack $requestStack): void
+    /**
+     * @param mixed[] $fields
+     *
+     * @return mixed[]
+     */
+    private function fixNumbers(array $fields): array
     {
-        $this->requestStack = $requestStack;
+        $numberFields = [];
+        foreach ($fields as $group => $groupFields) {
+            if ($group === 'all') {
+                continue;
+            }
+
+            foreach ($groupFields as $field => $fieldDefinition) {
+                if ($field === 'points') {
+                    // Points were always a number in M2
+                    $numberFields[$field] = (int) $fields[$group][$field]['value'];
+                }
+
+                if ($fieldDefinition['type'] !== 'number' || $fields[$group][$field]['value'] === null) {
+                    continue;
+                }
+
+                // Some requests don't seem to have properties unserialized by default (even in M2)
+                if (!isset($fieldDefinition['properties'])) {
+                    $fieldDefinition['properties'] = [];
+                }
+                $properties = is_string($fieldDefinition['properties']) ? \Mautic\CoreBundle\Helper\Serializer::decode($fieldDefinition['properties']) : $fieldDefinition['properties'];
+
+                $fields[$group][$field]['value']           = empty($properties['scale']) ? (int) $fields[$group][$field]['value']
+                    : (float) $fields[$group][$field]['value'];
+                $fields[$group][$field]['normalizedValue'] = empty($properties['scale']) ? (int) $fields[$group][$field]['normalizedValue']
+                    : (float) $fields[$group][$field]['normalizedValue'];
+
+                $numberFields[$field] = $fields[$group][$field]['value'];
+            }
+        }
+
+        // Fix "all" fields
+        $fields['all'] = array_merge($fields['all'], $numberFields);
+
+        return $fields;
     }
 }

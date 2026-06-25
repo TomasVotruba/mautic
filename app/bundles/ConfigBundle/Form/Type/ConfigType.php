@@ -25,13 +25,13 @@ class ConfigType extends AbstractType
     {
         // TODO very dirty quick fix for https://github.com/mautic/mautic/issues/8854
         if (isset($options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'])
-            && 3600 === $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime']
+            && $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'] === 3600
         ) {
             $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'] = 60;
         }
 
         if (isset($options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'])
-            && 1_209_600 === $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime']
+            && $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'] === 1_209_600
         ) {
             $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'] = 14;
         }
@@ -93,7 +93,7 @@ class ConfigType extends AbstractType
 
     private function addTransformers(FormBuilderInterface $builder): void
     {
-        if (0 === $builder->count()) {
+        if ($builder->count() === 0) {
             $builder->addModelTransformer($this->escapeTransformer);
 
             return;

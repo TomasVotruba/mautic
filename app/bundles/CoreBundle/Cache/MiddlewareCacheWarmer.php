@@ -53,7 +53,7 @@ class MiddlewareCacheWarmer implements CacheWarmerInterface
             unlink($this->cacheFile);
         }
 
-        if (false === file_exists($cacheDirectory)) {
+        if (file_exists($cacheDirectory) === false) {
             mkdir($cacheDirectory, 0777, true);
         }
 

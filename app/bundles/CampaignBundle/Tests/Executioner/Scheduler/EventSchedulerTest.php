@@ -355,7 +355,7 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $now) {
-                if (1 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 1) {
                     $callback = function (ScheduledBatchEvent $event) use ($now) {
                         // The first log was scheduled to 10 minutes.
                         Assert::assertCount(1, $event->getScheduled());
@@ -365,7 +365,7 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                     $callback($parameters[0]);
                     $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
                 }
-                if (2 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 2) {
                     $callback = function (ScheduledBatchEvent $event) use ($now) {
                         // The second log was not scheduled so the default interval is used.
                         Assert::assertCount(1, $event->getScheduled());
@@ -375,7 +375,7 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                     $callback($parameters[0]);
                     $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if ($matcher->numberOfInvocations() === 3) {
                     $callback = function (ScheduledBatchEvent $event) {
                         Assert::assertCount(2, $event->getScheduled());
                     };

@@ -42,7 +42,7 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
 
     public function onExport(EntityExportEvent $event): void
     {
-        if (DynamicContent::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== DynamicContent::ENTITY_NAME) {
             return;
         }
 
@@ -77,7 +77,7 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
 
     public function onImport(EntityImportEvent $event): void
     {
-        if (DynamicContent::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
+        if ($event->getEntityName() !== DynamicContent::ENTITY_NAME || !$event->getEntityData()) {
             return;
         }
 
@@ -119,7 +119,7 @@ final class DynamicContentImportExportSubscriber implements EventSubscriberInter
 
     public function onUndoImport(EntityImportUndoEvent $event): void
     {
-        if (DynamicContent::ENTITY_NAME !== $event->getEntityName()) {
+        if ($event->getEntityName() !== DynamicContent::ENTITY_NAME) {
             return;
         }
 

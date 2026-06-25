@@ -31,50 +31,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ConfigTypeTest extends TypeTestCase
 {
-    protected function getExtensions(): array
-    {
-        // Some local environments do not have ext-imap loaded, but Mailbox uses these
-        // constants in method signatures and class loading fails without them.
-        defined('SORTARRIVAL') or define('SORTARRIVAL', 0);
-        defined('SE_UID') or define('SE_UID', 1);
-        defined('FT_PEEK') or define('FT_PEEK', 2);
-
-        $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnArgument(0);
-
-        $repoMock = $this->createMock(PageRepository::class);
-        $repoMock->method('getPageList')->willReturn([]);
-
-        $pageModelMock = $this->createMock(PageModel::class);
-        $pageModelMock->method('getRepository')->willReturn($repoMock);
-
-        $permsMock = $this->createMock(CorePermissions::class);
-        $permsMock->method('isGranted')->willReturn(false);
-
-        $dsnType              = new DsnType(
-            $this->createMock(DsnTransformerFactory::class),
-            $this->createMock(CoreParametersHelper::class),
-        );
-        $configType                     = new ConfigType($translator);
-        $preferenceCenterList           = new PreferenceCenterListType($pageModelMock, $permsMock);
-        $configMonitoredEmail           = new ConfigMonitoredEmailType(new EventDispatcher());
-        $configMonitoredMailboxes       = new ConfigMonitoredMailboxesType($this->createMock(Mailbox::class));
-        $dsnValidator                   = new DsnValidator($this->createMock(TransportFactory::class));
-        $emailValidator                 = $this->createMock(EmailValidator::class);
-        $customFieldValidator           = $this->createMock(CustomFieldValidator::class);
-        $emailOrEmailTokenListValidator = new EmailOrEmailTokenListValidator($emailValidator, $customFieldValidator);
-        $validator                      = Validation::createValidatorBuilder()
-            ->setConstraintValidatorFactory(new ConstraintValidatorFactory([
-                DsnValidator::class                   => $dsnValidator,
-                EmailOrEmailTokenListValidator::class => $emailOrEmailTokenListValidator,
-            ]))
-            ->getValidator();
-
-        return [
-            new ValidatorExtension($validator),
-            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList, $configMonitoredEmail, $configMonitoredMailboxes], []),
-        ];
-    }
 
     public function testNewConfigFieldsArePresentInForm(): void
     {
@@ -125,5 +81,49 @@ final class ConfigTypeTest extends TypeTestCase
         $this->assertSame('email', $data['email_default_utm_medium']);
         $this->assertSame('spring-promo', $data['email_default_utm_campaign']);
         $this->assertSame('header-link', $data['email_default_utm_content']);
+    }
+    protected function getExtensions(): array
+    {
+        // Some local environments do not have ext-imap loaded, but Mailbox uses these
+        // constants in method signatures and class loading fails without them.
+        defined('SORTARRIVAL') or define('SORTARRIVAL', 0);
+        defined('SE_UID') or define('SE_UID', 1);
+        defined('FT_PEEK') or define('FT_PEEK', 2);
+
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+
+        $repoMock = $this->createMock(PageRepository::class);
+        $repoMock->method('getPageList')->willReturn([]);
+
+        $pageModelMock = $this->createMock(PageModel::class);
+        $pageModelMock->method('getRepository')->willReturn($repoMock);
+
+        $permsMock = $this->createMock(CorePermissions::class);
+        $permsMock->method('isGranted')->willReturn(false);
+
+        $dsnType              = new DsnType(
+            $this->createMock(DsnTransformerFactory::class),
+            $this->createMock(CoreParametersHelper::class),
+        );
+        $configType                     = new ConfigType($translator);
+        $preferenceCenterList           = new PreferenceCenterListType($pageModelMock, $permsMock);
+        $configMonitoredEmail           = new ConfigMonitoredEmailType(new EventDispatcher());
+        $configMonitoredMailboxes       = new ConfigMonitoredMailboxesType($this->createMock(Mailbox::class));
+        $dsnValidator                   = new DsnValidator($this->createMock(TransportFactory::class));
+        $emailValidator                 = $this->createMock(EmailValidator::class);
+        $customFieldValidator           = $this->createMock(CustomFieldValidator::class);
+        $emailOrEmailTokenListValidator = new EmailOrEmailTokenListValidator($emailValidator, $customFieldValidator);
+        $validator                      = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(new ConstraintValidatorFactory([
+                DsnValidator::class                   => $dsnValidator,
+                EmailOrEmailTokenListValidator::class => $emailOrEmailTokenListValidator,
+            ]))
+            ->getValidator();
+
+        return [
+            new ValidatorExtension($validator),
+            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList, $configMonitoredEmail, $configMonitoredMailboxes], []),
+        ];
     }
 }

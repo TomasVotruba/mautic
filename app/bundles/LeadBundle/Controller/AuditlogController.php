@@ -28,7 +28,7 @@ class AuditlogController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' == $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() == 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),
@@ -85,7 +85,7 @@ class AuditlogController extends CommonController
         $this->setListFilters();
 
         $session = $request->getSession();
-        if ('POST' == $request->getMethod() && $request->request->has('search')) {
+        if ($request->getMethod() == 'POST' && $request->request->has('search')) {
             $filters = [
                 'search'        => InputHelper::clean($request->request->get('search')),
                 'includeEvents' => InputHelper::clean($request->request->all()['includeEvents'] ?? []),

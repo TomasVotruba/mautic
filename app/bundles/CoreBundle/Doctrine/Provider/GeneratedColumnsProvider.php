@@ -37,7 +37,7 @@ final class GeneratedColumnsProvider implements GeneratedColumnsProviderInterfac
     public function getGeneratedColumns(): GeneratedColumns
     {
         if ($this->generatedColumnsAreSupported()
-            && 0 === $this->generatedColumns->count()
+            && $this->generatedColumns->count() === 0
             && $this->dispatcher->hasListeners(CoreEvents::ON_GENERATED_COLUMNS_BUILD)
         ) {
             $event                  = $this->dispatcher->dispatch(new GeneratedColumnsEvent(), CoreEvents::ON_GENERATED_COLUMNS_BUILD);
@@ -49,7 +49,7 @@ final class GeneratedColumnsProvider implements GeneratedColumnsProviderInterfac
 
     public function generatedColumnsAreSupported(): bool
     {
-        return 1 !== version_compare($this->getMinimalSupportedVersion(), $this->versionProvider->getVersion());
+        return version_compare($this->getMinimalSupportedVersion(), $this->versionProvider->getVersion()) !== 1;
     }
 
     public function getMinimalSupportedVersion(): string

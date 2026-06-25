@@ -13,7 +13,7 @@ class AssetApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->configParams['validate_remote_domains'] = false;
         $this->configParams['site_url']                = 'https://raw.githubusercontent.com';
 
-        if ('testCreateNewRemoteAssetWithValidateRemoteDomainsEnabled' === $this->name()) {
+        if ($this->name() === 'testCreateNewRemoteAssetWithValidateRemoteDomainsEnabled') {
             $this->configParams['validate_remote_domains'] = true;
             $this->configParams['allowed_remote_domains']  = [
                 'first-allowed.tld',

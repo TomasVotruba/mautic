@@ -45,34 +45,9 @@ class LeadControllerTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         $this->configParams['mailer_from_email']   = 'admin@mautic-community.test';
-        $this->configParams['messenger_dsn_email'] = 'testEmailSendToContactSync' === $this->name() ? 'sync://' : 'in-memory://default';
+        $this->configParams['messenger_dsn_email'] = $this->name() === 'testEmailSendToContactSync' ? 'sync://' : 'in-memory://default';
 
         parent::setUp();
-    }
-
-    /**
-     * @throws \Doctrine\ORM\ORMException
-     */
-    protected function createLeadCompany(Lead $contactA, Company $company): CompanyLead
-    {
-        $leadCompany = new CompanyLead();
-        $leadCompany->setLead($contactA);
-        $leadCompany->setCompany($company);
-        $leadCompany->setDateAdded(new \DateTime());
-        $this->em->persist($leadCompany);
-
-        return $leadCompany;
-    }
-
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement([
-            'leads',
-            'companies',
-            'campaigns',
-            'categories',
-            'lead_lists',
-        ]);
     }
 
     /**
@@ -509,27 +484,6 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->assertEmpty($primaryCompanyName);
     }
 
-    /** @return array<int, array<string, mixed>> */
-    private function getMembersForCampaign(int $campaignId): array
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('cl.lead_id, cl.manually_added, cl.manually_removed, cl.date_last_exited')
-            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
-            ->where("cl.campaign_id = {$campaignId}")
-            ->executeQuery()
-            ->fetchAllAssociative();
-    }
-
-    /** @return array<int, array<string, mixed>> */
-    private function getLeadLists(): array
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('ll.id', 'll.name', 'll.category_id')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_lists', 'll')
-            ->executeQuery()
-            ->fetchAllAssociative();
-    }
-
     #[\PHPUnit\Framework\Attributes\TestDox('Ensure correct Preferred Timezone placeholder on add/edit contact page')]
     public function testEnsureCorrectPreferredTimeZonePlaceHolderOnContactPage(): void
     {
@@ -715,17 +669,6 @@ EMAIL;
         $this->testEmailSendToContactSync();
     }
 
-    private function createContact(string $email): Lead
-    {
-        $lead = new Lead();
-        $lead->setEmail($email);
-
-        $this->em->persist($lead);
-        $this->em->flush();
-
-        return $lead;
-    }
-
     public function testLookupTypeFieldOnError(): void
     {
         $crawler = $this->client->request('GET', 's/contacts/new/');
@@ -776,99 +719,6 @@ EMAIL;
 
         $clientResponse = $this->client->getResponse();
         Assert::assertStringContainsString('email: This field must be unique.', $clientResponse->getContent());
-    }
-
-    private function createCampaign(): Campaign
-    {
-        $campaign = new Campaign();
-
-        $campaign->setName('Campaign A');
-        $campaign->setCanvasSettings(
-            [
-                'nodes' => [
-                    [
-                        'id'        => '148',
-                        'positionX' => '760',
-                        'positionY' => '155',
-                    ],
-                    [
-                        'id'        => 'lists',
-                        'positionX' => '860',
-                        'positionY' => '50',
-                    ],
-                ],
-                'connections' => [
-                    [
-                        'sourceId' => 'lists',
-                        'targetId' => '148',
-                        'anchors'  => [
-                            'source' => 'leadsource',
-                            'target' => 'top',
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        $this->em->persist($campaign);
-        $this->em->flush();
-
-        return $campaign;
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function getCompanyLeads(int $leadId): array
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('cl.lead_id, cl.company_id, cl.is_primary, c.companyname')
-            ->from(MAUTIC_TABLE_PREFIX.'companies_leads', 'cl')
-            ->join('cl', MAUTIC_TABLE_PREFIX.'companies', 'c', 'c.id = cl.company_id')
-            ->where("cl.lead_id = {$leadId}")
-            ->orderBy('cl.company_id')
-            ->executeQuery()
-            ->fetchAllAssociative();
-    }
-
-    private function getLeadPrimaryCompany(int $leadId): ?string
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('l.company')
-            ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
-            ->where("l.id = {$leadId}")
-            ->executeQuery()
-            ->fetchOne();
-    }
-
-    /**
-     * @param int[] $expectedCompanies
-     */
-    private function assertCompanyAssociation(array $expectedCompanies, int $leadId): void
-    {
-        $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/edit/1');
-        $saveButton = $crawler->selectButton('lead[buttons][save]');
-        $form       = $saveButton->form();
-        /** @var ChoiceFormField $companyField */
-        $companyField = &$form['lead[companies]'];
-        $companyField->setValue($expectedCompanies);
-        $crawler    = $this->client->submit($form);
-        $companies  = $this->getCompanyLeads($leadId);
-        $collection = (new Collection($companies))->keyBy('company_id');
-        // Should have only one company associated
-        $this->assertCount(count($expectedCompanies), $collection);
-        $this->assertEquals($expectedCompanies, $collection->keys()->toArray());
-        // Only one should be primary
-        $primary = $collection->reject(
-            fn (array $company) => empty($company['is_primary'])
-        );
-        $this->assertCount(1, $primary);
-        // Primary company name should match
-        $primaryCompanyName = $this->getLeadPrimaryCompany($leadId);
-        $this->assertEquals($primary->first()['companyname'], $primaryCompanyName);
-        // Primary company should be in the UI of the details dropdown tray
-        $details = $crawler->filter('#lead-details')->html();
-        $this->assertStringContainsString($primaryCompanyName, $details);
     }
 
     public function testContactCompanyEditShowsOldCompanyNameInAuditLog(): void
@@ -965,16 +815,6 @@ EMAIL;
         $collection = new Collection($companies);
         // Should have no companies associated
         $this->assertCount(0, $collection);
-    }
-
-    private function getContactAuditLogForSpecificAction(Lead $contact, string $action): AuditLog
-    {
-        return $this->em->getRepository(AuditLog::class)->findOneBy([
-            'bundle'   => 'lead',
-            'object'   => 'lead',
-            'objectId' => $contact->getId(),
-            'action'   => $action,
-        ]);
     }
 
     public function testAllAssociatedCompaniesShouldBeFetchedOnContactEditAction(): void
@@ -1328,5 +1168,165 @@ EMAIL;
         $this->assertResponseIsSuccessful();
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
         $this->assertEquals(0, $leadsTableRows->count(), 'Should find 0 results for an invalid campaign ID format.');
+    }
+
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     */
+    protected function createLeadCompany(Lead $contactA, Company $company): CompanyLead
+    {
+        $leadCompany = new CompanyLead();
+        $leadCompany->setLead($contactA);
+        $leadCompany->setCompany($company);
+        $leadCompany->setDateAdded(new \DateTime());
+        $this->em->persist($leadCompany);
+
+        return $leadCompany;
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement([
+            'leads',
+            'companies',
+            'campaigns',
+            'categories',
+            'lead_lists',
+        ]);
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function getMembersForCampaign(int $campaignId): array
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('cl.lead_id, cl.manually_added, cl.manually_removed, cl.date_last_exited')
+            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
+            ->where("cl.campaign_id = {$campaignId}")
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function getLeadLists(): array
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('ll.id', 'll.name', 'll.category_id')
+            ->from(MAUTIC_TABLE_PREFIX.'lead_lists', 'll')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    private function createContact(string $email): Lead
+    {
+        $lead = new Lead();
+        $lead->setEmail($email);
+
+        $this->em->persist($lead);
+        $this->em->flush();
+
+        return $lead;
+    }
+
+    private function createCampaign(): Campaign
+    {
+        $campaign = new Campaign();
+
+        $campaign->setName('Campaign A');
+        $campaign->setCanvasSettings(
+            [
+                'nodes' => [
+                    [
+                        'id'        => '148',
+                        'positionX' => '760',
+                        'positionY' => '155',
+                    ],
+                    [
+                        'id'        => 'lists',
+                        'positionX' => '860',
+                        'positionY' => '50',
+                    ],
+                ],
+                'connections' => [
+                    [
+                        'sourceId' => 'lists',
+                        'targetId' => '148',
+                        'anchors'  => [
+                            'source' => 'leadsource',
+                            'target' => 'top',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        return $campaign;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function getCompanyLeads(int $leadId): array
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('cl.lead_id, cl.company_id, cl.is_primary, c.companyname')
+            ->from(MAUTIC_TABLE_PREFIX.'companies_leads', 'cl')
+            ->join('cl', MAUTIC_TABLE_PREFIX.'companies', 'c', 'c.id = cl.company_id')
+            ->where("cl.lead_id = {$leadId}")
+            ->orderBy('cl.company_id')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    private function getLeadPrimaryCompany(int $leadId): ?string
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('l.company')
+            ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
+            ->where("l.id = {$leadId}")
+            ->executeQuery()
+            ->fetchOne();
+    }
+
+    /**
+     * @param int[] $expectedCompanies
+     */
+    private function assertCompanyAssociation(array $expectedCompanies, int $leadId): void
+    {
+        $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/edit/1');
+        $saveButton = $crawler->selectButton('lead[buttons][save]');
+        $form       = $saveButton->form();
+        /** @var ChoiceFormField $companyField */
+        $companyField = &$form['lead[companies]'];
+        $companyField->setValue($expectedCompanies);
+        $crawler    = $this->client->submit($form);
+        $companies  = $this->getCompanyLeads($leadId);
+        $collection = (new Collection($companies))->keyBy('company_id');
+        // Should have only one company associated
+        $this->assertCount(count($expectedCompanies), $collection);
+        $this->assertEquals($expectedCompanies, $collection->keys()->toArray());
+        // Only one should be primary
+        $primary = $collection->reject(
+            fn (array $company) => empty($company['is_primary'])
+        );
+        $this->assertCount(1, $primary);
+        // Primary company name should match
+        $primaryCompanyName = $this->getLeadPrimaryCompany($leadId);
+        $this->assertEquals($primary->first()['companyname'], $primaryCompanyName);
+        // Primary company should be in the UI of the details dropdown tray
+        $details = $crawler->filter('#lead-details')->html();
+        $this->assertStringContainsString($primaryCompanyName, $details);
+    }
+
+    private function getContactAuditLogForSpecificAction(Lead $contact, string $action): AuditLog
+    {
+        return $this->em->getRepository(AuditLog::class)->findOneBy([
+            'bundle'   => 'lead',
+            'object'   => 'lead',
+            'objectId' => $contact->getId(),
+            'action'   => $action,
+        ]);
     }
 }

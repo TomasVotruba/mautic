@@ -20,9 +20,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 )]
 class DeleteOrphanSubmissionRecordsFromFormResultsTableCommand extends Command
 {
-    private const SUBMISSION_RESULTS_LIMIT = 5000;
 
     public const COMMAND_NAME = 'mautic:forms:delete-orphan-form-submission-records-from-form-results-table';
+    private const SUBMISSION_RESULTS_LIMIT = 5000;
 
     public function __construct(
         private FormRepository $formRepository,

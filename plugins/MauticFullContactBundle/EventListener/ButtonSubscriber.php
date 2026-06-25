@@ -33,7 +33,7 @@ class ButtonSubscriber implements EventSubscriberInterface
         /** @var FullContactIntegration $myIntegration */
         $myIntegration = $this->helper->getIntegrationObject('FullContact');
 
-        if (false === $myIntegration || !$myIntegration->getIntegrationSettings()->getIsPublished()) {
+        if ($myIntegration === false || !$myIntegration->getIntegrationSettings()->getIsPublished()) {
             return;
         }
 

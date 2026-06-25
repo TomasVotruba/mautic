@@ -199,7 +199,7 @@ class CompanyObjectHelper implements ObjectHelperInterface
 
         foreach ($fields as $col => $val) {
             // Use andWhere because Mautic treats conflicting unique identifiers as different objects
-            $q->{$this->repository->getUniqueIdentifiersWherePart()}("c.$col = :".$col)
+            $q->{$this->repository->getUniqueIdentifiersWherePart()}("c.{$col} = :".$col)
                 ->setParameter($col, $val);
         }
 
@@ -237,7 +237,7 @@ class CompanyObjectHelper implements ObjectHelperInterface
      */
     private function getUniqueIdentifierFields(): array
     {
-        if (null === $this->uniqueIdentifierFields) {
+        if ($this->uniqueIdentifierFields === null) {
             $uniqueIdentifierFields       = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier(['object' => MauticSyncDataExchange::OBJECT_COMPANY]);
             $this->uniqueIdentifierFields = array_keys($uniqueIdentifierFields);
         }

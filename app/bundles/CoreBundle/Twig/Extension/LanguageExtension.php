@@ -31,7 +31,7 @@ class LanguageExtension extends AbstractExtension
      */
     public function getLanguageName(string $code, ?string $displayLocale = null): string
     {
-        if (null === $displayLocale) {
+        if ($displayLocale === null) {
             $displayLocale = $this->getCurrentUserLocale();
         }
 

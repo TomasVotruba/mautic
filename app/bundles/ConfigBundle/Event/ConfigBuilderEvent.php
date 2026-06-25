@@ -7,6 +7,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ConfigBuilderEvent extends Event
 {
+
+    /**
+     * @var string[]
+     */
+    protected array $encodedFields = [];
     /**
      * @var mixed[]
      */
@@ -19,11 +24,6 @@ class ConfigBuilderEvent extends Event
         '@MauticConfig/FormTheme/_config_file_row.html.twig',
         '@MauticConfig/FormTheme/dsn_row.html.twig',
     ];
-
-    /**
-     * @var string[]
-     */
-    protected array $encodedFields = [];
 
     public function __construct(
         private BundleHelper $bundleHelper,

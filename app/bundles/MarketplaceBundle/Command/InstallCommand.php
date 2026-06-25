@@ -37,18 +37,18 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $packageName = $input->getArgument('package');
-        $dryRun      = true === $input->getOption('dry-run');
+        $dryRun      = $input->getOption('dry-run') === true;
 
         try {
             $package = $this->packageModel->getPackageDetail($packageName);
         } catch (ApiException $e) {
-            if (404 === $e->getCode()) {
+            if ($e->getCode() === 404) {
                 throw new \InvalidArgumentException('Given package '.$packageName.' does not exist in Packagist. Please check the name for typos.');
             }
             throw new \Exception('Error while trying to get package details: '.$e->getMessage());
         }
 
-        if (empty($package->packageBase->type) || 'mautic-plugin' !== $package->packageBase->type) {
+        if (empty($package->packageBase->type) || $package->packageBase->type !== 'mautic-plugin') {
             throw new \Exception('Package type is not mautic-plugin. Cannot install this plugin.');
         }
 
@@ -59,7 +59,7 @@ class InstallCommand extends Command
         $output->writeln('Installing '.$input->getArgument('package').', this might take a while...');
         $result = $this->composer->install($input->getArgument('package'), $dryRun);
 
-        if (0 !== $result->exitCode) {
+        if ($result->exitCode !== 0) {
             $output->writeln('<error>Error while installing this plugin.</error>');
 
             if ($result->output) {

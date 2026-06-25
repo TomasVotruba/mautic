@@ -37,14 +37,6 @@ class RelativeDateFunctionalTest extends MauticMysqlTestCase
         ], false)->getReferenceRepository();
     }
 
-    protected function beforeBeginTransaction(): void
-    {
-        $this->resetAutoincrement([
-            'leads',
-            'lead_lists',
-        ]);
-    }
-
     public function testSegmentCountIsCorrectForToday(): void
     {
         $name = 'Today';
@@ -147,6 +139,14 @@ class RelativeDateFunctionalTest extends MauticMysqlTestCase
         $lead = $this->createLead($name, 'now', '-4 days');
 
         $this->checkSegmentResult($name, $lead);
+    }
+
+    protected function beforeBeginTransaction(): void
+    {
+        $this->resetAutoincrement([
+            'leads',
+            'lead_lists',
+        ]);
     }
 
     private function checkSegmentResult(string $name, Lead $lead): void

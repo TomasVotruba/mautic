@@ -35,7 +35,7 @@ class AjaxController extends CommonAjaxController
     {
         $focusId = (int) InputHelper::clean($request->query->get('focusId'));
 
-        if (0 === $focusId) {
+        if ($focusId === 0) {
             return $this->sendJsonResponse([
                 'success' => 0,
                 'message' => $this->translator->trans('mautic.core.error.badrequest'),
@@ -54,7 +54,7 @@ class AjaxController extends CommonAjaxController
             $model   = $this->getModel('focus');
 
             $focus = $model->getEntity($focusId);
-            if (null === $focus) {
+            if ($focus === null) {
                 return $this->sendJsonResponse([
                     'success' => 0,
                     'message' => $this->translator->trans('mautic.api.call.notfound'),
@@ -82,7 +82,7 @@ class AjaxController extends CommonAjaxController
     {
         $focusId = (int) InputHelper::clean($request->query->get('focusId'));
 
-        if (0 === $focusId) {
+        if ($focusId === 0) {
             return $this->sendJsonResponse([
                 'success' => 0,
                 'message' => $this->translator->trans('mautic.core.error.badrequest'),
@@ -99,7 +99,7 @@ class AjaxController extends CommonAjaxController
             $model   = $this->getModel('focus');
 
             $focus = $model->getEntity($focusId);
-            if (null === $focus) {
+            if ($focus === null) {
                 return $this->sendJsonResponse([
                     'success' => 0,
                     'message' => $this->translator->trans('mautic.api.call.notfound'),

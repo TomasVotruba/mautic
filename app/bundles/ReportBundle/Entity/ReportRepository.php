@@ -26,53 +26,6 @@ class ReportRepository extends CommonRepository
         return parent::getEntities($args);
     }
 
-    protected function addCatchAllWhereClause($q, $filter): array
-    {
-        return $this->addStandardCatchAllWhereClause(
-            $q,
-            $filter,
-            [
-                'r.name',
-            ]
-        );
-    }
-
-    protected function addSearchCommandWhereClause($q, $filter): array
-    {
-        $command                 = $filter->command;
-        $unique                  = $this->generateRandomParameterName();
-        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
-
-        switch ($command) {
-            case $this->translator->trans('mautic.core.searchcommand.ispublished'):
-            case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('r.isPublished', ":$unique");
-                $forceParameters = [$unique => true];
-
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
-            case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
-                $expr            = $q->expr()->eq('r.isPublished', ":$unique");
-                $forceParameters = [$unique => false];
-
-                break;
-            case $this->translator->trans('mautic.core.searchcommand.ismine'):
-            case $this->translator->trans('mautic.core.searchcommand.ismine', [], null, 'en_US'):
-                $expr = $q->expr()->eq('IDENTITY(r.createdBy)', $this->currentUser->getId());
-                break;
-        }
-
-        if ($expr && $filter->not) {
-            $expr = $q->expr()->not($expr);
-        }
-
-        if (!empty($forceParameters)) {
-            $parameters = $forceParameters;
-        }
-
-        return [$expr, $parameters];
-    }
-
     /**
      * @return string[]
      */
@@ -85,13 +38,6 @@ class ReportRepository extends CommonRepository
         ];
 
         return array_merge($commands, parent::getSearchCommands());
-    }
-
-    protected function getDefaultOrder(): array
-    {
-        return [
-            ['r.name', 'ASC'],
-        ];
     }
 
     public function getTableAlias(): string
@@ -126,5 +72,59 @@ class ReportRepository extends CommonRepository
         $qb->orderBy('r.name');
 
         return $qb->executeQuery()->fetchAllAssociative();
+    }
+
+    protected function addCatchAllWhereClause($q, $filter): array
+    {
+        return $this->addStandardCatchAllWhereClause(
+            $q,
+            $filter,
+            [
+                'r.name',
+            ]
+        );
+    }
+
+    protected function addSearchCommandWhereClause($q, $filter): array
+    {
+        $command                 = $filter->command;
+        $unique                  = $this->generateRandomParameterName();
+        [$expr, $parameters]     = parent::addSearchCommandWhereClause($q, $filter);
+
+        switch ($command) {
+            case $this->translator->trans('mautic.core.searchcommand.ispublished'):
+            case $this->translator->trans('mautic.core.searchcommand.ispublished', [], null, 'en_US'):
+                $expr            = $q->expr()->eq('r.isPublished', ":{$unique}");
+                $forceParameters = [$unique => true];
+
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.isunpublished'):
+            case $this->translator->trans('mautic.core.searchcommand.isunpublished', [], null, 'en_US'):
+                $expr            = $q->expr()->eq('r.isPublished', ":{$unique}");
+                $forceParameters = [$unique => false];
+
+                break;
+            case $this->translator->trans('mautic.core.searchcommand.ismine'):
+            case $this->translator->trans('mautic.core.searchcommand.ismine', [], null, 'en_US'):
+                $expr = $q->expr()->eq('IDENTITY(r.createdBy)', $this->currentUser->getId());
+                break;
+        }
+
+        if ($expr && $filter->not) {
+            $expr = $q->expr()->not($expr);
+        }
+
+        if (!empty($forceParameters)) {
+            $parameters = $forceParameters;
+        }
+
+        return [$expr, $parameters];
+    }
+
+    protected function getDefaultOrder(): array
+    {
+        return [
+            ['r.name', 'ASC'],
+        ];
     }
 }

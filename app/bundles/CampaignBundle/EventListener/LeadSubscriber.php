@@ -79,7 +79,7 @@ class LeadSubscriber implements EventSubscriberInterface
         $leadEventLogRepository = $this->entityManager->getRepository(LeadEventLog::class);
 
         $options                   = $event->getQueryOptions();
-        $options['scheduledState'] = ('campaign.event' === $eventTypeKey) ? false : true;
+        $options['scheduledState'] = ($eventTypeKey === 'campaign.event') ? false : true;
         $logs                      = $leadEventLogRepository->getLeadLogs($event->getLeadId(), $options);
         $eventSettings             = $this->eventCollector->getEventsArray();
 
@@ -137,7 +137,7 @@ class LeadSubscriber implements EventSubscriberInterface
                     if ($parentEvent) {
                         $extra['parentDetails'] = $this->getParentDetails($parentEvent, $log);
 
-                        $toolTipClass = 'yes' === $log['decision_path'] ? 'text-success' : 'text-danger';
+                        $toolTipClass = $log['decision_path'] === 'yes' ? 'text-success' : 'text-danger';
                         $toolTip      = $this->translator->trans('mautic.campaign.event.path.tooltip', ['%path%' => ucfirst($log['decision_path'])]);
 
                         $label .= sprintf(' <i class="ri-node-tree %s" data-toggle="tooltip" title="%s"></i>', $toolTipClass, $toolTip);

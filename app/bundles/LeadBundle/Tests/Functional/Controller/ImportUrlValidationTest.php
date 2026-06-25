@@ -20,13 +20,6 @@ final class ImportUrlValidationTest extends MauticMysqlTestCase
 
     private string $csvFile;
 
-    protected function beforeTearDown(): void
-    {
-        if (isset($this->csvFile) && file_exists($this->csvFile)) {
-            unlink($this->csvFile);
-        }
-    }
-
     public function testImportRejectsInvalidDataProtocolUrl(): void
     {
         $this->generateCSV();
@@ -64,6 +57,13 @@ final class ImportUrlValidationTest extends MauticMysqlTestCase
 
         Assert::assertSame(2, $import->getIgnoredCount());
         Assert::assertSame(2, $import->getInsertedCount());
+    }
+
+    protected function beforeTearDown(): void
+    {
+        if (isset($this->csvFile) && file_exists($this->csvFile)) {
+            unlink($this->csvFile);
+        }
     }
 
     private function generateCSV(): void
