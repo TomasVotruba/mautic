@@ -647,7 +647,7 @@ class Form extends FormEntity implements UuidInterface
                 ],
                 $this->getFields()->getValues(),
             ),
-            fn ($elem): bool => isset($elem['mappedObject']) && isset($elem['mappedField']),
+            fn (array $elem): bool => isset($elem['mappedObject']) && isset($elem['mappedField']),
         );
     }
 
