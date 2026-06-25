@@ -145,7 +145,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->isChanged('name', $name);
         $this->name = $name;
@@ -166,7 +166,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->isChanged('description', $description);
         $this->description = $description;
@@ -187,7 +187,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setInsightType($insightType)
+    public function setInsightType($insightType): static
     {
         $this->isChanged('insightType', $insightType);
         $this->insightType = $insightType;
@@ -208,7 +208,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setInsightAction($insightAction)
+    public function setInsightAction($insightAction): static
     {
         $this->isChanged('insightAction', $insightAction);
         $this->insightAction = $insightAction;
@@ -229,7 +229,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setCustomField($customField)
+    public function setCustomField($customField): static
     {
         $this->isChanged('customField', $customField);
         $this->customField = $customField;
@@ -250,7 +250,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setPointGroups($pointGroups)
+    public function setPointGroups($pointGroups): static
     {
         $this->isChanged('pointGroups', $pointGroups);
         $this->pointGroups = $pointGroups;
@@ -271,7 +271,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setCategory($category)
+    public function setCategory($category): static
     {
         $this->isChanged('category', $category);
         $this->category = $category;

@@ -305,7 +305,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          *
          * @return ErrorHandler
          */
-        public static function register($environment = 'prod')
+        public static function register($environment = 'prod'): self
         {
             if ('dev' === $environment) {
                 Debug::enable();
@@ -339,7 +339,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          *
          * @return ErrorHandler
          */
-        public function setDisplayErrors($displayErrors)
+        public function setDisplayErrors($displayErrors): static
         {
             $this->displayErrors = $displayErrors;
 
@@ -351,7 +351,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          *
          * @return ErrorHandler
          */
-        public function setEnvironment($environment)
+        public function setEnvironment($environment): static
         {
             self::$environment = $environment;
 
@@ -363,7 +363,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          *
          * @return ErrorHandler
          */
-        public function setLogger($logger)
+        public function setLogger($logger): static
         {
             $this->logger = $logger;
 
@@ -375,7 +375,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          *
          * @return ErrorHandler
          */
-        public function setMainLogger($mainLogger)
+        public function setMainLogger($mainLogger): static
         {
             $this->mainLogger = $mainLogger;
 

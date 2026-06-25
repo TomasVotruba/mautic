@@ -38,7 +38,7 @@ class ParseEmailEvent extends Event
     /**
      * @return $this
      */
-    public function setMessages($messages)
+    public function setMessages($messages): static
     {
         $this->messages = $messages;
 
@@ -58,7 +58,7 @@ class ParseEmailEvent extends Event
      *
      * @return $this
      */
-    public function setKeys($keys)
+    public function setKeys($keys): static
     {
         $this->keys = $keys;
 

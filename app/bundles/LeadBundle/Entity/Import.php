@@ -246,7 +246,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setDir($dir)
+    public function setDir($dir): static
     {
         $this->isChanged('dir', $dir);
         $this->dir = $dir;
@@ -267,7 +267,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setFile($file)
+    public function setFile($file): static
     {
         $this->isChanged('file', $file);
         $this->file = $file;
@@ -298,7 +298,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setFilePath($path)
+    public function setFilePath($path): static
     {
         $fileName = basename($path);
         $dir      = substr($path, 0, -1 * (strlen($fileName) + 1));
@@ -329,7 +329,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setOriginalFile($originalFile)
+    public function setOriginalFile($originalFile): static
     {
         $this->isChanged('originalFile', $originalFile);
         $this->originalFile = $originalFile;
@@ -449,7 +449,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setPriority($priority)
+    public function setPriority($priority): static
     {
         $this->isChanged('priority', $priority);
         $this->priority = $priority;
@@ -470,7 +470,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setStatus($status)
+    public function setStatus($status): static
     {
         $this->isChanged('status', $status);
         $this->status = $status;
@@ -623,7 +623,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setObject($object)
+    public function setObject($object): static
     {
         $this->isChanged('object', $object);
         $this->object = $object;
@@ -673,7 +673,7 @@ class Import extends FormEntity
      *
      * @return Import
      */
-    public function setProperties($properties)
+    public function setProperties($properties): static
     {
         $this->isChanged('properties', $properties);
         $this->properties = $properties;

@@ -274,7 +274,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->isChanged('description', $description);
         $this->description = $description;
@@ -287,7 +287,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setLists($lists)
+    public function setLists($lists): static
     {
         $this->isChanged('lists', $lists);
         $this->lists = $lists;
@@ -300,7 +300,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setNetworkType($networkType)
+    public function setNetworkType($networkType): static
     {
         $this->isChanged('networkType', $networkType);
         $this->networkType = $networkType;
@@ -315,7 +315,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setRevision($revision)
+    public function setRevision($revision): static
     {
         $this->isChanged('revision', $revision);
         $this->revision = $revision;
@@ -330,7 +330,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setStats($stats)
+    public function setStats($stats): static
     {
         $this->isChanged('stats', $stats);
         $this->stats = $stats;
@@ -345,7 +345,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setTitle($title)
+    public function setTitle($title): static
     {
         $this->isChanged('title', $title);
         $this->title = $title;
@@ -360,7 +360,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setProperties($properties)
+    public function setProperties($properties): static
     {
         $this->isChanged('properties', $properties);
         $this->properties = $properties;
@@ -375,7 +375,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setPublishDown($publishDown)
+    public function setPublishDown($publishDown): static
     {
         $this->isChanged('publishDown', $publishDown);
         $this->publishDown = $publishDown;
@@ -390,7 +390,7 @@ class Monitoring extends FormEntity implements UuidInterface
      *
      * @return Monitoring
      */
-    public function setPublishUp($publishUp)
+    public function setPublishUp($publishUp): static
     {
         $this->isChanged('publishUp', $publishUp);
         $this->publishUp = $publishUp;

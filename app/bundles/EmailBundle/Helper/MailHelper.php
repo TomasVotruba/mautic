@@ -281,7 +281,7 @@ class MailHelper
      *
      * @return $this
      */
-    public function getMailer($cleanSlate = true)
+    public function getMailer($cleanSlate = true): static
     {
         $this->reset($cleanSlate);
 

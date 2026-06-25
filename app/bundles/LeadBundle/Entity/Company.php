@@ -332,7 +332,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     /**
      * @return Company
      */
-    public function setOwner(?User $owner = null)
+    public function setOwner(?User $owner = null): static
     {
         $this->isChanged('owner', $owner);
         $this->owner = $owner;
@@ -360,7 +360,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setScore($score)
+    public function setScore($score): static
     {
         $score = (int) $score;
 
@@ -391,7 +391,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->isChanged('companyname', $name);
         $this->name = $name;
@@ -412,7 +412,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->isChanged('companyemail', $email);
         $this->email = $email;
@@ -433,7 +433,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setAddress1($address1)
+    public function setAddress1($address1): static
     {
         $this->isChanged('companyaddress1', $address1);
         $this->address1 = $address1;
@@ -454,7 +454,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setAddress2($address2)
+    public function setAddress2($address2): static
     {
         $this->isChanged('companyaddress2', $address2);
         $this->address2 = $address2;
@@ -475,7 +475,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setPhone($phone)
+    public function setPhone($phone): static
     {
         $this->isChanged('companyphone', $phone);
         $this->phone = $phone;
@@ -496,7 +496,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setCity($city)
+    public function setCity($city): static
     {
         $this->isChanged('companycity', $city);
         $this->city = $city;
@@ -517,7 +517,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setState($state)
+    public function setState($state): static
     {
         $this->isChanged('companystate', $state);
         $this->state = $state;
@@ -538,7 +538,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setZipcode($zipcode)
+    public function setZipcode($zipcode): static
     {
         $this->isChanged('companyzipcode', $zipcode);
         $this->zipcode = $zipcode;
@@ -559,7 +559,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setCountry($country)
+    public function setCountry($country): static
     {
         $this->isChanged('companycountry', $country);
         $this->country = $country;
@@ -580,7 +580,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setWebsite($website)
+    public function setWebsite($website): static
     {
         $this->isChanged('companywebsite', $website);
         $this->website = $website;
@@ -601,7 +601,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setIndustry($industry)
+    public function setIndustry($industry): static
     {
         $this->isChanged('companyindustry', $industry);
         $this->industry = $industry;
@@ -622,7 +622,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      *
      * @return Company
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->isChanged('companydescription', $description);
         $this->description = $description;

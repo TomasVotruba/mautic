@@ -170,7 +170,7 @@ class TweetStat
      *
      * @return $this
      */
-    public function setTwitterTweetId($twitterTweetId)
+    public function setTwitterTweetId($twitterTweetId): static
     {
         $this->twitterTweetId = $twitterTweetId;
 
@@ -250,7 +250,7 @@ class TweetStat
      *
      * @return $this
      */
-    public function setFavoriteCount($favoriteCount)
+    public function setFavoriteCount($favoriteCount): static
     {
         $this->favoriteCount = $favoriteCount;
 
@@ -270,7 +270,7 @@ class TweetStat
      *
      * @return $this
      */
-    public function setRetweetCount($retweetCount)
+    public function setRetweetCount($retweetCount): static
     {
         $this->retweetCount = $retweetCount;
 
@@ -362,7 +362,7 @@ class TweetStat
      *
      * @return self
      */
-    public function setResponseDetails($responseDetails)
+    public function setResponseDetails($responseDetails): static
     {
         $this->responseDetails = $responseDetails;
 

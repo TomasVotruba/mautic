@@ -78,7 +78,7 @@ class WebhookQueue
      *
      * @return WebhookQueue
      */
-    public function setWebhook($webhook)
+    public function setWebhook($webhook): static
     {
         $this->webhook = $webhook;
 
@@ -98,7 +98,7 @@ class WebhookQueue
      *
      * @return WebhookQueue
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -130,7 +130,7 @@ class WebhookQueue
      *
      * @return WebhookQueue
      */
-    public function setPayload($payload)
+    public function setPayload($payload): static
     {
         $this->payloadCompressed = gzcompress($payload, 9);
 
@@ -150,7 +150,7 @@ class WebhookQueue
      *
      * @return WebhookQueue
      */
-    public function setEvent($event)
+    public function setEvent($event): static
     {
         $this->event = $event;
 

@@ -396,7 +396,7 @@ class Stat
      *
      * @return Stat
      */
-    public function setClickCount($clickCount)
+    public function setClickCount($clickCount): static
     {
         $this->clickCount = $clickCount;
 
@@ -415,7 +415,7 @@ class Stat
      *
      * @return Stat
      */
-    public function upClickCount()
+    public function upClickCount(): static
     {
         $count            = (int) $this->clickCount + 1;
         $this->clickCount = $count;
@@ -434,7 +434,7 @@ class Stat
     /**
      * @return Stat
      */
-    public function setLastClicked(\DateTime $lastClicked)
+    public function setLastClicked(\DateTime $lastClicked): static
     {
         $this->lastClicked = $lastClicked;
 
@@ -454,7 +454,7 @@ class Stat
      *
      * @return Stat
      */
-    public function setClickDetails($clickDetails)
+    public function setClickDetails($clickDetails): static
     {
         $this->clickDetails = $clickDetails;
 
@@ -474,7 +474,7 @@ class Stat
      *
      * @return Stat
      */
-    public function setDateRead($dateRead)
+    public function setDateRead($dateRead): static
     {
         $this->dateRead = $dateRead;
 

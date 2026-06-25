@@ -479,7 +479,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setUsername($username)
+    public function setUsername($username): static
     {
         $this->isChanged('username', $username);
         $this->username = $username;
@@ -494,7 +494,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setPassword($password)
+    public function setPassword($password): static
     {
         $this->password = $password;
 
@@ -506,7 +506,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword($plainPassword): static
     {
         $this->plainPassword = $plainPassword;
 
@@ -518,7 +518,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setCurrentPassword($currentPassword)
+    public function setCurrentPassword($currentPassword): static
     {
         $this->currentPassword = $currentPassword;
 
@@ -532,7 +532,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setFirstName($firstName)
+    public function setFirstName($firstName): static
     {
         $this->isChanged('firstName', $firstName);
         $this->firstName = $firstName;
@@ -557,7 +557,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setLastName($lastName)
+    public function setLastName($lastName): static
     {
         $this->isChanged('lastName', $lastName);
         $this->lastName = $lastName;
@@ -592,7 +592,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->isChanged('email', $email);
         $this->email = $email;
@@ -615,7 +615,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setRole(?Role $role = null)
+    public function setRole(?Role $role = null): static
     {
         $this->isChanged('role', $role);
         $this->role = $role;
@@ -638,7 +638,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setActivePermissions(array $permissions)
+    public function setActivePermissions(array $permissions): static
     {
         $this->activePermissions = $permissions;
 
@@ -662,7 +662,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setPosition($position)
+    public function setPosition($position): static
     {
         $this->isChanged('position', $position);
         $this->position = $position;
@@ -687,7 +687,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setTimezone($timezone)
+    public function setTimezone($timezone): static
     {
         $this->isChanged('timezone', $timezone);
         $this->timezone = $timezone;
@@ -708,7 +708,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     /**
      * @return User
      */
-    public function setLocale(?string $locale)
+    public function setLocale(?string $locale): static
     {
         $this->isChanged('locale', $locale);
         $this->locale = $locale;
@@ -801,7 +801,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @return User
      */
-    public function setSignature($signature)
+    public function setSignature($signature): static
     {
         $this->isChanged('signature', $signature);
         $this->signature = $signature;
