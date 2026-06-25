@@ -48,7 +48,7 @@ class ClientController extends AbstractStandardFormController
      *
      * @param int $page
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1): Response
+    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1): Response
     {
         if (!$this->security->isGranted('api:clients:view')) {
             $this->throwAccessDenied();

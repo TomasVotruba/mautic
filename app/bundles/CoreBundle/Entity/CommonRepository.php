@@ -197,7 +197,7 @@ class CommonRepository extends ServiceEntityRepository
      * @param object $entity
      * @param bool   $flush  true by default; use false if persisting in batches
      */
-    public function deleteEntity($entity, $flush = true): void
+    public function deleteEntity(object $entity, $flush = true): void
     {
         // delete entity
         $this->_em->remove($entity);
@@ -217,7 +217,7 @@ class CommonRepository extends ServiceEntityRepository
     /**
      * @param mixed $entity
      */
-    public function detachEntity($entity): void
+    public function detachEntity(object $entity): void
     {
         $this->getEntityManager()->detach($entity);
     }
@@ -822,7 +822,7 @@ class CommonRepository extends ServiceEntityRepository
      * @param object $entity
      * @param bool   $flush  true by default; use false if persisting in batches
      */
-    public function saveEntity($entity, $flush = true): void
+    public function saveEntity(object $entity, $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -1781,7 +1781,7 @@ class CommonRepository extends ServiceEntityRepository
      * @param string $sqlAttr
      * @param array  $allowedCharacters
      */
-    protected function sanitize($sqlAttr, $allowedCharacters = []): string
+    protected function sanitize(string $sqlAttr, array $allowedCharacters = []): string
     {
         return InputHelper::alphanum($sqlAttr, false, null, $allowedCharacters);
     }

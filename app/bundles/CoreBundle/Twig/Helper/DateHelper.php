@@ -47,7 +47,7 @@ final class DateHelper
      *
      * @return string
      */
-    private function format($type, $datetime, $timezone, $fromFormat)
+    private function format($type, $datetime, string $timezone, ?string $fromFormat)
     {
         if (empty($datetime)) {
             return '';
@@ -82,7 +82,7 @@ final class DateHelper
      *
      * @return string
      */
-    public function toFullConcat($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toFullConcat($datetime, string $timezone = 'local', ?string $fromFormat = 'Y-m-d H:i:s')
     {
         $this->helper->setDateTime($datetime, $fromFormat, $timezone);
 

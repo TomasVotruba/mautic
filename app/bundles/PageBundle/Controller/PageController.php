@@ -33,7 +33,7 @@ class PageController extends FormController
     /**
      * @param int $page
      */
-    public function indexAction(Request $request, PageConfig $pageConfig, PageHelperFactoryInterface $pageHelperFactory, PageModel $model, $page = 1): Response
+    public function indexAction(Request $request, PageConfig $pageConfig, PageHelperFactoryInterface $pageHelperFactory, PageModel $model, int $page = 1): Response
     {
         // set some permissions
         $permissions = $this->security->isGranted([

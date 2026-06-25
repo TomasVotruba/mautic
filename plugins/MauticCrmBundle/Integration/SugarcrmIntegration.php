@@ -1174,7 +1174,7 @@ class SugarcrmIntegration extends CrmAbstractIntegration
      *
      * @return mixed[]
      */
-    public function pushLeads($params = []): array
+    public function pushLeads(array $params = []): array
     {
         [$fromDate, $toDate]     = $this->getSyncTimeframeDates($params);
         $limit                   = $params['limit'];

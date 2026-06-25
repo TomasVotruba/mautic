@@ -121,7 +121,7 @@ class ReportBuilderEvent extends AbstractReportEvent
      *
      * @return array<string,array<string,string>>
      */
-    public function getStandardColumns($prefix, $removeColumns = [], $idLink = null): array
+    public function getStandardColumns(string $prefix, array $removeColumns = [], $idLink = null): array
     {
         return $this->reportHelper->getStandardColumns($prefix, $removeColumns, (string) $idLink);
     }

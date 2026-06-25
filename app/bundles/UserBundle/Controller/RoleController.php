@@ -33,7 +33,7 @@ class RoleController extends FormController
      *
      * @param int $page
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1): Response
+    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1): Response
     {
         if (!$this->security->isGranted('user:roles:view')) {
             $this->throwAccessDenied();

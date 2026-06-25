@@ -27,7 +27,7 @@ class CompanyController extends FormController
     /**
      * @param int $page
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, CompanyColumnsDictionary $companyColumnsDictionary, $page = 1): Response
+    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, CompanyColumnsDictionary $companyColumnsDictionary, int $page = 1): Response
     {
         // set some permissions
         $permissions = $this->security->isGranted(

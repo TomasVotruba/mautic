@@ -48,7 +48,7 @@ class CoreParametersHelper
     /**
      * @param string $name
      */
-    public function has($name): bool
+    public function has(string $name): bool
     {
         return $this->parameters->has($this->stripMauticPrefix($name));
     }

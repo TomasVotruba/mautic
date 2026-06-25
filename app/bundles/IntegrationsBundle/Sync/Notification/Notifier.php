@@ -31,7 +31,7 @@ class Notifier
      * @throws HandlerNotSupportedException
      * @throws IntegrationNotFoundException
      */
-    public function noteMauticSyncIssue(array $notifications, $integrationHandler = MauticSyncDataExchange::NAME): void
+    public function noteMauticSyncIssue(array $notifications, string $integrationHandler = MauticSyncDataExchange::NAME): void
     {
         foreach ($notifications as $notification) {
             $handler = $this->handlerContainer->getHandler($integrationHandler, $notification->getMauticObject());

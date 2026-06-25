@@ -248,7 +248,7 @@ class Interval implements ScheduleModeInterface
     /**
      * @return \DateTimeInterface
      */
-    private function getExecutionDateTimeFromHour(Lead $contact, \DateTimeInterface $hour, $eventId, \DateTimeInterface $compareFromDateTime)
+    private function getExecutionDateTimeFromHour(Lead $contact, \DateTimeInterface $hour, int $eventId, \DateTimeInterface $compareFromDateTime)
     {
         /** @var \DateTime $groupHour */
         $groupHour = clone $hour;
@@ -276,7 +276,7 @@ class Interval implements ScheduleModeInterface
         Lead $contact,
         \DateTimeInterface $startTime,
         \DateTimeInterface $endTime,
-        $eventId,
+        int $eventId,
         \DateTimeInterface $compareFromDateTime,
     ) {
         /* @var \DateTime $startTime */

@@ -12,7 +12,7 @@ class IdentifyCompanyHelper
      * @param array $data
      * @param mixed $lead
      */
-    public static function identifyLeadsCompany($data, $lead, CompanyModel $companyModel): array
+    public static function identifyLeadsCompany(array $data, $lead, CompanyModel $companyModel): array
     {
         $addContactToCompany = true;
 

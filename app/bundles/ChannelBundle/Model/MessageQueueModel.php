@@ -315,7 +315,7 @@ class MessageQueueModel extends FormModel
     /**
      * @param array $channelIds
      */
-    public function getQueuedChannelCount($channel, $channelIds = []): int
+    public function getQueuedChannelCount($channel, ?array $channelIds = []): int
     {
         return $this->getRepository()->getQueuedChannelCount($channel, $channelIds);
     }

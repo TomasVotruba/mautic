@@ -51,7 +51,7 @@ class FileUploadValidator
      *
      * @throws FileInvalidException
      */
-    public function checkExtension($extension, array $allowedExtensions, $extensionErrorMsg = 'mautic.asset.asset.error.file.extension'): void
+    public function checkExtension($extension, array $allowedExtensions, string $extensionErrorMsg = 'mautic.asset.asset.error.file.extension'): void
     {
         $extension         = strtolower($extension);
         $allowedExtensions = array_map('strtolower', $allowedExtensions);
@@ -71,7 +71,7 @@ class FileUploadValidator
      *
      * @throws FileInvalidException
      */
-    public function checkFileSize($fileSize, $maxUploadSizeMB, $sizeErrorMsg = 'mautic.asset.asset.error.file.size'): void
+    public function checkFileSize($fileSize, $maxUploadSizeMB, string $sizeErrorMsg = 'mautic.asset.asset.error.file.size'): void
     {
         if (!$maxUploadSizeMB) {
             return;

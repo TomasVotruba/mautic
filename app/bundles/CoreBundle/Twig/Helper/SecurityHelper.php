@@ -82,7 +82,7 @@ final class SecurityHelper
      *
      * @param string $intention
      */
-    public function getCsrfToken($intention): string
+    public function getCsrfToken(string $intention): string
     {
         return $this->tokenManager->getToken($intention)->getValue();
     }

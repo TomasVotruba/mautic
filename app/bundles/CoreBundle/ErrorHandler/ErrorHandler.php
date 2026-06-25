@@ -385,7 +385,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         /**
          * @param array $context
          */
-        protected function log($logLevel, $message, $context = [], $debugTrace = null)
+        protected function log($logLevel, $message, array $context = [], $debugTrace = null)
         {
             $message = strip_tags($message);
             if ($this->logger) {
