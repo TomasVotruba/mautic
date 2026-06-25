@@ -103,7 +103,7 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
      *
      * @var \DateInterval|null
      */
-    private $rescheduleInterval;
+    private ?\DateInterval $rescheduleInterval = null;
 
     private ?\DateTime $dateQueued = null;
 

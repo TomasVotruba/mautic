@@ -118,13 +118,13 @@ class LeadList extends FormEntity implements UuidInterface
      * @var \DateTimeInterface|null
      */
     #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
-    private $lastBuiltDate;
+    private \DateTime|null|\DateTimeInterface $lastBuiltDate = null;
 
     /**
      * @var float|null
      */
     #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
-    private $lastBuiltTime;
+    private ?float $lastBuiltTime = null;
 
     #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
     private ?\DateTimeInterface $deleted = null;

@@ -20,7 +20,7 @@ class Summary
     /**
      * @var \DateTimeImmutable|null
      **/
-    private $dateTriggered;
+    private \DateTimeImmutable|null|\DateTimeInterface $dateTriggered = null;
 
     /**
      * @var int
@@ -50,7 +50,7 @@ class Summary
     /**
      * @var Campaign|null
      */
-    private $campaign;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
     /**
      * @var int|null
