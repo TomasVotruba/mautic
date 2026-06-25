@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity;
 
@@ -234,7 +234,7 @@ class FormEntity extends CommonEntity
     {
         if ($checkPublishStatus && method_exists($this, 'getPublishUp')) {
             $status = $this->getPublishStatus();
-            if ('published' == $status) {
+            if ('published' === $status) {
                 // check to see if there is a category to check
                 if ($checkCategoryStatus && method_exists($this, 'getCategory')) {
                     $category = $this->getCategory();
@@ -330,11 +330,11 @@ class FormEntity extends CommonEntity
      */
     public function setCreatedBy($createdBy = null)
     {
-        if (null != $createdBy && !$createdBy instanceof User) {
+        if (null !== $createdBy && !$createdBy instanceof User) {
             $this->createdBy = $createdBy;
         } else {
-            $this->createdBy = (null != $createdBy) ? $createdBy->getId() : null;
-            if (null != $createdBy) {
+            $this->createdBy = (null !== $createdBy) ? $createdBy->getId() : null;
+            if (null !== $createdBy) {
                 $this->createdByUser = $createdBy->getName();
             }
         }
@@ -361,12 +361,12 @@ class FormEntity extends CommonEntity
      */
     public function setModifiedBy($modifiedBy = null)
     {
-        if (null != $modifiedBy && !$modifiedBy instanceof User) {
+        if (null !== $modifiedBy && !$modifiedBy instanceof User) {
             $this->modifiedBy = $modifiedBy;
         } else {
-            $this->modifiedBy = (null != $modifiedBy) ? $modifiedBy->getId() : null;
+            $this->modifiedBy = (null !== $modifiedBy) ? $modifiedBy->getId() : null;
 
-            if (null != $modifiedBy) {
+            if (null !== $modifiedBy) {
                 $this->modifiedByUser = $modifiedBy->getName();
             }
         }
@@ -393,12 +393,12 @@ class FormEntity extends CommonEntity
      */
     public function setCheckedOutBy($checkedOutBy = null)
     {
-        if (null != $checkedOutBy && !$checkedOutBy instanceof User) {
+        if (null !== $checkedOutBy && !$checkedOutBy instanceof User) {
             $this->checkedOutBy = $checkedOutBy;
         } else {
-            $this->checkedOutBy = (null != $checkedOutBy) ? $checkedOutBy->getId() : null;
+            $this->checkedOutBy = (null !== $checkedOutBy) ? $checkedOutBy->getId() : null;
 
-            if (null != $checkedOutBy) {
+            if (null !== $checkedOutBy) {
                 $this->checkedOutByUser = $checkedOutBy->getName();
             }
         }

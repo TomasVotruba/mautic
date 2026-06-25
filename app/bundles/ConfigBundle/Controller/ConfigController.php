@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ConfigBundle\Controller;
 
@@ -61,7 +61,7 @@ class ConfigController extends FormController
         $openTab    = null;
 
         // Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 $isValid = false;
                 if ($isWritable && $isValid = $this->isFormValid($form)) {
@@ -200,14 +200,14 @@ class ConfigController extends FormController
         // Extract and base64 encode file contents
         $fileFields = $event->getFileFields();
 
-        if (!in_array($objectId, $fileFields)) {
+        if (!in_array($objectId, $fileFields, true)) {
             $this->throwAccessDenied();
         }
 
         $content  = $this->coreParametersHelper->get($objectId);
         $filename = $request->get('filename', $objectId);
 
-        if ($decoded = base64_decode($content)) {
+        if ($decoded = base64_decode($content, true)) {
             $response = new Response($decoded);
             $response->headers->set('Content-Type', 'application/force-download');
             $response->headers->set('Content-Type', 'application/octet-stream');
@@ -240,7 +240,7 @@ class ConfigController extends FormController
         // Extract and base64 encode file contents
         $fileFields = $event->getFileFields();
 
-        if (in_array($objectId, $fileFields)) {
+        if (in_array($objectId, $fileFields, true)) {
             $configurator->mergeParameters([$objectId => null]);
             try {
                 $configurator->write();
@@ -273,7 +273,7 @@ class ConfigController extends FormController
         foreach ($forms as &$form) {
             // Merge the bundle params with the local params
             foreach ($form['parameters'] as $key => $value) {
-                if (in_array($key, $doNotChange)) {
+                if (in_array($key, $doNotChange, true)) {
                     unset($form['parameters'][$key]);
                 } elseif (array_key_exists($key, $localParams)) {// @phpstan-ignore function.impossibleType (Not sure what this is about)
                     $paramValue               = $localParams[$key];

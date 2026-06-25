@@ -149,7 +149,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $count     = count($existing);
             ++$aliasTag;
         }
-        if ($testAlias != $alias) {
+        if ($testAlias !== $alias) {
             $alias = $testAlias;
         }
         $entity->setAlias($alias);
@@ -605,7 +605,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
      */
     public function addLead($lead, $lists, $manuallyAdded = false, $batchProcess = false, $searchListLead = 1, $dateManipulated = null): void
     {
-        if (null == $dateManipulated) {
+        if (null === $dateManipulated) {
             $dateManipulated = new \DateTime();
         }
 
@@ -664,7 +664,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                 continue;
             }
 
-            if (-1 == $searchListLead) {
+            if (-1 === $searchListLead) {
                 $listLead = null;
             } elseif ($searchListLead) {
                 $listLead = $this->getListLeadRepository()->findOneBy(
@@ -682,7 +682,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                 );
             }
 
-            if (null != $listLead) {
+            if (null !== $listLead) {
                 if ($manuallyAdded && $listLead->wasManuallyRemoved()) {
                     $listLead->setManuallyRemoved(false);
                     $listLead->setManuallyAdded($manuallyAdded);
@@ -812,7 +812,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                     'list' => $listId,
                 ]);
 
-            if (null == $listLead) {
+            if (null === $listLead) {
                 // Lead is not part of this list
                 continue;
             }
@@ -966,7 +966,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
-        if (in_array(0, $segments)) {
+        if (in_array(0, $segments, true)) {
             $qAll = $this->em->getConnection()->createQueryBuilder();
             $qAll->select('COUNT(t.date_added) AS leads, 0 as id, "All Contacts" as name, "" as alias')
                 ->from(MAUTIC_TABLE_PREFIX.'leads', 't');
@@ -1211,7 +1211,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             foreach ($retrFilters as $eachFilter) {
                 // BC support for old filters where the field existed outside of properties.
                 $filter = $eachFilter['properties']['filter'] ?? $eachFilter['filter'];
-                if ($filter && 'leadlist' === $eachFilter['type'] && in_array($segmentId, $filter)) {
+                if ($filter && 'leadlist' === $eachFilter['type'] && in_array($segmentId, $filter, true)) {
                     if ($returnProperty && $value = $accessor->getValue($entity, $returnProperty)) {
                         $dependents[] = $value;
                     } else {
@@ -1251,7 +1251,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             foreach ($entity->getFilters() as $entityFilter) {
                 // BC support for old filters where the field existed outside of properties.
                 $filter = $entityFilter['properties']['filter'] ?? $entityFilter['filter'];
-                if ($filter && in_array($entityFilter['type'], $emailFilterTypes) && in_array($emailId, $filter)) {
+                if ($filter && in_array($entityFilter['type'], $emailFilterTypes, true) && in_array($emailId, $filter, true)) {
                     $dependents[] = $entity->getId();
                     break;
                 }
@@ -1285,7 +1285,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             foreach ($entity->getFilters() as $entityFilter) {
                 // BC support for old filters where the field existed outside of properties.
                 $filter = $entityFilter['properties']['filter'] ?? $entityFilter['filter'];
-                if ($filter && 'tags' === $entityFilter['type'] && in_array($tagId, $filter)) {
+                if ($filter && 'tags' === $entityFilter['type'] && in_array($tagId, $filter, true)) {
                     $dependents[] = $entity->getId();
                     break;
                 }
@@ -1371,7 +1371,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             asort($typeChoices);
         }
 
-        return (null == $sourceType) ? $choices : $choices[$sourceType];
+        return (null === $sourceType) ? $choices : $choices[$sourceType];
     }
 
     /**

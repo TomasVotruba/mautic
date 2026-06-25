@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Security\Permissions;
 
@@ -61,7 +61,7 @@ class ApiPermissions extends AbstractPermissions
 
     protected function getSynonym($name, $level)
     {
-        if ('access' == $name && 'granted' == $level) {
+        if ('access' === $name && 'granted' === $level) {
             return [$name, 'full'];
         }
 

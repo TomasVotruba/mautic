@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Event;
 
@@ -59,7 +59,7 @@ class ReportBuilderEvent extends AbstractReportEvent
      */
     public function addTable($context, array $data, $group = null)
     {
-        $data['group'] = (null == $group) ? $context : $group;
+        $data['group'] = (null === $group) ? $context : $group;
 
         foreach ($data['columns'] as $column => &$d) {
             $d['label'] = null !== $d['label'] ? $this->translator->trans($d['label']) : '';
@@ -89,7 +89,7 @@ class ReportBuilderEvent extends AbstractReportEvent
 
         $this->tableArray[$context] = $data;
 
-        if ($this->context == $context) {
+        if ($this->context === $context) {
             $this->stopPropagation();
         }
 
@@ -278,7 +278,7 @@ class ReportBuilderEvent extends AbstractReportEvent
      */
     public function addGraph($context, $type, $graphId, $options = [])
     {
-        if (in_array($type, $this->supportedGraphs)) {
+        if (in_array($type, $this->supportedGraphs, true)) {
             $this->graphArray[$context][$graphId] = [
                 'options' => $options,
                 'type'    => $type,

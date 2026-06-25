@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -73,8 +73,8 @@ class EncryptionHelper
     public function decrypt($data, $mainDecryptOnly = false)
     {
         $encryptData      = explode('|', $data);
-        $encryptedMessage = base64_decode($encryptData[0]);
-        $initVector       = base64_decode($encryptData[1]);
+        $encryptedMessage = base64_decode($encryptData[0], true);
+        $initVector       = base64_decode($encryptData[1], true);
         $mainTried        = false;
         foreach ($this->availableCiphers as $availableCipher) {
             if ($mainDecryptOnly && $mainTried) {

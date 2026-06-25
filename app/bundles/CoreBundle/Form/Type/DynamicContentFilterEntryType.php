@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Form\Type;
 
@@ -145,7 +145,7 @@ class DynamicContentFilterEntryType extends AbstractType
                     'dnc_bounced_sms',
                     'dnc_unsubscribed_sms',
                     'hit_url',
-                ]
+                ], true
             ),
             ARRAY_FILTER_USE_KEY
         );

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Segment\Query;
 
@@ -107,7 +107,7 @@ class ContactSegmentQueryBuilder
 
         $currentSelects = [];
         foreach ($qb->getQueryParts()['select'] as $select) {
-            if ($select != $primary) {
+            if ($select !== $primary) {
                 $currentSelects[] = $select;
             }
         }
@@ -261,8 +261,8 @@ class ContactSegmentQueryBuilder
         $edges = $this->dependencyMap[$segmentId];
 
         foreach ($edges as $edge) {
-            if (!in_array($edge, $resolved)) {
-                if (in_array($edge, $seen)) {
+            if (!in_array($edge, $resolved, true)) {
+                if (in_array($edge, $seen, true)) {
                     throw new SegmentQueryException('Circular reference detected.');
                 }
                 $this->getResolutionPlan($edge, $seen, $resolved);

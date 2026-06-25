@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Model;
 
@@ -211,7 +211,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         // Ensure that list emails are published
-        if ('list' == $entity->getEmailType()) {
+        if ('list' === $entity->getEmailType()) {
             // Ensure that this email has the same lists assigned as the translated parent if applicable
             if ($translationParent = $entity->getTranslationParent()) {
                 \assert($translationParent instanceof Email);
@@ -247,7 +247,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $this->postTranslationEntitySave($entity);
 
             // Force translations for this entity to use the same segments
-            if ('list' == $entity->getEmailType() && $entity->hasTranslations()) {
+            if ('list' === $entity->getEmailType() && $entity->hasTranslations()) {
                 $translations                      = $entity->getTranslationChildren()->toArray();
                 $this->updatingTranslationChildren = true;
                 foreach ($translations as $translation) {
@@ -1039,7 +1039,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     public function getQueuedCounts(Email $email, $includeVariants = true): int
     {
         $ids = ($includeVariants) ? $email->getRelatedEntityIds() : null;
-        if (!in_array($email->getId(), $ids)) {
+        if (!in_array($email->getId(), $ids, true)) {
             $ids[] = $email->getId();
         }
 
@@ -1142,7 +1142,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $leadCount         = count($leads);
 
             while ($leadCount) {
-                if (null != $limit) {
+                if (null !== $limit) {
                     // Only retrieve the difference between what has already been sent and the limit
                     $limit -= $leadCount;
 
@@ -1167,7 +1167,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                     $failedRecipientsByList[$options['listId']] = $listErrors;
                 }
 
-                if (null !== $limit && 0 == $limit) {
+                if (null !== $limit && 0 === $limit) {
                     break;
                 }
 
@@ -1868,7 +1868,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $segmentId  = ArrayHelper::pickValue('segmentId', $filter);
 
         $format = '%H:00';
-        if (12 == $timeFormat) {
+        if (12 === $timeFormat) {
             $format = '%h %p';
         }
 
@@ -1929,19 +1929,19 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $flag    = ArrayHelper::pickValue('flag', $filter, false);
         $dataset = ArrayHelper::pickValue('dataset', $filter, []);
 
-        if (!is_null($companyId = ArrayHelper::pickValue('companyId', $filter))) {
+        if (null !== ($companyId = ArrayHelper::pickValue('companyId', $filter))) {
             $fetchOptions->setCompanyId((int) $companyId);
         }
 
-        if (!is_null($campaignId = ArrayHelper::pickValue('campaignId', $filter))) {
+        if (null !== ($campaignId = ArrayHelper::pickValue('campaignId', $filter))) {
             $fetchOptions->setCampaignId((int) $campaignId);
         }
 
-        if (!is_null($segmentId = ArrayHelper::pickValue('segmentId', $filter))) {
+        if (null !== ($segmentId = ArrayHelper::pickValue('segmentId', $filter))) {
             $fetchOptions->setSegmentId((int) $segmentId);
         }
 
-        if (!is_null($emailId = ArrayHelper::pickValue('email_id', $filter))) {
+        if (null !== ($emailId = ArrayHelper::pickValue('email_id', $filter))) {
             $fetchOptions->setEmailIds([(int) $emailId]);
         }
 
@@ -1949,42 +1949,42 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $fetchOptions->setFilters($filter);
 
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
-        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'sent_and_opened']) || !$flag || in_array('sent', $dataset)) {
+        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'sent_and_opened'], true) || !$flag || in_array('sent', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.sent.emails'),
                 $this->statsCollectionHelper->fetchSentStats($dateFrom, $dateTo, $fetchOptions)
             );
         }
 
-        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'sent_and_opened', 'opened']) || in_array('opened', $dataset)) {
+        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'sent_and_opened', 'opened'], true) || in_array('opened', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.read.emails'),
                 $this->statsCollectionHelper->fetchOpenedStats($dateFrom, $dateTo, $fetchOptions)
             );
         }
 
-        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'failed']) || in_array('failed', $dataset)) {
+        if (in_array($flag, ['all', 'sent_and_opened_and_failed', 'failed'], true) || in_array('failed', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.failed.emails'),
                 $this->statsCollectionHelper->fetchFailedStats($dateFrom, $dateTo, $fetchOptions)
             );
         }
 
-        if (in_array($flag, ['all', 'clicked']) || in_array('clicked', $dataset)) {
+        if (in_array($flag, ['all', 'clicked'], true) || in_array('clicked', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.clicked'),
                 $this->statsCollectionHelper->fetchClickedStats($dateFrom, $dateTo, $fetchOptions)
             );
         }
 
-        if (in_array($flag, ['all', 'unsubscribed']) || in_array('unsubscribed', $dataset)) {
+        if (in_array($flag, ['all', 'unsubscribed'], true) || in_array('unsubscribed', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.unsubscribed'),
                 $this->statsCollectionHelper->fetchUnsubscribedStats($dateFrom, $dateTo, $fetchOptions)
             );
         }
 
-        if (in_array($flag, ['all', 'bounced']) || in_array('bounced', $dataset)) {
+        if (in_array($flag, ['all', 'bounced'], true) || in_array('bounced', $dataset, true)) {
             $chart->setDataset(
                 $this->translator->trans('mautic.email.bounced'),
                 $this->statsCollectionHelper->fetchBouncedStats($dateFrom, $dateTo, $fetchOptions)
@@ -2090,11 +2090,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $chartQuery = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
         $chartQuery->applyFilters($q, $filters);
 
-        if (isset($options['groupBy']) && 'sends' == $options['groupBy']) {
+        if (isset($options['groupBy']) && 'sends' === $options['groupBy']) {
             $chartQuery->applyDateFilters($q, 'date_sent');
         }
 
-        if (isset($options['groupBy']) && 'reads' == $options['groupBy']) {
+        if (isset($options['groupBy']) && 'reads' === $options['groupBy']) {
             $chartQuery->applyDateFilters($q, 'date_read');
         }
 

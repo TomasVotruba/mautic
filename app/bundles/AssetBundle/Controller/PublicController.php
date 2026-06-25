@@ -136,7 +136,7 @@ class PublicController extends AbstractFormController
 
         $stream = $request->get('stream', in_array(
             $entity->getExtension(),
-            $this->coreParametersHelper->get('streamed_extensions')
+            $this->coreParametersHelper->get('streamed_extensions'), true
         ));
 
         if (!$stream) {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -206,7 +206,7 @@ class Import extends FormEntity
      */
     public function canProceed(): bool
     {
-        if (!in_array($this->getStatus(), [self::QUEUED, self::DELAYED])) {
+        if (!in_array($this->getStatus(), [self::QUEUED, self::DELAYED], true)) {
             $this->setStatusInfo('Import could not be triggered since it is not queued nor delayed');
 
             return false;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Serializer\Exclusion;
 
@@ -40,7 +40,7 @@ class FieldInclusionStrategy implements ExclusionStrategyInterface
         }
 
         $name = $property->serializedName ?: $property->name;
-        if (in_array($name, $this->fields)) {
+        if (in_array($name, $this->fields, true)) {
             return false;
         }
 

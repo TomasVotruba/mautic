@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Menu;
 
@@ -43,13 +43,13 @@ class MenuBuilder
         try {
             /** @var \Knp\Menu\ItemInterface $item */
             foreach ($menu as $item) {
-                if ('current' == $forRouteUri && $this->matcher->isCurrent($item)) {
+                if ('current' === $forRouteUri && $this->matcher->isCurrent($item)) {
                     // current match
                     return $item;
-                } elseif ('current' != $forRouteUri && $item->getUri() == $forRouteUri) {
+                } elseif ('current' !== $forRouteUri && $item->getUri() === $forRouteUri) {
                     // route uri match
                     return $item;
-                } elseif (!empty($forRouteName) && $forRouteName == $item->getExtra('routeName')) {
+                } elseif (!empty($forRouteName) && $forRouteName === $item->getExtra('routeName')) {
                     // route name match
                     return $item;
                 }

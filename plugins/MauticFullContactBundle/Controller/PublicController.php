@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticFullContactBundle\Controller;
 
@@ -48,7 +48,7 @@ class PublicController extends FormController
             return new Response('ERROR');
         }
 
-        if ('company' == $validatedRequest['type']) {
+        if ('company' === $validatedRequest['type']) {
             return $this->compcallbackAction($mauticLogger, $result, $validatedRequest);
         }
 

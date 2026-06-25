@@ -87,7 +87,7 @@ class DeleteOrphanFormResultsTableCommand extends Command
         $inValidFormResultsTable = [];
 
         foreach ($allTables as $tableName) {
-            if (str_contains($tableName, 'form_results') && !in_array($tableName, $validFormTables)) {
+            if (str_contains($tableName, 'form_results') && !in_array($tableName, $validFormTables, true)) {
                 $inValidFormResultsTable[] = $tableName;
             }
         }

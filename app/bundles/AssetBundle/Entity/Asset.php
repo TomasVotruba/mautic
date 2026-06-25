@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Entity;
 
@@ -1008,7 +1008,7 @@ class Asset extends FormEntity implements UuidInterface
 
         // Search for icon name by file extension.
         foreach ($fileTypes as $icon => $extensions) {
-            if (in_array($fileType, $extensions)) {
+            if (in_array($fileType, $extensions, true)) {
                 return 'ri-file-'.$icon.'-line';
             }
         }
@@ -1030,7 +1030,7 @@ class Asset extends FormEntity implements UuidInterface
 
         $imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-        if (in_array($fileType, $imageTypes)) {
+        if (in_array($fileType, $imageTypes, true)) {
             return true;
         }
 
@@ -1318,13 +1318,13 @@ class Asset extends FormEntity implements UuidInterface
     {
         $unit = strtoupper($unit);
 
-        if ((!$unit && $size >= 1 << 30) || 'GB' == $unit || 'G' == $unit) {
+        if ((!$unit && $size >= 1 << 30) || 'GB' === $unit || 'G' === $unit) {
             return [$size / (1 << 30), 'GB'];
         }
-        if ((!$unit && $size >= 1 << 20) || 'MB' == $unit || 'M' == $unit) {
+        if ((!$unit && $size >= 1 << 20) || 'MB' === $unit || 'M' === $unit) {
             return [$size / (1 << 20), 'MB'];
         }
-        if ((!$unit && $size >= 1 << 10) || 'KB' == $unit || 'K' == $unit) {
+        if ((!$unit && $size >= 1 << 10) || 'KB' === $unit || 'K' === $unit) {
             return [$size / (1 << 10), 'KB'];
         }
 

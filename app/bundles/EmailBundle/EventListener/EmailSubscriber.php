@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -218,7 +218,7 @@ class EmailSubscriber implements EventSubscriberInterface
         $liveEmailReflection   = new \ReflectionObject($liveEmail);
         $editedEmailReflection = new \ReflectionObject($editedEmail);
         foreach ($liveEmailReflection->getProperties() as $property) {
-            if (in_array($property->getName(), ['id', 'emailType'])) {
+            if (in_array($property->getName(), ['id', 'emailType'], true)) {
                 continue;
             }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -92,7 +92,7 @@ class AssetGenerationHelper
             $assetsPath = $this->pathsHelper->getSystemPath('media');
 
             $assetsFullPath = "$rootPath/$assetsPath";
-            if ('prod' == $env) {
+            if ('prod' === $env) {
                 $loadAll = false; // by default, loading should not be required
 
                 // check for libraries and app files and generate them if they don't exist if in prod environment
@@ -112,7 +112,7 @@ class AssetGenerationHelper
             }
 
             if ($loadAll || $forceRegeneration) {
-                if ('prod' == $env) {
+                if ('prod' === $env) {
                     ini_set('max_execution_time', '300');
 
                     $inProgressFile = "$assetsFullPath/generation_in_progress.txt";
@@ -134,7 +134,7 @@ class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ('prod' === $env) {
                         $assets[$ext]['libraries'][$relPath] = $details;
                     } else {
                         $assets[$ext][$relPath] = $details;
@@ -161,7 +161,7 @@ class AssetGenerationHelper
                 $modifiedLast = array_merge($modifiedLast, $this->findOverrides($env, $assets));
 
                 // combine the files into their corresponding name and put in the root media folder
-                if ('prod' == $env) {
+                if ('prod' === $env) {
                     $checkPaths = [
                         $assetsFullPath,
                         "$assetsFullPath/css",
@@ -199,7 +199,7 @@ class AssetGenerationHelper
                                     throw new \ErrorException('These files are missing: '.implode(', ', $missing).'. Have you forgot to install/update modules?');
                                 }
 
-                                if ('css' == $type) {
+                                if ('css' === $type) {
                                     $minifier = new Minify\CSS(...array_column($files, 'fullPath'));
                                     $minifier->minify($assetFile);
                                 } else {
@@ -214,7 +214,7 @@ class AssetGenerationHelper
                 }
             }
 
-            if ('prod' == $env) {
+            if ('prod' === $env) {
                 // return prod generated assets
                 $assets = [
                     'css' => [
@@ -257,7 +257,7 @@ class AssetGenerationHelper
                 $group = $directory->getBasename();
 
                 // Only auto load directories app or libraries
-                if (!in_array($group, ['app', 'libraries'])) {
+                if (!in_array($group, ['app', 'libraries'], true)) {
                     continue;
                 }
 
@@ -280,7 +280,7 @@ class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ('prod' === $env) {
                         $lastModified = filemtime($fullPath);
                         if (!isset($modifiedLast[$group]) || $lastModified > $modifiedLast[$group]) {
                             $modifiedLast[$group] = $lastModified;
@@ -310,7 +310,7 @@ class AssetGenerationHelper
                 'relPath'  => $relPath,
             ];
 
-            if ('prod' == $env) {
+            if ('prod' === $env) {
                 $lastModified = filemtime($fullPath);
                 if (!isset($modifiedLast['app']) || $lastModified > $modifiedLast['app']) {
                     $modifiedLast['app'] = $lastModified;
@@ -350,7 +350,7 @@ class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ('prod' === $env) {
                         $lastModified = filemtime($fullPath);
                         if (!isset($modifiedLast[$ext][$group]) || $lastModified > $modifiedLast[$ext][$group]) {
                             $modifiedLast[$ext][$group] = $lastModified;

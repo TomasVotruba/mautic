@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller\Api;
 
@@ -107,7 +107,7 @@ class EventLogApiController extends FetchCommonApiController
         // Ensure campaign exists and user has access
         if (!empty($campaignId)) {
             $campaign = $this->getModel('campaign')->getEntity($campaignId);
-            if (null == $campaign || !$campaign->getId()) {
+            if (null === $campaign || !$campaign->getId()) {
                 return $this->notFound();
             }
             if (!$this->checkEntityAccess($campaign)) {

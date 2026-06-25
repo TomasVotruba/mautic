@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\EventListener;
 
@@ -50,7 +50,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('campaign:campaigns:viewother');
 
-        if ('events.in.time' == $event->getType()) {
+        if ('events.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 
@@ -73,7 +73,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('leads.added.in.time' == $event->getType()) {
+        if ('leads.added.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 

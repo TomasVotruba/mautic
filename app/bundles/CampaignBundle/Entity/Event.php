@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Entity;
 
@@ -530,15 +530,15 @@ class Event implements ChannelInterface, UuidInterface
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ('category' == $prop || 'parent' == $prop) {
+        if ('category' === $prop || 'parent' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
 
                 return true;
             }
-        } elseif ($this->$prop != $val) {
+        } elseif ($this->$prop !== $val) {
             $this->changes[$prop] = [$this->$prop, $val];
 
             return true;
@@ -1190,7 +1190,7 @@ class Event implements ChannelInterface, UuidInterface
 
     public function isDeleted(): bool
     {
-        return !is_null($this->deleted);
+        return null !== $this->deleted;
     }
 
     public function getFailedCount(): int

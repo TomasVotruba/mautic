@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -26,7 +26,7 @@ trait VariantModelTrait
 
         // set this email as the parent for the original parent and children
         if ($parent) {
-            if ($parent->getId() != $entity->getId()) {
+            if ($parent->getId() !== $entity->getId()) {
                 if (method_exists($parent, 'setIsPublished')) {
                     $parent->setIsPublished(false);
                 }
@@ -48,7 +48,7 @@ trait VariantModelTrait
 
         if (count($save)) {
             foreach ($save as $child) {
-                if ($child->getId() != $entity->getId()) {
+                if ($child->getId() !== $entity->getId()) {
                     if (method_exists($child, 'setIsPublished')) {
                         $child->setIsPublished(false);
                     }
@@ -141,11 +141,11 @@ trait VariantModelTrait
         $repo = $this->getRepository();
 
         if (method_exists($repo, 'resetVariants')) {
-            if (null == $relatedIds) {
+            if (null === $relatedIds) {
                 $relatedIds = $entity->getRelatedEntityIds();
             }
 
-            if (!in_array($entity->getId(), $relatedIds)) {
+            if (!in_array($entity->getId(), $relatedIds, true)) {
                 $relatedIds[] = $entity->getId();
             }
 

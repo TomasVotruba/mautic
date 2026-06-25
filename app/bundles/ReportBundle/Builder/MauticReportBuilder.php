@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Builder;
 
@@ -353,7 +353,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
                 $exprFunction = $filter['expr'] ?? $filter['condition'];
                 $paramName    = sprintf('i%dc%s', $i, InputHelper::alphanum($filter['column']));
 
-                if (!$this->isEmptyValueSupportedCondition($exprFunction) && !is_array($filter['value']) && '' == trim((string) $filter['value'])) {
+                if (!$this->isEmptyValueSupportedCondition($exprFunction) && !is_array($filter['value']) && '' === trim((string) $filter['value'])) {
                     // Ignore empty values before applying glue so they do not create empty OR groups.
                     continue;
                 }
@@ -496,13 +496,13 @@ final class MauticReportBuilder implements ReportBuilderInterface
         $tagSubQuery->select('DISTINCT lead_id')
             ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx');
 
-        if (in_array($filter['condition'], ['in', 'notIn']) && !empty($filter['value'])) {
+        if (in_array($filter['condition'], ['in', 'notIn'], true) && !empty($filter['value'])) {
             $tagSubQuery->where($tagSubQuery->expr()->in('ltx.tag_id', $filter['value']));
         }
 
-        if (in_array($filter['condition'], ['in', 'notEmpty'])) {
+        if (in_array($filter['condition'], ['in', 'notEmpty'], true)) {
             return $tagSubQuery->expr()->in('l.id', $tagSubQuery->getSQL());
-        } elseif (in_array($filter['condition'], ['notIn', 'empty'])) {
+        } elseif (in_array($filter['condition'], ['notIn', 'empty'], true)) {
             return $tagSubQuery->expr()->notIn('l.id', $tagSubQuery->getSQL());
         }
 

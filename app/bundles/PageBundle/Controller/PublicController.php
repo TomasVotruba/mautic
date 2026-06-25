@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Controller;
 
@@ -73,7 +73,7 @@ class PublicController extends AbstractFormController
             // Make sure the page is published or deny access if not
             if (!$published && !$userAccess) {
                 // If the page has a redirect type, handle it
-                if (null != $entity->getRedirectType()) {
+                if (null !== $entity->getRedirectType()) {
                     $model->hitPage($entity, $request, $entity->getRedirectType());
 
                     if ($entity->getRedirectUrl()) {
@@ -108,7 +108,7 @@ class PublicController extends AbstractFormController
                 }
 
                 // Redirect if they don't match
-                if ($requestUri != $url) {
+                if ($requestUri !== $url) {
                     $model->hitPage($entity, $request, 301, $lead, $query);
 
                     return $this->redirect($url, 301);
@@ -119,7 +119,7 @@ class PublicController extends AbstractFormController
             [$parentVariant, $childrenVariants] = $entity->getVariants();
 
             // Is this a variant of another? If so, the parent URL should be used unless a user is logged in and previewing
-            if ($parentVariant != $entity && !$userAccess) {
+            if ($parentVariant !== $entity && !$userAccess) {
                 $model->hitPage($entity, $request, 301, $lead, $query);
                 $url = $model->generateUrl($parentVariant, false);
 
@@ -217,7 +217,7 @@ class PublicController extends AbstractFormController
                                 3600 * 24 * 14
                             );
 
-                            if ($useId != $entity->getId()) {
+                            if ($useId !== $entity->getId()) {
                                 $entity = $childrenVariants[$useId];
                             }
                         }

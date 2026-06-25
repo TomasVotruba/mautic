@@ -218,7 +218,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
             function ($contact): bool {
                 return
                     empty($contact->getFields())
-                    || !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
+                    || !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2'], true);
             },
         ];
 
@@ -243,7 +243,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
             function ($contact): bool {
                 return
                     !empty($contact->getFields())
-                    && in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
+                    && in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2'], true);
             },
         ];
     }

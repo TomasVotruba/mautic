@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CategoryBundle\Form\Type;
 
@@ -32,7 +32,7 @@ class CategoryType extends AbstractType
 
         if (!$options['data']->getId()) {
             // Do not allow custom bundle
-            if (true == $options['show_bundle_select']) {
+            if (true === $options['show_bundle_select']) {
                 // Create new category from category bundle - let user select the bundle
                 $selected = $this->requestStack->getSession()->get('mautic.category.type', 'category');
                 $builder->add(

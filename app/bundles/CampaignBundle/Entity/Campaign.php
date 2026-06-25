@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Entity;
 
@@ -286,10 +286,10 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ('category' == $prop) {
+        if ('category' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
         } elseif ('projects' === $prop) {
@@ -666,7 +666,7 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         // Extract event IDs from canvas nodes (excludes 'lists', 'forms' and other non-event nodes)
         $eventIds = array_filter(
             array_column($canvasSettings['nodes'], 'id'),
-            fn ($id): bool => !in_array($id, ['lists', 'forms'])
+            fn ($id): bool => !in_array($id, ['lists', 'forms'], true)
         );
 
         if (empty($eventIds)) {
@@ -715,7 +715,7 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     public function isDeleted(): bool
     {
-        return !is_null($this->deleted);
+        return null !== $this->deleted;
     }
 
     /**

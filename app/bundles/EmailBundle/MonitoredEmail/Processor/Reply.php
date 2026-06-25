@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\MonitoredEmail\Processor;
 
@@ -58,7 +58,7 @@ class Reply implements ProcessorInterface
         $possibleFromEmails = $this->addressHelper->getVariations($stat->getLead()->getEmail());
         $fromEmail          = $this->addressHelper->cleanEmail($repliedEmail->getFromAddress());
 
-        if (!in_array($fromEmail, $possibleFromEmails)) {
+        if (!in_array($fromEmail, $possibleFromEmails, true)) {
             // We can't reliably assume this email was from the originating contact
             $this->logger->debug('MONITORED EMAIL: '.implode(', ', $possibleFromEmails).' != '.$fromEmail.' so cannot confirm match');
 

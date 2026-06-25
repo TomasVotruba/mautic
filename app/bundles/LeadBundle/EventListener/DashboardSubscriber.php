@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\EventListener;
 
@@ -72,7 +72,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('lead:leads:viewother');
 
-        if ('created.leads.in.time' == $event->getType()) {
+        if ('created.leads.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 
@@ -101,7 +101,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('anonymous.vs.identified.leads' == $event->getType()) {
+        if ('anonymous.vs.identified.leads' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
                 $event->setTemplateData([
@@ -117,7 +117,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('map.of.leads' == $event->getType()) {
+        if ('map.of.leads' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
                 $event->setTemplateData([
@@ -132,7 +132,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('top.lists' == $event->getType()) {
+        if ('top.lists' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -181,7 +181,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('lead.lifetime' == $event->getType()) {
+        if ('lead.lifetime' === $event->getType()) {
             $params = $event->getWidget()->getParams();
 
             if (empty($params['limit'])) {
@@ -216,7 +216,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $deviceGranularity = [];
 
             foreach ($lists as &$list) {
-                if ('' != $list['alias']) {
+                if ('' !== $list['alias']) {
                     $listUrl = $this->router->generate('mautic_contact_index', ['search' => 'segment:'.$list['alias']]);
                 } else {
                     $listUrl = $this->router->generate('mautic_contact_index', []);
@@ -281,7 +281,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('top.owners' == $event->getType()) {
+        if ('top.owners' === $event->getType()) {
             if (!$canViewOthers) {
                 $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
                 $event->stopPropagation();
@@ -334,7 +334,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('top.creators' == $event->getType()) {
+        if ('top.creators' === $event->getType()) {
             if (!$canViewOthers) {
                 $event->setErrorMessage($this->translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
                 $event->stopPropagation();
@@ -387,7 +387,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('created.leads' == $event->getType()) {
+        if ('created.leads' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -436,7 +436,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             return;
         }
 
-        if ('segments.build.time' == $event->getType()) {
+        if ('segments.build.time' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 

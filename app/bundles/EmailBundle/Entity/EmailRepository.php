@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Entity;
 
@@ -121,7 +121,7 @@ class EmailRepository extends CommonRepository
         if (empty($args['iterable_mode'])) {
             $q->leftJoin('e.category', 'c');
 
-            if (empty($args['ignoreListJoin']) && (!isset($args['email_type']) || 'list' == $args['email_type'])) {
+            if (empty($args['ignoreListJoin']) && (!isset($args['email_type']) || 'list' === $args['email_type'])) {
                 $q->leftJoin('e.lists', 'l');
             }
         }
@@ -211,7 +211,7 @@ class EmailRepository extends CommonRepository
         $statQb->andWhere($statQb->expr()->isNotNull('stat.lead_id'));
 
         if ($variantIds) {
-            if (!in_array($emailId, $variantIds)) {
+            if (!in_array($emailId, $variantIds, true)) {
                 $variantIds[] = (string) $emailId;
             }
             $statQb->andWhere($statQb->expr()->in('stat.email_id', ':variantIds'))
@@ -224,7 +224,7 @@ class EmailRepository extends CommonRepository
         }
 
         // Only include those who belong to the associated lead lists
-        if (is_null($listIds)) {
+        if (null === $listIds) {
             // Get a list of lists associated with this email
             $lists = $this->getEntityManager()->getConnection()->createQueryBuilder()
                 ->select('el.leadlist_id')
@@ -562,7 +562,7 @@ class EmailRepository extends CommonRepository
         }
 
         foreach ($joins[$fromAlias] as $join) {
-            if ($join['joinTable'] == $table && $join['joinAlias'] == $alias) {
+            if ($join['joinTable'] === $table && $join['joinAlias'] === $alias) {
                 return true;
             }
         }

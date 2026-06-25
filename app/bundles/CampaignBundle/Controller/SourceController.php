@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller;
 
@@ -43,7 +43,7 @@ class SourceController extends CommonFormController
         }
 
         // set the sourceType key for sources
-        if (!in_array($sourceType, $this->supportedSourceTypes)) {
+        if (!in_array($sourceType, $this->supportedSourceTypes, true)) {
             return $this->modalAccessDenied();
         }
 
@@ -150,7 +150,7 @@ class SourceController extends CommonFormController
         $success = 0;
         $valid   = $cancelled   = false;
 
-        if (!in_array($sourceType, $this->supportedSourceTypes)) {
+        if (!in_array($sourceType, $this->supportedSourceTypes, true)) {
             return $this->modalAccessDenied();
         }
 
@@ -261,7 +261,7 @@ class SourceController extends CommonFormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             // Add the field to the delete list
             if (isset($modifiedSources[$sourceType])) {
                 unset($modifiedSources[$sourceType]);

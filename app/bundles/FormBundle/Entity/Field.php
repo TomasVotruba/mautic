@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Entity;
 
@@ -336,7 +336,7 @@ class Field implements UuidInterface
      */
     private function isChanged($prop, $val): void
     {
-        if ($this->$prop != $val) {
+        if ($this->$prop !== $val) {
             $this->changes[$prop] = [$this->$prop, $val];
         }
     }
@@ -919,10 +919,10 @@ class Field implements UuidInterface
 
             if ('notIn' === $this->conditions['expr']) {
                 // value not matched
-                if ('' !== $value && !in_array(InputHelper::clean($value), $this->conditions['values'])) {
+                if ('' !== $value && !in_array(InputHelper::clean($value), $this->conditions['values'], true)) {
                     return true;
                 }
-            } elseif (in_array(InputHelper::clean($value), $this->conditions['values'])) {
+            } elseif (in_array(InputHelper::clean($value), $this->conditions['values'], true)) {
                 return true;
             }
         }

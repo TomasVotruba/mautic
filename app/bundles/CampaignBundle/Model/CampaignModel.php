@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Model;
 
@@ -233,12 +233,12 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             $event = !$isNew ? $existingEvents[$properties['id']] : new Event(new \DateTime());
 
             foreach ($properties as $f => $v) {
-                if ('id' == $f && str_starts_with($v, 'new')) {
+                if ('id' === $f && str_starts_with($v, 'new')) {
                     // set the temp ID used to be able to match up connections
                     $event->setTempId($v);
                 }
 
-                if (in_array($f, ['id', 'parent', 'campaign', 'dateAdded', 'dateLinked'])) {
+                if (in_array($f, ['id', 'parent', 'campaign', 'dateAdded', 'dateLinked'], true)) {
                     continue;
                 }
 
@@ -284,7 +284,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                 $source = $connection['sourceId'];
                 $target = $connection['targetId'];
 
-                if (in_array($source, ['lists', 'forms'])) {
+                if (in_array($source, ['lists', 'forms'], true)) {
                     // Only concerned with events and not sources
                     continue;
                 }
@@ -295,7 +295,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                     $sourceDecision = (!empty($connection['anchors'][0])) ? $connection['anchors'][0]['endpoint'] : null;
                 }
 
-                if ('leadsource' == $sourceDecision) {
+                if ('leadsource' === $sourceDecision) {
                     // Lead source connection that does not matter
                     continue;
                 }
@@ -311,7 +311,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         foreach ($events as $id => $e) {
             if (isset($relationships[$id])) {
                 // Has a parent
-                $anchor = in_array($relationships[$id]['decision'], ['yes', 'no']) ? $relationships[$id]['decision'] : null;
+                $anchor = in_array($relationships[$id]['decision'], ['yes', 'no'], true) ? $relationships[$id]['decision'] : null;
                 $events[$id]->setDecisionPath($anchor);
 
                 $parentId = $relationships[$id]['parent'];
@@ -564,7 +564,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             asort($typeChoices);
         }
 
-        return (null == $sourceType) ? $choices : $choices[$sourceType];
+        return (null === $sourceType) ? $choices : $choices[$sourceType];
     }
 
     /**
@@ -787,7 +787,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             return;
         }
         foreach ($hierarchy as $eventId => $parent) {
-            if ($parent == $root || 1 === $count) {
+            if ($parent === $root || 1 === $count) {
                 $events[$eventId]->setOrder($order);
                 unset($hierarchy[$eventId]);
                 if (count($hierarchy)) {
@@ -871,7 +871,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             if ('lead.tags' === $type) {
                 $eventTags = $properties['tags'];
             }
-            if (in_array($tagName, $eventTags)) {
+            if (in_array($tagName, $eventTags, true)) {
                 $dependents[] = $entity->getCampaign()->getId();
             }
         }

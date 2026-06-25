@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Entity\oAuth2;
 
@@ -120,7 +120,7 @@ class Client extends BaseClient
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ($current != $val) {
+        if ($current !== $val) {
             $this->changes[$prop] = [$current, $val];
         }
     }

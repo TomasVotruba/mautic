@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\ErrorHandler {
     use Mautic\CoreBundle\Exception\DatabaseConnectionException;
@@ -416,7 +416,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         private function generateResponse($error, $inTemplate = false)
         {
             // Get a trace
-            if ('dev' == self::$environment) {
+            if ('dev' === self::$environment) {
                 if (empty($error['trace'])) {
                     ob_start();
                     debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -436,7 +436,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 }
             }
 
-            $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 'XMLHttpRequest' == $_SERVER['HTTP_X_REQUESTED_WITH'])
+            $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 'XMLHttpRequest' === $_SERVER['HTTP_X_REQUESTED_WITH'])
                 || (isset($_SERVER['HTTP_ACCEPT']) && 'application/json' === $_SERVER['HTTP_ACCEPT']);
 
             if (!$inTemplate && !defined('MAUTIC_RENDERING_TEMPLATE') && $isAjax) {
@@ -454,7 +454,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                     ],
                 ];
 
-                if ('dev' == self::$environment) {
+                if ('dev' === self::$environment) {
                     $dataArray['trace'] = $error['trace'];
                     if (isset($error['context'])) {
                         $dataArray['context'] = $error['context'];
@@ -470,7 +470,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 return json_encode($dataArray);
             }
 
-            if ('dev' == self::$environment || $this->displayErrors) {
+            if ('dev' === self::$environment || $this->displayErrors) {
                 $error['file']          = str_replace(self::$root, '', $error['file']);
                 $errorMessage           = $error['logMessage'] ?? $error['message'];
                 $error['message']       = "$errorMessage - in file {$error['file']} - at line {$error['line']}";
@@ -528,7 +528,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                 return $exception->getMessage();
             }
 
-            if ('dev' == self::$environment && !empty($error['previous'])) {
+            if ('dev' === self::$environment && !empty($error['previous'])) {
                 $previousContent = '<div><h4>Previous Exceptions</h4>'.$this->generateResponse($error['previous']).'</div>';
                 $content         = str_replace('<div id="previous"></div>', $previousContent, $content);
             }

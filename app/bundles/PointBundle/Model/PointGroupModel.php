@@ -140,6 +140,6 @@ class PointGroupModel extends CommonFormModel implements GlobalSearchInterface
 
     public static function isAllowedPointOperation(string $operator): bool
     {
-        return in_array($operator, [Lead::POINTS_ADD, Lead::POINTS_SUBTRACT, Lead::POINTS_MULTIPLY, Lead::POINTS_DIVIDE, Lead::POINTS_SET]);
+        return in_array($operator, [Lead::POINTS_ADD, Lead::POINTS_SUBTRACT, Lead::POINTS_MULTIPLY, Lead::POINTS_DIVIDE, Lead::POINTS_SET], true);
     }
 }

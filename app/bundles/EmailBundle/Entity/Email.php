@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Entity;
 
@@ -613,10 +613,10 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
 
-        if ('variantParent' == $prop || 'translationParent' == $prop || 'category' == $prop || 'list' == $prop) {
+        if ('variantParent' === $prop || 'translationParent' === $prop || 'category' === $prop || 'list' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
         } else {

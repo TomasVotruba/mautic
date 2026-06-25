@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DashboardBundle\Event;
 
@@ -73,7 +73,7 @@ class WidgetTypeListEvent extends CommonEvent
         }
         $perm = $this->security->isGranted($permissions, 'RETURN_ARRAY');
 
-        return !in_array(false, $perm);
+        return !in_array(false, $perm, true);
     }
 
     /**

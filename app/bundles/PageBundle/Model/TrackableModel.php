@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Model;
 
@@ -140,7 +140,7 @@ class TrackableModel extends AbstractCommonModel
         $url = UrlHelper::decodeAmpersands($url);
 
         $trackable = $this->getRepository()->findByUrl($url, $channel, $channelId);
-        if (null == $trackable) {
+        if (null === $trackable) {
             $trackable = $this->createTrackableEntity($url, $channel, $channelId);
             $this->getRepository()->saveEntity($trackable->getRedirect());
             $this->getRepository()->saveEntity($trackable);
@@ -564,7 +564,7 @@ class TrackableModel extends AbstractCommonModel
             || (isset($urlParts['scheme'])
                 && !in_array(
                     $urlParts['scheme'],
-                    ['http', 'https', 'ftp', 'ftps', 'mailto']
+                    ['http', 'https', 'ftp', 'ftps', 'mailto'], true
                 ))) {
             return false;
         }

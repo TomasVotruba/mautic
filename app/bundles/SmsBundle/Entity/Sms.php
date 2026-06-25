@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Entity;
 
@@ -238,7 +238,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
             function (Sms $sms, ExecutionContextInterface $context): void {
                 $type      = $sms->getSmsType();
                 $validator = $context->getValidator();
-                if ('list' == $type) {
+                if ('list' === $type) {
                     $violations = $validator->validate(
                         $sms->getLists(),
                         [
@@ -293,10 +293,10 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
 
-        if ('category' == $prop || 'list' == $prop) {
+        if ('category' === $prop || 'list' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
         } else {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Entity;
 
@@ -204,7 +204,7 @@ class Trigger extends FormEntity implements UuidInterface
      */
     protected function isChanged($prop, $val)
     {
-        if ('events' == $prop) {
+        if ('events' === $prop) {
             // changes are already computed so just add them
             $this->changes[$prop][$val[0] ?? ''] = $val[1];
         } else {

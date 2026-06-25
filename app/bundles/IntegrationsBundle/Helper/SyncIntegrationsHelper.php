@@ -91,7 +91,7 @@ class SyncIntegrationsHelper
 
             // Sync is enabled
             $enabledFeatures = $integrationConfiguration->getSupportedFeatures();
-            if (!in_array(ConfigFormFeaturesInterface::FEATURE_SYNC, $enabledFeatures)) {
+            if (!in_array(ConfigFormFeaturesInterface::FEATURE_SYNC, $enabledFeatures, true)) {
                 continue;
             }
 
@@ -106,7 +106,7 @@ class SyncIntegrationsHelper
                 $mappingManual     = $syncIntegration->getMappingManual();
                 $mappedObjectNames = $mappingManual->getMappedIntegrationObjectsNames($mauticObject);
                 foreach ($mappedObjectNames as $mappedObjectName) {
-                    if (in_array($mappedObjectName, $featureSettings['sync']['objects'])) {
+                    if (in_array($mappedObjectName, $featureSettings['sync']['objects'], true)) {
                         return true;
                     }
                 }

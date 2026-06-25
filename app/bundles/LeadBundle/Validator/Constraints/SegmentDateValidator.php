@@ -23,7 +23,7 @@ final class SegmentDateValidator extends ConstraintValidator
     public function validate($filters, Constraint $constraint): void
     {
         foreach ($filters as $filter) {
-            if (isset($filter['type']) && in_array($filter['type'], ['date', 'datetime'])) {
+            if (isset($filter['type']) && in_array($filter['type'], ['date', 'datetime'], true)) {
                 $segmentFilter  = $this->contactSegmentFilterFactory->factorSegmentFilter($filter);
                 $parameterValue = $segmentFilter->getParameterValue();
 
@@ -31,7 +31,7 @@ final class SegmentDateValidator extends ConstraintValidator
                     continue;
                 }
 
-                if (in_array($filter['operator'] ?? '', ['regexp', '!regexp', 'like', '!like', 'startsWith', 'endsWith', 'contains'])) {
+                if (in_array($filter['operator'] ?? '', ['regexp', '!regexp', 'like', '!like', 'startsWith', 'endsWith', 'contains'], true)) {
                     continue;
                 }
 

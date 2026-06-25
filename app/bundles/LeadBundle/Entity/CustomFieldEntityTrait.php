@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -111,7 +111,7 @@ trait CustomFieldEntityTrait
         $field    = $this->getField($alias);
         $setter   = 'set'.ucfirst($property);
 
-        if (null == $oldValue) {
+        if (null === $oldValue) {
             $oldValue = $this->getFieldValue($alias);
         } elseif ($field) {
             $oldValue = CustomFieldHelper::fixValueType($field['type'], $oldValue);
@@ -206,7 +206,7 @@ trait CustomFieldEntityTrait
 
         foreach ($this->fields as $groupFields) {
             foreach ($groupFields as $name => $details) {
-                if ($name == $key) {
+                if ($name === $key) {
                     return $details;
                 }
             }

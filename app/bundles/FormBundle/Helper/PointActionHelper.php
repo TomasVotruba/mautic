@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Helper;
 
@@ -10,7 +10,7 @@ class PointActionHelper
         $formId       = $form->getId();
         $limitToForms = $action['properties']['forms'];
 
-        if (!empty($limitToForms) && !in_array($formId, $limitToForms)) {
+        if (!empty($limitToForms) && !in_array($formId, $limitToForms, true)) {
             // no points change
             return false;
         }

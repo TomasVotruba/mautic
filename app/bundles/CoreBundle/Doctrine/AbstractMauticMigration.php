@@ -49,7 +49,7 @@ abstract class AbstractMauticMigration extends AbstractMigration
         $platform = DatabasePlatform::getDatabasePlatform($this->platform);
 
         // Abort the migration if the platform is unsupported
-        $this->abortIf(!in_array($platform, $this->supported), 'The database platform is unsupported for migrations');
+        $this->abortIf(!in_array($platform, $this->supported, true), 'The database platform is unsupported for migrations');
 
         $function = $platform.'Up';
 

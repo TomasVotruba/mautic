@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Security\Permissions;
 
@@ -217,7 +217,7 @@ class CorePermissions implements ResetInterface
             }
 
             $parts = explode(':', $permission);
-            if (false === in_array(count($parts), [3, 4])) {
+            if (false === in_array(count($parts), [3, 4], true)) {
                 throw new PermissionBadFormatException($this->getTranslator()->trans('mautic.core.permissions.badformat', ['%permission%' => $permission]));
             }
 
@@ -237,7 +237,7 @@ class CorePermissions implements ResetInterface
                     } else {
                         throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.notfound', ['%permission%' => $permission]));
                     }
-                } elseif ('anon.' == $userEntity) {
+                } elseif ('anon.' === $userEntity) {
                     // anon user or session timeout
                     $permissions[$permission] = false;
                 } elseif ($permissionObject instanceof VirtualPermissions) {
@@ -253,13 +253,13 @@ class CorePermissions implements ResetInterface
             $this->grantedPermissions[$permission] = $permissions[$permission];
         }
 
-        if ('MATCH_ALL' == $mode) {
+        if ('MATCH_ALL' === $mode) {
             // deny if any of the permissions are denied
-            return in_array(0, $permissions) ? false : true;
-        } elseif ('MATCH_ONE' == $mode) {
+            return in_array(0, $permissions, true) ? false : true;
+        } elseif ('MATCH_ONE' === $mode) {
             // grant if any of the permissions were granted
-            return in_array(1, $permissions);
-        } elseif ('RETURN_ARRAY' == $mode) {
+            return in_array(1, $permissions, true);
+        } elseif ('RETURN_ARRAY' === $mode) {
             return $permissions;
         }
         throw new PermissionNotFoundException($this->getTranslator()->trans('mautic.core.permissions.mode.notfound', ['%mode%' => $mode]));
@@ -287,7 +287,7 @@ class CorePermissions implements ResetInterface
             }
 
             $parts = explode(':', $p);
-            if (3 != count($parts)) {
+            if (3 !== count($parts)) {
                 $result[$p] = false;
             } else {
                 // check against bundle permissions class

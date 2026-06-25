@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller;
 
@@ -538,9 +538,9 @@ class PublicController extends CommonFormController
         $template = $form->getTemplate() ?? $this->coreParametersHelper->get('theme');
         if (!empty($template)) {
             $theme = $themeHelper->getTheme($template);
-            if ($theme->getTheme() != $template) {
+            if ($theme->getTheme() !== $template) {
                 $config = $theme->getConfig();
-                if (in_array('form', $config['features'])) {
+                if (in_array('form', $config['features'], true)) {
                     $template = $theme->getTheme();
                 } else {
                     $template = null;

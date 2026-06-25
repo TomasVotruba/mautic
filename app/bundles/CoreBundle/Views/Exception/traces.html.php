@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $formatArgs = function ($args) use (&$formatArgs) {
     $result = [];

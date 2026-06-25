@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\Controller;
 
@@ -453,7 +453,7 @@ class MobileNotificationController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action, ['update_select' => $updateSelect]);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && 'POST' === $method) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -563,7 +563,7 @@ class MobileNotificationController extends FormController
         $model  = $this->getModel('notification');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('notification:mobile_notifications:create')
                 || !$this->security->hasEntityAccess(
                     'notification:mobile_notifications:viewown',

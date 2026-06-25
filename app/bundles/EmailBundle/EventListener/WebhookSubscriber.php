@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -98,7 +98,7 @@ class WebhookSubscriber implements EventSubscriberInterface
         $webhookQueue = $event->getWebhookQueue();
         $eventType    = $webhookQueue->getEvent()->getEventType();
 
-        if (!in_array($eventType, [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_OPEN])) {
+        if (!in_array($eventType, [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_OPEN], true)) {
             return;
         }
 

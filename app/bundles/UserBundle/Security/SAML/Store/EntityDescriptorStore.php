@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\UserBundle\Security\SAML\Store;
 
@@ -64,7 +64,7 @@ class EntityDescriptorStore implements EntityDescriptorStoreInterface
 
     private function createEntityDescriptor(): void
     {
-        $xml = base64_decode($this->coreParametersHelper->get('saml_idp_metadata'));
+        $xml = base64_decode($this->coreParametersHelper->get('saml_idp_metadata'), true);
 
         $this->entityDescriptor = EntityDescriptor::loadXml($xml);
     }

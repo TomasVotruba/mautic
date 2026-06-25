@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ConfigBundle\Service;
 
@@ -59,7 +59,7 @@ class ConfigChangeLogger
 
         $diff = [];
         foreach ($postData as $key => $value) {
-            if (array_key_exists($key, $originalData) && $originalData[$key] != $value) {
+            if (array_key_exists($key, $originalData) && $originalData[$key] !== $value) {
                 if ($value instanceof UploadedFile) {
                     $value = $value->getFilename();
                 }
@@ -111,7 +111,7 @@ class ConfigChangeLogger
     {
         $keys = $this->filterKeys;
 
-        return array_filter($data, fn ($key): bool => !in_array($key, $keys),
+        return array_filter($data, fn ($key): bool => !in_array($key, $keys, true),
             ARRAY_FILTER_USE_KEY);
     }
 }

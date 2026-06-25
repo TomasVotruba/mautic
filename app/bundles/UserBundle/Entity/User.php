@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\UserBundle\Entity;
 
@@ -355,12 +355,12 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ('role' == $prop) {
+        if ('role' === $prop) {
             if ($current && !$val) {
                 $this->changes['role'] = [$current->getName().' ('.$current->getId().')', $val];
             } elseif (!$this->role && $val) {
                 $this->changes['role'] = [$current, $val->getName().' ('.$val->getId().')'];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
+            } elseif ($current && $val && $current->getId() !== $val->getId()) {
                 $this->changes['role'] = [
                     $current->getName().'('.$current->getId().')',
                     $val->getName().'('.$val->getId().')',

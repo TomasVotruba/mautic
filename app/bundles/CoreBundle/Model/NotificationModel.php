@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -119,7 +119,7 @@ class NotificationModel extends FormModel
         $notification->setMessage(EmojiHelper::toHtml(InputHelper::strict_html($message)));
         $notification->setIconClass($iconClass);
         $notification->setUser($user);
-        if (null == $datetime) {
+        if (null === $datetime) {
             $datetime = new \DateTime();
         }
         $notification->setDateAdded($datetime);
@@ -204,7 +204,7 @@ class NotificationModel extends FormModel
 
                 $alreadyNotified = $this->getSession()->get('mautic.update.notified');
 
-                if (empty($alreadyNotified) || $alreadyNotified != $updateData['version']) {
+                if (empty($alreadyNotified) || $alreadyNotified !== $updateData['version']) {
                     $newUpdate = true;
                     $this->getSession()->set('mautic.update.notified', $updateData['version']);
                 }

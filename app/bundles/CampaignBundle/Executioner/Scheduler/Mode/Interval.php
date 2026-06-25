@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Executioner\Scheduler\Mode;
 
@@ -160,7 +160,7 @@ class Interval implements ScheduleModeInterface
 
     private function isRestrictedToDailyScheduling(Event $event): bool
     {
-        return !in_array($event->getTriggerIntervalUnit(), ['i', 'h', 'd', 'm', 'y'])
+        return !in_array($event->getTriggerIntervalUnit(), ['i', 'h', 'd', 'm', 'y'], true)
             && empty($event->getTriggerRestrictedDaysOfWeek());
     }
 
@@ -236,7 +236,7 @@ class Interval implements ScheduleModeInterface
             }
 
             // Schedule for the next day of the week if applicable
-            while (!in_array((int) $groupDateTime->format('w'), $daysOfWeek)) {
+            while (!in_array((int) $groupDateTime->format('w'), $daysOfWeek, true)) {
                 /** @var \DateTime $groupDateTime */
                 $groupDateTime->modify('+1 day');
             }

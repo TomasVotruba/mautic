@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
@@ -161,7 +161,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             return false;
         }
 
-        if (null == $eventDetails) {
+        if (null === $eventDetails) {
             return true;
         }
 
@@ -213,13 +213,13 @@ class CampaignSubscriber implements EventSubscriberInterface
         $applyToAny = (empty($config['url']) && empty($config['referer']) && empty($limitToPages));
 
         // 2. some landing pages are set and page ID match
-        $langingPageIsHit = (!empty($limitToPages) && in_array($pageHitId, $limitToPages));
+        $langingPageIsHit = (!empty($limitToPages) && in_array($pageHitId, $limitToPages, true));
 
         // 3. URL rule is set and match with URL hit
-        $urlIsHit = (!empty($config['url']) && in_array(true, $urlMatches));
+        $urlIsHit = (!empty($config['url']) && in_array(true, $urlMatches, true));
 
         // 3. URL rule is set and match with URL hit
-        $refererIsHit = (!empty($config['referer']) && in_array(true, $refererMatches));
+        $refererIsHit = (!empty($config['referer']) && in_array(true, $refererMatches, true));
 
         if ($applyToAny || $langingPageIsHit || $urlIsHit || $refererIsHit) {
             return $event->setResult(true);

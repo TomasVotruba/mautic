@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\InstallBundle\Configurator\Step;
 
@@ -237,7 +237,7 @@ class CheckStep implements StepInterface
 
         foreach ($data as $key => $value) {
             // Exclude keys from the config
-            if (!in_array($key, ['configIsWritable', 'projectDir'])) {
+            if (!in_array($key, ['configIsWritable', 'projectDir'], true)) {
                 $parameters[$key] = $value;
             }
         }

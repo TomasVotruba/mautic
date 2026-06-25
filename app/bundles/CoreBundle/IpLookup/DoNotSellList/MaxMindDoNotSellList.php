@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\IpLookup\DoNotSellList;
 
@@ -23,7 +23,7 @@ class MaxMindDoNotSellList implements DoNotSellListInterface
     {
         $listPath = $this->getListPath();
 
-        if (false == $listPath) {
+        if (false === $listPath) {
             throw new BadConfigurationException('Please configure the path to the MaxMind Do Not Sell List.');
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\DataFixtures\ORM;
 
@@ -24,13 +24,13 @@ class LoadPageData extends AbstractFixture implements OrderedFixtureInterface
             $page = new Page();
             $key  = $count + 1;
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ('NULL' !== $val) {
                     $setter = 'set'.ucfirst($col);
-                    if (in_array($col, ['translationParent', 'variantParent'])) {
+                    if (in_array($col, ['translationParent', 'variantParent'], true)) {
                         $page->$setter($this->getReference('page-'.$val));
-                    } elseif (in_array($col, ['dateAdded', 'variantStartDate'])) {
+                    } elseif (in_array($col, ['dateAdded', 'variantStartDate'], true)) {
                         $page->$setter(new \DateTime($val));
-                    } elseif (in_array($col, ['content', 'variantSettings'])) {
+                    } elseif (in_array($col, ['content', 'variantSettings'], true)) {
                         $val = Serializer::decode(stripslashes($val));
                         $page->$setter($val);
                     } else {

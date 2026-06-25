@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Controller;
 
@@ -141,7 +141,7 @@ class PublicController extends CommonFormController
 
             /** @var \Mautic\FormBundle\Entity\Form $unsubscribeForm */
             $unsubscribeForm = $email->getUnsubscribeForm();
-            if (null != $unsubscribeForm && $unsubscribeForm->isPublished()) {
+            if (null !== $unsubscribeForm && $unsubscribeForm->isPublished()) {
                 $formTemplate = $unsubscribeForm->getTemplate();
                 $formContent  = '<div class="mautic-unsubscribeform">'.$formModel->getContent($unsubscribeForm).'</div>';
             }
@@ -158,7 +158,7 @@ class PublicController extends CommonFormController
         }
 
         $theme = $themeHelper->getTheme($template);
-        if ($theme->getTheme() != $template) {
+        if ($theme->getTheme() !== $template) {
             $template = $theme->getTheme();
         }
         $contentTemplate = $themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/message.html.twig');
@@ -285,7 +285,7 @@ class PublicController extends CommonFormController
 
         if (!empty($formContent)) {
             $viewParams['content'] = $formContent;
-            if (in_array('form', $config['features'])) {
+            if (in_array('form', $config['features'], true)) {
                 $contentTemplate = $themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/form.html.twig');
             } else {
                 $viewParams['content'] = '';
@@ -369,7 +369,7 @@ class PublicController extends CommonFormController
 
         $theme = $themeHelper->getTheme($template);
 
-        if ($theme->getTheme() != $template) {
+        if ($theme->getTheme() !== $template) {
             $template = $theme->getTheme();
         }
 
@@ -577,7 +577,7 @@ class PublicController extends CommonFormController
         // compare signatures
         if (hash_equals($mySig, $query['sig'])) {
             // decode and parse query variables
-            $b64 = base64_decode($query['d']);
+            $b64 = base64_decode($query['d'], true);
             $gz  = gzdecode($b64);
             parse_str($gz, $query);
         } else {

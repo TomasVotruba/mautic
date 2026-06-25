@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller\Api;
 
@@ -511,7 +511,7 @@ class LeadApiController extends CommonApiController
             return $this->badRequest();
         }
 
-        if ('removeUtmTags' == $method) {
+        if ('removeUtmTags' === $method) {
             $view = $this->view(
                 [
                     'recordFound'        => $result,

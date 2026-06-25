@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
@@ -42,7 +42,7 @@ EOT
 
         if ($updateData['error']) {
             $output->writeln('<error>'.$this->translator->trans($updateData['message']).'</error>');
-        } elseif ('mautic.core.updater.running.latest.version' == $updateData['message']) {
+        } elseif ('mautic.core.updater.running.latest.version' === $updateData['message']) {
             $output->writeln('<info>'.$this->translator->trans($updateData['message']).'</info>');
         } else {
             $output->writeln($this->translator->trans($updateData['message'], ['%version%' => $updateData['version'], '%announcement%' => $updateData['announcement']]));

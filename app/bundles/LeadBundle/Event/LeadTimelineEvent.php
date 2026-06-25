@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Event;
 
@@ -230,7 +230,7 @@ class LeadTimelineEvent extends Event
                             return strnatcmp($aLabel, $bLabel);
 
                         case 'timestamp':
-                            if ($a['timestamp'] == $b['timestamp']) {
+                            if ($a['timestamp'] === $b['timestamp']) {
                                 $aPriority = isset($a['eventPriority']) ? (int) $a['eventPriority'] : 0;
                                 $bPriority = isset($b['eventPriority']) ? (int) $b['eventPriority'] : 0;
 
@@ -242,7 +242,7 @@ class LeadTimelineEvent extends Event
                 }
             );
 
-            if ('DESC' == $this->orderBy[1]) {
+            if ('DESC' === $this->orderBy[1]) {
                 $events = array_reverse($events);
             }
         }
@@ -369,12 +369,12 @@ class LeadTimelineEvent extends Event
             return false;
         }
 
-        if (in_array($eventType, $this->filters['excludeEvents'])) {
+        if (in_array($eventType, $this->filters['excludeEvents'], true)) {
             return false;
         }
 
         if (!empty($this->filters['includeEvents'])) {
-            if (!in_array($eventType, $this->filters['includeEvents'])) {
+            if (!in_array($eventType, $this->filters['includeEvents'], true)) {
                 return false;
             }
         } elseif ($inclusive) {

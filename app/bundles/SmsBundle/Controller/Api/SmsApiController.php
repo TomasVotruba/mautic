@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Controller\Api;
 
@@ -65,7 +65,7 @@ class SmsApiController extends CommonApiController
 
         $message = $this->model->getEntity((int) $id);
 
-        if (is_null($message)) {
+        if (null === $message) {
             return $this->notFound();
         }
 

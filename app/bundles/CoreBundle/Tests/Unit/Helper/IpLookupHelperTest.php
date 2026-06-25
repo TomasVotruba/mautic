@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Unit\Helper;
 
@@ -196,7 +196,7 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
             ->method('getRepository')
             ->willReturn($mockRepository);
 
-        if (is_null($mockCoreParametersHelper)) {
+        if (null === $mockCoreParametersHelper) {
             $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
             $mockCoreParametersHelper->expects($this->any())
                 ->method('get')

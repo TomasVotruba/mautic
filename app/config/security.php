@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 
@@ -192,7 +192,7 @@ $restrictedConfigFields = [
 ];
 
 // List config keys that are dev mode only
-if ('prod' == $container->getParameter('kernel.environment')) {
+if ('prod' === $container->getParameter('kernel.environment')) {
     $restrictedConfigFields = array_merge($restrictedConfigFields, ['transifex_username', 'transifex_password']);
 }
 

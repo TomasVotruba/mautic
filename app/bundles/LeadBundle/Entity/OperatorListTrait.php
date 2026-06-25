@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -185,7 +185,7 @@ trait OperatorListTrait
             $operatorList    = $this->getFilterExpressionFunctions();
             $operatorChoices = [];
             foreach ($operatorList as $operator => $def) {
-                if (empty($def['hide']) || in_array($operator, $overrideHiddenOperators)) {
+                if (empty($def['hide']) || in_array($operator, $overrideHiddenOperators, true)) {
                     $operatorChoices[$operator] = $def['label'];
                 }
             }
@@ -219,11 +219,11 @@ trait OperatorListTrait
             return 'bool';
         }
 
-        if (in_array($type, ['country', 'timezone', 'region', 'locale'])) {
+        if (in_array($type, ['country', 'timezone', 'region', 'locale'], true)) {
             return 'select';
         }
 
-        if (in_array($type, ['lookup',  'text', 'email', 'url', 'email', 'tel'])) {
+        if (in_array($type, ['lookup',  'text', 'email', 'url', 'email', 'tel'], true)) {
             return 'text';
         }
 

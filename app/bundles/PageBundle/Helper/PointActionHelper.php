@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Helper;
 
@@ -29,7 +29,7 @@ class PointActionHelper
             $limitToPages = $action['properties']['pages'];
         }
 
-        if (!empty($limitToPages) && !in_array($pageHitId, $limitToPages)) {
+        if (!empty($limitToPages) && !in_array($pageHitId, $limitToPages, true)) {
             // no points change
             return false;
         }
@@ -102,6 +102,6 @@ class PointActionHelper
         }
 
         // return true only if all configured options are true
-        return !in_array(false, $changePoints);
+        return !in_array(false, $changePoints, true);
     }
 }

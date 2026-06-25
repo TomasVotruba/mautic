@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $container->loadFromExtension('fos_oauth_server', [
     'db_driver'           => 'orm',

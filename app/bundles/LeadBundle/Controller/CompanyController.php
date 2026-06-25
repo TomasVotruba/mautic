@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -684,7 +684,7 @@ class CompanyController extends FormController
         $model  = $this->getModel('lead.company');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('lead:leads:create')) {
                 $this->throwAccessDenied();
             }
@@ -1150,7 +1150,7 @@ class CompanyController extends FormController
                 'contentTemplate' => '@MauticLead/Company/merge.html.twig',
                 'passthroughVars' => [
                     'route'  => false,
-                    'target' => ('update' == $tmpl) ? '.company-merge-options' : null,
+                    'target' => ('update' === $tmpl) ? '.company-merge-options' : null,
                 ],
             ]
         );

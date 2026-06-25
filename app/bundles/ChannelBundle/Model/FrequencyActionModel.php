@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ChannelBundle\Model;
 
@@ -42,7 +42,7 @@ class FrequencyActionModel
         $channels       = $this->contactModel->getPreferenceChannels();
 
         foreach ($channels as $channel) {
-            if (is_null($preferredChannel)) {
+            if (null === $preferredChannel) {
                 $preferredChannel = $channel;
             }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -266,12 +266,12 @@ class AjaxController extends CommonAjaxController
         $listId    = (int) $request->request->get('listId');
         $action    = InputHelper::clean($request->request->get('listAction'));
 
-        if (!empty($leadId) && !empty($listId) && in_array($action, ['remove', 'add'])) {
+        if (!empty($leadId) && !empty($listId) && in_array($action, ['remove', 'add'], true)) {
             $lead = $leadModel->getEntity($leadId);
             $list = $listModel->getEntity($listId);
 
             if (null !== $lead && null !== $list) {
-                $class = 'add' == $action ? 'addToLists' : 'removeFromLists';
+                $class = 'add' === $action ? 'addToLists' : 'removeFromLists';
                 $leadModel->$class($lead, $list);
                 $dataArray['success'] = 1;
             }
@@ -287,7 +287,7 @@ class AjaxController extends CommonAjaxController
         $channel   = InputHelper::clean($request->request->get('channel'));
         $action    = InputHelper::clean($request->request->get('channelAction'));
 
-        if (!empty($leadId) && !empty($channel) && in_array($action, ['remove', 'add'])) {
+        if (!empty($leadId) && !empty($channel) && in_array($action, ['remove', 'add'], true)) {
             $lead = $leadModel->getEntity($leadId);
 
             if (null !== $lead) {
@@ -317,7 +317,7 @@ class AjaxController extends CommonAjaxController
         $campaignId = (int) $request->request->get('campaignId');
         $action     = InputHelper::clean($request->request->get('campaignAction'));
 
-        if (empty($leadId) || empty($campaignId) || !in_array($action, ['remove', 'add'])) {
+        if (empty($leadId) || empty($campaignId) || !in_array($action, ['remove', 'add'], true)) {
             return $this->sendJsonResponse($dataArray);
         }
         $lead     = $leadModel->getEntity($leadId);
@@ -347,12 +347,12 @@ class AjaxController extends CommonAjaxController
         $companyId = (int) $request->request->get('companyId');
         $action    = InputHelper::clean($request->request->get('companyAction'));
 
-        if (!empty($leadId) && !empty($companyId) && in_array($action, ['remove', 'add'])) {
+        if (!empty($leadId) && !empty($companyId) && in_array($action, ['remove', 'add'], true)) {
             $lead    = $leadModel->getEntity($leadId);
             $company = $companyModel->getEntity($companyId);
 
             if (null !== $lead && null !== $company) {
-                $class = 'add' == $action ? 'addLeadToCompany' : 'removeLeadFromCompany';
+                $class = 'add' === $action ? 'addLeadToCompany' : 'removeLeadFromCompany';
                 $companyModel->$class($company, $lead);
                 $dataArray['success'] = 1;
             }
@@ -442,7 +442,7 @@ class AjaxController extends CommonAjaxController
             $session->set('mautic.lead.indexmode', $indexMode);
 
             // (strpos($search, "$isCommand:$anonymous") === false && strpos($search, "$listCommand:") === false)) ||
-            if ('list' != $indexMode) {
+            if ('list' !== $indexMode) {
                 // remove anonymous leads unless requested to prevent clutter
                 $filter['force'][] = "!$anonymous";
             }
@@ -473,7 +473,7 @@ class AjaxController extends CommonAjaxController
                 /** @var \Mautic\EmailBundle\Entity\EmailRepository $emailRepo */
                 $emailRepo          = $this->getModel('email')->getRepository();
                 $indexMode          = $request->get('view', $session->get('mautic.lead.indexmode', 'list'));
-                $template           = ('list' == $indexMode) ? 'list_rows' : 'grid_cards';
+                $template           = ('list' === $indexMode) ? 'list_rows' : 'grid_cards';
                 $dataArray['leads'] = $this->render(
                     "@MauticLead/Lead/{$template}.html.twig",
                     [
@@ -538,7 +538,7 @@ class AjaxController extends CommonAjaxController
             $tagOptions = '';
 
             foreach ($tags as $tag) {
-                $selected = (in_array($tag['label'], $leadTagKeys)) ? ' selected="selected"' : '';
+                $selected = (in_array($tag['label'], $leadTagKeys, true)) ? ' selected="selected"' : '';
                 $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
             }
 
@@ -572,7 +572,7 @@ class AjaxController extends CommonAjaxController
             $tagOptions = '';
 
             foreach ($allTags as $tag) {
-                $selected = (in_array($tag['value'], $tags) || in_array($tag['label'], $tags)) ? ' selected="selected"' : '';
+                $selected = (in_array($tag['value'], $tags, true) || in_array($tag['label'], $tags, true)) ? ' selected="selected"' : '';
                 $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
             }
 
@@ -612,7 +612,7 @@ class AjaxController extends CommonAjaxController
             $utmTagOptions = '';
 
             foreach ($allUtmTags as $utmTag) {
-                $selected = (in_array($utmTag['value'], $utmTags) || in_array($utmTag['label'], $utmTags)) ? ' selected="selected"' : '';
+                $selected = (in_array($utmTag['value'], $utmTags, true) || in_array($utmTag['label'], $utmTags, true)) ? ' selected="selected"' : '';
                 $utmTagOptions .= '<option'.$selected.' value="'.$utmTag['value'].'">'.$utmTag['label'].'</option>';
             }
 
@@ -659,7 +659,7 @@ class AjaxController extends CommonAjaxController
             if (!empty($properties['list'])) {
                 // Lookup/Select options
                 $options = FormFieldHelper::parseList($properties['list']);
-            } elseif (!empty($properties) && 'boolean' == $leadFieldType) {
+            } elseif (!empty($properties) && 'boolean' === $leadFieldType) {
                 // Boolean options
                 $options = [
                     0 => $properties['no'],
@@ -681,7 +681,7 @@ class AjaxController extends CommonAjaxController
                         break;
                     case 'date':
                     case 'datetime':
-                        if ('date' == $operator) {
+                        if ('date' === $operator) {
                             $fieldHelper = new FormFieldHelper();
                             $fieldHelper->setTranslator($this->translator);
                             $options = $fieldHelper->getDateChoices();

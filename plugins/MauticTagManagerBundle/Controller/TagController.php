@@ -387,7 +387,7 @@ class TagController extends FormController
     {
         $existingTags = $tagModel->getRepository()->getTagsByName([$tag->getTag()]);
         foreach ($existingTags as $existingTag) {
-            if ($existingTag->getId() != $tag->getId()) {
+            if ($existingTag->getId() !== $tag->getId()) {
                 return false;
             }
         }
@@ -699,7 +699,7 @@ class TagController extends FormController
             'contentTemplate' => '@MauticTagManager/Tag/merge.html.twig',
             'passthroughVars' => [
                 'route'  => false,
-                'target' => ('update' == $tmpl) ? '.tag-merge-options' : null,
+                'target' => ('update' === $tmpl) ? '.tag-merge-options' : null,
             ],
         ]);
     }

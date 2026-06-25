@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -27,6 +27,6 @@ $_SERVER['APP_DEBUG']               = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'
 $_SERVER['APP_DEBUG']               = $_ENV['APP_DEBUG']               = (int) $_SERVER['APP_DEBUG'] || filter_var($_SERVER['APP_DEBUG'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
 $_SERVER['IPS_ALLOWED']             = $_ENV['IPS_ALLOWED']             = ($_SERVER['IPS_ALLOWED'] ?? $_ENV['IPS_ALLOWED'] ?? null) ?: '127.0.0.1,::1,172.17.0.1';
 
-if ('dev' === strtolower($_SERVER['APP_ENV']) && extension_loaded('apcu') && in_array(@$_SERVER['REMOTE_ADDR'], explode(',', $_SERVER['IPS_ALLOWED']))) {
+if ('dev' === strtolower($_SERVER['APP_ENV']) && extension_loaded('apcu') && in_array(@$_SERVER['REMOTE_ADDR'], explode(',', $_SERVER['IPS_ALLOWED']), true)) {
     @apcu_clear_cache();
 }

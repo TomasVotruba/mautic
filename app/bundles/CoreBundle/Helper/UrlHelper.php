@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -45,11 +45,11 @@ class UrlHelper
     {
         $path = $host = $scheme = '';
 
-        $ssl    = !empty($_SERVER['HTTPS']) && 'on' == $_SERVER['HTTPS'];
+        $ssl    = !empty($_SERVER['HTTPS']) && 'on' === $_SERVER['HTTPS'];
         $scheme = strtolower($_SERVER['SERVER_PROTOCOL']);
         $scheme = substr($scheme, 0, strpos($scheme, '/')).($ssl ? 's' : '');
         $port   = $_SERVER['SERVER_PORT'];
-        $port   = ((!$ssl && '80' == $port) || ($ssl && '443' == $port)) ? '' : ":$port";
+        $port   = ((!$ssl && '80' === $port) || ($ssl && '443' === $port)) ? '' : ":$port";
         $host   = $_SERVER['HTTP_HOST'] ?? null;
         $host ??= $_SERVER['SERVER_NAME'].$port;
         $base   = "$scheme://$host".$_SERVER['REQUEST_URI'];
@@ -57,12 +57,12 @@ class UrlHelper
         $base = str_replace('/index.php', '', $base);
 
         /* return if already absolute URL */
-        if ('' != parse_url($rel, PHP_URL_SCHEME)) {
+        if ('' !== parse_url($rel, PHP_URL_SCHEME)) {
             return $rel;
         }
 
         /* queries and anchors */
-        if ('#' == $rel[0] || '?' == $rel[0]) {
+        if ('#' === $rel[0] || '?' === $rel[0]) {
             return $base.$rel;
         }
 
@@ -81,12 +81,12 @@ class UrlHelper
         $path = preg_replace('#/[^/]*$#', '', $path);
 
         /* destroy path if relative url points to root */
-        if ('/' == $rel[0]) {
+        if ('/' === $rel[0]) {
             $path = '';
         }
 
         /* dirty absolute URL // with port number if exists */
-        if ('' != parse_url($base, PHP_URL_PORT)) {
+        if ('' !== parse_url($base, PHP_URL_PORT)) {
             $abs = "$host:".parse_url($base, PHP_URL_PORT)."$path/$rel";
         } else {
             $abs = "$host$path/$rel";

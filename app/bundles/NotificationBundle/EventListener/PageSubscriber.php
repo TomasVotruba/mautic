@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\EventListener;
 
@@ -30,7 +30,7 @@ class PageSubscriber implements EventSubscriberInterface
         $features          = $settings->getFeatureSettings();
 
         $script = '';
-        if (!in_array('landing_page_enabled', $features)) {
+        if (!in_array('landing_page_enabled', $features, true)) {
             $script = 'disable_notification = true;';
         }
 

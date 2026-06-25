@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Api;
 
@@ -50,7 +50,7 @@ class ZohoApi extends CrmApi
      */
     public function getLeadFields($object = 'Leads')
     {
-        if ('company' == $object) {
+        if ('company' === $object) {
             $object = 'Accounts'; // Zoho object name
         }
 

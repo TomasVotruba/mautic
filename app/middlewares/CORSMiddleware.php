@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\Middleware;
 
@@ -96,7 +96,7 @@ class CORSMiddleware implements HttpKernelInterface, PrioritizedMiddlewareInterf
         $origin = $request->headers->get('Origin');
 
         // If we're not restricting domains, set the header to the request origin
-        if (!$this->restrictCORSDomains || in_array($origin, $this->validCORSDomains)) {
+        if (!$this->restrictCORSDomains || in_array($origin, $this->validCORSDomains, true)) {
             $this->requestOriginIsValid = true;
 
             return $origin;

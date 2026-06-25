@@ -156,7 +156,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 $existingIds = array_column($values, 'id');
 
                 foreach ($eventData[$key] as $dataValue) {
-                    if (!in_array($dataValue['id'], $existingIds)) {
+                    if (!in_array($dataValue['id'], $existingIds, true)) {
                         $values[] = $dataValue;
                     }
                 }
@@ -640,7 +640,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
         foreach ($propertyPaths as $path) {
             $existingValue = $this->getNestedValue($event, $path);
 
-            if (!is_null($existingValue)) {
+            if (null !== $existingValue) {
                 if (is_array($existingValue)) {
                     // If the existing value is an array, replace it with a single-element array
                     $this->setNestedValue($event, $path, [$channelId]);

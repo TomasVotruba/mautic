@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Helper;
 
@@ -32,12 +32,12 @@ class FieldAliasHelper
         $repo      = $this->fieldModel->getRepository();
         $testAlias = $alias;
         $aliases   = $repo->getAliases($field->getId(), false, true, null);
-        $count     = (int) in_array($testAlias, $aliases);
+        $count     = (int) in_array($testAlias, $aliases, true);
         $aliasTag  = $count;
 
         while ($count) {
             $testAlias = $alias.$aliasTag;
-            $count     = (int) in_array($testAlias, $aliases);
+            $count     = (int) in_array($testAlias, $aliases, true);
             ++$aliasTag;
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DashboardBundle\Event;
 
@@ -83,7 +83,7 @@ class WidgetDetailEvent extends CommonEvent
 
         // If there are no additional parameters we return uniqueWidgetId as a cache key
         // Otherwise we return hashed $cacheKey value
-        $cacheKey = (1 == count($cacheKey)) ? $this->getUniqueWidgetId() : substr(md5(implode('', $cacheKey)), 0, 16);
+        $cacheKey = (1 === count($cacheKey)) ? $this->getUniqueWidgetId() : substr(md5(implode('', $cacheKey)), 0, 16);
 
         return $this->cacheKeyPath.$cacheKey;
     }
@@ -335,7 +335,7 @@ class WidgetDetailEvent extends CommonEvent
     {
         $perm = $this->security->isGranted($permissions, 'RETURN_ARRAY');
 
-        return in_array(true, $perm);
+        return in_array(true, $perm, true);
     }
 
     /**
@@ -355,7 +355,7 @@ class WidgetDetailEvent extends CommonEvent
      */
     private function usesLegacyCache(): bool
     {
-        return is_null($this->cacheProvider);
+        return null === $this->cacheProvider;
     }
 
     /**

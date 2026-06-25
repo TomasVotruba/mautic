@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -209,10 +209,10 @@ class LeadFieldRepository extends CommonRepository
     {
         $columnAlias = 'l.';
         // Join company tables If we're trying search by company fields
-        if (in_array($field, array_column($this->getFieldAliases('company'), 'alias'))) {
+        if (in_array($field, array_column($this->getFieldAliases('company'), 'alias'), true)) {
             $this->addCompanyLeftJoin($q);
             $columnAlias = 'company.';
-        } elseif (in_array($field, ['utm_campaign', 'utm_content', 'utm_medium', 'utm_source', 'utm_term'])) {
+        } elseif (in_array($field, ['utm_campaign', 'utm_content', 'utm_medium', 'utm_source', 'utm_term'], true)) {
             $q->join('l', MAUTIC_TABLE_PREFIX.'lead_utmtags', 'u', 'l.id = u.lead_id');
             $columnAlias = 'u.';
         }

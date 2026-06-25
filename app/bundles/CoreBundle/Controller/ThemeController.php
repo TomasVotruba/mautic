@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Controller;
 
@@ -242,7 +242,7 @@ class ThemeController extends FormController
             ];
         } elseif (!$this->security->isGranted('core:themes:delete')) {
             $this->throwAccessDenied();
-        } elseif (in_array($themeName, $themeHelper->getDefaultThemes())) {
+        } elseif (in_array($themeName, $themeHelper->getDefaultThemes(), true)) {
             $flashes[] = [
                 'type'    => 'error',
                 'msg'     => 'mautic.core.theme.cannot.be.removed',
@@ -325,7 +325,7 @@ class ThemeController extends FormController
             ];
         }
 
-        if (!in_array($themeName, $themeHelper->getDefaultThemes())) {
+        if (!in_array($themeName, $themeHelper->getDefaultThemes(), true)) {
             return [
                 [
                     'type'    => 'error',

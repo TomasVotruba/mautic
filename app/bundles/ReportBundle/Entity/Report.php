@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Entity;
 
@@ -655,8 +655,8 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
     public function ensureIsMonthlyScheduled(): void
     {
         if (
-            !in_array($this->getScheduleMonthFrequency(), SchedulerEnum::getMonthFrequencyForSelect())
-            || !in_array($this->getScheduleDay(), SchedulerEnum::getDayEnumForSelect())
+            !in_array($this->getScheduleMonthFrequency(), SchedulerEnum::getMonthFrequencyForSelect(), true)
+            || !in_array($this->getScheduleDay(), SchedulerEnum::getDayEnumForSelect(), true)
         ) {
             throw new ScheduleNotValidException();
         }
@@ -669,7 +669,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      */
     public function ensureIsWeeklyScheduled(): void
     {
-        if (!in_array($this->getScheduleDay(), SchedulerEnum::getDayEnumForSelect())) {
+        if (!in_array($this->getScheduleDay(), SchedulerEnum::getDayEnumForSelect(), true)) {
             throw new ScheduleNotValidException();
         }
         $this->setIsScheduled(true);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -179,7 +179,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         if (in_array($command, [
             $this->translator->trans('mautic.project.searchcommand.name'),
             $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'),
-        ])) {
+        ], true)) {
             return $this->handleProjectFilter(
                 $this->_em->getConnection()->createQueryBuilder(),
                 'company_id',
@@ -190,7 +190,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             );
         }
 
-        if (in_array($command, $this->availableSearchFields)) {
+        if (in_array($command, $this->availableSearchFields, true)) {
             $expr = $q->expr()->like($this->getTableAlias().".$command", ":$unique");
         }
 
@@ -449,7 +449,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         $reflection = new \ReflectionClass(new $class());
 
         // Get the label column if necessary
-        if (null == $labelColumn) {
+        if (null === $labelColumn) {
             if ($reflection->hasMethod('getTitle')) {
                 $labelColumn = 'title';
             } else {

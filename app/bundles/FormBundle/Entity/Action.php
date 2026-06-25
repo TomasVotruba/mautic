@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Entity;
 
@@ -152,7 +152,7 @@ class Action implements UuidInterface
 
     private function isChanged($prop, $val): void
     {
-        if ($this->$prop != $val) {
+        if ($this->$prop !== $val) {
             $this->changes[$prop] = [$this->$prop, $val];
         }
     }

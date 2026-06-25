@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper\Chart;
 
@@ -40,7 +40,7 @@ class LineChart extends AbstractChart implements ChartInterface
         protected $dateFormat = null,
     ) {
         $this->unit       = $unit ?? $this->getTimeUnitFromDateRange($dateFrom, $dateTo);
-        $this->isTimeUnit = in_array($this->unit, ['H', 'i', 's']);
+        $this->isTimeUnit = in_array($this->unit, ['H', 'i', 's'], true);
         $this->setDateRange($dateFrom, $dateTo);
         $this->amount     = $this->countAmountFromDateRange();
         $this->generateTimeLabels($this->amount);

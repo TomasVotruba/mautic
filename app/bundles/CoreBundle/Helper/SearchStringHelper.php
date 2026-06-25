@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -139,7 +139,7 @@ class SearchStringHelper
             unset($chars[$pos]);
             ++$pos;
 
-            if (':' == $char) {
+            if (':' === $char) {
                 // the string is a command
                 $command = trim(substr($string, 0, -1));
                 // does this have a negative?
@@ -155,19 +155,19 @@ class SearchStringHelper
                     $filters->{$baseName}[$keyCount]->command = $command;
                     $string                                   = '';
                 }
-            } elseif (' ' == $char) {
+            } elseif (' ' === $char) {
                 // arrived at the end of a single word that is not within a quote or parenthesis so add it as standalone
-                if (' ' != $string) {
+                if (' ' !== $string) {
                     $string = trim($string);
                     $type   = ('OR' === $string || 'AND' === $string) ? $string : '';
                     $this->setFilter($filters, $baseName, $keyCount, $string, $command, $overrideCommand, true, $type, !empty($chars));
                 }
                 continue;
-            } elseif (in_array($char, $this->needsClosing)) {
+            } elseif (in_array($char, $this->needsClosing, true)) {
                 // arrived at a character that has a closing partner and thus needs to be parsed as a group
 
                 // find the closing match
-                $key = array_search($char, $this->needsClosing);
+                $key = array_search($char, $this->needsClosing, true);
 
                 $openingCount = 1;
                 $closingCount = 1;
@@ -237,7 +237,7 @@ class SearchStringHelper
             $string = trim($string);
 
             // remove operators and empty values
-            if (in_array($string, ['', 'OR', 'AND'])) {
+            if (in_array($string, ['', 'OR', 'AND'], true)) {
                 unset($filters->{$baseName}[$keyCount]);
 
                 return;

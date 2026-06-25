@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Mautic\FormBundle\Event\Service\FieldValueTransformer;
 use Mautic\FormBundle\Form\Type\FieldType;

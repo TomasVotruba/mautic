@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\EventListener;
 
@@ -120,7 +120,7 @@ class CoreSubscriber implements EventSubscriberInterface
         foreach ($bundles as $bundle) {
             if (!empty($bundle['config']['routes'][$type])) {
                 foreach ($bundle['config']['routes'][$type] as $name => $details) {
-                    if ('api' == $type && !empty($details['standard_entity'])) {
+                    if ('api' === $type && !empty($details['standard_entity'])) {
                         $standards = [
                             'getall' => [
                                 'action' => 'getEntities',
@@ -184,7 +184,7 @@ class CoreSubscriber implements EventSubscriberInterface
                         $pathBase   = $details['path'];
                         $controller = $details['controller'];
                         foreach ($standards as $standardName => $standardDetails) {
-                            if (!empty($details['supported_endpoints']) && !in_array($standardName, $details['supported_endpoints'])) {
+                            if (!empty($details['supported_endpoints']) && !in_array($standardName, $details['supported_endpoints'], true)) {
                                 // Not supported so ignore
                                 continue;
                             }
@@ -254,7 +254,7 @@ class CoreSubscriber implements EventSubscriberInterface
         }
         if (isset($details['format'])) {
             $defaults['_format'] = $details['format'];
-        } elseif ('api' == $type) {
+        } elseif ('api' === $type) {
             $defaults['_format'] = 'json';
         }
         $method = [];
@@ -285,7 +285,7 @@ class CoreSubscriber implements EventSubscriberInterface
                 $requirements['objectId'] = '[a-zA-Z0-9_-]+';
             }
         }
-        if ('api' == $type) {
+        if ('api' === $type) {
             if (str_contains($details['path'], '{id}')) {
                 if (!isset($requirements['page'])) {
                     $requirements['id'] = '\d+';

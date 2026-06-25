@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
@@ -190,7 +190,7 @@ class PageSubscriber implements EventSubscriberInterface
         $livePageReflection   = new \ReflectionObject($livePage);
         $editedPageReflection = new \ReflectionObject($editedPage);
         foreach ($livePageReflection->getProperties() as $property) {
-            if ('id' == $property->getName()) {
+            if ('id' === $property->getName()) {
                 continue;
             }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DashboardBundle\Controller\Api;
 
@@ -124,7 +124,7 @@ class WidgetApiController extends CommonApiController
             return $this->notFound();
         }
 
-        if ('raw' == $dataFormat) {
+        if ('raw' === $dataFormat) {
             if (isset($data['chartData']['labels']) && isset($data['chartData']['datasets'])) {
                 $rawData = [];
                 foreach ($data['chartData']['datasets'] as $dataset) {

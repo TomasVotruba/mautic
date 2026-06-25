@@ -194,7 +194,7 @@ class UserSummaryNotificationHelperTest extends TestCase
                         'mautic.integration.sync.user_notification.count_message',
                     ];
 
-                    if (!in_array($string, $expectedStrings)) {
+                    if (!in_array($string, $expectedStrings, true)) {
                         $this->fail($string.' is not an expected translation key');
                     }
 

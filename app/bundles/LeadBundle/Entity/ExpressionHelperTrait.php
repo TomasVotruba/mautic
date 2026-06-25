@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -22,7 +22,7 @@ trait ExpressionHelperTrait
 
         if (null === $includeIsNull) {
             // Auto determine based on negate operators
-            $includeIsNull = in_array($operator, ['neq', 'notLike', 'notIn']);
+            $includeIsNull = in_array($operator, ['neq', 'notLike', 'notIn'], true);
         }
 
         if ($includeIsNull) {

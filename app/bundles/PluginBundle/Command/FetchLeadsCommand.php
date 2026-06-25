@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Command;
 
@@ -132,14 +132,14 @@ class FetchLeadsCommand extends Command
         // set this constant to ensure that all contacts have the same date modified time and date synced time to prevent a pull/push loop
         define('MAUTIC_DATE_MODIFIED_OVERRIDE', time());
 
-        if (isset($supportedFeatures) && in_array('get_leads', $supportedFeatures)) {
+        if (isset($supportedFeatures) && in_array('get_leads', $supportedFeatures, true)) {
             if (null !== $integrationObject && method_exists($integrationObject, 'getLeads') && isset($config['objects'])) {
                 $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.fetch.leads', ['%integration%' => $integration]).'</info>');
                 $output->writeln('<comment>'.$this->translator->trans('mautic.plugin.command.fetch.leads.starting').'</comment>');
 
                 // Handle case when integration object are named "Contacts" and "Leads"
                 $leadObjectName = 'Lead';
-                if (in_array('Leads', $config['objects'])) {
+                if (in_array('Leads', $config['objects'], true)) {
                     $leadObjectName = 'Leads';
                 }
                 $contactObjectName = 'Contact';
@@ -148,7 +148,7 @@ class FetchLeadsCommand extends Command
                 }
 
                 $updated = $created = $processed = 0;
-                if (in_array($leadObjectName, $config['objects'])) {
+                if (in_array($leadObjectName, $config['objects'], true)) {
                     $leadList = [];
                     $results  = $integrationObject->getLeads($params, null, $leadsExecuted, $leadList, $leadObjectName);
                     if (is_array($results)) {
@@ -194,7 +194,7 @@ class FetchLeadsCommand extends Command
             if (null !== $integrationObject && method_exists($integrationObject, 'getCompanies') && isset($config['objects'])
                 && in_array(
                     'company',
-                    $config['objects']
+                    $config['objects'], true
                 )
             ) {
                 $updated = $created = $processed = 0;
@@ -227,7 +227,7 @@ class FetchLeadsCommand extends Command
             }
         }
 
-        if (isset($supportedFeatures) && in_array('push_leads', $supportedFeatures) && method_exists($integrationObject, 'pushLeads')) {
+        if (isset($supportedFeatures) && in_array('push_leads', $supportedFeatures, true) && method_exists($integrationObject, 'pushLeads')) {
             $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.leads', ['%integration%' => $integration]).'</info>');
             $result  = $integrationObject->pushLeads($params);
             $ignored = 0;
@@ -253,7 +253,7 @@ class FetchLeadsCommand extends Command
                 .'</comment>'."\n"
             );
 
-            if (in_array('push_companies', $supportedFeatures) && method_exists($integrationObject, 'pushCompanies')) {
+            if (in_array('push_companies', $supportedFeatures, true) && method_exists($integrationObject, 'pushCompanies')) {
                 $output->writeln('<info>'.$this->translator->trans('mautic.plugin.command.pushing.companies', ['%integration%' => $integration]).'</info>');
                 $result  = $integrationObject->pushCompanies($params);
                 $ignored = 0;

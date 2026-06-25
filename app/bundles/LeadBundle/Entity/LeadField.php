@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -929,6 +929,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     public function supportsLength(): bool
     {
-        return in_array($this->type, self::TYPES_SUPPORTING_LENGTH);
+        return in_array($this->type, self::TYPES_SUPPORTING_LENGTH, true);
     }
 }

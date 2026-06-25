@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
@@ -696,14 +696,14 @@ class DynamicsIntegration extends CrmAbstractIntegration
         $object                = 'contacts';
         $config                = $this->mergeConfigToFeatureSettings();
         $integrationEntityRepo = $this->em->getRepository(IntegrationEntity::class);
-        $fieldsToUpdateInCrm   = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0) : [];
+        $fieldsToUpdateInCrm   = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0, true) : [];
         $leadFields            = array_unique(array_values($config['leadFields'] ?? []));
         $totalUpdated          = $totalCreated          = $totalErrors          = 0;
 
-        if ($key = array_search('mauticContactTimelineLink', $leadFields)) {
+        if ($key = array_search('mauticContactTimelineLink', $leadFields, true)) {
             unset($leadFields[$key]);
         }
-        if ($key = array_search('mauticContactIsContactableByEmail', $leadFields)) {
+        if ($key = array_search('mauticContactIsContactableByEmail', $leadFields, true)) {
             unset($leadFields[$key]);
         }
 

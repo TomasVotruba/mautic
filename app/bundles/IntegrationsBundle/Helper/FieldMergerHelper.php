@@ -102,7 +102,7 @@ class FieldMergerHelper
         if (!empty($this->currentFieldMappings[$object][$fieldName]['syncDirection'])
             && in_array(
                 $this->currentFieldMappings[$object][$fieldName]['syncDirection'],
-                $supportedDirections
+                $supportedDirections, true
             )) {
             // Keep the already configured value
             return $this->currentFieldMappings[$object][$fieldName]['syncDirection'];
@@ -145,7 +145,7 @@ class FieldMergerHelper
         }
 
         $supportedDirections = $this->getSupportedSyncDirections($fieldName);
-        if (in_array($fieldMapping['syncDirection'], $supportedDirections)) {
+        if (in_array($fieldMapping['syncDirection'], $supportedDirections, true)) {
             return $fieldMapping['syncDirection'];
         }
 

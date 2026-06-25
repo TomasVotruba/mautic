@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Doctrine\Bundle\FixturesBundle\DependencyInjection\CompilerPass\FixturesCompilerPass;
 use Mautic\CoreBundle\Loader\ParameterLoader;

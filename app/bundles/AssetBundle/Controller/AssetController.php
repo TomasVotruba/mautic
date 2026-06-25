@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Controller;
 
@@ -230,7 +230,7 @@ class AssetController extends FormController
         $download = $request->query->get('download', 0);
 
         // Display the file directly in the browser just for selected extensions
-        $defaultStream = in_array($activeAsset->getExtension(), $this->coreParametersHelper->get('streamed_extensions')) ? '1' : null;
+        $defaultStream = in_array($activeAsset->getExtension(), $this->coreParametersHelper->get('streamed_extensions'), true) ? '1' : null;
         $stream        = $request->query->get('stream', $defaultStream);
 
         if ('1' === $download || '1' === $stream) {
@@ -271,7 +271,7 @@ class AssetController extends FormController
      */
     public function newAction(Request $request, CoreParametersHelper $parametersHelper, UploaderHelper $uploaderHelper, IntegrationHelper $integrationHelper, AssetModel $model, $entity = null)
     {
-        if (null == $entity) {
+        if (null === $entity) {
             $entity = $model->getEntity();
         }
 
@@ -311,7 +311,7 @@ class AssetController extends FormController
         $form = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -472,7 +472,7 @@ class AssetController extends FormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && 'POST' === $method) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -567,7 +567,7 @@ class AssetController extends FormController
         $entity = $model->getEntity($objectId);
         $clone  = null;
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('asset:assets:create')
                 || !$this->security->hasEntityAccess(
                     'asset:assets:viewown', 'asset:assets:viewother', $entity->getCreatedBy()

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\MonitoredEmail;
 
@@ -188,7 +188,7 @@ class Mailbox
 
         $this->createAttachmentsDir($pathsHelper);
 
-        if ('imap.gmail.com' == $this->settings['host']) {
+        if ('imap.gmail.com' === $this->settings['host']) {
             $this->isGmail = true;
         }
     }
@@ -250,7 +250,7 @@ class Mailbox
      */
     public function setImapPath($settings = null): void
     {
-        if (null == $settings) {
+        if (null === $settings) {
             $settings = $this->settings;
         }
         $paths              = $this->getImapPath($settings);
@@ -280,7 +280,7 @@ class Mailbox
     {
         $this->settings = array_merge($this->settings, $settings);
 
-        $this->isGmail = ('imap.gmail.com' == $this->settings['host']);
+        $this->isGmail = ('imap.gmail.com' === $this->settings['host']);
 
         $this->setImapPath();
     }
@@ -296,7 +296,7 @@ class Mailbox
      */
     public function getMailboxSettings($bundle = null, $mailbox = '')
     {
-        if (null == $bundle) {
+        if (null === $bundle) {
             return $this->settings;
         }
 
@@ -335,7 +335,7 @@ class Mailbox
      */
     public function switchFolder($folder): void
     {
-        if ($folder != $this->imapFolder) {
+        if ($folder !== $this->imapFolder) {
             $this->imapFullPath = $this->imapPath.$folder;
             $this->imapFolder   = $folder;
         }
@@ -868,13 +868,13 @@ class Mailbox
                 $options
             );
 
-        if (1 == $partStructure->encoding) {
+        if (1 === $partStructure->encoding) {
             $data = imap_utf8($data);
-        } elseif (2 == $partStructure->encoding) {
+        } elseif (2 === $partStructure->encoding) {
             $data = imap_binary($data);
-        } elseif (3 == $partStructure->encoding) {
+        } elseif (3 === $partStructure->encoding) {
             $data = imap_base64($data);
-        } elseif (4 == $partStructure->encoding) {
+        } elseif (4 === $partStructure->encoding) {
             $data = quoted_printable_decode($data);
         }
 
@@ -938,7 +938,7 @@ class Mailbox
                         break;
                     case TYPEMULTIPART:
                         if (
-                            'report' != $subtype
+                            'report' !== $subtype
                             || empty($params['report-type'])
                         ) {
                             break;
@@ -958,9 +958,9 @@ class Mailbox
                         }
                         break;
                     case TYPEMESSAGE:
-                        if ($isDsn || ('delivery-status' == $subtype)) {
+                        if ($isDsn || ('delivery-status' === $subtype)) {
                             $mail->dsnReport = $data;
-                        } elseif ($isFbl || ('feedback-report' == $subtype)) {
+                        } elseif ($isFbl || ('feedback-report' === $subtype)) {
                             $mail->fblReport = $data;
                         } else {
                             $mail->textPlain .= trim($data);
@@ -973,7 +973,7 @@ class Mailbox
         }
         if (!empty($partStructure->parts)) {
             foreach ($partStructure->parts as $subPartNum => $subPartStructure) {
-                if (2 == $partStructure->type && 'RFC822' == $partStructure->subtype) {
+                if (2 === $partStructure->type && 'RFC822' === $partStructure->subtype) {
                     $this->initMailPart($mail, $subPartStructure, $partNum, $markAsSeen, $isDsn, $isFbl);
                 } else {
                     $this->initMailPart($mail, $subPartStructure, $partNum.'.'.($subPartNum + 1), $markAsSeen, $isDsn, $isFbl);
@@ -1012,7 +1012,7 @@ class Mailbox
         $newString = '';
         $elements  = imap_mime_header_decode($string);
         for ($i = 0; $i < count($elements); ++$i) {
-            if ('default' == $elements[$i]->charset) {
+            if ('default' === $elements[$i]->charset) {
                 $elements[$i]->charset = 'iso-8859-1';
             }
             $newString .= $this->convertStringEncoding($elements[$i]->text, $elements[$i]->charset, $charset);
@@ -1059,7 +1059,7 @@ class Mailbox
     protected function convertStringEncoding($string, $fromEncoding, $toEncoding)
     {
         $convertedString = null;
-        if ($string && $fromEncoding != $toEncoding) {
+        if ($string && $fromEncoding !== $toEncoding) {
             $convertedString = @iconv($fromEncoding, $toEncoding.'//IGNORE', $string);
             if (!$convertedString && extension_loaded('mbstring')) {
                 $convertedString = @mb_convert_encoding($string, $toEncoding, $fromEncoding);

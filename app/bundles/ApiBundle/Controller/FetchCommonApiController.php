@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Controller;
 
@@ -653,7 +653,7 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
         foreach ($where as $key => $statement) {
             if (isset($statement['internal'])) {
                 unset($where[$key]);
-            } elseif (in_array($statement['expr'], ['andX', 'orX'])) {
+            } elseif (in_array($statement['expr'], ['andX', 'orX'], true)) {
                 $this->sanitizeWhereClauseArrayFromRequest($where[$key]['val']);
             }
         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\Controller;
 
@@ -47,7 +47,7 @@ class NotificationController extends AbstractFormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $this->setListFilters();
         }
 
@@ -270,7 +270,7 @@ class NotificationController extends AbstractFormController
         $page         = $session->get('mautic.notification.page', 1);
         $action       = $this->generateUrl('mautic_notification_action', ['objectAction' => 'new']);
         $notification = $request->request->all()['notification'] ?? [];
-        $updateSelect = ('POST' == $method)
+        $updateSelect = ('POST' === $method)
             ? ($notification['updateSelect'] ?? false)
             : $request->get('updateSelect', false);
 
@@ -551,7 +551,7 @@ class NotificationController extends AbstractFormController
         $model  = $this->getModel('notification');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('notification:notifications:create')
                 || !$this->security->hasEntityAccess(
                     'notification:notifications:viewown',

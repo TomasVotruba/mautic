@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\WebhookBundle\Entity;
 
@@ -567,15 +567,15 @@ class Webhook extends FormEntity implements SkipModifiedInterface
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ('category' == $prop) {
+        if ('category' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
-        } elseif ('events' == $prop) {
+        } elseif ('events' === $prop) {
             $this->changes[$prop] = [];
-        } elseif ($current != $val) {
+        } elseif ($current !== $val) {
             $this->changes[$prop] = [$current, $val];
         } else {
             parent::isChanged($prop, $val);

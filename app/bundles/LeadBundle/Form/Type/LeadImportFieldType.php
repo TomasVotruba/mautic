@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -101,7 +101,7 @@ class LeadImportFieldType extends AbstractType
             );
         }
 
-        if (in_array($options['object'], ['lead', 'company'])) {
+        if (in_array($options['object'], ['lead', 'company'], true)) {
             $builder->add(
                 'skip_if_exists',
                 YesNoButtonGroupType::class,

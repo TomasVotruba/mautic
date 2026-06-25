@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -628,7 +628,7 @@ SQL;
         }
 
         foreach ($expectedSegmentIds as $expectedSegmentId) {
-            if (in_array($expectedSegmentId, $segmentIds)) { // No exact type comparison used!
+            if (in_array($expectedSegmentId, $segmentIds, true)) { // No exact type comparison used!
                 return false;
             }
         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Model;
 
@@ -189,7 +189,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             }
 
             foreach ($properties as $f => $v) {
-                if (in_array($f, ['id', 'order'])) {
+                if (in_array($f, ['id', 'order'], true)) {
                     continue;
                 }
 
@@ -260,13 +260,13 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             $action = !$isNew ? $existingActions[$properties['id']] : new Action();
 
             foreach ($properties as $f => $v) {
-                if (in_array($f, ['id', 'order'])) {
+                if (in_array($f, ['id', 'order'], true)) {
                     continue;
                 }
 
                 $func = 'set'.ucfirst($f);
 
-                if ('properties' == $f) {
+                if ('properties' === $f) {
                     if (isset($v['mappedFields'])) {
                         foreach ($v['mappedFields'] as $pk => $pv) {
                             if (str_contains($pv, 'new')) {
@@ -491,7 +491,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $pageCount    = 1;
 
         foreach ($fields as $fieldId => $field) {
-            if ('pagebreak' == $field->getType() && $openFieldId) {
+            if ('pagebreak' === $field->getType() && $openFieldId) {
                 // Open the page
                 $pages['open'][$openFieldId] = $pageCount;
                 $openFieldId                 = false;
@@ -611,7 +611,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         ];
         $ignoreTypes = $this->getCustomComponents()['viewOnlyFields'];
         foreach ($fields as $f) {
-            if (!in_array($f->getType(), $ignoreTypes)) {
+            if (!in_array($f->getType(), $ignoreTypes, true)) {
                 $columns[] = [
                     'name'    => $f->getAlias(),
                     'type'    => 'text',
@@ -752,7 +752,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             if (
                 $field->getMappedField()
                 && $field->getIsAutoFill()
-                && in_array($field->getMappedObject(), $objectsToAutoFill)
+                && in_array($field->getMappedObject(), $objectsToAutoFill, true)
             ) {
                 $autoFillFields[$key] = $field;
             }
@@ -1013,7 +1013,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
     {
         $contactField = $this->leadFieldModel->getEntityByAlias($contactFieldAlias); // @todo this must use all objects as well. Not just contact.
 
-        if (empty($contactField) || !in_array($contactField->getType(), ContactFieldHelper::getListTypes())) {
+        if (empty($contactField) || !in_array($contactField->getType(), ContactFieldHelper::getListTypes(), true)) {
             return null;
         }
 

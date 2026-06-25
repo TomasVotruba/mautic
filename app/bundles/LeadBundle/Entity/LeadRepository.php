@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -447,7 +447,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 $primary = null;
 
                 foreach ($companies as $company) {
-                    if (isset($company['is_primary']) && 1 == $company['is_primary']) {
+                    if (isset($company['is_primary']) && 1 === $company['is_primary']) {
                         $primary = $company;
                     }
                 }
@@ -511,7 +511,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
 
                     // Try to find the primary company
                     foreach ($companies[$id] as $company) {
-                        if (1 == $company['is_primary']) {
+                        if (1 === $company['is_primary']) {
                             $primary = $company;
                         }
                     }
@@ -675,7 +675,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
         }
 
         $args['qb']    = $qb;
-        $args['count'] = (ListController::ROUTE_SEGMENT_CONTACTS == $args['route']) ? $this->listLeadRepository->getContactsCountBySegment($entityId, $filters) : null;
+        $args['count'] = (ListController::ROUTE_SEGMENT_CONTACTS === $args['route']) ? $this->listLeadRepository->getContactsCountBySegment($entityId, $filters) : null;
 
         if ($dateFrom && $dateTo) {
             $qb->andWhere('entity.date_added BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
@@ -959,7 +959,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 $filter->strict = true;
                 break;
             default:
-                if (in_array($command, $this->availableSearchFields)) {
+                if (in_array($command, $this->availableSearchFields, true)) {
                     $expr = $q->expr()->$likeExpr("l.$command", ":$unique");
                 }
                 $returnParameter = true;

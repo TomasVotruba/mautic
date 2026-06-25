@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Model;
 
@@ -73,7 +73,7 @@ class TriggerEventModel extends CommonFormModel
         foreach ($entities as $entity) {
             $retrFilters = $entity->getProperties();
             foreach ($retrFilters as $eachFilter) {
-                if (in_array($segmentId, $eachFilter)) {
+                if (in_array($segmentId, $eachFilter, true)) {
                     $dependents[] = $entity->getTrigger()->getId();
                 }
             }
@@ -130,7 +130,7 @@ class TriggerEventModel extends CommonFormModel
         foreach ($entities as $entity) {
             $properties = $entity->getProperties();
             foreach ($properties as $property) {
-                if (in_array($tagName, $property)) {
+                if (in_array($tagName, $property, true)) {
                     $triggerIds[] = $entity->getTrigger()->getId();
                 }
             }

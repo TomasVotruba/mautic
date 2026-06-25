@@ -55,7 +55,7 @@ class SeriesPieChart extends AbstractChart implements ChartInterface
      */
     public function setDataset(array $value): static
     {
-        if (0 == $this->totalCount) {
+        if (0 === $this->totalCount) {
             foreach ($value as $item) {
                 $this->totalCount += $item;
             }

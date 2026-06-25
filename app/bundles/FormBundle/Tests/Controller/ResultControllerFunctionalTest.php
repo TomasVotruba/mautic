@@ -156,7 +156,7 @@ final class ResultControllerFunctionalTest extends MauticMysqlTestCase
 
         [, $data] = explode(';', $data);
         [, $data] = explode(',', $data);
-        $data     = base64_decode($data);
+        $data     = base64_decode($data, true);
 
         file_put_contents($filename, $data);
     }

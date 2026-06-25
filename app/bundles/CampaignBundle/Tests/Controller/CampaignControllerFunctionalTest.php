@@ -42,8 +42,8 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
             'testCampaignCountsBeforeSummarizeCommandWithoutSummaryWithRange', 'testCampaignCountsBeforeSummarizeCommandWithSummaryAndRange',
             'testCampaignCountsAfterSummarizeCommandWithoutSummaryWithRange', 'testCampaignCountsAfterSummarizeCommandWithSummaryAndRange',
             'testCampaignPendingCountsWithoutSummaryAndRange', 'testCampaignPendingCountsWithoutSummaryWithRange', 'testCampaignRemovedLeadCountsWithoutSummaryWithRange', 'testCampaignRemovedLeadCountsWithSummaryAndRange', 'testCampaignRemovedLeadAndPendingCountsWithSummaryAndRange', 'testCampaignRemovedLeadAndPendingCountsWithoutSummaryWithRange', ];
-        $this->configParams[self::CAMPAIGN_SUMMARY_PARAM] = in_array($this->name(), $functionForUseSummary);
-        $this->configParams[self::CAMPAIGN_RANGE_PARAM]   = in_array($this->name(), $functionForUseRange);
+        $this->configParams[self::CAMPAIGN_SUMMARY_PARAM] = in_array($this->name(), $functionForUseSummary, true);
+        $this->configParams[self::CAMPAIGN_RANGE_PARAM]   = in_array($this->name(), $functionForUseRange, true);
         parent::setUp();
 
         $model = static::getContainer()->get(CampaignModel::class);

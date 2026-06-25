@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity;
 
@@ -122,7 +122,7 @@ class CommonRepository extends ServiceEntityRepository
                         [$alias, $o] = explode('.', $o);
                     }
 
-                    if (in_array($o, $properties)) {
+                    if (in_array($o, $properties, true)) {
                         $o = preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $o);
                         $o = strtolower($o);
                     }
@@ -320,7 +320,7 @@ class CommonRepository extends ServiceEntityRepository
                 $baseCols[false][$entityClass] = $metadata->getFieldNames();
 
                 foreach ($metadata->getAssociationMappings() as $field => $association) {
-                    if (in_array($association['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE])) {
+                    if (in_array($association['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE], true)) {
                         $baseCols[true][$entityClass][]  = $association['joinColumns'][0]['name'];
                         $baseCols[false][$entityClass][] = $field;
                     }
@@ -493,16 +493,16 @@ class CommonRepository extends ServiceEntityRepository
         } else {
             $func = (!empty($filter['operator'])) ? $filter['operator'] : $filter['expr'];
 
-            if (in_array($func, ['isNull', 'isNotNull'])) {
+            if (in_array($func, ['isNull', 'isNotNull'], true)) {
                 $expr = $q->expr()->{$func}($filter['column']);
-            } elseif (in_array($func, ['in', 'notIn'])) {
+            } elseif (in_array($func, ['in', 'notIn'], true)) {
                 $expr = $q->expr()->{$func}($filter['column'], ':'.$unique);
                 $q->setParameter($unique, $filter['value'], ArrayParameterType::STRING);
-            } elseif (in_array($func, ['like', 'notLike'])) {
+            } elseif (in_array($func, ['like', 'notLike'], true)) {
                 if (isset($filter['strict']) && !$filter['strict']) {
                     if (is_numeric($filter['value'])) {
                         // Postgres doesn't like using "LIKE" with numbers
-                        $func = ('like' == $func) ? 'eq' : 'neq';
+                        $func = ('like' === $func) ? 'eq' : 'neq';
                     } else {
                         $filter['value'] = "%{$filter['value']}%";
                     }
@@ -704,7 +704,7 @@ class CommonRepository extends ServiceEntityRepository
         $reflection = new \ReflectionClass(new $class());
 
         // Get the label column if necessary
-        if (null == $labelColumn) {
+        if (null === $labelColumn) {
             $labelColumn = $reflection->hasMethod('getTitle') ? 'title' : 'name';
         }
 
@@ -1287,7 +1287,7 @@ class CommonRepository extends ServiceEntityRepository
                 $subJoinAdded = $this->buildDbalJoinsFromAssociations($q, $targetMetdata->getAssociationMappings(), $property, $propertyAllowedJoins);
             }
 
-            if ($subJoinAdded || in_array($property, $allowed)) {
+            if ($subJoinAdded || in_array($property, $allowed, true)) {
                 // Unset the property so that it's not used again in other the next level
                 unset($allowed[$property]);
                 $targetTable = $targetMetdata->getTableName();
@@ -1591,7 +1591,7 @@ class CommonRepository extends ServiceEntityRepository
                     continue;
                 }
 
-                if (in_array($clause['expr'], $andOr)) {
+                if (in_array($clause['expr'], $andOr, true)) {
                     $composite = $query->expr()->{$clause['expr']}();
                     $this->buildWhereClauseFromArray($query, $clause['val'], $composite);
 
@@ -1650,11 +1650,11 @@ class CommonRepository extends ServiceEntityRepository
                             break;
                         default:
                             if (method_exists($query->expr(), $clause['expr'])) {
-                                if (in_array($clause['expr'], $columnValue)) {
+                                if (in_array($clause['expr'], $columnValue, true)) {
                                     $param       = $this->generateRandomParameterName();
                                     $whereClause = $query->expr()->{$clause['expr']}($column, ':'.$param);
                                     $query->setParameter($param, $clause['val']);
-                                } elseif (in_array($clause['expr'], $justColumn)) {
+                                } elseif (in_array($clause['expr'], $justColumn, true)) {
                                     $whereClause = $query->expr()->{$clause['expr']}($column);
                                 }
                             }
@@ -1721,17 +1721,17 @@ class CommonRepository extends ServiceEntityRepository
         foreach ($commands as $k => $c) {
             if (is_array($c)) {
                 // subcommands
-                if ($this->translator->trans($k) == $command || $this->translator->trans($k, [], null, 'en_US') == $command) {
+                if ($this->translator->trans($k) === $command || $this->translator->trans($k, [], null, 'en_US') === $command) {
                     foreach ($c as $subc) {
-                        if ($this->translator->trans($subc) == $subcommand || $this->translator->trans($subc, [], null, 'en_US') == $subcommand) {
+                        if ($this->translator->trans($subc) === $subcommand || $this->translator->trans($subc, [], null, 'en_US') === $subcommand) {
                             return true;
                         }
                     }
                 }
-            } elseif ($this->translator->trans($c) == $command || $this->translator->trans($c, [], null, 'en_US') == $command) {
+            } elseif ($this->translator->trans($c) === $command || $this->translator->trans($c, [], null, 'en_US') === $command) {
                 return true;
-            } elseif ($this->translator->trans($c) == "{$command}:{$subcommand}"
-                || $this->translator->trans($c, [], null, 'en_US') == "{$command}:{$subcommand}"
+            } elseif ($this->translator->trans($c) === "{$command}:{$subcommand}"
+                || $this->translator->trans($c, [], null, 'en_US') === "{$command}:{$subcommand}"
             ) {
                 $command    = "{$command}:{$subcommand}";
                 $subcommand = '';
@@ -1796,7 +1796,7 @@ class CommonRepository extends ServiceEntityRepository
                 [$alias, $col] = explode('.', $col);
             }
 
-            if (in_array($col, $properties)) {
+            if (in_array($col, $properties, true)) {
                 $col = preg_replace('/(?<=\\w)(?=[A-Z])/', '_$1', $col);
                 $col = strtolower($col);
             }

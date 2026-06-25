@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Controller\Api;
 
@@ -58,7 +58,7 @@ class FileApiController extends CommonApiController
         if ($request->files->count() > 0) {
             foreach ($request->files as $file) {
                 $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
-                if (in_array($extension, $this->allowedExtensions)) {
+                if (in_array($extension, $this->allowedExtensions, true)) {
                     $fileName = md5(uniqid()).'.'.$extension;
                     $moved    = $file->move($path, $fileName);
 
@@ -160,7 +160,7 @@ class FileApiController extends CommonApiController
                 $subdir = implode('/', $dirs);
             }
 
-            if (!in_array($dir, $possibleDirs)) {
+            if (!in_array($dir, $possibleDirs, true)) {
                 throw new \InvalidArgumentException($dir.' not found. Only '.implode(' or ', $possibleDirs).' options are possible.');
             }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Form\Type;
 
@@ -48,7 +48,7 @@ class EventType extends AbstractType
             ]
         );
 
-        if (in_array($options['data']['eventType'], ['action', 'condition'])) {
+        if (in_array($options['data']['eventType'], ['action', 'condition'], true)) {
             $label = 'mautic.campaign.form.type';
 
             $choices = [
@@ -57,7 +57,7 @@ class EventType extends AbstractType
                 'date'      => 'mautic.campaign.form.type.date',
             ];
 
-            if (in_array($options['data']['type'], OptimizedScheduler::AVAILABLE_FOR_EVENTS)) {
+            if (in_array($options['data']['type'], OptimizedScheduler::AVAILABLE_FOR_EVENTS, true)) {
                 $choices['optimized'] = 'mautic.campaign.form.type.optimized';
             }
 

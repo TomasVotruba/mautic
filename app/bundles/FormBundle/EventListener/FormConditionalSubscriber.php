@@ -49,7 +49,7 @@ final class FormConditionalSubscriber implements EventSubscriberInterface
         // Delete child fields
         $deleteIds = [];
         foreach ($form->getFields() as $field) {
-            if ($field->getParent() && !in_array($field->getParent(), $actualFieldIds)) {
+            if ($field->getParent() && !in_array($field->getParent(), $actualFieldIds, true)) {
                 $deleteIds[] = $field->getId();
             }
         }

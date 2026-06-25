@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\Integration;
 
@@ -65,7 +65,7 @@ class OneSignalIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ('features' === $formArea) {
             $builder->add(
                 'subdomain_name',
                 TextType::class,

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller\Api;
 
@@ -179,7 +179,7 @@ class FormApiController extends CommonApiController
                     $requestFieldIds[] = $fieldParams['id'];
                 }
 
-                if (is_null($fieldEntity)) {
+                if (null === $fieldEntity) {
                     $msg = $this->translator->trans(
                         'mautic.core.error.entity.not.found',
                         [
@@ -199,7 +199,7 @@ class FormApiController extends CommonApiController
                 if (!empty($fieldParams['alias'])) {
                     $fieldParams['alias'] = $fieldModel->cleanAlias($fieldParams['alias'], 'f_', 25);
 
-                    if (!in_array($fieldParams['alias'], $aliases)) {
+                    if (!in_array($fieldParams['alias'], $aliases, true)) {
                         $fieldEntityArray['alias'] = $fieldParams['alias'];
                     }
                 }
@@ -209,7 +209,7 @@ class FormApiController extends CommonApiController
                 }
 
                 // Check that the alias is not already in use by another field
-                if (in_array($fieldEntityArray['alias'], $requestUsedAliases)) {
+                if (in_array($fieldEntityArray['alias'], $requestUsedAliases, true)) {
                     $msg = $this->translator->trans('mautic.form.field.alias.unique', ['%alias%' => $fieldEntityArray['alias']], 'validators');
 
                     return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
@@ -235,7 +235,7 @@ class FormApiController extends CommonApiController
             $fieldsToDelete = [];
 
             foreach ($currentFields as $currentField) {
-                if (!in_array($currentField->getId(), $requestFieldIds)) {
+                if (!in_array($currentField->getId(), $requestFieldIds, true)) {
                     $fieldsToDelete[] = $currentField->getId();
                 }
             }
@@ -282,7 +282,7 @@ class FormApiController extends CommonApiController
             $actionsToDelete = [];
 
             foreach ($currentActions as $currentAction) {
-                if (!in_array($currentAction->getId(), $requestActionIds)) {
+                if (!in_array($currentAction->getId(), $requestActionIds, true)) {
                     $actionsToDelete[] = $currentAction->getId();
                 }
             }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Event;
 
@@ -77,7 +77,7 @@ class ParseEmailEvent extends Event
         foreach ($folderKeys as $folderKey) {
             $key = $bundleKey.'_'.$folderKey;
 
-            if (in_array($key, $this->keys)) {
+            if (in_array($key, $this->keys, true)) {
                 return true;
             }
         }

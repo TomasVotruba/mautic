@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Form\DataTransformer;
 
@@ -29,7 +29,7 @@ class IdToEntityModelTransformer implements DataTransformerInterface
         $func = 'get'.ucfirst($this->id);
 
         if (!$this->isArray) {
-            if (is_null($entity) || !is_object($entity) || !method_exists($entity, $func)) {
+            if (null === $entity || !is_object($entity) || !method_exists($entity, $func)) {
                 return '';
             }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Form\DataTransformer;
 
@@ -37,17 +37,17 @@ class ReportFilterDataTransformer implements DataTransformerInterface
                 return $filters;
             }
             $type = $this->columns[$f['column']]['type'];
-            if (in_array($type, ['datetime', 'time', DateTimeType::class, DateType::class, TimeType::class])) {
+            if (in_array($type, ['datetime', 'time', DateTimeType::class, DateType::class, TimeType::class], true)) {
                 // Skip datetime parsing for string-like conditions
-                if (isset($f['condition']) && in_array($f['condition'], ['like', 'notLike', 'startsWith', 'endsWith', 'contains'])) {
+                if (isset($f['condition']) && in_array($f['condition'], ['like', 'notLike', 'startsWith', 'endsWith', 'contains'], true)) {
                     continue;
                 }
                 $dt         = new DateTimeHelper($f['value'], null, 'utc');
 
-                if (in_array($type, ['date', DateType::class])) {
+                if (in_array($type, ['date', DateType::class], true)) {
                     // Pass the specific format for a date
                     $f['value'] = $dt->toLocalString('Y-m-d');
-                } elseif (in_array($type, ['time', TimeType::class])) {
+                } elseif (in_array($type, ['time', TimeType::class], true)) {
                     // Pass the specific format for a time
                     $f['value'] = $dt->toLocalString('H:i:s');
                 } else {
@@ -76,9 +76,9 @@ class ReportFilterDataTransformer implements DataTransformerInterface
                 return $filters;
             }
             $type = $this->columns[$f['column']]['type'];
-            if (in_array($type, ['datetime', 'time'])) {
+            if (in_array($type, ['datetime', 'time'], true)) {
                 // Skip datetime parsing for string-like conditions
-                if (isset($f['condition']) && in_array($f['condition'], ['like', 'notLike', 'startsWith', 'endsWith', 'contains'])) {
+                if (isset($f['condition']) && in_array($f['condition'], ['like', 'notLike', 'startsWith', 'endsWith', 'contains'], true)) {
                     continue;
                 }
                 $dt         = new DateTimeHelper($f['value'], null, 'local');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DynamicContentBundle\Entity;
 
@@ -312,10 +312,10 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
 
-        if ('variantParent' == $prop || 'translationParent' == $prop || 'category' == $prop) {
+        if ('variantParent' === $prop || 'translationParent' === $prop || 'category' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
         } else {

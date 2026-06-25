@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller;
 
@@ -898,7 +898,7 @@ class CampaignController extends AbstractStandardFormController
                 $listFilters['filters']['groups']['mautic.campaign.leadsource.'.$type]['values'] = $typeFilters;
 
                 foreach ($typeFilters as $fltr) {
-                    if ('list' == $type) {
+                    if ('list' === $type) {
                         $listIds[] = (int) $fltr;
                     } else {
                         $formIds[] = (int) $fltr;
@@ -1263,7 +1263,7 @@ class CampaignController extends AbstractStandardFormController
             case 'interval':
                 if (!empty($event['triggerInterval']) && !empty($event['triggerIntervalUnit'])) {
                     return $this->translator->trans(
-                        'mautic.campaign.connection.trigger.interval.label'.('no' == $event['decisionPath'] ? '_inaction' : ''),
+                        'mautic.campaign.connection.trigger.interval.label'.('no' === $event['decisionPath'] ? '_inaction' : ''),
                         [
                             '%number%' => $event['triggerInterval'],
                             '%unit%'   => $this->translator->trans(
@@ -1277,7 +1277,7 @@ class CampaignController extends AbstractStandardFormController
             case 'date':
                 if (!empty($event['triggerDate'])) {
                     return $this->translator->trans(
-                        'mautic.campaign.connection.trigger.date.label'.('no' == $event['decisionPath'] ? '_inaction' : ''),
+                        'mautic.campaign.connection.trigger.date.label'.('no' === $event['decisionPath'] ? '_inaction' : ''),
                         [
                             '%full%' => $this->dateHelper->toFull($event['triggerDate']),
                             '%time%' => $this->dateHelper->toTime($event['triggerDate']),

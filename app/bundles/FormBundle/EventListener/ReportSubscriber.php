@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\EventListener;
 
@@ -302,7 +302,7 @@ class ReportSubscriber implements EventSubscriberInterface
         $viewOnlyFields = $this->formModel->getCustomComponents()['viewOnlyFields'];
 
         foreach ($fields as $field) {
-            if (!in_array($field->getType(), $viewOnlyFields)) {
+            if (!in_array($field->getType(), $viewOnlyFields, true)) {
                 $index                      = $prefix.$field->getAlias();
                 $formResultsColumns[$index] = [
                     'label' => $this->translator->trans('mautic.form.report.form_results.label', ['%field%' => $field->getLabel()]),

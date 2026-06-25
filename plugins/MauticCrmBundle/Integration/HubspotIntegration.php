@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
@@ -263,7 +263,7 @@ class HubspotIntegration extends CrmAbstractIntegration
 
         if (!$updateLink) {
             foreach ($leadData as $field => $value) {
-                if ('lifecyclestage' == $field || 'associatedcompanyid' == $field) {
+                if ('lifecyclestage' === $field || 'associatedcompanyid' === $field) {
                     continue;
                 }
                 $formattedLeadData['properties'][] = [
@@ -328,7 +328,7 @@ class HubspotIntegration extends CrmAbstractIntegration
                 ]
             );
         }
-        if ('features' == $formArea) {
+        if ('features' === $formArea) {
             $builder->add(
                 'objects',
                 ChoiceType::class,
@@ -360,9 +360,9 @@ class HubspotIntegration extends CrmAbstractIntegration
             $value              = str_replace(';', '|', $field['value']);
             $fieldsValues[$key] = $value;
         }
-        if ('Lead' == $object && !isset($fieldsValues['email'])) {
+        if ('Lead' === $object && !isset($fieldsValues['email'])) {
             foreach ($data['identity-profiles'][0]['identities'] as $identifiedProfile) {
-                if ('EMAIL' == $identifiedProfile['type']) {
+                if ('EMAIL' === $identifiedProfile['type']) {
                     $fieldsValues['email'] = $identifiedProfile['value'];
                 }
             }
@@ -513,7 +513,7 @@ class HubspotIntegration extends CrmAbstractIntegration
                     $stage->setName($stageName);
                     $stages[$stageName] = $stage;
                 }
-                if (!$lead->getStage() && $lead->getStage() != $stage) {
+                if (!$lead->getStage() && $lead->getStage() !== $stage) {
                     $lead->setStage($stage);
 
                     // add a contact stage change log

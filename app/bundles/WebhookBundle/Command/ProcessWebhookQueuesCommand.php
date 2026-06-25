@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\WebhookBundle\Command;
 
@@ -58,7 +58,7 @@ class ProcessWebhookQueuesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // check to make sure we are in queue mode
-        if ($this->coreParametersHelper->get('queue_mode') != $this->webhookModel::COMMAND_PROCESS) {
+        if ($this->coreParametersHelper->get('queue_mode') !== $this->webhookModel::COMMAND_PROCESS) {
             $output->writeLn('Webhook Bundle is in immediate process mode. To use the command function change to command mode.');
 
             return Command::SUCCESS;

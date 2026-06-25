@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
@@ -405,7 +405,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
         $language   = $page->getLanguage();
         $translated = $this->translator->trans('mautic.page.lang.'.$language);
 
-        if ($translated == 'mautic.page.lang.'.$language) {
+        if ($translated === 'mautic.page.lang.'.$language) {
             $translated = $language;
         }
 

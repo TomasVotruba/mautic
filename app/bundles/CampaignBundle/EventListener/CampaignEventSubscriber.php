@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\EventListener;
 
@@ -190,7 +190,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         }
         $eventPreview->addEventStat('pending_executions', $logStats->pendingExecutions);
 
-        if (in_array($eventPreview->event->getEventType(), ['condition', 'decision'])) {
+        if (in_array($eventPreview->event->getEventType(), ['condition', 'decision'], true)) {
             $eventPreview->addEventStat('negative_path_count', $logStats->negativePathCount);
             $eventPreview->addEventStat('positive_path_count', $logStats->positivePathCount);
         }

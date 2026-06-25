@@ -30,7 +30,7 @@ final class AssetExportListEvent extends CommonEvent
 
     public function setList(string $item): void
     {
-        if (!in_array($item, $this->list)) {
+        if (!in_array($item, $this->list, true)) {
             $this->list[] = $item;
         }
     }

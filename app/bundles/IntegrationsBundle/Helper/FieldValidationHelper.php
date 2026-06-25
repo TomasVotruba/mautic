@@ -35,7 +35,7 @@ class FieldValidationHelper
         }
 
         $features = $integrationConfiguration->getSupportedFeatures();
-        if (!in_array(ConfigFormFeaturesInterface::FEATURE_SYNC, $features)) {
+        if (!in_array(ConfigFormFeaturesInterface::FEATURE_SYNC, $features, true)) {
             // Don't bind form errors if sync is not enabled
             return;
         }

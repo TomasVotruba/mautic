@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\EventListener;
 
@@ -47,15 +47,15 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         }
 
         $startDate = $parent->getVariantStartDate();
-        if (null != $startDate) {
-            $counts = ('page' == $type) ? $this->submissionRepository->getSubmissionCountsByPage($ids, $startDate) : $this->submissionRepository->getSubmissionCountsByEmail($ids, $startDate);
+        if (null !== $startDate) {
+            $counts = ('page' === $type) ? $this->submissionRepository->getSubmissionCountsByPage($ids, $startDate) : $this->submissionRepository->getSubmissionCountsByEmail($ids, $startDate);
 
             if ($counts) {
                 $submissions = $support = $data = [];
                 $hasResults  = [];
 
                 $submissionLabel = $this->translator->trans('mautic.form.abtest.label.submissions');
-                $hitLabel        = ('page' == $type) ? $this->translator->trans('mautic.form.abtest.label.hits') : $this->translator->trans('mautic.form.abtest.label.sentemils');
+                $hitLabel        = ('page' === $type) ? $this->translator->trans('mautic.form.abtest.label.hits') : $this->translator->trans('mautic.form.abtest.label.sentemils');
 
                 foreach ($counts as $stats) {
                     $submissionRate            = ($stats['total']) ? round(($stats['count'] / $stats['total']) * 100, 2) : 0;
@@ -67,18 +67,18 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 }
 
                 // make sure that parent and published children are included
-                if (!in_array($parent->getId(), $hasResults)) {
+                if (!in_array($parent->getId(), $hasResults, true)) {
                     $data[$submissionLabel][] = 0;
                     $data[$hitLabel][]        = 0;
-                    $support['labels'][]      = (('page' == $type) ? $parent->getTitle() : $parent->getName()).' (0%)';
+                    $support['labels'][]      = (('page' === $type) ? $parent->getTitle() : $parent->getName()).' (0%)';
                 }
 
                 foreach ($children as $c) {
                     if ($c->isPublished()) {
-                        if (!in_array($c->getId(), $hasResults)) {
+                        if (!in_array($c->getId(), $hasResults, true)) {
                             $data[$submissionLabel][] = 0;
                             $data[$hitLabel][]        = 0;
-                            $support['labels'][]      = (('page' == $type) ? $c->getTitle() : $c->getName()).' (0%)';
+                            $support['labels'][]      = (('page' === $type) ? $c->getTitle() : $c->getName()).' (0%)';
                         }
                     }
                 }
@@ -99,7 +99,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $max = max($submissions);
 
                 // get the page ids with the most number of submissions
-                $winners = array_keys($submissions, $max);
+                $winners = array_keys($submissions, $max, true);
 
                 $event->setAbTestResults([
                     'winners'         => $winners,

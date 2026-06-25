@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Controller;
 
@@ -17,7 +17,7 @@ class ExceptionController extends CommonController
         $exception      = FlattenException::createFromThrowable($exception, $exception->getCode(), $request->headers->all());
         $class          = $exception->getClass();
         $currentContent = $this->getAndCleanOutputBuffering($request->headers->get('X-Php-Ob-Level', -1));
-        $layout         = 'prod' == MAUTIC_ENV ? 'Error' : 'Exception';
+        $layout         = 'prod' === MAUTIC_ENV ? 'Error' : 'Exception';
         $code           = $exception->getStatusCode();
 
         // All valid status codes are within the range of 100 to 599, inclusive
@@ -55,7 +55,7 @@ class ExceptionController extends CommonController
                 ],
             ];
 
-            if ('dev' == MAUTIC_ENV) {
+            if ('dev' === MAUTIC_ENV) {
                 $dataArray['trace'] = $exception->getTrace();
             }
 
@@ -102,8 +102,8 @@ class ExceptionController extends CommonController
                     'error' => [
                         'code'      => $code,
                         'text'      => $statusText,
-                        'exception' => ('dev' == MAUTIC_ENV) ? $exception->getMessage() : '',
-                        'trace'     => ('dev' == MAUTIC_ENV) ? $exception->getTrace() : '',
+                        'exception' => ('dev' === MAUTIC_ENV) ? $exception->getMessage() : '',
+                        'trace'     => ('dev' === MAUTIC_ENV) ? $exception->getTrace() : '',
                     ],
                     'route' => $urlParts['path'] ?? $url,
                 ],

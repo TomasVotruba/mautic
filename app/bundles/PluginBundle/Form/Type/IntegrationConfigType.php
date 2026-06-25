@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Form\Type;
 
@@ -14,7 +14,7 @@ class IntegrationConfigType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (null != $options['integration']) {
+        if (null !== $options['integration']) {
             $options['integration']->appendToForm($builder, $options['data'], 'integration');
         }
 

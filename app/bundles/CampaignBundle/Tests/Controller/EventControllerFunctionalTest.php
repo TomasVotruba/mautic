@@ -52,7 +52,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             'eventType',
             'anchor',
             'anchorEventType',
-        ]), ARRAY_FILTER_USE_KEY);
+        ], true), ARRAY_FILTER_USE_KEY);
         $expectedEventData = [
             'name'            => 'Contact field value',
             'type'            => 'lead.field_value',

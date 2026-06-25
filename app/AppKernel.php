@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Mautic\CoreBundle\Loader\ParameterLoader;
 use Mautic\CoreBundle\Release\ThisRelease;
@@ -186,12 +186,12 @@ class AppKernel extends Kernel
             }
         }
 
-        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
+        if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Symfony\Bundle\MakerBundle\MakerBundle();
         }
 
-        if (in_array($this->getEnvironment(), ['test'])) {
+        if (in_array($this->getEnvironment(), ['test'], true)) {
             $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
             $bundles[] = new Liip\TestFixturesBundle\LiipTestFixturesBundle();
         }
@@ -316,7 +316,7 @@ class AppKernel extends Kernel
     public function getCacheDir(): string
     {
         if ($cachePath = $this->getParameterLoader()->getLocalParameterBag()->get('cache_path')) {
-            $envFolder = ('/' != substr($cachePath, -1)) ? '/'.$this->environment : $this->environment;
+            $envFolder = ('/' !== substr($cachePath, -1)) ? '/'.$this->environment : $this->environment;
 
             return str_replace('%kernel.project_dir%', $this->getProjectDir(), $cachePath.$envFolder);
         }

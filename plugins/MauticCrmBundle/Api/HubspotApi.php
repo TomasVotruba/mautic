@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Api;
 
@@ -23,12 +23,12 @@ class HubspotApi extends CrmApi
             $url     = sprintf('%s/%s/%s/?hapikey=%s', $this->integration->getApiUrl(), $object, $operation, $this->integration->getHubSpotApiKey());
         }
         $request = $this->integration->makeRequest($url, $parameters, $method, $this->requestSettings);
-        if (isset($request['status']) && 'error' == $request['status']) {
+        if (isset($request['status']) && 'error' === $request['status']) {
             $message = $request['message'];
             if (isset($request['validationResults'])) {
                 $message .= " \n ".print_r($request['validationResults'], true);
             }
-            if (isset($request['validationResults'][0]['error']) && 'PROPERTY_DOESNT_EXIST' == $request['validationResults'][0]['error']) {
+            if (isset($request['validationResults'][0]['error']) && 'PROPERTY_DOESNT_EXIST' === $request['validationResults'][0]['error']) {
                 $this->createProperty($request['validationResults'][0]['name']);
                 $this->request($operation, $parameters, $method, $object);
             } else {
@@ -36,7 +36,7 @@ class HubspotApi extends CrmApi
             }
         }
 
-        if (isset($request['error']) && 401 == $request['error']['code']) {
+        if (isset($request['error']) && 401 === $request['error']['code']) {
             $response = json_decode($request['error']['message'] ?? null, true);
 
             if (isset($response)) {
@@ -57,7 +57,7 @@ class HubspotApi extends CrmApi
      */
     public function getLeadFields($object = 'contacts')
     {
-        if ('company' == $object) {
+        if ('company' === $object) {
             $object = 'companies'; // hubspot company object name
         }
 

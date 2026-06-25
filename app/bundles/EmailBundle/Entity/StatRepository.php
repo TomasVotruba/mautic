@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Entity;
 
@@ -374,7 +374,7 @@ class StatRepository extends CommonRepository
         }
 
         foreach ($totalCounts as $t) {
-            if (null != $t['email_id']) {
+            if (null !== $t['email_id']) {
                 $return[$t['email_id']]['totalCount'] = (int) $t['the_count'];
             }
         }
@@ -462,12 +462,12 @@ class StatRepository extends CommonRepository
 
         if (isset($options['state'])) {
             $state = $options['state'];
-            if ('read' == $state) {
+            if ('read' === $state) {
                 $timestampColumn = 's.date_read';
                 $query->andWhere(
                     $query->expr()->eq('s.is_read', 1)
                 );
-            } elseif ('failed' == $state) {
+            } elseif ('failed' === $state) {
                 $query->andWhere(
                     $query->expr()->eq('s.is_failed', 1)
                 );

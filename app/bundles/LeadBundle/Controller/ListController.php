@@ -66,7 +66,7 @@ class ListController extends FormController
         $permissions = $this->security->isGranted($permissionsToCheck, 'RETURN_ARRAY');
 
         // If no permission set to the current user.
-        if (!in_array(1, $permissions)) {
+        if (!in_array(1, $permissions, true)) {
             $this->throwAccessDenied();
         }
 
@@ -317,7 +317,7 @@ class ListController extends FormController
         $form = $segmentModel->createForm($segment, $this->formFactory, $action);
 
         // Check for a submitted form and process it
-        if (!$ignorePost && Request::METHOD_POST == $request->getMethod()) {
+        if (!$ignorePost && Request::METHOD_POST === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -692,13 +692,13 @@ class ListController extends FormController
             } elseif ($model->isLocked($lead)) {
                 return $this->isLocked($postActionVars, $lead, 'lead');
             } else {
-                $function = ('remove' == $action) ? 'removeLead' : 'addLead';
+                $function = ('remove' === $action) ? 'removeLead' : 'addLead';
                 $model->$function($lead, $list, true);
 
                 $identifier = $this->translator->trans($lead->getPrimaryIdentifier());
                 $flashes[]  = [
                     'type' => 'notice',
-                    'msg'  => ('remove' == $action) ? 'mautic.lead.lead.notice.removedfromlists' :
+                    'msg'  => ('remove' === $action) ? 'mautic.lead.lead.notice.removedfromlists' :
                         'mautic.lead.lead.notice.addedtolists',
                     'msgVars' => [
                         '%name%' => $identifier,
@@ -893,7 +893,7 @@ class ListController extends FormController
                 $listFilters['filters']['groups']['mautic.lead.list.source.segment.'.$type]['values'] = $typeFilters;
 
                 foreach ($typeFilters as $fltr) {
-                    if ('category' == $type) {
+                    if ('category' === $type) {
                         $catIds[] = (int) $fltr;
                     } // else for other group filters
                 }
@@ -955,13 +955,13 @@ class ListController extends FormController
         }
 
         if (!empty($filters)) {
-            if (isset($filters['includeEvents']) && in_array('manually_added', $filters['includeEvents'])) {
+            if (isset($filters['includeEvents']) && in_array('manually_added', $filters['includeEvents'], true)) {
                 $listFilters = array_merge($listFilters, ['manually_added' => 1]);
             }
-            if (isset($filters['includeEvents']) && in_array('manually_removed', $filters['includeEvents'])) {
+            if (isset($filters['includeEvents']) && in_array('manually_removed', $filters['includeEvents'], true)) {
                 $listFilters = array_merge($listFilters, ['manually_removed' => 1]);
             }
-            if (isset($filters['includeEvents']) && in_array('filter_added', $filters['includeEvents'])) {
+            if (isset($filters['includeEvents']) && in_array('filter_added', $filters['includeEvents'], true)) {
                 $listFilters = array_merge($listFilters, ['manually_added' => 0]);
             }
         }

@@ -298,12 +298,12 @@ final class ImportController extends AbstractFormController
 
                         foreach ($group[$entityType] as &$item) {
                             if (isset($item['uuid']) && (int) $item['uuid'] === (int) $entityUuid) {
-                                if (Campaign::ENTITY_NAME == $entityType) {
+                                if (Campaign::ENTITY_NAME === $entityType) {
                                     foreach ($group[Event::ENTITY_NAME] as &$eventItem) {
                                         $eventItem['uuid'] = '';
                                     }
                                 }
-                                if (Form::ENTITY_NAME == $entityType) {
+                                if (Form::ENTITY_NAME === $entityType) {
                                     if (isset($group[Field::ENTITY_NAME])) {
                                         foreach ($group[Field::ENTITY_NAME] as &$fieldItem) {
                                             $fieldItem['uuid'] = '';

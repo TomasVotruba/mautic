@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Helper;
 
@@ -380,7 +380,7 @@ class MailHelper
             // Attach assets
             /** @var Asset $asset */
             foreach ($this->assets as $asset) {
-                if (!in_array($asset->getId(), $this->attachedAssets)) {
+                if (!in_array($asset->getId(), $this->attachedAssets, true)) {
                     $this->attachedAssets[] = $asset->getId();
                     $this->attachFile(
                         $asset->getFilePath(),
@@ -665,7 +665,7 @@ class MailHelper
         // Parts (plaintext)
         $textBody     = $message->getTextBody() ?? '';
         $bodyReplaced = str_ireplace($search, $replace, $textBody);
-        if ($textBody != $bodyReplaced) {
+        if ($textBody !== $bodyReplaced) {
             $textBody = strip_tags($bodyReplaced);
             $message->text($textBody);
         }
@@ -1441,7 +1441,7 @@ class MailHelper
      */
     public function parsePlainText($content = null): void
     {
-        if (null == $content) {
+        if (null === $content) {
             if (!$content = $this->message->getHtmlBody()) {
                 $content = $this->body['content'];
             }
@@ -1885,7 +1885,7 @@ class MailHelper
                 }
 
                 try {
-                    if (in_array(strtolower($headerKey), ['from', 'to', 'cc', 'bcc', 'reply-to'])) {
+                    if (in_array(strtolower($headerKey), ['from', 'to', 'cc', 'bcc', 'reply-to'], true)) {
                         // Handling headers that require MailboxListHeader
                         $headerValue = array_map(fn ($address): Address => new Address($address),
                             explode(',', $headerValue));

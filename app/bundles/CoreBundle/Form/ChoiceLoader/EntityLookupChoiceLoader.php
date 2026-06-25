@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Form\ChoiceLoader;
 
@@ -166,7 +166,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
 
         if (!$isGrouped) {
             // fix for array_count_values error when there are null values
-            $prepped = array_replace($prepped, array_fill_keys(array_keys($prepped, null), ''));
+            $prepped = array_replace($prepped, array_fill_keys(array_keys($prepped, null, true), ''));
             // Same labels will cause options to be merged with Symfony 2.8+ so ensure labels are unique
             $counts     = array_count_values($prepped);
             $duplicates = array_filter(
@@ -203,7 +203,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
         }
 
         $args = $this->options['lookup_arguments'] ?? [];
-        if ($dataPlaceholder = array_search('$data', $args)) {
+        if ($dataPlaceholder = array_search('$data', $args, true)) {
             $args[$dataPlaceholder] = $data;
         }
 
@@ -288,7 +288,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
      */
     private function sanitizeIds(int|string|array|object|null $data): array
     {
-        if (is_null($data)) {
+        if (null === $data) {
             return [];
         }
 

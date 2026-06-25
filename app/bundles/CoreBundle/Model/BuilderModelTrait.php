@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -15,7 +15,7 @@ trait BuilderModelTrait
      */
     public function getCommonBuilderComponents($requestedComponents, BuilderEvent $event)
     {
-        $singleComponent = (!is_array($requestedComponents) && 'all' != $requestedComponents);
+        $singleComponent = (!is_array($requestedComponents) && 'all' !== $requestedComponents);
         $components      = [];
 
         if (!is_array($requestedComponents)) {

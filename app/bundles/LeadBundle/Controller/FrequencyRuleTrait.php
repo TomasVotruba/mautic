@@ -65,7 +65,7 @@ trait FrequencyRuleTrait
             }
         }
 
-        if (null == $data) {
+        if (null === $data) {
             $data = $this->getFrequencyRuleFormData($lead, $allChannels, $leadChannels, $isPublic, null, $isPreferenceCenter);
         }
         /** @var FormInterface $form */
@@ -170,7 +170,7 @@ trait FrequencyRuleTrait
             foreach ($formData['lead_channels']['subscribed_channels'] as $contactChannel) {
                 if (!isset($leadChannels[$contactChannel])) {
                     $contactable = $dncModel->isContactable($lead, $contactChannel);
-                    if (DoNotContact::UNSUBSCRIBED == $contactable || DoNotContact::MANUAL == $contactable) {
+                    if (DoNotContact::UNSUBSCRIBED === $contactable || DoNotContact::MANUAL === $contactable) {
                         $dncModel->removeDncForContact($lead->getId(), $contactChannel);
                     }
                 }

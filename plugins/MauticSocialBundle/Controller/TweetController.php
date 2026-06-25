@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticSocialBundle\Controller;
 
@@ -104,7 +104,7 @@ class TweetController extends FormController
      */
     protected function getTemplateName($file): string
     {
-        if (('form.html.twig' === $file) && 1 == $this->getCurrentRequest()->get('modal')) {
+        if (('form.html.twig' === $file) && 1 === $this->getCurrentRequest()->get('modal')) {
             return '@MauticSocial/Tweet/form_modal.html.twig';
         }
 

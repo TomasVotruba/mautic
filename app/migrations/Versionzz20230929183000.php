@@ -20,7 +20,7 @@ final class Versionzz20230929183000 extends AbstractMauticMigration
         $matches = glob($appConfigDir.'/*local.php');
 
         $this->skipIf(
-            0 == count($matches),
+            0 === count($matches),
             'There are no local config files to migrate. Skipping the migration.'
         );
     }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\DataFixtures\ORM;
 
@@ -26,9 +26,9 @@ class LoadEmailData extends AbstractFixture implements OrderedFixtureInterface
             $email->setDateAdded(new \DateTime());
             $key = $count + 1;
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ('NULL' !== $val) {
                     $setter = 'set'.ucfirst($col);
-                    if (in_array($col, ['content', 'variantSettings'])) {
+                    if (in_array($col, ['content', 'variantSettings'], true)) {
                         $val = Serializer::decode(stripslashes($val));
                     }
                     $email->$setter($val);

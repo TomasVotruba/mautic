@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
@@ -67,7 +67,7 @@ EOT
                 $this->doNotSellList->stripCIDR($item['value']), $this->doNotSellList->getList());
             $doNotSellContacts = $this->findContactsFromIPs($doNotSellListIPs);
 
-            if (0 == count($doNotSellContacts)) {
+            if (0 === count($doNotSellContacts)) {
                 $output->writeln('<info>No matches found.</info>');
 
                 return Command::SUCCESS;
@@ -120,7 +120,7 @@ EOT
     {
         /** @var Lead $lead */
         $lead       = $this->leadRepository->findOneBy(['id' => $contactId]);
-        $matchedIps = array_filter($lead->getIpAddresses()->getValues(), fn ($item): bool => $item->getIpAddress() == $ip);
+        $matchedIps = array_filter($lead->getIpAddresses()->getValues(), fn ($item): bool => $item->getIpAddress() === $ip);
 
         if (!$matchedIps) {
             return;
@@ -132,19 +132,19 @@ EOT
         }
 
         $changed = false;
-        if (($ipDetails['city'] ?? '') == $lead->getCity()) {
+        if (($ipDetails['city'] ?? '') === $lead->getCity()) {
             $lead->setCity(null);
             $changed = true;
         }
-        if (($ipDetails['region'] ?? '') == $lead->getState()) {
+        if (($ipDetails['region'] ?? '') === $lead->getState()) {
             $lead->setState(null);
             $changed = true;
         }
-        if (($ipDetails['country'] ?? '') == $lead->getCountry()) {
+        if (($ipDetails['country'] ?? '') === $lead->getCountry()) {
             $lead->setCountry(null);
             $changed = true;
         }
-        if (($ipDetails['zipcode'] ?? '') == $lead->getZipcode()) {
+        if (($ipDetails['zipcode'] ?? '') === $lead->getZipcode()) {
             $lead->setZipcode(null);
             $changed = true;
         }

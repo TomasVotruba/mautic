@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller;
 
@@ -96,7 +96,7 @@ class EventController extends CommonFormController
         }
 
         // set the eventType key for events
-        if (!in_array($eventType, $this->supportedEventTypes)) {
+        if (!in_array($eventType, $this->supportedEventTypes, true)) {
             return $this->modalAccessDenied();
         }
 
@@ -256,7 +256,7 @@ class EventController extends CommonFormController
          */
         if (empty($event)
             || empty($event['eventType'])
-            || !in_array($event['eventType'], $this->supportedEventTypes)
+            || !in_array($event['eventType'], $this->supportedEventTypes, true)
             || !isset($event['type'])
             || !$request->isXmlHttpRequest()
             || !$this->security->isGranted(
@@ -381,14 +381,14 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ('POST' === $request->getMethod() && null !== $event) {
             $events = $this->eventCollector->getEventsArray();
             if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
                 $event['settings'] = $events[$event['eventType']][$event['type']];
             }
 
             // Add the field to the delete list
-            if (!in_array($objectId, $deletedEvents)) {
+            if (!in_array($objectId, $deletedEvents, true)) {
                 // If event is new don't add to deleted list
                 if (!str_contains($objectId, 'new')) {
                     $redirectEvent = $request->get('redirectTo');
@@ -448,7 +448,7 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ('POST' === $request->getMethod() && null !== $event) {
             $events = $this->eventCollector->getEventsArray();
             if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
                 $event['settings'] = $events[$event['eventType']][$event['type']];
@@ -515,7 +515,7 @@ class EventController extends CommonFormController
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $event) {
+        if ('POST' === $request->getMethod() && null !== $event) {
             $keyId          = 'new'.hash('sha1', uniqid((string) mt_rand()));
             $event['id']    = $event['tempId']    = $keyId;
             $session->set('mautic.campaign.events.clone.storage', $event);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticSocialBundle\Integration;
 
@@ -215,7 +215,7 @@ class FoursquareIntegration extends SocialIntegration
 
     public function matchFieldName($field, $subfield = '')
     {
-        if ('contact' == $field && in_array($subfield, ['facebook', 'twitter'])) {
+        if ('contact' === $field && in_array($subfield, ['facebook', 'twitter'], true)) {
             return $subfield.'ProfileHandle';
         }
 

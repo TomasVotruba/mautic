@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Twig\Helper;
 
@@ -185,7 +185,7 @@ final class AssetsHelper
         $addScripts = function ($s) use ($location, &$assets, $async, $name): void {
             $name = $name ?: 'script_'.hash('sha1', uniqid((string) mt_rand()));
 
-            if ('head' == $location) {
+            if ('head' === $location) {
                 // special place for these so that declarations and scripts can be mingled
                 $assets['headDeclarations'][$name] = ['script' => [$s, $async]];
             } else {
@@ -193,7 +193,7 @@ final class AssetsHelper
                     $assets['scripts'][$location] = [];
                 }
 
-                if (!in_array($s, $assets['scripts'][$location])) {
+                if (!in_array($s, $assets['scripts'][$location], true)) {
                     $assets['scripts'][$location][$name] = [$s, $async];
                 }
             }
@@ -220,7 +220,7 @@ final class AssetsHelper
      */
     public function addScriptDeclaration($script, $location = 'head')
     {
-        if ('head' == $location) {
+        if ('head' === $location) {
             // special place for these so that declarations and scripts can be mingled
             $this->assets[$this->context]['headDeclarations'][] = ['declaration' => $script];
         } else {
@@ -228,7 +228,7 @@ final class AssetsHelper
                 $this->assets[$this->context]['scriptDeclarations'][$location] = [];
             }
 
-            if (!in_array($script, $this->assets[$this->context]['scriptDeclarations'][$location])) {
+            if (!in_array($script, $this->assets[$this->context]['scriptDeclarations'][$location], true)) {
                 $this->assets[$this->context]['scriptDeclarations'][$location][] = $script;
             }
         }
@@ -250,7 +250,7 @@ final class AssetsHelper
                 $this->assets[$this->context]['stylesheets'] = [];
             }
 
-            if (!in_array($s, $this->assets[$this->context]['stylesheets'])) {
+            if (!in_array($s, $this->assets[$this->context]['stylesheets'], true)) {
                 $this->assets[$this->context]['stylesheets'][] = $s;
             }
         };
@@ -279,7 +279,7 @@ final class AssetsHelper
             $this->assets[$this->context]['styleDeclarations'] = [];
         }
 
-        if (!in_array($styles, $this->assets[$this->context]['styleDeclarations'])) {
+        if (!in_array($styles, $this->assets[$this->context]['styleDeclarations'], true)) {
             $this->assets[$this->context]['styleDeclarations'][] = $styles;
         }
 
@@ -296,14 +296,14 @@ final class AssetsHelper
      */
     public function addCustomDeclaration($declaration, $location = 'head')
     {
-        if ('head' == $location) {
+        if ('head' === $location) {
             $this->assets[$this->context]['headDeclarations'][] = ['custom' => $declaration];
         } else {
             if (!isset($this->assets[$this->context]['customDeclarations'][$location])) {
                 $this->assets[$this->context]['customDeclarations'][$location] = [];
             }
 
-            if (!in_array($declaration, $this->assets[$this->context]['customDeclarations'][$location])) {
+            if (!in_array($declaration, $this->assets[$this->context]['customDeclarations'][$location], true)) {
                 $this->assets[$this->context]['customDeclarations'][$location][] = $declaration;
             }
         }
@@ -404,10 +404,10 @@ final class AssetsHelper
                         break;
                     case 'custom':
                     case 'declaration':
-                        if ('custom' == $type && $scriptOpen) {
+                        if ('custom' === $type && $scriptOpen) {
                             $headOutput .= "\n</script>";
                             $scriptOpen = false;
-                        } elseif ('declaration' == $type && !$scriptOpen) {
+                        } elseif ('declaration' === $type && !$scriptOpen) {
                             $headOutput .= "\n<script data-source=\"mautic\">";
                             $scriptOpen = true;
                         }
@@ -586,7 +586,7 @@ final class AssetsHelper
                     $match[0] = $this->escape($match[0]);
                     $match[1] = $this->escape($match[1]);
 
-                    return '<'.array_push($links, "<a $attr href=\"https://twitter.com/".('@' == $match[0][0] ? '' : 'search/%23').$match[1]."\">{$match[0]}</a>").'>';
+                    return '<'.array_push($links, "<a $attr href=\"https://twitter.com/".('@' === $match[0][0] ? '' : 'search/%23').$match[1]."\">{$match[0]}</a>").'>';
                 }, $text),
                 default => preg_replace_callback('~'.preg_quote($protocol, '~').'://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr): string {
                     $match[1] = $this->escape($match[1]);

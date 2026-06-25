@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
@@ -579,7 +579,7 @@ class ZohoIntegration extends CrmAbstractIntegration
     {
         $authType = $this->getAuthenticationType();
 
-        if ('oauth2' == $authType) {
+        if ('oauth2' === $authType) {
             $callback    = $this->getAuthCallbackUrl();
             $clientIdKey = $this->getClientIdKey();
             $state       = $this->getAuthLoginState();
@@ -615,7 +615,7 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ('features' === $formArea) {
             $builder->add(
                 'updateBlanks',
                 ChoiceType::class,
@@ -733,12 +733,12 @@ class ZohoIntegration extends CrmAbstractIntegration
                         /** @var array $opts */
                         $opts = $leadObject['fields'];
                         foreach ($opts as $field) {
-                            if (true == $field['read_only']) {
+                            if (true === $field['read_only']) {
                                 continue;
                             }
 
                             $is_required = false;
-                            if (true == $field['system_mandatory']) {
+                            if (true === $field['system_mandatory']) {
                                 $is_required = true;
                             }
 
@@ -787,13 +787,13 @@ class ZohoIntegration extends CrmAbstractIntegration
         }
         $config                = $this->mergeConfigToFeatureSettings();
         $integrationEntityRepo = $this->em->getRepository(IntegrationEntity::class);
-        $fieldsToUpdateInZoho  = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0) : [];
+        $fieldsToUpdateInZoho  = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0, true) : [];
         $leadFields            = array_unique(array_values($config['leadFields']));
         $totalUpdated          = $totalCreated = $totalErrors = 0;
-        if ($key = array_search('mauticContactTimelineLink', $leadFields)) {
+        if ($key = array_search('mauticContactTimelineLink', $leadFields, true)) {
             unset($leadFields[$key]);
         }
-        if ($key = array_search('mauticContactIsContactableByEmail', $leadFields)) {
+        if ($key = array_search('mauticContactIsContactableByEmail', $leadFields, true)) {
             unset($leadFields[$key]);
         }
         if (empty($leadFields)) {
@@ -1016,7 +1016,7 @@ class ZohoIntegration extends CrmAbstractIntegration
         $config  = $this->mergeConfigToFeatureSettings($config);
         $zObject = 'Leads';
 
-        $fieldsToUpdateInZoho       = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0) : [];
+        $fieldsToUpdateInZoho       = isset($config['update_mautic']) ? array_keys($config['update_mautic'], 0, true) : [];
         $availableFields            = $this->getAvailableLeadFields(['feature_settings' => ['objects' => ['Leads', 'Contacts']]]);
         $fieldsToUpdate['Leads']    = array_values(array_intersect(array_keys($availableFields['Leads']), $fieldsToUpdateInZoho));
         $fieldsToUpdate['Contacts'] = array_values(array_intersect(array_keys($availableFields['Contacts']), $fieldsToUpdateInZoho));
@@ -1075,7 +1075,7 @@ class ZohoIntegration extends CrmAbstractIntegration
     public function getBlankFieldsToUpdate($fields, $sfRecord, $objectFields, $config)
     {
         // check if update blank fields is selected
-        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' == $config['updateBlanks'][0]) {
+        if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' === $config['updateBlanks'][0]) {
             foreach ($sfRecord as $fieldName => $sfField) {
                 if (array_key_exists($fieldName, $objectFields['required']['fields'])) {
                     continue; // this will be treated differently

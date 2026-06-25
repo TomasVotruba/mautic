@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticFocusBundle\Model;
 
@@ -371,8 +371,8 @@ class FocusModel extends FormModel implements GlobalSearchInterface
         $data = $query->loadAndBuildTimeData($q);
         $chart->setDataset($this->translator->trans('mautic.focus.graph.views'), $data);
 
-        if ('notification' != $focus->getType()) {
-            if ('link' == $focus->getType()) {
+        if ('notification' !== $focus->getType()) {
+            if ('link' === $focus->getType()) {
                 $q = $query->prepareTimeDataQuery('focus_stats', 'date_added', ['type' => Stat::TYPE_CLICK, 'focus_id' => $focus->getId()]);
                 if (!$canViewOthers) {
                     $this->limitQueryToCreator($q);
@@ -421,7 +421,7 @@ class FocusModel extends FormModel implements GlobalSearchInterface
     {
         $focusArray = $focus->toArray();
 
-        if ('link' != $focusArray['type'] || !($linkUrl = $focusArray['properties']['content']['link_url'])) {
+        if ('link' !== $focusArray['type'] || !($linkUrl = $focusArray['properties']['content']['link_url'])) {
             return null;
         }
 

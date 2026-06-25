@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Form\Type;
 
@@ -50,14 +50,14 @@ class FeatureSettingsType extends AbstractType
             $settings    = [
                 'silence_exceptions' => false,
                 'feature_settings'   => $data,
-                'ignore_field_cache' => 1 == $page && 'POST' !== strtoupper($method),
+                'ignore_field_cache' => 1 === $page && 'POST' !== strtoupper($method),
             ];
 
             try {
                 $fields = $integrationObject->getFormLeadFields($settings);
                 $fields = $fields[0] ?? $fields;
 
-                if (isset($settings['feature_settings']['objects']) and in_array('company', $settings['feature_settings']['objects'])) {
+                if (isset($settings['feature_settings']['objects']) and in_array('company', $settings['feature_settings']['objects'], true)) {
                     $integrationCompanyFields = $integrationObject->getFormCompanyFields($settings);
                     if (isset($integrationCompanyFields['company'])) {
                         $integrationCompanyFields = $integrationCompanyFields['company'];
@@ -118,7 +118,7 @@ class FeatureSettingsType extends AbstractType
                     ]
                 );
             }
-            if ('get' == $method && $error) {
+            if ('get' === $method && $error) {
                 $form->addError(new FormError($error));
             }
         };

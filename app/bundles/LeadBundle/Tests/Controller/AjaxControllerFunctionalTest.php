@@ -481,7 +481,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         // Assert the tag is removed from the lead
         $updatedLead = $this->em->getRepository(Lead::class)->find($lead->getId());
-        $this->assertFalse(in_array($tag, $updatedLead->getTags()->toArray()));
+        $this->assertFalse(in_array($tag, $updatedLead->getTags()->toArray(), true));
     }
 
     public function testContactListActionSuggestionsByAdminUser(): void

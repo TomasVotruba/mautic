@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticSocialBundle\Integration;
 
@@ -79,7 +79,7 @@ abstract class SocialIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ('features' === $formArea) {
             $name     = strtolower($this->getName());
             $formType = $this->getFormType();
             if ($formType) {
@@ -135,7 +135,7 @@ abstract class SocialIntegration extends AbstractIntegration
                         }
                         break;
                     case 'array_object':
-                        if ('urls' == $field || 'url' == $field) {
+                        if ('urls' === $field || 'url' === $field) {
                             foreach ($socialProfileUrls as $p => $d) {
                                 $fields["{$p}ProfileHandle"] = (!$label)
                                     ? $this->translator->transConditional("mautic.integration.common.{$p}ProfileHandle", "mautic.integration.{$s}.{$p}ProfileHandle")

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\EventListener;
 
@@ -74,7 +74,7 @@ class LeadSubscriber implements EventSubscriberInterface
             /** @var Integration $integration */
             $supportedFeatures = $integration->getSupportedFeatures();
 
-            if ($integration->getIsPublished() && !empty($integration->getApiKeys()) && in_array(self::FEATURE_PUSH_LEAD, $supportedFeatures)) {
+            if ($integration->getIsPublished() && !empty($integration->getApiKeys()) && in_array(self::FEATURE_PUSH_LEAD, $supportedFeatures, true)) {
                 return true;
             }
         }

@@ -114,7 +114,7 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
             ->method('validateAndScheduleEventForContacts')
             ->willReturnCallback(function () use (&$callbackCounter) {
                 ++$callbackCounter;
-                if (in_array($callbackCounter, [3, 4])) {
+                if (in_array($callbackCounter, [3, 4], true)) {
                     throw new NotSchedulableException();
                 }
             });

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Event;
 
@@ -105,7 +105,7 @@ class CustomButtonEvent extends AbstractCustomRequestEvent
     public function checkLocationContext($location): bool
     {
         if (null !== $location) {
-            if ((is_array($location) && !in_array($this->location, $location)) || (is_string($location) && $location !== $this->location)) {
+            if ((is_array($location) && !in_array($this->location, $location, true)) || (is_string($location) && $location !== $this->location)) {
                 return false;
             }
         }

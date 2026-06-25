@@ -41,7 +41,7 @@ class SegmentDependencyTreeFactory
 
             // Be aware of the loops here. We must stop building children
             // and report the problem instead if there is a loop or duplicate segments.
-            if (!in_array($childSegment->getId(), $this->usedSegmentIds)) {
+            if (!in_array($childSegment->getId(), $this->usedSegmentIds, true)) {
                 $this->buildTree($childSegment, $childNode);
             } else {
                 $childNode->addParam('message', 'This segment already exists in the segment dependency tree');

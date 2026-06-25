@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -21,7 +21,7 @@ trait LeadDetailsTrait
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if (null === $filters) {
             $filters = $session->get(
                 'mautic.plugin.timeline.filters',
                 [
@@ -32,7 +32,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if (null === $orderBy) {
             if (!$session->has('mautic.plugin.timeline.orderby')) {
                 $session->set('mautic.plugin.timeline.orderby', 'timestamp');
                 $session->set('mautic.plugin.timeline.orderbydir', 'DESC');
@@ -162,11 +162,11 @@ trait LeadDetailsTrait
     {
         $translator = $this->translator;
 
-        if (null == $fromDate) {
+        if (null === $fromDate) {
             $fromDate = new \DateTime('first day of this month 00:00:00');
             $fromDate->modify('-6 months');
         }
-        if (null == $toDate) {
+        if (null === $toDate) {
             $toDate = new \DateTime();
         }
 
@@ -191,7 +191,7 @@ trait LeadDetailsTrait
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if (null === $filters) {
             $filters = $session->get(
                 'mautic.lead.'.$lead->getId().'.auditlog.filters',
                 [
@@ -202,7 +202,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if (null === $orderBy) {
             if (!$session->has('mautic.lead.'.$lead->getId().'.auditlog.orderby')) {
                 $session->set('mautic.lead.'.$lead->getId().'.auditlog.orderby', 'al.dateAdded');
                 $session->set('mautic.lead.'.$lead->getId().'.auditlog.orderbydir', 'DESC');
@@ -259,7 +259,7 @@ trait LeadDetailsTrait
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
-        if (null == $filters) {
+        if (null === $filters) {
             $filters = $session->get(
                 'mautic.lead.'.$lead->getId().'.timeline.filters',
                 [
@@ -270,7 +270,7 @@ trait LeadDetailsTrait
             );
         }
 
-        if (null == $orderBy) {
+        if (null === $orderBy) {
             if (!$session->has('mautic.lead.'.$lead->getId().'.timeline.orderby')) {
                 $session->set('mautic.lead.'.$lead->getId().'.timeline.orderby', 'timestamp');
                 $session->set('mautic.lead.'.$lead->getId().'.timeline.orderbydir', 'DESC');
@@ -292,11 +292,11 @@ trait LeadDetailsTrait
      */
     protected function getStatsCount(Lead $lead, ?\DateTime $fromDate = null, ?\DateTime $toDate = null): array
     {
-        if (null == $fromDate) {
+        if (null === $fromDate) {
             $fromDate = new \DateTime('first day of this month 00:00:00');
             $fromDate->modify('-6 months');
         }
-        if (null == $toDate) {
+        if (null === $toDate) {
             $toDate = new \DateTime();
         }
 

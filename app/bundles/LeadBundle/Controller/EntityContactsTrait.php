@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -79,7 +79,7 @@ trait EntityContactsTrait
         }
 
         // Apply filters
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $this->setListFilters($sessionVar.'.contact');
         }
 

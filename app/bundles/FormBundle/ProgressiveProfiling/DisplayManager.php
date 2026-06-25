@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\ProgressiveProfiling;
 
@@ -18,7 +18,7 @@ class DisplayManager
 
     public function showForField(Field $field): bool
     {
-        if (in_array($field->getType(), $this->viewOnlyFields)) {
+        if (in_array($field->getType(), $this->viewOnlyFields, true)) {
             return true;
         }
 
@@ -43,7 +43,7 @@ class DisplayManager
     {
         $fields = $this->form->getFields()->toArray();
         foreach ($fields as $fieldFromArray) {
-            if (in_array($field->getType(), $this->viewOnlyFields)) {
+            if (in_array($field->getType(), $this->viewOnlyFields, true)) {
                 continue;
             }
 
@@ -60,7 +60,7 @@ class DisplayManager
 
     public function useProgressiveProfilingLimit(): bool
     {
-        return '' != $this->form->getProgressiveProfilingLimit();
+        return '' !== $this->form->getProgressiveProfilingLimit();
     }
 
     /**
@@ -73,7 +73,7 @@ class DisplayManager
 
     public function increaseDisplayedFields(Field $field): void
     {
-        if (!in_array($field->getType(), $this->viewOnlyFields)) {
+        if (!in_array($field->getType(), $this->viewOnlyFields, true)) {
             $this->displayCounter->increaseDisplayedFields();
         }
     }

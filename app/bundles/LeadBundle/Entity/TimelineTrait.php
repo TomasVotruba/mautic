@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -96,7 +96,7 @@ trait TimelineTrait
             foreach ($results as &$result) {
                 foreach ($serializedColumns as $col) {
                     if (isset($result[$col])) {
-                        $result[$col] = (null == $result[$col]) ? [] : Serializer::decode($result[$col]);
+                        $result[$col] = (null === $result[$col]) ? [] : Serializer::decode($result[$col]);
                     }
                 }
 

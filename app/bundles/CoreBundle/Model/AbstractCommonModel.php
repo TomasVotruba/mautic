@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -203,7 +203,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
         }
 
         // Check for uncategorized
-        if ($this->translator->trans('mautic.core.url.uncategorized') == $category) {
+        if ($this->translator->trans('mautic.core.url.uncategorized') === $category) {
             $category = null;
         }
 
@@ -216,7 +216,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
         $entity = false;
         if (str_contains($idSlug, ':')) {
             $parts = explode(':', $idSlug);
-            if (2 == count($parts)) {
+            if (2 === count($parts)) {
                 $entity = $this->getEntity($parts[0]);
             }
         } else {

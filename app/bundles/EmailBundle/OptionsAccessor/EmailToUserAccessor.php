@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\OptionsAccessor;
 
@@ -44,7 +44,7 @@ class EmailToUserAccessor
             }
         }
 
-        if ($this->shouldSentToOwner() && $owner && !in_array($owner->getId(), $userIds)) {
+        if ($this->shouldSentToOwner() && $owner && !in_array($owner->getId(), $userIds, true)) {
             $users[] = ['id' => $owner->getId()];
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Controller;
 
@@ -69,7 +69,7 @@ class CommonController extends AbstractController implements MauticController
      */
     protected function accessGranted($level): bool
     {
-        return in_array($level, $this->getPermissions());
+        return in_array($level, $this->getPermissions(), true);
     }
 
     /**
@@ -372,7 +372,7 @@ class CommonController extends AbstractController implements MauticController
         }
 
         $tmpl = $parameters['tmpl'] ?? $request->get('tmpl', 'index');
-        if ('index' == $tmpl) {
+        if ('index' === $tmpl) {
             $updatedContent = [];
             if (!empty($newContent)) {
                 $updatedContent['newContent'] = $newContent;
@@ -557,7 +557,7 @@ class CommonController extends AbstractController implements MauticController
         if ($request->query->has('orderby')) {
             $orderBy = InputHelper::clean($request->query->get('orderby'), true);
             $dir     = $session->get("$name.orderbydir", 'ASC');
-            $dir     = $orderBy === $session->get("$name.orderby") || false == $session->has("$name.orderby") ? (('ASC' == $dir) ? 'DESC' : 'ASC') : $dir;
+            $dir     = $orderBy === $session->get("$name.orderby") || false === $session->has("$name.orderby") ? (('ASC' === $dir) ? 'DESC' : 'ASC') : $dir;
             $session->set("$name.orderby", $orderBy);
             $session->set("$name.orderbydir", $dir);
         }
@@ -572,7 +572,7 @@ class CommonController extends AbstractController implements MauticController
             $value   = InputHelper::clean($request->query->get('value'), true);
             $filters = $session->get("$name.filters", []);
 
-            if ('' == $value) {
+            if ('' === $value) {
                 if (isset($filters[$filter])) {
                     unset($filters[$filter]);
                 }
@@ -643,7 +643,7 @@ class CommonController extends AbstractController implements MauticController
      */
     public function exportResultsAs($toExport, $type, $filename, ExportHelper $exportHelper): StreamedResponse
     {
-        if (!in_array($type, $exportHelper->getSupportedExportTypes())) {
+        if (!in_array($type, $exportHelper->getSupportedExportTypes(), true)) {
             throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type]));
         }
 

@@ -680,7 +680,7 @@ class LeadModel extends FormModel
                         $newValue = implode('|', $newValue);
                     }
 
-                    $isEmpty = (null == $newValue || '' == $newValue);
+                    $isEmpty = (null === $newValue || '' === $newValue);
                     if ($curValue !== $newValue && (!$isEmpty || $overwriteWithBlank)) {
                         $field['value'] = $newValue;
                         $lead->addUpdatedField($alias, $newValue, $curValue);
@@ -692,10 +692,10 @@ class LeadModel extends FormModel
                             // check to see if a field has been assigned
 
                             if (!empty($socialFeatureSettings[$service]['leadFields'])
-                                && in_array($field['alias'], $socialFeatureSettings[$service]['leadFields'])
+                                && in_array($field['alias'], $socialFeatureSettings[$service]['leadFields'], true)
                             ) {
                                 // check to see if the data is available
-                                $key = array_search($field['alias'], $socialFeatureSettings[$service]['leadFields']);
+                                $key = array_search($field['alias'], $socialFeatureSettings[$service]['leadFields'], true);
                                 if (isset($details['profile'][$key])) {
                                     // Found!!
                                     $field['value'] = $details['profile'][$key];
@@ -1156,7 +1156,7 @@ class LeadModel extends FormModel
 
             /** @var ?LeadCategory $leadCategory */
             $leadCategory = $this->getLeadCategoryRepository()->findOneBy(['lead' => $lead, 'category' => $category]);
-            if (is_null($leadCategory)) {
+            if (null === $leadCategory) {
                 $dispatchEvent = true;
 
                 $newLeadCategory = new LeadCategory();
@@ -1596,13 +1596,13 @@ class LeadModel extends FormModel
         $leadModified = $tagsDeleted = false;
 
         foreach ($currentTags as $tag) {
-            if (!in_array($tag->getId(), $tags)) {
+            if (!in_array($tag->getId(), $tags, true)) {
                 // Tag has been removed
                 $lead->removeTag($tag);
                 $leadModified = $tagsDeleted = true;
             } else {
                 // Remove tag so that what's left are new tags
-                $key = array_search($tag->getId(), $tags);
+                $key = array_search($tag->getId(), $tags, true);
                 unset($tags[$key]);
             }
         }
@@ -1908,7 +1908,7 @@ class LeadModel extends FormModel
             'expression' => 'isNotNull',
         ];
 
-        if ('top' == $flag) {
+        if ('top' === $flag) {
             $topLists = $this->leadListModel->getTopLists(6, $dateFrom, $dateTo);
             foreach ($topLists as $list) {
                 $filter['leadlist_id'] = [
@@ -1918,7 +1918,7 @@ class LeadModel extends FormModel
                 $all = $query->fetchTimeData('leads', 'date_added', $filter);
                 $chart->setDataset($list['name'].': '.$allLeadsT, $all);
             }
-        } elseif ('topIdentifiedVsAnonymous' == $flag) {
+        } elseif ('topIdentifiedVsAnonymous' === $flag) {
             $topLists = $this->leadListModel->getTopLists(3, $dateFrom, $dateTo);
             foreach ($topLists as $list) {
                 $anonymousFilter['leadlist_id'] = [
@@ -1934,13 +1934,13 @@ class LeadModel extends FormModel
                 $chart->setDataset($list['name'].': '.$identifiedT, $identified);
                 $chart->setDataset($list['name'].': '.$anonymousT, $anonymous);
             }
-        } elseif ('identified' == $flag) {
+        } elseif ('identified' === $flag) {
             $identified = $query->fetchTimeData('leads', 'date_added', $identifiedFilter);
             $chart->setDataset($identifiedT, $identified);
-        } elseif ('anonymous' == $flag) {
+        } elseif ('anonymous' === $flag) {
             $anonymous = $query->fetchTimeData('leads', 'date_added', $anonymousFilter);
             $chart->setDataset($anonymousT, $anonymous);
-        } elseif ('identifiedVsAnonymous' == $flag) {
+        } elseif ('identifiedVsAnonymous' === $flag) {
             $identified = $query->fetchTimeData('leads', 'date_added', $identifiedFilter);
             $anonymous  = $query->fetchTimeData('leads', 'date_added', $anonymousFilter);
             $chart->setDataset($identifiedT, $identified);
@@ -2484,7 +2484,7 @@ class LeadModel extends FormModel
      */
     private function validateSelectFields(Lead $entity, ?array $fields): void
     {
-        if (is_null($fields)) {
+        if (null === $fields) {
             return;
         }
         foreach ($fields as $group => $groupFields) {
@@ -2501,7 +2501,7 @@ class LeadModel extends FormModel
                 $flattenedAllowedValues = array_map(fn ($item): string => html_entity_decode($item['value'], ENT_QUOTES), $allowedValues['list']);
 
                 $fieldValue = $entity->getFieldValue($field['alias'], $group);
-                if (!empty($allowedValues['list']) && !in_array($fieldValue, $flattenedAllowedValues)) {
+                if (!empty($allowedValues['list']) && !in_array($fieldValue, $flattenedAllowedValues, true)) {
                     // if the set value of the field is not present allowed values array,
                     // update the field value to null
                     $entity->addUpdatedField($field['alias'], null);
@@ -2521,7 +2521,7 @@ class LeadModel extends FormModel
         $fieldData = [];
         foreach ($fields as $leadField => $importField) {
             // Prevent overwriting existing data with empty data
-            if (array_key_exists($importField, $data) && !is_null($data[$importField]) && '' != $data[$importField]) {
+            if (array_key_exists($importField, $data) && null !== $data[$importField] && '' !== $data[$importField]) {
                 $fieldEntity = $this->leadFieldModel->getEntityByAlias($leadField);
 
                 $fieldData[$leadField] = InputHelper::_(
@@ -2542,7 +2542,7 @@ class LeadModel extends FormModel
         $leadFieldValue = $lead->getFieldValue($leadField['alias']);
 
         if (CustomFieldValueHelper::TYPE_BOOLEAN === $leadField['type']) {
-            return is_null($leadFieldValue);
+            return null === $leadFieldValue;
         }
 
         return empty($leadFieldValue);

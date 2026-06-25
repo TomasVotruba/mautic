@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -87,7 +87,7 @@ class BuilderTokenHelper
             'RETURN_ARRAY'
         );
 
-        if (1 == count(array_unique($permissions)) && false == end($permissions)) {
+        if (1 === count(array_unique($permissions)) && false === end($permissions)) {
             return;
         }
 

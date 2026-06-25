@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticEmailMarketingBundle\Integration;
 
@@ -23,12 +23,12 @@ abstract class EmailAbstractIntegration extends AbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea || 'integration' == $formArea) {
+        if ('features' === $formArea || 'integration' === $formArea) {
             if ($this->isAuthorized()) {
                 $formType = $this->getFormType();
 
                 if ($formType) {
-                    if ('integration' == $formArea && isset($data['leadFields']) && empty($data['list_settings']['leadFields'])) {
+                    if ('integration' === $formArea && isset($data['leadFields']) && empty($data['list_settings']['leadFields'])) {
                         $data['list_settings']['leadFields'] = $data['leadFields'];
                     }
 
@@ -90,7 +90,7 @@ abstract class EmailAbstractIntegration extends AbstractIntegration
             unset($config['config']['list_settings']['leadFields']);
         }
 
-        if (empty($config['integration']) || (!empty($config['integration']) && $config['integration'] == $this->getName())) {
+        if (empty($config['integration']) || (!empty($config['integration']) && $config['integration'] === $this->getName())) {
             $featureSettings = array_merge($featureSettings, $config['config']);
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Form\Validator\Constraints;
 
@@ -29,7 +29,7 @@ class CircularDependencyValidator extends ConstraintValidator
 
         try {
             $segmentId = $this->getSegmentIdFromRequest();
-            if (in_array($segmentId, $dependentSegmentIds)) {
+            if (in_array($segmentId, $dependentSegmentIds, true)) {
                 $this->context->addViolation($constraint->message);
             }
         } catch (\UnexpectedValueException) {
@@ -55,7 +55,7 @@ class CircularDependencyValidator extends ConstraintValidator
     private function reduceToSegmentIds(array $filters): array
     {
         $segmentFilters = array_filter($filters, fn (array $filter): bool => 'leadlist' === $filter['type']
-            && in_array($filter['operator'], [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY, OperatorOptions::EXCLUDING_ALL, OperatorOptions::INCLUDING_ALL]));
+            && in_array($filter['operator'], [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY, OperatorOptions::EXCLUDING_ALL, OperatorOptions::INCLUDING_ALL], true));
 
         $segentIdsInFilter = array_map(function (array $filter) {
             $bcValue = $filter['filter'] ?? [];

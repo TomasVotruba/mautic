@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\IpLookup;
 
@@ -41,7 +41,7 @@ class TelizeLookup extends AbstractRemoteDataLookup
 
         if ($data) {
             foreach ($data as $key => $value) {
-                if ('postal_code' == $key) {
+                if ('postal_code' === $key) {
                     $key = 'zipcode';
                 }
 

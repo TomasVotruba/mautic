@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Controller;
 
@@ -317,7 +317,7 @@ class EmailController extends FormController
                         }
 
                         // make sure all the variants are configured with the same criteria
-                        if ($lastCriteria != $variantSettings['winnerCriteria']) {
+                        if ($lastCriteria !== $variantSettings['winnerCriteria']) {
                             $variantError = true;
                         }
 
@@ -1286,7 +1286,7 @@ class EmailController extends FormController
         } else {
             $isNew  = false;
             $entity = $model->getEntity($objectId);
-            if (null == $entity
+            if (null === $entity
                 || !$this->security->hasEntityAccess(
                     'email:emails:viewown',
                     'email:emails:viewother',
@@ -1338,7 +1338,7 @@ class EmailController extends FormController
     ) {
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             $parent = $entity->getVariantParent();
 
             if ($parent || !$this->security->isGranted('email:emails:create')
@@ -1505,7 +1505,7 @@ class EmailController extends FormController
             );
         }
 
-        if ('template' == $entity->getEmailType()
+        if ('template' === $entity->getEmailType()
             || !$this->security->hasEntityAccess(
                 'email:emails:viewown',
                 'email:emails:viewother',
@@ -1537,7 +1537,7 @@ class EmailController extends FormController
         $form     = $this->formFactory->create(BatchSendType::class, [], ['action' => $action]);
         $complete = $request->request->get('complete', false);
 
-        if ('POST' == $request->getMethod() && ($complete || $this->isFormValid($form))) {
+        if ('POST' === $request->getMethod() && ($complete || $this->isFormValid($form))) {
             if (!$complete) {
                 $progress = [0, (int) $pending];
                 $session->set('mautic.email.send.progress', $progress);
@@ -1834,7 +1834,7 @@ class EmailController extends FormController
                     }
                 }
 
-                if (0 != count($errors)) {
+                if (0 !== count($errors)) {
                     $this->addFlashMessage(implode('; ', $errors));
                 } else {
                     $this->addFlashMessage('mautic.email.notice.test_sent_multiple.success');

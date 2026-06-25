@@ -48,11 +48,11 @@ class TokenParser
                     $token->setDefaultValue($value);
                 }
 
-                if ('link-text' == $keyword) {
+                if ('link-text' === $keyword) {
                     $token->setLinkText($value);
                 }
 
-                if ('base-url' == $keyword) {
+                if ('base-url' === $keyword) {
                     $token->setBaseURL($value);
                 }
             }

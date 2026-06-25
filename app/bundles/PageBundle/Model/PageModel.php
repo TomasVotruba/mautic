@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Model;
 
@@ -173,7 +173,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 $count     = $repo->checkPageUniqueAlias($testAlias, $pageIds);
                 ++$aliasTag;
             }
-            if ($testAlias != $alias) {
+            if ($testAlias !== $alias) {
                 $alias = $testAlias;
             }
             $entity->setAlias($alias);
@@ -324,7 +324,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
     {
         // If this is a variant, then get the parent's URL
         $parent = $entity->getVariantParent();
-        if (null != $parent) {
+        if (null !== $parent) {
             $entity = $parent;
         }
 
@@ -424,7 +424,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         // Get lead if required
-        if (null == $lead) {
+        if (null === $lead) {
             $lead = $this->contactRequestHelper->getContactFromQuery($query);
 
             // company
@@ -806,7 +806,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
 
-        if (!$flag || 'total_and_unique' == $flag) {
+        if (!$flag || 'total_and_unique' === $flag) {
             $q = $query->prepareTimeDataQuery('page_hits', 'date_hit', $filter);
 
             if (!$canViewOthers) {
@@ -817,7 +817,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $chart->setDataset($this->translator->trans('mautic.page.show.total.visits'), $data);
         }
 
-        if ('unique' == $flag || 'total_and_unique' == $flag) {
+        if ('unique' === $flag || 'total_and_unique' === $flag) {
             $q = $query->prepareTimeDataQuery(
                 'page_hits',
                 'date_hit',
@@ -1192,12 +1192,12 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         $pageURL = 'http';
-        if ('on' == $request->server->get('HTTPS')) {
+        if ('on' === $request->server->get('HTTPS')) {
             $pageURL .= 's';
         }
         $pageURL .= '://';
 
-        if (!in_array((int) $request->server->get('SERVER_PORT', 80), [80, 8080, 443])) {
+        if (!in_array((int) $request->server->get('SERVER_PORT', 80), [80, 8080, 443], true)) {
             return $pageURL.$request->server->get('SERVER_NAME').':'.$request->server->get('SERVER_PORT').
                 $request->server->get('REQUEST_URI');
         }

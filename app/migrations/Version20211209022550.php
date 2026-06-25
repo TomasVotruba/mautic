@@ -51,9 +51,9 @@ final class Version20211209022550 extends AbstractMauticMigration
             // Map all leads permission to list.
             $newPermissions = $leadPermission;
 
-            if (!in_array('full', $newPermissions)) {
+            if (!in_array('full', $newPermissions, true)) {
                 // If lead has viewown permission, then add create permission for list.
-                if (in_array('viewown', $leadPermission)) {
+                if (in_array('viewown', $leadPermission, true)) {
                     $newPermissions[] = 'create';
                 }
 

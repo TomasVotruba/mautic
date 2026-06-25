@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\EventListener;
 
@@ -70,7 +70,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
         $features = $integration->getSupportedFeatures();
 
-        if (in_array('mobile', $features)) {
+        if (in_array('mobile', $features, true)) {
             $event->addAction(
                 static::EVENT_ACTION_SEND_MOBILE_NOTIFICATION,
                 [

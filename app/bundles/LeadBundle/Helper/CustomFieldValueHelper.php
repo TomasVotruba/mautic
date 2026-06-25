@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Helper;
 
@@ -63,7 +63,7 @@ class CustomFieldValueHelper
             foreach ($list as $property) {
                 if (isset($property[$value])) {
                     return $property[$value];
-                } elseif (isset($property['value']) && $property['value'] == $value) {
+                } elseif (isset($property['value']) && $property['value'] === $value) {
                     return $property['label'];
                 }
             }

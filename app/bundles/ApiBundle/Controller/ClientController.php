@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Controller;
 
@@ -149,7 +149,7 @@ class ClientController extends AbstractStandardFormController
         $success = 0;
         $flashes = [];
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $client = $this->clientModel->getEntity($clientId);
 
             if (null === $client) {
@@ -219,7 +219,7 @@ class ClientController extends AbstractStandardFormController
         $form->remove('consumerSecret');
 
         // /Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -227,7 +227,7 @@ class ClientController extends AbstractStandardFormController
                     // If the admin is creating API credentials, enable 'Client Credential' grant type
                     /** @var User $user */
                     $user = $this->getUser();
-                    if (ClientModel::API_MODE_OAUTH2 == $apiMode && $user->getRole()->isAdmin()) {
+                    if (ClientModel::API_MODE_OAUTH2 === $apiMode && $user->getRole()->isAdmin()) {
                         $client->addGrantType(OAuth2::GRANT_TYPE_CLIENT_CREDENTIALS);
                     }
                     $client->setRole($user->getRole());
@@ -336,7 +336,7 @@ class ClientController extends AbstractStandardFormController
         $form->remove('api_mode');
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && 'POST' === $request->getMethod()) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     // form is valid so process the data

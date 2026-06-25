@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity\Transformer;
 
@@ -49,7 +49,7 @@ class NotificationArrayTransformer implements DataTransformerInterface
             ->getPropertyAccessor();
 
         foreach ($value as $property => $val) {
-            if (!in_array($property, $vars)) {
+            if (!in_array($property, $vars, true)) {
                 throw new \InvalidArgumentException('Object '.Notification::class.' does not have property '.$property);
             }
             $propertyAccessor->setValue($notification, "[{$property}]", $val);

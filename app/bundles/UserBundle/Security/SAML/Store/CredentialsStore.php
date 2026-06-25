@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\UserBundle\Security\SAML\Store;
 
@@ -49,8 +49,8 @@ class CredentialsStore implements CredentialStoreInterface
 
     private function createOwnCredentials(): X509Credential
     {
-        $certificateContent = base64_decode($this->coreParametersHelper->get('saml_idp_own_certificate'));
-        $privateKeyContent  = base64_decode($this->coreParametersHelper->get('saml_idp_own_private_key'));
+        $certificateContent = base64_decode($this->coreParametersHelper->get('saml_idp_own_certificate'), true);
+        $privateKeyContent  = base64_decode($this->coreParametersHelper->get('saml_idp_own_private_key'), true);
         $keyPassword        = (string) $this->coreParametersHelper->get('saml_idp_own_password');
 
         return $this->createCredentials($certificateContent, $privateKeyContent, $keyPassword);

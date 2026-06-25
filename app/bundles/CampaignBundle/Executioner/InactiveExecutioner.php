@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Executioner;
 
@@ -280,7 +280,7 @@ class InactiveExecutioner implements ExecutionerInterface
             $event = $this->redirectionHelper->handleEventRedirection($event, $events, $key);
 
             // Ignore decisions
-            if (Event::TYPE_DECISION == $event->getEventType()) {
+            if (Event::TYPE_DECISION === $event->getEventType()) {
                 $this->logger->debug('CAMPAIGN: Ignoring child event ID '.$event->getId().' as a decision');
 
                 $events->remove($key);

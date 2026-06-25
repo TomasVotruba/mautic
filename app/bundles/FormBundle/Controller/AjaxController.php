@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller;
 
@@ -46,7 +46,7 @@ class AjaxController extends CommonAjaxController
         $sessionId   = InputHelper::clean($request->request->get('formId'));
         $sessionName = 'mautic.form.'.$sessionId.'.'.$name.'.modified';
         $session     = $request->getSession();
-        $orderName   = ('fields' == $name) ? 'mauticform' : 'mauticform_action';
+        $orderName   = ('fields' === $name) ? 'mauticform' : 'mauticform_action';
         $order       = InputHelper::clean($request->request->all()[$orderName]);
         $components  = $session->get($sessionName);
 
@@ -97,7 +97,7 @@ class AjaxController extends CommonAjaxController
         $fields     = [];
 
         foreach ($formFields as $field) {
-            if ('button' != $field->getType()) {
+            if ('button' !== $field->getType()) {
                 $properties = $field->getProperties();
                 $options    = [];
 
@@ -146,7 +146,7 @@ class AjaxController extends CommonAjaxController
     {
         $response     = $this->forwardWithPost('Mautic\FormBundle\Controller\PublicController::submitAction', $request->request->all(), [], ['ajax' => true]);
         $responseData = json_decode($response->getContent(), true);
-        $success      = (!in_array($response->getStatusCode(), [404, 500]) && empty($responseData['errorMessage'])
+        $success      = (!in_array($response->getStatusCode(), [404, 500], true) && empty($responseData['errorMessage'])
             && empty($responseData['validationErrors']));
 
         $message = '';

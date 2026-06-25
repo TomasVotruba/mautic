@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller\Api;
 
@@ -40,7 +40,7 @@ trait CustomFieldsApiControllerTrait
             unset($parameters['lastActive'], $parameters['tags'], $parameters['ipAddress']);
         }
 
-        if (in_array($request->getMethod(), ['POST', 'PUT'])) {
+        if (in_array($request->getMethod(), ['POST', 'PUT'], true)) {
             // If a new contact or PUT update (complete representation of the objectd), set empty fields to field defaults if the parameter
             // is not defined in the request
 
@@ -51,7 +51,7 @@ trait CustomFieldsApiControllerTrait
             foreach ($fields as $alias => $field) {
                 // Set the default value if the parameter is not included in the request, there is no value for the given entity, and a default is defined
                 $currentValue = $entity->getFieldValue($alias);
-                if (!isset($parameters[$alias]) && ('' === $currentValue || null == $currentValue) && '' !== $field['defaultValue'] && null !== $field['defaultValue']) {
+                if (!isset($parameters[$alias]) && ('' === $currentValue || null === $currentValue) && '' !== $field['defaultValue'] && null !== $field['defaultValue']) {
                     $parameters[$alias] = $field['defaultValue'];
                 }
             }

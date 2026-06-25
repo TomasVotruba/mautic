@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticFocusBundle\EventListener;
 
@@ -32,7 +32,7 @@ class StatSubscriber implements EventSubscriberInterface
         $hit    = $event->getHit();
         $source = $hit->getSource();
 
-        if ('focus' == $source || 'focus.focus' == $source) {
+        if ('focus' === $source || 'focus.focus' === $source) {
             $sourceId = $hit->getSourceId();
             $focus    = $this->model->getEntity($sourceId);
 

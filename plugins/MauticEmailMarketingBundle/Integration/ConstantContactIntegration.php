@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticEmailMarketingBundle\Integration;
 
@@ -86,7 +86,7 @@ class ConstantContactIntegration extends EmailAbstractIntegration
             $leadFields[$f] = [
                 'label'    => $this->translator->trans('mautic.constantcontact.field.'.$f),
                 'type'     => 'string',
-                'required' => 'email' == $f,
+                'required' => 'email' === $f,
             ];
         }
 

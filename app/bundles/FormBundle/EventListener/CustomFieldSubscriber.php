@@ -36,7 +36,7 @@ final class CustomFieldSubscriber implements EventSubscriberInterface
     {
         $customField = $event->getField();
 
-        if (!in_array($customField->getType(), ['multiselect', 'select'])) {
+        if (!in_array($customField->getType(), ['multiselect', 'select'], true)) {
             return;
         }
 
@@ -51,7 +51,7 @@ final class CustomFieldSubscriber implements EventSubscriberInterface
 
             $form = $formField->getForm();
 
-            if (in_array($form->getId(), $clearedFormIds)) {
+            if (in_array($form->getId(), $clearedFormIds, true)) {
                 continue;
             }
 

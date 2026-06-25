@@ -54,12 +54,12 @@ class FieldFilterTransformer implements DataTransformerInterface
             if ('datetime' === $filterType || 'date' === $filterType) {
                 $bcFilter = $filter['filter'] ?? '';
                 $filter   = $filter['properties']['filter'] ?? $bcFilter;
-                if (empty($filter) || in_array($filter, $this->relativeDateStrings) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
+                if (empty($filter) || in_array($filter, $this->relativeDateStrings, true) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
                     continue;
                 }
 
-                if (in_array(strtolower($filter), $this->defaultStrings)) {
-                    $rawFilters[$key]['properties']['filter'] = $this->translator->trans(array_search(strtolower($filter), $this->defaultStrings));
+                if (in_array(strtolower($filter), $this->defaultStrings, true)) {
+                    $rawFilters[$key]['properties']['filter'] = $this->translator->trans(array_search(strtolower($filter), $this->defaultStrings, true));
 
                     continue;
                 }
@@ -91,7 +91,7 @@ class FieldFilterTransformer implements DataTransformerInterface
         $rawFilters = array_values($rawFilters);
 
         foreach ($rawFilters as $k => $f) {
-            if ('datetime' == $f['type'] || 'date' === $f['type']) {
+            if ('datetime' === $f['type'] || 'date' === $f['type']) {
                 $bcFilter = $f['filter'] ?? '';
                 $filter   = $f['properties']['filter'] ?? $bcFilter;
                 $filter   = strtolower($filter);
@@ -99,8 +99,8 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                if (in_array($filter, $this->relativeDateStrings)) {
-                    $translationKey                         = array_search($filter, $this->relativeDate->getRelativeDateStrings());
+                if (in_array($filter, $this->relativeDateStrings, true)) {
+                    $translationKey                         = array_search($filter, $this->relativeDate->getRelativeDateStrings(), true);
                     $rawFilters[$k]['properties']['filter'] = $this->defaultStrings[$translationKey];
 
                     continue;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -51,7 +51,7 @@ class DashboardBestHoursSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('email:emails:viewother');
 
-        if ('emails.best.hours' == $event->getType()) {
+        if ('emails.best.hours' === $event->getType()) {
             $widget     = $event->getWidget();
             $params     = $widget->getParams();
             $filterKeys = ['companyId', 'campaignId', 'segmentId'];

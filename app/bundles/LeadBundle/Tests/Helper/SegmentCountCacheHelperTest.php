@@ -242,7 +242,7 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->cacheProviderMock
             ->method('getItem')
             ->willReturnCallback(function ($key) use ($segmentId, $cacheItem) {
-                if (in_array($key, ['segment.'.$segmentId.'.lead', 'segment.'.$segmentId.'.lead.recount'])) {
+                if (in_array($key, ['segment.'.$segmentId.'.lead', 'segment.'.$segmentId.'.lead.recount'], true)) {
                     return $cacheItem;
                 }
 

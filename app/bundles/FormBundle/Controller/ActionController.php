@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller;
 
@@ -24,7 +24,7 @@ class ActionController extends CommonFormController
         $method  = $request->getMethod();
         $session = $request->getSession();
 
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             $formAction = $request->request->all()['formaction'] ?? [];
             $actionType = $formAction['type'];
             $formId     = $formAction['formId'];
@@ -57,7 +57,7 @@ class ActionController extends CommonFormController
         $formAction['settings'] = $customComponents['actions'][$actionType];
 
         // Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -176,7 +176,7 @@ class ActionController extends CommonFormController
             $form->get('formId')->setData($formId);
 
             // Check for a submitted form and process it
-            if ('POST' == $method) {
+            if ('POST' === $method) {
                 if (!$cancelled = $this->isFormCancelled($form)) {
                     if ($valid = $this->isFormValid($form)) {
                         $success = 1;
@@ -200,15 +200,15 @@ class ActionController extends CommonFormController
                         $keyId = $objectId;
 
                         // take note if this is a submit button or not
-                        if ('button' == $actionType) {
+                        if ('button' === $actionType) {
                             $submits = $session->get('mautic.formactions.submits', []);
-                            if ('submit' == $formAction['properties']['type'] && !in_array($keyId, $submits)) {
+                            if ('submit' === $formAction['properties']['type'] && !in_array($keyId, $submits, true)) {
                                 // button type updated to submit
                                 $submits[] = $keyId;
                                 $session->set('mautic.formactions.submits', $submits);
-                            } elseif ('submit' != $formAction['properties']['type'] && in_array($keyId, $submits)) {
+                            } elseif ('submit' !== $formAction['properties']['type'] && in_array($keyId, $submits, true)) {
                                 // button type updated to something other than submit
-                                $key = array_search($keyId, $submits);
+                                $key = array_search($keyId, $submits, true);
                                 unset($submits[$key]);
                                 $session->set('mautic.formactions.submits', $submits);
                             }
@@ -291,19 +291,19 @@ class ActionController extends CommonFormController
         }
 
         $formAction = (array_key_exists($objectId, $actions)) ? $actions[$objectId] : null;
-        if ('POST' == $request->getMethod() && null !== $formAction) {
+        if ('POST' === $request->getMethod() && null !== $formAction) {
             // add the field to the delete list
-            if (!in_array($objectId, $delete)) {
+            if (!in_array($objectId, $delete, true)) {
                 $delete[] = $objectId;
                 $session->set('mautic.form.'.$formId.'.actions.deleted', $delete);
             }
 
             // take note if this is a submit button or not
-            if ('button' == $formAction['type']) {
+            if ('button' === $formAction['type']) {
                 $submits    = $session->get('mautic.formactions.submits', []);
                 $properties = $formAction['properties'];
-                if ('submit' == $properties['type'] && in_array($objectId, $submits)) {
-                    $key = array_search($objectId, $submits);
+                if ('submit' === $properties['type'] && in_array($objectId, $submits, true)) {
+                    $key = array_search($objectId, $submits, true);
                     unset($submits[$key]);
                     $session->set('mautic.formactions.submits', $submits);
                 }

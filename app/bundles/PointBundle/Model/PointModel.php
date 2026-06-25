@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Model;
 
@@ -182,7 +182,7 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
             // let's prevent some unnecessary DB calls
             $session         = $this->requestStack->getMainRequest()->getSession();
             $triggeredEvents = $session->get('mautic.triggered.point.actions', []);
-            if (in_array($typeId, $triggeredEvents)) {
+            if (in_array($typeId, $triggeredEvents, true)) {
                 return;
             }
             $triggeredEvents[] = $typeId;
@@ -356,7 +356,7 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
         $pointActionIds = [];
         foreach ($entities as $entity) {
             $properties = $entity->getProperties();
-            if (in_array($emailId, $properties['emails'] ?? [])) {
+            if (in_array($emailId, $properties['emails'] ?? [], true)) {
                 $pointActionIds[] = $entity->getId();
             }
         }

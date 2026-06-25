@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -553,15 +553,15 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     {
         $getter  = 'get'.ucfirst($prop);
         $current = $oldValue ?? $this->$getter();
-        if ('owner' == $prop) {
+        if ('owner' === $prop) {
             if ($current && !$val) {
                 $this->changes['owner'] = [$current->getId(), $val];
             } elseif (!$current && $val) {
                 $this->changes['owner'] = [$current, $val->getId()];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
+            } elseif ($current && $val && $current->getId() !== $val->getId()) {
                 $this->changes['owner'] = [$current->getId(), $val->getId()];
             }
-        } elseif ('ipAddresses' == $prop) {
+        } elseif ('ipAddresses' === $prop) {
             $this->changes['ipAddresses'] = ['', $val->getIpAddress()]; // Kept for BC. Not a good way to track changes on a collection
 
             if (empty($this->changes['ipAddressList'])) {
@@ -569,13 +569,13 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
             }
 
             $this->changes['ipAddressList'][$val->getIpAddress()] = $val;
-        } elseif ('tags' == $prop) {
+        } elseif ('tags' === $prop) {
             if ($val instanceof Tag) {
                 $this->changes['tags']['added'][] = $val->getTag();
             } else {
                 $this->changes['tags']['removed'][] = $val;
             }
-        } elseif ('utmtags' == $prop) {
+        } elseif ('utmtags' === $prop) {
             if ($val instanceof UtmTag) {
                 if ($val->getUtmContent()) {
                     $this->changes['utmtags'] = ['utm_content', $val->getUtmContent()];
@@ -593,7 +593,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
                     $this->changes['utmtags'] = ['utm_source', $val->getUtmSource()];
                 }
             }
-        } elseif ('frequencyRules' == $prop) {
+        } elseif ('frequencyRules' === $prop) {
             if (!isset($this->changes['frequencyRules'])) {
                 $this->changes['frequencyRules'] = [];
             }
@@ -605,15 +605,15 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
             } else {
                 $this->changes['frequencyRules']['removed'][] = $val;
             }
-        } elseif ('stage' == $prop) {
+        } elseif ('stage' === $prop) {
             if ($current && !$val) {
                 $this->changes['stage'] = [$current->getId(), $val];
             } elseif (!$current && $val) {
                 $this->changes['stage'] = [$current, $val->getId()];
-            } elseif ($current && $val && $current->getId() != $val->getId()) {
+            } elseif ($current && $val && $current->getId() !== $val->getId()) {
                 $this->changes['stage'] = [$current->getId(), $val->getId()];
             }
-        } elseif ('points' == $prop && $current != $val) {
+        } elseif ('points' === $prop && $current !== $val) {
             $this->changes['points'] = [$current, $val];
         } else {
             parent::isChanged($prop, $val);
@@ -827,7 +827,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
         // Use $updatedPoints in an attempt to keep track in the $changes log although this may not be accurate if the DB updates the points rather
         // than PHP memory
-        if (null == $this->updatedPoints) {
+        if (null === $this->updatedPoints) {
             $this->updatedPoints = $this->points;
         }
         $oldPoints = $this->updatedPoints;
@@ -1242,7 +1242,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
 
     public function wasAnonymous(): bool
     {
-        return null == $this->dateIdentified && false === $this->isAnonymous();
+        return null === $this->dateIdentified && false === $this->isAnonymous();
     }
 
     /**

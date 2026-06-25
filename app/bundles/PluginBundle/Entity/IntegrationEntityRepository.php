@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Entity;
 
@@ -173,7 +173,7 @@ class IntegrationEntityRepository extends CommonRepository
         $integrationEntity = ['Contact', 'Lead'],
         $excludeIntegrationIds = [],
     ): array {
-        if ('company' == $internalEntity) {
+        if ('company' === $internalEntity) {
             $joinTable = 'companies';
         } else {
             $joinTable = 'leads';
@@ -242,7 +242,7 @@ class IntegrationEntityRepository extends CommonRepository
             )
         );
 
-        if ('lead' == $internalEntity) {
+        if ('lead' === $internalEntity) {
             $q->andWhere(
                 $q->expr()->and($q->expr()->isNotNull('l.email')));
         } else {
@@ -311,7 +311,7 @@ class IntegrationEntityRepository extends CommonRepository
      */
     public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead')
     {
-        if ('company' == $internalEntity) {
+        if ('company' === $internalEntity) {
             $joinTable = 'companies';
         } else {
             $joinTable = 'leads';
@@ -324,7 +324,7 @@ class IntegrationEntityRepository extends CommonRepository
         } else {
             $q->select('l.id as internal_entity_id,'.$leadFields);
         }
-        if ('company' == $internalEntity) {
+        if ('company' === $internalEntity) {
             $q->where('not exists (select null from '.MAUTIC_TABLE_PREFIX
                 .'integration_entity i where i.integration = :integration and i.internal_entity LIKE "'.$internalEntity.'%" and i.internal_entity_id = l.id)')
                 ->setParameter('integration', $integration);
@@ -337,7 +337,7 @@ class IntegrationEntityRepository extends CommonRepository
                 ->setParameter('integration', $integration);
         }
 
-        if ('company' == $internalEntity) {
+        if ('company' === $internalEntity) {
             $q->andWhere('l.companyname is not null');
         } else {
             $q->andWhere('l.email is not null');

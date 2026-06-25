@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
@@ -366,7 +366,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             $matchedFields[$leadField] = $this->limitString($value, $fieldType);
         }
 
-        if (count(array_diff_key($uniqueLeadFields, $matchedFields)) == count($uniqueLeadFields)) {
+        if (count(array_diff_key($uniqueLeadFields, $matchedFields)) === count($uniqueLeadFields)) {
             // return if uniqueIdentifiers have no data set to avoid duplicating leads.
             $this->logger->debug('getMauticLead: No unique identifiers', [
                 'uniqueLeadFields' => $uniqueLeadFields,
@@ -404,7 +404,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
 
             $fieldsToUpdateInMautic = array_intersect_key($leadFields, $fieldsToUpdateInMautic);
             $matchedFields          = array_intersect_key($matchedFields, array_flip($fieldsToUpdateInMautic));
-            if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' == $config['updateBlanks'][0]) {
+            if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0]) && 'updateBlanks' === $config['updateBlanks'][0]) {
                 $matchedFields = $this->getBlankFieldsToUpdateInMautic($matchedFields, $lead->getFields(true), $leadFields, $data, $object);
             }
         }
@@ -419,7 +419,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
             $leadSocialCache[$this->getName()] = array_merge($leadSocialCache[$this->getName()], $socialCache);
 
             // Check for activity while here
-            if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures())) {
+            if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures(), true)) {
                 $this->getPublicActivity($identifiers, $leadSocialCache[$this->getName()]);
             }
 
@@ -435,7 +435,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
 
         // Update the owner if it matches (needs to be set by the integration) when fetching the data
         if (isset($data['owner_email']) && isset($config['updateOwner']) && isset($config['updateOwner'][0])
-            && 'updateOwner' == $config['updateOwner'][0]
+            && 'updateOwner' === $config['updateOwner'][0]
         ) {
             if ($mauticUser = $this->em->getRepository(\Mautic\UserBundle\Entity\User::class)->findOneBy(['email' => $data['owner_email']])) {
                 $lead->setOwner($mauticUser);
@@ -501,7 +501,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
      */
     protected function getFieldsByPriority(array $config, $priorityObject, $direction)
     {
-        return isset($config['update_'.$priorityObject]) ? array_keys($config['update_'.$priorityObject], $direction) : array_keys($config['leadFields'] ?? []);
+        return isset($config['update_'.$priorityObject]) ? array_keys($config['update_'.$priorityObject], $direction, true) : array_keys($config['leadFields'] ?? []);
     }
 
     /**
@@ -550,7 +550,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
     {
         // check if update blank fields is selected
         if (isset($config['updateBlanks']) && isset($config['updateBlanks'][0])
-            && 'updateBlanks' == $config['updateBlanks'][0]
+            && 'updateBlanks' === $config['updateBlanks'][0]
             && !empty($sfRecord)
             && isset($objectFields['required']['fields'])
         ) {
@@ -628,7 +628,7 @@ abstract class CrmAbstractIntegration extends AbstractIntegration
     {
         // We must not convert boolean values to string, otherwise "false" will be converted to an empty string.
         // "False" has to be converted to 0 instead.
-        if (('text' == $fieldType) && !is_bool($value)) {
+        if (('text' === $fieldType) && !is_bool($value)) {
             return substr($value, 0, 255);
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Deduplicate;
 
@@ -146,7 +146,7 @@ class ContactMerger
         $oldestFields = $oldest->getProfileFields();
 
         foreach (array_keys($newestFields) as $field) {
-            if (in_array($field, ['id', 'points'])) {
+            if (in_array($field, ['id', 'points'], true)) {
                 // Let mergePoints() take care of this
                 continue;
             }

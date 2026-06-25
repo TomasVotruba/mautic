@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\EventListener;
 
@@ -84,7 +84,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $limitToForms = $event->getConfig()['forms'];
 
         // check against selected forms
-        if (!empty($limitToForms) && !in_array($eventDetails->getId(), $limitToForms)) {
+        if (!empty($limitToForms) && !in_array($eventDetails->getId(), $limitToForms, true)) {
             return $event->setResult(false);
         }
 

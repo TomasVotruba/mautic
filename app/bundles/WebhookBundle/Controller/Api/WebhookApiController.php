@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\WebhookBundle\Controller\Api;
 
@@ -81,7 +81,7 @@ class WebhookApiController extends CommonApiController
         // Remove events missing in the PUT request
         if ('PUT' === $this->requestStack->getCurrentRequest()->getMethod()) {
             foreach ($entity->getEvents() as $event) {
-                if (!in_array($event->getEventType(), $eventsToKeep)) {
+                if (!in_array($event->getEventType(), $eventsToKeep, true)) {
                     $entity->removeEvent($event);
                 }
             }

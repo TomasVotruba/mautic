@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticEmailMarketingBundle\Form\Type;
 
@@ -79,7 +79,7 @@ class IcontactType extends AbstractType
             });
         }
 
-        if (isset($options['form_area']) && 'integration' == $options['form_area']) {
+        if (isset($options['form_area']) && 'integration' === $options['form_area']) {
             $leadFields = $this->pluginModel->getLeadFields();
 
             $fields = $object->getFormLeadFields();

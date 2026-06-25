@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Segment;
 
@@ -47,7 +47,7 @@ class ContactSegmentFilterFactory
                 $mergedProperty      = $filter['merged_property'];
                 $factorSegmentFilter = null;
                 foreach ($filter['properties'] as $index => $nestedFilter) {
-                    if (!in_array($nestedFilter['operator'], $this->operatorsWithEmptyValuesAllowed) && empty($nestedFilter['filter']) && !is_numeric($nestedFilter['filter'])) {
+                    if (!in_array($nestedFilter['operator'], $this->operatorsWithEmptyValuesAllowed, true) && empty($nestedFilter['filter']) && !is_numeric($nestedFilter['filter'])) {
                         continue; // If no value set for the filter, don't consider it
                     }
                     $factorSegmentFilter                    = $this->factorSegmentFilter($nestedFilter, $batchLimiters);

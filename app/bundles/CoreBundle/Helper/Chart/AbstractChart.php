@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper\Chart;
 
@@ -94,9 +94,9 @@ abstract class AbstractChart
             $unit = $this->unit;
         }
 
-        $isTime = in_array($unit, ['H', 'i', 's']) ? 'T' : '';
+        $isTime = in_array($unit, ['H', 'i', 's'], true) ? 'T' : '';
 
-        if ('i' == $unit) {
+        if ('i' === $unit) {
             $unit = 'M';
         }
 
@@ -137,7 +137,7 @@ abstract class AbstractChart
         $this->dateTo   = clone $dateTo;
 
         // a diff of two identical dates returns 0, but we expect 24 hours
-        if ($dateFrom == $dateTo) {
+        if ($dateFrom === $dateTo) {
             $this->dateTo->modify('+1 day');
         }
 

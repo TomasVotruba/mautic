@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Twig\Helper;
 
@@ -39,7 +39,7 @@ final class MenuHelper
         foreach ($attributes as $name => $value) {
             $name  = trim($name);
             $value = trim($value);
-            if ($name == $value) {
+            if ($name === $value) {
                 $string .= " $name";
             } else {
                 $string .= " $name=\"$value\"";

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Facebook\WebDriver\WebDriverKeys;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Contact;

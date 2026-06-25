@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Event;
 
@@ -42,7 +42,7 @@ class AbstractReportEvent extends Event
             $res = array_filter($context, fn ($elem): bool => 0 === stripos($this->context, (string) $elem));
 
             return count($res) > 0;
-        } elseif ($this->context == $context) {
+        } elseif ($this->context === $context) {
             return true;
         } elseif (0 === stripos($this->context, (string) $context)) {
             return true;

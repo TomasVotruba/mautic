@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Controller;
 
@@ -24,7 +24,7 @@ class TriggerEventController extends CommonFormController
         $method  = $request->getMethod();
         $session = $request->getSession();
 
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             $triggerEvent = $request->request->all()['pointtriggerevent'] ?? [];
             $eventType    = $triggerEvent['type'];
             $triggerId    = $triggerEvent['triggerId'];
@@ -62,7 +62,7 @@ class TriggerEventController extends CommonFormController
         $triggerEvent['settings'] = $events[$eventType];
 
         // Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -178,7 +178,7 @@ class TriggerEventController extends CommonFormController
             ]);
             $form->get('triggerId')->setData($triggerId);
             // Check for a submitted form and process it
-            if ('POST' == $method) {
+            if ('POST' === $method) {
                 if (!$cancelled = $this->isFormCancelled($form)) {
                     if ($valid = $this->isFormValid($form)) {
                         $success = 1;
@@ -285,9 +285,9 @@ class TriggerEventController extends CommonFormController
 
         $triggerEvent = (array_key_exists($objectId, $events)) ? $events[$objectId] : null;
 
-        if ('POST' == $request->getMethod() && null !== $triggerEvent) {
+        if ('POST' === $request->getMethod() && null !== $triggerEvent) {
             // add the field to the delete list
-            if (!in_array($objectId, $delete)) {
+            if (!in_array($objectId, $delete, true)) {
                 $delete[] = $objectId;
                 $session->set('mautic.point.'.$triggerId.'.triggerevents.deleted', $delete);
             }
@@ -348,8 +348,8 @@ class TriggerEventController extends CommonFormController
 
         if ('POST' === $request->getMethod() && null !== $triggerEvent) {
             // add the field to the delete list
-            if (in_array($objectId, $delete)) {
-                $key = array_search($objectId, $delete);
+            if (in_array($objectId, $delete, true)) {
+                $key = array_search($objectId, $delete, true);
                 unset($delete[$key]);
                 $session->set('mautic.point.'.$triggerId.'.triggerevents.deleted', $delete);
             }

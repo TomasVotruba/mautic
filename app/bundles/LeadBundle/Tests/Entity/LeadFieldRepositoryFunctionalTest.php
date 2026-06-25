@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Entity;
 
@@ -235,7 +235,7 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $colorFieldExist = false;
         if (!empty($allLeadFields)) {
             foreach ($allLeadFields as $field) {
-                if ('colors' == $field->getAlias()) {
+                if ('colors' === $field->getAlias()) {
                     $colorFieldExist = true;
                 }
             }

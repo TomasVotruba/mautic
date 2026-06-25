@@ -63,7 +63,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
             $pseudoFields = [];
             foreach ($fields as $field) {
-                if (in_array($field->getName(), $availableFields)) {
+                if (in_array($field->getName(), $availableFields, true)) {
                     $contact->addUpdatedField($field->getName(), $field->getValue()->getNormalizedValue());
                 } else {
                     $pseudoFields[$field->getName()] = $field;
@@ -138,7 +138,7 @@ class ContactObjectHelper implements ObjectHelperInterface
 
             $pseudoFields = [];
             foreach ($fields as $field) {
-                if (in_array($field->getName(), $availableFields)) {
+                if (in_array($field->getName(), $availableFields, true)) {
                     $contact->addUpdatedField($field->getName(), $field->getValue()->getNormalizedValue());
                 } else {
                     $pseudoFields[$field->getName()] = $field;
@@ -348,7 +348,7 @@ class ContactObjectHelper implements ObjectHelperInterface
                 );
             }
 
-            if ('owner_id' == $name) {
+            if ('owner_id' === $name) {
                 $ownerId = $field->getValue()->getNormalizedValue();
                 $this->model->updateLeadOwner($contact, $ownerId);
             }
@@ -361,7 +361,7 @@ class ContactObjectHelper implements ObjectHelperInterface
     {
         $value = (int) $value;
 
-        if (in_array($value, [DoNotContact::BOUNCED, DoNotContact::UNSUBSCRIBED, DoNotContact::MANUAL, DoNotContact::IS_CONTACTABLE])) {
+        if (in_array($value, [DoNotContact::BOUNCED, DoNotContact::UNSUBSCRIBED, DoNotContact::MANUAL, DoNotContact::IS_CONTACTABLE], true)) {
             return $value;
         }
 

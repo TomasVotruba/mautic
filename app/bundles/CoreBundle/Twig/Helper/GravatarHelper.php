@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Twig\Helper;
 
@@ -37,7 +37,7 @@ final class GravatarHelper
             || ($request
                 && in_array(
                     $request->getClientIp(),
-                    array_merge($this->devHosts, ['127.0.0.1', 'fe80::1', '::1'])
+                    array_merge($this->devHosts, ['127.0.0.1', 'fe80::1', '::1']), true
                 )))
             ?
             'mp'

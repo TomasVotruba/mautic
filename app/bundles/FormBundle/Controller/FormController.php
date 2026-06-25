@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller;
 
@@ -316,7 +316,7 @@ class FormController extends CommonFormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -396,7 +396,7 @@ class FormController extends CommonFormController
                             );
                             $valid = false;
 
-                            if ('dev' == $this->getParameter('kernel.environment')) {
+                            if ('dev' === $this->getParameter('kernel.environment')) {
                                 throw $e;
                             }
                         }
@@ -511,7 +511,7 @@ class FormController extends CommonFormController
             $entity = $model->getEntity($objectId);
 
             // Process submit of cloned form
-            if (null == $entity && $objectId == $sessionId) {
+            if (null === $entity && $objectId === $sessionId) {
                 $entity = $model->getEntity();
             }
         }
@@ -566,7 +566,7 @@ class FormController extends CommonFormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && 'POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // set added/updated fields
@@ -718,11 +718,11 @@ class FormController extends CommonFormController
         foreach ($existingFields as $fieldId => $formField) {
             // Check to see if the field still exists
 
-            if ('button' == $formField->getType()) {
+            if ('button' === $formField->getType()) {
                 // submit button found
                 $submitButton = true;
             }
-            if ('button' !== $formField->getType() && !in_array($formField->getType(), $availableFields)) {
+            if ('button' !== $formField->getType() && !in_array($formField->getType(), $availableFields, true)) {
                 continue;
             }
 
@@ -859,7 +859,7 @@ class FormController extends CommonFormController
         /** @var Form $entity */
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('form:forms:create')
                 || !$this->security->hasEntityAccess(
                     'form:forms:viewown',
@@ -940,9 +940,9 @@ class FormController extends CommonFormController
         $template = $form->getTemplate() ?? $this->coreParametersHelper->get('theme');
         if (!empty($template)) {
             $theme = $themeHelper->getTheme($template);
-            if ($theme->getTheme() != $template) {
+            if ($theme->getTheme() !== $template) {
                 $config = $theme->getConfig();
-                if (in_array('form', $config['features'])) {
+                if (in_array('form', $config['features'], true)) {
                     $template = $theme->getTheme();
                 } else {
                     $template = null;
@@ -1142,7 +1142,7 @@ class FormController extends CommonFormController
             ],
         ];
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             /** @var FormModel $model */
             $model = $this->getModel('form');
             $ids   = json_decode($request->query->get('ids', ''));

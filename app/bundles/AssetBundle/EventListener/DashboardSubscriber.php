@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\EventListener;
 
@@ -52,7 +52,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('asset:assets:viewother');
 
-        if ('asset.downloads.in.time' == $event->getType()) {
+        if ('asset.downloads.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 
@@ -74,7 +74,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('unique.vs.repetitive.downloads' == $event->getType()) {
+        if ('unique.vs.repetitive.downloads' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
                 $event->setTemplateData([
@@ -88,7 +88,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('popular.assets' == $event->getType()) {
+        if ('popular.assets' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -132,7 +132,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('created.assets' == $event->getType()) {
+        if ('created.assets' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 

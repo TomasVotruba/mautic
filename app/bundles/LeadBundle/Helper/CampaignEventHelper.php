@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Helper;
 
@@ -28,11 +28,11 @@ class CampaignEventHelper
         $limitRemoveFrom = $event['properties']['removedFrom'];
         $list            = $eventDetails->getList();
 
-        if ($eventDetails->wasAdded() && !empty($limitAddTo) && !in_array($list->getId(), $limitAddTo)) {
+        if ($eventDetails->wasAdded() && !empty($limitAddTo) && !in_array($list->getId(), $limitAddTo, true)) {
             return false;
         }
 
-        if ($eventDetails->wasRemoved() && !empty($limitRemoveFrom) && !in_array($list->getId(), $limitRemoveFrom)) {
+        if ($eventDetails->wasRemoved() && !empty($limitRemoveFrom) && !in_array($list->getId(), $limitRemoveFrom, true)) {
             return false;
         }
 

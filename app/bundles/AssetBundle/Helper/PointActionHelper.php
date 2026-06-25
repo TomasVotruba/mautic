@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Helper;
 
@@ -9,7 +9,7 @@ class PointActionHelper
         $assetId       = $eventDetails->getId();
         $limitToAssets = $action['properties']['assets'];
 
-        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets)) {
+        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets, true)) {
             // no points change
             return false;
         }

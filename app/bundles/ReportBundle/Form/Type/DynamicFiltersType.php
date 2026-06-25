@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Form\Type;
 
@@ -74,7 +74,7 @@ class DynamicFiltersType extends AbstractType
                         ];
 
                         if (isset($options['data'][$definition['alias']])) {
-                            $args['data'] = (1 == (int) $options['data'][$definition['alias']]);
+                            $args['data'] = (1 === (int) $options['data'][$definition['alias']]);
                         } elseif (isset($filter['value']) && '' !== $filter['value']) {
                             $args['data'] = (int) $filter['value'];
                         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -287,7 +287,7 @@ class InputHelper
         }
 
         $parts['scheme'] ??= $defaultProtocol;
-        if (!in_array($parts['scheme'], $allowedProtocols)) {
+        if (!in_array($parts['scheme'], $allowedProtocols, true)) {
             $parts['scheme'] = $defaultProtocol;
         }
 
@@ -453,7 +453,7 @@ class InputHelper
             if ($needsScriptDecoding) {
                 $value = preg_replace_callback(
                     "/<mscript>(.*?)<\/mscript>/is",
-                    fn ($matches): string => base64_decode($matches[1]),
+                    fn ($matches): string => base64_decode($matches[1], true),
                     $value);
             }
         }

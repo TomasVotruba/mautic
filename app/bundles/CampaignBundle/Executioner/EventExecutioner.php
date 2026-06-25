@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Executioner;
 
@@ -244,7 +244,7 @@ class EventExecutioner
 
         foreach ($events as $key => $event) {
             // Ignore decisions
-            if (Event::TYPE_DECISION == $event->getEventType()) {
+            if (Event::TYPE_DECISION === $event->getEventType()) {
                 $this->logger->debug('CAMPAIGN: Ignoring child event ID '.$event->getId().' as a decision');
                 continue;
             }

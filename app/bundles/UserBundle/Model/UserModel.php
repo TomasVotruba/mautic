@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\UserBundle\Model;
 
@@ -366,7 +366,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function setPreference($key, $value = null, ?User $user = null): void
     {
-        if (null == $user) {
+        if (null === $user) {
             $user = $this->userHelper->getUser();
         }
 
@@ -383,7 +383,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function getPreference($key, $default = null, ?User $user = null)
     {
-        if (null == $user) {
+        if (null === $user) {
             $user = $this->userHelper->getUser();
         }
         $preferences = $user->getPreferences();

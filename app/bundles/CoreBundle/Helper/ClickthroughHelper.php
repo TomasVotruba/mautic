@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -24,7 +24,7 @@ class ClickthroughHelper
     public static function decodeArrayFromUrl($string, $urlDecode = true)
     {
         $raw     = $urlDecode ? urldecode($string) : $string;
-        $decoded = base64_decode($raw);
+        $decoded = base64_decode($raw, true);
 
         if (empty($decoded)) {
             return [];

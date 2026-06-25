@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Segment\Query;
 
@@ -28,7 +28,7 @@ class QueryBuilder extends BaseQueryBuilder
      */
     public function expr()
     {
-        if (!is_null($this->_expr)) {
+        if (null !== $this->_expr) {
             return $this->_expr;
         }
 
@@ -156,7 +156,7 @@ class QueryBuilder extends BaseQueryBuilder
     {
         $parts = $this->getQueryParts();
         foreach ($parts['join']['l'] as $joinedTable) {
-            if ($joinedTable['joinAlias'] == $alias) {
+            if ($joinedTable['joinAlias'] === $alias) {
                 return $joinedTable['joinCondition'];
             }
         }
@@ -177,7 +177,7 @@ class QueryBuilder extends BaseQueryBuilder
 
         foreach ($parts as $tbl => $joins) {
             foreach ($joins as $key => $join) {
-                if ($join['joinAlias'] == $alias) {
+                if ($join['joinAlias'] === $alias) {
                     $result[$tbl][$key]['joinCondition'] = $join['joinCondition'].' and ('.$expr.')';
                     $inserted                            = true;
                 }
@@ -200,7 +200,7 @@ class QueryBuilder extends BaseQueryBuilder
     {
         $parts = $this->getQueryPart('join');
         foreach ($parts['l'] as $key => $part) {
-            if ($part['joinAlias'] == $alias) {
+            if ($part['joinAlias'] === $alias) {
                 $parts['l'][$key]['joinCondition'] = $expr;
             }
         }
@@ -232,7 +232,7 @@ class QueryBuilder extends BaseQueryBuilder
      */
     public function getTableAlias(string $table, $joinType = null)
     {
-        if (is_null($joinType)) {
+        if (null === $joinType) {
             $tables = $this->getTableAliases();
 
             return $tables[$table] ?? false;
@@ -241,7 +241,7 @@ class QueryBuilder extends BaseQueryBuilder
         $tableJoins = $this->getTableJoins($table);
 
         foreach ($tableJoins as $tableJoin) {
-            if ($tableJoin['joinType'] == $joinType) {
+            if ($tableJoin['joinType'] === $joinType) {
                 return $tableJoin['joinAlias'];
             }
         }
@@ -257,7 +257,7 @@ class QueryBuilder extends BaseQueryBuilder
         $found = [];
         foreach ($this->getQueryParts()['join'] as $join) {
             foreach ($join as $joinPart) {
-                if ($tableName == $joinPart['joinTable']) {
+                if ($tableName === $joinPart['joinTable']) {
                     $found[] = $joinPart;
                 }
             }
@@ -285,7 +285,7 @@ class QueryBuilder extends BaseQueryBuilder
         $joins     = $parts['join'][$leadTable];
 
         foreach ($joins as $join) {
-            if ('right' == $join['joinType']) {
+            if ('right' === $join['joinType']) {
                 $matches = null;
                 if (preg_match('/'.$leadTable.'\.id \= ([^\ ]+)/i', $join['joinCondition'], $matches)) {
                     return $matches[1];
@@ -328,7 +328,7 @@ class QueryBuilder extends BaseQueryBuilder
 
         foreach ($queryParts['join'] as $join) {
             foreach ($join as $joinPart) {
-                if ($joinPart['joinTable'] == $table) {
+                if ($joinPart['joinTable'] === $table) {
                     return true;
                 }
             }
@@ -402,9 +402,9 @@ class QueryBuilder extends BaseQueryBuilder
         $glue = strtolower($glue);
 
         //  Different handling
-        if ('or' == $glue) {
+        if ('or' === $glue) {
             //  Is this the first condition in query builder?
-            if (!is_null($this->getQueryPart('where'))) {
+            if (null !== $this->getQueryPart('where')) {
                 // Are the any queued conditions?
                 if ($this->hasLogicStack()) {
                     // We need to apply current stack to the query builder

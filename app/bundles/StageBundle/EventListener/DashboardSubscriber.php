@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\StageBundle\EventListener;
 
@@ -47,7 +47,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('stage:stages:viewother');
 
-        if ('stages.in.time' == $event->getType()) {
+        if ('stages.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 

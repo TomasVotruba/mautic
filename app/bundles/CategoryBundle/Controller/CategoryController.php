@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CategoryBundle\Controller;
 
@@ -75,7 +75,7 @@ class CategoryController extends AbstractFormController
         }
 
         // hack to make pagination work for default list view
-        if ('all' == $bundle) {
+        if ('all' === $bundle) {
             $bundle = 'category';
         }
 
@@ -115,7 +115,7 @@ class CategoryController extends AbstractFormController
 
         $filter = ['string' => $search];
 
-        if ('category' != $bundle) {
+        if ('category' !== $bundle) {
             $filter['force'] = [
                 [
                     'column' => 'c.bundle',
@@ -346,7 +346,7 @@ class CategoryController extends AbstractFormController
         $form['inForm']->setData($inForm);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $method) {
+        if (!$ignorePost && 'POST' === $method) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -601,7 +601,7 @@ class CategoryController extends AbstractFormController
     private function getInFormValue(Request $request, string $method): int
     {
         $inForm = $request->get('inForm', 0);
-        if (Request::METHOD_POST == $method) {
+        if (Request::METHOD_POST === $method) {
             $category_form = $request->request->all()['category_form'] ?? [];
             $inForm        = $category_form['inForm'] ?? 0;
         }

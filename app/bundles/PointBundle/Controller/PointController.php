@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Controller;
 
@@ -344,7 +344,7 @@ class PointController extends AbstractFormController
         $model  = $this->getModel('point');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('point:points:create')) {
                 $this->throwAccessDenied();
             }

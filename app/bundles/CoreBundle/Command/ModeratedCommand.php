@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
@@ -92,7 +92,7 @@ abstract class ModeratedCommand extends Command
             // File lock is deprecated in favor of Symfony's Lock component's lock
             $this->moderationMode = 'flock';
         }
-        if (!in_array($this->moderationMode, [self::MODE_PID, self::MODE_FLOCK, self::MODE_REDIS])) {
+        if (!in_array($this->moderationMode, [self::MODE_PID, self::MODE_FLOCK, self::MODE_REDIS], true)) {
             $output->writeln('<error>Unknown locking method specified.</error>');
 
             return false;
@@ -100,7 +100,7 @@ abstract class ModeratedCommand extends Command
 
         // Allow multiple runs of the same command if executing different IDs, etc
         $this->moderationKey = $this->getName().$moderationKey;
-        if (in_array($this->moderationMode, [self::MODE_PID, self::MODE_FLOCK])) {
+        if (in_array($this->moderationMode, [self::MODE_PID, self::MODE_FLOCK], true)) {
             // Setup the run directory for lock/pid files
             $this->runDirectory = $this->pathsHelper->getSystemPath('cache').'/../run';
             if (!file_exists($this->runDirectory) && !@mkdir($this->runDirectory)) {
@@ -211,7 +211,7 @@ abstract class ModeratedCommand extends Command
         }
 
         $disabled = explode(',', ini_get('disable_functions'));
-        if (in_array('getmypid', $disabled) || in_array('posix_getpgid', $disabled)) {
+        if (in_array('getmypid', $disabled, true) || in_array('posix_getpgid', $disabled, true)) {
             return false;
         }
 

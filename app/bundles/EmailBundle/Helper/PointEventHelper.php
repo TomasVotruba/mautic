@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Helper;
 
@@ -23,7 +23,7 @@ class PointEventHelper
             $limitToEmails = $action['properties']['emails'];
         }
 
-        if (!empty($limitToEmails) && !in_array($emailId, $limitToEmails)) {
+        if (!empty($limitToEmails) && !in_array($emailId, $limitToEmails, true)) {
             // no points change
             return false;
         }
@@ -39,7 +39,7 @@ class PointEventHelper
         $email = $this->emailModel->getEntity($emailId);
 
         // make sure the email still exists and is published
-        if (null != $email && $email->isPublished()) {
+        if (null !== $email && $email->isPublished()) {
             $leadFields = $lead->getFields();
             if (isset($leadFields['core']['email']['value']) && $leadFields['core']['email']['value']) {
                 $leadCredentials       = $lead->getProfileFields();

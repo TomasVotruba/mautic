@@ -38,7 +38,7 @@ class FormExtension extends AbstractExtension
             return true;
         }
         foreach ($form->children as $key => $child) {
-            if (in_array($key, $excluding)) {
+            if (in_array($key, $excluding, true)) {
                 continue;
             }
 

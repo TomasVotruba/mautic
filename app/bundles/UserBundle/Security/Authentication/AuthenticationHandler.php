@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\UserBundle\Security\Authentication;
 
@@ -26,7 +26,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 
         $format = $request->request->get('format');
 
-        if ('json' == $format) {
+        if ('json' === $format) {
             $array    = ['success' => true];
             $response = new Response(json_encode($array));
             $response->headers->set('Content-Type', 'application/json');
@@ -45,7 +45,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 
         $format = $request->request->get('format');
 
-        if ('json' == $format) {
+        if ('json' === $format) {
             $array    = ['success' => false, 'message' => $exception->getMessage()];
             $response = new Response(json_encode($array));
             $response->headers->set('Content-Type', 'application/json');

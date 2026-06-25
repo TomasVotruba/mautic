@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration\Salesforce\Helper;
 
@@ -33,7 +33,7 @@ class StateValidationHelper
 
         if (
             !isset($mappedData['Country'])
-            || !in_array($mappedData['Country'], self::$supportedCountriesWithStates)
+            || !in_array($mappedData['Country'], self::$supportedCountriesWithStates, true)
         ) {
             unset($mappedData['State']);
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\EventListener;
 
@@ -54,7 +54,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('form:forms:viewother');
 
-        if ('submissions.in.time' == $event->getType()) {
+        if ('submissions.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 
@@ -76,7 +76,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('top.submission.referrers' == $event->getType()) {
+        if ('top.submission.referrers' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -120,7 +120,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('top.submitters' == $event->getType()) {
+        if ('top.submitters' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -171,7 +171,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('created.forms' == $event->getType()) {
+        if ('created.forms' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 

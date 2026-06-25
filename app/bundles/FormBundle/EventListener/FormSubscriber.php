@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\EventListener;
 
@@ -212,7 +212,7 @@ class FormSubscriber implements EventSubscriberInterface
         $fieldTypes = [];
         foreach ($fields as $field) {
             $fieldTypes[$field['alias']] = $field['type'];
-            if (!isset($post[$field['alias']]) || 'button' == $field['type']) {
+            if (!isset($post[$field['alias']]) || 'button' === $field['type']) {
                 continue;
             }
 
@@ -269,10 +269,10 @@ class FormSubscriber implements EventSubscriberInterface
             if (!empty($email)) {
                 // Remove Mautic values and password fields
                 foreach ($post as $key => $value) {
-                    if (in_array($key, ['messenger', 'submit', 'formId', 'formid', 'formName', 'return'])) {
+                    if (in_array($key, ['messenger', 'submit', 'formId', 'formid', 'formName', 'return'], true)) {
                         unset($post[$key]);
                     }
-                    if (isset($fieldTypes[$key]) && in_array($fieldTypes[$key], ['password'])) {
+                    if (isset($fieldTypes[$key]) && in_array($fieldTypes[$key], ['password'], true)) {
                         $post[$key] = '*********';
                     }
                 }

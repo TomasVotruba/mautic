@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Security\Permissions;
 
@@ -103,7 +103,7 @@ abstract class AbstractPermissions
         static $permissionLevels = [];
         $bundle                  = $this->getName();
 
-        if (!in_array($bundle, $permissionLevels)) {
+        if (!in_array($bundle, $permissionLevels, true)) {
             $permissionLevels[$bundle] = [];
             if (isset($permissions[$bundle])) {
                 if ($this->isEnabled()) {
@@ -143,35 +143,35 @@ abstract class AbstractPermissions
      */
     protected function getSynonym($name, $level)
     {
-        if (in_array($level, ['viewown', 'viewother'])) {
+        if (in_array($level, ['viewown', 'viewother'], true)) {
             if (isset($this->permissions[$name]['view'])) {
                 $level = 'view';
             }
-        } elseif ('view' == $level) {
+        } elseif ('view' === $level) {
             if (isset($this->permissions[$name]['viewown'])) {
                 $level = 'viewown';
             }
-        } elseif (in_array($level, ['editown', 'editother'])) {
+        } elseif (in_array($level, ['editown', 'editother'], true)) {
             if (isset($this->permissions[$name]['edit'])) {
                 $level = 'edit';
             }
-        } elseif ('edit' == $level) {
+        } elseif ('edit' === $level) {
             if (isset($this->permissions[$name]['editown'])) {
                 $level = 'editown';
             }
-        } elseif (in_array($level, ['deleteown', 'deleteother'])) {
+        } elseif (in_array($level, ['deleteown', 'deleteother'], true)) {
             if (isset($this->permissions[$name]['delete'])) {
                 $level = 'delete';
             }
-        } elseif ('delete' == $level) {
+        } elseif ('delete' === $level) {
             if (isset($this->permissions[$name]['deleteown'])) {
                 $level = 'deleteown';
             }
-        } elseif (in_array($level, ['publishown', 'publishother'])) {
+        } elseif (in_array($level, ['publishown', 'publishother'], true)) {
             if (isset($this->permissions[$name]['publish'])) {
                 $level = 'publish';
             }
-        } elseif ('publish' == $level) {
+        } elseif ('publish' === $level) {
             if (isset($this->permissions[$name]['publishown'])) {
                 $level = 'publishown';
             }
@@ -238,16 +238,16 @@ abstract class AbstractPermissions
                 }
                 foreach ($required as $r) {
                     [$ignore, $r] = $this->getSynonym($level, $r);
-                    if ($this->isSupported($level, $r) && !in_array($r, $perms)) {
+                    if ($this->isSupported($level, $r) && !in_array($r, $perms, true)) {
                         $perms[] = $r;
                     }
                 }
             }
-            $hasViewAccess = (!$hasViewAccess && (in_array('view', $perms) || in_array('viewown', $perms)));
+            $hasViewAccess = (!$hasViewAccess && (in_array('view', $perms, true) || in_array('viewown', $perms, true)));
         }
 
         // check categories for view permissions and add it if the user has view access to the other permissions
-        if (isset($this->permissions['categories']) && $hasViewAccess && (!isset($permissions['categories']) || !in_array('view', $permissions['categories']))) {
+        if (isset($this->permissions['categories']) && $hasViewAccess && (!isset($permissions['categories']) || !in_array('view', $permissions['categories'], true))) {
             $permissions['categories'][] = 'view';
         }
 
@@ -267,16 +267,16 @@ abstract class AbstractPermissions
             $perms = array_keys($perms);
             $totalAvailable += count($perms);
 
-            if (in_array('full', $perms)) {
+            if (in_array('full', $perms, true)) {
                 if (1 === count($perms)) {
                     // full is the only permission so count as 1
-                    if (!empty($data[$level]) && !in_array('full', $data[$level])) {
+                    if (!empty($data[$level]) && !in_array('full', $data[$level], true)) {
                         ++$totalGranted;
                     }
                 } else {
                     // remove full from total count
                     --$totalAvailable;
-                    if (!empty($data[$level]) && in_array('full', $data[$level])) {
+                    if (!empty($data[$level]) && in_array('full', $data[$level], true)) {
                         // user has full access so sum perms minus full
                         $totalGranted += count($perms) - 1;
                         // move on to the next level
@@ -375,7 +375,7 @@ abstract class AbstractPermissions
 
         $choices['mautic.core.permissions.full'] = 'full';
 
-        $label = ('categories' == $level) ? 'mautic.category.permissions.categories' : "mautic.$bundle.permissions.$level";
+        $label = ('categories' === $level) ? 'mautic.category.permissions.categories' : "mautic.$bundle.permissions.$level";
         $builder->add(
             "$bundle:$level",
             PermissionListType::class,

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Controller;
 
@@ -572,7 +572,7 @@ class CommonApiController extends FetchCommonApiController
 
             $headers = [];
             // return the newly created entities location if applicable
-            if (in_array($statusCode, [Response::HTTP_CREATED, Response::HTTP_ACCEPTED])) {
+            if (in_array($statusCode, [Response::HTTP_CREATED, Response::HTTP_ACCEPTED], true)) {
                 $route = (null !== $this->router->getRouteCollection()->get('mautic_api_'.$this->entityNameMulti.'_getone'))
                     ? 'mautic_api_'.$this->entityNameMulti.'_getone' : 'mautic_api_get'.$this->entityNameOne;
                 $headers['Location'] = $this->generateUrl(
@@ -607,7 +607,7 @@ class CommonApiController extends FetchCommonApiController
                 $msg = $this->translator->trans('mautic.core.error.badrequest', [], 'flashes');
             }
 
-            $responseCode = in_array(Response::HTTP_UNPROCESSABLE_ENTITY, $formErrorCodes) ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_BAD_REQUEST;
+            $responseCode = in_array(Response::HTTP_UNPROCESSABLE_ENTITY, $formErrorCodes, true) ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_BAD_REQUEST;
 
             return $this->returnError($msg, $responseCode, $formErrors);
         }

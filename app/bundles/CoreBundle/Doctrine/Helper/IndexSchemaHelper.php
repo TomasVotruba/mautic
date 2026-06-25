@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Doctrine\Helper;
 
@@ -207,7 +207,7 @@ class IndexSchemaHelper
             $columns = [$columns];
         }
         foreach ($columns as $column) {
-            if (!in_array($column, $this->allowedColumns)) {
+            if (!in_array($column, $this->allowedColumns, true)) {
                 $columnSchema = $this->table->getColumn($column);
 
                 $type = $columnSchema->getType();

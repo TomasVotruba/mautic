@@ -16,7 +16,7 @@ final class Note
         private string $note,
         string $type,
     ) {
-        if (!in_array($type, [self::TYPE_INFO, self::TYPE_WARNING])) {
+        if (!in_array($type, [self::TYPE_INFO, self::TYPE_WARNING], true)) {
             throw new \InvalidArgumentException(sprintf('Type value can be either "%s" or "%s".', self::TYPE_INFO, self::TYPE_WARNING));
         }
 

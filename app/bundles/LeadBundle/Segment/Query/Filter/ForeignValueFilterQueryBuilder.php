@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Segment\Query\Filter;
 
@@ -41,7 +41,7 @@ class ForeignValueFilterQueryBuilder extends BaseFilterQueryBuilder
 
         $subQueryBuilder = $queryBuilder->createQueryBuilder();
 
-        if (!is_null($filter->getWhere())) {
+        if (null !== $filter->getWhere()) {
             $subQueryBuilder->andWhere(str_replace(str_replace(MAUTIC_TABLE_PREFIX, '', $filter->getTable()).'.', $tableAlias.'.', $filter->getWhere()));
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Helper;
 
@@ -11,7 +11,7 @@ class CampaignEventHelper
      */
     public static function validateLeadChangeTrigger(?CampaignLeadChangeEvent $eventDetails = null, array $event = []): bool
     {
-        if (null == $eventDetails) {
+        if (null === $eventDetails) {
             return true;
         }
 
@@ -19,7 +19,7 @@ class CampaignEventHelper
         $action           = $event['properties']['action'];
 
         // check against selected campaigns
-        if (!empty($limitToCampaigns) && !in_array($event['campaign']['id'], $limitToCampaigns)) {
+        if (!empty($limitToCampaigns) && !in_array($event['campaign']['id'], $limitToCampaigns, true)) {
             return false;
         }
 

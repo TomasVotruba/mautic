@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Entity;
 
@@ -87,10 +87,10 @@ class PageRepository extends CommonRepository
                 ->setParameter('id', $this->currentUser->getId());
         }
 
-        if ('translation' == $topLevel) {
+        if ('translation' === $topLevel) {
             // only get top level pages
             $q->andWhere($q->expr()->isNull('p.translationParent'));
-        } elseif ('variant' == $topLevel) {
+        } elseif ('variant' === $topLevel) {
             $q->andWhere($q->expr()->isNull('p.variantParent'));
         }
 

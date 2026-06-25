@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\EventListener;
 
@@ -466,7 +466,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
         $primaryCompany =  $this->companyModel->getEntity($company['id']);
 
-        if (isset($config['companyname']) && $primaryCompany->getName() != $config['companyname']) {
+        if (isset($config['companyname']) && $primaryCompany->getName() !== $config['companyname']) {
             [$company, $leadAdded, $companyEntity] = IdentifyCompanyHelper::identifyLeadsCompany($config, $lead, $this->companyModel);
             $companyChangeLog                      = null;
             if ($leadAdded) {
@@ -553,13 +553,13 @@ class CampaignSubscriber implements EventSubscriberInterface
                     // Keep regex values unchanged so they are evaluated as patterns
                     // Otherwise CustomFieldHelper::fieldValueTransfomer would attempt to parse
                     // the regex as a DateTime string, which would throw an error
-                    if (!in_array($operator, [OperatorOptions::REGEXP, OperatorOptions::NOT_REGEXP])) {
+                    if (!in_array($operator, [OperatorOptions::REGEXP, OperatorOptions::NOT_REGEXP], true)) {
                         $fieldValue = CustomFieldHelper::fieldValueTransfomer($fields[$field], $value);
                     }
                 }
 
                 // Preventing date/datetime fields to fail on empty/notEmpty
-                if (in_array($fieldType, ['date', 'datetime']) && in_array($operator, ['empty', '!empty'])) {
+                if (in_array($fieldType, ['date', 'datetime'], true) && in_array($operator, ['empty', '!empty'], true)) {
                     $result     = $this->leadFieldModel->getRepository()->compareEmptyDateValue(
                         $lead->getId(),
                         $field,
@@ -714,10 +714,10 @@ class CampaignSubscriber implements EventSubscriberInterface
         $triggerIntervalUnit = strtoupper($triggerIntervalUnit);
         $timeNotation        = '';
         // add T for Time units
-        if (in_array($triggerIntervalUnit, ['H', 'I'])) {
+        if (in_array($triggerIntervalUnit, ['H', 'I'], true)) {
             $timeNotation = 'T';
             // DateInterval Minutes notation is 'M'
-            $triggerIntervalUnit = ('I' == $triggerIntervalUnit) ? 'M' : $triggerIntervalUnit;
+            $triggerIntervalUnit = ('I' === $triggerIntervalUnit) ? 'M' : $triggerIntervalUnit;
         }
 
         $duration = 'P'.$timeNotation.$triggerInterval.$triggerIntervalUnit;
@@ -727,7 +727,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $objEffectiveDate->add($interval);
 
         $now    = new \DateTime();
-        if (OperatorOptions::LESS_THAN == $operator) {
+        if (OperatorOptions::LESS_THAN === $operator) {
             $result = ($now < $objEffectiveDate);
         } else {
             $result = ($now > $objEffectiveDate);

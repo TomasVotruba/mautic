@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticSocialBundle\Command;
 
@@ -109,16 +109,16 @@ class MauticSocialMonitoringCommand extends Command
         $commandName = '';
 
         // hashtag command
-        if ('twitter_hashtag' == $networkType) {
+        if ('twitter_hashtag' === $networkType) {
             $commandName = 'social:monitor:twitter:hashtags';
         }
 
         // mention command
-        if ('twitter_handle' == $networkType) {
+        if ('twitter_handle' === $networkType) {
             $commandName = 'social:monitor:twitter:mentions';
         }
 
-        if ('' == $commandName) {
+        if ('' === $commandName) {
             $output->writeln('Matching command not found.');
 
             return 1;

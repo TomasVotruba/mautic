@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\EventListener;
 
@@ -70,7 +70,7 @@ class DoctrineEventsSubscriber
             );
 
             foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
-                if (\Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY == $mapping['type']
+                if (\Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY === $mapping['type']
                     && isset($classMetadata->associationMappings[$fieldName]['joinTable']['name'])
                 ) {
                     $mappedTableName                                                     = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
@@ -111,7 +111,7 @@ class DoctrineEventsSubscriber
         $tables = $schema->getTables();
 
         foreach ($tables as $table) {
-            if (in_array($table->getName(), $this->deprecatedEntityTables)) {
+            if (in_array($table->getName(), $this->deprecatedEntityTables, true)) {
                 // remove table from schema
                 $schema->dropTable($table->getName());
             }
@@ -125,7 +125,7 @@ class DoctrineEventsSubscriber
             foreach ($table->getIndexes() as $id => $index) {
                 $index_first_column = $this->trimQuotes(strtolower($index->getColumns()[0]));
 
-                if (!$index->isPrimary() && 1 == count($index->getColumns()) && $index_first_column === $pk_first_column) {
+                if (!$index->isPrimary() && 1 === count($index->getColumns()) && $index_first_column === $pk_first_column) {
                     $table->dropIndex($id);
                 }
             }

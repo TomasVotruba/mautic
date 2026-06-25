@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Helper;
 
@@ -123,7 +123,7 @@ class FormUploader
      */
     private function fixRotationJPG($filename): void
     {
-        if (IMAGETYPE_JPEG != exif_imagetype($filename)) {
+        if (IMAGETYPE_JPEG !== exif_imagetype($filename)) {
             return;
         }
         $exif = exif_read_data($filename);

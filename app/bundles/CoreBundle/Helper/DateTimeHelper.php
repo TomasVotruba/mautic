@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -46,7 +46,7 @@ class DateTimeHelper
      */
     public function setDateTime($datetime = '', ?string $fromFormat = self::FORMAT_DB, string $timezone = 'local'): void
     {
-        if ('local' == $timezone) {
+        if ('local' === $timezone) {
             $timezone = self::$defaultLocalTimezone;
         } elseif (empty($timezone)) {
             $timezone = 'UTC';
@@ -97,7 +97,7 @@ class DateTimeHelper
     {
         if ($this->datetime) {
             $dateTime = clone $this->datetime;
-            $utc      = ('UTC' == $this->timezone) ? $dateTime : $dateTime->setTimezone($this->utc);
+            $utc      = ('UTC' === $this->timezone) ? $dateTime : $dateTime->setTimezone($this->utc);
             if (empty($format)) {
                 $format = $this->format;
             }
@@ -201,7 +201,7 @@ class DateTimeHelper
      */
     public function getDiff($compare = 'now', $format = null, $resetTime = false)
     {
-        if ('now' == $compare) {
+        if ('now' === $compare) {
             $compare = new \DateTime('now', $this->datetime->getTimezone());
         }
 
@@ -214,7 +214,7 @@ class DateTimeHelper
 
         $interval = $compare->diff($with);
 
-        return (null == $format) ? $interval : $interval->format($format);
+        return (null === $format) ? $interval : $interval->format($format);
     }
 
     /**
@@ -270,7 +270,7 @@ class DateTimeHelper
         $possibleUnits = ['Y', 'M', 'D', 'I', 'H', 'S'];
         $unit          = strtoupper($unit);
 
-        if (!in_array($unit, $possibleUnits)) {
+        if (!in_array($unit, $possibleUnits, true)) {
             throw new \InvalidArgumentException($unit.' is invalid unit for DateInterval');
         }
 
@@ -316,7 +316,7 @@ class DateTimeHelper
      */
     public function getTextDate($interval = null)
     {
-        if (null == $interval) {
+        if (null === $interval) {
             $interval = $this->getDiff('now', null, true);
         }
 
@@ -348,7 +348,7 @@ class DateTimeHelper
         if (empty($timezone)) {
             foreach (timezone_abbreviations_list() as $abbr) {
                 foreach ($abbr as $city) {
-                    if ($city['offset'] == $offset) {
+                    if ($city['offset'] === $offset) {
                         return $city['timezone_id'];
                     }
                 }

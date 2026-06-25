@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -53,7 +53,7 @@ class FormModel extends AbstractCommonModel
                 $maxLockTime      = $this->coreParametersHelper->get('max_entity_lock_time', 0);
                 $lockValidityDate = false;
 
-                if (0 != $maxLockTime && is_numeric($maxLockTime)) {
+                if (0 !== $maxLockTime && is_numeric($maxLockTime)) {
                     $lockValidityDate = clone $checkedOut;
                     $lockValidityDate->add(new \DateInterval('PT'.$maxLockTime.'S'));
                 }

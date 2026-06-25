@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller\Api;
 
@@ -267,9 +267,9 @@ class ListApiController extends CommonApiController
      */
     protected function checkEntityAccess($entity, $action = 'view')
     {
-        if ('create' == $action || 'edit' == $action || 'view' == $action) {
+        if ('create' === $action || 'edit' === $action || 'view' === $action) {
             return $this->security->isGranted(LeadPermissions::LISTS_VIEW_OWN);
-        } elseif ('delete' == $action) {
+        } elseif ('delete' === $action) {
             return $this->security->hasEntityAccess(
                 true, LeadPermissions::LISTS_DELETE_OTHER, $entity->getCreatedBy()
             );

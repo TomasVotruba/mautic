@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Entity;
 
@@ -69,7 +69,7 @@ class LeadRepository extends CommonRepository
             ->setParameter('false', false, 'boolean')
             ->setParameter('campaign', $campaignId);
 
-        if (null != $eventId) {
+        if (null !== $eventId) {
             $dq = $this->getEntityManager()->createQueryBuilder();
             $dq->select('el.id')
                 ->from(LeadEventLog::class, 'ell')

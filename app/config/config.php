@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Doctrine\DBAL\Types\Types;
 use Mautic\CoreBundle\Doctrine\Type;

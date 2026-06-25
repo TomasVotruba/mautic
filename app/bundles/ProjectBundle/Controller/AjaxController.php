@@ -74,7 +74,7 @@ final class AjaxController extends CommonAjaxController
         foreach ($allProjects as $project) {
             $value    = htmlspecialchars((string) $project['value'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $label    = htmlspecialchars((string) $project['label'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $selected = in_array($project['value'], $existingProjectIds) ? ' selected="selected"' : '';
+            $selected = in_array($project['value'], $existingProjectIds, true) ? ' selected="selected"' : '';
             $projectOptions .= "<option{$selected} value=\"{$value}\">{$label}</option>";
         }
 

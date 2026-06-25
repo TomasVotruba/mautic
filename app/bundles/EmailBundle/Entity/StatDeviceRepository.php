@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Entity;
 
@@ -19,7 +19,7 @@ class StatDeviceRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'email_stats_devices', 'ed')
             ->join('ed', MAUTIC_TABLE_PREFIX.'lead_devices', 'd', 'd.id = ed.device_id')
             ->join('ed', MAUTIC_TABLE_PREFIX.'email_stats', 'es', 'es.id = ed.stat_id');
-        if (null != $emailIds) {
+        if (null !== $emailIds) {
             if (!is_array($emailIds)) {
                 $emailIds = [(int) $emailIds];
             }

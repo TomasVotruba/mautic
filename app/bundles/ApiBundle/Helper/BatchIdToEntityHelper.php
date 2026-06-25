@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Helper;
 
@@ -75,7 +75,7 @@ class BatchIdToEntityHelper
             if (!isset($entitiesKeyedById[$id])) {
                 $hasPreviousId = array_filter(
                     $entities,
-                    fn ($entity): bool => $id == $entity->getPreviousId()
+                    fn ($entity): bool => $id === $entity->getPreviousId()
                 );
 
                 if ($hasPreviousId) {

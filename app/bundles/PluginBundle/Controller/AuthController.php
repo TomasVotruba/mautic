@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Controller;
 
@@ -86,7 +86,7 @@ class AuthController extends FormController
             $message = $this->translator->trans($postMessage[0], $postMessage[1], 'flashes');
             $session->remove('mautic.integration.postauth.message');
             $type = $postMessage[2];
-            if ('error' == $type) {
+            if ('error' === $type) {
                 $alert = 'danger';
             }
         }

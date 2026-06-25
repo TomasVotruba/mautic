@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Segment\Query\Filter;
 
@@ -52,7 +52,7 @@ class ForeignFuncFilterQueryBuilder extends BaseFilterQueryBuilder
             if ($filterAggr) {
                 // No join needed, it is placed in exist/not exists
             } else {
-                if ('companies' == $filter->getTable()) {
+                if ('companies' === $filter->getTable()) {
                     $relTable = $this->generateRandomParameterName();
                     $queryBuilder->leftJoin($leadsTableAlias, MAUTIC_TABLE_PREFIX.'companies_leads', $relTable, $relTable.'.lead_id = '.$leadsTableAlias.'.id');
                     $queryBuilder->leftJoin($relTable, $filter->getTable(), $tableAlias, $tableAlias.'.id = '.$relTable.'.company_id');

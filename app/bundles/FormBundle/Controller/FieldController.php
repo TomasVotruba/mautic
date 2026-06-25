@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Controller;
 
@@ -64,7 +64,7 @@ class FieldController extends CommonFormController
         $method  = $request->getMethod();
         $session = $request->getSession();
 
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             $formField = $request->request->all()['formfield'] ?? [];
             $fieldType = $formField['type'];
             $formId    = $formField['formId'];
@@ -97,7 +97,7 @@ class FieldController extends CommonFormController
         }
 
         // Check for a submitted form and process it
-        if ('POST' == $method) {
+        if ('POST' === $method) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -124,7 +124,7 @@ class FieldController extends CommonFormController
                     $formField['alias'] = $formFieldModel->generateAlias($alias, $aliases);
 
                     // Force required for captcha if not a honeypot
-                    if ('captcha' == $formField['type']) {
+                    if ('captcha' === $formField['type']) {
                         $formField['isRequired'] = !empty($formField['properties']['captcha']);
                     }
 
@@ -258,7 +258,7 @@ class FieldController extends CommonFormController
             $form = $this->getFieldForm($formId, $formField);
 
             // Check for a submitted form and process it
-            if ('POST' == $method) {
+            if ('POST' === $method) {
                 if (!$cancelled = $this->isFormCancelled($form)) {
                     if ($valid = $this->isFormValid($form)) {
                         $success = 1;
@@ -277,7 +277,7 @@ class FieldController extends CommonFormController
                             // Get aliases in order to generate update for this one
                             $aliases = [];
                             foreach ($fields as $k => $f) {
-                                if ($k != $objectId) {
+                                if ($k !== $objectId) {
                                     $aliases[] = $f['alias'];
                                 }
                             }
@@ -288,7 +288,7 @@ class FieldController extends CommonFormController
                         }
 
                         // Force required for captcha if not a honeypot
-                        if ('captcha' == $formField['type']) {
+                        if ('captcha' === $formField['type']) {
                             $formField['isRequired'] = !empty($formField['properties']['captcha']);
                         }
 
@@ -405,7 +405,7 @@ class FieldController extends CommonFormController
             }
 
             // add the field to the delete list
-            if (!in_array($objectId, $delete)) {
+            if (!in_array($objectId, $delete, true)) {
                 $delete[] = $objectId;
                 $session->set('mautic.form.'.$formId.'.fields.deleted', $delete);
             }

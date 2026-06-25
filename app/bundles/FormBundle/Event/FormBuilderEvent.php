@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Event;
 
@@ -181,7 +181,7 @@ class FormBuilderEvent extends Event
         if (!empty($this->validators)) {
             $validationData = $form->getData()['validation'] ?? [];
             foreach ($this->validators as $validator) {
-                if (isset($validator['formType']) && isset($validator['fieldType']) && $validator['fieldType'] == $form->getData()['type']) {
+                if (isset($validator['formType']) && isset($validator['fieldType']) && $validator['fieldType'] === $form->getData()['type']) {
                     $form->add(
                         'validation',
                         $validator['formType'],

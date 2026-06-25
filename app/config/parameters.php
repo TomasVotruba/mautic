@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $root = $container->getParameter('mautic.application_dir').'/app';
 include __DIR__.'/paths_helper.php';

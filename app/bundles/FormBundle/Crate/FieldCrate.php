@@ -44,7 +44,7 @@ final class FieldCrate
 
     public function isListType(): bool
     {
-        $isListType    = in_array($this->getType(), FormFieldHelper::getListTypes());
+        $isListType    = in_array($this->getType(), FormFieldHelper::getListTypes(), true);
         $hasList       = !empty($this->getProperties()['list']);
         $hasOptionList = !empty($this->getProperties()['optionlist']);
 

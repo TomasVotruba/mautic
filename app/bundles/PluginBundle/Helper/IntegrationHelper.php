@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Helper;
 
@@ -429,11 +429,11 @@ class IntegrationHelper
                     // clear the cache
                     unset($profile['profile'], $profile['activity']);
 
-                    if (in_array('public_profile', $features) && $sn->isAuthorized()) {
+                    if (in_array('public_profile', $features, true) && $sn->isAuthorized()) {
                         $sn->getUserData($identifierField, $profile);
                     }
 
-                    if (in_array('public_activity', $features) && $sn->isAuthorized()) {
+                    if (in_array('public_activity', $features, true) && $sn->isAuthorized()) {
                         $sn->getPublicActivity($identifierField, $profile);
                     }
 
@@ -542,7 +542,7 @@ class IntegrationHelper
                 foreach ($identifierField as $idf) {
                     $value = (is_array($fields[$f]) && isset($fields[$f]['value'])) ? $fields[$f]['value'] : $fields[$f];
 
-                    if (!in_array($value, $identifier) && str_contains($f, $idf)) {
+                    if (!in_array($value, $identifier, true) && str_contains($f, $idf)) {
                         $identifier[$f] = $value;
                         if (count($identifier) === count($identifierField)) {
                             // found enough matches so break

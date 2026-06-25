@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Form\Type;
 
@@ -78,7 +78,7 @@ class CampaignEventFormFieldValueType extends AbstractType
                 $formFields = $formEntity->getFields();
 
                 foreach ($formFields as $field) {
-                    if ('button' != $field->getType()) {
+                    if ('button' !== $field->getType()) {
                         $fields[$field->getLabel()]  = $field->getAlias();
                         $options[$field->getAlias()] = [];
                         $properties                  = $field->getProperties();

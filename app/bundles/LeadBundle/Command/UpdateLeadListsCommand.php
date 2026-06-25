@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Command;
 
@@ -137,7 +137,7 @@ class UpdateLeadListsCommand extends ModeratedCommand
                 $listId = $leadList->getId();
 
                 // Skip if already rebuilt
-                if (in_array($listId, $rebuiltLists)) {
+                if (in_array($listId, $rebuiltLists, true)) {
                     continue;
                 }
 
@@ -191,12 +191,12 @@ class UpdateLeadListsCommand extends ModeratedCommand
                     $dependentListId = (int) $dependentListId;
 
                     // Skip if already rebuilt or in exclude list
-                    if (in_array($dependentListId, $rebuiltLists) || in_array($dependentListId, $excludeSegments)) {
+                    if (in_array($dependentListId, $rebuiltLists, true) || in_array($dependentListId, $excludeSegments, true)) {
                         continue;
                     }
 
                     // Check for circular dependency
-                    if (in_array($dependentListId, $dependencyChain)) {
+                    if (in_array($dependentListId, $dependencyChain, true)) {
                         $output->writeln(
                             '<error>'.$this->translator->trans(
                                 'Circular dependency detected in segment chain: %chain%',

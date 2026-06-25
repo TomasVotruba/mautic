@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Entity;
 
@@ -100,7 +100,7 @@ class HitRepository extends CommonRepository
         $query->select('count(distinct(h.trackingId)) as hitCount');
         $query->andWhere($query->expr()->eq('h.source', $query->expr()->literal($source)));
 
-        if (null != $sourceId) {
+        if (null !== $sourceId) {
             if (is_array($sourceId)) {
                 $query->andWhere($query->expr()->in('h.sourceId', ':sourceIds'))
                     ->setParameter('sourceIds', $sourceId);
@@ -110,7 +110,7 @@ class HitRepository extends CommonRepository
             }
         }
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $query->andwhere($query->expr()->gte('h.dateHit', ':date'))
                 ->setParameter('date', $fromDate);
         }
@@ -140,7 +140,7 @@ class HitRepository extends CommonRepository
             ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER)
             ->groupBy('h.email_id');
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $dateHelper = new DateTimeHelper($fromDate);
             $q->andwhere($q->expr()->gte('h.date_hit', ':date'))
                 ->setParameter('date', $dateHelper->toUtcString());
@@ -557,7 +557,7 @@ class HitRepository extends CommonRepository
             ->where('lead_id = :leadId')
             ->setParameter('leadId', $leadId);
 
-        if (null != $trackingId) {
+        if (null !== $trackingId) {
             $q->andWhere('tracking_id = :trackingId')
                 ->setParameter('trackingId', $trackingId);
         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $appEntrypoint = file_exists(__DIR__.'/docroot/app/bundles/CoreBundle/Assets/app.js')
     ? './docroot/app/bundles/CoreBundle/Assets/app.js'

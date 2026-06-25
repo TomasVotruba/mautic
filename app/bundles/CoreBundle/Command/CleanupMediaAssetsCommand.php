@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
@@ -57,7 +57,7 @@ EOT
             if (file_exists($mediaOverride)) {
                 $md5_override = md5_file($mediaOverride);
 
-                if ($md5_source == $md5_override) {
+                if ($md5_source === $md5_override) {
                     $files_to_delete[] = $mediaOverride;
                 }
             }

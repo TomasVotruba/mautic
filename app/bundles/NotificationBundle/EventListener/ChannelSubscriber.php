@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\EventListener;
 
@@ -54,7 +54,7 @@ class ChannelSubscriber implements EventSubscriberInterface
 
             $supportedFeatures = $integration->getSupportedFeatures();
 
-            if (in_array('mobile', $supportedFeatures)) {
+            if (in_array('mobile', $supportedFeatures, true)) {
                 $event->addChannel(
                     'mobile_notification',
                     [

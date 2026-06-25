@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Event;
 
@@ -298,7 +298,7 @@ class EmailSendEvent extends CommonEvent
             // what entity is sending the email?
             'source' => $source,
             // the email being sent to be logged in page hit if applicable
-            'email'     => (null != $email) ? $email->getId() : null,
+            'email'     => (null !== $email) ? $email->getId() : null,
             'stat'      => $this->getIdHash(),
             'sent_time' => time(),
         ];

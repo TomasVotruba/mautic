@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Controller;
 
@@ -35,7 +35,7 @@ class AjaxController extends CommonController
     {
         $response = new JsonResponse();
 
-        if ('dev' == $this->getParameter('kernel.environment') && $addIgnoreWdt) {
+        if ('dev' === $this->getParameter('kernel.environment') && $addIgnoreWdt) {
             $dataArray['ignore_wdt'] = 1;
         }
 
@@ -71,12 +71,12 @@ class AjaxController extends CommonController
                 $parts     = explode(':', $action);
                 $namespace = 'Mautic';
 
-                if (3 == count($parts) && 'plugin' == $parts['0']) {
+                if (3 === count($parts) && 'plugin' === $parts['0']) {
                     $namespace = 'MauticPlugin';
                     array_shift($parts);
                 }
 
-                if (2 == count($parts)) {
+                if (2 === count($parts)) {
                     $bundleName = $parts[0];
                     $bundle     = ucfirst($bundleName);
                     $action     = $parts[1];
@@ -190,7 +190,7 @@ class AjaxController extends CommonController
 
                     foreach ($c as $subc) {
                         $subcommand = $command.$translator->trans($subc);
-                        if (!in_array($subcommand, $dupChecker)) {
+                        if (!in_array($subcommand, $dupChecker, true)) {
                             $dataArray[]  = ['value' => $subcommand];
                             $dupChecker[] = $subcommand;
                         }
@@ -199,7 +199,7 @@ class AjaxController extends CommonController
                     $command = $translator->trans($k);
                     $command = (!str_contains($command, ':')) ? $command.':' : $command;
 
-                    if (!in_array($command, $dupChecker)) {
+                    if (!in_array($command, $dupChecker, true)) {
                         $dataArray[]  = ['value' => $command];
                         $dupChecker[] = $command;
                     }

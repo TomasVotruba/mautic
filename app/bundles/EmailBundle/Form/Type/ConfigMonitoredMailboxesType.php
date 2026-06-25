@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Form\Type;
 
@@ -27,7 +27,7 @@ class ConfigMonitoredMailboxesType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $monitoredShowOn = ('general' == $options['mailbox']) ? '{}'
+        $monitoredShowOn = ('general' === $options['mailbox']) ? '{}'
             : '{"config_emailconfig_monitored_email_'.$options['mailbox'].'_override_settings_1": "checked"}';
 
         $builder->add(
@@ -142,7 +142,7 @@ class ConfigMonitoredMailboxesType extends AbstractType
             ]
         );
 
-        if ('general' != $options['mailbox']) {
+        if ('general' !== $options['mailbox']) {
             $builder->add(
                 'override_settings',
                 YesNoButtonGroupType::class,

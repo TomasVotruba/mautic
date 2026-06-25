@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -296,7 +296,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
                 $this->changes['owner'] = [$current->getName().' ('.$current->getId().')', $val];
             } elseif (!$current && $val) {
                 $this->changes['owner'] = [$current, $val->getName().' ('.$val->getId().')'];
-            } elseif ($current && $current->getId() != $val->getId()) {
+            } elseif ($current && $current->getId() !== $val->getId()) {
                 $this->changes['owner'] = [
                     $current->getName().'('.$current->getId().')',
                     $val->getName().'('.$val->getId().')',
@@ -632,7 +632,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     public function isDeleted(): bool
     {
-        return !is_null($this->deleted);
+        return null !== $this->deleted;
     }
 
     public function getDeleted(): ?\DateTimeInterface

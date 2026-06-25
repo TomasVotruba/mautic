@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Event;
 
@@ -451,7 +451,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
             return false;
         }
         foreach ($joins[$fromAlias] as $join) {
-            if ($join['joinTable'] == $table && $join['joinAlias'] == $alias) {
+            if ($join['joinTable'] === $table && $join['joinAlias'] === $alias) {
                 return true;
             }
         }

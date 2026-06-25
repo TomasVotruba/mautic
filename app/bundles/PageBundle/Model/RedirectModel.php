@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\Model;
 
@@ -128,7 +128,7 @@ class RedirectModel extends FormModel
         $repo     = $this->getRepository();
         $redirect = $repo->findOneBy(['url' => $url]);
 
-        if (null == $redirect) {
+        if (null === $redirect) {
             $redirect = $this->createRedirectEntity($url);
         }
 

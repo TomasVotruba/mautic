@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Controller\Api;
 
@@ -117,7 +117,7 @@ class TriggerApiController extends CommonApiController
         // Remove events which weren't in the PUT request
         if (!$isNew && 'PUT' === $method) {
             foreach ($currentEvents as $currentEvent) {
-                if (!in_array($currentEvent->getId(), $requestTriggerIds)) {
+                if (!in_array($currentEvent->getId(), $requestTriggerIds, true)) {
                     $entity->removeTriggerEvent($currentEvent);
                 }
             }
@@ -193,7 +193,7 @@ class TriggerApiController extends CommonApiController
         }
 
         foreach ($currentEvents as $currentEvent) {
-            if (in_array($currentEvent->getId(), $eventsToDelete)) {
+            if (in_array($currentEvent->getId(), $eventsToDelete, true)) {
                 $entity->removeTriggerEvent($currentEvent);
             }
         }

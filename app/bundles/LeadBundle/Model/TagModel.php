@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Model;
 
@@ -52,7 +52,7 @@ class TagModel extends FormModel
      */
     public function getEntity($id = null): ?Tag
     {
-        if (is_null($id)) {
+        if (null === $id) {
             return new Tag();
         }
 

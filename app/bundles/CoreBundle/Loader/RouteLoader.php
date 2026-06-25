@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Loader;
 
@@ -36,7 +36,7 @@ class RouteLoader extends Loader
         $forceSSL = false;
         if (!empty($siteUrl)) {
             $parts    = parse_url($siteUrl);
-            $forceSSL = (!empty($parts['scheme']) && 'https' == $parts['scheme']);
+            $forceSSL = (!empty($parts['scheme']) && 'https' === $parts['scheme']);
         }
 
         if ($forceSSL) {

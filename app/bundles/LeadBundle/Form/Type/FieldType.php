@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -212,7 +212,7 @@ class FieldType extends AbstractType
             ]
         );
 
-        $disableDefaultValue = (!$new && in_array($options['data']->getAlias(), $this->identifierFields->getFieldList($options['data']->getObject())));
+        $disableDefaultValue = (!$new && in_array($options['data']->getAlias(), $this->identifierFields->getFieldList($options['data']->getObject()), true));
         $builder->add(
             'defaultValue',
             TextType::class,
@@ -427,7 +427,7 @@ class FieldType extends AbstractType
                     break;
             }
 
-            if (in_array($type, LeadField::TYPES_SUPPORTING_LENGTH)) {
+            if (in_array($type, LeadField::TYPES_SUPPORTING_LENGTH, true)) {
                 $this->addLengthValidationField($form);
             }
 
@@ -497,7 +497,7 @@ class FieldType extends AbstractType
                     $data['defaultValue'] = null;
                 }
 
-                if (isset($data['type']) && !in_array($data['type'], LeadField::TYPES_SUPPORTING_LENGTH)) {
+                if (isset($data['type']) && !in_array($data['type'], LeadField::TYPES_SUPPORTING_LENGTH, true)) {
                     $data['charLengthLimit'] = null;
                 }
 
@@ -543,7 +543,7 @@ class FieldType extends AbstractType
             [
                 'disabled' => $options['data']->disablePublishChange(),
                 'attr'     => $attr,
-                'data'     => ('email' == $options['data']->getAlias()) ? true : $options['data']->getIsPublished(),
+                'data'     => ('email' === $options['data']->getAlias()) ? true : $options['data']->getIsPublished(),
                 'label'    => 'mautic.core.form.available',
             ]
         );
@@ -696,7 +696,7 @@ class FieldType extends AbstractType
         /** @var LeadField $field */
         $field = $context->getRoot()->getViewData();
 
-        if (in_array($field->getType(), self::$fieldsWithNoLengthLimit)) {
+        if (in_array($field->getType(), self::$fieldsWithNoLengthLimit, true)) {
             return;
         }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -172,7 +172,7 @@ class LanguageHelper
                 ];
         }
 
-        if (200 != $data->getStatusCode()) {
+        if (200 !== $data->getStatusCode()) {
             // Log the error
             $this->logger->error(
                 sprintf(
@@ -258,7 +258,7 @@ class LanguageHelper
                     '%url%' => $langUrl,
                 ],
             ];
-        } elseif (200 != $data->getStatusCode()) {
+        } elseif (200 !== $data->getStatusCode()) {
             return [
                 'error'   => true,
                 'message' => 'mautic.core.language.helper.error.on.language.server.side',
@@ -295,7 +295,7 @@ class LanguageHelper
 
         foreach (array_merge($mauticBundles, $pluginBundles) as $bundle) {
             // Apply the bundle filter.
-            if (!empty($forBundles) && !in_array($bundle['bundle'], $forBundles)) {
+            if (!empty($forBundles) && !in_array($bundle['bundle'], $forBundles, true)) {
                 continue;
             }
 

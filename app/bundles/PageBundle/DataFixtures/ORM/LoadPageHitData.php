@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\DataFixtures\ORM;
 
@@ -24,13 +24,13 @@ class LoadPageHitData extends AbstractFixture implements OrderedFixtureInterface
         foreach ($hits as $rows) {
             $hit = new Hit();
             foreach ($rows as $col => $val) {
-                if ('NULL' != $val) {
+                if ('NULL' !== $val) {
                     $setter = 'set'.ucfirst($col);
-                    if (in_array($col, ['page', 'ipAddress'])) {
+                    if (in_array($col, ['page', 'ipAddress'], true)) {
                         $hit->$setter($this->getReference($col.'-'.$val));
-                    } elseif (in_array($col, ['dateHit', 'dateLeft'])) {
+                    } elseif (in_array($col, ['dateHit', 'dateLeft'], true)) {
                         $hit->$setter(new \DateTime($val));
-                    } elseif ('browserLanguages' == $col) {
+                    } elseif ('browserLanguages' === $col) {
                         $val = Serializer::decode(stripslashes($val));
                         $hit->$setter($val);
                     } else {

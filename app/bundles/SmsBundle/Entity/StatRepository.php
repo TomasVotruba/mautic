@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Entity;
 
@@ -132,7 +132,7 @@ class StatRepository extends CommonRepository
 
         if (isset($options['state'])) {
             $state = $options['state'];
-            if ('failed' == $state) {
+            if ('failed' === $state) {
                 $query->andWhere(
                     $query->expr()->eq('s.is_failed', 1)
                 );

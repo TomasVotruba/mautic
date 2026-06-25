@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Controller;
 
@@ -191,7 +191,7 @@ class TriggerController extends FormController
         $form->get('sessionId')->setData($sessionId);
 
         // Check for a submitted form and process it
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
@@ -336,7 +336,7 @@ class TriggerController extends FormController
         $form->get('sessionId')->setData($objectId);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && 'POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // set added/updated events
@@ -463,7 +463,7 @@ class TriggerController extends FormController
 
         $triggerEvents = [];
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('point:triggers:create')) {
                 $this->throwAccessDenied();
             }

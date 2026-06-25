@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Controller;
 
@@ -332,7 +332,7 @@ class ReportController extends FormController
         $form   = $model->createForm($entity, $this->formFactory, $action);
 
         // /Check for a submitted form and process it
-        if (!$ignorePost && 'POST' == $request->getMethod()) {
+        if (!$ignorePost && 'POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 // Columns have to be reset in order for Symfony to honor the new submitted order
@@ -344,7 +344,7 @@ class ReportController extends FormController
                 $newSchedule['schedule_day']             = $request->request->all()['report']['scheduleDay'];
                 $newSchedule['schedule_month_frequency'] = $request->request->all()['report']['scheduleMonthFrequency'];
 
-                if ($oldSchedule != $newSchedule) {
+                if ($oldSchedule !== $newSchedule) {
                     $entity->setHasScheduleChanged(true);
                 }
 

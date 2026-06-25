@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\InstallBundle\Helper;
 
@@ -216,7 +216,7 @@ class SchemaHelper
 
         // cycle through the first time to drop all the foreign keys
         foreach ($tables as $t) {
-            if (!isset($mauticTables[$t]) && !in_array($t, $mauticTables)) {
+            if (!isset($mauticTables[$t]) && !in_array($t, $mauticTables, true)) {
                 // Not an applicable table
                 continue;
             }
@@ -248,7 +248,7 @@ class SchemaHelper
             // drop old indexes
             /** @var Index $oldIndex */
             foreach ($backupIndexes[$t] as $indexName => $oldIndex) {
-                if ('primary' == $indexName) {
+                if ('primary' === $indexName) {
                     continue;
                 }
 

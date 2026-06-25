@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CategoryBundle\Controller\Api;
 
@@ -57,7 +57,7 @@ class CategoryApiController extends CommonApiController
             $permissionBase = $bundle.':categories';
         }
 
-        if ('create' != $action) {
+        if ('create' !== $action) {
             $ownPerm   = "$permissionBase:{$action}own";
             $otherPerm = "$permissionBase:{$action}other";
 

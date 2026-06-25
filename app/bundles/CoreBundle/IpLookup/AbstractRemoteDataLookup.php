@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\IpLookup;
 
@@ -49,7 +49,7 @@ abstract class AbstractRemoteDataLookup extends AbstractLookup
         $url = $this->getUrl();
 
         try {
-            $response = ('post' == $this->method) ?
+            $response = ('post' === $this->method) ?
                 $this->client->post($url, [
                     \GuzzleHttp\RequestOptions::BODY    => $this->getParameters(),
                     \GuzzleHttp\RequestOptions::HEADERS => $this->getHeaders(),

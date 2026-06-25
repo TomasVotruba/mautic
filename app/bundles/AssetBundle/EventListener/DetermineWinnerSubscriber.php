@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\EventListener;
 
@@ -49,8 +49,8 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         }
 
         $startDate = $parent->getVariantStartDate();
-        if (null != $startDate) {
-            $counts = ('page' == $type) ? $repo->getDownloadCountsByPage($ids, $startDate) : $repo->getDownloadCountsByEmail($ids, $startDate);
+        if (null !== $startDate) {
+            $counts = ('page' === $type) ? $repo->getDownloadCountsByPage($ids, $startDate) : $repo->getDownloadCountsByEmail($ids, $startDate);
 
             $translator = $this->translator;
             if ($counts) {
@@ -58,7 +58,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $hasResults = [];
 
                 $downloadsLabel = $translator->trans('mautic.asset.abtest.label.downloads');
-                $hitsLabel      = ('page' == $type) ? $translator->trans('mautic.asset.abtest.label.hits') : $translator->trans('mautic.asset.abtest.label.sentemils');
+                $hitsLabel      = ('page' === $type) ? $translator->trans('mautic.asset.abtest.label.hits') : $translator->trans('mautic.asset.abtest.label.sentemils');
                 foreach ($counts as $stats) {
                     $rate                    = ($stats['total']) ? round(($stats['count'] / $stats['total']) * 100, 2) : 0;
                     $downloads[$stats['id']] = $rate;
@@ -69,18 +69,18 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 }
 
                 // make sure that parent and published children are included
-                if (!in_array($parent->getId(), $hasResults)) {
+                if (!in_array($parent->getId(), $hasResults, true)) {
                     $data[$downloadsLabel][] = 0;
                     $data[$hitsLabel][]      = 0;
-                    $support['labels'][]     = $parent->getId().':'.(('page' == $type) ? $parent->getTitle() : $parent->getName()).' (0%)';
+                    $support['labels'][]     = $parent->getId().':'.(('page' === $type) ? $parent->getTitle() : $parent->getName()).' (0%)';
                 }
 
                 foreach ($children as $c) {
                     if ($c->isPublished()) {
-                        if (!in_array($c->getId(), $hasResults)) {
+                        if (!in_array($c->getId(), $hasResults, true)) {
                             $data[$downloadsLabel][] = 0;
                             $data[$hitsLabel][]      = 0;
-                            $support['labels'][]     = $c->getId().':'.(('page' == $type) ? $c->getTitle() : $c->getName()).' (0%)';
+                            $support['labels'][]     = $c->getId().':'.(('page' === $type) ? $c->getTitle() : $c->getName()).' (0%)';
                         }
                     }
                 }
@@ -101,7 +101,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $max = max($downloads);
 
                 // get the page ids with the most number of downloads
-                $winners = ($max > 0) ? array_keys($downloads, $max) : [];
+                $winners = ($max > 0) ? array_keys($downloads, $max, true) : [];
 
                 $event->setAbTestResults([
                     'winners'         => $winners,

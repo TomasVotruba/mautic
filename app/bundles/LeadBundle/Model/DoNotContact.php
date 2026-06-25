@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Model;
 
@@ -44,7 +44,7 @@ class DoNotContact implements MauticModelInterface
             if ($dnc->getChannel() === $channel) {
                 // Skip if reason doesn't match
                 // Some integrations (Sugar CRM) can use both reasons (unsubscribed, bounced)
-                if ($reason && $dnc->getReason() != $reason) {
+                if ($reason && $dnc->getReason() !== $reason) {
                     continue;
                 }
                 $contact->removeDoNotContactEntry($dnc);

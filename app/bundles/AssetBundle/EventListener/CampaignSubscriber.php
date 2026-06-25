@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\EventListener;
 
@@ -58,7 +58,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $eventDetails = $event->getEventDetails();
 
-        if (null == $eventDetails) {
+        if (null === $eventDetails) {
             return $event->setResult(true);
         }
 
@@ -69,7 +69,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $assetId       = $eventDetails->getId();
         $limitToAssets = $event->getConfig()['assets'];
 
-        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets)) {
+        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets, true)) {
             // no points change
             return $event->setResult(false);
         }

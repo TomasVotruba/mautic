@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\WebhookBundle\Helper;
 
@@ -95,7 +95,7 @@ class CampaignHelper
                     \GuzzleHttp\RequestOptions::HEADERS     => $headers,
                     \GuzzleHttp\RequestOptions::TIMEOUT     => $timeout,
                 ];
-                if (array_key_exists('content-type', $headers) && 'application/json' == strtolower($headers['content-type'])) {
+                if (array_key_exists('content-type', $headers) && 'application/json' === strtolower($headers['content-type'])) {
                     $options[\GuzzleHttp\RequestOptions::BODY] = json_encode($payload);
                 } else {
                     $options[\GuzzleHttp\RequestOptions::FORM_PARAMS] = $payload;
@@ -112,7 +112,7 @@ class CampaignHelper
                 throw new \InvalidArgumentException('HTTP method "'.$method.' is not supported."');
         }
 
-        if (!in_array($response->getStatusCode(), [200, 201])) {
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
             throw new \OutOfRangeException('Campaign webhook response returned error code: '.$response->getStatusCode());
         }
     }

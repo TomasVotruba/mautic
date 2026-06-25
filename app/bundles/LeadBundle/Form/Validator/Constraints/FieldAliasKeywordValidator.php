@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Validator\Constraints;
 
@@ -50,8 +50,8 @@ class FieldAliasKeywordValidator extends ConstraintValidator
         $this->aliasHelper->makeAliasUnique($field);
 
         // If empty it's a new object else it's an edit
-        if (!$oldValue || (is_array($oldValue) && $oldValue['alias'] != $field->getAlias())) {
-            if (in_array($field->getAlias(), self::RESTRICTED_ALIASES)) {
+        if (!$oldValue || (is_array($oldValue) && $oldValue['alias'] !== $field->getAlias())) {
+            if (in_array($field->getAlias(), self::RESTRICTED_ALIASES, true)) {
                 $this->context->addViolation(
                     $this->translator->trans(
                         'mautic.lead.field.keyword.restricted',

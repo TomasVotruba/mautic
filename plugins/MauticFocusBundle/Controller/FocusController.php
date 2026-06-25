@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticFocusBundle\Controller;
 
@@ -138,7 +138,7 @@ class FocusController extends AbstractStandardFormController
     {
         $cacheTimeout = (int) $this->coreParametersHelper->get('cached_data_timeout');
 
-        if ('view' == $action) {
+        if ('view' === $action) {
             /** @var Focus $item */
             $item = $args['viewParameters']['item'];
 

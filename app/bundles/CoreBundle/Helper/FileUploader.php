@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -69,12 +69,12 @@ class FileUploader
     public function validateImage(File $file): void
     {
         // Check if the file is an image
-        if (!in_array($file->getMimeType(), $this->getAllowedImageMimeTypes())) {
+        if (!in_array($file->getMimeType(), $this->getAllowedImageMimeTypes(), true)) {
             throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', ['%types%' => implode(', ', $this->getAllowedImageExtensions())]));
         }
         // Also check the file extension
         $extension = strtolower(pathinfo($file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getFilename(), PATHINFO_EXTENSION));
-        if (!in_array($extension, $this->getAllowedImageExtensions())) {
+        if (!in_array($extension, $this->getAllowedImageExtensions(), true)) {
             throw new FileUploadException($this->translator->trans('mautic.core.fileuploader.unsupported_image', ['%types%' => implode(', ', $this->getAllowedImageExtensions())]));
         }
     }

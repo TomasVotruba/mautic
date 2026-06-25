@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -100,11 +100,11 @@ trait TranslationModelTrait
 
             if ($matchFound) {
                 // A translation was found based on language preference
-                $entity = ($matchFound == $translationParent->getId()) ? $translationParent : $translationChildren[$matchFound];
+                $entity = ($matchFound === $translationParent->getId()) ? $translationParent : $translationChildren[$matchFound];
             } elseif ($preferredCore) {
                 // Return the best matching language
                 $bestMatch      = array_values($translationList[$preferredCore])[0];
-                $entity         = ($bestMatch == $translationParent->getId()) ? $translationParent : $translationChildren[$bestMatch];
+                $entity         = ($bestMatch === $translationParent->getId()) ? $translationParent : $translationChildren[$bestMatch];
                 $chosenLanguage = $preferredCore;
             }
         }

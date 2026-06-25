@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Controller;
 
@@ -228,7 +228,7 @@ class AjaxController extends CommonAjaxController
         $entity             = $integration_object->getIntegrationSettings();
         $featureSettings    = $entity->getFeatureSettings();
         $doNotMatchField    = ('-1' === $mautic_field || '' === $mautic_field);
-        if ('lead' == $object) {
+        if ('lead' === $object) {
             $fields       = 'leadFields';
             $updateFields = 'update_mautic';
         } else {

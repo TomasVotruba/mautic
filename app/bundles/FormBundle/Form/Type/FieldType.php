@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Form\Type;
 
@@ -243,7 +243,7 @@ class FieldType extends AbstractType
         if ($addDefaultValue) {
             $builder->add(
                 'defaultValue',
-                ('textarea' == $type) ? TextareaType::class : TextType::class,
+                ('textarea' === $type) ? TextareaType::class : TextType::class,
                 [
                     'label'      => 'mautic.core.defaultvalue',
                     'label_attr' => ['class' => 'control-label'],

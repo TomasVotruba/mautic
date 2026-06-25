@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Model;
 
@@ -343,7 +343,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
                 ]
             );
 
-            if (null != $companyLead) {
+            if (null !== $companyLead) {
                 // Detach from Doctrine
                 $this->em->detach($companyLead);
 
@@ -466,7 +466,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
                 ]
             );
 
-            if (null == $companyLead) {
+            if (null === $companyLead) {
                 // Lead is not part of this list
                 continue;
             }
@@ -518,7 +518,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     public function getSimpleLookupResults(string $type, array|string $filter = '', int $limit = 10, int $start = 0, ?string $exclude = ''): array
     {
         $valueColumn = 'id';
-        if (!in_array($type, ['companyfield', 'lead.company'])) {
+        if (!in_array($type, ['companyfield', 'lead.company'], true)) {
             return [];
         }
         if ('lead.company' === $type) {
@@ -940,7 +940,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
         $fieldData = [];
         foreach ($fields as $importField => $entityField) {
             // Prevent overwriting existing data with empty data
-            if (array_key_exists($importField, $data) && !is_null($data[$importField]) && '' != $data[$importField]) {
+            if (array_key_exists($importField, $data) && null !== $data[$importField] && '' !== $data[$importField]) {
                 $fieldData[$entityField] = $data[$importField];
             }
         }

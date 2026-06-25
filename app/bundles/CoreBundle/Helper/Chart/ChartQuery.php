@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper\Chart;
 
@@ -70,7 +70,7 @@ class ChartQuery extends AbstractChart
     ) {
         $this->dateTimeHelper = new DateTimeHelper();
         $this->unit           = $unit ?? $this->getTimeUnitFromDateRange($dateFrom, $dateTo);
-        $this->isTimeUnit     = in_array($this->unit, ['H', 'i', 's']);
+        $this->isTimeUnit     = in_array($this->unit, ['H', 'i', 's'], true);
         $this->setDateRange($dateFrom, $dateTo);
     }
 
@@ -238,7 +238,7 @@ class ChartQuery extends AbstractChart
 
         if (true === $isEnumerable) {
             $count = 'COUNT('.$countColumn.') AS count';
-        } elseif ('sum' == $isEnumerable) {
+        } elseif ('sum' === $isEnumerable) {
             $count = 'SUM('.$countColumn.') AS count';
         } else {
             $count = $countColumn.' AS count';
@@ -312,7 +312,7 @@ class ChartQuery extends AbstractChart
 
         if ('Y' === $this->unit) {
             $previousDate->modify('first day of January');
-        } elseif ('m' == $this->unit) {
+        } elseif ('m' === $this->unit) {
             $previousDate->modify('first day of this month');
         } elseif ('W' === $this->unit) {
             $previousDate->modify('Monday this week');

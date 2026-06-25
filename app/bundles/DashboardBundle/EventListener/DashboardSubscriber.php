@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DashboardBundle\EventListener;
 
@@ -92,7 +92,7 @@ class DashboardSubscriber implements EventSubscriberInterface
     public function checkPermissions(WidgetDetailEvent $event): void
     {
         $widgetTypes = array_keys($this->types);
-        if ($this->permissions && !$event->hasPermissions($this->permissions) && in_array($event->getType(), $widgetTypes)) {
+        if ($this->permissions && !$event->hasPermissions($this->permissions) && in_array($event->getType(), $widgetTypes, true)) {
             $translator = $event->getTranslator();
             $event->setErrorMessage($translator->trans('mautic.dashboard.missing.permission', ['%section%' => $this->bundle]));
             $event->stopPropagation();

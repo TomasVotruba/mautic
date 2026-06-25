@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Helper;
 
@@ -116,7 +116,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                     continue;
                 }
 
-                if ('captcha' == $type) {
+                if ('captcha' === $type) {
                     $captcha = $f->getProperties()['captcha'];
                     if (empty($captcha) && Blank::class !== $constraint) {
                         // Used as a honeypot
@@ -125,7 +125,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                         continue;
                     }
 
-                    if (EqualTo::class == $constraint) {
+                    if (EqualTo::class === $constraint) {
                         $opts['value'] = $captcha;
                     }
                 }

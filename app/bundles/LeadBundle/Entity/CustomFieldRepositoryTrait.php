@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Entity;
 
@@ -84,7 +84,7 @@ trait CustomFieldRepositoryTrait
             $this->buildSelectClause($dq, $args);
 
             $results = $dq->executeQuery()->fetchAllAssociative();
-            if (isset($args['route']) && ListController::ROUTE_SEGMENT_CONTACTS == $args['route']) {
+            if (isset($args['route']) && ListController::ROUTE_SEGMENT_CONTACTS === $args['route']) {
                 unset($args['select']); // Our purpose of getting list of ids has already accomplished. We no longer need this.
             }
 
@@ -324,7 +324,7 @@ trait CustomFieldRepositoryTrait
             if (isset($fields[$k])) {
                 $r = CustomFieldHelper::fixValueType($fields[$k]['type'], $r);
 
-                if (!is_null($r)) {
+                if (null !== $r) {
                     switch ($fields[$k]['type']) {
                         case 'number':
                             $r = (float) $r;

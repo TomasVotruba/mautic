@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -92,10 +92,10 @@ trait MatchFilterForLeadTrait
                 case 'tags':
                 case 'select':
                 case 'multiselect':
-                    if (!is_null($leadVal) && !is_array($leadVal)) {
+                    if (null !== $leadVal && !is_array($leadVal)) {
                         $leadVal = explode('|', $leadVal);
                     }
-                    if (!is_null($filterVal) && !is_array($filterVal)) {
+                    if (null !== $filterVal && !is_array($filterVal)) {
                         $filterVal = explode('|', $filterVal);
                     }
                     break;
@@ -134,14 +134,14 @@ trait MatchFilterForLeadTrait
                     if ('boolean' === $data['type']) {
                         $groups[$groupNum] = $leadVal === $filterVal;
                     } else {
-                        $groups[$groupNum] = $leadVal == $filterVal;
+                        $groups[$groupNum] = $leadVal === $filterVal;
                     }
                     break;
                 case '!=':
                     if ('boolean' === $data['type']) {
                         $groups[$groupNum] = $leadVal !== $filterVal;
                     } else {
-                        $groups[$groupNum] = $leadVal != $filterVal;
+                        $groups[$groupNum] = $leadVal !== $filterVal;
                     }
                     break;
                 case 'gt':
@@ -205,7 +205,7 @@ trait MatchFilterForLeadTrait
             }
         }
 
-        return in_array(true, $groups);
+        return in_array(true, $groups, true);
     }
 
     /**
@@ -218,7 +218,7 @@ trait MatchFilterForLeadTrait
         $filterVal  = !is_array($filterVal) ? [$filterVal] : $filterVal;
         $retFlag    = $defaultFlag;
         foreach ($leadVal as $v) {
-            if (in_array($v, $filterVal)) {
+            if (in_array($v, $filterVal, true)) {
                 $retFlag = !$defaultFlag;
                 // Break once we find a match
                 break;
@@ -239,7 +239,7 @@ trait MatchFilterForLeadTrait
         $valuesMatched = 0;
 
         foreach ($leadVal as $value) {
-            if (in_array($value, $filterVal)) {
+            if (in_array($value, $filterVal, true)) {
                 ++$valuesMatched;
             }
         }

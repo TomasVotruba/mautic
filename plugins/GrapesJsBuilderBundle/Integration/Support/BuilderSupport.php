@@ -16,6 +16,6 @@ class BuilderSupport extends GrapesJsBuilderIntegration implements BuilderInterf
 
     public function isSupported(string $featureName): bool
     {
-        return in_array($featureName, $this->featuresSupported);
+        return in_array($featureName, $this->featuresSupported, true);
     }
 }

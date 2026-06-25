@@ -47,7 +47,7 @@ final class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $this->assertTrue(
             in_array(
                 $event->getResults()[0]['item_id'],
-                $campaign->getLists()->map(fn ($list) => $list->getId())->toArray()
+                $campaign->getLists()->map(fn ($list) => $list->getId())->toArray(), true
             )
         );
 
@@ -70,7 +70,7 @@ final class SegmentStatsSubscriberTest extends MauticMysqlTestCase
                     array_merge(
                         $campaign->getEvents()[0]->getProperties()['addToLists'],
                         $campaign->getEvents()[0]->getProperties()['removeFromLists']
-                    )
+                    ), true
                 )
             );
             $this->assertSame(1, (int) $segment['is_used']);
@@ -93,7 +93,7 @@ final class SegmentStatsSubscriberTest extends MauticMysqlTestCase
                     [
                         $email->getExcludedLists()->toArray()[0]->getId(),
                         $email->getLists()->toArray()[0]->getId(),
-                    ]
+                    ], true
                 )
             );
             $this->assertSame(1, (int) $segment['is_used']);

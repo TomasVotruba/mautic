@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Controller;
 
@@ -95,7 +95,7 @@ class PluginController extends FormController
 
         if (!empty($pluginFilter)) {
             foreach ($plugins as $plugin) {
-                if ($plugin['id'] == $pluginFilter) {
+                if ($plugin['id'] === $pluginFilter) {
                     $pluginName = $plugin['name'];
                     $pluginId   = $plugin['id'];
                     break;
@@ -176,7 +176,7 @@ class PluginController extends FormController
             ]
         );
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 $currentKeys            = $integrationObject->getDecryptedApiKeys($entity);
@@ -204,7 +204,7 @@ class PluginController extends FormController
 
                     if (!$authorize) {
                         $features = $entity->getSupportedFeatures();
-                        if (in_array('public_profile', $features) || in_array('push_lead', $features)) {
+                        if (in_array('public_profile', $features, true) || in_array('push_lead', $features, true)) {
                             // Ungroup the fields
                             $mauticLeadFields = [];
                             foreach ($leadFields as $groupFields) {

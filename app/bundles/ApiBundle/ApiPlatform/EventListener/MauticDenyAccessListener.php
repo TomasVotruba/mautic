@@ -91,7 +91,7 @@ final class MauticDenyAccessListener
         $isGrantedList = explode(':', $isGranted);
         $action        = array_pop($isGrantedList);
 
-        if (in_array($action, ['view', 'edit', 'delete'])) {
+        if (in_array($action, ['view', 'edit', 'delete'], true)) {
             if (!$this->security->hasEntityAccess($isGranted.'own', $isGranted.'other', $requestObject->getCreatedBy())) {
                 throw new AccessDeniedException();
             }

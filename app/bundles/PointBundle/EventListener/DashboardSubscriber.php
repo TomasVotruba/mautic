@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\EventListener;
 
@@ -47,7 +47,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('point:points:viewother');
 
-        if ('points.in.time' == $event->getType()) {
+        if ('points.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 

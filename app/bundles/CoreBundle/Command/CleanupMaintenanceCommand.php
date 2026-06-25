@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
@@ -137,7 +137,7 @@ EOT
             ->setRows($rows);
         $table->render();
 
-        if ('dev' == MAUTIC_ENV) {
+        if ('dev' === MAUTIC_ENV) {
             $output->writeln('<comment>Debug</comment>');
             $debug = $event->getDebug();
 

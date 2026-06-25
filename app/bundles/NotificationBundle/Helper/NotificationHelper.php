@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\Helper;
 
@@ -67,7 +67,7 @@ class NotificationHelper
 
             $appId                      = $keys['app_id'];
             $safariWebId                = $keys['safari_web_id'];
-            $welcomenotificationEnabled = in_array('welcome_notification_enabled', $supported);
+            $welcomenotificationEnabled = in_array('welcome_notification_enabled', $supported, true);
             $notificationSubdomainName  = $featureSettings['subdomain_name'];
             $leadAssociationUrl         = $this->router->generate(
                 'mautic_subscribe_notification',
@@ -82,7 +82,7 @@ class NotificationHelper
             }
 
             $server        = $this->requestStack->getCurrentRequest()->server;
-            $https         = 'https' == parse_url($server->get('HTTP_REFERER'), PHP_URL_SCHEME);
+            $https         = 'https' === parse_url($server->get('HTTP_REFERER'), PHP_URL_SCHEME);
             $subdomainName = '';
 
             if (!$https && $notificationSubdomainName) {
@@ -183,12 +183,12 @@ JS;
         $supportedFeatures = $integration->getIntegrationSettings()->getSupportedFeatures();
 
         // disable on Landing pages
-        if (true === $landingPage && !in_array('landing_page_enabled', $supportedFeatures)) {
+        if (true === $landingPage && !in_array('landing_page_enabled', $supportedFeatures, true)) {
             return false;
         }
 
         // disable on Landing pages
-        if (false === $landingPage && !in_array('tracking_page_enabled', $supportedFeatures)) {
+        if (false === $landingPage && !in_array('tracking_page_enabled', $supportedFeatures, true)) {
             return false;
         }
 

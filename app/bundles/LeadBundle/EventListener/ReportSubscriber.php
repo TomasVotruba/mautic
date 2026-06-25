@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\EventListener;
 
@@ -321,7 +321,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     // Must use the same filters for determining the min of a given subset
                     $filters = $event->getReport()->getFilters();
                     foreach ($filters as $filter) {
-                        if (in_array($filter['column'], $subsetFilters)) {
+                        if (in_array($filter['column'], $subsetFilters, true)) {
                             $filterParam = $event->createParameterName();
                             if (isset($filter['formula'])) {
                                 $x = "({$filter['formula']}) as {$alias}_{$filter['column']}";
@@ -342,9 +342,9 @@ class ReportSubscriber implements EventSubscriberInterface
                     ->join("{$alias}e", MAUTIC_TABLE_PREFIX.'campaigns', "{$alias}c", "{$alias}e.campaign_id = {$alias}c.id")
                     ->where($expr);
 
-                if ('multi' != $alias) {
+                if ('multi' !== $alias) {
                     // Get the min/max row and group by lead for first touch or last touch events
-                    $func = ('first' == $alias) ? 'min' : 'max';
+                    $func = ('first' === $alias) ? 'min' : 'max';
                     $subQ->select("$func({$alias}log.date_triggered)")
                         ->setMaxResults(1);
                     $qb->andWhere(
@@ -583,7 +583,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $chart        = new PieChart();
                     $companyCount = 0;
                     foreach ($counts as $count) {
-                        if ('' != $count['companycountry']) {
+                        if ('' !== $count['companycountry']) {
                             $chart->setDataset($count['companycountry'], $count['companies']);
                         }
                         $companyCount += $count['companies'];
@@ -612,7 +612,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $chart        = new PieChart();
                     $companyCount = 0;
                     foreach ($counts as $count) {
-                        if ('' != $count['companyindustry']) {
+                        if ('' !== $count['companyindustry']) {
                             $chart->setDataset($count['companyindustry'], $count['companies']);
                         }
                         $companyCount += $count['companies'];

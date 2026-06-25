@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -351,7 +351,7 @@ class ImportController extends FormController
                                 foreach ($config as $key => &$c) {
                                     $c = htmlspecialchars_decode($c);
 
-                                    if ('batchlimit' == $key) {
+                                    if ('batchlimit' === $key) {
                                         $c = (int) $c;
                                     }
                                 }
@@ -388,7 +388,7 @@ class ImportController extends FormController
                             } catch (\Exception) {
                                 $errorMessage = 'mautic.lead.import.filenotreadable';
                             } finally {
-                                if (!is_null($errorMessage)) {
+                                if (null !== $errorMessage) {
                                     $form->addError(
                                         new FormError(
                                             $this->translator->trans($errorMessage, $errorParameters, 'validators')

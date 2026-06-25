@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Form\Type;
 
@@ -38,7 +38,7 @@ trait FormFieldTrait
         $choices = [];
 
         foreach ($fields as $f) {
-            if (in_array($f['type'], $viewOnly)) {
+            if (in_array($f['type'], $viewOnly, true)) {
                 continue;
             }
 

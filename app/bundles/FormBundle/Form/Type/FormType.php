@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Form\Type;
 
@@ -206,7 +206,7 @@ class FormType extends AbstractType
         ]);
 
         $postAction = (isset($options['data'])) ? $options['data']->getPostAction() : '';
-        $required   = in_array($postAction, ['redirect', 'message', 'hideform']);
+        $required   = in_array($postAction, ['redirect', 'message', 'hideform'], true);
         $builder->add('postActionProperty', TextType::class, [
             'label'      => 'mautic.form.form.postactionproperty',
             'label_attr' => ['class' => 'control-label'],

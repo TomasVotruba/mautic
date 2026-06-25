@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -58,7 +58,7 @@ class NoteType extends AbstractType
         );
 
         $dt   = $options['data']->getDatetime();
-        $data = (null == $dt) ? $this->dateHelper->getDateTime() : $dt;
+        $data = (null === $dt) ? $this->dateHelper->getDateTime() : $dt;
 
         $builder->add(
             'dateTime',

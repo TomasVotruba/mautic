@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Model;
 
@@ -96,7 +96,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
             return;
         }
 
-        if (null == $request) {
+        if (null === $request) {
             $request = $this->requestStack->getCurrentRequest();
         }
 
@@ -411,7 +411,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     public function generateUrl(Asset $entity, bool $absolute = true, array $clickthrough = [], ?string $stream = null): string
     {
         $routeParams = ['slug' => $entity->getSlug()];
-        if (!is_null($stream)) {
+        if (null !== $stream) {
             $routeParams['stream'] = $stream;
         }
 
@@ -439,7 +439,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     public function getMaxUploadSize($unit = 'M', $humanReadable = false)
     {
         $maxAssetSize  = $this->maxAssetSize;
-        $maxAssetSize  = (-1 == $maxAssetSize || 0 === $maxAssetSize) ? PHP_INT_MAX : FileHelper::convertMegabytesToBytes($maxAssetSize);
+        $maxAssetSize  = (-1 === $maxAssetSize || 0 === $maxAssetSize) ? PHP_INT_MAX : FileHelper::convertMegabytesToBytes($maxAssetSize);
         $maxPostSize   = Asset::getIniValue('post_max_size');
         $maxUploadSize = Asset::getIniValue('upload_max_filesize');
         $memoryLimit   = Asset::getIniValue('memory_limit');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\StageBundle\EventListener;
 
@@ -52,7 +52,7 @@ class LeadSubscriber implements EventSubscriberInterface
         if (!$event->isEngagementCount()) {
             // Add the logs to the event array
             foreach ($logs['results'] as $log) {
-                if (isset($log['reference']) && null != $log['reference']) {
+                if (isset($log['reference']) && null !== $log['reference']) {
                     $eventLabel = [
                         'label'      => $log['eventName'],
                         'href'       => $this->router->generate('mautic_stage_action', ['objectAction' => 'edit', 'objectId' => $log['reference']]),

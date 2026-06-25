@@ -40,7 +40,7 @@ final class SegmentStatsSubscriber implements EventSubscriberInterface
         $allSegments = $this->leadListRepository->getAllSegments();
 
         $stats = array_map(function ($data) use ($result) {
-            if (in_array($data['item_id'], array_column($result, 'item_id'))) {
+            if (in_array($data['item_id'], array_column($result, 'item_id'), true)) {
                 $data['is_used'] = 1;
             }
 

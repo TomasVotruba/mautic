@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Entity;
 
@@ -346,15 +346,15 @@ class Form extends FormEntity implements UuidInterface
 
         $postAction = $data->getPostAction();
 
-        if ('message' == $postAction) {
+        if ('message' === $postAction) {
             $groups[] = 'messageRequired';
-        } elseif ('redirect' == $postAction) {
+        } elseif ('redirect' === $postAction) {
             $groups[] = 'urlRequired';
-        } elseif ('hideform' == $postAction) {
+        } elseif ('hideform' === $postAction) {
             $groups[] = 'hideformRequired';
         }
 
-        if ('' != $data->getProgressiveProfilingLimit()) {
+        if ('' !== $data->getProgressiveProfilingLimit()) {
             $groups[] = 'progressiveProfilingLimit';
         }
 
@@ -401,7 +401,7 @@ class Form extends FormEntity implements UuidInterface
 
     protected function isChanged($prop, $val)
     {
-        if ('actions' == $prop || 'fields' == $prop) {
+        if ('actions' === $prop || 'fields' === $prop) {
             // changes are already computed so just add them
             $this->changes[$prop][$val[0] ?? ''] = $val[1];
         } else {
@@ -899,7 +899,7 @@ class Form extends FormEntity implements UuidInterface
     {
         trigger_deprecation('mautic/mautic', '7.1', 'Form::isStandalone() is deprecated and will be removed in 8.0.');
 
-        return 'campaign' != $this->formType;
+        return 'campaign' !== $this->formType;
     }
 
     /**
@@ -936,7 +936,7 @@ class Form extends FormEntity implements UuidInterface
 
         // Progressive profiling must be turned off in the kiosk mode
         if (false === $this->getInKioskMode()) {
-            if ('' != $this->getProgressiveProfilingLimit()) {
+            if ('' !== $this->getProgressiveProfilingLimit()) {
                 $this->usesProgressiveProfiling = true;
 
                 return $this->usesProgressiveProfiling;

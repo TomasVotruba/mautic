@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -65,7 +65,7 @@ class ContactChannelsType extends AbstractType
 
         if (!$options['public_view'] || $showContactFrequency || $showContactPauseDates) {
             foreach ($options['channels'] as $channel) {
-                $attr = (isset($options['data']['subscribed_channels']) && !in_array($channel, $options['data']['subscribed_channels']))
+                $attr = (isset($options['data']['subscribed_channels']) && !in_array($channel, $options['data']['subscribed_channels'], true))
                     ? ['disabled' => 'disabled'] : [];
 
                 $builder->add(
@@ -106,7 +106,7 @@ class ContactChannelsType extends AbstractType
                     ]
                 );
 
-                if (false == $options['public_view']) {
+                if (false === $options['public_view']) {
                     $attributes = array_merge(
                         $attr,
                         [

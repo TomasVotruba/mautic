@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -492,9 +492,9 @@ class ReportSubscriber implements EventSubscriberInterface
         }
 
         if ($event->checkContext(self::CONTEXT_EMAILS)
-            && !in_array('mautic.email.graph.pie.read.ingored.unsubscribed.bounced', $graphs)
-            && !in_array('mautic.email.graph.pie.sent.read.clicked.unsubscribed', $graphs)
-            && !in_array('mautic.email.table.most.emails.clicks', $graphs)) {
+            && !in_array('mautic.email.graph.pie.read.ingored.unsubscribed.bounced', $graphs, true)
+            && !in_array('mautic.email.graph.pie.sent.read.clicked.unsubscribed', $graphs, true)
+            && !in_array('mautic.email.table.most.emails.clicks', $graphs, true)) {
             return;
         }
 
@@ -902,7 +902,7 @@ class ReportSubscriber implements EventSubscriberInterface
         }
 
         foreach ($joins[$fromAlias] as $join) {
-            if ($join['joinTable'] == $table && $join['joinAlias'] == $alias) {
+            if ($join['joinTable'] === $table && $join['joinAlias'] === $alias) {
                 return true;
             }
         }

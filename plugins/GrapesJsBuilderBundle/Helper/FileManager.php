@@ -116,7 +116,7 @@ class FileManager
 
         foreach ($finder as $file) {
             // exclude certain folders from grapesjs file manager
-            if (in_array($file->getRelativePath(), $this->coreParametersHelper->get('image_path_exclude'))) {
+            if (in_array($file->getRelativePath(), $this->coreParametersHelper->get('image_path_exclude'), true)) {
                 continue;
             }
 
@@ -187,7 +187,7 @@ class FileManager
         $filesIterator = new \LimitIterator($finder->getIterator(), $offset, $limit);
 
         foreach ($filesIterator as $file) {
-            if (in_array($file->getRelativePath(), $this->coreParametersHelper->get('image_path_exclude'))) {
+            if (in_array($file->getRelativePath(), $this->coreParametersHelper->get('image_path_exclude'), true)) {
                 continue;
             }
 
@@ -226,7 +226,7 @@ class FileManager
             ];
         } elseif ('svg' === $extension) {
             $info = $this->getSvgFileInfo($filePath, $file->getRelativePathname());
-        } elseif (in_array($extension, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])) {
+        } elseif (in_array($extension, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'], true)) {
             $info = [
                 'src'  => $this->getFullUrl($file->getRelativePathname()),
                 'type' => 'document',

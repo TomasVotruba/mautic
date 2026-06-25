@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\NotificationBundle\Entity;
 
@@ -283,7 +283,7 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
         $metadata->addConstraint(new Callback(
             function (Notification $notification, ExecutionContextInterface $context): void {
                 $type = $notification->getNotificationType();
-                if ('list' == $type) {
+                if ('list' === $type) {
                     $validator  = $context->getValidator();
                     $violations = $validator->validate(
                         $notification->getLists(),
@@ -347,10 +347,10 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
         $getter  = 'get'.ucfirst($prop);
         $current = $this->$getter();
 
-        if ('category' == $prop || 'list' == $prop) {
+        if ('category' === $prop || 'list' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->changes[$prop] = [$currentId, $newId];
             }
         } else {

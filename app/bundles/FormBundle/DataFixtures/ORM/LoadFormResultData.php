@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\DataFixtures\ORM;
 
@@ -26,16 +26,16 @@ class LoadFormResultData extends AbstractFixture implements OrderedFixtureInterf
                 $submission->setDateSubmitted(new \DateTime());
 
                 foreach ($rows as $col => $val) {
-                    if ('NULL' != $val) {
+                    if ('NULL' !== $val) {
                         $setter = 'set'.\ucfirst($col);
-                        if (\in_array($col, ['form', 'page', 'ipAddress', 'lead'])) {
+                        if (\in_array($col, ['form', 'page', 'ipAddress', 'lead'], true)) {
                             if ('lead' === $col) {
                                 // For some reason the lead must be linked with id - 1
                                 $entity = $this->getReference($col.'-'.($val - 1));
                             } else {
                                 $entity = $this->getReference($col.'-'.$val);
                             }
-                            if ('page' == $col) {
+                            if ('page' === $col) {
                                 $submission->setReferer($this->pageModel->generateUrl($entity));
                             }
                             $submission->$setter($entity);

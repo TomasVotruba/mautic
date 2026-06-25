@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\EventListener;
 
@@ -114,7 +114,7 @@ class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterfa
     {
         // Check for the keyword "this"
         $includeExecutingCampaign = false;
-        $key                      = array_search('this', $campaigns);
+        $key                      = array_search('this', $campaigns, true);
         if (false !== $key) {
             $includeExecutingCampaign = true;
             // Remove it from the list of IDs

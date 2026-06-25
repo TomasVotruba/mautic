@@ -48,7 +48,7 @@ final class ApiSubscriber implements EventSubscriberInterface
             Sms::class,
             Stage::class,
             Focus::class,
-        ])) {
+        ], true)) {
             return;
         }
 

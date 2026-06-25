@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -196,7 +196,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $eventParent  = $event->getEvent()['parent'];
         $eventConfig  = $event->getConfig();
 
-        if (null == $eventDetails) {
+        if (null === $eventDetails) {
             return $event->setResult(false);
         }
 
@@ -206,7 +206,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             if ($event->checkContext('email.click')) {
                 /** @var Hit $hit */
                 $hit = $eventDetails;
-                if (in_array((int) $eventParent['properties']['email'], $eventDetails->getEmail()->getRelatedEntityIds())) {
+                if (in_array((int) $eventParent['properties']['email'], $eventDetails->getEmail()->getRelatedEntityIds(), true)) {
                     if (!empty($eventConfig['urls']['list'])) {
                         $limitToUrls = (array) $eventConfig['urls']['list'];
                         if (UrlMatcher::hasMatch($limitToUrls, $hit->getUrl())) {
@@ -220,10 +220,10 @@ class CampaignSubscriber implements EventSubscriberInterface
                 return $event->setResult(false);
             } elseif ($event->checkContext('email.open')) {
                 // open decision
-                return $event->setResult(in_array((int) $eventParent['properties']['email'], $eventDetails->getRelatedEntityIds()));
+                return $event->setResult(in_array((int) $eventParent['properties']['email'], $eventDetails->getRelatedEntityIds(), true));
             } elseif ($event->checkContext('email.reply')) {
                 // reply decision
-                return $event->setResult(in_array((int) $eventParent['properties']['email'], $eventDetails->getRelatedEntityIds()));
+                return $event->setResult(in_array((int) $eventParent['properties']['email'], $eventDetails->getRelatedEntityIds(), true));
             }
         }
 
@@ -304,7 +304,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
             if (!$options['ignoreDNC']) {
                 $categories = $this->leadModel->getUnsubscribedLeadCategoriesIds($contact);
-                if ($emailCategory && !empty($categories) && in_array($emailCategory, $categories)) {
+                if ($emailCategory && !empty($categories) && in_array($emailCategory, $categories, true)) {
                     // Pass with a note to the UI because no use retrying
                     $event->passWithError(
                         $pending->get($logId),
@@ -321,7 +321,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             $credentialArray[$logId] = $leadCredentials;
         }
 
-        if (MailHelper::EMAIL_TYPE_MARKETING == $type) {
+        if (MailHelper::EMAIL_TYPE_MARKETING === $type) {
             $statRepository = $this->emailModel->getStatRepository();
             // Determine if this lead has received the email before and if so, don't send it again
             $stats = $statRepository->getSentCountForContacts($contactIds, $emailId);

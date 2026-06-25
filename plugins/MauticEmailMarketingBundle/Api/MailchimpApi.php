@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticEmailMarketingBundle\Api;
 
@@ -36,7 +36,7 @@ class MailchimpApi extends EmailMarketingApi
 
         $response = $this->integration->makeRequest($url, $parameters, $method, ['encode_parameters' => 'json']);
 
-        if (is_array($response) && !empty($response['status']) && 'error' == $response['status']) {
+        if (is_array($response) && !empty($response['status']) && 'error' === $response['status']) {
             throw new ApiErrorException($response['error']);
         } elseif (is_array($response) && !empty($response['errors'])) {
             $errors = [];

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model;
 
@@ -93,7 +93,7 @@ class IteratorExportDataModel implements \Iterator
      */
     public function valid(): bool
     {
-        if ($this->position <= $this->totalResult && !is_null($this->data)) {
+        if ($this->position <= $this->totalResult && null !== $this->data) {
             return true;
         }
 

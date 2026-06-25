@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Model;
 
@@ -193,7 +193,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                 $this->reportBuilderData[$context]['graphs'] = $this->reportBuilderData['all']['graphs'][$context] ?? [];
             } else {
                 // build them
-                $eventContext = ('all' == $context) ? '' : $context;
+                $eventContext = ('all' === $context) ? '' : $context;
 
                 $event = new ReportBuilderEvent($this->translator, $this->channelListHelper, $eventContext, $this->fieldModel->getPublishedFieldArrays(), $this->reportHelper, $reportSource);
                 $this->dispatcher->dispatch($event, ReportEvents::REPORT_ON_BUILD);
@@ -201,7 +201,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
                 $tables = $event->getTables();
                 $graphs = $event->getGraphs();
 
-                if ('all' == $context) {
+                if ('all' === $context) {
                     $this->reportBuilderData[$context]['tables'] = $tables;
                     $this->reportBuilderData[$context]['graphs'] = $graphs;
                 } else {
@@ -296,7 +296,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $return->definitions = [];
 
         foreach ($columns as $column => $data) {
-            if ($isGroupBy && ('unsubscribed' == $column || 'unsubscribed_ratio' == $column || 'unique_ratio' == $column)) {
+            if ($isGroupBy && ('unsubscribed' === $column || 'unsubscribed_ratio' === $column || 'unique_ratio' === $column)) {
                 continue;
             }
             if (isset($data['label'])) {
@@ -386,7 +386,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
 
         switch ($format) {
             case 'csv':
-                if (!is_null($handle)) {
+                if (null !== $handle) {
                     $this->csvExporter->export($reportDataResult, $handle, $page);
 
                     return;
@@ -823,7 +823,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         foreach ($entities as $entity) {
             $retrFilters = $entity->getFilters();
             foreach ($retrFilters as $eachFilter) {
-                if ($eachFilter['column'] == $search && $eachFilter['value'] == $segmentId) {
+                if ($eachFilter['column'] === $search && $eachFilter['value'] === $segmentId) {
                     $dependents[] = $entity->getId();
                 }
             }
@@ -853,7 +853,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $dependents = [];
         foreach ($entities as $entity) {
             foreach ($entity->getFilters() as $entityFilter) {
-                if ($entityFilter['column'] == $search && $entityFilter['value'] == $emailId) {
+                if ($entityFilter['column'] === $search && $entityFilter['value'] === $emailId) {
                     $dependents[] = $entity->getId();
                 }
             }
@@ -882,7 +882,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $dependents = [];
         foreach ($entities as $entity) {
             foreach ($entity->getFilters() as $entityFilter) {
-                if ($entityFilter['column'] == $search && (is_array($entityFilter['value']) && in_array($tagId, $entityFilter['value']))) {
+                if ($entityFilter['column'] === $search && (is_array($entityFilter['value']) && in_array($tagId, $entityFilter['value'], true))) {
                     $dependents[] = $entity->getId();
                 }
             }
@@ -906,6 +906,6 @@ class ReportModel extends FormModel implements GlobalSearchInterface
 
     protected function isDebugMode(): bool
     {
-        return MAUTIC_ENV == 'dev' || $this->coreParametersHelper->get('debug');
+        return MAUTIC_ENV === 'dev' || $this->coreParametersHelper->get('debug');
     }
 }

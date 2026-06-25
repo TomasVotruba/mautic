@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Twig\Helper;
 
@@ -42,7 +42,7 @@ final class AvatarHelper
         }
 
         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-        if (!in_array($ext, $this->imageTypes)) {
+        if (!in_array($ext, $this->imageTypes, true)) {
             throw new \Exception('File is not image');
         }
 
@@ -59,7 +59,7 @@ final class AvatarHelper
         $socialData = $lead->getSocialCache();
         $leadEmail  = $lead->getEmail();
 
-        if ('custom' == $preferred) {
+        if ('custom' === $preferred) {
             $avatarPath = $this->getAvatarPath(true).'/avatar'.$lead->getId();
             if (file_exists($avatarPath) && $fmtime = filemtime($avatarPath)) {
                 // Append file modified time to ensure the latest is used by browser

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PointBundle\Model;
 
@@ -249,7 +249,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
             $event = !$isNew ? $existingActions[$properties['id']] : new TriggerEvent();
 
             foreach ($properties as $f => $v) {
-                if (in_array($f, ['id', 'order'])) {
+                if (in_array($f, ['id', 'order'], true)) {
                     continue;
                 }
 

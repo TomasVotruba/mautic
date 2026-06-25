@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ChannelBundle\Model;
 
@@ -225,7 +225,7 @@ class MessageQueueModel extends FormModel
         // Group queue by channel and channel ID - this make it possible for processing listeners to batch process such as
         // sending emails in batches to 3rd party transactional services via HTTP APIs
         foreach ($queue as $key => $message) {
-            if (MessageQueue::STATUS_SENT == $message->getStatus()) {
+            if (MessageQueue::STATUS_SENT === $message->getStatus()) {
                 unset($queue[$key]);
                 continue;
             }

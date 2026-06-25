@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Menu;
 
@@ -220,13 +220,13 @@ class MenuHelper
         foreach ($config as $key => $value) {
             switch ($key) {
                 case 'enabled':
-                    $passChecks = $settings->getIsPublished() == $value;
+                    $passChecks = $settings->getIsPublished() === $value;
                     break;
                 case 'features':
                     $supportedFeatures = $settings->getSupportedFeatures();
 
                     foreach ($value as $featureName) {
-                        if (!in_array($featureName, $supportedFeatures)) {
+                        if (!in_array($featureName, $supportedFeatures, true)) {
                             $passChecks = false;
                             break;
                         }
@@ -244,7 +244,7 @@ class MenuHelper
      */
     protected function handleParametersChecks($name, $value): bool
     {
-        return $this->getParameter($name) == $value;
+        return $this->getParameter($name) === $value;
     }
 
     /**
@@ -253,7 +253,7 @@ class MenuHelper
      */
     protected function handleRequestChecks($name, $value): bool
     {
-        return $this->requestStack->getCurrentRequest()->get($name) == $value;
+        return $this->requestStack->getCurrentRequest()->get($name) === $value;
     }
 
     /**

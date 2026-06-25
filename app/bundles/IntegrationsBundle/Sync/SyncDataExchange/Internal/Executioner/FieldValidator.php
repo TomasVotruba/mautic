@@ -94,7 +94,7 @@ final class FieldValidator implements FieldValidatorInterface
                 NormalizedValueDAO::DOUBLE_TYPE,
                 NormalizedValueDAO::FLOAT_TYPE,
                 NormalizedValueDAO::INT_TYPE,
-            ]),
+            ], true),
             default => true,
         };
     }

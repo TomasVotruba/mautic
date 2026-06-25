@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\IpLookup;
 
@@ -99,7 +99,7 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
 
         $ip = $this->ip;
         $doNotSellList->loadList();
-        $ipMatch = array_filter($doNotSellList->getList(), fn ($item): bool => $doNotSellList->stripCIDR($item['value']) == $ip);
+        $ipMatch = array_filter($doNotSellList->getList(), fn ($item): bool => $doNotSellList->stripCIDR($item['value']) === $ip);
 
         return !boolval(count($ipMatch));
     }

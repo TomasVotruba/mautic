@@ -629,7 +629,7 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
 
         foreach ($choices as $groupKey => $group) {
             foreach ($group as $fieldKey => $field) {
-                if (in_array($field['properties']['type'] ?? '', ['date', 'datetime'])) {
+                if (in_array($field['properties']['type'] ?? '', ['date', 'datetime'], true)) {
                     $operators                                  = array_flip($field['operators'] ?? []);
                     $operators                                  = $this->translateOperators($operators);
                     $choices[$groupKey][$fieldKey]['operators'] = array_flip($operators);

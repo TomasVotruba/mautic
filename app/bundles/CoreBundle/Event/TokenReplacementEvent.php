@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Event;
 
@@ -73,7 +73,7 @@ class TokenReplacementEvent extends CommonEvent
      */
     public function getClickthrough()
     {
-        if (!in_array('lead', $this->clickthrough)) {
+        if (!in_array('lead', $this->clickthrough, true)) {
             if (is_array($this->lead) && !empty($this->lead['id'])) {
                 $this->clickthrough['lead'] = $this->lead['id'];
             } elseif ($this->lead instanceof Lead && $this->lead->getId()) {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Api;
 
@@ -63,7 +63,7 @@ class SalesforceApi extends CrmApi
         $requestUrl = RequestUrl::get($this->integration->getApiUrl(), $queryUrl, $operation, $object);
 
         $settings   = $this->requestSettings;
-        if ('PATCH' == $method) {
+        if ('PATCH' === $method) {
             $settings['headers'] = ['Sforce-Auto-Assign' => 'FALSE'];
         }
 
@@ -90,7 +90,7 @@ class SalesforceApi extends CrmApi
      */
     public function getLeadFields($object = null)
     {
-        if ('company' == $object) {
+        if ('company' === $object) {
             $object = 'Account'; // salesforce object name
         }
 
@@ -110,9 +110,9 @@ class SalesforceApi extends CrmApi
         ];
 
         // try searching for lead as this has been changed before in updated done to the plugin
-        if (isset($config['objects']) && false !== array_search('Contact', $config['objects']) && !empty($data['Contact']['Email'])) {
+        if (isset($config['objects']) && false !== array_search('Contact', $config['objects'], true) && !empty($data['Contact']['Email'])) {
             $fields      = $this->integration->getFieldsForQuery('Contact');
-            unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
+            unset($fields[array_search('HasOptedOutOfEmail', $fields, true)]);
             $fields[]    = 'Id';
             $fields      = implode(', ', array_unique($fields));
             $findContact = 'select '.$fields.' from Contact where email = \''.$this->escapeQueryValue($data['Contact']['Email']).'\'';
@@ -125,7 +125,7 @@ class SalesforceApi extends CrmApi
 
         if (!empty($data['Lead']['Email'])) {
             $fields   = $this->integration->getFieldsForQuery('Lead');
-            unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
+            unset($fields[array_search('HasOptedOutOfEmail', $fields, true)]);
             $fields[] = 'Id';
             $fields   = implode(', ', array_unique($fields));
             $findLead = 'select '.$fields.' from Lead where email = \''.$this->escapeQueryValue($data['Lead']['Email']).'\' and ConvertedContactId = NULL';
@@ -153,7 +153,7 @@ class SalesforceApi extends CrmApi
         $appendToQuery = '';
 
         // try searching for lead as this has been changed before in updated done to the plugin
-        if (isset($config['objects']) && false !== array_search('company', $config['objects']) && !empty($data['company']['Name'])) {
+        if (isset($config['objects']) && false !== array_search('company', $config['objects'], true) && !empty($data['company']['Name'])) {
             $fields = $this->integration->getFieldsForQuery('Account');
 
             if (!empty($data['company']['BillingCountry'])) {
@@ -359,15 +359,15 @@ class SalesforceApi extends CrmApi
     private function requestQueryAllAndHandle(string $queryUrl, array $fields, string $object, array $query): mixed
     {
         $config = $this->integration->mergeConfigToFeatureSettings([]);
-        if (isset($config['updateOwner']) && isset($config['updateOwner'][0]) && 'updateOwner' == $config['updateOwner'][0]) {
+        if (isset($config['updateOwner']) && isset($config['updateOwner'][0]) && 'updateOwner' === $config['updateOwner'][0]) {
             $fields[] = 'Owner.Name';
             $fields[] = 'Owner.Email';
         }
         $fields = array_unique($fields);
 
-        $ignoreConvertedLeads = ('Lead' == $object) ? ' and ConvertedContactId = NULL' : '';
+        $ignoreConvertedLeads = ('Lead' === $object) ? ' and ConvertedContactId = NULL' : '';
         if (!$this->isOptOutFieldAccessible()) { // If not opt-out is supported; unset it
-            unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
+            unset($fields[array_search('HasOptedOutOfEmail', $fields, true)]);
         }
 
         $baseQuery = 'SELECT %s from '.$object.' where SystemModStamp>='.$query['start'].' and SystemModStamp<='.$query['end'].' and isDeleted = false'
@@ -674,9 +674,9 @@ class SalesforceApi extends CrmApi
             if (!$missingField) {
                 throw $e;
             }
-            if ('HasOptedOutOfEmail' == $missingField) {
+            if ('HasOptedOutOfEmail' === $missingField) {
                 // Unset field as it is not accessible
-                unset($fields[array_search('HasOptedOutOfEmail', $fields)]);
+                unset($fields[array_search('HasOptedOutOfEmail', $fields, true)]);
 
                 // Disable the use of the HasOptedOutOfEmail field for future requests
                 $this->setOptOutFieldAccessible(false);
@@ -702,7 +702,7 @@ class SalesforceApi extends CrmApi
                     $entityManager->flush();
 
                     // Remove the missing field from the request
-                    $missingFieldIndex = array_search($missingField, $fields);
+                    $missingFieldIndex = array_search($missingField, $fields, true);
                     if (false !== $missingFieldIndex) {
                         unset($fields[$missingFieldIndex]);
                     }

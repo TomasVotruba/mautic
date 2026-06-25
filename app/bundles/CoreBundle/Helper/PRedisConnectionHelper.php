@@ -117,7 +117,7 @@ class PRedisConnectionHelper
         if ($connection instanceof RedisCluster || $connection instanceof PredisCluster) {
             $clusterStrategy = $connection->getClusterStrategy();
 
-            if ($clusterStrategy instanceof ClusterStrategy && !in_array(Unlink::ID, $clusterStrategy->getSupportedCommands())) {
+            if ($clusterStrategy instanceof ClusterStrategy && !in_array(Unlink::ID, $clusterStrategy->getSupportedCommands(), true)) {
                 $clusterStrategy->setCommandHandler(Unlink::ID, [$clusterStrategy, 'getKeyFromAllArguments']);
             }
         }

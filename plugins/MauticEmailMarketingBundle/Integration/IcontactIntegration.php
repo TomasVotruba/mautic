@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticEmailMarketingBundle\Integration;
 
@@ -154,7 +154,7 @@ class IcontactIntegration extends EmailAbstractIntegration
                 $leadFields[$f] = [
                     'label'    => $this->translator->trans('mautic.icontact.field.'.$f),
                     'type'     => 'string',
-                    'required' => 'email' == $f,
+                    'required' => 'email' === $f,
                 ];
             }
 

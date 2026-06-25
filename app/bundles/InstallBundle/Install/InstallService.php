@@ -230,7 +230,7 @@ class InstallService
             );
         }
 
-        if (!empty($dbParams['driver']) && !in_array($dbParams['driver'], DoctrineStep::getDriverKeys())) {
+        if (!empty($dbParams['driver']) && !in_array($dbParams['driver'], DoctrineStep::getDriverKeys(), true)) {
             $messages['driver'] = $this->translator->trans(
                 'mautic.install.database.driver.invalid',
                 ['%drivers%' => implode(', ', DoctrineStep::getDriverKeys())],

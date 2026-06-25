@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity;
 
@@ -36,7 +36,7 @@ class CommonEntity implements \Stringable
     {
         if (str_starts_with($name, 'is') && method_exists($this, 'get'.ucfirst($name))) {
             return $this->{'get'.ucfirst($name)}();
-        } elseif ('getName' == $name && method_exists($this, 'getTitle')) {
+        } elseif ('getName' === $name && method_exists($this, 'getTitle')) {
             return $this->getTitle();
         }
 
@@ -63,10 +63,10 @@ class CommonEntity implements \Stringable
     {
         $getter  = (method_exists($this, $prop)) ? $prop : 'get'.ucfirst($prop);
         $current = $this->$getter();
-        if ('category' == $prop) {
+        if ('category' === $prop) {
             $currentId = ($current) ? $current->getId() : '';
             $newId     = ($val) ? $val->getId() : null;
-            if ($currentId != $newId) {
+            if ($currentId !== $newId) {
                 $this->addChange($prop, [$currentId, $newId]);
             }
         } elseif ($current !== $val) {

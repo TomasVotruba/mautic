@@ -27,7 +27,7 @@ final class InfiniteLoopValidator extends ConstraintValidator
      */
     public function validateEvent(ExecutionContextInterface $context, string $triggerMode, array $addTo, int $triggerInterval, string $triggerIntervalUnit): void
     {
-        if (!in_array('this', $addTo)) {
+        if (!in_array('this', $addTo, true)) {
             return;
         }
 

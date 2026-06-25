@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Model;
 
@@ -126,7 +126,7 @@ class SubmissionModel extends CommonFormModel
         // set the landing page the form was submitted from if applicable
         if (!empty($post['mauticpage'])) {
             $page = $this->pageModel->getEntity((int) $post['mauticpage']);
-            if (null != $page) {
+            if (null !== $page) {
                 $submission->setPage($page);
             }
         }
@@ -220,7 +220,7 @@ class SubmissionModel extends CommonFormModel
                 continue;
             }
 
-            if (isset($components['viewOnlyFields']) && in_array($type, $components['viewOnlyFields'])) {
+            if (isset($components['viewOnlyFields']) && in_array($type, $components['viewOnlyFields'], true)) {
                 // don't save items that don't have a value associated with it
                 continue;
             }
@@ -262,7 +262,7 @@ class SubmissionModel extends CommonFormModel
             }
 
             $mappedField = $f->getMappedField();
-            if (!empty($mappedField) && in_array($f->getMappedObject(), ['company', 'contact'])) {
+            if (!empty($mappedField) && in_array($f->getMappedObject(), ['company', 'contact'], true)) {
                 $leadValue = $value;
 
                 $leadFieldMatches[$mappedField] = $leadValue;
@@ -728,7 +728,7 @@ class SubmissionModel extends CommonFormModel
         ];
 
         foreach ($values['results'] as $k2 => $r) {
-            if (in_array($r['type'], $viewOnlyFields)) {
+            if (in_array($r['type'], $viewOnlyFields, true)) {
                 continue;
             }
 
@@ -778,7 +778,7 @@ class SubmissionModel extends CommonFormModel
         ];
 
         foreach ($fields as $f) {
-            if (in_array($f->getType(), $viewOnlyFields) || false === $f->getSaveResult()) {
+            if (in_array($f->getType(), $viewOnlyFields, true) || false === $f->getSaveResult()) {
                 continue;
             }
             $header[] = $f->getLabel();

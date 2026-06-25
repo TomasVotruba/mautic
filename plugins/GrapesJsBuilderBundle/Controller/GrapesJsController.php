@@ -132,7 +132,7 @@ class GrapesJsController extends CommonController
             $entity = $model->getEntity((int) $objectId);
             $isNew  = false;
 
-            if (null == $entity
+            if (null === $entity
                 || !$this->security->hasEntityAccess(
                     $aclToCheck.'viewown',
                     $aclToCheck.'viewother',

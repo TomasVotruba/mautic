@@ -73,7 +73,7 @@ final class ServicePass implements CompilerPassInterface
                         }
 
                         // Setup default menu details
-                        if ('menus' == $type) {
+                        if ('menus' === $type) {
                             $details = array_merge(
                                 [
                                     'class'   => \Knp\Menu\MenuItem::class,
@@ -156,7 +156,7 @@ final class ServicePass implements CompilerPassInterface
                                 $definition->addTag($tag, $tagArguments);
                             }
 
-                            if ('events' == $type) {
+                            if ('events' === $type) {
                                 $definition->addTag('mautic.event_subscriber');
                             }
                         }

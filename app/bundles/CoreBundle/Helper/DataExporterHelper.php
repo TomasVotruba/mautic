@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -60,7 +60,7 @@ class DataExporterHelper
     private function secureAgainstCsvInjection(array $row): array
     {
         foreach ($row as $colNum => $colVal) {
-            if ($colVal && in_array(substr($colVal, 0, 1), ['+', '-', '=', '@'])) {
+            if ($colVal && in_array(substr($colVal, 0, 1), ['+', '-', '=', '@'], true)) {
                 $row[$colNum] = ' '.$colVal;
             }
         }

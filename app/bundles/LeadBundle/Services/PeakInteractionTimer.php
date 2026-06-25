@@ -209,7 +209,7 @@ class PeakInteractionTimer
             $interactionDate->setTimezone($dateTimeZone);
 
             $interactionKey = $type.':'.$interactionDate->format('Y-m-d_H');
-            if (!in_array($interactionKey, $registeredInteractions)) {
+            if (!in_array($interactionKey, $registeredInteractions, true)) {
                 $interactions[] = [
                     'type'      => $type,
                     'date'      => $interactionDate->format('Y-m-d H:i:s'),

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -52,7 +52,7 @@ class CacheStorageHelper
         $this->cacheDir          = $cacheDir.'/data';
 
         // @deprecated BC support for pre 2.6.0 to be removed in 3.0
-        if (!in_array($adaptor, [self::ADAPTOR_DATABASE, self::ADAPTOR_FILESYSTEM])) {
+        if (!in_array($adaptor, [self::ADAPTOR_DATABASE, self::ADAPTOR_FILESYSTEM], true)) {
             if (file_exists($adaptor)) {
                 $this->cacheDir = $adaptor.'/data';
             } else {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Form\Type;
 
@@ -22,7 +22,7 @@ class KeysType extends AbstractType
         $requiredKeys = $object->getRequiredKeyFields();
 
         foreach ($options['integration_keys'] as $key => $label) {
-            $isSecret = in_array($key, $secretKeys);
+            $isSecret = in_array($key, $secretKeys, true);
             $required = (isset($requiredKeys[$key]));
 
             // Password fields are going to be blank even if a value exists so only require if a password is not already saved

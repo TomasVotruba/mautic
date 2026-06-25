@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
@@ -331,7 +331,7 @@ class ThemeHelper implements ThemeHelperInterface
 
         $themeName = basename($zipFile, '.zip');
 
-        if (in_array($themeName, $this->getDefaultThemes())) {
+        if (in_array($themeName, $this->getDefaultThemes(), true)) {
             throw new \Exception($this->translator->trans('mautic.core.theme.default.cannot.overwrite', ['%name%' => $themeName], 'validators'));
         }
 
@@ -358,12 +358,12 @@ class ThemeHelper implements ThemeHelperInterface
             $extension = pathinfo($entry, PATHINFO_EXTENSION);
 
             // Check for required files
-            if (in_array($entry, $requiredFiles)) {
+            if (in_array($entry, $requiredFiles, true)) {
                 $foundRequiredFiles[] = $entry;
             }
 
             // Filter out dangerous files like .php
-            if (empty($extension) || in_array(strtolower($extension), $allowedExtensions)) {
+            if (empty($extension) || in_array(strtolower($extension), $allowedExtensions, true)) {
                 $allowedFiles[] = $entry;
             }
 
@@ -377,7 +377,7 @@ class ThemeHelper implements ThemeHelperInterface
                 $featureFile     = sprintf('html/%s.html.twig', strtolower($feature));
                 $requiredFiles[] = $featureFile;
 
-                if (in_array($featureFile, $allowedFiles)) {
+                if (in_array($featureFile, $allowedFiles, true)) {
                     $foundRequiredFiles[] = $featureFile;
                 }
             }
@@ -581,7 +581,7 @@ class ThemeHelper implements ThemeHelperInterface
             return false;
         }
 
-        if (!in_array($featureRequested, $config['features'])) {
+        if (!in_array($featureRequested, $config['features'], true)) {
             return false;
         }
 
@@ -600,12 +600,12 @@ class ThemeHelper implements ThemeHelperInterface
             throw new BadConfigurationException(sprintf('Theme %s not configured properly: builder property in the config.json', $config['name']));
         }
 
-        return in_array($builderName, $builderRequested);
+        return in_array($builderName, $builderRequested, true);
     }
 
     public function getCurrentTheme(string $template, string $specificFeature): string
     {
-        if ('mautic_code_mode' !== $template && !in_array($template, array_keys($this->getInstalledThemes($specificFeature)))) {
+        if ('mautic_code_mode' !== $template && !in_array($template, array_keys($this->getInstalledThemes($specificFeature)), true)) {
             return $this->coreParametersHelper->get('theme_email_default');
         }
 

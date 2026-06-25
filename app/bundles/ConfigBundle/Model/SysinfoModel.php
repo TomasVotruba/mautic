@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ConfigBundle\Model;
 
@@ -39,7 +39,7 @@ class SysinfoModel
      */
     public function getPhpInfo()
     {
-        if (!is_null($this->phpInfo)) {
+        if (null !== $this->phpInfo) {
             return $this->phpInfo;
         }
 
@@ -93,7 +93,7 @@ class SysinfoModel
      */
     public function getFolders()
     {
-        if (!is_null($this->folders)) {
+        if (null !== $this->folders) {
             return $this->folders;
         }
 
@@ -155,7 +155,7 @@ class SysinfoModel
 
         fseek($f, -1, SEEK_END);
 
-        if ("\n" != fread($f, 1)) {
+        if ("\n" !== fread($f, 1)) {
             --$lines;
         }
 

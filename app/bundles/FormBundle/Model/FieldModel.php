@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Model;
 
@@ -108,18 +108,18 @@ class FieldModel extends CommonFormModel
         // make sure alias is not already taken
         $testAlias = $alias;
 
-        $count    = (int) in_array($alias, $aliases);
+        $count    = (int) in_array($alias, $aliases, true);
         $aliasTag = $count;
 
         while ($count) {
             $testAlias = $alias.$aliasTag;
-            $count     = (int) in_array($testAlias, $aliases);
+            $count     = (int) in_array($testAlias, $aliases, true);
             ++$aliasTag;
         }
 
         // Prevent internally used identifiers in the form HTML from colliding with the generated field's ID
         $internalUse = ['message', 'error', 'id', 'return', 'name', 'messenger'];
-        if (in_array($testAlias, $internalUse)) {
+        if (in_array($testAlias, $internalUse, true)) {
             $testAlias = 'f_'.$testAlias;
         }
 

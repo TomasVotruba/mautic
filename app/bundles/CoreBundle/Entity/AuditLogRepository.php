@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity;
 
@@ -169,7 +169,7 @@ class AuditLogRepository extends CommonRepository
             ->where('al.object != :category')
             ->setParameter('category', 'category');
 
-        if (null != $object && null !== $id) {
+        if (null !== $object && null !== $id) {
             $query
                 ->andWhere('al.object = :object')
                 ->andWhere('al.objectId = :id')

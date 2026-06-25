@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
@@ -218,7 +218,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         $cwFields = [];
 
         foreach ($fields as $fieldName => $field) {
-            if (in_array($field['type'], ['string', 'boolean', 'ref'])) {
+            if (in_array($field['type'], ['string', 'boolean', 'ref'], true)) {
                 $cwFields[$fieldName] = [
                     'type'     => $field['type'],
                     'label'    => ucfirst($fieldName),
@@ -237,7 +237,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
      */
     public function appendToForm(&$builder, $data, $formArea): void
     {
-        if ('features' == $formArea) {
+        if ('features' === $formArea) {
             $builder->add(
                 'updateBlanks',
                 ChoiceType::class,
@@ -271,7 +271,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
             );
         }
 
-        if ('integration' == $formArea) {
+        if ('integration' === $formArea) {
             if ($this->isAuthorized()) {
                 $builder->add(
                     'push_activities',
@@ -441,15 +441,15 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         $executed            = 0;
         $integrationEntities = [];
         try {
-            while ($records = ('Contact' == $object)
+            while ($records = ('Contact' === $object)
                 ? $this->getApiHelper()->getContacts($params, $page)
                 : $this->getApiHelper()->getCompanies($params, $page)) {
-                $mauticReferenceObject = ('Contact' == $object) ? 'lead' : 'company';
+                $mauticReferenceObject = ('Contact' === $object) ? 'lead' : 'company';
                 foreach ($records as $record) {
                     if (is_array($record)) {
                         $id            = $record['id'];
                         $formattedData = $this->amendLeadDataBeforeMauticPopulate($record, $object);
-                        $entity        = ('Contact' == $object)
+                        $entity        = ('Contact' === $object)
                             ? $this->getMauticLead($formattedData)
                             : $this->getMauticCompany(
                                 $formattedData,
@@ -500,7 +500,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         if (empty($data)) {
             return $fieldsValues;
         }
-        if ('Contact' == $object) {
+        if ('Contact' === $object) {
             $fields = $this->getContactFields();
         } else {
             $fields = $this->getCompanyFields();
@@ -509,19 +509,19 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
         foreach ($data as $key => $field) {
             if (isset($fields[$key])) {
                 $name = $key;
-                if ('array' == $fields[$key]['type']) {
+                if ('array' === $fields[$key]['type']) {
                     $items = $fields[$key]['items'];
                     foreach ($field as $item) {
                         if (is_array($item[key($items['name'])])) {
                             foreach ($item[key($items['name'])] as $nameKey => $nameField) {
-                                if ($nameKey == $items['name'][key($items['name'])]) {
+                                if ($nameKey === $items['name'][key($items['name'])]) {
                                     $name = $nameField;
                                 }
                             }
                         }
                         $fieldsValues[$name] = $item[$items['value']];
                     }
-                } elseif ('ref' == $fields[$key]['type']) {
+                } elseif ('ref' === $fields[$key]['type']) {
                     $fieldsValues[$name] = $field[$fields[$key]['value']];
                 } else {
                     $fieldsValues[$name] = $field;
@@ -608,7 +608,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                 $id                    = $personData['id'];
                 $integrationEntities[] = $this->saveSyncedData($lead, $object, 'lead', $id);
 
-                if (isset($config['push_activities']) and true == $config['push_activities']) {
+                if (isset($config['push_activities']) and true === $config['push_activities']) {
                     $savedEntity = $this->createActivity($config['campaign_task'], $id, $lead->getId());
                     if ($savedEntity instanceof IntegrationEntity) {
                         $integrationEntities[] = $savedEntity;
@@ -632,7 +632,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
     public function getMappedFields($object, $lead, $personFound, $config, $cwContactData = []): array
     {
-        $fieldsToUpdateInCW = isset($config['update_mautic']) && $personFound ? array_keys($config['update_mautic'], 1) : [];
+        $fieldsToUpdateInCW = isset($config['update_mautic']) && $personFound ? array_keys($config['update_mautic'], 1, true) : [];
         $objectFields       = $this->prepareFieldsForPush($this->getContactFields());
         $leadFields         = $config['leadFields'];
 
@@ -683,19 +683,19 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                 continue;
             }
 
-            if ('communicationItems' == $integrationKey) {
+            if ('communicationItems' === $integrationKey) {
                 $communicationItems = [];
                 foreach ($field['items']['keys'] as $keyItem => $item) {
                     $defaultValue = [];
                     $keyExists    = false;
                     if (isset($leadFields[$item])) {
-                        if ('Email' == $item) {
+                        if ('Email' === $item) {
                             $defaultValue = ['defaultFlag' => true];
                         }
                         $mauticKey = $leadFields[$item];
                         if (isset($fields[$mauticKey]) && !empty($fields[$mauticKey]['value'])) {
                             foreach ($config['communicationItems'] as $key => $ci) {
-                                if ($ci['type']['id'] == $keyItem + 1) {
+                                if ($ci['type']['id'] === $keyItem + 1) {
                                     $config['communicationItems'][$key]['value'] = $fields[$mauticKey]['value'];
                                     $keyExists                                   = true;
                                 }
@@ -789,7 +789,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
      */
     protected function getPriorityFieldsForMautic($config, $object = null, $priorityObject = 'mautic')
     {
-        if ('company' == $object) {
+        if ('company' === $object) {
             $priority = parent::getPriorityFieldsForMautic($config, $object, 'mautic_company');
             $fields   = array_intersect_key($config['companyFields'], $priority);
         } else {

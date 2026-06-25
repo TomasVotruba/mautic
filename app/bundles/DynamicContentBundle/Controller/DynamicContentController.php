@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\DynamicContentBundle\Controller;
 
@@ -430,7 +430,7 @@ class DynamicContentController extends FormController
         $model  = $this->getModel('dynamicContent');
         $entity = $model->getEntity($objectId);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             if (!$this->security->isGranted('dynamiccontent:dynamiccontents:create')
                 || !$this->security->hasEntityAccess(
                     'dynamiccontent:dynamiccontents:viewown',

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\EmailBundle\EventListener;
 
@@ -42,7 +42,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $ids       = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($ids)) {
+        if (null !== $startDate && !empty($ids)) {
             // get their bounce rates
             $counts = $repo->getOpenedRates($ids, $startDate);
 
@@ -66,7 +66,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                     $hasResults[]                                                   = $id;
                 }
 
-                if (!in_array($parent->getId(), $hasResults)) {
+                if (!in_array($parent->getId(), $hasResults, true)) {
                     // make sure that parent and published children are included
                     $support['labels'][] = $parent->getName().' (0%)';
 
@@ -76,7 +76,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
 
                 foreach ($children as $c) {
                     if ($c->isPublished()) {
-                        if (!in_array($c->getId(), $hasResults)) {
+                        if (!in_array($c->getId(), $hasResults, true)) {
                             // make sure that parent and published children are included
                             $support['labels'][]                                            = $c->getName().' (0%)';
                             $data[$translator->trans('mautic.email.abtest.label.opened')][] = 0;
@@ -101,7 +101,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $max = max($rates);
 
                 // get the page ids with the most number of downloads
-                $winners = ($max > 0) ? array_keys($rates, $max) : [];
+                $winners = ($max > 0) ? array_keys($rates, $max, true) : [];
 
                 $event->setAbTestResults([
                     'winners'         => $winners,
@@ -138,7 +138,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $ids = $parent->getRelatedEntityIds();
 
         $startDate = $parent->getVariantStartDate();
-        if (null != $startDate && !empty($ids)) {
+        if (null !== $startDate && !empty($ids)) {
             // get their bounce rates
             $clickthroughCounts = $pageRepo->getEmailClickthroughHitCount($ids, $startDate);
             $sentCounts         = $emailRepo->getSentCounts($ids, $startDate);
@@ -167,7 +167,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                     $hasResults[]                                                             = $id;
                 }
 
-                if (!in_array($parent->getId(), $hasResults)) {
+                if (!in_array($parent->getId(), $hasResults, true)) {
                     // make sure that parent and published children are included
                     $support['labels'][] = $parent->getName().' (0%)';
 
@@ -177,7 +177,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
 
                 foreach ($children as $c) {
                     if ($c->isPublished()) {
-                        if (!in_array($c->getId(), $hasResults)) {
+                        if (!in_array($c->getId(), $hasResults, true)) {
                             // make sure that parent and published children are included
                             $support['labels'][]                                                  = $c->getName().' (0%)';
                             $data[$translator->trans('mautic.email.abtest.label.clickthrough')][] = 0;
@@ -202,7 +202,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $max = max($rates);
 
                 // get the page ids with the most number of downloads
-                $winners = ($max > 0) ? array_keys($rates, $max) : [];
+                $winners = ($max > 0) ? array_keys($rates, $max, true) : [];
 
                 $event->setAbTestResults([
                     'winners'         => $winners,

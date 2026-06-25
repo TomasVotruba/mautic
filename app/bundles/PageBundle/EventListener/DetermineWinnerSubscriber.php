@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
@@ -35,7 +35,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $pageIds   = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($pageIds)) {
+        if (null !== $startDate && !empty($pageIds)) {
             // get their bounce rates
             $counts = $this->hitRepository->getBounces($pageIds, $startDate, true);
             if ($counts) {
@@ -89,7 +89,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $min                   = min($rates);
                 $support['step_width'] = (ceil($min / 10) * 10);
 
-                $winners = ($min >= 0) ? array_keys($rates, $min) : [];
+                $winners = ($min >= 0) ? array_keys($rates, $min, true) : [];
 
                 $event->setAbTestResults([
                     'winners'         => $winners,
@@ -119,7 +119,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
         $pageIds   = $parent->getRelatedEntityIds();
         $startDate = $parent->getVariantStartDate();
 
-        if (null != $startDate && !empty($pageIds)) {
+        if (null !== $startDate && !empty($pageIds)) {
             // get their bounce rates
             $counts  = $this->hitRepository->getDwellTimesForPages($pageIds, ['fromDate' => $startDate]);
             $support = [];
@@ -141,7 +141,7 @@ class DetermineWinnerSubscriber implements EventSubscriberInterface
                 $support['step_width'] = (ceil($max / 10) * 10);
 
                 // get the page ids with the greatest average dwell time
-                $winners = ($max > 0) ? array_keys($avgs, $max) : [];
+                $winners = ($max > 0) ? array_keys($avgs, $max, true) : [];
 
                 $event->setAbTestResults([
                     'winners'         => $winners,

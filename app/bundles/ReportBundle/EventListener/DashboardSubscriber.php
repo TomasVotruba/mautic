@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\ReportBundle\EventListener;
 
@@ -55,7 +55,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
     {
         $this->checkPermissions($event);
 
-        if ('report' == $event->getType()) {
+        if ('report' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
             if (!$event->isCached()) {

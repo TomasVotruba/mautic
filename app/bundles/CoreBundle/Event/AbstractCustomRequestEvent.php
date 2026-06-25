@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Event;
 
@@ -63,7 +63,7 @@ abstract class AbstractCustomRequestEvent extends Event
 
     public function checkRouteContext($route): bool
     {
-        if (null == $this->request) {
+        if (null === $this->request) {
             return false;
         }
 

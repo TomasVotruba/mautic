@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Entity;
 
@@ -158,7 +158,7 @@ class DownloadRepository extends CommonRepository
         $q->andWhere('a.source = "page"')
             ->andWhere('a.code = 200');
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('a.date_download', ':date'))
                 ->setParameter('date', $dh->toUtcString());
@@ -199,7 +199,7 @@ class DownloadRepository extends CommonRepository
 
         $q->andWhere('a.code = 200');
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('a.date_download', ':date'))
                 ->setParameter('date', $dh->toUtcString());

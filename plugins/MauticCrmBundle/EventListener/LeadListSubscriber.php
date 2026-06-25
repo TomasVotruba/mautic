@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MauticPlugin\MauticCrmBundle\EventListener;
 
@@ -92,7 +92,7 @@ class LeadListSubscriber implements EventSubscriberInterface
         $filters = ($list instanceof LeadList) ? $list->getFilters() : $list['filters'];
 
         foreach ($filters as $filter) {
-            if ('integration_campaigns' == $filter['field']) {
+            if ('integration_campaigns' === $filter['field']) {
                 if (str_contains($filter['filter'], '::')) {
                     [$integrationName, $campaignId] = explode('::', $filter['filter']);
                 } else {

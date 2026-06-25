@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Entity;
 
@@ -181,7 +181,7 @@ class SubmissionRepository extends CommonRepository
     {
         $entity = parent::getEntity($id);
 
-        if (null != $entity) {
+        if (null !== $entity) {
             $form = $entity->getForm();
 
             // use DBAL to get entity fields
@@ -367,7 +367,7 @@ class SubmissionRepository extends CommonRepository
                 ->setParameter('page', (int) $pageId);
         }
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('s.date_submitted', ':date'))
                 ->setParameter('date', $dh->toUtcString());
@@ -400,7 +400,7 @@ class SubmissionRepository extends CommonRepository
                 ->setParameter('id', (int) $emailId);
         }
 
-        if (null != $fromDate) {
+        if (null !== $fromDate) {
             $dh = new DateTimeHelper($fromDate);
             $q->andWhere($q->expr()->gte('s.date_submitted', ':date'))
                 ->setParameter('date', $dh->toUtcString());

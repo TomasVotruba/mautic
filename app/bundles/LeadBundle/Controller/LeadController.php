@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Controller;
 
@@ -126,7 +126,7 @@ class LeadController extends FormController
         $session->set('mautic.lead.indexmode', $indexMode);
 
         $anonymousShowing = false;
-        if ('list' != $indexMode || ('list' == $indexMode && !str_contains($search, $anonymous))) {
+        if ('list' !== $indexMode || ('list' === $indexMode && !str_contains($search, $anonymous))) {
             // remove anonymous leads unless requested to prevent clutter
             $filter['force'] .= " !$anonymous";
         } elseif (str_contains($search, $anonymous) && !str_contains($search, '!'.$anonymous)) {
@@ -753,7 +753,7 @@ class LeadController extends FormController
 
                     // Upload avatar if applicable
                     $image = $form['preferred_profile_image']->getData();
-                    if ('custom' == $image) {
+                    if ('custom' === $image) {
                         // Check for a file
                         /** @var UploadedFile $file */
                         if ($file = $form['custom_avatar']->getData()) {
@@ -1043,7 +1043,7 @@ class LeadController extends FormController
                 'contentTemplate' => '@MauticLead/Lead/merge.html.twig',
                 'passthroughVars' => [
                     'route'  => false,
-                    'target' => ('update' == $tmpl) ? '.lead-merge-options' : null,
+                    'target' => ('update' === $tmpl) ? '.lead-merge-options' : null,
                 ],
             ]
         );
@@ -1119,7 +1119,7 @@ class LeadController extends FormController
                 'contentTemplate' => '@MauticLead/Lead/frequency.html.twig',
                 'passthroughVars' => [
                     'route'  => false,
-                    'target' => ('update' == $tmpl) ? '.lead-frequency-options' : null,
+                    'target' => ('update' === $tmpl) ? '.lead-frequency-options' : null,
                 ],
             ]
         );
@@ -1273,7 +1273,7 @@ class LeadController extends FormController
         $model = $this->getModel('lead');
         $lead  = $model->getEntity($objectId);
 
-        if (null != $lead
+        if (null !== $lead
             && $this->security->hasEntityAccess(
                 'lead:leads:editown',
                 'lead:leads:editother',
@@ -1311,7 +1311,7 @@ class LeadController extends FormController
         $model = $this->getModel('lead');
         $lead  = $model->getEntity($objectId);
 
-        if (null != $lead
+        if (null !== $lead
             && $this->security->hasEntityAccess(
                 'lead:leads:editown',
                 'lead:leads:editother',
@@ -1351,7 +1351,7 @@ class LeadController extends FormController
         $model = $this->getModel('lead');
         $lead  = $model->getEntity($objectId);
 
-        if (null != $lead
+        if (null !== $lead
             && $this->security->hasEntityAccess(
                 'lead:leads:editown',
                 'lead:leads:editother',
@@ -1891,7 +1891,7 @@ class LeadController extends FormController
             $this->throwAccessDenied();
         }
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             /** @var LeadModel $model */
             $model = $this->getModel('lead');
             $data  = $request->request->all()['lead_batch_owner'] ?? [];
@@ -2152,7 +2152,7 @@ class LeadController extends FormController
         $mine       = $this->translator->trans('mautic.core.searchcommand.ismine');
         $indexMode  = $session->get('mautic.lead.indexmode', 'list');
 
-        if ('list' != $indexMode || ('list' == $indexMode && !str_contains($search, $anonymous))) {
+        if ('list' !== $indexMode || ('list' === $indexMode && !str_contains($search, $anonymous))) {
             $filter['force'] .= " !$anonymous";
         }
 
@@ -2218,7 +2218,7 @@ class LeadController extends FormController
                 ],
             ];
         } else {
-            if ('list' != $indexMode || ('list' == $indexMode && !str_contains($search, $anonymous))) {
+            if ('list' !== $indexMode || ('list' === $indexMode && !str_contains($search, $anonymous))) {
                 // remove anonymous leads unless requested to prevent clutter
                 $filter['force'] .= " !$anonymous";
             }
@@ -2443,12 +2443,12 @@ class LeadController extends FormController
                         $scoreKey = ContactGroupPointsType::getFieldKey($group->getId());
                         $oldScore = $initData[$scoreKey] ?? null;
                         $newScore = $postData[$scoreKey];
-                        if (!is_null($oldScore) && is_null($newScore)) {
+                        if (null !== $oldScore && null === $newScore) {
                             // set 0 when the new score is not present, but the record exists
                             $newScore = 0;
                         }
 
-                        if (!is_null($newScore) && $newScore !== $oldScore) {
+                        if (null !== $newScore && $newScore !== $oldScore) {
                             $pointGroupModel->adjustPoints($lead, $group, $newScore, Lead::POINTS_SET);
                             $delta = $newScore - ($oldScore ?? 0);
 

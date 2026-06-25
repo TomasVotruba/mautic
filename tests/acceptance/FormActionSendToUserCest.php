@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Page\Acceptance\FormPage;
 use Step\Acceptance\FormStep;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -76,7 +76,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
                     if (!empty($properties['list'])) {
                         // Lookup/Select options
                         $fieldValues = FormFieldHelper::parseList($properties['list']);
-                    } elseif (!empty($properties) && 'boolean' == $fieldType) {
+                    } elseif (!empty($properties) && 'boolean' === $fieldType) {
                         // Boolean options
                         $fieldValues = [
                             0 => $properties['no'],
@@ -133,12 +133,12 @@ class CampaignEventLeadFieldValueType extends AbstractType
                 }
             }
 
-            $supportsValue   = !in_array($operator, ['empty', '!empty']);
-            $supportsChoices = !in_array($operator, ['empty', '!empty', 'regexp', '!regexp']);
+            $supportsValue   = !in_array($operator, ['empty', '!empty'], true);
+            $supportsChoices = !in_array($operator, ['empty', '!empty', 'regexp', '!regexp'], true);
 
             // Display selectbox for a field with choices, textbox for others
             if (!empty($fieldValues) && $supportsChoices) {
-                $isMultiple   = in_array($operator, [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY]);
+                $isMultiple   = in_array($operator, [OperatorOptions::INCLUDING_ANY, OperatorOptions::EXCLUDING_ANY], true);
                 $value        = $isMultiple && !is_array($data['value']) ? [$data['value']] : $data['value'];
                 $innerBuilder = $form->getConfig()->getFormFactory()->createNamedBuilder('value', ChoiceType::class, null, [
                     'choices'    => array_flip($fieldValues),
@@ -203,7 +203,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
                 'operator',
                 ChoiceType::class,
                 [
-                    'choices'           => $this->leadModel->getOperatorsForFieldType(null == $fieldType ? 'default' : $fieldType, ['date']),
+                    'choices'           => $this->leadModel->getOperatorsForFieldType(null === $fieldType ? 'default' : $fieldType, ['date']),
                     'label'             => 'mautic.lead.lead.submitaction.operator',
                     'label_attr'        => ['class' => 'control-label'],
                     'attr'              => [

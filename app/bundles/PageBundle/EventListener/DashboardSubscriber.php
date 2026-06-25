@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
@@ -57,7 +57,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
         $this->checkPermissions($event);
         $canViewOthers = $event->hasPermission('page:pages:viewother');
 
-        if ('page.hits.in.time' == $event->getType()) {
+        if ('page.hits.in.time' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 
@@ -84,7 +84,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('unique.vs.returning.leads' == $event->getType()) {
+        if ('unique.vs.returning.leads' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
                 $event->setTemplateData([
@@ -98,7 +98,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('dwell.times' == $event->getType()) {
+        if ('dwell.times' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
                 $event->setTemplateData([
@@ -112,7 +112,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('popular.pages' == $event->getType()) {
+        if ('popular.pages' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -156,7 +156,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('created.pages' == $event->getType()) {
+        if ('created.pages' === $event->getType()) {
             if (!$event->isCached()) {
                 $params = $event->getWidget()->getParams();
 
@@ -196,7 +196,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $event->stopPropagation();
         }
 
-        if ('device.granularity' == $event->getType()) {
+        if ('device.granularity' === $event->getType()) {
             $widget = $event->getWidget();
             $params = $widget->getParams();
 

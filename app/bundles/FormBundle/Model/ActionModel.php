@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\FormBundle\Model;
 
@@ -76,7 +76,7 @@ class ActionModel extends CommonFormModel
         foreach ($entities as $entity) {
             $properties = $entity->getProperties();
             foreach ($properties as $property) {
-                if (in_array($segmentId, $property)) {
+                if (in_array($segmentId, $property, true)) {
                     $dependents[] = $entity->getForm()->getId();
                 }
             }
@@ -134,7 +134,7 @@ class ActionModel extends CommonFormModel
         foreach ($entities as $entity) {
             $properties = $entity->getProperties();
             foreach ($properties as $property) {
-                if (in_array($tagName, $property)) {
+                if (in_array($tagName, $property, true)) {
                     $dependents[] = $entity->getForm()->getId();
                 }
             }

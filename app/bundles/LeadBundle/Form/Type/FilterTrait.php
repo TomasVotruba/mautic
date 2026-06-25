@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Form\Type;
 
@@ -87,7 +87,7 @@ trait FilterTrait
                 }
 
                 $customOptions['choices']                   = $options['lists'];
-                $customOptions['multiple']                  = in_array($data['operator'], ['in', '!in']);
+                $customOptions['multiple']                  = in_array($data['operator'], ['in', '!in'], true);
                 $customOptions['choice_translation_domain'] = false;
                 $type                                       = ChoiceType::class;
                 break;
@@ -205,7 +205,7 @@ trait FilterTrait
                 $type                                       = ChoiceType::class;
                 $customOptions['choices']                   = $options[$choiceKey];
                 $customOptions['choice_translation_domain'] = false;
-                $customOptions['multiple']                  = in_array($operator, ['in', '!in']);
+                $customOptions['multiple']                  = in_array($operator, ['in', '!in'], true);
 
                 if ($customOptions['multiple']) {
                     array_unshift($customOptions['choices'], ['' => '']);
@@ -254,7 +254,7 @@ trait FilterTrait
                     ]
                 );
 
-                if (in_array($operator, ['in', '!in'])) {
+                if (in_array($operator, ['in', '!in'], true)) {
                     $customOptions['multiple'] = true;
                     if (!isset($data['filter'])) {
                         $data['filter'] = [];
@@ -301,7 +301,7 @@ trait FilterTrait
         }
 
         $customOptions['constraints'] = [];
-        if (in_array($operator, ['empty', '!empty'])) {
+        if (in_array($operator, ['empty', '!empty'], true)) {
             $attr['disabled'] = 'disabled';
         } elseif ($operator) {
             $customOptions['constraints'][] = new NotBlank(
@@ -310,7 +310,7 @@ trait FilterTrait
                 ]
             );
 
-            if (in_array($operator, ['regexp', '!regexp']) && $this->connection) {
+            if (in_array($operator, ['regexp', '!regexp'], true) && $this->connection) {
                 // Let's add a custom valdiator to test the regex
                 $customOptions['constraints'][] =
                     new Callback(
@@ -333,7 +333,7 @@ trait FilterTrait
         }
 
         // @todo implement in UI
-        if (in_array($operator, ['between', '!between'])) {
+        if (in_array($operator, ['between', '!between'], true)) {
             $form->add(
                 'filter',
                 CollectionType::class,
@@ -353,7 +353,7 @@ trait FilterTrait
                 }
             }
 
-            if (in_array($data['operator'], ['empty', '!empty'])) {
+            if (in_array($data['operator'], ['empty', '!empty'], true)) {
                 // @see Symfony\Component\Form\Extension\Core\Type\ChoiceType::configureOptions
                 $data['filter'] = null;
             }

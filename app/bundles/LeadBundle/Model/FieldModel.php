@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Model;
 
@@ -773,8 +773,8 @@ class FieldModel extends FormModel
     {
         $fields = $this->getRepository()->findBy([], ['order' => 'ASC']);
         foreach ($fields as $field) {
-            if (in_array($field->getId(), $list)) {
-                $order = ((int) array_search($field->getId(), $list) + $start);
+            if (in_array($field->getId(), $list, true)) {
+                $order = ((int) array_search($field->getId(), $list, true) + $start);
                 $field->setOrder($order);
                 $this->em->persist($field);
             }

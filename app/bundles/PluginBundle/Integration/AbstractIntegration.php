@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Mautic\PluginBundle\Integration;
 
@@ -688,7 +688,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             ];
         }
 
-        if ('GET' == $method && !empty($parameters)) {
+        if ('GET' === $method && !empty($parameters)) {
             $parameters = array_merge($settings['query'], $parameters);
             $query      = http_build_query($parameters);
             $url .= (!str_contains($url, '?')) ? '?'.$query : '&'.$query;
@@ -709,11 +709,11 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
         if ('GET' !== $method) {
             if (!empty($parameters)) {
-                if ('oauth1a' == $authType) {
+                if ('oauth1a' === $authType) {
                     $parameters = http_build_query($parameters);
                 }
                 if (!empty($settings['encode_parameters'])) {
-                    if ('json' == $settings['encode_parameters']) {
+                    if ('json' === $settings['encode_parameters']) {
                         // encode the arguments as JSON
                         $parameters = json_encode($parameters);
                         if (empty($settings['encoding_headers_set'])) {
@@ -979,7 +979,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         $authType = $this->getAuthenticationType();
 
-        if ('oauth2' == $authType) {
+        if ('oauth2' === $authType) {
             $callback    = $this->getAuthCallbackUrl();
             $clientIdKey = $this->getClientIdKey();
             $state       = $this->getAuthLoginState();
@@ -1114,7 +1114,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         // check to see if an entity exists
         $entity = $this->getIntegrationSettings();
-        if (null == $entity) {
+        if (null === $entity) {
             $entity = new Integration();
             $entity->setName($this->getName());
         }
@@ -1428,7 +1428,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         };
 
         if ($submittedObjects) {
-            if (in_array('company', $submittedObjects)) {
+            if (in_array('company', $submittedObjects, true)) {
                 // special handling for company fields
                 if (isset($availableIntegrationFields['company'])) {
                     $cleanup($submittedCompanyFields, $availableIntegrationFields['company'], $mauticCompanyFields, 'companyFields');
@@ -1477,7 +1477,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             if ('leadFields' === $fieldType) {
                 if ((is_array($details) && !empty($details['required'])) || 'email' === $field
                     || (isset($details['optionLabel'])
-                        && 'email' == strtolower(
+                        && 'email' === strtolower(
                             $details['optionLabel']
                         ))
                 ) {
@@ -1628,10 +1628,10 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         // Glean supported fields from what was returned by the integration
         $gleanedData = $data;
 
-        if (null == $object) {
+        if (null === $object) {
             $object = 'lead';
         }
-        if ('company' == $object) {
+        if ('company' === $object) {
             if (!isset($config['companyFields'])) {
                 $config = $this->mergeConfigToFeatureSettings($config);
 
@@ -1642,7 +1642,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
             $fields = $config['companyFields'];
         }
-        if ('lead' == $object) {
+        if ('lead' === $object) {
             if (!isset($config['leadFields'])) {
                 $config = $this->mergeConfigToFeatureSettings($config);
 
@@ -1729,7 +1729,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         }
 
         // Check for activity while here
-        if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures())) {
+        if (null !== $identifiers && in_array('public_activity', $this->getSupportedFeatures(), true)) {
             $this->getPublicActivity($identifiers, $leadSocialCache[$this->getName()]);
         }
 
@@ -1776,7 +1776,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         if (isset($config['config'])
             && (empty($config['integration'])
                 || (!empty($config['integration'])
-                    && $config['integration'] == $this->getName()))
+                    && $config['integration'] === $this->getName()))
         ) {
             $featureSettings = array_merge($featureSettings, $config['config']);
         }
@@ -1906,7 +1906,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return 200 == $retcode;
+        return 200 === $retcode;
     }
 
     /**
@@ -1987,7 +1987,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             }
         }
 
-        $logger->error('INTEGRATION ERROR: '.$this->getName().' - '.(('dev' == MAUTIC_ENV) ? (string) $e : $e->getMessage()));
+        $logger->error('INTEGRATION ERROR: '.$this->getName().' - '.(('dev' === MAUTIC_ENV) ? (string) $e : $e->getMessage()));
     }
 
     /**
@@ -2015,7 +2015,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
      */
     public function getFormNotes($section)
     {
-        if ('leadfield_match' == $section) {
+        if ('leadfield_match' === $section) {
             return ['mautic.integration.form.field_match_notes', 'info'];
         }
 
