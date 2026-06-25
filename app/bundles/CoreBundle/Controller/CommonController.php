@@ -202,10 +202,8 @@ class CommonController extends AbstractController implements MauticController
     /**
      * Determines if a redirect response should be returned or a Json response directing the ajax call to force a page
      * refresh.
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function delegateRedirect($url): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+    public function delegateRedirect($url): JsonResponse|RedirectResponse
     {
         $request = $this->getCurrentRequest();
 

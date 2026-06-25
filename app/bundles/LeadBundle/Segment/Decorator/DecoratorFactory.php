@@ -25,7 +25,7 @@ class DecoratorFactory
     /**
      * @return FilterDecoratorInterface
      */
-    public function getDecoratorForFilter(ContactSegmentFilterCrate $contactSegmentFilterCrate): \Mautic\LeadBundle\Segment\Decorator\FilterDecoratorInterface|\Mautic\LeadBundle\Segment\Decorator\DateCompanyDecorator|\Mautic\LeadBundle\Segment\Decorator\CustomMappedDecorator|\Mautic\LeadBundle\Segment\Decorator\CompanyDecorator|\Mautic\LeadBundle\Segment\Decorator\BaseDecorator
+    public function getDecoratorForFilter(ContactSegmentFilterCrate $contactSegmentFilterCrate): FilterDecoratorInterface|DateCompanyDecorator|CustomMappedDecorator|CompanyDecorator|BaseDecorator
     {
         $decoratorEvent = new LeadListFiltersDecoratorDelegateEvent($contactSegmentFilterCrate);
 

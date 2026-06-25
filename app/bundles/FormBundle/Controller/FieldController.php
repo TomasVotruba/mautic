@@ -57,7 +57,7 @@ class FieldController extends CommonFormController
      *
      * @return Response
      */
-    public function newAction(Request $request, Environment $twig): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+    public function newAction(Request $request, Environment $twig): JsonResponse|Response
     {
         $success = 0;
         $valid   = $cancelled   = false;
@@ -232,7 +232,7 @@ class FieldController extends CommonFormController
      *
      * @return Response
      */
-    public function editAction(Request $request, Environment $twig, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+    public function editAction(Request $request, Environment $twig, $objectId): JsonResponse|Response
     {
         $session   = $request->getSession();
         $method    = $request->getMethod();

@@ -80,7 +80,7 @@ class CorePermissions implements ResetInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function getPermissionObject($bundle, $throwException = true): false|\Mautic\CoreBundle\Security\Permissions\AbstractPermissions
+    public function getPermissionObject($bundle, $throwException = true): false|AbstractPermissions
     {
         if (empty($bundle)) {
             throw new \InvalidArgumentException("Bundle and permission type must be specified. {$bundle} given.");

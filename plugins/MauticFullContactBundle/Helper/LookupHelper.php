@@ -165,7 +165,7 @@ class LookupHelper
      *
      * @return bool|FullContact_Company|FullContact_Person
      */
-    protected function getFullContact($person = true): false|\MauticPlugin\MauticFullContactBundle\Services\FullContact_Person|\MauticPlugin\MauticFullContactBundle\Services\FullContact_Company
+    protected function getFullContact($person = true): false|FullContact_Person|FullContact_Company
     {
         if (!$this->integration || !$this->integration->getIntegrationSettings()->getIsPublished()) {
             return false;

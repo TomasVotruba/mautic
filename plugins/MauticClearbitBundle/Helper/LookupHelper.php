@@ -147,7 +147,7 @@ class LookupHelper
      *
      * @return bool|Clearbit_Company|Clearbit_Person
      */
-    protected function getClearbit($person = true): false|\MauticPlugin\MauticClearbitBundle\Services\Clearbit_Person|\MauticPlugin\MauticClearbitBundle\Services\Clearbit_Company
+    protected function getClearbit($person = true): false|Clearbit_Person|Clearbit_Company
     {
         if (!$this->integration || !$this->integration->getIntegrationSettings()->getIsPublished()) {
             return false;

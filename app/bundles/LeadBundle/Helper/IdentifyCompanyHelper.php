@@ -116,8 +116,6 @@ class IdentifyCompanyHelper
      * Checks if email address' domain has a DNS MX record. Returns the domain if found.
      *
      * @param string $email
-     *
-     * @return string|false
      */
     protected static function domainExists($email): false|string
     {

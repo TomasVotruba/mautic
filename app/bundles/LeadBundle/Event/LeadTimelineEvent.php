@@ -252,8 +252,6 @@ class LeadTimelineEvent extends Event
 
     /**
      * Get the max number of pages for pagination.
-     *
-     * @return float|int
      */
     public function getMaxPage(): int|float
     {

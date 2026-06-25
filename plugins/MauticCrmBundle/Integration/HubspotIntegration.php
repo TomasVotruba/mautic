@@ -348,9 +348,6 @@ class HubspotIntegration extends CrmAbstractIntegration
         }
     }
 
-    /**
-     * @return array
-     */
     public function amendLeadDataBeforeMauticPopulate($data, $object): array
     {
         if (!isset($data['properties'])) {
@@ -562,8 +559,6 @@ class HubspotIntegration extends CrmAbstractIntegration
     /**
      * @param Lead  $lead
      * @param array $config
-     *
-     * @return array|bool
      */
     public function pushLead($lead, $config = []): array|bool
     {

@@ -306,8 +306,6 @@ class IntegrationEntityRepository extends CommonRepository
 
     /**
      * @param int $limit
-     *
-     * @return array|int
      */
     public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead'): int|array
     {

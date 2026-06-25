@@ -1030,8 +1030,6 @@ class SugarcrmIntegration extends CrmAbstractIntegration
     /**
      * @param Lead  $lead
      * @param array $config
-     *
-     * @return array|bool
      */
     public function pushLead($lead, $config = []): array|bool
     {

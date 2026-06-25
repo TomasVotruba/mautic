@@ -460,11 +460,9 @@ class SubmissionModel extends CommonFormModel
     }
 
     /**
-     * @return StreamedResponse|Response
-     *
      * @throws \Exception
      */
-    public function exportResults($format, $form, $queryArgs): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
+    public function exportResults($format, $form, $queryArgs): StreamedResponse|Response
     {
         $viewOnlyFields              = $this->formModel->getCustomComponents()['viewOnlyFields'];
         $queryArgs['viewOnlyFields'] = $viewOnlyFields;
@@ -571,11 +569,9 @@ class SubmissionModel extends CommonFormModel
      * @param object               $page
      * @param array<string, mixed> $queryArgs
      *
-     * @return StreamedResponse|Response
-     *
      * @throws \Exception
      */
-    public function exportResultsForPage($format, $page, $queryArgs): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
+    public function exportResultsForPage($format, $page, $queryArgs): StreamedResponse|Response
     {
         $results    = $this->getEntitiesByPage($queryArgs);
         $results    = $results['results'];

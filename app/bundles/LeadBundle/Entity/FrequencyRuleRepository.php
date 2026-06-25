@@ -167,8 +167,6 @@ class FrequencyRuleRepository extends CommonRepository
      * @param string $statTable
      * @param string $statContactColumn
      * @param string $statSentColumn
-     *
-     * @return array
      */
     private function getDefaultFrequencyRuleViolations(
         array $leadIds,

@@ -31,8 +31,6 @@ class DoNotContactRepository extends CommonRepository
      * @param int|null                            $reason
      * @param array<int,int|string>|int|true|null $listId
      * @param bool                                $combined
-     *
-     * @return array|int
      */
     public function getCount($channel = null, $ids = null, $reason = null, $listId = null, ?ChartQuery $chartQuery = null, $combined = false): array|int
     {

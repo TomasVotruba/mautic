@@ -1008,8 +1008,6 @@ class ZohoIntegration extends CrmAbstractIntegration
     /**
      * @param Lead|array $lead
      * @param array      $config
-     *
-     * @return array|bool
      */
     public function pushLead($lead, $config = []): array|bool
     {

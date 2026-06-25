@@ -738,9 +738,6 @@ class TrackableModel extends AbstractCommonModel
         return $content;
     }
 
-    /**
-     * @return array
-     */
     protected function getContactFieldUrlTokens(): array
     {
         if (null !== $this->contactFieldUrlTokens) {

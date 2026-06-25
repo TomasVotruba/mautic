@@ -337,7 +337,7 @@ class DateTimeHelper
      *
      * @return string
      */
-    public function guessTimezoneFromOffset($offset = 0): string|null|false
+    public function guessTimezoneFromOffset($offset = 0): string|false|null
     {
         // Sanitize input
         $offset = (int) $offset;
