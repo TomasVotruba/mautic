@@ -158,7 +158,7 @@ class ContactLimiter
      *
      * @throws \Exception
      */
-    public function getCampaignLimitRemaining()
+    public function getCampaignLimitRemaining(): float|int
     {
         if (!$this->hasCampaignLimit()) {
             throw new \Exception('Campaign Limit was not set');

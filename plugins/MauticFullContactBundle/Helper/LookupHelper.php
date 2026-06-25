@@ -126,7 +126,7 @@ class LookupHelper
         }
     }
 
-    public function validateRequest($oid)
+    public function validateRequest($oid): array|false
     {
         // prefix#entityId#hour#userId#nonce
         [$w, $id, $hour, $uid, $nonce]     = explode('#', $oid, 5);
@@ -162,10 +162,8 @@ class LookupHelper
 
     /**
      * @param bool $person
-     *
-     * @return bool|FullContact_Company|FullContact_Person
      */
-    protected function getFullContact($person = true)
+    protected function getFullContact($person = true): false|FullContact_Person|FullContact_Company
     {
         if (!$this->integration || !$this->integration->getIntegrationSettings()->getIsPublished()) {
             return false;

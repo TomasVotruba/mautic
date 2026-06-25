@@ -1586,7 +1586,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         array $to = [],
         array $cc = [],
         array $bcc = [],
-    ) {
+    ): false|array {
         if (!$emailId = $email->getId()) {
             return false;
         }
@@ -2237,7 +2237,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $tokens = [],
         $assetAttachments = [],
         $saveStat = true,
-    ) {
+    ): false|array {
         if (!$emailId = $email->getId()) {
             return false;
         }

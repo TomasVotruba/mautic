@@ -154,10 +154,8 @@ class InputHelper
      * Cleans value by HTML-escaping '"<>& and characters with ASCII value less than 32.
      *
      * @param bool|false $urldecode
-     *
-     * @return mixed|string
      */
-    public static function clean($value, $urldecode = false)
+    public static function clean($value, $urldecode = false): array|string|false
     {
         if (is_array($value)) {
             foreach ($value as &$v) {
@@ -220,7 +218,7 @@ class InputHelper
      *
      * @return string
      */
-    public static function filename($value, $extension = null)
+    public static function filename($value, $extension = null): string|array|null
     {
         $value = str_replace(' ', '_', $value);
 
@@ -258,10 +256,8 @@ class InputHelper
      * @param mixed              $defaultProtocol
      * @param array<string>      $removeQuery
      * @param bool|false         $ignoreFragment
-     *
-     * @return mixed|string
      */
-    public static function url($value, $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], $ignoreFragment = false)
+    public static function url($value, $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], $ignoreFragment = false): array|string|false
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -344,7 +340,7 @@ class InputHelper
      *
      * @return array|mixed|string
      */
-    public static function cleanArray($value, $urldecode = false)
+    public static function cleanArray($value, $urldecode = false): array
     {
         $value = self::clean($value, $urldecode);
 
