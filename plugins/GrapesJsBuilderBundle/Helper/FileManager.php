@@ -59,7 +59,7 @@ class FileManager
     /**
      * @param string $fileName
      */
-    public function getCompleteFilePath($fileName): string
+    public function getCompleteFilePath(string $fileName): string
     {
         $uploadDir = $this->getUploadDir();
 
@@ -71,7 +71,7 @@ class FileManager
         return $this->getGrapesJsImagesPath(true);
     }
 
-    public function getFullUrl($fileName, $separator = '/'): string
+    public function getFullUrl(string $fileName, string $separator = '/'): string
     {
         // if a static_url (CDN) is configured use that, otherwise use the site url
         $url = $this->coreParametersHelper->get('static_url') ?? $this->coreParametersHelper->get('site_url');
@@ -86,7 +86,7 @@ class FileManager
      * @param bool   $fullPath
      * @param string $separator
      */
-    private function getGrapesJsImagesPath($fullPath = false, $separator = '/'): string
+    private function getGrapesJsImagesPath($fullPath = false, string $separator = '/'): string
     {
         return $this->pathsHelper->getSystemPath('images', $fullPath)
             .$separator

@@ -113,7 +113,7 @@ class oAuthHelper
     /**
      * Build base string for OAuth 1 signature signing.
      */
-    private function buildBaseString($baseURI, $method, $params): string
+    private function buildBaseString($baseURI, string $method, $params): string
     {
         $r = $this->normalizeParameters($params);
 

@@ -224,7 +224,7 @@ class MessageModel extends FormModel implements AjaxLookupModelInterface, Global
      *
      * @return string|null
      */
-    public function getChannelName($id, $entityName, $nameColumn = 'name')
+    public function getChannelName($id, $entityName, ?string $nameColumn = 'name')
     {
         if (!$id || !$entityName || !$nameColumn) {
             return null;

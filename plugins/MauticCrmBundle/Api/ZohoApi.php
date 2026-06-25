@@ -159,7 +159,7 @@ class ZohoApi extends CrmApi
      *
      * @throws ApiErrorException
      */
-    public function getSearchRecords($searchColumn, $searchValue, $object = 'Leads')
+    public function getSearchRecords(string $searchColumn, string $searchValue, string $object = 'Leads')
     {
         $parameters = [
             'criteria' => '('.$searchColumn.':equals:'.$searchValue.')',

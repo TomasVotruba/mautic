@@ -335,7 +335,7 @@ class SubmissionRepository extends CommonRepository
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getMostSubmitted($query, $limit = 10, $offset = 0, $column = 'fs.id', $as = 'submissions'): array
+    public function getMostSubmitted($query, $limit = 10, $offset = 0, string $column = 'fs.id', ?string $as = 'submissions'): array
     {
         $asSelect = ($as) ? ' as '.$as : '';
 
@@ -525,7 +525,7 @@ class SubmissionRepository extends CommonRepository
      * @param int    $formId
      * @param string $formAlias
      */
-    public function getResultsTableName($formId, $formAlias): string
+    public function getResultsTableName($formId, string $formAlias): string
     {
         return MAUTIC_TABLE_PREFIX.'form_results_'.$formId.'_'.$formAlias;
     }

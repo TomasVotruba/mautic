@@ -926,7 +926,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
     /**
      * Remove script from html.
      */
-    private function removeScriptTag($html): string
+    private function removeScriptTag(string $html): string
     {
         libxml_use_internal_errors(true);
         $dom = new \DOMDocument();
@@ -954,7 +954,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
     /**
      * Generate dom manipulation javascript to include all script.
      */
-    private function generateJsScript($html): string
+    private function generateJsScript(string $html): string
     {
         libxml_use_internal_errors(true);
         $dom = new \DOMDocument();

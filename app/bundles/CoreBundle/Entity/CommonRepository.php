@@ -655,7 +655,7 @@ class CommonRepository extends ServiceEntityRepository
      *
      * @return string|null
      */
-    public function getValue($id, $column)
+    public function getValue($id, string $column)
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
         $q->select($this->getTableAlias().'.'.$column)
@@ -689,7 +689,7 @@ class CommonRepository extends ServiceEntityRepository
      *
      * @return mixed[]
      */
-    public function getSimpleList(?CompositeExpression $expr = null, array $parameters = [], $labelColumn = null, $valueColumn = 'id', $extraColumns = null, $limit = 0): array
+    public function getSimpleList(?CompositeExpression $expr = null, array $parameters = [], $labelColumn = null, string $valueColumn = 'id', $extraColumns = null, $limit = 0): array
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 
@@ -1273,7 +1273,7 @@ class CommonRepository extends ServiceEntityRepository
         return true;
     }
 
-    protected function buildDbalJoinsFromAssociations(DbalQueryBuilder $q, $associations, $alias, array $allowed): bool
+    protected function buildDbalJoinsFromAssociations(DbalQueryBuilder $q, $associations, string $alias, array $allowed): bool
     {
         $joinAdded = false;
         foreach ($associations as $property => $association) {

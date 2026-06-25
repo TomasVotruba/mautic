@@ -238,7 +238,7 @@ class FormRepository extends CommonRepository
      * @param int    $formId
      * @param string $formAlias
      */
-    public function getResultsTableName($formId, $formAlias): string
+    public function getResultsTableName($formId, string $formAlias): string
     {
         return MAUTIC_TABLE_PREFIX.'form_results_'.$formId.'_'.$formAlias;
     }

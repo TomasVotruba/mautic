@@ -74,7 +74,7 @@ class SeriesPieChart extends AbstractChart implements ChartInterface
      *
      * @return string
      */
-    public function buildFullLabel($label, $value)
+    public function buildFullLabel(string $label, $value)
     {
         if (!$this->totalCount) {
             return $label;

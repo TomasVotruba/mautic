@@ -20,7 +20,7 @@ class SugarcrmApi extends CrmApi
      *
      * @throws ApiErrorException
      */
-    public function request($sMethod, $data = [], $method = 'GET', $object = null)
+    public function request(string $sMethod, $data = [], string $method = 'GET', $object = null)
     {
         if (!$object) {
             $object = $this->object;

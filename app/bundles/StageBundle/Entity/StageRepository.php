@@ -129,7 +129,7 @@ class StageRepository extends CommonRepository
      *
      * @return array
      */
-    public function getStages($user = false, $id = '')
+    public function getStages($user = false, string $id = '')
     {
         static $stages = [];
 

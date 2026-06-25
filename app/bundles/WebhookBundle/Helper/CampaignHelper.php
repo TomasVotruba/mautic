@@ -77,7 +77,7 @@ class CampaignHelper
      * @throws \InvalidArgumentException
      * @throws \OutOfRangeException
      */
-    private function makeRequest($url, $method, $timeout, array $headers, array $payload): void
+    private function makeRequest(string $url, $method, $timeout, array $headers, array $payload): void
     {
         switch ($method) {
             case 'get':

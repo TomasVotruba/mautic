@@ -65,7 +65,7 @@ class LeadSubscriber implements EventSubscriberInterface
      * @param string $eventTypeKey
      * @param string $eventTypeName
      */
-    private function addTimelineEvents(LeadTimelineEvent $event, $eventTypeKey, $eventTypeName): void
+    private function addTimelineEvents(LeadTimelineEvent $event, string $eventTypeKey, $eventTypeName): void
     {
         $event->addEventType($eventTypeKey, $eventTypeName);
         $event->addSerializerGroup('campaignList');

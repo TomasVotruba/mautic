@@ -505,7 +505,7 @@ class HitRepository extends CommonRepository
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getMostVisited($query, $limit = 10, $offset = 0, $column = 'p.hits', $as = ''): array
+    public function getMostVisited($query, $limit = 10, $offset = 0, string $column = 'p.hits', $as = ''): array
     {
         if ($as) {
             $as = ' as "'.$as.'"';

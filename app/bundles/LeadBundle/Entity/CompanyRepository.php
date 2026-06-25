@@ -396,7 +396,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getCompaniesByGroup($query, $column): array
+    public function getCompaniesByGroup($query, string $column): array
     {
         $query->select('count(comp.id) as companies, '.$column)
             ->addGroupBy($column)
@@ -432,7 +432,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         ?CompositeExpression $expr = null,
         array $parameters = [],
         $labelColumn = null,
-        $valueColumn = 'id',
+        string $valueColumn = 'id',
         int $limit = 10,
         int $start = 0,
     ): array {

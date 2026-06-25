@@ -121,7 +121,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      * @param string $prefix
      * @param string $categoryPrefix
      */
-    public function addCategoryLeftJoin(QueryBuilder $queryBuilder, $prefix, $categoryPrefix = self::CATEGORY_PREFIX): self
+    public function addCategoryLeftJoin(QueryBuilder $queryBuilder, string $prefix, string $categoryPrefix = self::CATEGORY_PREFIX): self
     {
         if ($this->usesColumnWithPrefix($categoryPrefix)) {
             $queryBuilder->leftJoin($prefix, MAUTIC_TABLE_PREFIX.'categories', $categoryPrefix, $categoryPrefix.'.id = '.$prefix.'.category_id');
@@ -136,7 +136,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      * @param string $prefix
      * @param string $leadPrefix
      */
-    public function addLeadLeftJoin(QueryBuilder $queryBuilder, $prefix, $leadPrefix = self::CONTACT_PREFIX): self
+    public function addLeadLeftJoin(QueryBuilder $queryBuilder, string $prefix, string $leadPrefix = self::CONTACT_PREFIX): self
     {
         if ($this->usesColumnWithPrefix($leadPrefix)
             || $this->usesColumnWithPrefix(self::IP_ADDRESS_PREFIX)
@@ -157,7 +157,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      * @param string $prefix
      * @param string $ipPrefix
      */
-    public function addIpAddressLeftJoin(QueryBuilder $queryBuilder, $prefix, $ipPrefix = self::IP_ADDRESS_PREFIX): self
+    public function addIpAddressLeftJoin(QueryBuilder $queryBuilder, string $prefix, string $ipPrefix = self::IP_ADDRESS_PREFIX): self
     {
         if ($this->usesColumnWithPrefix($ipPrefix)) {
             $queryBuilder->leftJoin($prefix, MAUTIC_TABLE_PREFIX.'ip_addresses', $ipPrefix, $ipPrefix.'.id = '.$prefix.'.ip_id');
@@ -173,7 +173,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      * @param string $ipPrefix
      * @param string $leadPrefix
      */
-    public function addLeadIpAddressLeftJoin(QueryBuilder $queryBuilder, $ipXrefPrefix = 'lip', $ipPrefix = self::IP_ADDRESS_PREFIX, $leadPrefix = self::CONTACT_PREFIX): self
+    public function addLeadIpAddressLeftJoin(QueryBuilder $queryBuilder, string $ipXrefPrefix = 'lip', $ipPrefix = self::IP_ADDRESS_PREFIX, string $leadPrefix = self::CONTACT_PREFIX): self
     {
         if ($this->usesColumnWithPrefix($ipPrefix)) {
             $this->addIpAddressLeftJoin($queryBuilder, $ipXrefPrefix, $ipPrefix);
@@ -207,7 +207,7 @@ class ReportGeneratorEvent extends AbstractReportEvent
      *
      * @param string $prefix
      */
-    public function addChannelLeftJoins(QueryBuilder $queryBuilder, $prefix): self
+    public function addChannelLeftJoins(QueryBuilder $queryBuilder, string $prefix): self
     {
         foreach ($this->channelListHelper->getChannels() as $channel => $details) {
             if (!array_key_exists(ReportModel::CHANNEL_FEATURE, $details)) {

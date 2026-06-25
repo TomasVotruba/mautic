@@ -34,7 +34,7 @@ trait EntityContactsTrait
         $entityId,
         $page,
         $permission,
-        $sessionVar,
+        string $sessionVar,
         $entityJoinTable,
         $dncChannel = null,
         $entityIdColumnName = 'id',

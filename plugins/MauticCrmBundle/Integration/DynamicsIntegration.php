@@ -879,7 +879,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
         }
     }
 
-    private function getExistingRecord($seachColumn, $searchValue, $object = 'contacts')
+    private function getExistingRecord(string $seachColumn, string $searchValue, $object = 'contacts')
     {
         $availableFields    = $this->getAvailableLeadFields();
         $oparams['$select'] = implode(',', array_keys($availableFields[$object]));

@@ -526,7 +526,7 @@ class ImportController extends FormController
      *
      * @return int
      */
-    protected function getLineCount($object)
+    protected function getLineCount(string $object)
     {
         $progress = $this->requestStack->getSession()->get('mautic.'.$object.'.import.progress', [0, 0]);
 
@@ -592,7 +592,7 @@ class ImportController extends FormController
      *
      * @return string
      */
-    protected function getImportFileName($object)
+    protected function getImportFileName(string $object)
     {
         // Return the dir path from session if exists
         if ($fileName = $this->requestStack->getSession()->get('mautic.'.$object.'.import.file')) {

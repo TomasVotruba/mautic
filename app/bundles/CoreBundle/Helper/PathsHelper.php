@@ -149,7 +149,7 @@ class PathsHelper
      *
      * @throws \InvalidArgumentException
      */
-    public function getSystemPath($name, $fullPath = false)
+    public function getSystemPath(string $name, $fullPath = false)
     {
         switch ($name) {
             case 'currentTheme':

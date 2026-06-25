@@ -50,7 +50,7 @@ class BundleHelper
      *
      * @throws \Exception
      */
-    public function getBundleConfig($bundleName, $configKey = '', $includePlugins = false)
+    public function getBundleConfig($bundleName, ?string $configKey = '', $includePlugins = false)
     {
         // get the configs
         $configFiles = $this->getMauticBundles($includePlugins);

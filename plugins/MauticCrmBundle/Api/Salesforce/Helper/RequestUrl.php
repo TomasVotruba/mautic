@@ -9,7 +9,7 @@ class RequestUrl
      *
      * @return string
      */
-    public static function get($apiUrl, $queryUrl, $operation = null, $object = null)
+    public static function get(string $apiUrl, ?string $queryUrl, $operation = null, $object = null)
     {
         if ($queryUrl) {
             return ($operation) ? sprintf($queryUrl.'/%s', $operation) : $queryUrl;

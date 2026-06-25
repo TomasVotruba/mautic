@@ -1154,7 +1154,7 @@ class SugarcrmIntegration extends CrmAbstractIntegration
      * @param array  $keys
      * @param string $object
      */
-    public function cleanSugarData($fields, $keys, $object): array
+    public function cleanSugarData($fields, $keys, string $object): array
     {
         $leadFields = [];
 
@@ -1491,7 +1491,7 @@ class SugarcrmIntegration extends CrmAbstractIntegration
         return null;
     }
 
-    protected function buildCompositeBody(&$mauticData, $availableFields, $fieldsToUpdateInSugarUpdate, $object, $lead, $onwerAssignedUserIdByEmail = null, $objectId = null)
+    protected function buildCompositeBody(&$mauticData, $availableFields, $fieldsToUpdateInSugarUpdate, string $object, $lead, $onwerAssignedUserIdByEmail = null, $objectId = null)
     {
         $body = [];
         if (isset($lead['email']) && !empty($lead['email'])) {

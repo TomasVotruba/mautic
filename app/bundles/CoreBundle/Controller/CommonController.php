@@ -423,7 +423,7 @@ class CommonController extends AbstractController implements MauticController
      *
      * @return Response
      */
-    public function executeAction(Request $request, $objectAction, $objectId = 0, $objectSubId = 0, $objectModel = '')
+    public function executeAction(Request $request, string $objectAction, $objectId = 0, $objectSubId = 0, $objectModel = '')
     {
         if (method_exists($this, $objectAction.'Action')) {
             return $this->forward(
@@ -641,7 +641,7 @@ class CommonController extends AbstractController implements MauticController
     /**
      * @param array|\Iterator $toExport
      */
-    public function exportResultsAs($toExport, $type, $filename, ExportHelper $exportHelper): StreamedResponse
+    public function exportResultsAs($toExport, string $type, $filename, ExportHelper $exportHelper): StreamedResponse
     {
         if (!in_array($type, $exportHelper->getSupportedExportTypes())) {
             throw new BadRequestHttpException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type]));

@@ -131,7 +131,7 @@ class OwnerSubscriber implements EventSubscriberInterface
      *
      * @param string $field
      */
-    private function buildLabel($field): string
+    private function buildLabel(string $field): string
     {
         return sprintf(
             '%s: %s',

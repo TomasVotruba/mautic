@@ -638,7 +638,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
      *
      * @return mixed|string|ResponseInterface
      */
-    public function makeRequest($url, $parameters = [], $method = 'GET', $settings = [])
+    public function makeRequest(string $url, $parameters = [], $method = 'GET', $settings = [])
     {
         // If not authorizing the session itself, check isAuthorized which will refresh tokens if applicable
         if (empty($settings['authorize_session'])) {
@@ -1808,7 +1808,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
      *
      * @return mixed
      */
-    public function matchFieldName($field, $subfield = '')
+    public function matchFieldName($field, ?string $subfield = '')
     {
         if (!empty($field) && !empty($subfield)) {
             return $subfield.ucfirst($field);

@@ -32,7 +32,7 @@ class CommonEntity implements \Stringable
      *
      * @throws \InvalidArgumentException
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, $arguments)
     {
         if (str_starts_with($name, 'is') && method_exists($this, 'get'.ucfirst($name))) {
             return $this->{'get'.ucfirst($name)}();
