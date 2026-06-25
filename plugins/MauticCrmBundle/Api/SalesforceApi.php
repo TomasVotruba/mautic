@@ -620,9 +620,6 @@ class SalesforceApi extends CrmApi
         return isset($matches[1]) ? [$matches[1], $matches[2]] : [null, null];
     }
 
-    /**
-     * @return bool|float|mixed|string
-     */
     private function escapeQueryValue($value): string|array
     {
         // SF uses backslashes as escape delimeter
@@ -633,9 +630,7 @@ class SalesforceApi extends CrmApi
         $value = $this->integration->cleanPushData($value);
 
         // Escape single quotes
-        $value = str_replace("'", "\'", $value);
-
-        return $value;
+        return str_replace("'", "\'", $value);
     }
 
     public function isOptOutFieldAccessible(): bool

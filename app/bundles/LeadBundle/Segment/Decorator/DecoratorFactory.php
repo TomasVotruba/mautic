@@ -22,7 +22,7 @@ class DecoratorFactory
     ) {
     }
 
-    public function getDecoratorForFilter(ContactSegmentFilterCrate $contactSegmentFilterCrate): FilterDecoratorInterface|DateCompanyDecorator|CustomMappedDecorator|CompanyDecorator|BaseDecorator
+    public function getDecoratorForFilter(ContactSegmentFilterCrate $contactSegmentFilterCrate): FilterDecoratorInterface
     {
         $decoratorEvent = new LeadListFiltersDecoratorDelegateEvent($contactSegmentFilterCrate);
 

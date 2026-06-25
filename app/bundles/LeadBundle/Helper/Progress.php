@@ -143,8 +143,6 @@ class Progress
 
     /**
      * Counts percentage of the progress.
-     *
-     * @return int
      */
     public function toPercent(): float|int
     {

@@ -254,12 +254,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
         }
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    public function sanitizeValue($value): int|string|array
+    public function sanitizeValue(mixed $value): int|string|array
     {
         $valueType = gettype($value);
         $value     = str_replace(['"', '>', '<'], ['&quot;', '&gt;', '&lt;'], strip_tags(rawurldecode($value)));

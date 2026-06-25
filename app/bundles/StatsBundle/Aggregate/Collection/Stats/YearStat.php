@@ -45,9 +45,6 @@ class YearStat implements StatInterface
         return $this->stats;
     }
 
-    /**
-     * @return int
-     */
     public function getSum(): int|float
     {
         $sum = 0;

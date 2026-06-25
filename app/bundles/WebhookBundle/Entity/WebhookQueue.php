@@ -92,9 +92,6 @@ class WebhookQueue
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPayload(): string|false|null
     {
         if (null === $this->payloadCompressed) {

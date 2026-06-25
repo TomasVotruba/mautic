@@ -302,10 +302,8 @@ class TrackableModel extends AbstractCommonModel
      *
      * @param string $content
      * @param string $type    html|text
-     *
-     * @return string
      */
-    protected function prepareContentWithTrackableTokens($content, $type): string|array|null
+    protected function prepareContentWithTrackableTokens($content, $type): string
     {
         if (empty($content)) {
             return '';
@@ -652,21 +650,17 @@ class TrackableModel extends AbstractCommonModel
 
     /**
      * Build query string while accounting for tokens that include an equal sign.
-     *
-     * @return mixed|string
      */
-    protected function httpBuildQuery(array $queryParts): string|array|null
+    protected function httpBuildQuery(array $queryParts): string
     {
         $query = http_build_query($queryParts);
 
         // http_build_query likely encoded tokens so that has to be fixed so they get replaced
-        $query = preg_replace_callback(
+        return preg_replace_callback(
             '/%7B(\S+?)%7D/i',
             fn ($matches): string => urldecode($matches[0]),
             $query
         );
-
-        return $query;
     }
 
     private function isContactFieldToken($token): bool

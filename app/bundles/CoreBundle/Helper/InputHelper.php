@@ -215,10 +215,8 @@ class InputHelper
      *
      * @param string $value
      * @param string $extension
-     *
-     * @return string
      */
-    public static function filename($value, $extension = null): string|array|null
+    public static function filename($value, $extension = null): string
     {
         $value = str_replace(' ', '_', $value);
 
@@ -337,8 +335,6 @@ class InputHelper
      * Returns a clean array.
      *
      * @param bool|false $urldecode
-     *
-     * @return array|mixed|string
      */
     public static function cleanArray($value, $urldecode = false): array
     {

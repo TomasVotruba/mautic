@@ -584,8 +584,6 @@ class Import extends FormEntity
 
     /**
      * Returns run time in seconds.
-     *
-     * @return int
      */
     public function getRunTimeSeconds(): int|float
     {

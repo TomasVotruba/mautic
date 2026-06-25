@@ -2299,9 +2299,6 @@ class SalesforceIntegration extends CrmAbstractIntegration
         }
     }
 
-    /**
-     * @return bool|mixed|string
-     */
     protected function setContactToSync(&$checkEmailsInSF, $lead): false|string
     {
         $key = $this->getSyncKey($lead['email']);
@@ -2317,9 +2314,6 @@ class SalesforceIntegration extends CrmAbstractIntegration
         return $key;
     }
 
-    /**
-     * @return int
-     */
     protected function getSalesforceSyncLimit($currentContactList, $limit): float|int
     {
         return $limit - count($currentContactList);

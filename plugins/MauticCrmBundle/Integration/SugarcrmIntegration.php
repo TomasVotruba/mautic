@@ -406,8 +406,6 @@ class SugarcrmIntegration extends CrmAbstractIntegration
     /**
      * @param array      $params
      * @param array|null $query
-     *
-     * @return int|null
      */
     public function getCompanies($params = [], $query = null, $executed = null): int|float|null
     {

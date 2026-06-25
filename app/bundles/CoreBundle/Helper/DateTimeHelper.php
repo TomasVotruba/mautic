@@ -332,8 +332,6 @@ class DateTimeHelper
      * Tries to guess timezone from timezone offset.
      *
      * @param int $offset in seconds
-     *
-     * @return string
      */
     public function guessTimezoneFromOffset($offset = 0): string|false|null
     {

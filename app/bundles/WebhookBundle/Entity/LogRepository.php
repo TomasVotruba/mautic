@@ -69,8 +69,6 @@ class LogRepository extends CommonRepository
      *
      * @param int $webhookId
      * @param int $limit
-     *
-     * @return float|null
      */
     public function getSuccessVsErrorStatusCodeRatio($webhookId, $limit): int|float|null
     {

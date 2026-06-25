@@ -655,8 +655,6 @@ class Mailbox
      *  deleted - this mail is flagged for deletion
      *  seen - this mail is flagged as already read
      *  draft - this mail is flagged as being a draft
-     *
-     * @return array
      */
     public function getMailsInfo(array $mailsIds): array|false
     {
