@@ -237,7 +237,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
         /**
          * @return array
          */
-        public static function prepareExceptionForOutput($exception)
+        public static function prepareExceptionForOutput($exception): false|array
         {
             $inline             = null;
             $logMessage         = null;

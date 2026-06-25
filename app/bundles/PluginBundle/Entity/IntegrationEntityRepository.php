@@ -309,7 +309,7 @@ class IntegrationEntityRepository extends CommonRepository
      *
      * @return array|int
      */
-    public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead')
+    public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead'): int|array
     {
         if ('company' == $internalEntity) {
             $joinTable = 'companies';

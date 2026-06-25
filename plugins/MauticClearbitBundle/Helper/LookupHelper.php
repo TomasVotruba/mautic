@@ -110,7 +110,7 @@ class LookupHelper
         }
     }
 
-    public function validateRequest($oid, $type)
+    public function validateRequest($oid, $type): array|false
     {
         // prefix#entityId#hour#userId#nonce
         [$w, $id, $hour, $uid, $nonce]     = explode('#', $oid, 5);
@@ -147,7 +147,7 @@ class LookupHelper
      *
      * @return bool|Clearbit_Company|Clearbit_Person
      */
-    protected function getClearbit($person = true)
+    protected function getClearbit($person = true): false|\MauticPlugin\MauticClearbitBundle\Services\Clearbit_Person|\MauticPlugin\MauticClearbitBundle\Services\Clearbit_Company
     {
         if (!$this->integration || !$this->integration->getIntegrationSettings()->getIsPublished()) {
             return false;

@@ -126,7 +126,7 @@ class PluginController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function configAction(Request $request, EntityManagerInterface $em, IntegrationHelper $integrationHelper, LoggerInterface $mauticLogger, $name, $activeTab = 'details-container', $page = 1)
+    public function configAction(Request $request, EntityManagerInterface $em, IntegrationHelper $integrationHelper, LoggerInterface $mauticLogger, $name, $activeTab = 'details-container', $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
             $this->throwAccessDenied();

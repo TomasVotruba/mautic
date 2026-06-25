@@ -126,7 +126,7 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function newAction(Request $request, FormFactoryInterface $formFactory)
+    public function newAction(Request $request, FormFactoryInterface $formFactory): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         // retrieve the entity
         $widget = new Widget();
@@ -192,7 +192,7 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function editAction(Request $request, FormFactoryInterface $formFactory, $objectId)
+    public function editAction(Request $request, FormFactoryInterface $formFactory, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('dashboard');
         \assert($model instanceof DashboardModel);

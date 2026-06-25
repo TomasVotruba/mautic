@@ -351,7 +351,7 @@ class HubspotIntegration extends CrmAbstractIntegration
     /**
      * @return array
      */
-    public function amendLeadDataBeforeMauticPopulate($data, $object)
+    public function amendLeadDataBeforeMauticPopulate($data, $object): array
     {
         if (!isset($data['properties'])) {
             return [];
@@ -565,7 +565,7 @@ class HubspotIntegration extends CrmAbstractIntegration
      *
      * @return array|bool
      */
-    public function pushLead($lead, $config = [])
+    public function pushLead($lead, $config = []): array|bool
     {
         $config = $this->mergeConfigToFeatureSettings($config);
 

@@ -314,7 +314,7 @@ class DateTimeHelper
      *
      * @return bool|string
      */
-    public function getTextDate($interval = null)
+    public function getTextDate($interval = null): string|false
     {
         if (null == $interval) {
             $interval = $this->getDiff('now', null, true);
@@ -337,7 +337,7 @@ class DateTimeHelper
      *
      * @return string
      */
-    public function guessTimezoneFromOffset($offset = 0)
+    public function guessTimezoneFromOffset($offset = 0): string|null|false
     {
         // Sanitize input
         $offset = (int) $offset;

@@ -1580,7 +1580,7 @@ class LeadController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function batchCampaignsAction(Request $request, MembershipManager $membershipManager, $objectId = 0)
+    public function batchCampaignsAction(Request $request, MembershipManager $membershipManager, $objectId = 0): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\CampaignBundle\Model\CampaignModel $campaignModel */
         $campaignModel = $this->getModel('campaign');
@@ -1702,7 +1702,7 @@ class LeadController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function batchDncAction(Request $request, DoNotContactModel $doNotContact, LeadModel $model)
+    public function batchDncAction(Request $request, DoNotContactModel $doNotContact, LeadModel $model): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             $data = $request->request->all()['lead_batch_dnc'] ?? [];
@@ -1780,7 +1780,7 @@ class LeadController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function batchStagesAction(Request $request, $objectId = 0)
+    public function batchStagesAction(Request $request, $objectId = 0): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if ('POST' === $request->getMethod()) {
             /** @var LeadModel $model */
@@ -1885,7 +1885,7 @@ class LeadController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function batchOwnersAction(Request $request, $objectId = 0)
+    public function batchOwnersAction(Request $request, $objectId = 0): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->security->isGranted('user:users:view')) {
             $this->throwAccessDenied();

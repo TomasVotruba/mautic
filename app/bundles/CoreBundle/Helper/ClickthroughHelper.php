@@ -21,7 +21,7 @@ class ClickthroughHelper
      *
      * @return array
      */
-    public static function decodeArrayFromUrl($string, $urlDecode = true)
+    public static function decodeArrayFromUrl($string, $urlDecode = true): array
     {
         $raw     = $urlDecode ? urldecode($string) : $string;
         $decoded = base64_decode($raw);

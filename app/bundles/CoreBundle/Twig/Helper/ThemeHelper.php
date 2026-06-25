@@ -97,7 +97,7 @@ final class ThemeHelper
      *
      * @return bool|string
      */
-    public function getErrorPageTemplate($code)
+    public function getErrorPageTemplate($code): string|false
     {
         $errorPage = $this->getThemePath()."/error_{$code}.html.twig";
         if (file_exists($errorPage)) {

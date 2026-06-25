@@ -205,7 +205,7 @@ class CommonController extends AbstractController implements MauticController
      *
      * @return JsonResponse|RedirectResponse
      */
-    public function delegateRedirect($url)
+    public function delegateRedirect($url): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $request = $this->getCurrentRequest();
 

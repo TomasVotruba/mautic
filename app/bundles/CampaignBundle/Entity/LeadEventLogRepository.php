@@ -411,7 +411,7 @@ class LeadEventLogRepository extends CommonRepository
      *
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
+    public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter): \Doctrine\Common\Collections\ArrayCollection
     {
         if ($limiter->hasCampaignLimit() && 0 === $limiter->getCampaignLimitRemaining()) {
             return new ArrayCollection();

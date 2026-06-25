@@ -119,7 +119,7 @@ class IdentifyCompanyHelper
      *
      * @return string|false
      */
-    protected static function domainExists($email)
+    protected static function domainExists($email): false|string
     {
         if (!strstr($email, '@')) { // not a valid email adress
             return false;

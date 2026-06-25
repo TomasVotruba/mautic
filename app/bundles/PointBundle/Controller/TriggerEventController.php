@@ -17,7 +17,7 @@ class TriggerEventController extends CommonFormController
      *
      * @return Response
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $success = 0;
         $valid   = $cancelled   = false;
@@ -143,7 +143,7 @@ class TriggerEventController extends CommonFormController
      *
      * @return Response
      */
-    public function editAction(Request $request, $objectId)
+    public function editAction(Request $request, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $session      = $request->getSession();
         $method       = $request->getMethod();

@@ -177,7 +177,7 @@ class FrequencyRuleRepository extends CommonRepository
         $statTable,
         $statContactColumn,
         $statSentColumn,
-    ) {
+    ): array {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
         $query->select("ch.$statContactColumn")

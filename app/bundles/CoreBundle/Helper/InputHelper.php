@@ -161,7 +161,7 @@ class InputHelper
      *
      * @return mixed|string
      */
-    public static function clean($value, $urldecode = false)
+    public static function clean($value, $urldecode = false): array|string|false
     {
         if (is_array($value)) {
             foreach ($value as &$v) {
@@ -224,7 +224,7 @@ class InputHelper
      *
      * @return string
      */
-    public static function filename($value, $extension = null)
+    public static function filename($value, $extension = null): string|array|null
     {
         $value = str_replace(' ', '_', $value);
 
@@ -348,7 +348,7 @@ class InputHelper
      *
      * @return array|mixed|string
      */
-    public static function cleanArray($value, $urldecode = false)
+    public static function cleanArray($value, $urldecode = false): array
     {
         $value = self::clean($value, $urldecode);
 

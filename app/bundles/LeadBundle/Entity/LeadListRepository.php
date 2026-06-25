@@ -281,7 +281,7 @@ class LeadListRepository extends CommonRepository
      *
      * @throws \Exception
      */
-    public function getLeadCount($listIds)
+    public function getLeadCount($listIds): int|array
     {
         if (!is_array($listIds)) {
             $listIds = [$listIds];

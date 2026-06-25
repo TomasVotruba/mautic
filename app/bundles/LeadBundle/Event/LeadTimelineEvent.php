@@ -255,7 +255,7 @@ class LeadTimelineEvent extends Event
      *
      * @return float|int
      */
-    public function getMaxPage()
+    public function getMaxPage(): int|float
     {
         if (!$this->totalEvents) {
             return 1;

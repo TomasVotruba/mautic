@@ -27,7 +27,7 @@ class SourceController extends CommonFormController
      *
      * @return Response
      */
-    public function newAction(Request $request, $objectId = 0)
+    public function newAction(Request $request, $objectId = 0): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $success = 0;
         $valid   = $cancelled   = false;
@@ -131,7 +131,7 @@ class SourceController extends CommonFormController
     /**
      * @return Response
      */
-    public function editAction(Request $request, $objectId)
+    public function editAction(Request $request, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $this->setCampaignElements($request->request);
         $modifiedSources = $this->modifiedSources;
