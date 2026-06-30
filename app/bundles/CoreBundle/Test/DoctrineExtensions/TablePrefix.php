@@ -32,7 +32,10 @@ class TablePrefix
         }
     }
 
-    private function addPrefixToIndexes($prefix, array &$table, string $key): void
+    /**
+     * @param mixed[] $table
+     */
+    private function addPrefixToIndexes(string $prefix, array &$table, string $key): void
     {
         if (!isset($table[$key])) {
             return;
