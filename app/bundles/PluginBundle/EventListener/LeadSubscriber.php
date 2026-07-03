@@ -2,7 +2,6 @@
 
 namespace Mautic\PluginBundle\EventListener;
 
-use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Event\CompanyEvent;
 use Mautic\LeadBundle\Event\LeadEvent;
 use Mautic\LeadBundle\LeadEvents;
@@ -49,9 +48,6 @@ class LeadSubscriber implements EventSubscriberInterface
         return false;
     }
 
-    /*
-    * Change lead event
-    */
     public function onLeadSave(LeadEvent $event): void
     {
         $lead                  = $event->getLead();
