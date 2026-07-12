@@ -4,6 +4,9 @@ namespace Mautic\LeadBundle\Entity;
 
 interface CustomFieldEntityInterface
 {
+    /**
+     * @return int
+     */
     public function getId();
 
     /**
