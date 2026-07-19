@@ -385,7 +385,7 @@ final class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->frequencyRepository->method('getAppliedFrequencyRules')
             ->willReturn([]);
 
-        $this->entityManager
+        $this->entityManager->expects($this->atLeast(3))
             ->method('getRepository')
             ->willReturnMap(
                 [
@@ -529,7 +529,7 @@ final class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->frequencyRepository->method('getAppliedFrequencyRules')
             ->willReturn([]);
 
-        $this->entityManager
+        $this->entityManager->expects($this->atLeast(3))
             ->method('getRepository')
             ->willReturnMap(
                 [
@@ -589,7 +589,7 @@ final class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailRepository->method('getDoNotEmailList')
             ->willReturn([1 => 'someone@domain.com']);
 
-        $this->entityManager
+        $this->entityManager->expects($this->atLeast(3))
             ->method('getRepository')
             ->willReturnMap(
                 [
@@ -666,7 +666,7 @@ final class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->companyModel->method('getRepository')
             ->willReturn($this->companyRepository);
 
-        $this->entityManager
+        $this->entityManager->expects($this->atLeast(3))
             ->method('getRepository')
             ->willReturnMap(
                 [
@@ -729,7 +729,7 @@ final class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->frequencyRepository->method('getAppliedFrequencyRules')
             ->willReturn([['lead_id' => 1, 'frequency_number' => 1, 'frequency_time' => 'DAY']]);
 
-        $this->entityManager
+        $this->entityManager->expects($this->atLeast(4))
             ->method('getRepository')
             ->willReturnMap(
                 [

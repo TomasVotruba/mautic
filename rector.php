@@ -10,7 +10,6 @@ use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Symfony\CodeQuality\Rector\ClassMethod\ResponseReturnTypeControllerActionRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictStringReturnsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Utils\Rector\UnserializeToSerializerDecodeRector;
 
@@ -117,19 +116,6 @@ return RectorConfig::configure()
         ],
 
         Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector::class,
-
-        StringReturnTypeFromStrictStringReturnsRector::class => [
-            __DIR__.'/app/bundles/CoreBundle/Entity/FormEntity.php',
-        ],
-
-        Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector::class,
-
-        // will be fixed
-        Rector\PHPUnit\CodeQuality\Rector\Expression\DecorateWillReturnMapWithExpectsMockRector::class,
-
-        Rector\PHPUnit\CodeQuality\Rector\Expression\DecorateWillReturnMapWithExpectsMockRector::class => [
-            __DIR__.'/app/bundles/EmailBundle/Tests/Model/EmailModelTest.php',
-        ],
 
         // handle later with full PHP 8.0 upgrade
         OptionalParametersAfterRequiredRector::class,
