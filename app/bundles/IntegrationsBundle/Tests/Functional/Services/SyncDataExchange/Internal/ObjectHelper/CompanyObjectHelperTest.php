@@ -13,10 +13,21 @@ use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\ObjectHelper\Compan
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\MauticSyncDataExchange;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Model\CompanyModel;
-use Mautic\UserBundle\Model\UserModel;
 
 final class CompanyObjectHelperTest extends MauticMysqlTestCase
 {
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\UserBundle\Entity\UserRepository $userRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     public function testUpdateEmpty(): void
     {
         /** @var CompanyObjectHelper $companyObjectHelper */
@@ -27,9 +38,8 @@ final class CompanyObjectHelperTest extends MauticMysqlTestCase
 
     public function testUpdate(): void
     {
-        /** @var UserModel $userModel */
-        $userModel = static::getContainer()->get('mautic.user.model.user');
-        $users     = $userModel->getRepository()->findAll();
+        static::getContainer()->get('mautic.user.model.user');
+        $users     = $this->userRepository->findAll();
         $user      = reset($users);
         $now       = new \DateTime();
 

@@ -98,7 +98,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function getUserList($search = '', $limit = 10, $start = 0, $permissionLimiter = [])
     {
-        return $this->getRepository()->getUserList($search, $limit, $start, $permissionLimiter);
+        return $this->userRepository->getUserList($search, $limit, $start, $permissionLimiter);
     }
 
     /**
@@ -160,7 +160,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     {
         $adminRole = $this->roleRepository->findOneBy(['isAdmin' => true]);
 
-        return $this->getRepository()->findOneBy(
+        return $this->userRepository->findOneBy(
             [
                 'role'        => $adminRole,
                 'isPublished' => true,
@@ -384,7 +384,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
         $user->setPreferences($preferences);
 
-        $this->getRepository()->saveEntity($user);
+        $this->userRepository->saveEntity($user);
     }
 
     /**
@@ -405,12 +405,12 @@ class UserModel extends FormModel implements GlobalSearchInterface
      */
     public function getOwnerListChoices(): array
     {
-        return $this->getRepository()->getOwnerListChoices();
+        return $this->userRepository->getOwnerListChoices();
     }
 
     public function hasUserWithEmail(string $email): bool
     {
-        return null !== $this->getRepository()->findOneBy(['email' => $email]);
+        return null !== $this->userRepository->findOneBy(['email' => $email]);
     }
 
     public function createInvite(string $email, Role $role): UserInvite

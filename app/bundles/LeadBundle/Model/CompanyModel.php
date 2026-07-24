@@ -551,7 +551,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
             );
         }
 
-        return $this->getRepository()->getAjaxSimpleList($composite, ['filterVar' => $filterVal.'%'], $column, $valueColumn);
+        return $this->companyRepository->getAjaxSimpleList($composite, ['filterVar' => $filterVal.'%'], $column, $valueColumn);
     }
 
     /**
@@ -599,7 +599,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
                     );
                 }
 
-                $results = $this->getRepository()->getAjaxSimpleList(
+                $results = $this->companyRepository->getAjaxSimpleList(
                     $composite,
                     ['filterVar' => $filterVal.'%'],
                     $column,
@@ -976,7 +976,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     {
         $this->dispatchEvent('pre_delete', $entity);
         $entity->setDeleted(new \DateTime());
-        $this->getRepository()->saveEntity($entity);
+        $this->companyRepository->saveEntity($entity);
 
         $event = new CompanyEvent($entity);
         $this->dispatcher->dispatch($event, LeadEvents::COMPANY_SOFT_DELETE);
@@ -1004,7 +1004,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     public function permanentDeleteCompany(Company $company): void
     {
         $company->deletedId = $company->getId();
-        $this->getRepository()->deleteEntity($company);
+        $this->companyRepository->deleteEntity($company);
         $this->dispatchEvent('post_delete', $company);
     }
 
@@ -1019,7 +1019,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
 
     public function deleteCompanyPermanently(int $companyId): void
     {
-        $company = $this->getRepository()->find($companyId);
+        $company = $this->companyRepository->find($companyId);
 
         if ($company) {
             $this->permanentDeleteCompany($company);

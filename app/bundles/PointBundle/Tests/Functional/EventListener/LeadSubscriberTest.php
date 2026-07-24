@@ -14,17 +14,24 @@ use Mautic\PointBundle\Entity\Point;
 use Mautic\PointBundle\Entity\Trigger;
 use Mautic\PointBundle\Entity\TriggerEvent;
 use Mautic\PointBundle\EventListener\LeadSubscriber;
-use Mautic\PointBundle\Model\PointModel;
 
 final class LeadSubscriberTest extends MauticMysqlTestCase
 {
-    private PointModel $model;
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\PointBundle\Entity\PointRepository $pointRepository,
+    ) {
+        parent::__construct($name);
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->model = self::getContainer()->get('mautic.point.model.point');
     }
 
     public function testLeadPointLogUpdateLead(): void
@@ -98,7 +105,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $lead->setEmail($email);
         $lead->setPoints(10);
 
-        $this->model->getRepository()->saveEntity($lead);
+        $this->pointRepository->saveEntity($lead);
 
         return $lead;
     }
@@ -112,7 +119,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $point->isPublished(true);
         $point->setRepeatable(true);
 
-        $this->model->getRepository()->saveEntity($point);
+        $this->pointRepository->saveEntity($point);
 
         return $point;
     }
@@ -125,7 +132,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $log->setIpAddress($ipAddress);
         $log->setDateFired(new \DateTime());
 
-        $this->model->getRepository()->saveEntity($log);
+        $this->pointRepository->saveEntity($log);
 
         return $log;
     }
@@ -137,7 +144,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $event->setName($type);
         $event->setTrigger($trigger);
 
-        $this->model->getRepository()->saveEntity($event);
+        $this->pointRepository->saveEntity($event);
 
         return $event;
     }
@@ -150,6 +157,6 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $log->setIpAddress($ipAddress);
         $log->setDateFired(new \DateTime());
 
-        $this->model->getRepository()->saveEntity($log);
+        $this->pointRepository->saveEntity($log);
     }
 }

@@ -33,6 +33,7 @@ class ContactScheduledExportCommand extends Command
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly FormatterHelper $formatterHelper,
         private readonly ProcessSignalService $processSignalService,
+        private readonly \Mautic\LeadBundle\Entity\ContactExportSchedulerRepository $contactExportSchedulerRepository,
     ) {
         parent::__construct();
     }
@@ -59,9 +60,9 @@ class ContactScheduledExportCommand extends Command
         $ids = $this->formatterHelper->simpleCsvToArray($input->getOption('ids'), 'int');
 
         if ([] !== $ids) {
-            $contactExportSchedulers = $this->contactExportSchedulerModel->getRepository()->findBy(['id' => $ids]);
+            $contactExportSchedulers = $this->contactExportSchedulerRepository->findBy(['id' => $ids]);
         } else {
-            $contactExportSchedulers = $this->contactExportSchedulerModel->getRepository()
+            $contactExportSchedulers = $this->contactExportSchedulerRepository
                 ->findBy([], [], self::PICK_SCHEDULED_EXPORTS_LIMIT);
         }
 

@@ -140,6 +140,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         private readonly TrackableRepository $trackableRepository,
         private readonly LeadRepository $leadRepository,
         private readonly LeadEventLogRepository $leadEventLogRepository,
+        private readonly \Mautic\LeadBundle\Entity\CompanyRepository $companyRepository,
     ) {
         $this->connection = $em->getConnection(); // Necessary for FilterTrait
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
@@ -290,7 +291,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $event = $this->dispatchEvent('pre_save', $entity, $isNew);
             }
 
-            $this->getRepository()->saveEntity($entity, false);
+            $this->emailRepository->saveEntity($entity, false);
 
             if ($dispatchEvent) {
                 $this->dispatchEvent('post_save', $entity, $isNew, $event);
@@ -499,7 +500,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         // Only up counts if associated with both an email and lead
         if ($firstTime && $email && $lead) {
             try {
-                $this->getRepository()->incrementRead($email->getId(), $stat->getId(), $email->isVariant());
+                $this->emailRepository->incrementRead($email->getId(), $stat->getId(), $email->isVariant());
             } catch (\Exception $exception) {
                 error_log($exception);
             }
@@ -542,7 +543,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
 
             if (null !== $hitDateTime && $lead->getLastActive() < $hitDateTime) { // We need to perform the update after all is saved
-                $this->leadModel->getRepository()->updateLastActive($lead->getId(), $hitDateTime);
+                $this->leadRepository->updateLastActive($lead->getId(), $hitDateTime);
             }
         }
     }
@@ -1009,7 +1010,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     ) {
         $variantIds = ($includeVariants) ? $email->getRelatedEntityIds() : null;
 
-        $total      = $this->getRepository()->getEmailPendingLeads(
+        $total      = $this->emailRepository->getEmailPendingLeads(
             $email->getId(),
             $variantIds,
             $listId,
@@ -1396,7 +1397,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
         }
 
-        $emailRepo = $this->getRepository();
+        $emailRepo = $this->emailRepository;
 
         // get email settings such as templates, weights, etc
         $emailSettings = &$this->getEmailSettings($email);
@@ -1556,7 +1557,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $strikes = 3;
             while ($strikes >= 0) {
                 try {
-                    $this->getRepository()->upCountSent($emailId, (int) $count, $isVariant);
+                    $this->emailRepository->upCountSent($emailId, (int) $count, $isVariant);
                     break;
                 } catch (\Exception $exception) {
                     error_log($exception);
@@ -1615,7 +1616,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         $mailer            = $this->mailHelper->getMailer();
         if (!isset($lead['companies'])) {
-            $lead['companies'] = $this->companyModel->getRepository()->getCompaniesByLeadId($lead['id']);
+            $lead['companies'] = $this->companyRepository->getCompaniesByLeadId($lead['id']);
         }
         $mailer->setLead($lead, true);
         $mailer->setTokens($tokens);
@@ -2159,7 +2160,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $results = [];
         switch ($type) {
             case 'email':
-                $emailRepo = $this->getRepository();
+                $emailRepo = $this->emailRepository;
                 $emailRepo->setCurrentUser($this->userHelper->getUser());
                 $emails = $emailRepo->getEmailList(
                     $filter,
@@ -2200,8 +2201,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             return $contact;
         }
 
-        $companies = $this->companyModel
-            ->getRepository()
+        $companies = $this->companyRepository
             ->getCompaniesForContacts([$contact['id']]);
 
         $contact['companies'] = $companies[$contact['id']] ?? [];
@@ -2415,7 +2415,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function invalidatePendingCountCacheForList(int $listId): void
     {
-        foreach ($this->getRepository()->getSegmentEmailIdsByListId($listId) as $emailId) {
+        foreach ($this->emailRepository->getSegmentEmailIdsByListId($listId) as $emailId) {
             $this->invalidatePendingCountCache($emailId);
         }
     }
@@ -2516,7 +2516,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEmailsToSendWinnerVariant(): array
     {
-        $emails = $this->getRepository()->getPublishedEmailsWithVariant();
+        $emails = $this->emailRepository->getPublishedEmailsWithVariant();
 
         $emailsToSend = [];
 
@@ -2570,7 +2570,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             /** @var iterable<Email> $save */
             $save = $this->variantConverterService->getUpdatedVariants();
 
-            $this->getRepository()->saveEntities($save);
+            $this->emailRepository->saveEntities($save);
         } finally {
             $this->inConversion = false;
         }

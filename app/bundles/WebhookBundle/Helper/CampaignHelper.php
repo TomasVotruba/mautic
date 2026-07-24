@@ -24,6 +24,7 @@ class CampaignHelper
         protected Client $client,
         protected CompanyModel $companyModel,
         private readonly EventDispatcherInterface $dispatcher,
+        private readonly \Mautic\LeadBundle\Entity\CompanyRepository $companyRepository,
     ) {
     }
 
@@ -141,7 +142,7 @@ class CampaignHelper
         if (empty($this->contactsValues[$contact->getId()])) {
             $this->contactsValues[$contact->getId()]              = $contact->getProfileFields();
             $this->contactsValues[$contact->getId()]['ipAddress'] = $this->ipAddressesToCsv($contact->getIpAddresses());
-            $this->contactsValues[$contact->getId()]['companies'] = $this->companyModel->getRepository()->getCompaniesByLeadId($contact->getId());
+            $this->contactsValues[$contact->getId()]['companies'] = $this->companyRepository->getCompaniesByLeadId($contact->getId());
         }
 
         return $this->contactsValues[$contact->getId()];

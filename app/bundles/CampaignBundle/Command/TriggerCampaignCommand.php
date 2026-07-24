@@ -67,6 +67,7 @@ class TriggerCampaignCommand extends ModeratedCommand
         PathsHelper $pathsHelper,
         private CoreParametersHelper $coreParametersHelper,
         private ProcessSignalService $processSignalService,
+        private readonly \Mautic\LeadBundle\Entity\LeadListRepository $leadListRepository,
     ) {
         parent::__construct($pathsHelper, $coreParametersHelper);
     }
@@ -417,7 +418,7 @@ class TriggerCampaignCommand extends ModeratedCommand
             if ($updateSegmentCountInBackground) {
                 $this->segmentCountCacheHelper->invalidateSegmentContactCount($segmentId);
             } else {
-                $totalLeadCount = $this->listModel->getRepository()->getLeadCount($segmentId);
+                $totalLeadCount = $this->leadListRepository->getLeadCount($segmentId);
                 $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, (int) $totalLeadCount);
             }
         }

@@ -18,8 +18,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class WebhookSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+<<<<<<< HEAD
         private WebhookModel $webhookModel,
         private LeadModel $leadModel,
+=======
+        private readonly WebhookModel $webhookModel,
+        private readonly LeadModel $leadModel,
+        private readonly \Mautic\LeadBundle\Entity\LeadRepository $leadRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -292,7 +298,7 @@ final readonly class WebhookSubscriber implements EventSubscriberInterface
 
             if ($detachContactReference) {
                 $detachContactReference = false;
-                $this->leadModel->getRepository()->detachEntity($contact);
+                $this->leadRepository->detachEntity($contact);
             }
         }
     }

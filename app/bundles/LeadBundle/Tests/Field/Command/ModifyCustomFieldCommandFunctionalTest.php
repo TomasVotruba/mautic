@@ -18,6 +18,18 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
      */
     private array $csvFiles = [];
 
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     protected function beforeTearDown(): void
     {
         foreach ($this->csvFiles as $file) {
@@ -93,7 +105,7 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
         /** @var FieldModel $fieldModel */
         $fieldModel = $this->getContainer()->get('mautic.lead.model.field');
         $fieldModel->saveEntities($fields);
-        $fieldModel->getRepository()->detachEntities($fields);
+        $this->leadFieldRepository->detachEntities($fields);
     }
 
     /**

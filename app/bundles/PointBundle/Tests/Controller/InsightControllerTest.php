@@ -12,6 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class InsightControllerTest extends MauticMysqlTestCase
 {
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\PointBundle\Entity\PointInsightRepository $pointInsightRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     public function testInsightIndexActionWithoutPage(): void
     {
         $this->client->request(Request::METHOD_GET, '/s/points/insights');
@@ -71,10 +83,9 @@ final class InsightControllerTest extends MauticMysqlTestCase
 
     public function testInsightCloneAction(): void
     {
-        /** @var InsightModel $insightModel */
-        $insightModel = self::getContainer()->get('mautic.point.model.insight');
+        self::getContainer()->get('mautic.point.model.insight');
 
-        $insightRepo = $insightModel->getRepository();
+        $insightRepo = $this->pointInsightRepository;
 
         $insight = $this->createTestInsight();
         $this->em->flush();
@@ -93,10 +104,9 @@ final class InsightControllerTest extends MauticMysqlTestCase
 
     public function testInsightBatchDeleteAction(): void
     {
-        /** @var InsightModel $insightModel */
-        $insightModel = self::getContainer()->get('mautic.point.model.insight');
+        self::getContainer()->get('mautic.point.model.insight');
 
-        $insightRepo = $insightModel->getRepository();
+        $insightRepo = $this->pointInsightRepository;
 
         $insight1 = $this->createTestInsight('Test Insight 1');
         $insight2 = $this->createTestInsight('Test Insight 2');

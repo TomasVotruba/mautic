@@ -90,7 +90,7 @@ class SummaryModel extends AbstractCommonModel
         $start = null;
 
         if (!$rebuild) {
-            $start = $this->getRepository()->getOldestTriggeredDate();
+            $start = $this->summaryRepository->getOldestTriggeredDate();
         }
 
         // Start with the current hour.
@@ -128,7 +128,7 @@ class SummaryModel extends AbstractCommonModel
                 $dateFromFormatted = $dateFrom->format('Y-m-d H:i:s');
                 $dateToFormatted   = $dateTo->format('Y-m-d H:i:s');
                 $output->write("\t".$dateFromFormatted.' - '.$dateToFormatted);
-                $this->getRepository()->summarize($dateFrom, $dateTo);
+                $this->summaryRepository->summarize($dateFrom, $dateTo);
                 $progressBar->advance($hoursPerBatch);
                 $dateTo = $dateTo->sub($interval);
             } while ($end < $dateFrom);
@@ -156,7 +156,7 @@ class SummaryModel extends AbstractCommonModel
             $dateTo     = $log['dateTo'];
             $campaignId = $log['campaignId'];
             $eventId    = $log['eventId'];
-            $this->getRepository()->summarize($dateFrom, $dateTo, $campaignId, $eventId);
+            $this->summaryRepository->summarize($dateFrom, $dateTo, $campaignId, $eventId);
         }
     }
 

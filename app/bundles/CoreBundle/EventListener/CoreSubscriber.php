@@ -12,7 +12,6 @@ use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Menu\MenuHelper;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Event\LoginEvent;
-use Mautic\UserBundle\Model\UserModel;
 use Mautic\UserBundle\UserEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -26,6 +25,7 @@ use Symfony\Component\Security\Http\SecurityEvents;
 final readonly class CoreSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+<<<<<<< HEAD
         private BundleHelper $bundleHelper,
         private MenuHelper $menuHelper,
         private UserHelper $userHelper,
@@ -34,6 +34,16 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
         private UserModel $userModel,
         private EventDispatcherInterface $dispatcher,
         private RequestStack $requestStack,
+=======
+        private readonly BundleHelper $bundleHelper,
+        private readonly MenuHelper $menuHelper,
+        private readonly UserHelper $userHelper,
+        private readonly CoreParametersHelper $coreParametersHelper,
+        private readonly AuthorizationCheckerInterface $securityContext,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly RequestStack $requestStack,
+        private readonly \Mautic\UserBundle\Entity\UserRepository $userRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -67,7 +77,7 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
             // mark the user as last logged in
             $user = $this->userHelper->getUser();
             if ($user instanceof User) {
-                $this->userModel->getRepository()->setLastLogin($user);
+                $this->userRepository->setLastLogin($user);
 
                 // Set the timezone and locale in session while we have it since Symfony dispatches the onKernelRequest prior to the
                 // firewall setting the known user

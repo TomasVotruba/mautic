@@ -14,6 +14,18 @@ final class TriggerControllerTest extends MauticMysqlTestCase
 {
     use TriggerTrait;
 
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\PointBundle\Entity\TriggerRepository $triggerRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     public function testIndexActionWithoutPage(): void
     {
         $this->client->request(Request::METHOD_GET, '/s/points/triggers');
@@ -33,7 +45,7 @@ final class TriggerControllerTest extends MauticMysqlTestCase
         /** @var TriggerModel $triggerModel */
         $triggerModel = self::getContainer()->get('mautic.point.model.trigger');
 
-        $triggerRepo      = $triggerModel->getRepository();
+        $triggerRepo      = $this->triggerRepository;
         $triggerEventRepo = $triggerModel->getEventRepository();
 
         $trigger = $this->createTrigger('Trigger', 5);

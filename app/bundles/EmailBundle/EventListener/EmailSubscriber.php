@@ -30,12 +30,22 @@ final readonly class EmailSubscriber implements EventSubscriberInterface
     private const RETRY_COUNT = 3;
 
     public function __construct(
+<<<<<<< HEAD
         private IpLookupHelper $ipLookupHelper,
         private AuditLogModel $auditLogModel,
         private EmailModel $emailModel,
         private TranslatorInterface $translator,
         private EntityManagerInterface $entityManager,
         private EmailDraftModel $emailDraftModel,
+=======
+        private readonly IpLookupHelper $ipLookupHelper,
+        private readonly AuditLogModel $auditLogModel,
+        private readonly EmailModel $emailModel,
+        private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EmailDraftModel $emailDraftModel,
+        private readonly \Mautic\EmailBundle\Entity\EmailRepository $emailRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -58,7 +68,7 @@ final readonly class EmailSubscriber implements EventSubscriberInterface
     {
         $email = $event->getEmail();
         if ($email->isVariant()) {
-            $this->emailModel->getRepository()->cloneFromParentToVariant($email);
+            $this->emailRepository->cloneFromParentToVariant($email);
         }
     }
 

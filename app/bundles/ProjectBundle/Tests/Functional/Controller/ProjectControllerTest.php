@@ -19,7 +19,17 @@ final class ProjectControllerTest extends MauticMysqlTestCase
 {
     public const USERNAME = 'johny';
 
-    private ProjectRepository $projectRepository;
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly ProjectRepository $projectRepository,
+    ) {
+        parent::__construct($name);
+    }
 
     protected function setUp(): void
     {
@@ -34,7 +44,6 @@ final class ProjectControllerTest extends MauticMysqlTestCase
 
         /** @var ProjectModel $projectModel */
         $projectModel            = self::getContainer()->get(ProjectModel::class);
-        $this->projectRepository = $projectModel->getRepository();
 
         foreach ($projects as $projectName) {
             $project = new Project();

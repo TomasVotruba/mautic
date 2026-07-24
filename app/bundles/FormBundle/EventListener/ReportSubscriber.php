@@ -27,6 +27,7 @@ final readonly class ReportSubscriber implements EventSubscriberInterface
     public const CONTEXT_FORM_RESULT     = 'form.results';
 
     public function __construct(
+<<<<<<< HEAD
         private CompanyReportData $companyReportData,
         private SubmissionRepository $submissionRepository,
         private FormModel $formModel,
@@ -34,6 +35,16 @@ final readonly class ReportSubscriber implements EventSubscriberInterface
         private CoreParametersHelper $coreParametersHelper,
         private TranslatorInterface $translator,
         private DncReportService $dncReportService,
+=======
+        private readonly CompanyReportData $companyReportData,
+        private readonly SubmissionRepository $submissionRepository,
+        private readonly FormModel $formModel,
+        private readonly ReportHelper $reportHelper,
+        private readonly CoreParametersHelper $coreParametersHelper,
+        private readonly TranslatorInterface $translator,
+        private readonly DncReportService $dncReportService,
+        private readonly \Mautic\FormBundle\Entity\FormRepository $formRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -128,7 +139,7 @@ final readonly class ReportSubscriber implements EventSubscriberInterface
         }
 
         if ($event->checkContext(self::CONTEXT_FORM_RESULT)) {
-            $formRepository = $this->formModel->getRepository();
+            $formRepository = $this->formRepository;
             // select only the table for an existing report, if the setting is disabled
             if (false === $this->coreParametersHelper->get('form_results_data_sources')) {
                 $reportSource = empty($event->getContext()) ? ($event->getReportSource() ?? '') : $event->getContext();

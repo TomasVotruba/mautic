@@ -11,17 +11,24 @@ use Mautic\LeadBundle\Event\LeadMergeEvent;
 use Mautic\StageBundle\Entity\LeadStageLog;
 use Mautic\StageBundle\Entity\Stage;
 use Mautic\StageBundle\EventListener\LeadSubscriber;
-use Mautic\StageBundle\Model\StageModel;
 
 final class LeadSubscriberTest extends MauticMysqlTestCase
 {
-    private StageModel $model;
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\StageBundle\Entity\StageRepository $stageRepository,
+    ) {
+        parent::__construct($name);
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->model = self::getContainer()->get('mautic.stage.model.stage');
     }
 
     public function testUpdateLead(): void
@@ -63,7 +70,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $lead->setEmail($email);
         $lead->setPoints(10);
 
-        $this->model->getRepository()->saveEntity($lead);
+        $this->stageRepository->saveEntity($lead);
 
         return $lead;
     }
@@ -74,7 +81,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $stage->setName($name);
         $stage->setWeight($weight);
 
-        $this->model->getRepository()->saveEntity($stage);
+        $this->stageRepository->saveEntity($stage);
 
         return $stage;
     }
@@ -87,6 +94,6 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $log->setStage($stage);
         $log->setDateFired(new \DateTime());
 
-        $this->model->getRepository()->saveEntity($log);
+        $this->stageRepository->saveEntity($log);
     }
 }

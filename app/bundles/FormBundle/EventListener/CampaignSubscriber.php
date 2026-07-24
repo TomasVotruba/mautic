@@ -15,7 +15,6 @@ use Mautic\FormBundle\Form\Type\CampaignEventFormSubmitType;
 use Mautic\FormBundle\FormEvents;
 use Mautic\FormBundle\Helper\FormFieldHelper;
 use Mautic\FormBundle\Model\FormModel;
-use Mautic\FormBundle\Model\SubmissionModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final readonly class CampaignSubscriber implements EventSubscriberInterface
@@ -28,11 +27,14 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
         private FormFieldHelper $formFieldHelper,
 =======
         private readonly FormModel $formModel,
-        private readonly SubmissionModel $formSubmissionModel,
         private readonly RealTimeExecutioner $realTimeExecutioner,
         private readonly FormFieldHelper $formFieldHelper,
         private readonly FormRepository $formRepository,
+<<<<<<< HEAD
 >>>>>>> 7da6b8bae0 (use form model repository directly)
+=======
+        private readonly \Mautic\FormBundle\Entity\SubmissionRepository $submissionRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -130,7 +132,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
         $filter = $this->formFieldHelper->getFieldFilter($field->getType());
         $value  = InputHelper::_($event->getConfig()['value'], $filter);
 
-        $result = $this->formSubmissionModel->getRepository()->compareValue(
+        $result = $this->submissionRepository->compareValue(
             $lead->getId(),
             $form->getId(),
             $form->getAlias(),

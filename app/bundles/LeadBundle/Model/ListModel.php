@@ -132,7 +132,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
         $alias = $this->cleanAlias($alias, '', 0, '-');
 
         // make sure alias is not already taken
-        $repo      = $this->getRepository();
+        $repo      = $this->leadListRepository;
         $testAlias = $alias;
         $existing  = $repo->getLists(null, $testAlias, $entity->getId(), false);
         $count     = count($existing);
@@ -201,7 +201,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             throw new DeleteEntityDependencyException($event->getDependencyErrors());
         }
 
-        $this->getRepository()->setSegmentAsDeleted($id);
+        $this->leadListRepository->setSegmentAsDeleted($id);
 
         $entity->deletedId = $id;
         $this->dispatchEvent('on_list_delete', $entity);
@@ -211,7 +211,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
     public function hardDeleteEntity(LeadList $leadList): void
     {
         $leadList->deletedId = $leadList->getId();
-        $this->getRepository()->deleteEntity($leadList);
+        $this->leadListRepository->deleteEntity($leadList);
         $this->dispatchEvent('post_delete', $leadList);
     }
 
@@ -248,7 +248,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
 
     public function getSoftDeletedEntity(int $id): ?LeadList
     {
-        return $this->getRepository()->getSoftDeletedEntity($id);
+        return $this->leadListRepository->getSoftDeletedEntity($id);
     }
 
     /**
@@ -584,7 +584,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
         if ($this->coreParametersHelper->get('update_segment_contact_count_in_background', false)) {
             $this->segmentCountCacheHelper->invalidateSegmentContactCount($segmentId);
         } else {
-            $totalLeadCount = $this->getRepository()->getLeadCount($segmentId);
+            $totalLeadCount = $this->leadListRepository->getLeadCount($segmentId);
             $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, (int) $totalLeadCount);
         }
 
@@ -714,11 +714,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         }
 
         if (!empty($persistLists)) {
-            $this->getRepository()->saveEntities($persistLists);
+            $this->leadListRepository->saveEntities($persistLists);
         }
 
         // Clear ListLead entities from Doctrine memory
-        $this->getRepository()->detachEntities($persistLists);
+        $this->leadListRepository->detachEntities($persistLists);
 
         if ($batchProcess) {
             // Detach for batch processing to preserve memory
@@ -838,11 +838,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         }
 
         if (!empty($persistLists)) {
-            $this->getRepository()->saveEntities($persistLists);
+            $this->leadListRepository->saveEntities($persistLists);
         }
 
         if (!empty($deleteLists)) {
-            $this->getRepository()->deleteEntities($deleteLists);
+            $this->leadListRepository->deleteEntities($deleteLists);
         }
 
         // Clear ListLead entities from Doctrine memory
@@ -1392,7 +1392,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
 
     public function leadListExists(int $id): bool
     {
-        return $this->getRepository()->leadListExists($id);
+        return $this->leadListRepository->leadListExists($id);
     }
 
     /**
@@ -1410,7 +1410,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
             if ($this->segmentCountCacheHelper->hasSegmentContactCount($listId)) {
                 $leadCounts[$listId] = $this->segmentCountCacheHelper->getSegmentContactCount($listId);
             } else {
-                $count               = $this->getRepository()->getLeadCount($listId);
+                $count               = $this->leadListRepository->getLeadCount($listId);
                 $leadCounts[$listId] = $count;
                 $this->segmentCountCacheHelper->setSegmentContactCount($listId, (int) $count);
             }
@@ -1421,7 +1421,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
 
     public function getActiveSegmentContactCount(int $segmentId): int
     {
-        $total = $this->getRepository()->getLeadCount($segmentId);
+        $total = $this->leadListRepository->getLeadCount($segmentId);
         $dnc   = $this->doNotContactRepository->getCount(null, null, null, $segmentId);
 
         return max(0, $total - $dnc);
@@ -1444,6 +1444,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $criteria['id'] = $segmentsFilter;
         }
 
-        return $this->getRepository()->findBy($criteria, ['lastBuiltTime' => $order], $limit);
+        return $this->leadListRepository->findBy($criteria, ['lastBuiltTime' => $order], $limit);
     }
 }

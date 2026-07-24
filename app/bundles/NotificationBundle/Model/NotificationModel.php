@@ -87,7 +87,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
                 $event = $this->dispatchEvent('pre_save', $entity, $isNew);
             }
 
-            $this->getRepository()->saveEntity($entity, false);
+            $this->notificationRepository->saveEntity($entity, false);
 
             if ($dispatchEvent) {
                 $this->dispatchEvent('post_save', $entity, $isNew, $event);
@@ -285,7 +285,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
         $results = [];
         switch ($type) {
             case 'notification':
-                $entities = $this->getRepository()->getNotificationList(
+                $entities = $this->notificationRepository->getNotificationList(
                     $filter,
                     $limit,
                     $start,
@@ -302,7 +302,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
 
                 break;
             case 'mobile_notification':
-                $entities = $this->getRepository()->getMobileNotificationList(
+                $entities = $this->notificationRepository->getMobileNotificationList(
                     $filter,
                     $limit,
                     $start,

@@ -10,7 +10,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class FormSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+<<<<<<< HEAD
         private FocusModel $model,
+=======
+        private readonly FocusModel $model,
+        private readonly \MauticPlugin\MauticFocusBundle\Entity\FocusRepository $focusRepository,
+>>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 
@@ -28,7 +33,7 @@ final readonly class FormSubscriber implements EventSubscriberInterface
     {
         $form   = $event->getForm();
         $formId = $form->deletedId;
-        $foci   = $this->model->getRepository()->findByForm($formId);
+        $foci   = $this->focusRepository->findByForm($formId);
 
         if (empty($foci)) {
             return;

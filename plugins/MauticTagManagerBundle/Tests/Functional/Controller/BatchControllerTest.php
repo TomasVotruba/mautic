@@ -9,12 +9,9 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\Tag;
 use Mautic\LeadBundle\Entity\TagRepository;
 use Mautic\LeadBundle\Model\LeadModel;
-use Mautic\LeadBundle\Model\TagModel;
 
 final class BatchControllerTest extends MauticMysqlTestCase
 {
-    private TagRepository $tagRepository;
-
     /**
      * @var array<int, Tag>
      */
@@ -25,6 +22,18 @@ final class BatchControllerTest extends MauticMysqlTestCase
      */
     private array $leads;
 
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly TagRepository $tagRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,10 +43,7 @@ final class BatchControllerTest extends MauticMysqlTestCase
             'tag3',
             'tag4',
         ];
-
-        /** @var TagModel $tagModel */
-        $tagModel            = static::getContainer()->get('mautic.lead.model.tag');
-        $this->tagRepository = $tagModel->getRepository();
+        static::getContainer()->get('mautic.lead.model.tag');
         $this->tags          = $this->addTags($tags);
         $this->leads         = $this->addLeads();
     }

@@ -38,6 +38,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         LoggerInterface $mauticLogger,
         CoreParametersHelper $coreParametersHelper,
         private readonly GrapesJsBuilderRepository $grapesJsBuilderRepository,
+        private readonly \Mautic\EmailBundle\Entity\EmailRepository $emailRepository,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -83,7 +84,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
             return;
         }
 
-        $grapesJsBuilder = $this->getRepository()->findOneBy(['email' => $entity]);
+        $grapesJsBuilder = $this->grapesJsBuilderRepository->findOneBy(['email' => $entity]);
 
         if (!$grapesJsBuilder) {
             $grapesJsBuilder = new GrapesJsBuilder();
@@ -95,7 +96,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         }
 
         $this->updateEntityEditorState($entity, $data);
-        $this->getRepository()->saveEntity($grapesJsBuilder);
+        $this->grapesJsBuilderRepository->saveEntity($grapesJsBuilder);
 
         $emailForm  = $request->request->all('emailform');
         $customHtml = is_array($emailForm) ? ($emailForm['customHtml'] ?? null) : null;
@@ -104,7 +105,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
         }
 
         $entity->setCustomHtml($customHtml);
-        $this->emailModel->getRepository()->saveEntity($entity);
+        $this->emailRepository->saveEntity($entity);
     }
 
     /**
@@ -206,7 +207,7 @@ class GrapesJsBuilderModel extends AbstractCommonModel
     public function getGrapesJsFromEmailId(?int $emailId)
     {
         if ($email = $this->emailModel->getEntity($emailId)) {
-            return $this->getRepository()->findOneBy(['email' => $email]);
+            return $this->grapesJsBuilderRepository->findOneBy(['email' => $email]);
         }
     }
 }

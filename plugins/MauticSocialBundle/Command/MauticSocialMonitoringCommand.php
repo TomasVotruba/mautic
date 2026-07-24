@@ -18,6 +18,7 @@ class MauticSocialMonitoringCommand extends Command
 {
     public function __construct(
         private readonly MonitoringModel $monitoringModel,
+        private readonly \MauticPlugin\MauticSocialBundle\Entity\MonitoringRepository $monitoringRepository,
     ) {
         parent::__construct();
     }
@@ -79,7 +80,7 @@ class MauticSocialMonitoringCommand extends Command
             'limit' => 100,
         ];
 
-        $repository = $this->monitoringModel->getRepository();
+        $repository = $this->monitoringRepository;
 
         if (null !== $id) {
             $filter['filter'] = [

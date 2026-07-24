@@ -318,7 +318,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
         $results = [];
         switch ($type) {
             case 'dynamicContent':
-                $entities = $this->getRepository()->getDynamicContentList(
+                $entities = $this->dynamicContentRepository->getDynamicContentList(
                     $filter,
                     $limit,
                     $start,

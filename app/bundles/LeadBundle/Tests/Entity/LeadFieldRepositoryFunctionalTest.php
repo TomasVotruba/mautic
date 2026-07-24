@@ -14,6 +14,18 @@ final class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback     = false;
 
+    /**
+     * @psalm-param non-empty-string $name
+     *
+     * @internal This method is not covered by the backward compatibility promise for PHPUnit
+     */
+    public function __construct(
+        string $name,
+        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
+    ) {
+        parent::__construct($name);
+    }
+
     private const ADMINISTRATOR_VALUE = "administrator's";
 
     public function testCompareValueEqualsOperator(): void
@@ -170,7 +182,7 @@ final class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $this->assertInstanceOf(LeadModel::class, $contactModel);
 
         $contactModel->saveEntity($lead);
-        $repository = $fieldModel->getRepository();
+        $repository = $this->leadFieldRepository;
 
         $this->assertTrue($repository->compareValue($lead->getId(), 'colors', ['green', 'blue'], 'in'));
         $this->assertFalse($repository->compareValue($lead->getId(), 'colors', ['red', 'yellow'], 'in'));
@@ -210,7 +222,7 @@ final class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $this->assertInstanceOf(LeadModel::class, $contactModel);
 
         $contactModel->saveEntity($lead);
-        $repository = $fieldModel->getRepository();
+        $repository = $this->leadFieldRepository;
 
         $this->assertTrue($repository->compareValue($lead->getId(), 'job_title', [self::ADMINISTRATOR_VALUE], 'in'));
         $this->assertFalse($repository->compareValue($lead->getId(), 'job_title', ['user'], 'in'));

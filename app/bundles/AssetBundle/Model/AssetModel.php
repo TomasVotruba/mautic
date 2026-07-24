@@ -72,6 +72,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         private readonly EmailRepository $emailRepository,
         private readonly AssetRepository $assetRepository,
         private readonly DownloadRepository $downloadRepository,
+        private readonly \Mautic\CategoryBundle\Entity\CategoryRepository $categoryRepository,
     ) {
         $this->maxAssetSize           = $coreParametersHelper->get('max_size');
 
@@ -243,7 +244,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         if (empty($systemEntry)) {
             $download->setAsset($asset);
 
-            $this->getRepository()->upDownloadCount($asset->getId(), 1, $isUnique);
+            $this->assetRepository->upDownloadCount($asset->getId(), 1, $isUnique);
         }
 
         // check for existing IP
@@ -283,7 +284,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     {
         $id = ($asset instanceof Asset) ? $asset->getId() : (int) $asset;
 
-        $this->getRepository()->upDownloadCount($id, $increaseBy, $unique);
+        $this->assetRepository->upDownloadCount($id, $increaseBy, $unique);
     }
 
     public function getRepository(): AssetRepository
@@ -385,7 +386,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
             case 'asset':
                 $viewOther = $this->security->isGranted('asset:assets:viewother');
                 $request   = $this->requestStack->getCurrentRequest();
-                $repo      = $this->getRepository();
+                $repo      = $this->assetRepository;
                 $repo->setCurrentUser($this->userHelper->getUser());
                 // During the form submit & edit, make sure that the data is checked against available assets
                 if ('mautic_segment_action' === $request->get('_route')
@@ -396,7 +397,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
                 $results = $repo->getAssetList($filter, $limit, 0, $viewOther);
                 break;
             case 'category':
-                $results = $this->categoryModel->getRepository()->getCategoryList($filter, $limit, 0);
+                $results = $this->categoryRepository->getCategoryList($filter, $limit, 0);
                 break;
         }
 
@@ -473,7 +474,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
             return 0;
         }
 
-        $repo = $this->getRepository();
+        $repo = $this->assetRepository;
         $size = $repo->getAssetSize($assets);
 
         if ($size) {

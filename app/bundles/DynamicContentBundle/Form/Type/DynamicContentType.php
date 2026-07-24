@@ -88,9 +88,10 @@ class DynamicContentType extends AbstractType
         private readonly EntityManager $em,
         ListModel $listModel,
         private readonly TranslatorInterface $translator,
-        private readonly LeadModel $leadModel,
+        LeadModel $leadModel,
         private TypeList $typeList,
         private readonly RelativeDate $relativeDate,
+        private readonly \Mautic\LeadBundle\Entity\LeadRepository $leadRepository,
     ) {
         $this->fieldChoices    = $listModel->getChoiceFields();
         $this->timezoneChoices = FormFieldHelper::getTimezonesChoices();
@@ -343,7 +344,7 @@ class DynamicContentType extends AbstractType
     {
         unset($this->fieldChoices['company']);
 
-        $customFields = $this->leadModel->getRepository()->getCustomFieldList('lead');
+        $customFields = $this->leadRepository->getCustomFieldList('lead');
 
         $this->fieldChoices['lead'] = array_filter(
             $this->fieldChoices['lead'],

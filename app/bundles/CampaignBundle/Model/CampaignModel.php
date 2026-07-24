@@ -70,6 +70,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         private readonly LeadRepository $leadRepository,
         private readonly LeadEventLogRepository $leadEventLogRepository,
         private readonly StatRepository $statRepository,
+        private readonly \Mautic\FormBundle\Entity\FormRepository $formRepository,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -157,7 +158,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         // Null all the event parents for this campaign to avoid database constraints
         $this->getEventRepository()->nullEventParents($entity->getId());
         $this->dispatchEvent('pre_delete', $entity);
-        $this->getRepository()->setCampaignAsDeleted($entity->getId());
+        $this->campaignRepository->setCampaignAsDeleted($entity->getId());
 
         $this->dispatcher->dispatch(new Events\DeleteCampaign($entity), CampaignEvents::ON_CAMPAIGN_DELETE);
     }
@@ -165,7 +166,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     public function deleteCampaign(Campaign $campaign): void
     {
         $campaign->deletedId = $campaign->getId();
-        $this->getRepository()->deleteEntity($campaign);
+        $this->campaignRepository->deleteEntity($campaign);
         $this->dispatchEvent('post_delete', $campaign);
     }
 
@@ -422,7 +423,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         $entity->setCanvasSettings($settings);
 
         if ($persist) {
-            $this->getRepository()->saveEntity($entity);
+            $this->campaignRepository->saveEntity($entity);
         }
 
         return $settings;
@@ -438,10 +439,10 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         $sources = [];
 
         // Lead lists
-        $sources['lists'] = $this->getRepository()->getCampaignListSources($campaignId);
+        $sources['lists'] = $this->campaignRepository->getCampaignListSources($campaignId);
 
         // Forms
-        $sources['forms'] = $this->getRepository()->getCampaignFormSources($campaignId);
+        $sources['forms'] = $this->campaignRepository->getCampaignFormSources($campaignId);
 
         return $sources;
     }
@@ -543,7 +544,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             case null:
                 $choices['forms'] = [];
                 $viewOther        = $this->security->isGranted('form:forms:viewother');
-                $repo             = $this->formModel->getRepository();
+                $repo             = $this->formRepository;
                 $repo->setCurrentUser($this->userHelper->getUser());
 
                 $forms = $repo->getFormList('', 0, 0, $viewOther);
@@ -569,7 +570,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     {
         $formId = ($form instanceof Form) ? $form->getId() : $form;
 
-        return $this->getRepository()->findByFormId($formId);
+        return $this->campaignRepository->findByFormId($formId);
     }
 
     /**
@@ -588,7 +589,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         if (!isset($campaigns[$lead->getId()])) {
-            $repo   = $this->getRepository();
+            $repo   = $this->campaignRepository;
             $leadId = $lead->getId();
             // get the campaigns the lead is currently part of
             $campaigns[$leadId] = $repo->getPublishedCampaigns(
@@ -612,7 +613,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         static $campaigns = [];
 
         if (empty($campaigns)) {
-            $campaigns = $this->getRepository()->getPublishedCampaigns(
+            $campaigns = $this->campaignRepository->getPublishedCampaigns(
                 null,
                 null,
                 $forList,
@@ -671,7 +672,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
     public function getCampaignListIds($id): array
     {
-        return $this->getRepository()->getCampaignListIds((int) $id);
+        return $this->campaignRepository->getCampaignListIds((int) $id);
     }
 
     /**
@@ -800,7 +801,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
     public function getCampaignIdsWithDependenciesOnSegment($segmentId): array
     {
-        $entities = $this->getRepository()->getEntities(
+        $entities = $this->campaignRepository->getEntities(
             [
                 'filter'    => [
                     'force' => [
@@ -828,7 +829,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getCampaignIdsWithDependenciesOnEmail(int $emailId): array
     {
-        return $this->getRepository()->getCampaignIdsWithDependenciesOnEmail($emailId);
+        return $this->campaignRepository->getCampaignIdsWithDependenciesOnEmail($emailId);
     }
 
     /**
@@ -917,7 +918,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     public function transactionalCampaignUnPublish(Campaign $campaign): void
     {
         $this->em->beginTransaction();
-        $result = $this->getRepository()->getCampaignPublishAndVersionData($campaign->getId());
+        $result = $this->campaignRepository->getCampaignPublishAndVersionData($campaign->getId());
 
         if (!(int) $result['is_published']) {
             $this->em->commit();

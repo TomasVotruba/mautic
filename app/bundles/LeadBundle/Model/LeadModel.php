@@ -164,6 +164,7 @@ class LeadModel extends FormModel
         private readonly CompanyLeadRepository $companyLeadRepository,
         private readonly DoNotContactRepository $doNotContactRepository,
         private readonly StatRepository $statRepository,
+        private readonly \Mautic\LeadBundle\Entity\CompanyRepository $companyRepository,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -310,7 +311,7 @@ class LeadModel extends FormModel
             // Check if this contact was merged into another and if so, return the new contact
             if ($entity = $this->getMergeRecordRepository()->findMergedContact($id)) {
                 // Hydrate fields with custom field data
-                $fields = $this->getRepository()->getFieldValues($entity->getId());
+                $fields = $this->leadRepository->getFieldValues($entity->getId());
                 $entity->setFields($fields);
             }
         }
@@ -339,7 +340,7 @@ class LeadModel extends FormModel
                     }
 
                     // Hydrate fields with custom field data
-                    $fields = $this->getRepository()->getFieldValues($entity->getId());
+                    $fields = $this->leadRepository->getFieldValues($entity->getId());
                     $entity->setFields($fields);
 
                     // Add the entity to the array to the right place.
@@ -708,7 +709,7 @@ class LeadModel extends FormModel
      */
     public function disassociateOwner($userId): void
     {
-        $leads = $this->getRepository()->findByOwner($userId);
+        $leads = $this->leadRepository->findByOwner($userId);
         foreach ($leads as $lead) {
             $lead->setOwner(null);
             $this->saveEntity($lead);
@@ -764,7 +765,7 @@ class LeadModel extends FormModel
      */
     public function getLeadsByIp($ip)
     {
-        return $this->getRepository()->getLeadsByIp($ip);
+        return $this->leadRepository->getLeadsByIp($ip);
     }
 
     /**
@@ -808,7 +809,7 @@ class LeadModel extends FormModel
 
         $leadId = ($lead instanceof Lead) ? $lead->getId() : (int) $lead;
 
-        return $this->getRepository()->getFieldValues($leadId);
+        return $this->leadRepository->getFieldValues($leadId);
     }
 
     /**
@@ -862,7 +863,7 @@ class LeadModel extends FormModel
      */
     public function getLead($leadId)
     {
-        return $this->getRepository()->getLead($leadId);
+        return $this->leadRepository->getLead($leadId);
     }
 
     /**
@@ -913,7 +914,7 @@ class LeadModel extends FormModel
 
         // Check for leads using unique identifier
         if (count($uniqueFieldData)) {
-            $existingLeads = $this->getRepository()->getLeadsByUniqueFields($uniqueFieldData);
+            $existingLeads = $this->leadRepository->getLeadsByUniqueFields($uniqueFieldData);
 
             if (!empty($existingLeads)) {
                 $this->logger->debug("LEAD: Existing contact ID# {$existingLeads[0]->getId()} found through query identifiers.");
@@ -2298,7 +2299,7 @@ class LeadModel extends FormModel
         }
 
         if (!empty($entities)) {
-            $this->companyModel->getRepository()->saveEntities($entities);
+            $this->companyRepository->saveEntities($entities);
         }
 
         return $success;

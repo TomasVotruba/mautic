@@ -26,6 +26,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
         protected Translator $translator,
         protected LeadModel $leadModel,
         protected FieldModel $fieldModel,
+        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
     ) {
     }
 
@@ -67,7 +68,7 @@ class CampaignEventLeadFieldValueType extends AbstractType
             $operator    = '=';
 
             if (isset($data['field'])) {
-                $field    = $this->fieldModel->getRepository()->findOneBy(['alias' => $data['field']]);
+                $field    = $this->leadFieldRepository->findOneBy(['alias' => $data['field']]);
                 $operator = $data['operator'];
 
                 if ($field) {

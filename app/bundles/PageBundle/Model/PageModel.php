@@ -119,6 +119,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
         private readonly HitRepository $hitRepository,
         private readonly EmailRepository $emailRepository,
         private readonly UtmTagRepository $utmTagRepository,
+        private readonly \Mautic\PageBundle\Entity\RedirectRepository $redirectRepository,
+        private readonly \Mautic\PageBundle\Entity\TrackableRepository $trackableRepository,
+        private readonly \Mautic\LeadBundle\Entity\LeadRepository $leadRepository,
     ) {
         $this->dateTimeHelper = new DateTimeHelper();
 
@@ -168,7 +171,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $alias = $this->cleanAlias($alias, '', 0, '-', ['_']);
 
             // make sure alias is not already taken
-            $repo      = $this->getRepository();
+            $repo      = $this->pageRepository;
             $testAlias = $alias;
             $count     = $repo->checkPageUniqueAlias($testAlias, $pageIds);
             $aliasTag  = 1;
@@ -307,7 +310,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         switch ($type) {
             case 'page':
                 $viewOther = $this->security->isGranted('page:pages:viewother');
-                $repo      = $this->getRepository();
+                $repo      = $this->pageRepository;
                 $repo->setCurrentUser($this->userHelper->getUser());
                 $results = $repo->getPageList($filter, $limit, 0, $viewOther);
                 break;
@@ -621,7 +624,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 $isVariant = ($isUnique) ? $page->getVariantStartDate() : false;
 
                 try {
-                    $this->getRepository()->upHitCount($page->getId(), 1, $isUnique, !empty($isVariant));
+                    $this->pageRepository->upHitCount($page->getId(), 1, $isUnique, !empty($isVariant));
                 } catch (\Exception $exception) {
                     $this->logger->error(
                         $exception->getMessage(),
@@ -630,11 +633,11 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 }
             } elseif ($page instanceof Redirect) {
                 try {
-                    $this->pageRedirectModel->getRepository()->upHitCount($page->getId(), 1, $isUnique);
+                    $this->redirectRepository->upHitCount($page->getId(), 1, $isUnique);
 
                     // If this is a trackable, up the trackable counts as well
                     if ($hit->getSource() && $hit->getSourceId()) {
-                        $this->pageTrackableModel->getRepository()->upHitCount(
+                        $this->trackableRepository->upHitCount(
                             $page->getId(),
                             $hit->getSource(),
                             $hit->getSourceId(),
@@ -708,7 +711,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         if (null !== $hitDate) {
             if (null === $lead->getLastActive() || $lead->getLastActive() < $hitDate) {
                 try {
-                    $this->leadModel->getRepository()->updateLastActive($lead->getId(), $hitDate);
+                    $this->leadRepository->updateLastActive($lead->getId(), $hitDate);
                 } catch (\Exception $e) {
                     $data = [
                         'unique'             => ($isUnique ? 'true' : 'false'),

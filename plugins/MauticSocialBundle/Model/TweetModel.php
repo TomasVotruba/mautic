@@ -54,7 +54,7 @@ class TweetModel extends FormModel implements AjaxLookupModelInterface
                     $filter = '';
                 }
 
-                $tweetRepo = $this->getRepository();
+                $tweetRepo = $this->tweetRepository;
                 $tweetRepo->setCurrentUser($this->userHelper->getUser());
                 $entities = $tweetRepo->getTweetList(
                     $filter,
