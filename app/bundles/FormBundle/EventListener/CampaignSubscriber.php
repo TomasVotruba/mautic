@@ -8,6 +8,7 @@ use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CampaignBundle\Executioner\RealTimeExecutioner;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\FormBundle\Entity\Form;
+use Mautic\FormBundle\Entity\FormRepository;
 use Mautic\FormBundle\Event\SubmissionEvent;
 use Mautic\FormBundle\Form\Type\CampaignEventFormFieldValueType;
 use Mautic\FormBundle\Form\Type\CampaignEventFormSubmitType;
@@ -20,10 +21,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class CampaignSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+<<<<<<< HEAD
         private FormModel $formModel,
         private SubmissionModel $formSubmissionModel,
         private RealTimeExecutioner $realTimeExecutioner,
         private FormFieldHelper $formFieldHelper,
+=======
+        private readonly FormModel $formModel,
+        private readonly SubmissionModel $formSubmissionModel,
+        private readonly RealTimeExecutioner $realTimeExecutioner,
+        private readonly FormFieldHelper $formFieldHelper,
+        private readonly FormRepository $formRepository,
+>>>>>>> 7da6b8bae0 (use form model repository directly)
     ) {
     }
 
@@ -108,7 +117,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
         }
 
         $operators = $this->formModel->getFilterExpressionFunctions();
-        $form      = $this->formModel->getRepository()->findOneById($event->getConfig()['form']);
+        $form      = $this->formRepository->findOneById($event->getConfig()['form']);
 
         if (!$form || !$form->getId()) {
             $event->setResult(false);
