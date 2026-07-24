@@ -4,14 +4,30 @@ declare(strict_types=1);
 
 namespace Utils\Rector;
 
+use PhpParser\Modifiers;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
+use PhpParser\Node\PropertyItem;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeFinder;
 use PHPStan\Type\ObjectType;
 use Rector\NodeManipulator\ClassDependencyManipulator;
+use Rector\PhpParser\AstResolver;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,12 +40,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * FormModel::getRepository(): FormRepository { return $this->formRepository; }. Going through the model
  * just to reach its repository hides the repository dependency and couples the caller to the whole model.
  *
- * Two shapes, picked from the call receiver:
+ * Three shapes, picked from the surrounding class and the call receiver:
  *
- *   1. The model reaching its own repository - replace with the already-injected property:
+ *   1. Test cases (Symfony KernelTestCase descendants) get the container lookup - a test cannot take a
+ *      service through its PHPUnit-owned constructor:
+ *        $tagModel->getRepository()  ->  self::getContainer()->get(TagRepository::class)
+ *
+ *   2. The model reaching its own repository already holds the property - just swap the call for it:
  *        $this->getRepository()->getNotificationList(...)  ->  $this->notificationRepository->getNotificationList(...)
  *
- *   2. Another object reaching a model's repository - inject the repository and drop the model hop:
+ *   3. Another object reaching a model's repository gets the repository injected and drops the model hop:
  *        $this->formModel->getRepository()->findOneById(...)  ->  $this->formRepository->findOneById(...)
  *      with "private readonly FormRepository $formRepository" added to the constructor.
  *
@@ -38,6 +58,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ModelGetRepositoryToRepositoryServiceRector extends AbstractRector
 {
+    /**
+     * Any class extending this is treated as a test and gets the container lookup.
+     */
+    private const KERNEL_TEST_CASE = 'Symfony\Bundle\FrameworkBundle\Test\KernelTestCase';
+
     private const ABSTRACT_COMMON_MODEL = 'Mautic\CoreBundle\Model\AbstractCommonModel';
 
     /**
@@ -50,6 +75,7 @@ final class ModelGetRepositoryToRepositoryServiceRector extends AbstractRector
     ];
 
     public function __construct(
+        private readonly AstResolver $astResolver,
         private readonly ClassDependencyManipulator $classDependencyManipulator,
         private readonly NodeFinder $nodeFinder,
     ) {
@@ -95,6 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $isTestCase = $this->isObjectType($node, new ObjectType(self::KERNEL_TEST_CASE));
         $hasChanged = false;
 
         foreach ($getRepositoryCalls as $getRepositoryCall) {
@@ -103,17 +130,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyName = $this->resolvePropertyName($repositoryClass);
+            $replacement = $this->resolveReplacement($node, $getRepositoryCall, $repositoryClass, $isTestCase);
 
-            // The model reaching its own repository already holds the property - just swap the call for it.
-            if (!$this->isCallOnThis($getRepositoryCall)) {
-                $this->classDependencyManipulator->addConstructorDependency(
-                    $node,
-                    new PropertyMetadata($propertyName, new ObjectType($repositoryClass))
-                );
-            }
-
-            $this->replaceNode($node, $getRepositoryCall, new PropertyFetch(new Variable('this'), $propertyName));
+            $this->replaceNode($node, $getRepositoryCall, $replacement);
             $hasChanged = true;
         }
 
@@ -146,7 +165,7 @@ CODE_SAMPLE
 
     /**
      * The static type of $model->getRepository() is the concrete repository - unless the model leaves it
-     * as the generic Doctrine EntityRepository, in which case there is no dedicated service to depend on.
+     * as a generic base, in which case there is no dedicated service to depend on.
      */
     private function resolveRepositoryClass(MethodCall $methodCall): ?string
     {
@@ -163,9 +182,160 @@ CODE_SAMPLE
         return $repositoryClass;
     }
 
+    /**
+     * Picks the replacement node for the matched call and performs any needed injection as a side effect.
+     */
+    private function resolveReplacement(Class_ $class, MethodCall $methodCall, string $repositoryClass, bool $isTestCase): Node
+    {
+        if ($isTestCase) {
+            return $this->createContainerGet($repositoryClass);
+        }
+
+        $propertyName = $this->resolvePropertyName($repositoryClass);
+
+        // The model reaching its own repository already holds the property - no injection needed.
+        if (!$this->isCallOnThis($methodCall)) {
+            $this->injectRepository($class, $repositoryClass, $propertyName);
+        }
+
+        return new PropertyFetch(new Variable('this'), $propertyName);
+    }
+
     private function isCallOnThis(MethodCall $methodCall): bool
     {
         return $methodCall->var instanceof Variable && $this->isName($methodCall->var, 'this');
+    }
+
+    /**
+     * Adds the repository dependency, via constructor promotion or - when the class only inherits a
+     * constructor it would otherwise have to override - via a #[Required] autowire method.
+     */
+    private function injectRepository(Class_ $class, string $repositoryClass, string $propertyName): void
+    {
+        if ($this->shouldUseAutowireMethod($class)) {
+            $this->addAutowireDependency($class, $repositoryClass, $propertyName);
+
+            return;
+        }
+
+        $this->classDependencyManipulator->addConstructorDependency(
+            $class,
+            new PropertyMetadata($propertyName, new ObjectType($repositoryClass))
+        );
+    }
+
+    /**
+     * A class without its own constructor that inherits one cannot gain a promoted property without
+     * declaring a full constructor override that forwards every parent argument. Mautic injects into
+     * such classes with an autowire method instead.
+     */
+    private function shouldUseAutowireMethod(Class_ $class): bool
+    {
+        // Its own constructor can take one more promoted parameter safely.
+        if ($class->getMethod('__construct') instanceof ClassMethod) {
+            return false;
+        }
+
+        if (!$class->extends instanceof Name) {
+            return false;
+        }
+
+        $parentClass = $this->getName($class->extends);
+        if ('' === (string) $parentClass) {
+            return false;
+        }
+
+        // Only an inherited constructor would have to be overridden.
+        return $this->astResolver->resolveClassMethod($parentClass, '__construct') instanceof ClassMethod;
+    }
+
+    /**
+     * Injects through "autowire<ShortClassName>()", reusing that method when the class already has one.
+     */
+    private function addAutowireDependency(Class_ $class, string $repositoryClass, string $propertyName): void
+    {
+        // Already injected by an earlier call for the same repository.
+        if ($class->getProperty($propertyName) instanceof Property) {
+            return;
+        }
+
+        $param      = new Param(
+            new Variable($propertyName),
+            null,
+            new FullyQualified($repositoryClass)
+        );
+        $assignment = new Expression(
+            new Assign(new PropertyFetch(new Variable('this'), $propertyName), new Variable($propertyName))
+        );
+
+        $autowireClassMethod = $this->resolveAutowireClassMethod($class);
+
+        if ($autowireClassMethod instanceof ClassMethod) {
+            $autowireClassMethod->params[] = $param;
+            $autowireClassMethod->stmts[]  = $assignment;
+        } else {
+            $autowireClassMethod = $this->createAutowireClassMethod($class, $param, $assignment);
+            array_unshift($class->stmts, $autowireClassMethod);
+        }
+
+        array_unshift($class->stmts, $this->createProperty($repositoryClass, $propertyName));
+    }
+
+    private function resolveAutowireClassMethod(Class_ $class): ?ClassMethod
+    {
+        $autowireMethodName = $this->resolveAutowireMethodName($class);
+
+        foreach ($class->getMethods() as $classMethod) {
+            if ($this->isName($classMethod->name, $autowireMethodName)) {
+                return $classMethod;
+            }
+        }
+
+        return null;
+    }
+
+    private function createAutowireClassMethod(Class_ $class, Param $param, Expression $assignment): ClassMethod
+    {
+        $classMethod             = new ClassMethod($this->resolveAutowireMethodName($class));
+        $classMethod->flags      = Modifiers::PUBLIC;
+        $classMethod->params     = [$param];
+        $classMethod->returnType = new Identifier('void');
+        $classMethod->stmts      = [$assignment];
+
+        // Symfony calls every #[Required] method on service instantiation.
+        $classMethod->attrGroups = [
+            new AttributeGroup([new Attribute(new FullyQualified('Symfony\Contracts\Service\Attribute\Required'))]),
+        ];
+
+        return $classMethod;
+    }
+
+    private function createProperty(string $repositoryClass, string $propertyName): Property
+    {
+        $property       = new Property(Modifiers::PRIVATE, [new PropertyItem($propertyName)]);
+        $property->type = new FullyQualified($repositoryClass);
+
+        return $property;
+    }
+
+    /**
+     * The name is fixed by AutowireMethodNameMustMatchClassRule: "autowire" + the short class name.
+     */
+    private function resolveAutowireMethodName(Class_ $class): string
+    {
+        return 'autowire'.$class->name?->toString();
+    }
+
+    /**
+     * Builds self::getContainer()->get(SomeRepository::class).
+     */
+    private function createContainerGet(string $repositoryClass): MethodCall
+    {
+        return new MethodCall(
+            new StaticCall(new Name('self'), 'getContainer'),
+            'get',
+            [new Arg(new ClassConstFetch(new FullyQualified($repositoryClass), 'class'))]
+        );
     }
 
     /**
