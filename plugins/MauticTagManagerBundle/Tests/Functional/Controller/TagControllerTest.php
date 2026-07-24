@@ -27,22 +27,14 @@ final class TagControllerTest extends MauticMysqlTestCase
 {
     private const MERGE_ROUTE_BASE = '/s/tags/merge/';
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly TagRepository $tagRepository,
-    ) {
-        parent::__construct($name);
-    }
+    private TagRepository $tagRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        static::getContainer()->get('mautic.lead.model.tag');
+        /** @var TagModel $tagModel */
+        $tagModel            = static::getContainer()->get('mautic.lead.model.tag');
+        $this->tagRepository = $tagModel->getRepository();
 
         $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5'];
 

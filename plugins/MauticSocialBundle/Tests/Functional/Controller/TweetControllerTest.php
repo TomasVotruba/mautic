@@ -14,25 +14,13 @@ final class TweetControllerTest extends MauticMysqlTestCase
 {
     private TweetRepository $tweetsRepo;
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly TweetRepository $tweetRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
 
         /** @var TweetModel $tweetsModel */
         $tweetsModel      = static::getContainer()->get('mautic.social.model.tweet');
-        $this->tweetsRepo = $this->tweetRepository;
+        $this->tweetsRepo = $tweetsModel->getRepository();
 
         $tweet = new Tweet();
         $tweet->setName('Tweet One')

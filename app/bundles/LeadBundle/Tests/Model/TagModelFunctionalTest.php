@@ -11,18 +11,6 @@ use Mautic\LeadBundle\Model\TagModel;
 
 final class TagModelFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly TagRepository $tagRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     public function testDeleteOrphanTags(): void
     {
         /** @var TagModel $model */
@@ -42,7 +30,7 @@ final class TagModelFunctionalTest extends MauticMysqlTestCase
         }
 
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->tagRepository;
+        $tagRepository = $model->getRepository();
         $count         = $tagRepository->count([]);
         $this->assertSame(4, $count);
 

@@ -11,24 +11,17 @@ use Mautic\LeadBundle\Entity\ListLead;
 use Mautic\PageBundle\Entity\Hit;
 use Mautic\PageBundle\Entity\Redirect;
 use Mautic\PageBundle\Entity\Trackable;
+use Mautic\PageBundle\Model\TrackableModel;
 
 final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\PageBundle\Entity\TrackableRepository $trackableRepository,
-    ) {
-        parent::__construct($name);
-    }
+    private TrackableModel $model;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->model = self::getContainer()->get('mautic.page.model.trackable');
     }
 
     public function testGetCount(): void
@@ -58,11 +51,11 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
         $segment = $this->createSegment();
         $this->addContactsToSegment($segment, [$leadA, $leadB, $leadC]);
 
-        $this->assertSame('2', $this->trackableRepository->getCount('channel-a', [1, 2], null));
+        $this->assertSame('2', $this->model->getRepository()->getCount('channel-a', [1, 2], null));
 
-        $this->assertEmpty($this->trackableRepository->getCount('channel-a', [2], [$segment->getId()]));
+        $this->assertEmpty($this->model->getRepository()->getCount('channel-a', [2], [$segment->getId()]));
 
-        $count = $this->trackableRepository->getCount('channel-b', [1, 2, 3], [$segment->getId()]);
+        $count = $this->model->getRepository()->getCount('channel-b', [1, 2, 3], [$segment->getId()]);
 
         $this->assertNotEmpty($count);
         $this->assertArrayHasKey($segment->getId(), $count);
@@ -76,7 +69,7 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
             ->setChannelId($channelId)
             ->setRedirect($redirect);
 
-        $this->trackableRepository->saveEntity($trackable);
+        $this->model->getRepository()->saveEntity($trackable);
     }
 
     private function createRedirect(string $url): Redirect
@@ -85,7 +78,7 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
         $redirect->setUrl($url);
         $redirect->setRedirectId();
 
-        $this->trackableRepository->saveEntity($redirect);
+        $this->model->getRepository()->saveEntity($redirect);
 
         return $redirect;
     }
@@ -101,7 +94,7 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
         $hit->setSourceId($sourceId);
         $hit->setRedirect($redirect);
 
-        $this->trackableRepository->saveEntity($hit);
+        $this->model->getRepository()->saveEntity($hit);
     }
 
     private function createSegment(): LeadList
@@ -111,7 +104,7 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
         $segment->setPublicName('test');
         $segment->setAlias('test-alias');
 
-        $this->trackableRepository->saveEntity($segment);
+        $this->model->getRepository()->saveEntity($segment);
 
         return $segment;
     }
@@ -121,7 +114,7 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
         $lead = new Lead();
         $lead->setEmail($email);
 
-        $this->trackableRepository->saveEntity($lead);
+        $this->model->getRepository()->saveEntity($lead);
 
         return $lead;
     }
@@ -139,6 +132,6 @@ final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
             $listLead->setDateAdded(new \DateTime());
             $contacts[] = $listLead;
         }
-        $this->trackableRepository->saveEntities($contacts);
+        $this->model->getRepository()->saveEntities($contacts);
     }
 }

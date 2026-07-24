@@ -6,14 +6,11 @@ namespace Utils\Rector;
 
 use PhpParser\Modifiers;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -58,9 +55,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ModelGetRepositoryToRepositoryServiceRector extends AbstractRector
 {
     /**
-     * Any class extending this is treated as a test and gets the container lookup.
+     * Any class extending this is a test and is left untouched.
      */
-    private const KERNEL_TEST_CASE = 'Symfony\Bundle\FrameworkBundle\Test\KernelTestCase';
+    private const TEST_CASE = 'PHPUnit\Framework\TestCase';
 
     private const ABSTRACT_COMMON_MODEL = 'Mautic\CoreBundle\Model\AbstractCommonModel';
 
@@ -115,12 +112,16 @@ CODE_SAMPLE
             return null;
         }
 
+        // Tests keep their getRepository() mocks - a test cannot take a service through its constructor.
+        if ($this->isObjectType($node, new ObjectType(self::TEST_CASE))) {
+            return null;
+        }
+
         $getRepositoryCalls = $this->findModelGetRepositoryCalls($node);
         if ([] === $getRepositoryCalls) {
             return null;
         }
 
-        $isTestCase = $this->isObjectType($node, new ObjectType(self::KERNEL_TEST_CASE));
         $hasChanged = false;
 
         foreach ($getRepositoryCalls as $getRepositoryCall) {
@@ -129,7 +130,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $replacement = $this->resolveReplacement($node, $getRepositoryCall, $repositoryClass, $isTestCase);
+            $replacement = $this->resolveReplacement($node, $getRepositoryCall, $repositoryClass);
 
             $this->replaceNode($node, $getRepositoryCall, $replacement);
             $hasChanged = true;
@@ -184,12 +185,8 @@ CODE_SAMPLE
     /**
      * Picks the replacement node for the matched call and performs any needed injection as a side effect.
      */
-    private function resolveReplacement(Class_ $class, MethodCall $methodCall, string $repositoryClass, bool $isTestCase): Node
+    private function resolveReplacement(Class_ $class, MethodCall $methodCall, string $repositoryClass): Node
     {
-        if ($isTestCase) {
-            return $this->createContainerGet($repositoryClass);
-        }
-
         $propertyName = $this->resolvePropertyName($repositoryClass);
 
         // The model reaching its own repository already holds the property - no injection needed.
@@ -323,18 +320,6 @@ CODE_SAMPLE
     private function resolveAutowireMethodName(Class_ $class): string
     {
         return 'autowire'.$class->name?->toString();
-    }
-
-    /**
-     * Builds self::getContainer()->get(SomeRepository::class).
-     */
-    private function createContainerGet(string $repositoryClass): MethodCall
-    {
-        return new MethodCall(
-            new StaticCall(new Name('self'), 'getContainer'),
-            'get',
-            [new Arg(new ClassConstFetch(new FullyQualified($repositoryClass), 'class'))]
-        );
     }
 
     /**

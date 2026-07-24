@@ -22,18 +22,6 @@ final class CustomFieldNotificationFunctionalTest extends MauticMysqlTestCase
 
     private LeadField $leadField;
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -80,7 +68,7 @@ final class CustomFieldNotificationFunctionalTest extends MauticMysqlTestCase
         /** @var FieldModel $fieldModel */
         $fieldModel = $this->getContainer()->get('mautic.lead.model.field');
         $fieldModel->saveEntity($field);
-        $this->leadFieldRepository->detachEntity($field);
+        $fieldModel->getRepository()->detachEntity($field);
 
         return $field;
     }

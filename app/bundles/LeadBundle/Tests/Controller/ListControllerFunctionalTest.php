@@ -38,19 +38,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     private string $prefix;
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly LeadListRepository $leadListRepository,
-        private readonly LeadRepository $leadRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     protected function setUp(): void
     {
         $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCountInBackground' === $this->name();
@@ -58,13 +45,13 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         parent::setUp();
         $this->listModel = static::getContainer()->get('mautic.lead.model.list');
         $this->assertInstanceOf(ListModel::class, $this->listModel);
-        $this->listRepo = $this->leadListRepository;
+        $this->listRepo = $this->listModel->getRepository();
         $this->assertInstanceOf(LeadListRepository::class, $this->listRepo);
         /** @var LeadModel $leadModel */
         $leadModel = static::getContainer()->get('mautic.lead.model.lead');
         $this->assertInstanceOf(LeadModel::class, $leadModel);
         $this->segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
-        $this->leadRepo                = $this->leadRepository;
+        $this->leadRepo                = $leadModel->getRepository();
         $this->assertInstanceOf(LeadRepository::class, $this->leadRepo);
         $this->prefix                  = self::getContainer()->getParameter('mautic.db_table_prefix');
         $this->translator              = self::getContainer()->get('translator');

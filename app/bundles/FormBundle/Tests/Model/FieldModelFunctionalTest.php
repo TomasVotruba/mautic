@@ -16,18 +16,6 @@ final class FieldModelFunctionalTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\FormBundle\Entity\FieldRepository $fieldRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     public function testDeleteFormFieldShouldRemoveTableColumn(): void
     {
         $formData = [
@@ -110,7 +98,7 @@ final class FieldModelFunctionalTest extends MauticMysqlTestCase
             'filter' => [
                 'force' => [
                     [
-                        'column' => $this->fieldRepository->getTableAlias().'.alias',
+                        'column' => $fieldModel->getRepository()->getTableAlias().'.alias',
                         'expr'   => 'in',
                         'value'  => ['fname', 'lname'],
                     ],

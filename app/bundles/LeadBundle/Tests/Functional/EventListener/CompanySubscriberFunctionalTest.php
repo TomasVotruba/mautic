@@ -13,29 +13,19 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Model\UserModel;
 
 final class CompanySubscriberFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\UserBundle\Entity\UserRepository $userRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     /**
      * @throws OptimisticLockException
      * @throws ORMException
      */
     public function testCreateCompany(): void
     {
-        static::getContainer()->get('mautic.user.model.user');
-        $users     = $this->userRepository->findAll();
+        /** @var UserModel $userModel */
+        $userModel = static::getContainer()->get('mautic.user.model.user');
+        $users     = $userModel->getRepository()->findAll();
         $user      = reset($users);
         $this->assertInstanceOf(User::class, $user);
 

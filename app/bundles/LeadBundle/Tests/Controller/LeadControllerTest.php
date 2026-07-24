@@ -49,18 +49,6 @@ final class LeadControllerTest extends MauticMysqlTestCase
 
     private const CLOSE_MODAL_ASSERTION_MESSAGE = 'The response does not contain the `closeModal` param.';
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     protected function setUp(): void
     {
         $this->configParams['mailer_from_email']   = 'admin@mautic-community.test';
@@ -574,7 +562,7 @@ final class LeadControllerTest extends MauticMysqlTestCase
         $firstnameField = $fieldModel->getEntity(2);
         $this->assertInstanceOf(LeadField::class, $firstnameField);
         $firstnameField->setIsRequired(true);
-        $this->leadFieldRepository->saveEntity($firstnameField);
+        $fieldModel->getRepository()->saveEntity($firstnameField);
 
         $crawler = $this->client->request('GET', 's/contacts/new/');
         $form    = $crawler->filterXPath('//form[@name="lead"]')->form();

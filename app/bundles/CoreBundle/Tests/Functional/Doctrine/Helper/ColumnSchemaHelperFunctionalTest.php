@@ -19,18 +19,6 @@ final class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
 
     protected $useCleanupRollback = false;
 
-    /**
-     * @psalm-param non-empty-string $name
-     *
-     * @internal This method is not covered by the backward compatibility promise for PHPUnit
-     */
-    public function __construct(
-        string $name,
-        private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
-    ) {
-        parent::__construct($name);
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -93,7 +81,7 @@ final class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
         $fieldModel = $this->getContainer()->get('mautic.lead.model.field');
         $this->assertInstanceOf(FieldModel::class, $fieldModel);
         $fieldModel->saveEntity($field);
-        $this->leadFieldRepository->detachEntity($field);
+        $fieldModel->getRepository()->detachEntity($field);
 
         return $field;
     }
