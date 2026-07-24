@@ -421,7 +421,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
             ->setTokenSelector($inviteToken['selector'])
             ->setTokenVerifierHash(password_hash($inviteToken['verifier'], PASSWORD_DEFAULT))
             ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')));
-        $this->getUserInviteRepository()->revokeOutstandingInvites($email);
+        $this->userInviteRepository->revokeOutstandingInvites($email);
         $this->em->persist($invite);
         $this->em->flush();
 
@@ -449,7 +449,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
             return null;
         }
 
-        $invite = $this->getUserInviteRepository()->findOneByTokenSelector($inviteToken['selector']);
+        $invite = $this->userInviteRepository->findOneByTokenSelector($inviteToken['selector']);
         if (null === $invite) {
             $this->logInvalidInvite('token selector was not found', null, $inviteToken['selector']);
 

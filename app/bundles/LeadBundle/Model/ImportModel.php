@@ -544,7 +544,7 @@ class ImportModel extends FormModel
             return null;
         }
 
-        return $this->getEventLogRepository()->getFailedRows($importId, ['select' => 'properties,id'], $object);
+        return $this->leadEventLogRepository->getFailedRows($importId, ['select' => 'properties,id'], $object);
     }
 
     public function getRepository(): ImportRepository

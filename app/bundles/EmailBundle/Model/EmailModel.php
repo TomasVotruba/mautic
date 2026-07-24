@@ -809,7 +809,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         $emailIds      = ($includeVariants) ? $email->getRelatedEntityIds() : [$email->getId()];
         $templateEmail = 'template' === $email->getEmailType();
-        $results       = $this->getStatDeviceRepository()->getDeviceStats($emailIds, $dateFrom, $dateTo);
+        $results       = $this->statDeviceRepository->getDeviceStats($emailIds, $dateFrom, $dateTo);
 
         // Organize by list_id (if a segment email) and/or device
         $stats   = [];
@@ -2043,7 +2043,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     {
         $chart = new PieChart();
 
-        $deviceStats = $this->getStatDeviceRepository()->getDeviceStats(
+        $deviceStats = $this->statDeviceRepository->getDeviceStats(
             null,
             $dateFrom,
             $dateTo

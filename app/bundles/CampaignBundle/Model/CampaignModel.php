@@ -156,7 +156,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     public function deleteEntity($entity): void
     {
         // Null all the event parents for this campaign to avoid database constraints
-        $this->getEventRepository()->nullEventParents($entity->getId());
+        $this->eventRepository->nullEventParents($entity->getId());
         $this->dispatchEvent('pre_delete', $entity);
         $this->campaignRepository->setCampaignAsDeleted($entity->getId());
 
@@ -351,7 +351,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
         // Persist events if campaign is being edited
         if ($entity->getId()) {
-            $this->getEventRepository()->saveEntities($events);
+            $this->eventRepository->saveEntities($events);
 
             $this->handleDeletedEventsWithRedirect($deletedEvents);
         }
@@ -630,7 +630,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     public function saveCampaignLead(CampaignLead $campaignLead): bool
     {
         try {
-            $this->getCampaignLeadRepository()->saveEntity($campaignLead);
+            $this->leadRepository->saveEntity($campaignLead);
 
             return true;
         } catch (\Exception $exception) {
@@ -718,7 +718,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         $chart->setDataset($this->translator->trans('mautic.campaign.campaign.leads'), $contacts);
 
         if (isset($filter['campaign_id'])) {
-            $rawEvents = $this->getEventRepository()->getCampaignEvents($filter['campaign_id']);
+            $rawEvents = $this->eventRepository->getCampaignEvents($filter['campaign_id']);
 
             // Group events by type
             foreach ($rawEvents as $event) {
@@ -837,7 +837,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getCampaignIdsWithDependenciesOnTagName(string $tagName): array
     {
-        $entities = $this->getEventRepository()->getEntities(
+        $entities = $this->eventRepository->getEntities(
             [
                 'filter' => [
                     'force'  => [
@@ -965,9 +965,9 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         if ([] !== $deletedIds) {
-            $this->getEventRepository()->nullEventRelationships($deletedIds);
+            $this->eventRepository->nullEventRelationships($deletedIds);
 
-            $this->getEventRepository()->setEventsAsDeletedWithRedirect($deletedData);
+            $this->eventRepository->setEventsAsDeletedWithRedirect($deletedData);
         }
     }
 
@@ -978,7 +978,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         if (is_numeric($redirectEventValue) || is_string($redirectEventValue)) {
-            $redirectEvent = $this->getEventRepository()->find($redirectEventValue);
+            $redirectEvent = $this->eventRepository->find($redirectEventValue);
             if ($redirectEvent) {
                 $event->setRedirectEvent($redirectEvent);
             }

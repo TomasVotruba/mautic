@@ -236,7 +236,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
             $isUnique = $trackingNewlyGenerated;
         } elseif (!empty($trackingId)) {
             // Determine if this is a unique download
-            $isUnique = $this->getDownloadRepository()->isUniqueDownload($asset->getId(), $trackingId);
+            $isUnique = $this->downloadRepository->isUniqueDownload($asset->getId(), $trackingId);
         }
 
         $download->setTrackingId($trackingId);

@@ -40,16 +40,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * FormModel::getRepository(): FormRepository { return $this->formRepository; }. Going through the model
  * just to reach its repository hides the repository dependency and couples the caller to the whole model.
  *
- * Three shapes, picked from the surrounding class and the call receiver:
+ * Test classes are skipped - a test cannot take a service through its PHPUnit-owned constructor, and
+ * rewriting their mocks does more harm than good.
  *
- *   1. Test cases (Symfony KernelTestCase descendants) get the container lookup - a test cannot take a
- *      service through its PHPUnit-owned constructor:
- *        $tagModel->getRepository()  ->  self::getContainer()->get(TagRepository::class)
+ * Two shapes, picked from the surrounding class and the call receiver:
  *
- *   2. The model reaching its own repository already holds the property - just swap the call for it:
+ *   1. The model reaching its own repository already holds the property - just swap the call for it:
  *        $this->getRepository()->getNotificationList(...)  ->  $this->notificationRepository->getNotificationList(...)
  *
- *   3. Another object reaching a model's repository gets the repository injected and drops the model hop:
+ *   2. Another object reaching a model's repository gets the repository injected and drops the model hop:
  *        $this->formModel->getRepository()->findOneById(...)  ->  $this->formRepository->findOneById(...)
  *      with "private readonly FormRepository $formRepository" added to the constructor.
  *

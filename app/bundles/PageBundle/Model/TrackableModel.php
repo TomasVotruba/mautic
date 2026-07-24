@@ -105,7 +105,7 @@ class TrackableModel extends AbstractCommonModel
 
         $redirect = $trackable->getRedirect();
 
-        $redirectModel = $this->getRedirectModel();
+        $redirectModel = $this->redirectModel;
 
         $trackedUrl = $redirectModel->generateRedirectUrl($redirect, $clickthrough);
 
@@ -403,7 +403,7 @@ class TrackableModel extends AbstractCommonModel
 
     protected function createTrackableEntity($url, $channel, $channelId): Trackable
     {
-        $redirect = $this->getRedirectModel()->createRedirectEntity($url);
+        $redirect = $this->redirectModel->createRedirectEntity($url);
 
         $trackable = new Trackable();
         $trackable->setChannel($channel)
@@ -628,7 +628,7 @@ class TrackableModel extends AbstractCommonModel
         }
 
         // Simple redirects
-        return $this->getRedirectModel()->getRedirectsByUrls($trackableUrls);
+        return $this->redirectModel->getRedirectsByUrls($trackableUrls);
     }
 
     /**

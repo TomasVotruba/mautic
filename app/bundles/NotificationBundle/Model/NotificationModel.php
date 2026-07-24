@@ -156,7 +156,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
         $stat->setSource($source);
         $stat->setSourceId($sourceId);
 
-        $this->getStatRepository()->saveEntity($stat);
+        $this->statRepository->saveEntity($stat);
     }
 
     /**
@@ -247,7 +247,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
      */
     public function getNotificationStatus($idHash)
     {
-        return $this->getStatRepository()->getNotificationStatus($idHash);
+        return $this->statRepository->getNotificationStatus($idHash);
     }
 
     /**
@@ -257,7 +257,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface, G
      */
     public function getNotificationStatByLeadId($notificationId, $leadId)
     {
-        return $this->getStatRepository()->findBy(
+        return $this->statRepository->findBy(
             [
                 'notification' => (int) $notificationId,
                 'lead'         => (int) $leadId,

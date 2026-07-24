@@ -96,7 +96,7 @@ class SummaryModel extends AbstractCommonModel
         // Start with the current hour.
         $start ??= new \DateTime('+1 hour');
         $start->setTimestamp($start->getTimestamp() - ($start->getTimestamp() % 3600));
-        $end = $this->getCampaignLeadEventLogRepository()->getOldestTriggeredDate();
+        $end = $this->leadEventLogRepository->getOldestTriggeredDate();
 
         if (!$end) {
             $output->writeln('There are no records in the campaign lead event log table. Nothing to summarize.');
