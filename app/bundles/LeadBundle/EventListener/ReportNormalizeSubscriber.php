@@ -10,11 +10,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class ReportNormalizeSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
-        private FieldModel $fieldModel,
-=======
         private readonly \Mautic\LeadBundle\Entity\LeadFieldRepository $leadFieldRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

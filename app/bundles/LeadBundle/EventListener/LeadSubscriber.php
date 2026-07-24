@@ -60,8 +60,8 @@ final class LeadSubscriber implements EventSubscriberInterface
         private CoreParametersHelper $coreParametersHelper,
         private CompanyLeadRepository $companyLeadRepository,
         ModelFactory $modelFactory,
-        private $isTest = false,
         private readonly \Mautic\CoreBundle\Entity\AuditLogRepository $auditLogRepository,
+        private $isTest = false,
     ) {
         $this->setModelFactory($modelFactory);
     }

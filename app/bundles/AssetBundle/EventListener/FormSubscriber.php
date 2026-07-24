@@ -22,22 +22,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final readonly class FormSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private AssetModel $assetModel,
         private TranslatorInterface $translator,
         private AnalyticsHelper $analyticsHelper,
         private AssetsHelper $assetsHelper,
         private ThemeHelperInterface $themeHelper,
         private CoreParametersHelper $coreParametersHelper,
-=======
-        private readonly AssetModel $assetModel,
-        protected TranslatorInterface $translator,
-        private readonly AnalyticsHelper $analyticsHelper,
-        private readonly AssetsHelper $assetsHelper,
-        private readonly ThemeHelperInterface $themeHelper,
-        private readonly CoreParametersHelper $coreParametersHelper,
         private readonly \Mautic\AssetBundle\Entity\AssetRepository $assetRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

@@ -19,16 +19,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class CampaignSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private DynamicContentModel $dynamicContentModel,
         private CacheProvider $cache,
         private EventDispatcherInterface $dispatcher,
-=======
-        private readonly DynamicContentModel $dynamicContentModel,
-        protected CacheProvider $cache,
-        private readonly EventDispatcherInterface $dispatcher,
         private readonly \Mautic\DynamicContentBundle\Entity\DynamicContentRepository $dynamicContentRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

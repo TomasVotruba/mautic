@@ -20,21 +20,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class CampaignSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private FormModel $formModel,
-        private SubmissionModel $formSubmissionModel,
         private RealTimeExecutioner $realTimeExecutioner,
         private FormFieldHelper $formFieldHelper,
-=======
-        private readonly FormModel $formModel,
-        private readonly RealTimeExecutioner $realTimeExecutioner,
-        private readonly FormFieldHelper $formFieldHelper,
         private readonly FormRepository $formRepository,
-<<<<<<< HEAD
->>>>>>> 7da6b8bae0 (use form model repository directly)
-=======
         private readonly \Mautic\FormBundle\Entity\SubmissionRepository $submissionRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

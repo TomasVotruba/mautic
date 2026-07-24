@@ -10,12 +10,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class FormSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private FocusModel $model,
-=======
-        private readonly FocusModel $model,
         private readonly \MauticPlugin\MauticFocusBundle\Entity\FocusRepository $focusRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

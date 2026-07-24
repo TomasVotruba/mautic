@@ -14,16 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final readonly class BroadcastSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private EmailModel $model,
         private EntityManager $em,
         private TranslatorInterface $translator,
-=======
-        private readonly EmailModel $model,
-        private readonly EntityManager $em,
-        private readonly TranslatorInterface $translator,
         private readonly \Mautic\EmailBundle\Entity\EmailRepository $emailRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
     ) {
     }
 

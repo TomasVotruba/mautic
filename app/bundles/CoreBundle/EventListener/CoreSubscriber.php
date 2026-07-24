@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Menu\MenuHelper;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Event\LoginEvent;
 use Mautic\UserBundle\UserEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,25 +26,14 @@ use Symfony\Component\Security\Http\SecurityEvents;
 final readonly class CoreSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-<<<<<<< HEAD
         private BundleHelper $bundleHelper,
         private MenuHelper $menuHelper,
         private UserHelper $userHelper,
         private CoreParametersHelper $coreParametersHelper,
         private AuthorizationCheckerInterface $securityContext,
-        private UserModel $userModel,
         private EventDispatcherInterface $dispatcher,
         private RequestStack $requestStack,
-=======
-        private readonly BundleHelper $bundleHelper,
-        private readonly MenuHelper $menuHelper,
-        private readonly UserHelper $userHelper,
-        private readonly CoreParametersHelper $coreParametersHelper,
-        private readonly AuthorizationCheckerInterface $securityContext,
-        private readonly EventDispatcherInterface $dispatcher,
-        private readonly RequestStack $requestStack,
-        private readonly \Mautic\UserBundle\Entity\UserRepository $userRepository,
->>>>>>> 0236a2224f ([solid] use repsitory directly, instead of getRepository() extra call)
+        private UserRepository $userRepository,
     ) {
     }
 
