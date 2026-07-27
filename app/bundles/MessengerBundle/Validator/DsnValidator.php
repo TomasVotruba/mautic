@@ -6,6 +6,7 @@ namespace Mautic\MessengerBundle\Validator;
 
 use Mautic\CoreBundle\Helper\Dsn\Dsn as CoreDsn;
 use Mautic\MessengerBundle\Validator\Dsn as DsnConstraint;
+use Symfony\Component\Mailer\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportFactory;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -14,7 +15,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class DsnValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly TransportFactory $transportFactory,
+        private readonly \Symfony\Component\Messenger\Transport\TransportFactoryInterface $transportFactory,
     ) {
     }
 

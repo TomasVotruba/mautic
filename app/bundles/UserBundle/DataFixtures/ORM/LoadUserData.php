@@ -8,6 +8,7 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Mautic\UserBundle\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, FixtureGroupInterface
 {
@@ -17,7 +18,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, F
     }
 
     public function __construct(
-        private readonly UserPasswordHasher $hasher,
+        private readonly UserPasswordHasherInterface $hasher,
     ) {
     }
 
