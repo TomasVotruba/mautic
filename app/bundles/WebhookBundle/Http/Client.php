@@ -2,7 +2,6 @@
 
 namespace Mautic\WebhookBundle\Http;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PrivateAddressChecker;

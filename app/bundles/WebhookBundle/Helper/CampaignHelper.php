@@ -4,7 +4,6 @@ namespace Mautic\WebhookBundle\Helper;
 
 use Doctrine\Common\Collections\Collection;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 use Mautic\CoreBundle\Helper\AbstractFormFieldHelper;
 use Mautic\LeadBundle\Entity\Lead;
