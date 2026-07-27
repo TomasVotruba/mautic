@@ -17,7 +17,8 @@ use PHPStan\Rules\RuleErrorBuilder;
  *
  * Typing "Router $router" locks the service to one implementation and blocks decoration, while
  * "RouterInterface $router" describes what the class actually needs. The interface is discovered by
- * convention: a param typed "X" is reported when "XInterface" exists and "X" implements it.
+ * convention: a param typed "X" is reported when "XInterface" exists and "X" implements it. Only
+ * Symfony and Doctrine classes are checked - Mautic's own classes are left alone.
  *
  * @implements Rule<ClassMethod>
  */
@@ -26,9 +27,21 @@ final class PreferInterfaceInConstructorRule implements Rule
     /**
      * @var string[]
      */
+    /**
+     * Only 3rd-party contracts are enforced - Mautic's own classes are free to be typed directly.
+     *
+     * @var string[]
+     */
+    private const HANDLED_NAMESPACE_PREFIXES = ['Symfony\\', 'Doctrine\\'];
+
+    /**
+     * @var string[]
+     */
     private const SKIPPED_INTERFACES = [
         // the concrete Session is the only way to reach getFlashBag()
         'Symfony\\Component\\HttpFoundation\\Session\\SessionInterface',
+        // route loading relies on the concrete Loader
+        'Symfony\\Component\\Config\\Loader\\LoaderInterface',
     ];
 
     public function __construct(
@@ -88,6 +101,10 @@ final class PreferInterfaceInConstructorRule implements Rule
      */
     private function matchImplementedSameNamedInterface(string $className): ?string
     {
+        if (!$this->isHandledNamespace($className)) {
+            return null;
+        }
+
         if (!$this->reflectionProvider->hasClass($className)) {
             return null;
         }
@@ -115,5 +132,16 @@ final class PreferInterfaceInConstructorRule implements Rule
         }
 
         return $interfaceName;
+    }
+
+    private function isHandledNamespace(string $className): bool
+    {
+        foreach (self::HANDLED_NAMESPACE_PREFIXES as $handledNamespacePrefix) {
+            if (str_starts_with($className, $handledNamespacePrefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
