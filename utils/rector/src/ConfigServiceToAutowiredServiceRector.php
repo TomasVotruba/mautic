@@ -67,6 +67,11 @@ use Utils\Rector\ValueObject\ServiceTag;
  *   'mautic.some.validator' => ['class' => SomeValidator::class, 'tag' => 'validator.constraint_validator', 'alias' => 'some_validator']
  *   ->  $services->set(...)->tag('validator.constraint_validator', ['alias' => 'some_validator']);
  *
+ * The "serviceAlias" and "serviceAliases", unlike "alias", are real service aliases pointing at the service:
+ *
+ *   'mautic.sms.api' => ['class' => SomeApi::class, 'serviceAliases' => ['sms_api']]
+ *   ->  $services->alias('sms_api', 'mautic.sms.api');
+ *
  * The "methodCalls" become ->call() calls, their arguments following the very same rules as the constructor ones:
  *
  *   'mautic.some.helper' => ['class' => SomeHelper::class, 'methodCalls' => ['setFormModel' => ['mautic.form.model.form']]]
@@ -186,7 +191,14 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             // ServicePass gives every config.php service an alias of its very class name,
             // see Mautic\CoreBundle\DependencyInjection\Compiler\ServicePass
             if ($serviceName !== $serviceDefinition->getClassName()) {
-                $setStmts[] = $this->createServiceAliasStmt($serviceName, $serviceDefinition->getClassName());
+                $setStmts[] = $this->createServiceAliasStmt(
+                    new ClassConstFetch(new Name($serviceDefinition->getClassName()), 'class'),
+                    $serviceName
+                );
+            }
+
+            foreach ($serviceDefinition->getServiceAliasNames() as $serviceAliasName) {
+                $setStmts[] = $this->createServiceAliasStmt(new String_($serviceAliasName), $serviceName);
             }
         }
 
@@ -277,13 +289,13 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             $groupName = $groupArrayItem->key instanceof String_ ? $groupArrayItem->key->value : '';
 
             foreach ($groupArray->items as $key => $serviceArrayItem) {
-                $serviceDefinition = $this->matchServiceDefinition($serviceArrayItem, $groupName);
-                if (!$serviceDefinition instanceof ServiceDefinition) {
+                $serviceName = $this->matchServiceName($serviceArrayItem->key);
+                if (!$serviceName instanceof String_) {
                     continue;
                 }
 
-                $serviceName = $serviceArrayItem->key;
-                if (!$serviceName instanceof String_) {
+                $serviceDefinition = $this->matchServiceDefinition($serviceArrayItem, $groupName, $serviceName->value);
+                if (!$serviceDefinition instanceof ServiceDefinition) {
                     continue;
                 }
 
@@ -564,16 +576,25 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
     }
 
     /**
-     * Matches a service definition made of a "class" key and optional "arguments", "tag", "tags", "tagArguments",
-     * "alias" and "methodCalls",
-     * e.g. ['class' => SomeService::class, 'arguments' => ['translator'], 'tag' => 'security.voter'].
+     * A service is named by a plain string or by a SomeService::class constant, both ending up as the very same
+     * service id, see ServicePass.
      */
-    private function matchServiceDefinition(ArrayItem $arrayItem, string $groupName): ?ServiceDefinition
+    private function matchServiceName(?Node $keyNode): ?String_
     {
-        if (!$arrayItem->key instanceof String_) {
-            return null;
+        if ($keyNode instanceof String_) {
+            return new String_($keyNode->value);
         }
 
+        return $keyNode instanceof ClassConstFetch ? $this->matchClassName($keyNode) : null;
+    }
+
+    /**
+     * Matches a service definition made of a "class" key and optional "arguments", "tag", "tags", "tagArguments",
+     * "alias", "methodCalls", "serviceAlias" and "serviceAliases",
+     * e.g. ['class' => SomeService::class, 'arguments' => ['translator'], 'tag' => 'security.voter'].
+     */
+    private function matchServiceDefinition(ArrayItem $arrayItem, string $groupName, string $serviceName): ?ServiceDefinition
+    {
         $definitionArray = $arrayItem->value;
         if (!$definitionArray instanceof Array_) {
             return null;
@@ -589,7 +610,7 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
         }
 
         // "parent", "factory", ... would be silently dropped on the way
-        if ([] !== array_diff($definitionKeys, ['class', 'arguments', 'tag', 'tags', 'tagArguments', 'alias', 'methodCalls'])) {
+        if ([] !== array_diff($definitionKeys, ['class', 'arguments', 'tag', 'tags', 'tagArguments', 'alias', 'methodCalls', 'serviceAlias', 'serviceAliases'])) {
             return null;
         }
 
@@ -630,7 +651,60 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             return null;
         }
 
-        return new ServiceDefinition($className->value, $serviceArguments, $serviceTags, $serviceMethodCalls);
+        $serviceAliasNames = $this->resolveServiceAliasNames($definitionArray, $serviceName);
+        if (null === $serviceAliasNames) {
+            return null;
+        }
+
+        return new ServiceDefinition($className->value, $serviceArguments, $serviceTags, $serviceMethodCalls, $serviceAliasNames);
+    }
+
+    /**
+     * The "serviceAlias" and "serviceAliases" are real service aliases, pointing at the service itself,
+     * see ServicePass::process().
+     *
+     * A name is a sprintf() pattern there, e.g. "%s.api", so anything carrying a "%" is left in config.php,
+     * as the pattern would have to be filled in by hand.
+     *
+     * @return string[]|null null when an alias name cannot be re-created
+     */
+    private function resolveServiceAliasNames(Array_ $definitionArray, string $serviceName): ?array
+    {
+        $aliasValues = [];
+
+        $serviceAliasValue = $this->matchArrayValueByKey($definitionArray, 'serviceAlias');
+        if (null !== $serviceAliasValue) {
+            $aliasValues[] = $serviceAliasValue;
+        }
+
+        // "serviceAliases" is only looked at when there is no "serviceAlias", see ServicePass
+        $serviceAliasesValue = [] === $aliasValues ? $this->matchArrayValueByKey($definitionArray, 'serviceAliases') : null;
+        if (null !== $serviceAliasesValue) {
+            if (!$serviceAliasesValue instanceof Array_) {
+                return null;
+            }
+
+            foreach ($serviceAliasesValue->items as $serviceAliasArrayItem) {
+                $aliasValues[] = $serviceAliasArrayItem->value;
+            }
+        }
+
+        $serviceAliasNames = [];
+
+        foreach ($aliasValues as $aliasValue) {
+            if (!$aliasValue instanceof String_ || str_contains($aliasValue->value, '%')) {
+                return null;
+            }
+
+            // an alias of the service name would be the service itself
+            if ($aliasValue->value === $serviceName) {
+                continue;
+            }
+
+            $serviceAliasNames[] = $aliasValue->value;
+        }
+
+        return $serviceAliasNames;
     }
 
     /**
@@ -786,7 +860,7 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             return new String_($tagValue->value);
         }
 
-        if (!$tagValue instanceof ClassConstFetch || !$tagValue->class instanceof Name || !$tagValue->name instanceof Identifier) {
+        if (!$tagValue instanceof ClassConstFetch || !$tagValue->name instanceof Identifier) {
             return null;
         }
 
@@ -795,7 +869,19 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             return null;
         }
 
-        return new ClassConstFetch(new Name($tagValue->class->toString()), $tagValue->name->toString());
+        return $this->createClassConstFetch($tagValue);
+    }
+
+    /**
+     * Re-creates a class constant as a fresh node, as the parsed one belongs to another file.
+     */
+    private function createClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
+    {
+        if (!$classConstFetch->class instanceof Name || !$classConstFetch->name instanceof Identifier) {
+            return null;
+        }
+
+        return new ClassConstFetch(new Name($classConstFetch->class->toString()), $classConstFetch->name->toString());
     }
 
     /**
@@ -824,6 +910,13 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
                 $tagArgumentValue = new UnaryMinus(new Int_($tagArgumentValue->expr->value));
             } elseif ($tagArgumentValue instanceof ConstFetch) {
                 $tagArgumentValue = new ConstFetch(new Name($tagArgumentValue->name->toString()));
+            } elseif ($tagArgumentValue instanceof ClassConstFetch) {
+                $classConstFetch = $this->createClassConstFetch($tagArgumentValue);
+                if (!$classConstFetch instanceof ClassConstFetch) {
+                    return null;
+                }
+
+                $tagArgumentValue = $classConstFetch;
             } else {
                 return null;
             }
@@ -968,7 +1061,49 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             return new ConstFetch(new Name($argumentValue->name->toString()));
         }
 
+        if ($argumentValue instanceof Array_) {
+            return $this->createArrayArgumentExpr($argumentValue);
+        }
+
         return null;
+    }
+
+    /**
+     * An array argument is passed on as it is, only its "%mautic.some_config%" values are resolved,
+     * see ServicePass::processArgument(). A plain value stays the very string it is, it is no service reference.
+     */
+    private function createArrayArgumentExpr(Array_ $arrayArgumentValue): ?Array_
+    {
+        $arrayItems = [];
+
+        foreach ($arrayArgumentValue->items as $argumentArrayItem) {
+            $itemValue = $argumentArrayItem->value;
+
+            // anything else would make ServicePass itself fail on the "%" check of the value
+            if (!$itemValue instanceof String_) {
+                return null;
+            }
+
+            if (str_starts_with($itemValue->value, '%') && str_ends_with($itemValue->value, '%') && strlen($itemValue->value) > 2) {
+                $parameterName = str_replace('%%', '%', substr($itemValue->value, 1, -1));
+                $itemValue     = $this->createConfiguratorFuncCall(self::PARAM_FUNCTION_NAME, $parameterName);
+            } else {
+                $itemValue = new String_($itemValue->value);
+            }
+
+            $itemKey = $argumentArrayItem->key;
+            if (null !== $itemKey) {
+                if (!$itemKey instanceof String_ && !$itemKey instanceof Int_) {
+                    return null;
+                }
+
+                $itemKey = $itemKey instanceof String_ ? new String_($itemKey->value) : new Int_($itemKey->value);
+            }
+
+            $arrayItems[] = new ArrayItem($itemValue, $itemKey);
+        }
+
+        return new Array_($arrayItems);
     }
 
     private function createStringArgumentExpr(string $argumentValue): ?Expr
@@ -1083,10 +1218,10 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
         return new Expression($methodCall);
     }
 
-    private function createServiceAliasStmt(string $serviceName, string $className): Expression
+    private function createServiceAliasStmt(Expr $aliasName, string $serviceName): Expression
     {
         $methodCall = new MethodCall(new Variable(self::SERVICES_VARIABLE_NAME), 'alias', [
-            new Arg(new ClassConstFetch(new Name($className), 'class')),
+            new Arg($aliasName),
             new Arg(new String_($serviceName)),
         ]);
 

@@ -10,12 +10,14 @@ final readonly class ServiceDefinition
      * @param ServiceArgument[]   $serviceArguments
      * @param ServiceTag[]        $serviceTags
      * @param ServiceMethodCall[] $serviceMethodCalls
+     * @param string[]            $serviceAliasNames
      */
     public function __construct(
         private string $className,
         private array $serviceArguments,
         private array $serviceTags,
         private array $serviceMethodCalls,
+        private array $serviceAliasNames = [],
     ) {
     }
 
@@ -46,5 +48,13 @@ final readonly class ServiceDefinition
     public function getServiceMethodCalls(): array
     {
         return $this->serviceMethodCalls;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getServiceAliasNames(): array
+    {
+        return $this->serviceAliasNames;
     }
 }
