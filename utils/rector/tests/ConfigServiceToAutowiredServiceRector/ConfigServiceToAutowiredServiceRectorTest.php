@@ -775,6 +775,188 @@ CODE_SAMPLE;
         $this->assertStringContainsString($expectedSetStmts, $this->readServicesFile());
     }
 
+    public function testMovesServiceWithClassConstantTagArgument(): void
+    {
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            'mautic.some.event_listener' => [
+                'class'        => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class,
+                'tag'          => 'kernel.event_listener',
+                'tagArguments' => [
+                    'event' => Doctrine\Bundle\FixturesBundle\DependencyInjection\CompilerPass\FixturesCompilerPass::FIXTURE_TAG,
+                ],
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertIsString($this->refactorConfigFile($configFileContent));
+
+        $this->assertStringContainsString(
+            "->tag('kernel.event_listener', ['event' => Doctrine\Bundle\FixturesBundle\DependencyInjection\CompilerPass\FixturesCompilerPass::FIXTURE_TAG]);",
+            $this->readServicesFile()
+        );
+    }
+
+    public function testMovesServiceNamedByClassConstant(): void
+    {
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class => [
+                'class' => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class,
+                'tag'   => 'validator.constraint_validator',
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertIsString($this->refactorConfigFile($configFileContent));
+
+        $servicesFileContent = $this->readServicesFile();
+
+        // the service is named after its very class, so it needs neither an id nor a class alias
+        $this->assertStringContainsString(
+            '$services->set('.self::AUTOWIRABLE_HELPER_CLASS."::class)->tag('validator.constraint_validator');",
+            $servicesFileContent
+        );
+
+        $this->assertStringNotContainsString('$services->alias('.self::AUTOWIRABLE_HELPER_CLASS, $servicesFileContent);
+    }
+
+    public function testMovesServiceWithArrayConstructorArgument(): void
+    {
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            'mautic.some.attribute_aware_helper' => [
+                'class'     => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AttributeAwareHelper::class,
+                'arguments' => [
+                    'translator',
+                    [
+                        'email' => '%mautic.some_secret%',
+                        'name'  => 'some_plain_value',
+                    ],
+                ],
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertIsString($this->refactorConfigFile($configFileContent));
+
+        // only the "%mautic.some_secret%" value is a parameter, the plain one is no service reference
+        $this->assertStringContainsString(
+            "->arg('\$attributes', ['email' => param('mautic.some_secret'), 'name' => 'some_plain_value']);",
+            $this->readServicesFile()
+        );
+    }
+
+    public function testMovesServiceWithServiceAliases(): void
+    {
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            'mautic.some.transport' => [
+                'class'          => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class,
+                'serviceAliases' => [
+                    'some_api',
+                    'mautic.some.api',
+                ],
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertIsString($this->refactorConfigFile($configFileContent));
+
+        // unlike "alias", the "serviceAliases" are real service aliases
+        $expectedSetStmts = <<<'CODE_SAMPLE'
+    $services->set('mautic.some.transport', Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class);
+    $services->alias(Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class, 'mautic.some.transport');
+    $services->alias('some_api', 'mautic.some.transport');
+    $services->alias('mautic.some.api', 'mautic.some.transport');
+CODE_SAMPLE;
+
+        $this->assertStringContainsString($expectedSetStmts, $this->readServicesFile());
+    }
+
+    public function testMovesHelperWithServiceAlias(): void
+    {
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            'mautic.some.core_parameters' => [
+                'class'        => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class,
+                'serviceAlias' => 'mautic.config',
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertIsString($this->refactorConfigFile($configFileContent));
+
+        $this->assertStringContainsString(
+            "\$services->alias('mautic.config', 'mautic.some.core_parameters');",
+            $this->readServicesFile()
+        );
+    }
+
+    public function testSkipServiceWithSprintfServiceAlias(): void
+    {
+        // the alias name is a sprintf() pattern, filling it in is beyond what the rule can tell
+        $configFileContent = <<<'CODE_SAMPLE'
+<?php
+
+return [
+    'services' => [
+        'other' => [
+            'mautic.some.transport' => [
+                'class'        => Utils\Rector\Tests\ConfigServiceToAutowiredServiceRector\Source\AutowirableHelper::class,
+                'serviceAlias' => '%s.api',
+            ],
+        ],
+    ],
+];
+CODE_SAMPLE;
+
+        $this->createFile('services.php', self::SERVICES_FILE);
+
+        $this->assertNull($this->refactorConfigFile($configFileContent));
+        $this->assertSame(self::SERVICES_FILE, $this->readServicesFile());
+    }
+
     private function createFile(string $fileName, string $fileContent): string
     {
         $filePath = $this->temporaryDirectory.'/'.$fileName;
