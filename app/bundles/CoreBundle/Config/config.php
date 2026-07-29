@@ -154,15 +154,6 @@ return [
         ],
     ],
     'services' => [
-        'helpers' => [
-            'mautic.helper.core_parameters' => [
-                'class'     => Mautic\CoreBundle\Helper\CoreParametersHelper::class,
-                'arguments' => [
-                    'service_container',
-                ],
-                'serviceAlias' => 'mautic.config',
-            ],
-        ],
         'menus' => [
             'mautic.menu.main' => [
                 'alias' => 'main',

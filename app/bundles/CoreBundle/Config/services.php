@@ -50,6 +50,9 @@ return function (ContainerConfigurator $configurator): void {
         ->exclude('../{'.implode(',', array_merge(MauticCoreExtension::DEFAULT_EXCLUDES, $excludes)).'}');
 
     $services->load('Mautic\\CoreBundle\\Entity\\', '../Entity/*Repository.php');
+    $services->set('mautic.helper.core_parameters', Mautic\CoreBundle\Helper\CoreParametersHelper::class)->tag('twig.helper');
+    $services->alias(Mautic\CoreBundle\Helper\CoreParametersHelper::class, 'mautic.helper.core_parameters');
+    $services->alias('mautic.config', 'mautic.helper.core_parameters');
     $services->set('mautic.translation.loader', Mautic\CoreBundle\Loader\TranslationLoader::class)->tag('translation.loader', ['alias' => 'mautic']);
     $services->alias(Mautic\CoreBundle\Loader\TranslationLoader::class, 'mautic.translation.loader');
     $services->set('mautic.helper.theme', Mautic\CoreBundle\Helper\ThemeHelper::class)

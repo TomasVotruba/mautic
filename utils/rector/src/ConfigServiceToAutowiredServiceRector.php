@@ -1186,10 +1186,14 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
 
     private function createServiceSetStmt(string $serviceName, ServiceDefinition $serviceDefinition): Expression
     {
-        $methodCall = new MethodCall(new Variable(self::SERVICES_VARIABLE_NAME), 'set', [
-            new Arg(new String_($serviceName)),
-            new Arg(new ClassConstFetch(new Name($serviceDefinition->getClassName()), 'class')),
-        ]);
+        $classConstFetch = new ClassConstFetch(new Name($serviceDefinition->getClassName()), 'class');
+
+        // a service named after its very class needs no id of its own
+        $args = $serviceName === $serviceDefinition->getClassName()
+            ? [new Arg($classConstFetch)]
+            : [new Arg(new String_($serviceName)), new Arg($classConstFetch)];
+
+        $methodCall = new MethodCall(new Variable(self::SERVICES_VARIABLE_NAME), 'set', $args);
 
         foreach ($serviceDefinition->getServiceArguments() as $serviceArgument) {
             $methodCall = new MethodCall($methodCall, 'arg', [
