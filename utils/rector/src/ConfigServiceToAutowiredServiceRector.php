@@ -565,11 +565,17 @@ final class ConfigServiceToAutowiredServiceRector extends AbstractRector
             }
 
             $firstArg = $setMethodCall->getArgs()[0] ?? null;
-            if (!$firstArg instanceof Arg || !$firstArg->value instanceof String_) {
+            if (!$firstArg instanceof Arg) {
                 continue;
             }
 
-            $serviceNames[] = $firstArg->value->value;
+            // a service named after its very class carries no id of its own
+            $serviceName = $this->matchServiceName($firstArg->value);
+            if (!$serviceName instanceof String_) {
+                continue;
+            }
+
+            $serviceNames[] = $serviceName->value;
         }
 
         return $serviceNames;
