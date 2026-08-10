@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\CoreBundle\Tests\Unit\Doctrine;
 
 use Doctrine\DBAL\Platforms\MySQLPlatform;
@@ -7,30 +9,6 @@ use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 use Mautic\CoreBundle\Doctrine\Type\ArrayType;
 use Mautic\IntegrationsBundle\Sync\DAO\Value\ReferenceValueDAO;
-
-final class ExampleClassWithPrivateProperty
-{
-    /**
-     * @phpstan-ignore-next-line
-     */
-    private string $test = 'value';
-}
-
-final class ExampleClassWithProtectedProperty
-{
-    /**
-     * @phpstan-ignore-next-line
-     */
-    private string $test = 'value';
-}
-
-final class ExampleClassWithPublicProperty
-{
-    /**
-     * @phpstan-ignore-next-line
-     */
-    public $test = 'value';
-}
 
 final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
 {
@@ -71,19 +49,19 @@ final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(ConversionException::class);
 
-        $this->arrayType->convertToDatabaseValue([new ExampleClassWithPrivateProperty()], $this->platform);
+        $this->arrayType->convertToDatabaseValue([new Fixture\ExampleClassWithPrivateProperty()], $this->platform);
     }
 
     public function testGivenObjectWithProtectedPropertyWhenConvertsToDatabaseValueThenError(): void
     {
         $this->expectException(ConversionException::class);
 
-        $this->arrayType->convertToDatabaseValue([new ExampleClassWithProtectedProperty()], $this->platform);
+        $this->arrayType->convertToDatabaseValue([new Fixture\ExampleClassWithProtectedProperty()], $this->platform);
     }
 
     public function testGivenObjectWithPublicPropertyWhenConvertsToDatabaseValueThenGetEncodedData(): void
     {
-        $result = $this->arrayType->convertToDatabaseValue([new ExampleClassWithPublicProperty()], $this->platform);
+        $result = $this->arrayType->convertToDatabaseValue([new Fixture\ExampleClassWithPublicProperty()], $this->platform);
         $this->assertEquals(
             'a:1:{i:0;O:68:"Mautic\CoreBundle\Tests\Unit\Doctrine\ExampleClassWithPublicProperty":1:{s:4:"test";s:5:"value";}}',
             $result
@@ -127,7 +105,7 @@ final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
     {
         $array = [
             0,
-            new ExampleClassWithPrivateProperty(),
+            new Fixture\ExampleClassWithPrivateProperty(),
         ];
 
         $array = serialize($array);
@@ -143,7 +121,7 @@ final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
     {
         $array = [
             0,
-            new ExampleClassWithProtectedProperty(),
+            new Fixture\ExampleClassWithProtectedProperty(),
         ];
 
         $array = serialize($array);
@@ -159,7 +137,7 @@ final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
     {
         $array = [
             0,
-            new ExampleClassWithPublicProperty(),
+            new Fixture\ExampleClassWithPublicProperty(),
         ];
 
         $array = serialize($array);
@@ -168,7 +146,7 @@ final class ArrayTypeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             [
                 0,
-                new ExampleClassWithPublicProperty(),
+                new Fixture\ExampleClassWithPublicProperty(),
             ],
             $result
         );

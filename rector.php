@@ -87,9 +87,6 @@ return RectorConfig::configure()
             __DIR__.'/app/bundles/CoreBundle/Twig/Helper/DateHelper.php',
         ],
 
-        Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector::class => [
-            // test fixture
-            __DIR__.'/app/bundles/CoreBundle/Tests/Unit/Doctrine/ArrayTypeTest.php',
-        ],
+        '*/Fixture/*',
     ])
     ->reportUnusedSkips();
