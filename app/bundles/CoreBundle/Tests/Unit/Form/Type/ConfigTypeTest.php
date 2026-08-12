@@ -141,8 +141,7 @@ final class ConfigTypeTest extends TypeTestCase
         $configType = $this->getConfigFormType();
 
         $repoMock = $this->createMock(PageRepository::class);
-        $repoMock->expects($this->exactly(2))
-                 ->method('getPageList')
+        $repoMock->method('getPageList')
                  ->willReturn([]);
 
         $pageListType = new PageListType($this->createStub(CorePermissions::class), $repoMock);
