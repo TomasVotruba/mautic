@@ -338,10 +338,6 @@ final class ReportSubscriberTest extends AbstractMauticTestCase
             ->willReturn(['a', 'b', 'c']);
 
         $mockChartQuery->expects($this->once())
-            ->method('fetchCount')
-            ->willReturn(2);
-
-        $mockChartQuery->expects($this->once())
             ->method('fetchCountDateDiff')
             ->willReturn(2);
 
