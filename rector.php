@@ -41,7 +41,7 @@ return RectorConfig::configure()
         // Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector::class,
 
         // @todo move to "twig" group
-        // Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector::class,
+        Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector::class,
 
         // handle next
         Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWithoutExpectationsAttributeRector::class,

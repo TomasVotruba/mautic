@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(DateDayToday::class)]
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class DateDayTodayTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetOperatorBetween(): void
@@ -37,7 +38,8 @@ final class DateDayTodayTest extends \PHPUnit\Framework\TestCase
         $dateDecorator    = $this->createMock(DateDecorator::class);
         $timezoneResolver = $this->createStub(TimezoneResolver::class);
 
-        $dateDecorator->method('getOperator')
+        $dateDecorator
+            ->method('getOperator')
             ->with()
             ->willReturn('=<');
 
