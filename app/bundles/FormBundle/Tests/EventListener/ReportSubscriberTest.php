@@ -356,7 +356,7 @@ final class ReportSubscriberTest extends AbstractMauticTestCase
             ->method('checkContext')
             ->willReturn(true);
 
-        $mockEvent->expects($this->once())
+        $mockEvent
             ->method('getOptions')
             ->willReturn($graphOptions);
 

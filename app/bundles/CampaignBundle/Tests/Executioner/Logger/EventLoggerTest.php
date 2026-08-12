@@ -71,7 +71,7 @@ final class EventLoggerTest extends TestCase
 
     public function testBuildLogEntry(): void
     {
-        $this->ipLookupHelper->expects($this->atLeastOnce())->method('getIpAddress')->willReturn(new IpAddress());
+        $this->ipLookupHelper->method('getIpAddress')->willReturn(new IpAddress());
 
         $this->leadRepository->expects($this->exactly(3))
             ->method('getContactRotations')

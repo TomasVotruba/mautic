@@ -30,7 +30,6 @@ return RectorConfig::configure()
         Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector::class,
         Rector\TypeDeclarationDocblocks\Rector\ClassMethod\NarrowArrayCollectionUnionReturnDocblockRector::class,
         UnserializeToSerializerDecodeRector::class,
-        Utils\Rector\AddExpectsOnceToMockMethodCallRector::class,
 
         // DI
         Utils\Rector\ModelGetRepositoryToRepositoryServiceRector::class,
