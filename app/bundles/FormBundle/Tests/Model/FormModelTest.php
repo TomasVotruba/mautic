@@ -76,7 +76,7 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $this->leadFieldModel        = $this->createMock(LeadFieldModel::class);
         $this->formRepository        = $this->createMock(FormRepository::class);
         $coreParametersHelper  = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->expects($this->once())->method('get')
+        $coreParametersHelper->method('get')
             ->willReturnMap([
                 ['form_field_autofill', false, true],
             ]);
@@ -527,7 +527,7 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $form->addField(123, $emailField);
 
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->expects($this->once())
+        $coreParametersHelper
             ->method('get')
             ->with('form_field_autofill', false)
             ->willReturn(false);

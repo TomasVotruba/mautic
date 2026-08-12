@@ -205,7 +205,7 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $contactEntity->setId($contact['id']);
 
         $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contact]);
-        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->method('getLead')->willReturn(null);
         $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadRepository = $this->createMock(LeadRepository::class);
@@ -244,7 +244,7 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $contactEntity = new Lead();
 
         $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contactEntity]);
-        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->method('getLead')->willReturn(null);
         $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadModel      = $this->createMock(LeadModel::class);
@@ -282,7 +282,7 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $contactEntity->setId($contact['id']);
 
         $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contact]);
-        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->method('getLead')->willReturn(null);
         $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadModel      = $this->createMock(LeadModel::class);

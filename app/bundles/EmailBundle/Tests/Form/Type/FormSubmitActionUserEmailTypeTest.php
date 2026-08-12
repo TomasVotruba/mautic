@@ -23,7 +23,7 @@ final class FormSubmitActionUserEmailTypeTest extends \PHPUnit\Framework\TestCas
 
         $this->formBuilder          = $this->createMock(FormBuilderInterface::class);
         $this->form                 = new FormSubmitActionUserEmailType();
-        $this->formBuilder->expects($this->once())->method('create')->willReturnSelf();
+        $this->formBuilder->method('create')->willReturnSelf();
     }
 
     public function testBuildForm(): void

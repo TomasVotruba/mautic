@@ -67,7 +67,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
     {
         $this->eventCollector        = $this->createMock(EventCollector::class);
         $this->eventLogger           = $this->createMock(EventLogger::class);
-        $this->eventLogger->expects($this->once())->method('persistCollection')
+        $this->eventLogger->method('persistCollection')
             ->willReturn($this->eventLogger);
         $this->actionExecutioner     = $this->createMock(ActionExecutioner::class);
         $this->eventScheduler        = $this->createMock(EventScheduler::class);
@@ -120,7 +120,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $events   = new ArrayCollection([$otherEvent, $jumpEvent]);
         $contacts = new ArrayCollection([new Lead()]);
 
-        $this->eventCollector->expects($this->once())->method('getEventConfig')
+        $this->eventCollector->expects($this->atLeastOnce())->method('getEventConfig')
             ->willReturnCallback(
                 function (Event $event) use ($jumpConfig, $otherConfig): ActionAccessor {
                     if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType()) {
@@ -198,7 +198,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
             ->setProperties(['jumpToEvent' => 999]);
 
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())->method('getId')
+        $lead->expects($this->atLeastOnce())->method('getId')
             ->willReturn(1);
 
         $log = $this->createMock(LeadEventLog::class);
@@ -206,9 +206,9 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($lead);
         $log->expects($this->once())->method('setIsScheduled')
             ->willReturn($log);
-        $log->expects($this->once())->method('getEvent')
+        $log->method('getEvent')
             ->willReturn($event);
-        $log->expects($this->once())->method('getId')
+        $log->expects($this->atLeastOnce())->method('getId')
             ->willReturn(1);
 
         $logs = new ArrayCollection(

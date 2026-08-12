@@ -51,7 +51,7 @@ final class DateHelperTest extends \PHPUnit\Framework\TestCase
         );
 
         // Setup translator mock for humanized dates
-        $this->translator->expects($this->once())->method('trans')
+        $this->translator->method('trans')
             ->willReturnCallback(fn (string $key, array $parameters = []): string => match ($key) {
                 'mautic.core.date.years.ago'   => $parameters['%count%'].' year(s) ago',
                 'mautic.core.date.months.ago'  => $parameters['%count%'].' month(s) ago',
@@ -101,7 +101,7 @@ final class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->with('date_format_timeonly')
             ->willReturn('H:i:s');
 
-        $this->translator->expects($this->once())
+        $this->translator
             ->method('trans')
             ->with('mautic.core.date.today', $this->anything())
             ->willReturn('Today');

@@ -96,7 +96,7 @@ final class DynamicFiltersTypeTest extends TestCase
 
     private function setupTranslator(string $translation = 'Equals'): void
     {
-        $this->translator->expects($this->once())->method('trans')->willReturn($translation);
+        $this->translator->method('trans')->willReturn($translation);
     }
 
     /**

@@ -178,7 +178,7 @@ final class PageModelTest extends PageTestAbstract
         $pageModel   = $this->getPageModel();
 
         $ipAddress = $this->createMock(IpAddress::class);
-        $ipAddress->expects($this->once())->method('isTrackable')->willReturn(true);
+        $ipAddress->method('isTrackable')->willReturn(true);
 
         $this->security->expects($this->once())->method('isAnonymous')->willReturn(true);
         $this->ipLookupHelper->expects($this->once())->method('getIpAddress')->willReturn($ipAddress);

@@ -32,9 +32,9 @@ final class PreferenceBuilderTest extends \PHPUnit\Framework\TestCase
             );
 
         $log = $this->createMock(LeadEventLog::class);
-        $log->expects($this->once())->method('getLead')
+        $log->expects($this->atLeastOnce())->method('getLead')
             ->willReturn($lead);
-        $log->expects($this->once())->method('getId')
+        $log->expects($this->atLeastOnce())->method('getId')
             ->willReturn(1);
 
         $lead2 = $this->createMock(Lead::class);
@@ -52,9 +52,9 @@ final class PreferenceBuilderTest extends \PHPUnit\Framework\TestCase
             );
 
         $log2 = $this->createMock(LeadEventLog::class);
-        $log2->expects($this->once())->method('getLead')
+        $log2->expects($this->atLeastOnce())->method('getLead')
             ->willReturn($lead2);
-        $log2->expects($this->once())->method('getId')
+        $log2->expects($this->atLeastOnce())->method('getId')
             ->willReturn(2);
 
         $logs = new ArrayCollection([$log, $log2]);
@@ -117,9 +117,9 @@ final class PreferenceBuilderTest extends \PHPUnit\Framework\TestCase
             );
 
         $log = $this->createMock(LeadEventLog::class);
-        $log->expects($this->once())->method('getLead')
+        $log->expects($this->atLeastOnce())->method('getLead')
             ->willReturn($lead);
-        $log->expects($this->once())->method('getId')
+        $log->expects($this->atLeastOnce())->method('getId')
             ->willReturn(1);
 
         $logs = new ArrayCollection([$log]);

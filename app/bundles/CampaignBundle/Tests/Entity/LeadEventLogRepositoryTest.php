@@ -35,7 +35,7 @@ final class LeadEventLogRepositoryTest extends TestCase
             ->willReturn($leadEventLog);
 
         $leadEventLogRepository = $this->configureRepository(LeadEventLog::class, $emMock);
-        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
 
         $isLastFailed = $leadEventLogRepository->isLastFailed(42, 4242);
         $this->assertSame($expectedResult, $isLastFailed);

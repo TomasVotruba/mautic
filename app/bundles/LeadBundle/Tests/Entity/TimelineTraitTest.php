@@ -23,7 +23,7 @@ final class TimelineTraitTest extends TestCase
             ->onlyMethods(['getTableAlias'])
             ->getMock();
 
-        $this->repository->expects($this->once())->method('getTableAlias')->willReturn('ut');
+        $this->repository->method('getTableAlias')->willReturn('ut');
 
         $this->getTimelineResults = new \ReflectionMethod($this->repository, 'getTimelineResults');
     }
@@ -41,10 +41,10 @@ final class TimelineTraitTest extends TestCase
         $orderByParts = new \ArrayObject();
 
         $qb = $this->createMock(QueryBuilder::class);
-        $qb->expects($this->once())->method('andWhere')->willReturnSelf();
-        $qb->expects($this->once())->method('setParameter')->willReturnSelf();
-        $qb->expects($this->once())->method('setMaxResults')->willReturnSelf();
-        $qb->expects($this->once())->method('setFirstResult')->willReturnSelf();
+        $qb->method('andWhere')->willReturnSelf();
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('setMaxResults')->willReturnSelf();
+        $qb->method('setFirstResult')->willReturnSelf();
 
         $qb->expects($this->once())->method('orderBy')->willReturnCallback(
             static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
@@ -54,7 +54,7 @@ final class TimelineTraitTest extends TestCase
             }
         );
 
-        $qb->expects($this->once())->method('addOrderBy')->willReturnCallback(
+        $qb->method('addOrderBy')->willReturnCallback(
             static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
                 $orderByParts->append($sort.' '.$dir);
 

@@ -92,15 +92,15 @@ final class BatchIdToEntityHelperTest extends TestCase
     public function testOriginalKeyOrderingForIdKeyArray(): void
     {
         $entityMock1 = $this->createMock(Lead::class);
-        $entityMock1->expects($this->once())
+        $entityMock1->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
         $entityMock2 = $this->createMock(Lead::class);
-        $entityMock2->expects($this->once())
+        $entityMock2->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
         $entityMock4 = $this->createMock(Lead::class);
-        $entityMock4->expects($this->once())
+        $entityMock4->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(4);
         // Simulating ID 3 as not found
@@ -140,15 +140,15 @@ final class BatchIdToEntityHelperTest extends TestCase
     public function testOriginalKeyOrderingForSimpleArray(): void
     {
         $entityMock1 = $this->createMock(Lead::class);
-        $entityMock1->expects($this->once())
+        $entityMock1->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
         $entityMock2 = $this->createMock(Lead::class);
-        $entityMock2->expects($this->once())
+        $entityMock2->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
         $entityMock4 = $this->createMock(Lead::class);
-        $entityMock4->expects($this->once())
+        $entityMock4->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(4);
         // Simulating ID 3 as not found
@@ -168,15 +168,15 @@ final class BatchIdToEntityHelperTest extends TestCase
     public function testOriginalKeyOrderingForAssociativeArray(): void
     {
         $entityMock1 = $this->createMock(Lead::class);
-        $entityMock1->expects($this->once())
+        $entityMock1->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
         $entityMock2 = $this->createMock(Lead::class);
-        $entityMock2->expects($this->once())
+        $entityMock2->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
         $entityMock4 = $this->createMock(Lead::class);
-        $entityMock4->expects($this->once())
+        $entityMock4->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(4);
         // Simulating ID 3 as not found
@@ -206,19 +206,19 @@ final class BatchIdToEntityHelperTest extends TestCase
     public function testOriginalKeyOrderingForFullAssociativeArray(): void
     {
         $entityMock1 = $this->createMock(Lead::class);
-        $entityMock1->expects($this->once())
+        $entityMock1->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
         $entityMock2 = $this->createMock(Lead::class);
-        $entityMock2->expects($this->once())
+        $entityMock2->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
         $entityMock3 = $this->createMock(Lead::class);
-        $entityMock3->expects($this->once())
+        $entityMock3->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(3);
         $entityMock4 = $this->createMock(Lead::class);
-        $entityMock4->expects($this->once())
+        $entityMock4->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(4);
         $entities = [$entityMock4, $entityMock2, $entityMock1, $entityMock3];

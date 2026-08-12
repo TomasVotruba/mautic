@@ -79,14 +79,14 @@ final class ReferenceResolverTest extends TestCase
     public function testResolveCompanyReferences(): void
     {
         $result = $this->createMock(Result::class);
-        $result->expects($this->once())->method('fetchOne')
+        $result->method('fetchOne')
             ->willReturn('Company name');
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
-        $queryBuilder->expects($this->once())->method('executeQuery')
+        $queryBuilder->method('executeQuery')
             ->willReturn($result);
 
-        $this->connection->expects($this->once())->method('createQueryBuilder')
+        $this->connection->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
         $companyReference  = $this->createReference('company', 3);

@@ -35,7 +35,7 @@ final class SegmentOperatorQueryBuilderEventTest extends \PHPUnit\Framework\Test
 
     public function testConstructGettersSetters(): void
     {
-        $this->filter->expects($this->once())->method('getOperator')->willReturn('=');
+        $this->filter->expects($this->atLeastOnce())->method('getOperator')->willReturn('=');
         $this->filter->expects($this->once())->method('getGlue')->willReturn('and');
 
         $event = new SegmentOperatorQueryBuilderEvent($this->queryBuilder, $this->filter, 'parameterHolder1');

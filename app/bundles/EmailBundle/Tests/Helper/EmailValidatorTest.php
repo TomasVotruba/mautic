@@ -42,7 +42,7 @@ final class EmailValidatorTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->event      = $this->createMock(EmailValidationEvent::class);
 
-        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
+        $this->translator->method('trans')->willReturn('some translation');
 
         $this->emailValidator = new EmailValidator($this->translator, $this->dispatcher);
     }

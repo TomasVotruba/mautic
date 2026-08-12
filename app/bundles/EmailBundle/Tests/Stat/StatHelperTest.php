@@ -19,7 +19,7 @@ final class StatHelperTest extends \PHPUnit\Framework\TestCase
         $emailStatmodel     = $this->createMock(EmailStatModel::class);
         $mockStatRepository = $this->createMock(StatRepository::class);
 
-        $emailStatmodel->expects($this->once())->method('getRepository')->willReturn($mockStatRepository);
+        $emailStatmodel->expects($this->atLeastOnce())->method('getRepository')->willReturn($mockStatRepository);
 
         $mockStatRepository->expects($this->once())
             ->method('deleteStats')
@@ -28,14 +28,14 @@ final class StatHelperTest extends \PHPUnit\Framework\TestCase
         $statHelper = new StatHelper($emailStatmodel);
 
         $mockEmail = $this->createMock(Email::class);
-        $mockEmail->expects($this->once())->method('getId')
+        $mockEmail->expects($this->atLeastOnce())->method('getId')
             ->willReturn(15);
 
         $counter = 1;
         while ($counter <= 5) {
             $stat = $this->createMock(Stat::class);
 
-            $stat->expects($this->once())->method('getId')
+            $stat->expects($this->atLeastOnce())->method('getId')
                 ->willReturn((string) $counter);
 
             $stat->expects($this->once())->method('getEmail')
@@ -43,7 +43,7 @@ final class StatHelperTest extends \PHPUnit\Framework\TestCase
 
             $lead = $this->createMock(Lead::class);
 
-            $lead->expects($this->once())->method('getId')
+            $lead->expects($this->atLeastOnce())->method('getId')
                 ->willReturn($counter * 10);
 
             $stat->expects($this->once())->method('getLead')

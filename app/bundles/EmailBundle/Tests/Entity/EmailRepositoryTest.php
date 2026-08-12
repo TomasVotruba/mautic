@@ -25,10 +25,10 @@ final class EmailRepositoryTest extends TestCase
         parent::setUp();
 
         $this->repo = $this->configureRepository(Email::class);
-        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
+        $translator->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
             'mautic.email.email.searchcommand.isexpired' => 'is:expired',
             'mautic.email.email.searchcommand.ispending' => 'is:pending',
             default                                      => $id,

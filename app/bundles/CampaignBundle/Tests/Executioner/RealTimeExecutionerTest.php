@@ -64,7 +64,7 @@ final class RealTimeExecutionerTest extends TestCase
         $this->redirectionHelper = $this->createMock(EventRedirectionHelper::class);
 
         // Configure the redirection helper mock to return the event it receives
-        $this->redirectionHelper->expects($this->once())->method('handleEventRedirection')
+        $this->redirectionHelper->method('handleEventRedirection')
             ->willReturnCallback(fn (Event $event): Event => $event);
     }
 

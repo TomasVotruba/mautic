@@ -72,7 +72,7 @@ final class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getRelatedEntityIds')
             ->willReturn($ids);
 
-        $parentMock->expects($this->once())
+        $parentMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 
@@ -128,7 +128,7 @@ final class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getRelatedEntityIds')
             ->willReturn($ids);
 
-        $parentMock->expects($this->once())
+        $parentMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 

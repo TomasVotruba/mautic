@@ -50,7 +50,7 @@ final class TrackableModelTest extends TestCase
 
         $mockModel->autowireTrackableModel($mockRedirectModel, $mockLeadFieldRepository, $this->createStub(TrackableRepository::class));
 
-        $mockModel->expects($this->once())
+        $mockModel
             ->method('getEntitiesFromUrls')
             ->willReturn([]);
 
@@ -105,7 +105,7 @@ final class TrackableModelTest extends TestCase
             ->method('getDoNotTrackList')
             ->willReturn([]);
 
-        $mockModel->expects($this->once())
+        $mockModel
             ->method('getEntitiesFromUrls')
             ->willReturn([]);
 
@@ -640,7 +640,7 @@ TEXT;
             ->method('getDoNotTrackList')
             ->willReturn($doNotTrack);
 
-        $mockModel->expects($this->once())
+        $mockModel
             ->method('getEntitiesFromUrls')
             ->willReturnCallback(
                 function ($trackableUrls, $channel, $channelId): array {
@@ -653,7 +653,7 @@ TEXT;
                 }
             );
 
-        $mockModel->expects($this->once())
+        $mockModel
             ->method('getContactFieldUrlTokens')
             ->willReturn($urlFieldsForPlaintext);
 

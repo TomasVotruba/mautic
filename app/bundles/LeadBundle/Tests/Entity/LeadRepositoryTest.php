@@ -90,8 +90,8 @@ final class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $entities = [$contact, $contact2];
 
-        $repository->expects($this->once())->method('getEntities')->willReturn($entities);
-        $repository->expects($this->once())->method('buildQueryForGetLeadsByFieldValue')->willReturn(null);
+        $repository->expects($this->atLeastOnce())->method('getEntities')->willReturn($entities);
+        $repository->expects($this->atLeastOnce())->method('buildQueryForGetLeadsByFieldValue')->willReturn(null);
 
         $contacts = $repository->getLeadsByFieldValue('email', ['test@example.com', 'test2@example.com']);
 

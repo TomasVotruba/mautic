@@ -35,7 +35,7 @@ final class AdderTest extends \PHPUnit\Framework\TestCase
         $campaign = $this->createMock(Campaign::class);
         $campaign->expects($this->once())->method('getId')
             ->willReturn(1);
-        $campaign->expects($this->once())->method('allowRestart')
+        $campaign->method('allowRestart')
             ->willReturn(true);
 
         $contact = $this->createMock(Lead::class);

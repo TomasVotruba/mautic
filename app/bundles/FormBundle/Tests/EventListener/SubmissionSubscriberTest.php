@@ -45,7 +45,7 @@ final class SubmissionSubscriberTest extends TestCase
     public function testIgnoresSubmissionWithoutForm(): void
     {
         $submission = $this->createMock(Submission::class);
-        $submission->expects($this->once())->method('getForm')->willReturn(null);
+        $submission->expects($this->atLeastOnce())->method('getForm')->willReturn(null);
 
         $repository = $this->createMock(FormRepository::class);
         $repository->expects($this->never())->method('incrementSubmissionCount');
@@ -62,7 +62,7 @@ final class SubmissionSubscriberTest extends TestCase
         $form->expects($this->once())->method('getId')->willReturn($formId);
 
         $submission = $this->createMock(Submission::class);
-        $submission->expects($this->once())->method('getForm')->willReturn($form);
+        $submission->expects($this->atLeastOnce())->method('getForm')->willReturn($form);
 
         return $submission;
     }

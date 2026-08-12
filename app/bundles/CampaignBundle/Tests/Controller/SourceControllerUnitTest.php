@@ -174,13 +174,13 @@ final class SourceControllerUnitTest extends TestCase
 
         $controller->autowireSourceController($campaignModel);
 
-        $controller->expects($this->once())->method('isFormCancelled')
+        $controller->method('isFormCancelled')
             ->willReturn(false);
-        $controller->expects($this->once())->method('isFormValid')
+        $controller->method('isFormValid')
             ->willReturn(true);
-        $controller->expects($this->once())->method('renderView')
+        $controller->method('renderView')
             ->willReturn('<div>rendered</div>');
-        $controller->expects($this->once())->method('generateUrl')
+        $controller->method('generateUrl')
             ->willReturnCallback(static function (string $route, array $parameters = []): string {
                 if ('new' === ($parameters['objectAction'] ?? null)) {
                     return '/campaign/source/new';

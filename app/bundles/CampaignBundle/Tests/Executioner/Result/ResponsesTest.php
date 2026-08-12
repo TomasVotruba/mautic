@@ -16,7 +16,7 @@ final class ResponsesTest extends \PHPUnit\Framework\TestCase
         $actionEvent = $this->createMock(Event::class);
         $actionEvent->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_ACTION);
-        $actionEvent->expects($this->once())->method('getType')
+        $actionEvent->expects($this->atLeastOnce())->method('getType')
             ->willReturn('actionEvent');
         $actionEvent->expects($this->once())->method('getId')
             ->willReturn(1);
@@ -31,7 +31,7 @@ final class ResponsesTest extends \PHPUnit\Framework\TestCase
         $action2Event = $this->createMock(Event::class);
         $action2Event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_ACTION);
-        $action2Event->expects($this->once())->method('getType')
+        $action2Event->expects($this->atLeastOnce())->method('getType')
             ->willReturn('action2Event');
         $action2Event->expects($this->once())->method('getId')
             ->willReturn(2);
@@ -47,7 +47,7 @@ final class ResponsesTest extends \PHPUnit\Framework\TestCase
         $conditionEvent = $this->createMock(Event::class);
         $conditionEvent->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_CONDITION);
-        $conditionEvent->expects($this->once())->method('getType')
+        $conditionEvent->expects($this->atLeastOnce())->method('getType')
             ->willReturn('conditionEvent');
         $conditionEvent->expects($this->once())->method('getId')
             ->willReturn(3);

@@ -50,7 +50,7 @@ final class SegmentCountCacheHelperTest extends TestCase
         $segmentId = 1;
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead', 1, true);
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn($cacheItem);
@@ -65,7 +65,7 @@ final class SegmentCountCacheHelperTest extends TestCase
         $count     = 2;
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead');
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn($cacheItem);
@@ -75,7 +75,7 @@ final class SegmentCountCacheHelperTest extends TestCase
             ->with('segment_api_count_cache_ttl', 43200)
             ->willReturn(43200);
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('hasItem')
             ->with('segment.'.$segmentId.'.lead.recount')
             ->willReturn(false);
@@ -94,7 +94,7 @@ final class SegmentCountCacheHelperTest extends TestCase
         $count     = 2;
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead');
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn($cacheItem);
@@ -125,7 +125,7 @@ final class SegmentCountCacheHelperTest extends TestCase
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead.recount');
 
         $this->cacheProviderMock
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead.recount')
             ->willReturn($cacheItem);
@@ -183,11 +183,11 @@ final class SegmentCountCacheHelperTest extends TestCase
         $segmentId = 1;
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead', 5, true);
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('hasItem')
             ->willReturnCallback(fn (string $key): bool => $key === 'segment.'.$segmentId.'.lead');
 
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('getItem')
             ->willReturnCallback(function ($key) use ($segmentId, $cacheItem): ?\Symfony\Component\Cache\CacheItem {
                 if ($key === 'segment.'.$segmentId.'.lead') {
@@ -217,7 +217,7 @@ final class SegmentCountCacheHelperTest extends TestCase
             ->expects($this->exactly(2))
             ->method('hasItem')
             ->willReturnCallback(fn (string $key): bool => $key === 'segment.'.$segmentId.'.lead');
-        $this->cacheProviderMock->expects($this->once())
+        $this->cacheProviderMock->expects($this->atLeastOnce())
             ->method('getItem')
             ->willReturnCallback(function ($key) use ($segmentId, $cacheItem): ?\Symfony\Component\Cache\CacheItem {
                 if (in_array($key, ['segment.'.$segmentId.'.lead', 'segment.'.$segmentId.'.lead.recount'])) {

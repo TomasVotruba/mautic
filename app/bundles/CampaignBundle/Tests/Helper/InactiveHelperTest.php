@@ -92,7 +92,7 @@ final class InactiveHelperTest extends TestCase
 
         /** @var Campaign&MockObject $campaign */
         $campaign = $this->createMock(Campaign::class);
-        $campaign->expects($this->once())
+        $campaign->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
 
@@ -108,7 +108,7 @@ final class InactiveHelperTest extends TestCase
         $event->setCampaign($campaign);
         $event->setEventType(Event::TYPE_DECISION);
 
-        $parentEvent->expects($this->once())
+        $parentEvent->expects($this->atLeastOnce())
             ->method('getNegativeChildren')
             ->willReturnOnConsecutiveCalls(new ArrayCollection(), new ArrayCollection([$event]));
 

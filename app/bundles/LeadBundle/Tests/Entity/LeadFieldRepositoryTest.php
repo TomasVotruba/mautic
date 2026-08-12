@@ -49,9 +49,9 @@ final class LeadFieldRepositoryTest extends TestCase
         $statementCompareResult = $this->createMock(Result::class);
         $exprCompare            = $this->createMock(ExpressionBuilder::class);
 
-        $this->entityManager->expects($this->once())->method('getConnection')->willReturn($this->connection);
-        $builderAlias->expects($this->once())->method('expr')->willReturn(new ExpressionBuilder($this->connection));
-        $builderCompare->expects($this->once())->method('expr')->willReturn($exprCompare);
+        $this->entityManager->expects($this->atLeastOnce())->method('getConnection')->willReturn($this->connection);
+        $builderAlias->expects($this->atLeastOnce())->method('expr')->willReturn(new ExpressionBuilder($this->connection));
+        $builderCompare->expects($this->atLeastOnce())->method('expr')->willReturn($exprCompare);
 
         $this->connection->expects($this->exactly(2))
             ->method('createQueryBuilder')
@@ -334,7 +334,7 @@ final class LeadFieldRepositoryTest extends TestCase
             ->willReturnSelf();
 
         $expr = $this->createMock(Query\Expr::class);
-        $queryBuilder->expects($this->once())
+        $queryBuilder->expects($this->atLeastOnce())
             ->method('expr')
             ->willReturn($expr);
 

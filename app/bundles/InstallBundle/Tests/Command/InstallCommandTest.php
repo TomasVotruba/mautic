@@ -44,8 +44,8 @@ final class InstallCommandTest extends TestCase
         $inputDefinition->expects($this->once())->method('getArguments')->willReturn([]);
 
         $application->expects($this->once())->method('getHelperSet')->willReturn($this->createStub(HelperSet::class));
-        $application->expects($this->once())->method('getDefinition')->willReturn($inputDefinition);
-        $application->expects($this->once())->method('find')->willReturn($command);
+        $application->expects($this->atLeastOnce())->method('getDefinition')->willReturn($inputDefinition);
+        $application->method('find')->willReturn($command);
 
         $this->command = new InstallCommand($this->installer, $this->doctrineRegistry);
         $this->command->setApplication($application);

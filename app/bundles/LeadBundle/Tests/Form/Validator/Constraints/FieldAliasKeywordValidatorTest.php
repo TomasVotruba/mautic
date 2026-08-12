@@ -43,7 +43,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('getUnitOfWork')
             ->willReturn($this->unitOfWorkMock);
 
-        $listModelMock->expects($this->once())->method('getChoiceFields')
+        $listModelMock->method('getChoiceFields')
             ->willReturn(
                 [
                     'lead' => [
@@ -63,11 +63,11 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $contactSegmentFilterDictionary->expects($this->once())->method('getFilters')->willReturn(
+        $contactSegmentFilterDictionary->method('getFilters')->willReturn(
             []
         );
 
-        $translatorMock->expects($this->once())->method('trans')->willReturn('');
+        $translatorMock->method('trans')->willReturn('');
 
         $this->validator = new FieldAliasKeywordValidator(
             $listModelMock,

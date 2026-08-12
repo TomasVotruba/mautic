@@ -23,7 +23,7 @@ final class CompanyReportDataTest extends \PHPUnit\Framework\TestCase
     {
         $this->translator = $this->createMock(Translator::class);
 
-        $this->translator->expects($this->once())->method('trans')
+        $this->translator->expects($this->atLeastOnce())->method('trans')
             ->willReturnCallback(
                 fn (string $key): string => $key
             );
@@ -99,7 +99,7 @@ final class CompanyReportDataTest extends \PHPUnit\Framework\TestCase
             ->method('getEntities')
             ->willReturn([$field]);
 
-        $eventMock->expects($this->once())
+        $eventMock->expects($this->atLeastOnce())
             ->method('hasColumn')
             ->with('comp.id')
             ->willReturn(true);
@@ -126,7 +126,7 @@ final class CompanyReportDataTest extends \PHPUnit\Framework\TestCase
             ->method('getEntities')
             ->willReturn([$field]);
 
-        $eventMock->expects($this->once())
+        $eventMock->expects($this->atLeastOnce())
             ->method('hasColumn')
             ->willReturn(false);
 

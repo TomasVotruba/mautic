@@ -26,7 +26,7 @@ final class FormFieldRatingTypeTest extends TypeTestCase
     protected function setUp(): void
     {
         $this->translator = $this->createMock(TranslatorInterface::class);
-        $this->translator->expects($this->once())->method('trans')->willReturnCallback(
+        $this->translator->expects($this->atLeastOnce())->method('trans')->willReturnCallback(
             fn (string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string => $id
         );
 

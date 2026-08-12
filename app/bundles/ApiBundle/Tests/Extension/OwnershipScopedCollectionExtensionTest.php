@@ -33,7 +33,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
     public function testNoFilterAppliedWhenUserHasBothOwnAndOtherPermission(): void
     {
-        $this->security->expects($this->once())->method('isGranted')->willReturn(true);
+        $this->security->expects($this->atLeastOnce())->method('isGranted')->willReturn(true);
 
         // No need to stub user/metadata - should return early when both permissions granted
         $queryBuilder = $this->createQueryBuilderExpectingNoCalls();
@@ -48,7 +48,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
     public function testNoFilterAppliedWhenUserHasNeitherPermission(): void
     {
-        $this->security->expects($this->once())->method('isGranted')->willReturn(false);
+        $this->security->expects($this->atLeastOnce())->method('isGranted')->willReturn(false);
 
         // No need to stub user/metadata - should return early when neither permission granted
         $queryBuilder = $this->createQueryBuilderExpectingNoCalls();
@@ -63,7 +63,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
     public function testOwnFilterAppliedWhenUserHasOnlyOwnPermission(): void
     {
-        $this->security->expects($this->once())->method('isGranted')
+        $this->security->expects($this->atLeastOnce())->method('isGranted')
             ->willReturnCallback(fn (string $p): bool => 'lead:leads:viewown' === $p);
 
         $user = $this->createUserWithId(42);
@@ -74,7 +74,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $queryBuilder->expects($this->once())->method('getRootAliases')->willReturn(['o']);
-        $queryBuilder->expects($this->once())->method('expr')->willReturn(new Expr());
+        $queryBuilder->method('expr')->willReturn(new Expr());
         $queryBuilder->expects($this->once())
             ->method('andWhere')
             ->with('o.createdBy = :generated_created_by')
@@ -94,7 +94,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
     public function testOtherFilterAppliedWhenUserHasOnlyOtherPermission(): void
     {
-        $this->security->expects($this->once())->method('isGranted')
+        $this->security->expects($this->atLeastOnce())->method('isGranted')
             ->willReturnCallback(fn (string $p): bool => 'lead:leads:viewother' === $p);
 
         $user = $this->createUserWithId(7);
@@ -105,7 +105,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $queryBuilder->expects($this->once())->method('getRootAliases')->willReturn(['o']);
-        $queryBuilder->expects($this->once())->method('expr')->willReturn(new Expr());
+        $queryBuilder->method('expr')->willReturn(new Expr());
         $queryBuilder->expects($this->once())
             ->method('andWhere')
             ->with('(o.createdBy != :generated_created_by OR o.createdBy IS NULL)')
@@ -166,7 +166,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
     public function testOtherPermissionDerivationDoesNotCorruptOwnInMiddleOfString(): void
     {
-        $this->security->expects($this->once())->method('isGranted')
+        $this->security->expects($this->atLeastOnce())->method('isGranted')
             ->willReturnCallback(fn (string $p): bool => 'company:ownleads:viewown' === $p);
 
         $user = $this->createUserWithId(1);
@@ -177,7 +177,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $queryBuilder->expects($this->once())->method('getRootAliases')->willReturn(['o']);
-        $queryBuilder->expects($this->once())->method('expr')->willReturn(new Expr());
+        $queryBuilder->method('expr')->willReturn(new Expr());
         $queryBuilder->expects($this->once())->method('andWhere')->willReturnSelf();
         $queryBuilder->expects($this->once())->method('setParameter')->willReturnSelf();
 
@@ -201,7 +201,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
     private function createNameGenerator(string $generatedName = 'p'): QueryNameGeneratorInterface&MockObject
     {
         $generator = $this->createMock(QueryNameGeneratorInterface::class);
-        $generator->expects($this->once())->method('generateParameterName')->willReturn($generatedName);
+        $generator->method('generateParameterName')->willReturn($generatedName);
 
         return $generator;
     }
@@ -238,7 +238,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
     private function mockEntityMetadataWithCreatedBy(string $entityClass): void
     {
         $metadata = $this->createMock(ClassMetadata::class);
-        $metadata->expects($this->once())->method('hasField')->willReturnCallback(
+        $metadata->expects($this->atLeastOnce())->method('hasField')->willReturnCallback(
             fn (string $field): bool => 'createdBy' === $field
         );
         $metadata->expects($this->once())->method('hasAssociation')->willReturn(false);

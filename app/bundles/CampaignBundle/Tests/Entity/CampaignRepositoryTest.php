@@ -23,10 +23,10 @@ final class CampaignRepositoryTest extends TestCase
 
         $this->repository = $this->configureRepository(Campaign::class);
 
-        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): DbalQueryBuilder => new DbalQueryBuilder($this->connection));
+        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): DbalQueryBuilder => new DbalQueryBuilder($this->connection));
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
+        $translator->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
             'mautic.campaign.campaign.searchcommand.isexpired' => 'is:expired',
             'mautic.campaign.campaign.searchcommand.ispending' => 'is:pending',
             default                                            => $id,

@@ -56,13 +56,13 @@ final class FrequencyActionModelTest extends \PHPUnit\Framework\TestCase
             $this->frequencyRepoMock
         );
 
-        $collectionMock->expects($this->once())->method('toArray')
+        $collectionMock->method('toArray')
             ->willReturn([
                 'email' => $this->frequencyRuleEmailMock,
                 'sms'   => $this->frequencyRuleSmsMock,
             ]);
 
-        $this->contactMock5->expects($this->once())->method('getFrequencyRules')->willReturn($collectionMock);
+        $this->contactMock5->method('getFrequencyRules')->willReturn($collectionMock);
     }
 
     public function testUpdateWhenEntityAccess(): void

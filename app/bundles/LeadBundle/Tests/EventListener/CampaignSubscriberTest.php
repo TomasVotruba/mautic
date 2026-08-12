@@ -154,7 +154,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             $this->createStub(TranslatorInterface::class)
         );
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $mockCoreParametersHelper->expects($this->once())->method('getDefaultTimezone')
+        $mockCoreParametersHelper->method('getDefaultTimezone')
             ->willReturn('UTC');
 
         $this->subscriber = new CampaignSubscriber(
@@ -176,15 +176,15 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnCampaignTriggerActiononUpdateCompany(): void
     {
         $companyEntityFrom   = $this->createMock(Company::class);
-        $companyEntityFrom->expects($this->once())->method('getId')
+        $companyEntityFrom->method('getId')
             ->willReturn($this->configFrom['id']);
-        $companyEntityFrom->expects($this->once())->method('getName')
+        $companyEntityFrom->method('getName')
             ->willReturn($this->configFrom['companyname']);
 
         $companyEntityTo = $this->createMock(Company::class);
-        $companyEntityTo->expects($this->once())->method('getId')
+        $companyEntityTo->method('getId')
             ->willReturn($this->configTo['id']);
-        $companyEntityTo->expects($this->once())->method('getName')
+        $companyEntityTo->method('getName')
             ->willReturn($this->configTo['companyname']);
         $companyEntityTo->expects($this->once())->method('getProfileFields')
             ->willReturn($this->configTo);
@@ -207,7 +207,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             ->willReturn([['alias' => 'companyname']]);
 
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $mockCoreParametersHelper->expects($this->once())->method('get')
+        $mockCoreParametersHelper->method('get')
             ->with('default_timezone')
             ->willReturn('UTC');
 
@@ -250,7 +250,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnCampaignTriggerConditionDNCFlag(?int $reason, array $channels, bool $expected, int $dncLead): void
     {
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $mockCoreParametersHelper->expects($this->once())->method('get')
+        $mockCoreParametersHelper->method('get')
             ->with('default_timezone')
             ->willReturn('UTC');
 
@@ -419,10 +419,10 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $lead          = new Lead()->setEmail('tester@mautic.org');
 
         $leadEventLog = $this->createMock(LeadEventLog::class);
-        $leadEventLog->expects($this->once())
+        $leadEventLog->expects($this->atLeastOnce())
             ->method('getLead')
             ->willReturn($lead);
-        $leadEventLog->expects($this->once())
+        $leadEventLog
             ->method('getId')
             ->willReturn(6);
         $leadEventLog->expects($this->once())

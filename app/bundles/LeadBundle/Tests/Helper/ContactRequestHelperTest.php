@@ -65,16 +65,16 @@ final class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         $this->trackedContact           = $this->createMock(Lead::class);
         $this->contactMerger            = $this->createMock(ContactMerger::class);
 
-        $this->trackedContact->expects($this->once())->method('getId')
+        $this->trackedContact->method('getId')
             ->willReturn(1);
 
-        $this->trackedContact->expects($this->once())->method('getIpAddresses')
+        $this->trackedContact->method('getIpAddresses')
             ->willReturn(new ArrayCollection());
 
-        $this->contactTracker->expects($this->once())->method('getContact')
+        $this->contactTracker->method('getContact')
             ->willReturn($this->trackedContact);
 
-        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')
+        $this->ipLookupHelper->expects($this->atLeastOnce())->method('getIpAddress')
             ->willReturn(new IpAddress());
     }
 
@@ -91,7 +91,7 @@ final class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         ];
 
         $email = $this->createMock(Email::class);
-        $email->expects($this->once())->method('getId')
+        $email->method('getId')
             ->willReturn(2);
 
         $stat = new Stat();

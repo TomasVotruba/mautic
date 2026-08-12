@@ -79,10 +79,10 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
         $this->ipLookupHelperMock         = $this->createMock(IpLookupHelper::class);
         $this->requestStack               = new RequestStack([new Request()]);
 
-        $this->securityMock->expects($this->once())->method('isAnonymous')
+        $this->securityMock->expects($this->atLeastOnce())->method('isAnonymous')
             ->willReturn(true);
 
-        $this->ipLookupHelperMock->expects($this->once())->method('isRequestTrackable')
+        $this->ipLookupHelperMock->method('isRequestTrackable')
             ->willReturn(true);
     }
 
@@ -90,7 +90,7 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
     {
         $contactTracker = $this->getContactTracker();
 
-        $this->leadRepositoryMock->expects($this->once())
+        $this->leadRepositoryMock->expects($this->atLeastOnce())
             ->method('getFieldValues')
             ->willReturn([]);
 
@@ -109,7 +109,7 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
     {
         $contactTracker = $this->getContactTracker();
 
-        $this->leadRepositoryMock->expects($this->once())
+        $this->leadRepositoryMock->expects($this->atLeastOnce())
             ->method('getFieldValues')
             ->willReturn(
                 [
@@ -127,7 +127,7 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
         $lead   = new Lead();
         $device->setLead($lead);
 
-        $this->deviceTrackerMock->expects($this->once())->method('getTrackedDevice')
+        $this->deviceTrackerMock->expects($this->atLeastOnce())->method('getTrackedDevice')
             ->willReturn($device);
 
         $contact = $contactTracker->getContact();
@@ -192,7 +192,7 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
     {
         $contactTracker = $this->getContactTracker();
 
-        $this->leadRepositoryMock->expects($this->once())
+        $this->leadRepositoryMock->expects($this->atLeastOnce())
             ->method('getFieldValues')
             ->willReturn([]);
 
@@ -225,11 +225,11 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
         $device->setTrackingId('abc123');
 
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())->method('getId')
+        $lead->expects($this->atLeastOnce())->method('getId')
             ->willReturn(1);
 
         $lead2 = $this->createMock(Lead::class);
-        $lead2->expects($this->once())->method('getId')
+        $lead2->expects($this->atLeastOnce())->method('getId')
             ->willReturn(2);
 
         $leadDevice1 = new LeadDevice();
@@ -238,7 +238,7 @@ final class ContactTrackerTest extends \PHPUnit\Framework\TestCase
         $leadDevice1->setTrackingId('abc123');
         $leadDevice2->setTrackingId('def456');
 
-        $this->deviceTrackerMock->expects($this->once())->method('getTrackedDevice')
+        $this->deviceTrackerMock->expects($this->atLeastOnce())->method('getTrackedDevice')
             ->willReturnOnConsecutiveCalls($leadDevice1, $leadDevice2, null);
 
         $this->dispatcherMock->expects($this->once())

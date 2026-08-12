@@ -44,8 +44,8 @@ final class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
 
         /** @var ManagerRegistry&MockObject $managerRegistry */
         $managerRegistry = $this->createMock(ManagerRegistry::class);
-        $managerRegistry->expects($this->once())->method('getManagerForClass')->willReturn($emMock);
-        $emMock->expects($this->once())->method('getClassMetadata')->willReturn($this->createStub(ClassMetadata::class));
+        $managerRegistry->method('getManagerForClass')->willReturn($emMock);
+        $emMock->method('getClassMetadata')->willReturn($this->createStub(ClassMetadata::class));
 
         $this->repo = $this->getMockBuilder(CommonRepository::class)
             ->setConstructorArgs([$managerRegistry, Lead::class])
@@ -53,7 +53,7 @@ final class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $this->qb             = new QueryBuilder($emMock);
         $this->connectionMock = $this->createMock(Connection::class);
-        $this->connectionMock->expects($this->once())->method('getExpressionBuilder')
+        $this->connectionMock->method('getExpressionBuilder')
             ->willReturn(new ExpressionBuilder($this->connectionMock));
     }
 

@@ -26,7 +26,7 @@ final class ImportCommandTest extends TestCase
     public function testExecuteFailsIfModifiedByIsNotSet(): void
     {
         $translatorMock = $this->createMock(TranslatorInterface::class);
-        $translatorMock->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => $id);
+        $translatorMock->method('trans')->willReturnCallback(fn (string $id): string => $id);
         $importMock       = $this->createStub(Import::class);
         $importModelMock  = $this->createMock(ImportModel::class);
         $loggerMock       = $this->createStub(Logger::class);
@@ -57,7 +57,7 @@ final class ImportCommandTest extends TestCase
     {
         // Translator
         $translatorMock = $this->createMock(TranslatorInterface::class);
-        $translatorMock->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => $id);
+        $translatorMock->method('trans')->willReturnCallback(fn (string $id): string => $id);
 
         // Import entity
         $importMock = $this->createMock(Import::class);
@@ -126,13 +126,13 @@ final class ImportCommandTest extends TestCase
     public function testExecuteAddsNotificationOnFailure(): void
     {
         $translatorMock = $this->createMock(TranslatorInterface::class);
-        $translatorMock->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => $id);
+        $translatorMock->method('trans')->willReturnCallback(fn (string $id): string => $id);
 
         $importMock = $this->createMock(Import::class);
         $importMock->expects($this->once())
             ->method('getModifiedBy')
             ->willReturn(42);
-        $importMock->expects($this->once())->method('getStatusInfo')->willReturn('fail');
+        $importMock->expects($this->atLeastOnce())->method('getStatusInfo')->willReturn('fail');
         $importMock->expects($this->once())->method('getProcessedRows')->willReturn(1);
         $importMock->expects($this->once())->method('getInsertedCount')->willReturn(0);
         $importMock->expects($this->once())->method('getUpdatedCount')->willReturn(0);

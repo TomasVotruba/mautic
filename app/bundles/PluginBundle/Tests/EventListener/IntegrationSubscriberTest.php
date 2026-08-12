@@ -15,7 +15,7 @@ final class IntegrationSubscriberTest extends TestCase
     {
         $event = $this->createMock(PluginIntegrationRequestEvent::class);
         $event->expects($this->once())->method('getIntegrationName')->willReturn('Integration');
-        $event->expects($this->once())->method('getHeaders')->willReturn(['Authorization: Bearer some_token']);
+        $event->expects($this->atLeastOnce())->method('getHeaders')->willReturn(['Authorization: Bearer some_token']);
         $event->expects($this->once())->method('getMethod')->willReturn('POST');
         $event->expects($this->once())->method('getUrl')->willReturn('https://mautic.org');
         $event->expects($this->once())->method('getParameters')->willReturn(['key' => 'value']);

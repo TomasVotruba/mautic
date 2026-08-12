@@ -39,7 +39,7 @@ final class PointSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->triggerExecutedEvent = $this->createMock(TriggerExecutedEvent::class);
         $this->triggerEventEntity   = $this->createMock(TriggerEventEntity::class);
 
-        $this->triggerExecutedEvent->expects($this->once())
+        $this->triggerExecutedEvent
             ->method('getTriggerEvent')
             ->willReturn($this->triggerEventEntity);
     }

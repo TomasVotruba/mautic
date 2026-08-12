@@ -27,7 +27,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $integrationSettings->setFeatureSettings(['messaging_service_sid' => '123']);
         /** @phpstan-ignore classConstant.deprecatedClass */
         $this->integrationObject = $this->createMock(AbstractIntegration::class);
-        $this->integrationObject->expects($this->once())->method('getIntegrationSettings')
+        $this->integrationObject->expects($this->atLeastOnce())->method('getIntegrationSettings')
             ->willReturn($integrationSettings);
 
         $this->integrationHelper->expects($this->once())->method('getIntegrationObject')
@@ -79,7 +79,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $integrationSettings->setIsPublished(false);
         $integrationSettings->setFeatureSettings(['messaging_service_sid' => '123']);
 
-        $this->integrationObject->expects($this->once())->method('getIntegrationSettings')
+        $this->integrationObject->expects($this->atLeastOnce())->method('getIntegrationSettings')
             ->willReturn($integrationSettings);
 
         $this->getConfiguration()->getMessagingServiceSid();

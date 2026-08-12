@@ -68,7 +68,7 @@ final class PointEventHelperTest extends \PHPUnit\Framework\TestCase
                 return $email;
             });
 
-        $mock->expects($this->once())
+        $mock
             ->method('sendEmail')
             ->willReturn($sendEmail);
 

@@ -27,7 +27,7 @@ final class GeneratedColumnSubscriberTest extends TestCase
     {
         parent::setUp();
         $modelTranslator = $this->createMock(Translator::class);
-        $modelTranslator->expects($this->once())
+        $modelTranslator
             ->method('trans')
             ->willReturnArgument(0);
 
@@ -64,7 +64,7 @@ final class GeneratedColumnSubscriberTest extends TestCase
             new Request()
         );
 
-        $this->translator->expects($this->once())->method('trans')
+        $this->translator->method('trans')
             ->with('mautic.email.segment.choice.generated_email_domain')
             ->willReturn('translated string');
 

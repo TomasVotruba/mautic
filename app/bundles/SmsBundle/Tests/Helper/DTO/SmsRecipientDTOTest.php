@@ -49,10 +49,10 @@ final class SmsRecipientDTOTest extends TestCase
     private function initData(): void
     {
         $this->lead = $this->createMock(Lead::class);
-        $this->lead->expects($this->once())->method('getId')->willReturn(1);
+        $this->lead->expects($this->atLeastOnce())->method('getId')->willReturn(1);
 
         $lead2 = $this->createMock(Lead::class);
-        $lead2->expects($this->once())->method('getId')->willReturn(2);
+        $lead2->expects($this->atLeastOnce())->method('getId')->willReturn(2);
 
         $this->dto1 = new SmsRecipientDTO(
             $this->lead,

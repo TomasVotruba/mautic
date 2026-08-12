@@ -44,7 +44,7 @@ final class WidgetTest extends TestCase
         $this->userHelper     = $this->createMock(UserHelper::class);
 
         $this->user = $this->createMock(User::class);
-        $this->user->expects($this->once())
+        $this->user
             ->method('getId')
             ->willReturn(self::USER_ID);
 
@@ -59,7 +59,7 @@ final class WidgetTest extends TestCase
     {
         $widgetId = 2;
         $widget   = $this->createMock(WidgetEntity::class);
-        $widget->expects($this->once())
+        $widget
             ->method('getId')
             ->willReturn($widgetId);
         $widget->expects($this->once())
@@ -110,7 +110,7 @@ final class WidgetTest extends TestCase
     {
         $widgetId = 2;
         $widget   = $this->createMock(WidgetEntity::class);
-        $widget->expects($this->once())
+        $widget
             ->method('getId')
             ->willReturn(null);
 
@@ -129,7 +129,7 @@ final class WidgetTest extends TestCase
     {
         $widgetId = 2;
         $widget   = $this->createMock(WidgetEntity::class);
-        $widget->expects($this->once())
+        $widget
             ->method('getId')
             ->willReturn($widgetId);
         $widget->expects($this->once())

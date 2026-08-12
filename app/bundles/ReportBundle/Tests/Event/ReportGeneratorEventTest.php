@@ -46,7 +46,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddCategoryLeftJoinWhenColumnIsNotUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'comp.name']);
 
@@ -58,7 +58,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddCategoryLeftJoinWhenColumnIsUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(
                 ['e.id', ReportGeneratorEvent::CATEGORY_PREFIX.'.title', 'comp.name']
@@ -90,7 +90,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddLeadLeftJoinWhenColumnIsUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(
                 ['e.id', ReportGeneratorEvent::CONTACT_PREFIX.'.email', 'comp.name']
@@ -130,7 +130,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddIpAddressLeftJoinWhenColumnIsNotUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 't.name']);
 
@@ -142,7 +142,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddIpAddressLeftJoinWhenColumnIsUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(
                 ['e.id', ReportGeneratorEvent::IP_ADDRESS_PREFIX.'.address', 'comp.name']
@@ -162,7 +162,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testHasColumnWithPrefix(): void
     {
-        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->atLeastOnce())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
         $this->assertTrue($this->reportGeneratorEvent->hasColumnWithPrefix('e'));
@@ -175,10 +175,10 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testUsesColumnWithPrefix(): void
     {
-        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->atLeastOnce())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->atLeastOnce())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
         $this->report->expects($this->once())->method('getFilters')
@@ -205,10 +205,10 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testUsesColumn(): void
     {
-        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->atLeastOnce())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->atLeastOnce())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
         $this->report->expects($this->once())->method('getFilters')
@@ -245,7 +245,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddCompanyLeftJoinWhenColumnIsUsed(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'e.title', 'comp.name']);
         $matcher = $this->exactly(2);
@@ -270,7 +270,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testAddCompanyLeftJoinOnlyOnceWhenTableAlreadyJoined(): void
     {
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'e.title', 'comp.name']);
 

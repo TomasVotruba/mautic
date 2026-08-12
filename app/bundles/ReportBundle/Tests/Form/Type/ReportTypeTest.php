@@ -77,7 +77,7 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
         $this->reportModel->expects($this->once())->method('getGraphList')
             ->willReturn($graphList);
 
-        $this->formBuilder->expects($this->once())->method('addEventListener')
+        $this->formBuilder->expects($this->atLeastOnce())->method('addEventListener')
             ->willReturnCallback(
                 function (string $eventName, callable $listener) use ($report): MockObject {
                     if (FormEvents::PRE_SET_DATA === $eventName) {

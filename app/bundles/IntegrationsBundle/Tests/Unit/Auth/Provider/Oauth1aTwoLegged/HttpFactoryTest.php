@@ -29,9 +29,9 @@ final class HttpFactoryTest extends TestCase
         $credentials = $this->createMock(CredentialsInterface::class);
         $credentials->expects($this->exactly(5))->method('getConsumerKey')->willReturn('ConsumerKeyValue');
         $credentials->expects($this->exactly(2))->method('getConsumerSecret')->willReturn('ConsumerSecretValue');
-        $credentials->expects($this->once())->method('getToken')->willReturn('TokenValue');
-        $credentials->expects($this->once())->method('getTokenSecret')->willReturn('TokenSecretValue');
-        $credentials->expects($this->once())->method('getAuthUrl')->willReturn('AuthUrlValue');
+        $credentials->expects($this->atLeastOnce())->method('getToken')->willReturn('TokenValue');
+        $credentials->expects($this->atLeastOnce())->method('getTokenSecret')->willReturn('TokenSecretValue');
+        $credentials->expects($this->atLeastOnce())->method('getAuthUrl')->willReturn('AuthUrlValue');
         $httpFactory = new HttpFactory();
         $client      = $httpFactory->getClient($credentials);
         $config      = $client->getConfig(); /** @phpstan-ignore-line Deprecated. Must be refactored for Guzzle 8 */

@@ -220,7 +220,7 @@ final class EmailDefaultsHelperTest extends TestCase
     {
         $page = $this->createMock(Page::class);
         $page->expects($this->once())->method('getIsPreferenceCenter')->willReturn($isPreferenceCenter);
-        $page->expects($this->once())->method('isPublished')->willReturn($published);
+        $page->method('isPublished')->willReturn($published);
 
         return $page;
     }

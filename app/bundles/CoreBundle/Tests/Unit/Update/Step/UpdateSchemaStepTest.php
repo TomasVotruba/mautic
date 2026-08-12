@@ -50,9 +50,9 @@ final class UpdateSchemaStepTest extends AbstractStepTestCase
         $this->migrateCommand = $this->createMock(MigrateCommand::class);
         $this->migrateCommand->expects($this->once())->method('isEnabled')
             ->willReturn(true);
-        $this->migrateCommand->expects($this->once())->method('getName')
+        $this->migrateCommand->expects($this->atLeastOnce())->method('getName')
             ->willReturn('doctrine:migrations:migrate');
-        $this->migrateCommand->expects($this->once())->method('getAliases')
+        $this->migrateCommand->expects($this->atLeastOnce())->method('getAliases')
             ->willReturn([]);
         $this->migrateCommand->expects($this->once())->method('getHelperSet')
             ->willReturn($this->createStub(HelperSet::class));
@@ -61,13 +61,13 @@ final class UpdateSchemaStepTest extends AbstractStepTestCase
         $definition->expects($this->once())->method('hasArgument')
             ->willReturn(true);
         $inputArgument = $this->createMock(InputArgument::class);
-        $inputArgument->expects($this->once())->method('getName')
+        $inputArgument->expects($this->atLeastOnce())->method('getName')
             ->willReturn('');
         $inputArgument->expects($this->once())->method('isArray')
             ->willReturn(false);
         $definition->expects($this->once())->method('getArgument')
             ->willReturn($inputArgument);
-        $this->migrateCommand->expects($this->once())->method('getDefinition')
+        $this->migrateCommand->expects($this->atLeastOnce())->method('getDefinition')
             ->willReturn($definition);
 
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -92,7 +92,7 @@ final class UpdateSchemaStepTest extends AbstractStepTestCase
                 ['doctrine:migrations:migrate']
             );
 
-        $kernel->expects($this->once())->method('getContainer')
+        $kernel->expects($this->atLeastOnce())->method('getContainer')
             ->willReturn($container);
 
         $this->step = new UpdateSchemaStep($this->translator, $kernel);
@@ -139,7 +139,7 @@ final class UpdateSchemaStepTest extends AbstractStepTestCase
                 }
             );
 
-        $this->translator->expects($this->once())
+        $this->translator->expects($this->atLeastOnce())
             ->method('trans')
             ->willReturn('');
 

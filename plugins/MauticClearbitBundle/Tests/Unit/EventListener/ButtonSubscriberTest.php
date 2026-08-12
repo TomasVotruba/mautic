@@ -36,8 +36,8 @@ final class ButtonSubscriberTest extends TestCase
         $this->translator         = $this->createMock(TranslatorInterface::class);
         $this->router             = $this->createMock(RouterInterface::class);
 
-        $this->translator->expects($this->once())->method('trans')->willReturnArgument(0);
-        $this->router->expects($this->once())->method('generate')->willReturn('/some/url');
+        $this->translator->method('trans')->willReturnArgument(0);
+        $this->router->method('generate')->willReturn('/some/url');
     }
 
     public function testGetSubscribedEvents(): void

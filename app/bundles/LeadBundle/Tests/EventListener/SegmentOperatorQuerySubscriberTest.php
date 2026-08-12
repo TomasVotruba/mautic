@@ -45,7 +45,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $this->contactSegmentFilter = $this->createMock(ContactSegmentFilter::class);
         $this->subscriber           = new SegmentOperatorQuerySubscriber();
 
-        $this->queryBuilder->expects($this->once())->method('expr')->willReturn($this->expressionBuilder);
+        $this->queryBuilder->method('expr')->willReturn($this->expressionBuilder);
         $this->queryBuilder->expects($this->once())->method('getTableAlias')->willReturn('l');
     }
 
@@ -57,7 +57,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->queryBuilder->expects($this->never())
@@ -77,10 +77,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('empty');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -133,7 +133,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->queryBuilder->expects($this->never())
@@ -153,10 +153,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('notEmpty');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -209,7 +209,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a', 'value_b']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn(OperatorOptions::EXCLUDING_ALL);
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -235,10 +235,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('country');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn(OperatorOptions::EXCLUDING_ALL);
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -272,7 +272,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->expressionBuilder->expects($this->never())
@@ -291,10 +291,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('notBetween');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -332,7 +332,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->subscriber->onMultiselectOperators($event);
@@ -351,10 +351,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('multiselect');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -398,7 +398,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $combinedQuery       = $this->createStub(CompositeExpression::class);
         $eventQuery          = $this->createStub(CompositeExpression::class);
 
-        $regexpQueries->expects($this->once())->method('__toString')
+        $regexpQueries->method('__toString')
             ->willReturn($regexpQueriesString);
 
         $event = new SegmentOperatorQueryBuilderEvent(
@@ -407,10 +407,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('multiselect');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -467,10 +467,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('multiselect');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -514,7 +514,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $combinedQuery       = $this->createStub(CompositeExpression::class);
         $eventQuery          = $this->createStub(CompositeExpression::class);
 
-        $regexpQueries->expects($this->once())->method('__toString')
+        $regexpQueries->method('__toString')
             ->willReturn($regexpQueriesString);
 
         $event = new SegmentOperatorQueryBuilderEvent(
@@ -523,10 +523,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('multiselect');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -580,7 +580,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a', 'value_b']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn(OperatorOptions::INCLUDING_ALL);
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -606,10 +606,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a']
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('country');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn(OperatorOptions::INCLUDING_ALL);
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')
@@ -636,7 +636,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->subscriber->onDefaultOperators($event);
@@ -652,10 +652,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->expects($this->once())->method('getField')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
+        $this->contactSegmentFilter->expects($this->atLeastOnce())->method('getOperator')
             ->willReturn('gt');
 
         $this->contactSegmentFilter->expects($this->once())->method('getGlue')

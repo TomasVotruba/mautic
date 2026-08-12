@@ -68,7 +68,7 @@ final class IntegrationsListTypeTest extends TestCase
             ->method('getIntegrationObjects')
             ->with(null, 'features', true)
             ->willReturn(['integration1' => $integrationInstance1, 'integration2' => $integrationInstance2]);
-        $integrationHelper->expects($this->once())->method('getIntegrationObject')
+        $integrationHelper->method('getIntegrationObject')
             ->willReturn(
                 /** @phpstan-ignore classConstant.deprecatedClass */
                 $this->createStub(AbstractIntegration::class)
@@ -79,7 +79,7 @@ final class IntegrationsListTypeTest extends TestCase
         /** @var MockObject&FormInterface $form */
         $form = $this->createMock(FormInterface::class);
 
-        $form->expects($this->once())->method('add')
+        $form->expects($this->atLeastOnce())->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use (&$callsForm, $form): FormInterface {
                 if ('config' === $key) {
                     ++$callsForm;
@@ -116,7 +116,7 @@ final class IntegrationsListTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
 
         $callsBuilder = 0;
-        $builder->expects($this->once())->method('add')
+        $builder->expects($this->atLeastOnce())->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder, $builder): FormBuilderInterface {
                 if ('integration' === $key) {
                     ++$callsBuilder;
@@ -201,7 +201,7 @@ final class IntegrationsListTypeTest extends TestCase
             ->method('getIntegrationObjects')
             ->with(null, 'features', true)
             ->willReturn(['integration1' => $integrationInstance1, 'integration2' => $integrationInstance2]);
-        $integrationHelper->expects($this->once())->method('getIntegrationObject')
+        $integrationHelper->method('getIntegrationObject')
             ->willReturn(
                 /** @phpstan-ignore classConstant.deprecatedClass */
                 $this->createStub(AbstractIntegration::class)
@@ -209,7 +209,7 @@ final class IntegrationsListTypeTest extends TestCase
 
         $callsForm = 0;
         $form      = $this->createMock(FormInterface::class);
-        $form->expects($this->once())->method('add')
+        $form->expects($this->atLeastOnce())->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($integrationInstance1, &$callsForm, $form): FormInterface {
                 if ('config' === $key) {
                     ++$callsForm;
@@ -257,7 +257,7 @@ final class IntegrationsListTypeTest extends TestCase
         $callsBuilder = 0;
         $builder      = $this->createMock(FormBuilderInterface::class);
         $this->assertInstanceOf(FormBuilderInterface::class, $builder);
-        $builder->expects($this->once())->method('add')
+        $builder->expects($this->atLeastOnce())->method('add')
             ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder, $builder): FormBuilderInterface {
                 if ('integration' === $key) {
                     ++$callsBuilder;

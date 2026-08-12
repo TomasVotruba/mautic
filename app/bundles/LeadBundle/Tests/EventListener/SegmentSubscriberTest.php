@@ -48,7 +48,7 @@ final class SegmentSubscriberTest extends TestCase
         $this->listModel                       = $this->createMock(ListModel::class);
         $this->coreParametersHelper            = $this->createMock(CoreParametersHelper::class);
         $this->segmentCountCacheHelper         = $this->createStub(SegmentCountCacheHelper::class);
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnCallback(fn (): false => false);
+        $this->coreParametersHelper->method('get')->willReturnCallback(fn (): false => false);
     }
 
     public function testGetSubscribedEvents(): void

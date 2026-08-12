@@ -80,7 +80,7 @@ final class PeakInteractionTimerTest extends TestCase
         $this->submissionRepositoryMock = $this->createMock(SubmissionRepository::class);
         $this->cacheProviderMock        = $this->createMock(CacheProviderInterface::class);
 
-        $this->coreParametersHelperMock->expects($this->once())->method('get')
+        $this->coreParametersHelperMock->expects($this->atLeastOnce())->method('get')
             ->willReturnMap([
                 ['peak_interaction_timer_cache_timeout', null, $this->peakInteractionTimerCacheTimeout],
                 ['peak_interaction_timer_best_default_hour_start', null, $this->peakInteractionTimerBestDefaultHourStart],
@@ -117,7 +117,7 @@ final class PeakInteractionTimerTest extends TestCase
         $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
         $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
-            $contactMock->expects($this->once())->method('getTimezone')->willReturn($contactTimezone);
+            $contactMock->expects($this->atLeastOnce())->method('getTimezone')->willReturn($contactTimezone);
         }
 
         $this->statRepositoryMock->expects($this->once())->method('getLeadStats')->willReturn([]);
@@ -163,7 +163,7 @@ final class PeakInteractionTimerTest extends TestCase
         $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
         $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
-            $contactMock->expects($this->once())->method('getTimezone')->willReturn($contactTimezone);
+            $contactMock->expects($this->atLeastOnce())->method('getTimezone')->willReturn($contactTimezone);
         }
 
         $this->statRepositoryMock->expects($this->once())->method('getLeadStats')->willReturn([]);

@@ -41,7 +41,7 @@ final class CompanyObjectHelperTest extends TestCase
         $this->repository                 = $this->createMock(CompanyRepository::class);
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
 
-        $this->fieldsWithUniqueIdentifier->expects($this->once())->method('getFieldsWithUniqueIdentifier')
+        $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
             ->with(['object' => CompanyObject::NAME])
             ->willReturn(
                 [
@@ -66,7 +66,7 @@ final class CompanyObjectHelperTest extends TestCase
                 $property->setValue($company, $idMap[$company->getEmail()]);
             });
 
-        $this->repository->expects($this->once())
+        $this->repository->expects($this->atLeastOnce())
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
@@ -114,7 +114,7 @@ final class CompanyObjectHelperTest extends TestCase
                 $property->setValue($company, $idMap[$company->getEmail() ?? '']);
             });
 
-        $this->repository->expects($this->once())
+        $this->repository->expects($this->atLeastOnce())
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one

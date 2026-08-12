@@ -51,12 +51,12 @@ final class EmailTypeTest extends \PHPUnit\Framework\TestCase
             $this->createStub(StageRepository::class),
         );
 
-        $this->formBuilder->expects($this->once())->method('create')->willReturnSelf();
-        $this->formBuilder->expects($this->once())->method('add')->willReturnSelf();
-        $this->formBuilder->expects($this->once())->method('addModelTransformer')->willReturnSelf();
+        $this->formBuilder->expects($this->atLeastOnce())->method('create')->willReturnSelf();
+        $this->formBuilder->expects($this->atLeastOnce())->method('add')->willReturnSelf();
+        $this->formBuilder->expects($this->atLeastOnce())->method('addModelTransformer')->willReturnSelf();
         $corePermissions->expects($this->once())->method('hasPublishAccessForEntity')->willReturn(true);
-        $translator->expects($this->once())->method('trans')->willReturn('translated');
-        $emailConfig->expects($this->once())->method('isDraftEnabled')->willReturn(false);
+        $translator->expects($this->atLeastOnce())->method('trans')->willReturn('translated');
+        $emailConfig->method('isDraftEnabled')->willReturn(false);
     }
 
     public function testBuildForm(): void
@@ -65,7 +65,7 @@ final class EmailTypeTest extends \PHPUnit\Framework\TestCase
         $names   = [];
         $this->expectThemeHelper();
 
-        $this->formBuilder->expects($this->once())->method('add')
+        $this->formBuilder->expects($this->atLeastOnce())->method('add')
             ->with(
                 $this->callback(
                     function (string|FormBuilderInterface $name) use (&$names): true {

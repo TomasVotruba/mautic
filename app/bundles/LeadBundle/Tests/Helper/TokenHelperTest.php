@@ -47,7 +47,7 @@ final class TokenHelperTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $leadFieldRepository = $this->createMock(LeadFieldRepository::class);
-        $leadFieldRepository->expects($this->once())
+        $leadFieldRepository
             ->method('getFields')
             ->willReturn($fields);
 

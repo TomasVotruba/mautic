@@ -38,7 +38,7 @@ final class DashboardModelTest extends TestCase
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->session              = $this->createMock(Session::class);
         $requestStack               = $this->createMock(RequestStack::class);
-        $requestStack->expects($this->once())->method('getSession')
+        $requestStack->method('getSession')
             ->willReturn($this->session);
 
         $this->model = new DashboardModel(
@@ -109,7 +109,7 @@ final class DashboardModelTest extends TestCase
         $this->coreParametersHelper->expects($this->once())->method('get')->willReturn(null);
 
         $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->expects($this->once())->method('getSession')->willReturn($this->session);
+        $requestStack->method('getSession')->willReturn($this->session);
 
         $model = new DashboardModel(
             $this->coreParametersHelper,

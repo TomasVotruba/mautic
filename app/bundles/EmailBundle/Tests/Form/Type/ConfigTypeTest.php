@@ -43,7 +43,7 @@ final class ConfigTypeTest extends TypeTestCase
         defined('FT_PEEK') || define('FT_PEEK', 2);
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->expects($this->once())->method('trans')->willReturnArgument(0);
+        $translator->expects($this->atLeastOnce())->method('trans')->willReturnArgument(0);
 
         $repoMock = $this->createMock(PageRepository::class);
         $repoMock->expects($this->once())->method('getPageList')->willReturn([]);

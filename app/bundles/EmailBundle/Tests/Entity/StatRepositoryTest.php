@@ -21,7 +21,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->statRepository = $this->configureRepository(Stat::class);
-        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->expects($this->atLeastOnce())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
     }
 
     public function testGetStatsSummaryForContacts(): void

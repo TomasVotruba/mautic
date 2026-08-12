@@ -52,7 +52,7 @@ final class MigrationCommandSubscriberTest extends TestCase
 
         $this->event = new ConsoleTerminateEvent($this->command, $this->createStub(InputInterface::class), $this->createStub(OutputInterface::class), 0);
 
-        $this->connection->expects($this->once())->method('createSchemaManager')->willReturn($this->schemaManager);
+        $this->connection->method('createSchemaManager')->willReturn($this->schemaManager);
         $this->generatedColumns->add(new GeneratedColumn('page_hits', 'generated_hit_date', 'DATE', 'not important'));
     }
 

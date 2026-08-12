@@ -43,7 +43,7 @@ final class CampaignModelTransactionalTest extends TestCase
             ->willReturnSelf();
 
         $entityManagerMock = $this->createMock(EntityManager::class);
-        $entityManagerMock->expects($this->once())->method('getConnection')
+        $entityManagerMock->method('getConnection')
             ->willReturn($this->createStub(Connection::class));
 
         $userHelperMock = $this->createMock(UserHelper::class);

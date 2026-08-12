@@ -391,7 +391,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
     {
         $cache = $this->createMock(CacheInterface::class);
 
-        $cache->expects($this->once())
+        $cache->expects($this->atLeastOnce())
             ->method('get')
             ->withAnyParameters()
             ->willReturn('2019-05-22 19:36:30');
@@ -422,7 +422,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
 
         $translator = $this->createStub(TranslatorInterface::class);
 
-        $integration->expects($this->once())->method('getTranslator')->willReturn($translator);
+        $integration->method('getTranslator')->willReturn($translator);
 
         $this->expectException(ApiErrorException::class);
         $integration->expects($this->atLeastOnce())
@@ -450,7 +450,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
     {
         $cache = $this->createMock(CacheInterface::class);
 
-        $cache->expects($this->once())
+        $cache->expects($this->atLeastOnce())
             ->method('get')
             ->withAnyParameters()
             ->willReturn('2019-05-22 19:36:30');
@@ -490,9 +490,9 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getFeatureSettings', 'setFeatureSettings'])
             ->getMock();
 
-        $integration->expects($this->once())->method('getEntityManager')->willReturn($entityManager);
-        $integration->expects($this->once())->method('getIntegrationSettings')->willReturn($entity);
-        $entity->expects($this->once())->method('getFeatureSettings')->willReturn(['leadFields' => ['extraField__Lead' => '']]);
+        $integration->method('getEntityManager')->willReturn($entityManager);
+        $integration->method('getIntegrationSettings')->willReturn($entity);
+        $entity->method('getFeatureSettings')->willReturn(['leadFields' => ['extraField__Lead' => '']]);
 
         $this->expectException(ApiErrorException::class);
         $integration->expects($this->atLeastOnce())

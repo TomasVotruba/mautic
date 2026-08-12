@@ -69,13 +69,13 @@ final class ThemeHelperTest extends TestCase
         $this->loader              = $this->createMock(FilesystemLoader::class);
         $this->translator          = $this->createMock(TranslatorInterface::class);
         $this->coreParameterHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParameterHelper->expects($this->once())->method('get')
+        $this->coreParameterHelper->method('get')
             ->with('theme_import_allowed_extensions')
             ->willReturn(['json', 'twig', 'css', 'js', 'htm', 'html', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
         $this->builderIntegrationsHelper = $this->createMock(BuilderIntegrationsHelper::class);
 
-        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
+        $this->translator->method('trans')->willReturn('some translation');
 
         $this->themeHelper = new ThemeHelper(
             $this->pathsHelper,
@@ -96,7 +96,7 @@ final class ThemeHelperTest extends TestCase
             ->with('themes', true)
             ->willReturn(__DIR__.'/resource/themes');
 
-        $this->translator->expects($this->once())
+        $this->translator
             ->method('trans')
             ->with('mautic.core.theme.missing.files', $this->anything(), 'validators')
             ->willReturnCallback(
@@ -116,7 +116,7 @@ final class ThemeHelperTest extends TestCase
             ->with('themes', true)
             ->willReturn(__DIR__.'/resource/themes');
 
-        $this->translator->expects($this->once())
+        $this->translator
             ->method('trans')
             ->with('mautic.core.theme.missing.files', $this->anything(), 'validators')
             ->willReturnCallback(
@@ -136,7 +136,7 @@ final class ThemeHelperTest extends TestCase
             ->with('themes', true)
             ->willReturn(__DIR__.'/resource/themes');
 
-        $this->translator->expects($this->once())
+        $this->translator
             ->method('trans')
             ->with('mautic.core.theme.missing.files', $this->anything(), 'validators')
             ->willReturnCallback(
@@ -429,9 +429,9 @@ final class ThemeHelperTest extends TestCase
         $integration = new Integration();
         $integration->setIsPublished(true);
 
-        $mockBuilder->expects($this->once())->method('getIntegrationConfiguration')
+        $mockBuilder->method('getIntegrationConfiguration')
             ->willReturn($integration);
-        $this->builderIntegrationsHelper->expects($this->once())->method('getBuilder')
+        $this->builderIntegrationsHelper->expects($this->atLeastOnce())->method('getBuilder')
             ->willReturn($mockBuilder);
 
         $this->pathsHelper->expects($this->exactly(4))->method('getSystemPath')

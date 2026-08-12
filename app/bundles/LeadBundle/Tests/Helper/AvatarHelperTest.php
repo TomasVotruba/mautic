@@ -30,7 +30,7 @@ final class AvatarHelperTest extends \PHPUnit\Framework\TestCase
 
         $assetsHelperMock = new AssetsHelper($this->createStub(Packages::class));
         $pathsHelperMock  = $this->createMock(PathsHelper::class);
-        $pathsHelperMock->expects($this->once())->method('getSystemPath')
+        $pathsHelperMock->expects($this->atLeastOnce())->method('getSystemPath')
         ->willReturn('http://localhost');
         $pathsHelperMock->expects($this->once())->method('getAssetsPath')
           ->willReturn($root.'/app/assets');

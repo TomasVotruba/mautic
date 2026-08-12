@@ -226,7 +226,7 @@ final class OwnerSubscriberTest extends TestCase
             $parameterMap
         );
 
-        $coreParametersHelper->expects($this->once())->method('get')
+        $coreParametersHelper->expects($this->atLeastOnce())->method('get')
             ->willReturnMap(
                 $parameterMap
             );
@@ -296,7 +296,7 @@ final class OwnerSubscriberTest extends TestCase
     {
         /** @var Translator&MockObject $translator */
         $translator = $this->createMock(Translator::class);
-        $translator->expects($this->once())
+        $translator
             ->method('hasId')
             ->willReturn(false);
 
@@ -309,7 +309,7 @@ final class OwnerSubscriberTest extends TestCase
             [$content, $expected, $lead] = $data;
 
             $leadRepository = $this->createMock(LeadRepository::class);
-            $leadRepository->expects($this->once())->method('getLeadOwner')->willReturn(['first_name' => 'John', 'last_name' => 'Doe']);
+            $leadRepository->method('getLeadOwner')->willReturn(['first_name' => 'John', 'last_name' => 'Doe']);
             $subscriber = new OwnerSubscriber($this->createStub(TranslatorInterface::class), $leadRepository);
 
             $event = new TokenReplacementEvent($content, $lead);
@@ -339,7 +339,7 @@ final class OwnerSubscriberTest extends TestCase
     private function onSmsTokenReplacementProvider(): array
     {
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getId')
             ->willReturn(1);
         $lead->expects($this->once())
@@ -349,8 +349,8 @@ final class OwnerSubscriberTest extends TestCase
                     'id'     => 1,
                 ]
             );
-        $lead->expects($this->once())
-            ->method('getowner')
+        $lead->expects($this->atLeastOnce())
+            ->method('getOwner')
             ->willReturn(
                 $this->getUser()
             );

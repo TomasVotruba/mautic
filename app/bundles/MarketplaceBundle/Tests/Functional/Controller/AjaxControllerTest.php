@@ -80,8 +80,8 @@ final class AjaxControllerTest extends AbstractMauticTestCase
     private function generateController(bool $isPackageInstalled): AjaxController
     {
         $composer = $this->createMock(ComposerHelper::class);
-        $composer->expects($this->once())->method('install')->willReturn(new ConsoleOutput(0, 'OK'));
-        $composer->expects($this->once())->method('remove')->willReturn(new ConsoleOutput(0, 'OK'));
+        $composer->method('install')->willReturn(new ConsoleOutput(0, 'OK'));
+        $composer->method('remove')->willReturn(new ConsoleOutput(0, 'OK'));
         $composer->expects($this->once())->method('isInstalled')->willReturn($isPackageInstalled);
 
         $cacheHelper = $this->createMock(CacheHelper::class);

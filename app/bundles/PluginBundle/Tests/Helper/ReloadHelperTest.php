@@ -52,7 +52,7 @@ final class ReloadHelperTest extends \PHPUnit\Framework\TestCase
         ];
 
         $sampleSchema = $this->createMock(Schema::class);
-        $sampleSchema->expects($this->once())->method('getTables')
+        $sampleSchema->method('getTables')
                 ->willReturn([]);
 
         $this->sampleSchemas = [

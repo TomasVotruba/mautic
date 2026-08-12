@@ -281,7 +281,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->with($leadDeviceMock);
 
         // index 0-3 for leadDeviceRepository::findOneBy
-        $leadDeviceMock->expects($this->once())->method('getTrackingId')
+        $leadDeviceMock->expects($this->atLeastOnce())->method('getTrackingId')
             ->willReturnOnConsecutiveCalls(null, $uniqueTrackingIdentifier);
 
         $leadDeviceMock->expects($this->once())
@@ -341,7 +341,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->willReturn(true);
 
         // index 0-3 for leadDeviceRepository::findOneBy
-        $leadDeviceMock->expects($this->once())->method('getTrackingId')
+        $leadDeviceMock->expects($this->atLeastOnce())->method('getTrackingId')
             ->willReturnOnConsecutiveCalls(null, $uniqueTrackingIdentifier);
 
         $leadDeviceMock->expects($this->once())

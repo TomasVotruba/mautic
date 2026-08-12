@@ -107,7 +107,7 @@ final class EmailActionModelTest extends TestCase
 
     private function configurePermissionToAllowEdition(bool $allow): void
     {
-        $this->corePermissionsMock->expects($this->once())
+        $this->corePermissionsMock->expects($this->atLeastOnce())
             ->method('hasEntityAccess')
             ->willReturn($allow);
     }

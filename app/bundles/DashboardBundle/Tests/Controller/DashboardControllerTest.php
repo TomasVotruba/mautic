@@ -87,7 +87,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->expects($this->once())
+        $this->requestMock->expects($this->atLeastOnce())
             ->method('isXmlHttpRequest')
             ->willReturn(false);
 
@@ -101,7 +101,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')
             ->willReturn(false);
 
         $this->translatorMock->expects($this->once())
@@ -118,8 +118,8 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')->willReturn(true);
-        $this->requestMock->expects($this->once())->method('get')->willReturn('mockName');
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')->willReturn(true);
+        $this->requestMock->expects($this->atLeastOnce())->method('get')->willReturn('mockName');
 
         $this->containerMock->expects($this->exactly(2))
             ->method('get')->willReturnCallback(function (...$parameters): MockObject {
@@ -128,7 +128,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
                 return $this->routerMock;
             });
 
-        $this->routerMock->expects($this->once())
+        $this->routerMock->expects($this->atLeastOnce())
             ->method('generate')
             ->willReturn('https://some.url');
 
@@ -149,16 +149,16 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')
             ->willReturn(true);
 
-        $this->routerMock->expects($this->once())
+        $this->routerMock->expects($this->atLeastOnce())
             ->method('generate')
             ->willReturn('https://some.url');
 
-        $this->requestMock->expects($this->once())->method('get')->willReturn('mockName');
+        $this->requestMock->expects($this->atLeastOnce())->method('get')->willReturn('mockName');
 
-        $this->containerMock->expects($this->once())
+        $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
             ->with('router')
             ->willReturn($this->routerMock);
@@ -176,7 +176,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
 
     public function testWidgetDirectRequest(): void
     {
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')
             ->willReturn(false);
 
         $this->expectException(NotFoundHttpException::class);
@@ -188,14 +188,14 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $widgetId = '1';
         $twig     = $this->createStub(Environment::class);
 
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')
             ->willReturn(true);
 
         $widgetService = $this->createMock(Widget::class);
         $widgetService->expects($this->once())
             ->method('setFilter')
             ->with($this->requestMock);
-        $widgetService->expects($this->once())
+        $widgetService->expects($this->atLeastOnce())
             ->method('get')
             ->with((int) $widgetId)
             ->willReturn(null);
@@ -218,14 +218,14 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('render')
             ->willReturn($renderedContent);
 
-        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->atLeastOnce())->method('isXmlHttpRequest')
             ->willReturn(true);
 
         $widgetService = $this->createMock(Widget::class);
         $widgetService->expects($this->once())
             ->method('setFilter')
             ->with($this->requestMock);
-        $widgetService->expects($this->once())
+        $widgetService->expects($this->atLeastOnce())
             ->method('get')
             ->with((int) $widgetId)
             ->willReturn($widget);

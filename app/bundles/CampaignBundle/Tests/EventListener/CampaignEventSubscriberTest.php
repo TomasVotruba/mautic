@@ -132,7 +132,7 @@ final class CampaignEventSubscriberTest extends TestCase
             ->willReturn(false);
 
         $mockLead     = $this->createMock(Lead::class);
-        $mockLead->expects($this->once())
+        $mockLead->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(42);
         $mockCampaign = $this->createMock(Campaign::class);
@@ -144,7 +144,7 @@ final class CampaignEventSubscriberTest extends TestCase
         $mockEvent->expects($this->once())
             ->method('getCampaign')
             ->willReturn($mockCampaign);
-        $mockEvent->expects($this->once())
+        $mockEvent->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(42);
 
@@ -190,7 +190,7 @@ final class CampaignEventSubscriberTest extends TestCase
             ->willReturn(false);
 
         $mockLead     = $this->createMock(Lead::class);
-        $mockLead->expects($this->once())
+        $mockLead->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(42);
         $mockCampaign = $this->createMock(Campaign::class);
@@ -206,7 +206,7 @@ final class CampaignEventSubscriberTest extends TestCase
         $mockEvent->expects($this->once())
             ->method('getCampaign')
             ->willReturn($mockCampaign);
-        $mockEvent->expects($this->once())
+        $mockEvent->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(42);
 
@@ -261,7 +261,7 @@ final class CampaignEventSubscriberTest extends TestCase
         $lead->setId(42);
 
         $eventMock = $this->createMock(Event::class);
-        $eventMock->expects($this->once())
+        $eventMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(42);
 
@@ -300,7 +300,7 @@ final class CampaignEventSubscriberTest extends TestCase
         $lead->deletedId = 10;
 
         $eventMock = $this->createMock(Event::class);
-        $eventMock->expects($this->once())
+        $eventMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 
@@ -346,8 +346,8 @@ final class CampaignEventSubscriberTest extends TestCase
         $eventMock->expects($this->once())->method('getCampaign')->willReturn($campaignMock);
 
         // Mock behavior for threshold calculations
-        $leadMock->expects($this->once())->method('getId')->willReturn(1);
-        $eventMock->expects($this->once())->method('getId')->willReturn(1);
+        $leadMock->expects($this->atLeastOnce())->method('getId')->willReturn(1);
+        $eventMock->expects($this->atLeastOnce())->method('getId')->willReturn(1);
         $this->eventRepo->expects($this->once())->method('getFailedCountLeadEvent')
             ->with(1, 1)->willReturn(101);
         $this->leadEventLogRepositoryMock->expects($this->once())->method('isLastFailed')

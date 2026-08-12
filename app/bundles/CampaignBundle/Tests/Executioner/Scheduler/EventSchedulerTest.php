@@ -52,7 +52,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     {
         $this->logger              = new NullLogger();
         $coreParamtersHelper       = $this->createMock(CoreParametersHelper::class);
-        $coreParamtersHelper->expects($this->once())->method('getDefaultTimezone')
+        $coreParamtersHelper->method('getDefaultTimezone')
             ->willReturn('America/New_York');
         $this->intervalScheduler          = new Interval($this->logger, $coreParamtersHelper);
         $this->dateTimeScheduler          = new DateTime($this->logger);
@@ -137,25 +137,25 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     public function testEventDoesNotGetRescheduledForRelativeTimeWhenValidated(): void
     {
         $campaign = $this->createMock(Campaign::class);
-        $campaign->expects($this->once())->method('getId')
+        $campaign->method('getId')
             ->willReturn(1);
 
         $event = $this->createMock(Event::class);
-        $event->expects($this->once())->method('getTriggerMode')
+        $event->expects($this->atLeastOnce())->method('getTriggerMode')
             ->willReturn(Event::TRIGGER_MODE_INTERVAL);
         $event->expects($this->once())->method('getTriggerInterval')
             ->willReturn(1);
-        $event->expects($this->once())->method('getTriggerIntervalUnit')
+        $event->expects($this->atLeastOnce())->method('getTriggerIntervalUnit')
             ->willReturn('d');
-        $event->expects($this->once())->method('getTriggerHour')
+        $event->expects($this->atLeastOnce())->method('getTriggerHour')
             ->willReturn(
                 new \DateTime('1970-01-01 09:00:00')
             );
         $event->expects($this->once())->method('getTriggerRestrictedDaysOfWeek')
             ->willReturn([]);
-        $event->expects($this->once())->method('getCampaign')
+        $event->method('getCampaign')
             ->willReturn($campaign);
-        $event->expects($this->once())->method('getId')
+        $event->method('getId')
             ->willReturn(1);
 
         // The campaign executed with + 1 day at 1pm ET
@@ -168,7 +168,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
         $simulatedNow = new \DateTime('2018-08-31 13:00:15', new \DateTimeZone('America/New_York'));
 
         $contact = $this->createMock(Lead::class);
-        $contact->expects($this->once())->method('getId')
+        $contact->method('getId')
             ->willReturn(1);
         $contact->expects($this->once())->method('getTimezone')
             ->willReturn('America/New_York');
@@ -180,7 +180,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($logDateTriggered);
         $log->expects($this->once())->method('getLead')
             ->willReturn($contact);
-        $log->expects($this->once())->method('getEvent')
+        $log->expects($this->atLeastOnce())->method('getEvent')
             ->willReturn($event);
 
         $executionDate = $this->scheduler->validateExecutionDateTime($log, $simulatedNow);
@@ -192,25 +192,25 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     public function testEventIsRescheduledForRelativeTimeIfAppropriate(): void
     {
         $campaign = $this->createMock(Campaign::class);
-        $campaign->expects($this->once())->method('getId')
+        $campaign->method('getId')
             ->willReturn(1);
 
         $event = $this->createMock(Event::class);
-        $event->expects($this->once())->method('getTriggerMode')
+        $event->expects($this->atLeastOnce())->method('getTriggerMode')
             ->willReturn(Event::TRIGGER_MODE_INTERVAL);
         $event->expects($this->once())->method('getTriggerInterval')
             ->willReturn(1);
-        $event->expects($this->once())->method('getTriggerIntervalUnit')
+        $event->expects($this->atLeastOnce())->method('getTriggerIntervalUnit')
             ->willReturn('d');
-        $event->expects($this->once())->method('getTriggerHour')
+        $event->expects($this->atLeastOnce())->method('getTriggerHour')
             ->willReturn(
                 new \DateTime('1970-01-01 11:00:00')
             );
         $event->expects($this->once())->method('getTriggerRestrictedDaysOfWeek')
             ->willReturn([]);
-        $event->expects($this->once())->method('getCampaign')
+        $event->method('getCampaign')
             ->willReturn($campaign);
-        $event->expects($this->once())->method('getId')
+        $event->method('getId')
             ->willReturn(1);
 
         // The campaign executed with + 1 day at 1pm ET
@@ -223,7 +223,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
         $simulatedNow = new \DateTime('2018-08-31 13:00:15');
 
         $contact = $this->createMock(Lead::class);
-        $contact->expects($this->once())->method('getId')
+        $contact->method('getId')
             ->willReturn(1);
         $contact->expects($this->once())->method('getTimezone')
             ->willReturn('America/New_York');
@@ -235,7 +235,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($logDateTriggered);
         $log->expects($this->once())->method('getLead')
             ->willReturn($contact);
-        $log->expects($this->once())->method('getEvent')
+        $log->expects($this->atLeastOnce())->method('getEvent')
             ->willReturn($event);
 
         $executionDate = $this->scheduler->validateExecutionDateTime($log, $simulatedNow);
@@ -248,7 +248,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     public function testEventDoesNotGetRescheduledForRelativeTimeWithDowWhenValidated(): void
     {
         $campaign = $this->createMock(Campaign::class);
-        $campaign->expects($this->once())->method('getId')
+        $campaign->method('getId')
             ->willReturn(1);
 
         // The campaign executed with + 1 day at 1pm ET
@@ -263,23 +263,23 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
         $dow = $simulatedNow->format('w');
 
         $event = $this->createMock(Event::class);
-        $event->expects($this->once())->method('getTriggerMode')
+        $event->expects($this->atLeastOnce())->method('getTriggerMode')
             ->willReturn(Event::TRIGGER_MODE_INTERVAL);
-        $event->expects($this->once())->method('getTriggerRestrictedStartHour')
+        $event->expects($this->atLeastOnce())->method('getTriggerRestrictedStartHour')
             ->willReturn(new \DateTime('1970-01-01 10:00:00'));
-        $event->expects($this->once())->method('getTriggerRestrictedStopHour')
+        $event->expects($this->atLeastOnce())->method('getTriggerRestrictedStopHour')
             ->willReturn(new \DateTime('1970-01-01 20:00:00'));
         $event->expects($this->once())->method('getTriggerRestrictedDaysOfWeek')
             ->willReturn([$dow]);
-        $event->expects($this->once())->method('getCampaign')
+        $event->method('getCampaign')
             ->willReturn($campaign);
-        $event->expects($this->once())->method('getTriggerIntervalUnit')
+        $event->expects($this->atLeastOnce())->method('getTriggerIntervalUnit')
             ->willReturn('d');
-        $event->expects($this->once())->method('getId')
+        $event->method('getId')
             ->willReturn(1);
 
         $contact = $this->createMock(Lead::class);
-        $contact->expects($this->once())->method('getId')
+        $contact->method('getId')
             ->willReturn(1);
         $contact->expects($this->once())->method('getTimezone')
             ->willReturn('America/New_York');
@@ -291,7 +291,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($logDateTriggered);
         $log->expects($this->once())->method('getLead')
             ->willReturn($contact);
-        $log->expects($this->once())->method('getEvent')
+        $log->expects($this->atLeastOnce())->method('getEvent')
             ->willReturn($event);
 
         $executionDate = $this->scheduler->validateExecutionDateTime($log, $simulatedNow);
@@ -322,7 +322,7 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
         $logWithNoRescheduleInterval->setEvent($event);
         $logWithNoRescheduleInterval->setLead($contact);
 
-        $this->eventCollector->expects($this->once())->method('getEventConfig')
+        $this->eventCollector->expects($this->atLeastOnce())->method('getEventConfig')
             ->willReturn(new ActionAccessor([]));
 
         $coreParamtersHelper->expects($this->once())

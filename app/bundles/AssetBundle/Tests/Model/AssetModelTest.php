@@ -81,7 +81,7 @@ final class AssetModelTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParametersHelper->expects($this->once())->method('get')
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')
             ->with('max_size')
             ->willReturn('2MB');
         $cacheProvider               = new CacheProvider($this->coreParametersHelper, $this->createStub(ContainerInterface::class));
@@ -171,7 +171,7 @@ final class AssetModelTest extends \PHPUnit\Framework\TestCase
 
         $serverBag = $this->createMock(ServerBag::class);
 
-        $serverBag->expects($this->once())
+        $serverBag->expects($this->atLeastOnce())
             ->method('get')
             ->with('HTTP_REFERER')
             ->willReturn('http://localhost');

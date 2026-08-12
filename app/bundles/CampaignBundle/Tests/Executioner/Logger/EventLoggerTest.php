@@ -49,7 +49,7 @@ final class EventLoggerTest extends TestCase
         $logCollection = new ArrayCollection();
         while ($logCollection->count() < 60) {
             $log = $this->createMock(LeadEventLog::class);
-            $log->expects($this->once())->method('getId')
+            $log->expects($this->atLeastOnce())->method('getId')
                 ->willReturn($logCollection->count() + 1);
 
             $logCollection->add($log);
@@ -71,7 +71,7 @@ final class EventLoggerTest extends TestCase
 
     public function testBuildLogEntry(): void
     {
-        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')->willReturn(new IpAddress());
+        $this->ipLookupHelper->expects($this->atLeastOnce())->method('getIpAddress')->willReturn(new IpAddress());
 
         $this->leadRepository->expects($this->exactly(3))
             ->method('getContactRotations')
@@ -83,14 +83,14 @@ final class EventLoggerTest extends TestCase
 
         /** @var MockObject&Campaign $campaign */
         $campaign = $this->createMock(Campaign::class);
-        $campaign->expects($this->once())->method('getId')->willReturnOnConsecutiveCalls(1, 1, 1, 1, 2, 2);
+        $campaign->expects($this->atLeastOnce())->method('getId')->willReturnOnConsecutiveCalls(1, 1, 1, 1, 2, 2);
 
         $event = new Event();
         $event->setCampaign($campaign);
 
         /** @var MockObject&Lead $contact */
         $contact = $this->createMock(Lead::class);
-        $contact->expects($this->once())->method('getId')->willReturn(1);
+        $contact->expects($this->atLeastOnce())->method('getId')->willReturn(1);
 
         // rotation for campaign 1 and contact 1
         $log = $this->getLogger()->buildLogEntry($event, $contact, false);

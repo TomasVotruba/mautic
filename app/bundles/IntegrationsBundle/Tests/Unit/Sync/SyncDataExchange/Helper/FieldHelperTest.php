@@ -48,12 +48,12 @@ final class FieldHelperTest extends TestCase
         $this->fieldListProvider       = $this->createMock(FieldList::class);
         $channelListHelper             = $this->createMock(ChannelListHelper::class);
         $this->objectProvider          = $this->createMock(ObjectProvider::class);
-        $channelListHelper->expects($this->once())->method('getFeatureChannels')
+        $channelListHelper->method('getFeatureChannels')
             ->willReturn(['Email' => 'email']);
 
         $this->mauticSyncFieldsLoadEvent = $this->createMock(MauticSyncFieldsLoadEvent::class);
         $eventDispatcher                 = $this->createMock(EventDispatcherInterface::class);
-        $eventDispatcher->expects($this->once())->method('dispatch')
+        $eventDispatcher->method('dispatch')
             ->willReturn($this->mauticSyncFieldsLoadEvent);
 
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);

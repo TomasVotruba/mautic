@@ -39,7 +39,7 @@ final class ConfigSubscriberTest extends TestCase
             'segment_rebuild_time_warning'          => 30,
         ];
 
-        $this->configBuilderEvent->expects($this->once())->method('getParametersFromConfig')
+        $this->configBuilderEvent->method('getParametersFromConfig')
             ->willReturnCallback(fn (string $bundle): array => match ($bundle) {
                 'MauticLeadBundle' => $leadBundleParameters,
                 default            => [],

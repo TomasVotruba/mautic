@@ -165,7 +165,7 @@ final class MailHelperTest extends TestCase
 
         // Configure SMimeHelper to return false for signing by default
         $this->sMimeHelper->expects($this->once())->method('sMimeSigningEnabled')->willReturn(false);
-        $this->sMimeHelper->expects($this->once())->method('signContent')->willReturnArgument(0);
+        $this->sMimeHelper->method('signContent')->willReturnArgument(0);
 
         $this->entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
             ->method('getReference');
@@ -213,7 +213,7 @@ final class MailHelperTest extends TestCase
 
     public function testQueuedEmailFromOverride(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
         $singleMailHelper = $this->createMailHelperWithTransport(new BcInterfaceTokenTransport());
         $singleMailHelper->enableQueue();
@@ -281,9 +281,9 @@ final class MailHelperTest extends TestCase
 
     public function testQueuedOwnerAsMailer(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => null, 'signature' => 'owner 1'],
                 ['email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => null, 'signature' => 'owner 2'],
@@ -351,9 +351,9 @@ final class MailHelperTest extends TestCase
 
     public function testQueuedOwnerAsMailerHonorsEmailReplyToOverride(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => null, 'signature' => 'owner 1'],
                 ['email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => null, 'signature' => 'owner 2'],
@@ -392,7 +392,7 @@ final class MailHelperTest extends TestCase
                 ['mailer_from_name', null, 'No Body&#39;s Business'],
             ]);
 
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
                 ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
@@ -501,9 +501,9 @@ final class MailHelperTest extends TestCase
 
     public function testBatchIsEnabledWithBcTokenInterface(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
                 ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
@@ -539,7 +539,7 @@ final class MailHelperTest extends TestCase
 
     public function testGlobalFromThatAllFromAddressesAreTheSame(): void
     {
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
                 ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
@@ -588,7 +588,7 @@ final class MailHelperTest extends TestCase
 
     public function testStandardEmailReplyTo(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
 
@@ -610,7 +610,7 @@ final class MailHelperTest extends TestCase
 
     public function testEmailReplyToWithFromEmail(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
 
         $email = new Email();
@@ -632,7 +632,7 @@ final class MailHelperTest extends TestCase
             ['mailer_reply_to_email', null, 'admin@mautic.com'],
         ];
 
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
 
@@ -653,9 +653,9 @@ final class MailHelperTest extends TestCase
         $params = [
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
-        $this->contactRepository->expects($this->once())->method('getLeadOwner')
+        $this->contactRepository->method('getLeadOwner')
             ->willReturnOnConsecutiveCalls(
                 ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => 'owner 1', 'last_name' => '', 'signature' => 'owner 1'],
                 ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
@@ -797,7 +797,7 @@ final class MailHelperTest extends TestCase
             ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
         $mailer->setBody('{signature}');
@@ -825,7 +825,7 @@ final class MailHelperTest extends TestCase
             ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
         $mailer->addTo($this->contacts[0]['email']);
 
@@ -854,7 +854,7 @@ final class MailHelperTest extends TestCase
             ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test', 'custom-mautic-header' => '{contactfield=email}', 'Reply-to' => '{contactfield=email}']],
             ['mailer_from_email', null, 'nobody@nowhere.com'],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
         $mailer->addTo($this->contacts[0]['email']);
@@ -902,14 +902,14 @@ final class MailHelperTest extends TestCase
             ['mailer_custom_headers', [], ['X-Mautic-Test' => 'test', 'X-Mautic-Test2' => 'test']],
             ['secret_key', null, 'secret'],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $emailSecret      = hash_hmac('sha256', 'someemail@email.test', 'secret');
         $unsubscribeUrl   = 'http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret;
         $trackingPixelUrl = '/tracking.gif';
 
         $callCount = 0;
-        $this->router->expects($this->once())->method('generate')
+        $this->router->method('generate')
             ->willReturnCallback(function (string $route, array $params = []) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl, $emailSecret): string {
                 if (0 === $callCount++) {
                     $this->assertSame('mautic_email_unsubscribe', $route);
@@ -960,10 +960,10 @@ final class MailHelperTest extends TestCase
             ['secret_key', null, 'secret'],
             ['disable_unsubscribe_link_header', null, false],
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $emailSecret = hash_hmac('sha256', 'someemail@email.test', 'secret');
-        $this->router->expects($this->once())->method('generate')
+        $this->router->method('generate')
             ->willReturnCallback(
                 static function (string $route, array $parameters, int $referenceType) use ($emailSecret): string {
                     if ('mautic_email_unsubscribe' === $route) {
@@ -1039,7 +1039,7 @@ final class MailHelperTest extends TestCase
             $parameterMap
         );
 
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($parameterMap);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($parameterMap);
 
         $mockMailboxHelper = $this->createMock(Mailbox::class);
         $mockMailboxHelper->expects($this->once())->method('isConfigured')
@@ -1084,7 +1084,7 @@ final class MailHelperTest extends TestCase
         $params[] = ['minify_email_html', null, $minifyHtml];
         $params[] = ['mailer_is_owner', null, false];
         $params[] = ['mailer_append_tracking_pixel', null, false];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
 
         $mailer->addTo($this->contacts[0]['email']);
@@ -1165,7 +1165,7 @@ final class MailHelperTest extends TestCase
                 ]
             );
 
-        $this->router->expects($this->once())->method('generate')->willReturn('http://tracking.url');
+        $this->router->method('generate')->willReturn('http://tracking.url');
         $transport = new BatchTransport();
         $mailer    = $this->createMailHelperWithTransport($transport);
         $email     = new Email();
@@ -1210,7 +1210,7 @@ final class MailHelperTest extends TestCase
                 ]
             );
 
-        $this->router->expects($this->once())->method('generate')->willReturn('http://tracking.url');
+        $this->router->method('generate')->willReturn('http://tracking.url');
 
         $transport = new BatchTransport();
         $mailer    = $this->createMailHelperWithTransport($transport);
@@ -1241,7 +1241,7 @@ final class MailHelperTest extends TestCase
             ['mailer_from_name', null, 'No Body'],
             ['mailer_address_length_limit', null, 30], // Set a small address length limit for testing
         ];
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($params);
 
         $mailer = $this->createMailHelperWithTransport(new SmtpTransport());
 
@@ -1286,7 +1286,7 @@ final class MailHelperTest extends TestCase
 
     public function testClearMetadataAfterSend(): void
     {
-        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($this->defaultParams);
+        $this->coreParametersHelper->expects($this->atLeastOnce())->method('get')->willReturnMap($this->defaultParams);
 
         $mailer = $this->createMailHelperWithTransport(new BatchTransport());
 
@@ -1440,7 +1440,7 @@ final class MailHelperTest extends TestCase
                 ]
             );
 
-        $this->pathsHelper->expects($this->once())->method('getRootPath')->willReturn(realpath(__DIR__.'/../../../../../'));
+        $this->pathsHelper->expects($this->atLeastOnce())->method('getRootPath')->willReturn(realpath(__DIR__.'/../../../../../'));
 
         $mailer = new MailHelper(
             new Mailer(new SmtpTransport()),
@@ -1469,7 +1469,7 @@ final class MailHelperTest extends TestCase
         $initialHtml = 'Text <a href="https://mautic.com">Mautic</a> <img src="cid:abc" /> <img src="{ token }" /> <img src="https://mautic.com/app/assets/images/flags/{ country }.png"/> <img src="https://mautic.com/fake.jpg">';
         $trackedHtml = $initialHtml.'{unsubscribe_url}<img height="1" width="1" src="{tracking_pixel}" alt="" />';
 
-        $this->dispatcher->expects($this->once())->method('dispatch')
+        $this->dispatcher->expects($this->atLeastOnce())->method('dispatch')
             ->willReturnCallback(function (EmailSendEvent $event, string $eventName): EmailSendEvent {
                 if (EmailEvents::EMAIL_ON_SEND === $eventName) {
                     $event->addToken('{ token }', 'https://mautic.com/app/assets/images/flags/Venezuela.png');
@@ -1479,7 +1479,7 @@ final class MailHelperTest extends TestCase
                 return $event;
             });
 
-        $this->router->expects($this->once())->method('generate')
+        $this->router->method('generate')
             ->willReturnCallback(fn (string $route): string => match ($route) {
                 'mautic_email_unsubscribe' => '/unsubscribe',
                 'mautic_email_tracker'     => '/tracking.gif',

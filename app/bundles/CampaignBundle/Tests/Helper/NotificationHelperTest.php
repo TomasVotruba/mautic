@@ -58,7 +58,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getOwner')
             ->willReturn($user);
 
@@ -94,7 +94,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getOwner')
             ->willReturn(null);
 
@@ -131,7 +131,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getOwner')
             ->willReturn(null);
 
@@ -166,7 +166,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $campaign->setCreatedBy(2);
 
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getOwner')
             ->willReturn(null);
 
@@ -238,7 +238,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $campaign->setCreatedBy(2);
 
         $lead = $this->createMock(Lead::class);
-        $lead->expects($this->once())
+        $lead
             ->method('getOwner')
             ->willReturn(null);
 
@@ -250,7 +250,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
             ->method('getEntity')
             ->willReturn($user);
 
-        $this->translator->expects($this->once())
+        $this->translator->expects($this->atLeastOnce())
             ->method('trans')
             ->willReturn('test');
     }

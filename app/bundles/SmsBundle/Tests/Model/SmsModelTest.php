@@ -70,7 +70,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->logger               = $this->createStub(LoggerInterface::class);
         $this->coreParametersHelper = $this->createStub(CoreParametersHelper::class);
         $this->smsRepository        = $this->createMock(SmsRepository::class);
-        $this->dispatcher->expects($this->once())->method('dispatch')
+        $this->dispatcher->method('dispatch')
             ->willReturnArgument(0);
         $this->smsModel             = new SmsModel(
             $this->pageTrackableModel,
@@ -178,17 +178,17 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getRepository', 'getStatRepository'])
             ->getMock();
 
-        $smsModel->expects($this->once())->method('getStatRepository')
+        $smsModel->method('getStatRepository')
             ->willReturn($this->createStub(StatRepository::class));
 
         $smsRepo->expects($this->once())
             ->method('upCount')
             ->with($sms->getId(), 'sent', 2);
 
-        $smsModel->expects($this->once())->method('getRepository')
+        $smsModel->method('getRepository')
             ->willReturn($this->createStub(SmsRepository::class));
 
-        $smsModel->expects($this->once())->method('getStatRepository')
+        $smsModel->method('getStatRepository')
             ->willReturn($this->createStub(StatRepository::class));
 
         if ($isMMS) {

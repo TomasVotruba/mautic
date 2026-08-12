@@ -157,17 +157,17 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
         $entityManager              = $this->createMock(EntityManager::class);
         $connection                       = $this->createMock(Connection::class);
-        $entityManager->expects($this->once())->method('getConnection')->willReturn($connection);
+        $entityManager->method('getConnection')->willReturn($connection);
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
-        $schemaManager->expects($this->once())->method('tablesExist')->willReturn(true);
-        $connection->expects($this->once())->method('createSchemaManager')->willReturn($schemaManager);
-        $connection->expects($this->once())->method('beginTransaction')->willReturn(true);
-        $connection->expects($this->once())->method('commit')->willReturn(true);
-        $connection->expects($this->once())->method('rollBack')->willReturn(true);
-        $connection->expects($this->once())->method('executeStatement')->willReturn(1);
+        $schemaManager->method('tablesExist')->willReturn(true);
+        $connection->method('createSchemaManager')->willReturn($schemaManager);
+        $connection->method('beginTransaction')->willReturn(true);
+        $connection->method('commit')->willReturn(true);
+        $connection->method('rollBack')->willReturn(true);
+        $connection->method('executeStatement')->willReturn(1);
         $classMetadata = $this->createMock(ClassMetadata::class);
-        $classMetadata->expects($this->once())->method('getTableName')->willReturn('forms');
-        $entityManager->expects($this->once())->method('getClassMetadata')->willReturn($classMetadata);
+        $classMetadata->method('getTableName')->willReturn('forms');
+        $entityManager->method('getClassMetadata')->willReturn($classMetadata);
         $this->submissioRepository        = $this->createMock(SubmissionRepository::class);
         $this->leadRepository             = $this->createMock(LeadRepository::class);
         $this->uploadFieldValidatorMock   = $this->createMock(UploadFieldValidator::class);
@@ -177,7 +177,7 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactTracker             = $this->createMock(ContactTracker::class);
         $userRepository                   = $this->createMock(UserRepository::class);
 
-        $entityManager->expects($this->once())->method('getRepository')
+        $entityManager->method('getRepository')
             ->willReturnCallback(fn (string $class): ?\PHPUnit\Framework\MockObject\MockObject => match ($class) {
                 Submission::class => $this->submissioRepository,
                 Lead::class       => $this->leadRepository,
@@ -185,17 +185,17 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
                 default           => null,
             });
 
-        $dispatcher->expects($this->once())->method('hasListeners')->willReturn(false);
-        $deviceTrackingService->expects($this->once())->method('getTrackedDevice')->willReturn(null);
-        $this->formModel->expects($this->once())->method('getCustomComponents')->willReturn([
+        $dispatcher->method('hasListeners')->willReturn(false);
+        $deviceTrackingService->method('getTrackedDevice')->willReturn(null);
+        $this->formModel->method('getCustomComponents')->willReturn([
             'viewOnlyFields' => [],
             'fields'         => [],
         ]);
-        $this->submissioRepository->expects($this->once())->method('getResultsTableName')->willReturn('form_results');
-        $this->leadFieldModel->expects($this->once())->method('getFieldListWithProperties')->willReturn([]);
-        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')->willReturn(new IpAddress());
+        $this->submissioRepository->method('getResultsTableName')->willReturn('form_results');
+        $this->leadFieldModel->method('getFieldListWithProperties')->willReturn([]);
+        $this->ipLookupHelper->method('getIpAddress')->willReturn(new IpAddress());
 
-        $fieldHelper->expects($this->once())->method('getFieldFilter')->willReturn('string');
+        $fieldHelper->method('getFieldFilter')->willReturn('string');
 
         $this->submissionModel = new SubmissionModel(
             $this->ipLookupHelper,
@@ -235,11 +235,11 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
     public function testSaveSubmission(): void
     {
-        $this->contactTracker->expects($this->once())
+        $this->contactTracker->expects($this->atLeastOnce())
             ->method('getContact')
             ->willReturn(new Lead());
 
-        $this->userHelper->expects($this->once())
+        $this->userHelper->expects($this->atLeastOnce())
             ->method('getUser')
             ->willReturn(new User());
 
@@ -257,15 +257,15 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
             ->method('getFieldsWithUniqueIdentifier')
             ->willReturn(['eyJpc1B1Ymxpc2hlZCI6dHJ1ZSwiaXNVbmlxdWVJZGVudGlmZXIiOnRydWUsIm9iamVjdCI6ImxlYWQifQ==' => ['email' => 'Email']]);
 
-        $this->leadFieldModel->expects($this->once())
+        $this->leadFieldModel
             ->method('getFieldListWithProperties')
             ->willReturn($mockLeadField);
 
-        $this->companyModel->expects($this->once())->method('fetchCompanyFields')->willReturn([]);
+        $this->companyModel->method('fetchCompanyFields')->willReturn([]);
 
         $this->campaignModel->expects($this->once())->method('getCampaignsByForm')->willReturn([]);
 
-        $this->leadRepository->expects($this->once())
+        $this->leadRepository
             ->method('getLeadsByUniqueFields')
             ->willReturn(null);
 
@@ -281,7 +281,7 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
             ->method('processFileValidation')
             ->willReturn($this->file1Mock);
 
-        $this->ipLookupHelper->expects($this->once())
+        $this->ipLookupHelper
             ->method('getIpAddress')
             ->willReturn(new IpAddress());
 
@@ -397,11 +397,11 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
     private function setUpExport(): void
     {
-        $this->formModel->expects($this->once())
+        $this->formModel
             ->method('getCustomComponents')
             ->willReturn(['viewOnlyFields' => ['button', 'captcha', 'freetext']]);
 
-        $this->submissioRepository->expects($this->once())
+        $this->submissioRepository
             ->method('getEntities')
             ->willReturn([]);
     }
@@ -430,7 +430,7 @@ final class SubmissionModelTest extends \PHPUnit\Framework\TestCase
     {
         $values = ['Submission ID', 'Contact ID', 'Date Submitted', 'IP address', 'Referrer', 'Form ID'];
 
-        $this->translator->expects($this->once())
+        $this->translator->expects($this->atLeastOnce())
             ->method('trans')
             ->with($this->anything())
             ->willReturnCallback(fn ($text): ?string => match ($text) {

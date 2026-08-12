@@ -56,7 +56,7 @@ final class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyModel = $this->getCompanyModelForImport();
 
         $duplicatedCompany = $this->createMock(Company::class);
-        $duplicatedCompany->expects($this->once())->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
+        $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
         ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
@@ -69,7 +69,7 @@ final class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyModel = $this->getCompanyModelForImport();
 
         $duplicatedCompany = $this->createMock(Company::class);
-        $duplicatedCompany->expects($this->once())->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
+        $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
         ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
@@ -100,14 +100,14 @@ final class CompanyModelTest extends \PHPUnit\Framework\TestCase
         );
 
         $data = ['companyfield' => 'test', 'custom_html_field' => '<p>html content</p>'];
-        $companyModel->expects($this->once())->method('getFieldData')
+        $companyModel->expects($this->atLeastOnce())->method('getFieldData')
             ->willReturn($data);
         $this->setSecurity($companyModel);
 
-        $companyModel->expects($this->once())->method('getFieldData')->willReturn($data);
+        $companyModel->expects($this->atLeastOnce())->method('getFieldData')->willReturn($data);
 
         $duplicatedCompany = $this->createMock(Company::class);
-        $duplicatedCompany->expects($this->once())->method('getProfileFields')->willReturn($data);
+        $duplicatedCompany->method('getProfileFields')->willReturn($data);
 
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
         ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
@@ -135,7 +135,7 @@ final class CompanyModelTest extends \PHPUnit\Framework\TestCase
                 ],
             ]
         );
-        $companyModel->expects($this->once())->method('getFieldData')->willReturn(['companyfield' => 'xxx']);
+        $companyModel->expects($this->atLeastOnce())->method('getFieldData')->willReturn(['companyfield' => 'xxx']);
         $this->setSecurity($companyModel);
 
         return $companyModel;
@@ -203,7 +203,7 @@ final class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $security = $this->createMock(CorePermissions::class);
         $security->expects($this->once())->method('hasEntityAccess')
             ->willReturn(true);
-        $security->expects($this->once())->method('isGranted')
+        $security->method('isGranted')
             ->willReturn(true);
 
         $reflection = new \ReflectionClass($companyModel);

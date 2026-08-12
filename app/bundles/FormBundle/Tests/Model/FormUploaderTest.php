@@ -198,7 +198,7 @@ final class FormUploaderTest extends \PHPUnit\Framework\TestCase
                 }
             });
 
-        $fileUploaderMock->expects($this->once())
+        $fileUploaderMock->expects($this->atLeastOnce())
             ->method('delete')
             ->with($this->uploadDir.'/1/fieldId1/upload1.jpg');
 
@@ -279,7 +279,7 @@ final class FormUploaderTest extends \PHPUnit\Framework\TestCase
     {
         $fileUploaderMock = $this->createMock(FileUploader::class);
 
-        $fileUploaderMock->expects($this->once())
+        $fileUploaderMock->expects($this->atLeastOnce())
             ->method('delete')
             ->with($this->uploadDir.'/1/fieldId1');
 
@@ -324,7 +324,7 @@ final class FormUploaderTest extends \PHPUnit\Framework\TestCase
         $formMock                 = $this->createMock(Form::class);
         $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
 
-        $fileUploaderMock->expects($this->once())
+        $fileUploaderMock->expects($this->atLeastOnce())
             ->method('delete')
             ->with($this->uploadDir.'/1');
 

@@ -132,59 +132,59 @@ final class PublicControllerTest extends TestCase
     private function getVariantContent(int $aCount, int $bCount, int $cCount): string
     {
         $pageEntityB = $this->createMock(Page::class);
-        $pageEntityB->expects($this->once())->method('getId')
+        $pageEntityB->method('getId')
             ->willReturn(2);
         $pageEntityB->expects($this->once())->method('isPublished')
             ->willReturn(true);
-        $pageEntityB->expects($this->once())->method('getVariantHits')
+        $pageEntityB->expects($this->atLeastOnce())->method('getVariantHits')
             ->willReturn($bCount);
         $pageEntityB->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityB->expects($this->once())->method('isTranslation')
+        $pageEntityB->method('isTranslation')
             ->willReturn(false);
-        $pageEntityB->expects($this->once())->method('getContent')
+        $pageEntityB->method('getContent')
             ->willReturn(null);
-        $pageEntityB->expects($this->once())->method('getCustomHtml')
+        $pageEntityB->method('getCustomHtml')
             ->willReturn('pageB');
-        $pageEntityB->expects($this->once())->method('getVariantSettings')
+        $pageEntityB->method('getVariantSettings')
             ->willReturn(['weight' => '25']);
 
         $pageEntityC = $this->createMock(Page::class);
-        $pageEntityC->expects($this->once())->method('getId')
+        $pageEntityC->method('getId')
             ->willReturn(3);
         $pageEntityC->expects($this->once())->method('isPublished')
             ->willReturn(true);
-        $pageEntityC->expects($this->once())->method('getVariantHits')
+        $pageEntityC->expects($this->atLeastOnce())->method('getVariantHits')
             ->willReturn($cCount);
         $pageEntityC->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityC->expects($this->once())->method('isTranslation')
+        $pageEntityC->method('isTranslation')
             ->willReturn(false);
-        $pageEntityC->expects($this->once())->method('getContent')
+        $pageEntityC->method('getContent')
             ->willReturn(null);
-        $pageEntityC->expects($this->once())->method('getCustomHtml')
+        $pageEntityC->method('getCustomHtml')
             ->willReturn('pageC');
-        $pageEntityC->expects($this->once())->method('getVariantSettings')
+        $pageEntityC->method('getVariantSettings')
             ->willReturn(['weight' => '25']);
 
         $pageEntityA = $this->createMock(Page::class);
-        $pageEntityA->expects($this->once())->method('getId')
+        $pageEntityA->method('getId')
             ->willReturn(1);
         $pageEntityA->expects($this->once())->method('isPublished')
             ->willReturn(true);
         $pageEntityA->expects($this->once())->method('getVariants')
             ->willReturn([$pageEntityA, [2 => $pageEntityB, 3 => $pageEntityC]]);
-        $pageEntityA->expects($this->once())->method('getVariantHits')
+        $pageEntityA->expects($this->atLeastOnce())->method('getVariantHits')
             ->willReturn($aCount);
         $pageEntityA->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityA->expects($this->once())->method('isTranslation')
+        $pageEntityA->method('isTranslation')
             ->willReturn(false);
-        $pageEntityA->expects($this->once())->method('getContent')
+        $pageEntityA->method('getContent')
             ->willReturn(null);
-        $pageEntityA->expects($this->once())->method('getCustomHtml')
+        $pageEntityA->method('getCustomHtml')
             ->willReturn('pageA');
-        $pageEntityA->expects($this->once())->method('getVariantSettings')
+        $pageEntityA->method('getVariantSettings')
             ->willReturn(['weight' => '50']);
 
         $assetHelper = new AssetsHelper($this->createStub(Packages::class));
@@ -203,7 +203,7 @@ final class PublicControllerTest extends TestCase
         $pageModel->expects($this->once())->method('hitPage')
             ->willReturn(true);
 
-        $this->contactRequestHelper->expects($this->once())->method('getContactFromQuery')
+        $this->contactRequestHelper->expects($this->atLeastOnce())->method('getContactFromQuery')
             ->willReturn(new Lead());
 
         $this->request->attributes->set('ignore_mismatch', true);

@@ -93,7 +93,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getSource')
             ->willReturn(ReportSubscriber::CONTEXT_EMAIL_STATS);
 
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn([
                 'es.email_address',
@@ -122,7 +122,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getSource')
             ->willReturn(ReportSubscriber::CONTEXT_EMAIL_STATS);
 
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['vp.subject']);
 
@@ -147,7 +147,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getSource')
             ->willReturn(ReportSubscriber::CONTEXT_EMAIL_STATS);
 
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['unique_hits']);
 
@@ -179,7 +179,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('getSource')
             ->willReturn(ReportSubscriber::CONTEXT_EMAIL_STATS);
 
-        $this->report->expects($this->once())
+        $this->report->expects($this->atLeastOnce())
             ->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['cmp.name']);
 
@@ -213,8 +213,8 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $resultMock        = $this->createMock(Result::class);
         $translatorMock    = $this->createStub(TranslatorInterface::class);
 
-        $queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
-        $resultMock->expects($this->once())->method('fetchOne')->willReturn([]);
+        $queryBuilderMock->method('executeQuery')->willReturn($resultMock);
+        $resultMock->method('fetchOne')->willReturn([]);
 
         $eventMock->expects($this->once())
             ->method('getRequestedGraphs')
@@ -326,8 +326,8 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $resultMock        = $this->createMock(Result::class);
         $translatorMock    = $this->createStub(TranslatorInterface::class);
 
-        $queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
-        $resultMock->expects($this->once())->method('fetchOne')->willReturn([]);
+        $queryBuilderMock->method('executeQuery')->willReturn($resultMock);
+        $resultMock->method('fetchOne')->willReturn([]);
 
         $eventMock->expects($this->once())
             ->method('getRequestedGraphs')

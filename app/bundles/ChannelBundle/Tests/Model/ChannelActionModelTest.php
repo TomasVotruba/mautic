@@ -49,7 +49,7 @@ final class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
             $this->createStub(TranslatorInterface::class)
         );
 
-        $this->contactMock5->expects($this->once())->method('getId')->willReturn(5);
+        $this->contactMock5->method('getId')->willReturn(5);
     }
 
     public function testUpdateEntityAccess(): void

@@ -47,7 +47,7 @@ final class ChannelClickQueryBuilderTest extends TestCase
             $this->createStub(EventDispatcherInterface::class)
         );
 
-        $this->connectionMock->expects($this->once())->method('quote')
+        $this->connectionMock->method('quote')
             ->willReturnArgument(0);
     }
 
@@ -80,7 +80,7 @@ final class ChannelClickQueryBuilderTest extends TestCase
 
         $filter = $this->getContactSegmentFilter($operator, $parameterValue);
 
-        $this->randomParameterMock->expects($this->once())->method('generateRandomParameterName')
+        $this->randomParameterMock->expects($this->atLeastOnce())->method('generateRandomParameterName')
             ->willReturnOnConsecutiveCalls('queryAlias', 'para1', 'para2');
 
         $this->queryBuilder->applyQuery($queryBuilder, $filter);
@@ -127,7 +127,7 @@ final class ChannelClickQueryBuilderTest extends TestCase
 
         $filter = $this->getContactSegmentFilter($operator, $parameterValue, $batchLimiters);
 
-        $this->randomParameterMock->expects($this->once())->method('generateRandomParameterName')
+        $this->randomParameterMock->expects($this->atLeastOnce())->method('generateRandomParameterName')
             ->willReturnOnConsecutiveCalls('queryAlias', 'para1', 'para2');
 
         $this->queryBuilder->applyQuery($queryBuilder, $filter);

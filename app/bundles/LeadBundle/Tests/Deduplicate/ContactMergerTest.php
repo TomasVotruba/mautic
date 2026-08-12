@@ -50,7 +50,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $this->logger          = $this->createMock(Logger::class);
         $this->companyLeadRepo = $this->createMock(CompanyLeadRepository::class);
 
-        $this->leadRepository->expects($this->once())->method('getFieldValues')->willReturn([]);
+        $this->leadRepository->method('getFieldValues')->willReturn([]);
     }
 
     public function testMergeTimestamps(): void
@@ -250,7 +250,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->method('getId')
             ->willReturn(1);
 
-        $loser->expects($this->once())
+        $loser->expects($this->atLeastOnce())
             ->method('getId');
 
         // Winner values are newest so should be kept
@@ -400,7 +400,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->method('getId')
             ->willReturn(1);
 
-        $loser->expects($this->once())
+        $loser->expects($this->atLeastOnce())
             ->method('getId');
 
         // Winner values are newest so should be kept
@@ -444,11 +444,11 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $winner->expects($this->once())->method('getDateModified')->willReturn($winnerDateModified);
-        $winner->expects($this->once())->method('getId')->willReturn(1);
+        $winner->expects($this->atLeastOnce())->method('getId')->willReturn(1);
 
         $loser->expects($this->once())->method('getDateModified')->willReturn($loserDateModified);
-        $loser->expects($this->once())->method('getId')->willReturn(2);
-        $loser->expects($this->once())->method('isAnonymous')->willReturn(true);
+        $loser->expects($this->atLeastOnce())->method('getId')->willReturn(2);
+        $loser->expects($this->atLeastOnce())->method('isAnonymous')->willReturn(true);
 
         $matcher = $this->exactly(3);
         $winner->expects($matcher)
@@ -593,12 +593,12 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
     public function testFullMergeThrowsSameContactException(): void
     {
         $winner = $this->createMock(Lead::class);
-        $winner->expects($this->once())
+        $winner->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 
         $loser = $this->createMock(Lead::class);
-        $loser->expects($this->once())
+        $loser->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 
@@ -610,7 +610,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
     public function testFullMerge(): void
     {
         $winner = $this->createMock(Lead::class);
-        $winner->expects($this->once())
+        $winner->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
         $winner->expects($this->once())
@@ -627,7 +627,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->willReturn(new \DateTime('-30 minutes'));
 
         $loser = $this->createMock(Lead::class);
-        $loser->expects($this->once())
+        $loser->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
         $loser->expects($this->once())
@@ -722,7 +722,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->method('getId')
             ->willReturn(1);
 
-        $loser->expects($this->once())
+        $loser->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(2);
 

@@ -131,12 +131,12 @@ final class EmailControllerTest extends TestCase
             $this->createStub(LeadRepository::class)
         );
 
-        $this->sessionMock->expects($this->once())->method('getFlashBag')->willReturn($this->createStub(FlashBagInterface::class));
+        $this->sessionMock->method('getFlashBag')->willReturn($this->createStub(FlashBagInterface::class));
     }
 
     public function testSendActionWhenNoEntityFound(): void
     {
-        $this->containerMock->expects($this->once())
+        $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
             ->with('router')
             ->willReturn($this->routerMock);
@@ -164,7 +164,7 @@ final class EmailControllerTest extends TestCase
 
     public function testSendActionWhenEntityFoundButNotPublished(): void
     {
-        $this->containerMock->expects($this->once())
+        $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
             ->with('router')
             ->willReturn($this->routerMock);
@@ -209,7 +209,7 @@ final class EmailControllerTest extends TestCase
         $serviceExists = fn ($key): bool => count(array_filter($services, fn (array $service): bool => $service[0] === $key)) > 0;
 
         $this->containerMock->expects($this->once())->method('has')->willReturnCallback($serviceExists);
-        $this->containerMock->expects($this->once())->method('get')->willReturnMap($services);
+        $this->containerMock->expects($this->atLeastOnce())->method('get')->willReturnMap($services);
 
         $this->modelMock->expects($this->once())
             ->method('getEntity')

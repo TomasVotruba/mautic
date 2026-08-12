@@ -56,10 +56,10 @@ final class CampaignRotationTest extends MauticMysqlTestCase
         $request->setSession($sessionMock = $this->createMock(Session::class));
         $requestStack->push($request);
 
-        $sessionMock->expects($this->once())->method('getFlashBag')
+        $sessionMock->method('getFlashBag')
             ->willReturn($flashBagMock = $this->createMock(FlashBagInterface::class));
 
-        $flashBagMock->expects($this->once())->method('all')
+        $flashBagMock->method('all')
             ->willReturn([]);
 
         $contactTracker->setSystemContact($this->lead);

@@ -25,7 +25,7 @@ final class CacheClearSubscriberTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['clear', 'commit', 'getCacheAdapter'])
             ->getMock();
         $this->adapter->expects($this->once())->method('clear')->willReturn(true);
-        $this->adapter->expects($this->once())->method('commit')->willReturn(true);
+        $this->adapter->method('commit')->willReturn(true);
         $this->adapter->expects($this->once())->method('getCacheAdapter')->willReturn($this->createStub(AdapterInterface::class));
     }
 

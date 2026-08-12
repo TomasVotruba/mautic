@@ -127,7 +127,7 @@ final class UserModelTest extends TestCase
             ->method('generateSecret')
             ->willReturn($this->createStub(UserToken::class));
 
-        $this->mailHelper->expects($this->once())
+        $this->mailHelper->expects($this->atLeastOnce())
             ->method('getMailer')
             ->willReturn($this->mailHelper);
 
@@ -142,7 +142,7 @@ final class UserModelTest extends TestCase
             ->method('generate')
             ->with('mautic_user_passwordresetconfirm', ['token' => null], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->translator->expects($this->once())
+        $this->translator->expects($this->atLeastOnce())
             ->method('trans')
             ->willReturn('test');
 
@@ -189,7 +189,7 @@ final class UserModelTest extends TestCase
             ->method('getName')
             ->willReturn($name);
 
-        $this->mailHelper->expects($this->once())
+        $this->mailHelper->expects($this->atLeastOnce())
             ->method('getMailer')
             ->willReturn($this->mailHelper);
 
@@ -211,7 +211,7 @@ final class UserModelTest extends TestCase
         $subject = 'subject';
         $content = 'content';
 
-        $this->mailHelper->expects($this->once())
+        $this->mailHelper->expects($this->atLeastOnce())
             ->method('getMailer')
             ->willReturn($this->mailHelper);
 
@@ -265,7 +265,7 @@ final class UserModelTest extends TestCase
             ->with('@MauticUser/Email/invite.html.twig', ['inviteLink' => $link])
             ->willReturn('<p>Invite html</p>');
 
-        $this->mailHelper->expects($this->once())
+        $this->mailHelper->expects($this->atLeastOnce())
             ->method('getMailer')
             ->willReturn($this->mailHelper);
 

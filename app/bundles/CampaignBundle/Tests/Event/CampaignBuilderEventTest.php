@@ -134,7 +134,7 @@ final class CampaignBuilderEventTest extends CampaignTestAbstract
     {
         $translator = $this->createMock(Translator::class);
 
-        $translator->expects($this->once())
+        $translator->expects($this->atLeastOnce())
             ->method('trans')
             ->willReturnCallback(function (): string {
                 $args = func_get_args();

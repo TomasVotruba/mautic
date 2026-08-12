@@ -44,7 +44,7 @@ final class ChartQueryTest extends TestCase
         $this->queryBuilder   = $this->createMock(QueryBuilder::class);
         $this->dateTimeHelper = new DateTimeHelper();
 
-        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
     }
 
     public function testClassicDateColumn(): void

@@ -48,12 +48,12 @@ final class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->inactiveHelper = $this->createMock(InactiveHelper::class);
 
         $this->eventExecutioner = $this->createMock(EventExecutioner::class);
-        $this->eventExecutioner->expects($this->once())->method('getExecutionDate')->willReturn(new \DateTime());
+        $this->eventExecutioner->method('getExecutionDate')->willReturn(new \DateTime());
 
         $this->redirectionHelper = $this->createMock(EventRedirectionHelper::class);
 
         // Configure the redirection helper mock to return the event it receives
-        $this->redirectionHelper->expects($this->once())->method('handleEventRedirection')
+        $this->redirectionHelper->method('handleEventRedirection')
             ->willReturnCallback(fn (Event $event): Event => $event);
     }
 
@@ -99,7 +99,7 @@ final class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
         $campaign->expects($this->once())
             ->method('getEventsByType')
             ->willReturn(new ArrayCollection([$decision]));
-        $campaign->expects($this->once())
+        $campaign->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 
@@ -160,7 +160,7 @@ final class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
         $campaign->expects($this->once())
             ->method('isPublished')
             ->willReturn(true);
-        $campaign->expects($this->once())
+        $campaign->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn(1);
 

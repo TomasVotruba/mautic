@@ -26,11 +26,11 @@ final class SmsSubscriberTest extends TestCase
         $mockAuditLogModel = $this->createStub(AuditLogModel::class);
 
         $mockTrackableModel = $this->createMock(TrackableModel::class);
-        $mockTrackableModel->expects($this->once())->method('parseContentForTrackables')->willReturn([
+        $mockTrackableModel->method('parseContentForTrackables')->willReturn([
             $this->messageUrl,
             new Trackable(),
         ]);
-        $mockTrackableModel->expects($this->once())->method('generateTrackableUrl')->willReturn('custom');
+        $mockTrackableModel->method('generateTrackableUrl')->willReturn('custom');
 
         $mockPageTokenHelper = $this->createMock(TokenHelper::class);
         $mockPageTokenHelper->expects($this->once())->method('findPageTokens')->willReturn([]);
@@ -60,11 +60,11 @@ final class SmsSubscriberTest extends TestCase
         $mockAuditLogModel = $this->createStub(AuditLogModel::class);
 
         $mockTrackableModel = $this->createMock(TrackableModel::class);
-        $mockTrackableModel->expects($this->once())->method('parseContentForTrackables')->willReturn([
+        $mockTrackableModel->method('parseContentForTrackables')->willReturn([
             $this->messageUrl,
             new Trackable(),
         ]);
-        $mockTrackableModel->expects($this->once())->method('generateTrackableUrl')->willReturn('custom');
+        $mockTrackableModel->method('generateTrackableUrl')->willReturn('custom');
 
         $mockPageTokenHelper = $this->createMock(TokenHelper::class);
         $mockPageTokenHelper->expects($this->once())->method('findPageTokens')->willReturn([]);

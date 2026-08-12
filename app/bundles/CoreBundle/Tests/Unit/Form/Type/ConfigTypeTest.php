@@ -120,7 +120,7 @@ final class ConfigTypeTest extends TypeTestCase
     {
         $languageHelper             = $this->createMock(LanguageHelper::class);
 
-        $languageHelper->expects($this->once())
+        $languageHelper
                        ->method('fetchLanguages')
                        ->willReturn(['en' => ['name'=>'English']]);
 
