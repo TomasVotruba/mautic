@@ -38,15 +38,15 @@ return RectorConfig::configure()
     ->withComposerBased(phpunit: true, symfony: true)
     ->withSkip([
         // handle later
-        Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector::class,
+        // Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsForDataProviderRector::class,
 
         // @todo move to "twig" group
-        Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector::class,
+        // Rector\Php84\Rector\Class_\DeprecatedAnnotationToDeprecatedAttributeRector::class,
 
         // handle next
         Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWithoutExpectationsAttributeRector::class,
 
-        Rector\Symfony\CodeQuality\Rector\Class_\LoadValidatorMetadataToAttributeRector::class,
+        // Rector\Symfony\CodeQuality\Rector\Class_\LoadValidatorMetadataToAttributeRector::class,
         Utils\Rector\ModelGetRepositoryToRepositoryServiceRector::class => [
             __DIR__.'/app/bundles/PageBundle/Form/Type/PreferenceCenterListType.php',
         ],
