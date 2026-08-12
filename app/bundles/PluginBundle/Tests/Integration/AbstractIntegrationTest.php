@@ -41,7 +41,7 @@ final class AbstractIntegrationTest extends AbstractIntegrationTestCase
             ->onlyMethods(['getName', 'getAuthenticationType', 'getAvailableLeadFields'])
             ->getMock();
 
-        $integration->method('getAvailableLeadFields')
+        $integration->expects($this->once())->method('getAvailableLeadFields')
             ->willReturn(
                 [
                     'dnc' => [
@@ -96,7 +96,7 @@ final class AbstractIntegrationTest extends AbstractIntegrationTestCase
             ->onlyMethods(['getName', 'getAuthenticationType', 'makeHttpClient'])
             ->getMock();
 
-        $integration->method('makeHttpClient')
+        $integration->expects($this->once())->method('makeHttpClient')
             ->willReturn(
                 /** @phpstan-ignore class.extendsFinalByPhpDoc */
                 new class($assertRequest) extends Client {

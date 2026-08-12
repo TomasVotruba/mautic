@@ -64,7 +64,7 @@ final class Tracking404ModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn(true);
 
         $this->lead->setFirstname('identified');
-        $this->mockContactTracker
+        $this->mockContactTracker->expects($this->once())
             ->method('getContactByTrackedDevice')
             ->willReturn($this->lead);
 
@@ -79,7 +79,7 @@ final class Tracking404ModelTest extends \PHPUnit\Framework\TestCase
             ->with('do_not_track_404_anonymous')
             ->willReturn(true);
 
-        $this->mockContactTracker
+        $this->mockContactTracker->expects($this->once())
             ->method('getContactByTrackedDevice')
             ->willReturn($this->lead);
 

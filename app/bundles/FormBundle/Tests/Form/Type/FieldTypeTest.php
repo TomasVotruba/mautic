@@ -42,13 +42,13 @@ final class FieldTypeTest extends TypeTestCase
         // Set up expected behavior for objectCollector
         $objectCollection = new ObjectCollection();
         $objectCollection->append(new ObjectCrate('contact', 'Contact'));
-        $this->objectCollector->method('getObjects')->willReturn($objectCollection);
+        $this->objectCollector->expects($this->once())->method('getObjects')->willReturn($objectCollection);
 
         // Set up expected behavior for fieldCollector
         $fieldCollection = new FieldCollection([
             new FieldCrate('1', 'email', 'text', []),
         ]);
-        $this->fieldCollector->method('getFields')->willReturn($fieldCollection);
+        $this->fieldCollector->expects($this->once())->method('getFields')->willReturn($fieldCollection);
 
         parent::setUp();
     }

@@ -37,7 +37,7 @@ final class BotRatioHelperMatomoTest extends TestCase
 
         $emailStatMock    = $this->createMock(Stat::class);
         $emailSent        = new \DateTime('-1 second');
-        $emailStatMock->method('getDateSent')->willReturn($emailSent);
+        $emailStatMock->expects($this->once())->method('getDateSent')->willReturn($emailSent);
         $emailHitDateTime = new \DateTime();
         $ipAddress        = new IpAddress('1.2.3.4');
 
@@ -50,16 +50,16 @@ final class BotRatioHelperMatomoTest extends TestCase
         $userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
 
         $deviceDetectorMock = $this->createMock(DeviceDetector::class);
-        $deviceDetectorMock->method('parse');
-        $deviceDetectorMock->method('isBot')->willReturn(false);
+        $deviceDetectorMock->expects($this->once())->method('parse');
+        $deviceDetectorMock->expects($this->once())->method('isBot')->willReturn(false);
 
         $deviceDetectorFactoryMock = $this->createMock(DeviceDetectorFactoryInterface::class);
-        $deviceDetectorFactoryMock->method('create')->willReturn($deviceDetectorMock);
+        $deviceDetectorFactoryMock->expects($this->once())->method('create')->willReturn($deviceDetectorMock);
 
         $botRatioHelper = new BotRatioHelper($deviceDetectorFactoryMock, 0.6, 2, [], ['1.2.3.*']);
         $emailStatMock  = $this->createMock(Stat::class);
         $emailSent      = new \DateTime('-1 second');
-        $emailStatMock->method('getDateSent')->willReturn($emailSent);
+        $emailStatMock->expects($this->once())->method('getDateSent')->willReturn($emailSent);
 
         $emailHitDateTime = new \DateTime();
         $ipAddress        = new IpAddress('1.2.3.4');

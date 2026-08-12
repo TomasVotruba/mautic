@@ -127,7 +127,7 @@ final class UserModelTest extends TestCase
             ->method('generateSecret')
             ->willReturn($this->createStub(UserToken::class));
 
-        $this->mailHelper
+        $this->mailHelper->expects($this->once())
             ->method('getMailer')
             ->willReturn($this->mailHelper);
 
@@ -142,7 +142,7 @@ final class UserModelTest extends TestCase
             ->method('generate')
             ->with('mautic_user_passwordresetconfirm', ['token' => null], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturn('test');
 

@@ -325,9 +325,9 @@ final class ExportHelperTest extends TestCase
 
     public function testExportDataIntoFileCsvWithExistingFileNameWithZip(): void
     {
-        $this->coreParametersHelperMock->method('get')->with('contact_export_dir')->willReturn('/tmp');
+        $this->coreParametersHelperMock->expects($this->once())->method('get')->with('contact_export_dir')->willReturn('/tmp');
 
-        $this->filePathResolver->method('createDirectory')->with('/tmp');
+        $this->filePathResolver->expects($this->once())->method('createDirectory')->with('/tmp');
 
         $iteratorExportDataModelMock1 = $this->iteratorDataMock($this->dummyData);
         $this->filePaths[]            = $filePath = $this->exportHelper->exportDataIntoFile(
@@ -382,31 +382,31 @@ final class ExportHelperTest extends TestCase
         $iteratorData->array         = $data;
         $iteratorData->position      = 0;
 
-        $iteratorExportDataModelMock->method('rewind')
+        $iteratorExportDataModelMock->expects($this->once())->method('rewind')
             ->willReturnCallback(
                 function () use ($iteratorData): void {
                     $iteratorData->position = 0;
                 }
             );
 
-        $iteratorExportDataModelMock->method('current')
+        $iteratorExportDataModelMock->expects($this->once())->method('current')
             ->willReturnCallback(
                 fn (): mixed => $iteratorData->array[$iteratorData->position]
             );
 
-        $iteratorExportDataModelMock->method('key')
+        $iteratorExportDataModelMock->expects($this->once())->method('key')
             ->willReturnCallback(
                 fn (): int => $iteratorData->position
             );
 
-        $iteratorExportDataModelMock->method('next')
+        $iteratorExportDataModelMock->expects($this->once())->method('next')
             ->willReturnCallback(
                 function () use ($iteratorData): void {
                     ++$iteratorData->position;
                 }
             );
 
-        $iteratorExportDataModelMock->method('valid')
+        $iteratorExportDataModelMock->expects($this->once())->method('valid')
             ->willReturnCallback(
                 fn (): bool => isset($iteratorData->array[$iteratorData->position])
             );

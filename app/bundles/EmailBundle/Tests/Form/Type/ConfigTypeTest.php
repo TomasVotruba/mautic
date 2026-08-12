@@ -43,19 +43,19 @@ final class ConfigTypeTest extends TypeTestCase
         defined('FT_PEEK') || define('FT_PEEK', 2);
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnArgument(0);
+        $translator->expects($this->once())->method('trans')->willReturnArgument(0);
 
         $repoMock = $this->createMock(PageRepository::class);
-        $repoMock->method('getPageList')->willReturn([]);
+        $repoMock->expects($this->once())->method('getPageList')->willReturn([]);
 
         $pageModelMock = $this->createMock(PageModel::class);
-        $pageModelMock->method('getRepository')->willReturn($repoMock);
+        $pageModelMock->expects($this->once())->method('getRepository')->willReturn($repoMock);
 
         $permsMock = $this->createMock(CorePermissions::class);
-        $permsMock->method('isGranted')->willReturn(false);
+        $permsMock->expects($this->once())->method('isGranted')->willReturn(false);
 
         $dsnTransformerFactoryMock = $this->createMock(DsnTransformerFactory::class);
-        $dsnTransformerFactoryMock->method('create')->willReturnCallback(
+        $dsnTransformerFactoryMock->expects($this->once())->method('create')->willReturnCallback(
             fn (string $configKey, bool $allowEmpty): DsnTransformer => new DsnTransformer(
                 $this->createStub(CoreParametersHelper::class),
                 new EscapeTransformer([]),

@@ -30,7 +30,7 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
         $tag->setTag('tagLabel');
 
         $formMock = $this->createMock(Form::class);
-        $formMock->method('getData')
+        $formMock->expects($this->once())->method('getData')
             ->willReturn(
                 [
                     'name' => 'Bud',
@@ -67,7 +67,7 @@ final class ImportContactSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testHandleFieldWithIntValues(): void
     {
         $formMock = $this->createMock(Form::class);
-        $formMock->method('getData')
+        $formMock->expects($this->once())->method('getData')
             ->willReturn(
                 [
                     'name'           => 'Bud',

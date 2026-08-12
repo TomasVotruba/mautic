@@ -41,7 +41,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetOperatorsIncluding(): void
     {
-        $this->filterOperatorPovider
+        $this->filterOperatorPovider->expects($this->once())
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
@@ -64,7 +64,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetOperatorsExcluding(): void
     {
-        $this->filterOperatorPovider
+        $this->filterOperatorPovider->expects($this->once())
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
@@ -87,7 +87,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetOperatorsForFieldType(): void
     {
-        $this->filterOperatorPovider
+        $this->filterOperatorPovider->expects($this->once())
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
@@ -135,7 +135,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetOperatorsForSpecificField(): void
     {
-        $this->filterOperatorPovider
+        $this->filterOperatorPovider->expects($this->once())
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [

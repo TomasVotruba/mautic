@@ -47,10 +47,10 @@ final class SAMLSubscriberTest extends TestCase
         $request             = $this->createMock(Request::class);
         $request->attributes = new ParameterBag();
 
-        $request->method('getRequestUri')
+        $request->expects($this->once())->method('getRequestUri')
             ->willReturn('/saml/login');
 
-        $this->event->method('getRequest')
+        $this->event->expects($this->once())->method('getRequest')
             ->willReturn($request);
 
         $this->router->expects($this->once())

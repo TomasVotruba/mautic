@@ -33,7 +33,7 @@ final class MaxmindLookupTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $this->mockCoreParamsHelper = $this->createMock(CoreParametersHelper::class);
-        $this->mockCoreParamsHelper->method('get')->willReturn('list_path');
+        $this->mockCoreParamsHelper->expects($this->once())->method('get')->willReturn('list_path');
 
         // Mock http connector
         $this->mockHttp = $this->createMock(Client::class);
@@ -160,7 +160,7 @@ final class MaxmindLookupTest extends \PHPUnit\Framework\TestCase
 }
 RESPONSE);
 
-        $this->mockHttp
+        $this->mockHttp->expects($this->once())
             ->method('get')
             ->willReturn($mockResponse);
     }

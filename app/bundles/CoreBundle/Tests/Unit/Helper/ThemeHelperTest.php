@@ -69,13 +69,13 @@ final class ThemeHelperTest extends TestCase
         $this->loader              = $this->createMock(FilesystemLoader::class);
         $this->translator          = $this->createMock(TranslatorInterface::class);
         $this->coreParameterHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParameterHelper->method('get')
+        $this->coreParameterHelper->expects($this->once())->method('get')
             ->with('theme_import_allowed_extensions')
             ->willReturn(['json', 'twig', 'css', 'js', 'htm', 'html', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
         $this->builderIntegrationsHelper = $this->createMock(BuilderIntegrationsHelper::class);
 
-        $this->translator->method('trans')->willReturn('some translation');
+        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
 
         $this->themeHelper = new ThemeHelper(
             $this->pathsHelper,
@@ -429,9 +429,9 @@ final class ThemeHelperTest extends TestCase
         $integration = new Integration();
         $integration->setIsPublished(true);
 
-        $mockBuilder->method('getIntegrationConfiguration')
+        $mockBuilder->expects($this->once())->method('getIntegrationConfiguration')
             ->willReturn($integration);
-        $this->builderIntegrationsHelper->method('getBuilder')
+        $this->builderIntegrationsHelper->expects($this->once())->method('getBuilder')
             ->willReturn($mockBuilder);
 
         $this->pathsHelper->expects($this->exactly(4))->method('getSystemPath')

@@ -75,26 +75,26 @@ final class DetermineWinnerSubscriberTest extends TestCase
             ],
         ];
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturn($translation);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('hasTranslations')
             ->willReturn(1);
 
-        $childMock
+        $childMock->expects($this->once())
             ->method('hasTranslations')
             ->willReturn(1);
 
-        $transChildren->method('getKeys')
+        $transChildren->expects($this->once())->method('getKeys')
             ->willReturnOnConsecutiveCalls([2], [4]);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('getTranslationChildren')
             ->willReturn($transChildren);
 
-        $childMock
+        $childMock->expects($this->once())
             ->method('getTranslationChildren')
             ->willReturn($transChildren);
 
@@ -102,11 +102,11 @@ final class DetermineWinnerSubscriberTest extends TestCase
             ->method('getRelatedEntityIds')
             ->willReturn($ids);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('getId')
             ->willReturn(1);
 
-        $childMock
+        $childMock->expects($this->once())
             ->method('getId')
             ->willReturn(3);
 
@@ -158,7 +158,7 @@ final class DetermineWinnerSubscriberTest extends TestCase
             ],
         ];
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturn($translation);
 
@@ -166,7 +166,7 @@ final class DetermineWinnerSubscriberTest extends TestCase
             ->method('getRelatedEntityIds')
             ->willReturn($ids);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('getId')
             ->willReturn(1);
 

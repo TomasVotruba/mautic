@@ -28,7 +28,7 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $form->addField(0, $parentField);
         $field->setForm($form);
         $field->setParent($parentFieldId);
-        $parentField->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
 
         $this->assertFalse($field->showForConditionalField([]));
     }
@@ -44,8 +44,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'notIn', 'values' => []]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => 'value A'];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -62,8 +62,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'notIn', 'values' => [1]]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => 0];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -80,8 +80,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'notIn', 'values' => ['value A']]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => 'value A'];
 
         $this->assertFalse($field->showForConditionalField($data));
@@ -98,8 +98,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => '', 'any' => true, 'values' => ['value A']]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => 'value A'];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -116,8 +116,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => '', 'any' => true, 'values' => [1]]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => 0];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -134,8 +134,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'in', 'values' => ['value A']]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => ['value A']];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -152,8 +152,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'in', 'values' => ['value B']]);
-        $parentField->method('getId')->willReturn(55);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn(55);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => ['value A']];
 
         $this->assertFalse($field->showForConditionalField($data));
@@ -170,8 +170,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setForm($form);
         $field->setParent($parentFieldId);
         $field->setConditions(['expr' => 'in', 'values' => ['0']]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => [0]];
 
         $this->assertTrue($field->showForConditionalField($data));
@@ -189,8 +189,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setParent($parentFieldId);
         $specialValue = 'čé+äà>&"\'è';
         $field->setConditions(['expr' => 'in', 'values' => [InputHelper::clean($specialValue)]]);
-        $parentField->method('getId')->willReturn($parentFieldId);
-        $parentField->method('getAlias')->willReturn($parentFieldAlias);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentFieldId);
+        $parentField->expects($this->once())->method('getAlias')->willReturn($parentFieldAlias);
         $data = [$parentFieldAlias => [$specialValue]];
 
         $this->assertTrue($field->showForConditionalField($data));

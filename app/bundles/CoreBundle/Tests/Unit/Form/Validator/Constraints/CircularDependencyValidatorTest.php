@@ -99,26 +99,26 @@ final class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
         ];
 
         $mockEntity1 = $this->createMock(LeadList::class);
-        $mockEntity1
+        $mockEntity1->expects($this->once())
             ->method('getId')
             ->willReturn(1);
-        $mockEntity1
+        $mockEntity1->expects($this->once())
             ->method('getFilters')
             ->willReturn($filters);
 
         $mockEntity2 = $this->createMock(LeadList::class);
-        $mockEntity2
+        $mockEntity2->expects($this->once())
             ->method('getId')
             ->willReturn(2);
-        $mockEntity2
+        $mockEntity2->expects($this->once())
             ->method('getFilters')
             ->willReturn($filters2);
 
         $mockEntity3 = $this->createMock(LeadList::class);
-        $mockEntity3
+        $mockEntity3->expects($this->once())
             ->method('getId')
             ->willReturn(3);
-        $mockEntity3
+        $mockEntity3->expects($this->once())
             ->method('getFilters')
             ->willReturn($filters3);
 
@@ -128,7 +128,7 @@ final class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
             3 => $mockEntity3,
         ];
 
-        $this->mockListModel
+        $this->mockListModel->expects($this->once())
             ->method('getEntity')
             ->willReturnCallback(fn ($id): LeadList&\PHPUnit\Framework\MockObject\MockObject => $entities[$id]);
 

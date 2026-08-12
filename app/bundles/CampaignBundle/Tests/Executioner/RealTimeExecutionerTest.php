@@ -64,7 +64,7 @@ final class RealTimeExecutionerTest extends TestCase
         $this->redirectionHelper = $this->createMock(EventRedirectionHelper::class);
 
         // Configure the redirection helper mock to return the event it receives
-        $this->redirectionHelper->method('handleEventRedirection')
+        $this->redirectionHelper->expects($this->once())->method('handleEventRedirection')
             ->willReturnCallback(fn (Event $event): Event => $event);
     }
 
@@ -122,7 +122,7 @@ final class RealTimeExecutionerTest extends TestCase
         $event->expects($this->exactly(3))
             ->method('getChannel')
             ->willReturn('email');
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_DECISION);
 
         $this->eventRepository->expects($this->once())
@@ -153,7 +153,7 @@ final class RealTimeExecutionerTest extends TestCase
         $event->expects($this->exactly(2))
             ->method('getChannel')
             ->willReturn('page');
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_DECISION);
 
         $action1 = $this->createStub(Event::class);
@@ -201,7 +201,7 @@ final class RealTimeExecutionerTest extends TestCase
             ->willReturn($lead);
 
         $event = $this->getEventMock(2, 4);
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_DECISION);
 
         $this->eventRepository->expects($this->once())
@@ -232,7 +232,7 @@ final class RealTimeExecutionerTest extends TestCase
         $event->expects($this->once())
             ->method('getPositiveChildren')
             ->willReturn(new ArrayCollection());
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_DECISION);
 
         $this->eventRepository->expects($this->once())
@@ -273,7 +273,7 @@ final class RealTimeExecutionerTest extends TestCase
         $action2 = $this->createStub(Event::class);
 
         $event = $this->getEventMock(2, 3);
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_DECISION);
         $event->expects($this->once())
             ->method('getPositiveChildren')
@@ -325,7 +325,7 @@ final class RealTimeExecutionerTest extends TestCase
             ->willReturn($lead);
 
         $event = $this->createMock(Event::class);
-        $event->method('getEventType')
+        $event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_CONDITION);
 
         $event->expects($this->never())

@@ -22,7 +22,7 @@ final class ToBcBccFieldsTraitTest extends TypeTestCase
     protected function getExtensions(): array
     {
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnArgument(0);
+        $translator->expects($this->once())->method('trans')->willReturnArgument(0);
 
         $multipleEmailsValidator = new MultipleEmailsValidValidator(new EmailValidator($translator, new EventDispatcher()));
         $validator               = Validation::createValidatorBuilder()

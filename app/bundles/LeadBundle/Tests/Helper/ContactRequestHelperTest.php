@@ -65,16 +65,16 @@ final class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         $this->trackedContact           = $this->createMock(Lead::class);
         $this->contactMerger            = $this->createMock(ContactMerger::class);
 
-        $this->trackedContact->method('getId')
+        $this->trackedContact->expects($this->once())->method('getId')
             ->willReturn(1);
 
-        $this->trackedContact->method('getIpAddresses')
+        $this->trackedContact->expects($this->once())->method('getIpAddresses')
             ->willReturn(new ArrayCollection());
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($this->trackedContact);
 
-        $this->ipLookupHelper->method('getIpAddress')
+        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')
             ->willReturn(new IpAddress());
     }
 
@@ -91,7 +91,7 @@ final class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         ];
 
         $email = $this->createMock(Email::class);
-        $email->method('getId')
+        $email->expects($this->once())->method('getId')
             ->willReturn(2);
 
         $stat = new Stat();
@@ -122,7 +122,7 @@ final class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
 
         $contact = new Lead();
 
-        $this->dispatcher->method('dispatch')
+        $this->dispatcher->expects($this->once())->method('dispatch')
             ->willReturnCallback(function (ContactIdentificationEvent $event) use ($contact): ContactIdentificationEvent {
                 $event->setIdentifiedContact($contact, 'email');
 

@@ -34,7 +34,7 @@ final class GeneratedColumnsProviderTest extends TestCase
         $this->dispatcher      = $this->createMock(EventDispatcherInterface::class);
         $this->provider        = new GeneratedColumnsProvider($this->versionProvider, $this->dispatcher);
 
-        $this->dispatcher->method('hasListeners')->willReturn(true);
+        $this->dispatcher->expects($this->once())->method('hasListeners')->willReturn(true);
     }
 
     public function testGetGeneratedColumnsIfNotSupported(): void

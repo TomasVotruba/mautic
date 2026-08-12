@@ -189,8 +189,8 @@ final class LeadSubscriberTest extends CommonMocks
             'total'=> 1,
         ];
 
-        $this->statRepository->method($method)->willReturn($stats);
-        $this->focusModel->method('getStatRepository')->willReturn($this->statRepository);
+        $this->statRepository->expects($this->once())->method($method)->willReturn($stats);
+        $this->focusModel->expects($this->once())->method('getStatRepository')->willReturn($this->statRepository);
     }
 
     private function getLead(): Lead

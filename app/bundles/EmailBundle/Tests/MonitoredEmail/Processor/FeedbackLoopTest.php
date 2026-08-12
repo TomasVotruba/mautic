@@ -25,7 +25,7 @@ final class FeedbackLoopTest extends \PHPUnit\Framework\TestCase
     public function testContactIsFoundFromMessage(): void
     {
         $contactFinder = $this->createMock(ContactFinder::class);
-        $contactFinder->method('find')
+        $contactFinder->expects($this->once())->method('find')
             ->willReturnCallback(
                 function ($email): Result {
                     $stat = new Stat();

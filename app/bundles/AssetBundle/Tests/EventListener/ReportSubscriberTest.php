@@ -143,7 +143,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $report->setSource(ReportSubscriber::CONTEXT_ASSET_DOWNLOAD);
         $event              = new ReportGeneratorEvent($report, [], $this->queryBuilder, $this->channelListHelper);
         $subscriber         = new ReportSubscriber($this->createStub(CompanyReportData::class), $this->createStub(DownloadRepository::class), $this->createStub(DncReportService::class));
-        $this->queryBuilder->method('from')->willReturn($this->queryBuilder);
+        $this->queryBuilder->expects($this->once())->method('from')->willReturn($this->queryBuilder);
 
         $this->queryBuilder->expects($this->once())
             ->method('groupBy')
@@ -158,7 +158,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $report             = new Report();
         $report->setSource(ReportSubscriber::CONTEXT_ASSET_DOWNLOAD);
-        $this->queryBuilder->method('from')->willReturn($this->queryBuilder);
+        $this->queryBuilder->expects($this->once())->method('from')->willReturn($this->queryBuilder);
         $report->setGroupBy(['a.id' => 'desc']);
         $event              = new ReportGeneratorEvent($report, [], $this->queryBuilder, $this->channelListHelper);
         $subscriber         = new ReportSubscriber($this->createStub(CompanyReportData::class), $this->createStub(DownloadRepository::class), $this->createStub(DncReportService::class));

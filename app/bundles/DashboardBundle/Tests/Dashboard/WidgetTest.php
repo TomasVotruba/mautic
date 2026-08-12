@@ -44,7 +44,7 @@ final class WidgetTest extends TestCase
         $this->userHelper     = $this->createMock(UserHelper::class);
 
         $this->user = $this->createMock(User::class);
-        $this->user
+        $this->user->expects($this->once())
             ->method('getId')
             ->willReturn(self::USER_ID);
 

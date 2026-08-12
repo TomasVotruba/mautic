@@ -385,7 +385,7 @@ final class CampaignControllerTest extends MauticMysqlTestCase
 
         // Mock the ExportHelper to simulate file creation failure
         $exportHelperMock = $this->createMock(ExportHelper::class);
-        $exportHelperMock->method('writeToZipFile')->willReturn('');
+        $exportHelperMock->expects($this->once())->method('writeToZipFile')->willReturn('');
 
         // Inject the mock into the container
         self::getContainer()->set(ExportHelper::class, $exportHelperMock);
@@ -443,7 +443,7 @@ final class CampaignControllerTest extends MauticMysqlTestCase
 
         // Mock the ExportHelper to simulate file creation failure
         $exportHelperMock = $this->createMock(ExportHelper::class);
-        $exportHelperMock->method('writeToZipFile')->willReturn('/invalid/path/to/file.zip');
+        $exportHelperMock->expects($this->once())->method('writeToZipFile')->willReturn('/invalid/path/to/file.zip');
 
         // Use the test container to replace the service with the mock
         self::getContainer()->set(ExportHelper::class, $exportHelperMock);

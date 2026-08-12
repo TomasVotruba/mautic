@@ -42,7 +42,7 @@ final class WidgetDetailEventTest extends \PHPUnit\Framework\TestCase
 
     public function testGetCacheKey(): void
     {
-        $this->widget
+        $this->widget->expects($this->once())
             ->method('getParams')
             ->willReturn(['dateFrom' => '', 'dateTo' => '']);
 

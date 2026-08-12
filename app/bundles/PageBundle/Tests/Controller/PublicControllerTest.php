@@ -132,78 +132,78 @@ final class PublicControllerTest extends TestCase
     private function getVariantContent(int $aCount, int $bCount, int $cCount): string
     {
         $pageEntityB = $this->createMock(Page::class);
-        $pageEntityB->method('getId')
+        $pageEntityB->expects($this->once())->method('getId')
             ->willReturn(2);
-        $pageEntityB->method('isPublished')
+        $pageEntityB->expects($this->once())->method('isPublished')
             ->willReturn(true);
-        $pageEntityB->method('getVariantHits')
+        $pageEntityB->expects($this->once())->method('getVariantHits')
             ->willReturn($bCount);
-        $pageEntityB->method('getTranslations')
+        $pageEntityB->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityB->method('isTranslation')
+        $pageEntityB->expects($this->once())->method('isTranslation')
             ->willReturn(false);
-        $pageEntityB->method('getContent')
+        $pageEntityB->expects($this->once())->method('getContent')
             ->willReturn(null);
-        $pageEntityB->method('getCustomHtml')
+        $pageEntityB->expects($this->once())->method('getCustomHtml')
             ->willReturn('pageB');
-        $pageEntityB->method('getVariantSettings')
+        $pageEntityB->expects($this->once())->method('getVariantSettings')
             ->willReturn(['weight' => '25']);
 
         $pageEntityC = $this->createMock(Page::class);
-        $pageEntityC->method('getId')
+        $pageEntityC->expects($this->once())->method('getId')
             ->willReturn(3);
-        $pageEntityC->method('isPublished')
+        $pageEntityC->expects($this->once())->method('isPublished')
             ->willReturn(true);
-        $pageEntityC->method('getVariantHits')
+        $pageEntityC->expects($this->once())->method('getVariantHits')
             ->willReturn($cCount);
-        $pageEntityC->method('getTranslations')
+        $pageEntityC->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityC->method('isTranslation')
+        $pageEntityC->expects($this->once())->method('isTranslation')
             ->willReturn(false);
-        $pageEntityC->method('getContent')
+        $pageEntityC->expects($this->once())->method('getContent')
             ->willReturn(null);
-        $pageEntityC->method('getCustomHtml')
+        $pageEntityC->expects($this->once())->method('getCustomHtml')
             ->willReturn('pageC');
-        $pageEntityC->method('getVariantSettings')
+        $pageEntityC->expects($this->once())->method('getVariantSettings')
             ->willReturn(['weight' => '25']);
 
         $pageEntityA = $this->createMock(Page::class);
-        $pageEntityA->method('getId')
+        $pageEntityA->expects($this->once())->method('getId')
             ->willReturn(1);
-        $pageEntityA->method('isPublished')
+        $pageEntityA->expects($this->once())->method('isPublished')
             ->willReturn(true);
-        $pageEntityA->method('getVariants')
+        $pageEntityA->expects($this->once())->method('getVariants')
             ->willReturn([$pageEntityA, [2 => $pageEntityB, 3 => $pageEntityC]]);
-        $pageEntityA->method('getVariantHits')
+        $pageEntityA->expects($this->once())->method('getVariantHits')
             ->willReturn($aCount);
-        $pageEntityA->method('getTranslations')
+        $pageEntityA->expects($this->once())->method('getTranslations')
             ->willReturn([]);
-        $pageEntityA->method('isTranslation')
+        $pageEntityA->expects($this->once())->method('isTranslation')
             ->willReturn(false);
-        $pageEntityA->method('getContent')
+        $pageEntityA->expects($this->once())->method('getContent')
             ->willReturn(null);
-        $pageEntityA->method('getCustomHtml')
+        $pageEntityA->expects($this->once())->method('getCustomHtml')
             ->willReturn('pageA');
-        $pageEntityA->method('getVariantSettings')
+        $pageEntityA->expects($this->once())->method('getVariantSettings')
             ->willReturn(['weight' => '50']);
 
         $assetHelper = new AssetsHelper($this->createStub(Packages::class));
 
         $mauticSecurity = $this->createMock(CorePermissions::class);
-        $mauticSecurity->method('hasEntityAccess')
+        $mauticSecurity->expects($this->once())->method('hasEntityAccess')
             ->willReturn(false);
 
         $analyticsHelper = new AnalyticsHelper($this->createStub(CoreParametersHelper::class));
 
         $pageModel = $this->createMock(PageModel::class);
-        $pageModel->method('getHitQuery')
+        $pageModel->expects($this->once())->method('getHitQuery')
             ->willReturn([]);
-        $pageModel->method('getEntityBySlugs')
+        $pageModel->expects($this->once())->method('getEntityBySlugs')
             ->willReturn($pageEntityA);
-        $pageModel->method('hitPage')
+        $pageModel->expects($this->once())->method('hitPage')
             ->willReturn(true);
 
-        $this->contactRequestHelper->method('getContactFromQuery')
+        $this->contactRequestHelper->expects($this->once())->method('getContactFromQuery')
             ->willReturn(new Lead());
 
         $this->request->attributes->set('ignore_mismatch', true);
@@ -457,7 +457,7 @@ final class PublicControllerTest extends TestCase
             ->willReturn($mtcSessionEventArray);
 
         $contactTracker = $this->createMock(ContactTracker::class);
-        $contactTracker->method('getContact')
+        $contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
         $publicController = new PublicController(

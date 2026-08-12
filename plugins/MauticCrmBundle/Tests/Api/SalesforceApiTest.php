@@ -328,7 +328,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
                 }
             );
 
-        $integration->method('getFieldsForQuery')
+        $integration->expects($this->once())->method('getFieldsForQuery')
             ->willReturn([]);
 
         $api = new SalesforceApi($integration);
@@ -375,7 +375,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
                 }
             );
 
-        $integration->method('getFieldsForQuery')
+        $integration->expects($this->once())->method('getFieldsForQuery')
             ->willReturn([]);
 
         $api = new SalesforceApi($integration);
@@ -391,7 +391,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
     {
         $cache = $this->createMock(CacheInterface::class);
 
-        $cache
+        $cache->expects($this->once())
             ->method('get')
             ->withAnyParameters()
             ->willReturn('2019-05-22 19:36:30');
@@ -416,13 +416,13 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
             ->method('getCache')
             ->willReturn($cache);
 
-        $integration->method('getFieldsForQuery')
+        $integration->expects($this->once())->method('getFieldsForQuery')
             ->with('Lead')
             ->willReturn(['firstname', 'lastname', 'HasOptedOutOfEmail']);
 
         $translator = $this->createStub(TranslatorInterface::class);
 
-        $integration->method('getTranslator')->willReturn($translator);
+        $integration->expects($this->once())->method('getTranslator')->willReturn($translator);
 
         $this->expectException(ApiErrorException::class);
         $integration->expects($this->atLeastOnce())
@@ -450,7 +450,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
     {
         $cache = $this->createMock(CacheInterface::class);
 
-        $cache
+        $cache->expects($this->once())
             ->method('get')
             ->withAnyParameters()
             ->willReturn('2019-05-22 19:36:30');
@@ -476,7 +476,7 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
             ->method('getCache')
             ->willReturn($cache);
 
-        $integration->method('getFieldsForQuery')
+        $integration->expects($this->once())->method('getFieldsForQuery')
             ->with('Lead')
             ->willReturn(['firstname', 'lastname', 'extraField']);
 
@@ -490,9 +490,9 @@ final class SalesforceApiTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getFeatureSettings', 'setFeatureSettings'])
             ->getMock();
 
-        $integration->method('getEntityManager')->willReturn($entityManager);
-        $integration->method('getIntegrationSettings')->willReturn($entity);
-        $entity->method('getFeatureSettings')->willReturn(['leadFields' => ['extraField__Lead' => '']]);
+        $integration->expects($this->once())->method('getEntityManager')->willReturn($entityManager);
+        $integration->expects($this->once())->method('getIntegrationSettings')->willReturn($entity);
+        $entity->expects($this->once())->method('getFeatureSettings')->willReturn(['leadFields' => ['extraField__Lead' => '']]);
 
         $this->expectException(ApiErrorException::class);
         $integration->expects($this->atLeastOnce())

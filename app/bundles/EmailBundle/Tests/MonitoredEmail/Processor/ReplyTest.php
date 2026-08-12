@@ -81,7 +81,7 @@ final class ReplyTest extends \PHPUnit\Framework\TestCase
             $this->leadRepository
         );
 
-        $this->emailStatModel->method('getRepository')->willReturn($this->statRepo);
+        $this->emailStatModel->expects($this->once())->method('getRepository')->willReturn($this->statRepo);
     }
 
     #[TestDox('Test that the message is processed appropriately')]
@@ -94,7 +94,7 @@ final class ReplyTest extends \PHPUnit\Framework\TestCase
         $this->leadRepository->expects($this->atLeastOnce())
             ->method('detachEntity');
 
-        $this->contactFinder->method('findByHash')
+        $this->contactFinder->expects($this->once())->method('findByHash')
             ->willReturnCallback(
                 function ($hash): Result {
                     $stat = new Stat();
@@ -165,7 +165,7 @@ BODY;
             ->method('setDateRead')
             ->with($this->isInstanceOf(\DateTime::class));
 
-        $stat
+        $stat->expects($this->once())
             ->method('getReplies')
             ->willReturn(new ArrayCollection());
 

@@ -21,7 +21,7 @@ final class TwilioCallbackTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $this->configuration = $this->createMock(Configuration::class);
-        $this->configuration->method('getAccountSid')
+        $this->configuration->expects($this->once())->method('getAccountSid')
             ->willReturn('123');
     }
 
@@ -73,7 +73,7 @@ final class TwilioCallbackTest extends \PHPUnit\Framework\TestCase
     public function testMessageIsReturned(): void
     {
         $request      = $this->createMock(Request::class);
-        $request->method('get')
+        $request->expects($this->once())->method('get')
             ->willReturn('Hello');
 
         $inputBag = new InputBag([

@@ -99,7 +99,7 @@ final class ApiPermissionVoterTest extends TestCase
     private function createTokenWithUser(): TokenInterface&MockObject
     {
         $token = $this->createMock(TokenInterface::class);
-        $token->method('getUser')->willReturn($this->createStub(UserInterface::class));
+        $token->expects($this->once())->method('getUser')->willReturn($this->createStub(UserInterface::class));
 
         return $token;
     }

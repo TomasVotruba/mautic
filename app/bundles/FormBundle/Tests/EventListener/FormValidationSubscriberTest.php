@@ -38,7 +38,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testFailsWhenBelowMinimum(): void
     {
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
@@ -56,7 +56,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testFailsWhenNoSelectionsProvided(): void
     {
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
@@ -74,7 +74,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testFailsWhenValueIsNull(): void
     {
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 1], 'validators')
             ->willReturn('You must select at least 1 options.');
@@ -92,7 +92,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testFailsWhenAboveMaximum(): void
     {
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.maximum', ['%max%' => 3], 'validators')
             ->willReturn('You cannot select more than 3 options.');
@@ -154,7 +154,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testFallsBackToDefaultMessageWhenCustomMessageEmpty(): void
     {
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
             ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
@@ -184,7 +184,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $email = 'user@blocked.com';
 
-        $this->coreParametersHelper
+        $this->coreParametersHelper->expects($this->once())
             ->method('get')
             ->willReturnCallback(fn (string $key): array => match ($key) {
                 'do_not_submit_emails'         => ['*@blocked.com'],
@@ -210,7 +210,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $email = 'anyone@example.com';
 
-        $this->coreParametersHelper
+        $this->coreParametersHelper->expects($this->once())
             ->method('get')
             ->willReturnCallback(fn (string $key): array => match ($key) {
                 'do_not_submit_emails'         => [],

@@ -406,7 +406,7 @@ final class LegacyEventDispatcherTest extends TestCase
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
 
-        $this->dispatcher->method('dispatch')
+        $this->dispatcher->expects($this->once())->method('dispatch')
             ->with($this->isInstanceOf(CampaignExecutionEvent::class), 'something') // @phpstan-ignore classConstant.deprecatedClass
             ->willReturnCallback(
                 // @phpstan-ignore return.deprecatedClass

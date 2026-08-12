@@ -136,7 +136,7 @@ final class CampaignImportControllerTest extends MauticMysqlTestCase
         $session->save();
 
         $importHelper = $this->createMock(ImportHelper::class);
-        $importHelper->method('readZipFile')->willReturn([]);
+        $importHelper->expects($this->once())->method('readZipFile')->willReturn([]);
         self::getContainer()->set(ImportHelper::class, $importHelper);
 
         $this->client->request(Request::METHOD_GET, '/s/campaign/import/progress');
@@ -166,7 +166,7 @@ final class CampaignImportControllerTest extends MauticMysqlTestCase
         $session->save();
 
         $importHelper = $this->createMock(ImportHelper::class);
-        $importHelper->method('readZipFile')->willReturn(FixtureHelper::getPayload());
+        $importHelper->expects($this->once())->method('readZipFile')->willReturn(FixtureHelper::getPayload());
         self::getContainer()->set(ImportHelper::class, $importHelper);
 
         $this->client->request(Request::METHOD_GET, '/s/campaign/import/progress');
@@ -189,7 +189,7 @@ final class CampaignImportControllerTest extends MauticMysqlTestCase
         $session->save();
 
         $importHelper = $this->createMock(ImportHelper::class);
-        $importHelper->method('readZipFile')->willReturn([]);
+        $importHelper->expects($this->once())->method('readZipFile')->willReturn([]);
         self::getContainer()->set(ImportHelper::class, $importHelper);
 
         $this->client->request(Request::METHOD_GET, '/s/campaign/import/progress');
@@ -219,7 +219,7 @@ final class CampaignImportControllerTest extends MauticMysqlTestCase
         $session->save();
 
         $importHelper = $this->createMock(ImportHelper::class);
-        $importHelper->method('readZipFile')->willReturn(FixtureHelper::getPayload());
+        $importHelper->expects($this->once())->method('readZipFile')->willReturn(FixtureHelper::getPayload());
         self::getContainer()->set(ImportHelper::class, $importHelper);
 
         $this->client->request(Request::METHOD_GET, '/s/campaign/import/progress');

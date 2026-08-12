@@ -66,7 +66,7 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
         $graphList          = new \stdClass();
         $graphList->choices = [];
 
-        $this->reportModel->method('getFilterList')
+        $this->reportModel->expects($this->once())->method('getFilterList')
             ->willReturn($filterList);
 
         $this->reportModel->expects($this->exactly(2))
@@ -74,10 +74,10 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
             ->with('assets') // This is the confirmation that the source was selected properly.
             ->willReturn($columnList);
 
-        $this->reportModel->method('getGraphList')
+        $this->reportModel->expects($this->once())->method('getGraphList')
             ->willReturn($graphList);
 
-        $this->formBuilder->method('addEventListener')
+        $this->formBuilder->expects($this->once())->method('addEventListener')
             ->willReturnCallback(
                 function (string $eventName, callable $listener) use ($report): MockObject {
                     if (FormEvents::PRE_SET_DATA === $eventName) {

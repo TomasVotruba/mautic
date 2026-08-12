@@ -30,11 +30,11 @@ final class AvatarHelperTest extends \PHPUnit\Framework\TestCase
 
         $assetsHelperMock = new AssetsHelper($this->createStub(Packages::class));
         $pathsHelperMock  = $this->createMock(PathsHelper::class);
-        $pathsHelperMock->method('getSystemPath')
+        $pathsHelperMock->expects($this->once())->method('getSystemPath')
         ->willReturn('http://localhost');
-        $pathsHelperMock->method('getAssetsPath')
+        $pathsHelperMock->expects($this->once())->method('getAssetsPath')
           ->willReturn($root.'/app/assets');
-        $pathsHelperMock->method('getMediaPath')
+        $pathsHelperMock->expects($this->once())->method('getMediaPath')
           ->willReturn($root.'/media');
 
         $assetsHelperMock->setPathsHelper($pathsHelperMock);
@@ -54,11 +54,11 @@ final class AvatarHelperTest extends \PHPUnit\Framework\TestCase
         $_SERVER['SERVER_NAME']     = 'localhost';
         $_SERVER['REQUEST_URI']     = 'localhost';
 
-        $this->leadMock->method('getPreferredProfileImage')
+        $this->leadMock->expects($this->once())->method('getPreferredProfileImage')
             ->willReturn('gravatar');
-        $this->leadMock->method('getSocialCache')
+        $this->leadMock->expects($this->once())->method('getSocialCache')
             ->willReturn([]);
-        $this->leadMock->method('getEmail')
+        $this->leadMock->expects($this->once())->method('getEmail')
             ->willReturn('mautic@acquia.com');
         $avatar = $this->avatarHelper->getAvatar($this->leadMock);
         $this->assertSame('https://www.gravatar.com/avatar/96f1b78c73c1ee806cf6a4168fe9bf77?s=250&d=http%3A%2F%2Flocalhost%2Fimages%2Favatar.png', $avatar, 'Gravatar image should be returned');
@@ -74,11 +74,11 @@ final class AvatarHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetAvatarWhenDefault(): void
     {
-        $this->leadMock->method('getPreferredProfileImage')
+        $this->leadMock->expects($this->once())->method('getPreferredProfileImage')
             ->willReturn('gravatar');
-        $this->leadMock->method('getSocialCache')
+        $this->leadMock->expects($this->once())->method('getSocialCache')
             ->willReturn([]);
-        $this->leadMock->method('getEmail')
+        $this->leadMock->expects($this->once())->method('getEmail')
             ->willReturn('');
         $avatar = $this->avatarHelper->getAvatar($this->leadMock);
 

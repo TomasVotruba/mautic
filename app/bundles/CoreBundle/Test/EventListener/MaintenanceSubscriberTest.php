@@ -66,11 +66,11 @@ final class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
             ->with('log.date_added', ':date');
 
         $qb = $this->createMock(QueryBuilder::class);
-        $qb
+        $qb->expects($this->once())
             ->method('select')
             ->willReturn($qb);
 
-        $qb
+        $qb->expects($this->once())
             ->method('from')
             ->willReturn($qb);
 
@@ -97,7 +97,7 @@ final class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
                 static $callCount = 0;
                 ++$callCount;
                 $result = $this->createMock(Result::class);
-                $result->method('fetchAllAssociative')->willReturn(match ($callCount) {
+                $result->expects($this->once())->method('fetchAllAssociative')->willReturn(match ($callCount) {
                     1       => [['id' => 765]],
                     3       => [['id' => 764]],
                     default => [],
@@ -110,8 +110,8 @@ final class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('executeStatement')
             ->willReturn(1);
 
-        $qb->method('setMaxResults')->with(10000)->willReturn($qb);
-        $qb->method('setFirstResult')->with(0)->willReturn($qb);
+        $qb->expects($this->once())->method('setMaxResults')->with(10000)->willReturn($qb);
+        $qb->expects($this->once())->method('setFirstResult')->with(0)->willReturn($qb);
 
         $connection = $this->createMock(Connection::class);
         $connection

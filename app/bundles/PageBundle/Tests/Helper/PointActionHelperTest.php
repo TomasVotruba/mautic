@@ -29,7 +29,7 @@ final class PointActionHelperTest extends TestCase
         $this->hitRepository = $this->createMock(HitRepository::class);
         $this->eventDetails  = $this->createMock(Hit::class);
 
-        $this->eventDetails->method('getLead')->willReturn($this->createStub(Lead::class));
+        $this->eventDetails->expects($this->once())->method('getLead')->willReturn($this->createStub(Lead::class));
     }
 
     /**
@@ -38,8 +38,8 @@ final class PointActionHelperTest extends TestCase
     #[DataProvider('urlHitsActionDataProvider')]
     public function testValidateUrlPageHitsAction(array $action, bool $expectedResult): void
     {
-        $this->eventDetails->method('getUrl')->willReturn('https://example.com/ppk');
-        $this->hitRepository->method('getDwellTimesForUrl')->willReturn([
+        $this->eventDetails->expects($this->once())->method('getUrl')->willReturn('https://example.com/ppk');
+        $this->hitRepository->expects($this->once())->method('getDwellTimesForUrl')->willReturn([
             'sum'     => 0,
             'min'     => 0,
             'max'     => 0,
@@ -105,8 +105,8 @@ final class PointActionHelperTest extends TestCase
     #[DataProvider('returnWithinActionDataProvider')]
     public function testValidateUrlReturnWithinAction(array $action, bool $expectedResult): void
     {
-        $this->eventDetails->method('getUrl')->willReturn('https://example.com/test/');
-        $this->hitRepository->method('getDwellTimesForUrl')->willReturn([
+        $this->eventDetails->expects($this->once())->method('getUrl')->willReturn('https://example.com/test/');
+        $this->hitRepository->expects($this->once())->method('getDwellTimesForUrl')->willReturn([
             'sum'     => 0,
             'min'     => 0,
             'max'     => 0,
@@ -118,7 +118,7 @@ final class PointActionHelperTest extends TestCase
         $threeHoursAgoTimestamp = $currentTimestamp - (3 * 3600);
         $latestHit              = new \DateTime();
         $latestHit->setTimestamp($threeHoursAgoTimestamp);
-        $this->hitRepository->method('getLatestHit')->willReturn($latestHit);
+        $this->hitRepository->expects($this->once())->method('getLatestHit')->willReturn($latestHit);
 
         $pointActionHelper = new PointActionHelper($this->hitRepository);
         $result            = $pointActionHelper->validateUrlHit($this->eventDetails, $action);

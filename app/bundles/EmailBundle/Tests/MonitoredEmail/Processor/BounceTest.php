@@ -27,7 +27,7 @@ final class BounceTest extends \PHPUnit\Framework\TestCase
     {
         $transport     = new TestTransport();
         $contactFinder = $this->createMock(ContactFinder::class);
-        $contactFinder->method('find')
+        $contactFinder->expects($this->once())->method('find')
             ->willReturnCallback(
                 function ($email, $bounceAddress): Result {
                     $stat = new Stat();
@@ -74,7 +74,7 @@ final class BounceTest extends \PHPUnit\Framework\TestCase
     {
         $transport     = new NullTransport();
         $contactFinder = $this->createMock(ContactFinder::class);
-        $contactFinder->method('find')
+        $contactFinder->expects($this->once())->method('find')
             ->willReturnCallback(
                 function ($email, $bounceAddress): Result {
                     $stat = new Stat();

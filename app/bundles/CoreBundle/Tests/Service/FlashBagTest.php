@@ -51,8 +51,8 @@ final class FlashBagTest extends TestCase
         $this->requestStack      = $this->createMock(RequestStack::class);
         $this->notificationModel = $this->createMock(NotificationModel::class);
 
-        $this->session->method('getFlashBag')->willReturn($this->symfonyFlashBag);
-        $this->requestStack->method('getSession')->willReturn($this->session);
+        $this->session->expects($this->once())->method('getFlashBag')->willReturn($this->symfonyFlashBag);
+        $this->requestStack->expects($this->once())->method('getSession')->willReturn($this->session);
 
         $this->flashBag = new FlashBag($this->translator, $this->requestStack, $this->notificationModel);
 
@@ -68,7 +68,7 @@ final class FlashBagTest extends TestCase
         $addNotification   = false;
         $translatedMessage = 'translated';
 
-        $this->translator->method('trans')
+        $this->translator->expects($this->once())->method('trans')
             ->with($message, $messageVars, $domain)
             ->willReturn($translatedMessage);
 

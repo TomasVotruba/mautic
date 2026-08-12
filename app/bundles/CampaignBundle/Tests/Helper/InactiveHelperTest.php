@@ -92,7 +92,7 @@ final class InactiveHelperTest extends TestCase
 
         /** @var Campaign&MockObject $campaign */
         $campaign = $this->createMock(Campaign::class);
-        $campaign
+        $campaign->expects($this->once())
             ->method('getId')
             ->willReturn(2);
 
@@ -108,18 +108,18 @@ final class InactiveHelperTest extends TestCase
         $event->setCampaign($campaign);
         $event->setEventType(Event::TYPE_DECISION);
 
-        $parentEvent
+        $parentEvent->expects($this->once())
             ->method('getNegativeChildren')
             ->willReturnOnConsecutiveCalls(new ArrayCollection(), new ArrayCollection([$event]));
 
-        $parentEvent
+        $parentEvent->expects($this->once())
             ->method('getPositiveChildren')->willReturn(new ArrayCollection());
 
         $this->leadRepository->expects($this->exactly(4))
             ->method('getContactRotations')
             ->willReturn([]);
 
-        $this->scheduler
+        $this->scheduler->expects($this->once())
             ->method('getExecutionDateTime')
             ->willReturn(\DateTime::createFromFormat('Y-m-d H:i:s', '2022-05-30 12:00:00'));
 

@@ -417,19 +417,19 @@ final class FieldMergerHelperTest extends TestCase
     private function getIntegrationObject(bool $removeFirstField = false): MockObject&ConfigFormSyncInterface
     {
         $field1 = $this->createMock(MappedFieldInfoInterface::class);
-        $field1->method('getName')
+        $field1->expects($this->once())->method('getName')
             ->willReturn('field one');
         $field2 = $this->createMock(MappedFieldInfoInterface::class);
-        $field2->method('getName')
+        $field2->expects($this->once())->method('getName')
             ->willReturn('field two');
         $field3 = $this->createMock(MappedFieldInfoInterface::class);
-        $field3->method('getName')
+        $field3->expects($this->once())->method('getName')
             ->willReturn('field three');
         $field4 = $this->createMock(MappedFieldInfoInterface::class);
-        $field4->method('getName')
+        $field4->expects($this->once())->method('getName')
             ->willReturn('field four');
         $field5 = $this->createMock(MappedFieldInfoInterface::class);
-        $field5->method('getName')
+        $field5->expects($this->once())->method('getName')
             ->willReturn('field five');
 
         $fields = [
@@ -445,7 +445,7 @@ final class FieldMergerHelperTest extends TestCase
         }
 
         $integrationObject = $this->createMock(ConfigFormSyncInterface::class);
-        $integrationObject->method('getAllFieldsForMapping')
+        $integrationObject->expects($this->once())->method('getAllFieldsForMapping')
             ->willReturn($fields);
 
         return $integrationObject;

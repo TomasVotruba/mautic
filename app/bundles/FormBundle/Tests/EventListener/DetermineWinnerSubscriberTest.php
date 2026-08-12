@@ -59,22 +59,22 @@ final class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        $this->translator->method('trans')
+        $this->translator->expects($this->once())->method('trans')
             ->willReturnOnConsecutiveCalls($transSubmissions, $transHits);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('isPublished')
             ->willReturn(true);
 
-        $childMock
+        $childMock->expects($this->once())
             ->method('isPublished')
             ->willReturn(true);
 
-        $parentMock
+        $parentMock->expects($this->once())
             ->method('getId')
             ->willReturn(1);
 
-        $childMock
+        $childMock->expects($this->once())
             ->method('getId')
             ->willReturn(2);
 

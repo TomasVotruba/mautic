@@ -107,7 +107,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
             $stageRepository
         );
 
-        $translator->method('trans')->willReturnArgument(0);
+        $translator->expects($this->once())->method('trans')->willReturnArgument(0);
     }
 
     protected function tearDown(): void

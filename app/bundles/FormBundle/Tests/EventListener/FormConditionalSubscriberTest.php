@@ -45,11 +45,11 @@ final class FormConditionalSubscriberTest extends \PHPUnit\Framework\TestCase
         $childId     = 'new_child_id';
         $form        = new Form();
 
-        $parentField->method('getId')->willReturn($parentId);
-        $parentField->method('getSessionId')->willReturn($parentId);
-        $childField->method('getId')->willReturn($childId);
-        $childField->method('getSessionId')->willReturn($childId);
-        $childField->method('getParent')->willReturn($parentId);
+        $parentField->expects($this->once())->method('getId')->willReturn($parentId);
+        $parentField->expects($this->once())->method('getSessionId')->willReturn($parentId);
+        $childField->expects($this->once())->method('getId')->willReturn($childId);
+        $childField->expects($this->once())->method('getSessionId')->willReturn($childId);
+        $childField->expects($this->once())->method('getParent')->willReturn($parentId);
 
         $form->addField(0, $parentField);
         $form->addField(1, $childField);
@@ -74,9 +74,9 @@ final class FormConditionalSubscriberTest extends \PHPUnit\Framework\TestCase
         $childId     = 456;
         $form        = new Form();
 
-        $childField->method('getId')->willReturn($childId);
-        $childField->method('getSessionId')->willReturn($childId);
-        $childField->method('getParent')->willReturn($parentId);
+        $childField->expects($this->once())->method('getId')->willReturn($childId);
+        $childField->expects($this->once())->method('getSessionId')->willReturn($childId);
+        $childField->expects($this->once())->method('getParent')->willReturn($parentId);
 
         $form->addField(1, $childField);
 

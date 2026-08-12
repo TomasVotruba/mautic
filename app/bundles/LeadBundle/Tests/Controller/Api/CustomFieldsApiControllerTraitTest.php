@@ -27,7 +27,7 @@ final class CustomFieldsApiControllerTraitTest extends \PHPUnit\Framework\TestCa
         ];
 
         $paginator = $this->createMock(Paginator::class);
-        $paginator->method('getIterator')
+        $paginator->expects($this->once())->method('getIterator')
             ->willReturn($result);
 
         $modelFake = $this->createMock(FieldModel::class);

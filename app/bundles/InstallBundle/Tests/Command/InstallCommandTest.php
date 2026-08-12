@@ -40,12 +40,12 @@ final class InstallCommandTest extends TestCase
         $inputDefinition        = $this->createMock(InputDefinition::class);
         $command                = $this->createMock(Command::class);
 
-        $inputDefinition->method('getOptions')->willReturn([]);
-        $inputDefinition->method('getArguments')->willReturn([]);
+        $inputDefinition->expects($this->once())->method('getOptions')->willReturn([]);
+        $inputDefinition->expects($this->once())->method('getArguments')->willReturn([]);
 
-        $application->method('getHelperSet')->willReturn($this->createStub(HelperSet::class));
-        $application->method('getDefinition')->willReturn($inputDefinition);
-        $application->method('find')->willReturn($command);
+        $application->expects($this->once())->method('getHelperSet')->willReturn($this->createStub(HelperSet::class));
+        $application->expects($this->once())->method('getDefinition')->willReturn($inputDefinition);
+        $application->expects($this->once())->method('find')->willReturn($command);
 
         $this->command = new InstallCommand($this->installer, $this->doctrineRegistry);
         $this->command->setApplication($application);
@@ -53,7 +53,7 @@ final class InstallCommandTest extends TestCase
 
     public function testCommandWhenSiteInstalled(): void
     {
-        $this->installer->method('checkIfInstalled')->willReturn(true);
+        $this->installer->expects($this->once())->method('checkIfInstalled')->willReturn(true);
 
         $input  = new ArrayInput(['site_url' => 'localhost']);
         $output = new BufferedOutput();
@@ -64,9 +64,9 @@ final class InstallCommandTest extends TestCase
 
     public function testCommandWhenSiteNotInstalled(): void
     {
-        $this->installer->method('checkIfInstalled')->willReturn(false);
+        $this->installer->expects($this->once())->method('checkIfInstalled')->willReturn(false);
 
-        $this->doctrineRegistry->method('getConnection')->willReturn($this->createStub(ConnectionWrapper::class));
+        $this->doctrineRegistry->expects($this->once())->method('getConnection')->willReturn($this->createStub(ConnectionWrapper::class));
 
         $input = new ArrayInput(
             [

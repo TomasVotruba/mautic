@@ -121,7 +121,7 @@ final class EventModelTest extends TestCase
         ];
 
         $redirectEvent = $this->createMock(Event::class);
-        $redirectEvent->method('getId')->willReturn(123);
+        $redirectEvent->expects($this->once())->method('getId')->willReturn(123);
 
         $deletedEvents = [
             ['id' => 'new1', 'redirectEvent' => null],

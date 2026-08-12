@@ -206,19 +206,19 @@ final class BatchIdToEntityHelperTest extends TestCase
     public function testOriginalKeyOrderingForFullAssociativeArray(): void
     {
         $entityMock1 = $this->createMock(Lead::class);
-        $entityMock1
+        $entityMock1->expects($this->once())
             ->method('getId')
             ->willReturn(1);
         $entityMock2 = $this->createMock(Lead::class);
-        $entityMock2
+        $entityMock2->expects($this->once())
             ->method('getId')
             ->willReturn(2);
         $entityMock3 = $this->createMock(Lead::class);
-        $entityMock3
+        $entityMock3->expects($this->once())
             ->method('getId')
             ->willReturn(3);
         $entityMock4 = $this->createMock(Lead::class);
-        $entityMock4
+        $entityMock4->expects($this->once())
             ->method('getId')
             ->willReturn(4);
         $entities = [$entityMock4, $entityMock2, $entityMock1, $entityMock3];

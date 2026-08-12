@@ -21,7 +21,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->statRepository = $this->configureRepository(Stat::class);
-        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
     }
 
     public function testGetStatsSummaryForContacts(): void
@@ -37,7 +37,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
             )
             ->willReturn($this->result);
 
-        $this->result->method('fetchAllAssociative')
+        $this->result->expects($this->once())->method('fetchAllAssociative')
             ->willReturn([
                 [
                     'lead_id'               => '6',
@@ -92,7 +92,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
             )
             ->willReturn($this->result);
 
-        $this->result->method('fetchAllAssociative')
+        $this->result->expects($this->once())->method('fetchAllAssociative')
             ->willReturn([
                 [
                     'count' => 1,
@@ -136,7 +136,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
                 return $this->result;
             });
 
-        $this->result->method('fetchAllAssociative')
+        $this->result->expects($this->once())->method('fetchAllAssociative')
             ->willReturn([$expectedRow]);
 
         $this->assertSame(

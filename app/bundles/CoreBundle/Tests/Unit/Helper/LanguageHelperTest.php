@@ -46,7 +46,7 @@ final class LanguageHelperTest extends TestCase
         $this->tmpPath          = $this->translationsPath.'/tmp';
 
         $this->pathsHelper = $this->createMock(PathsHelper::class);
-        $this->pathsHelper->method('getSystemPath')
+        $this->pathsHelper->expects($this->once())->method('getSystemPath')
             ->willReturnCallback(
                 function ($path) {
                     switch ($path) {

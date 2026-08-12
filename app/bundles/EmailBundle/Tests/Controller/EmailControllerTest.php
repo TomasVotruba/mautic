@@ -106,7 +106,7 @@ final class EmailControllerTest extends TestCase
         $this->requestStack               = new RequestStack();
         $this->corePermissionsMock        = $this->createMock(CorePermissions::class);
 
-        $helperUserMock->method('getUser')
+        $helperUserMock->expects($this->once())->method('getUser')
             ->willReturn(new User(false));
 
         $this->controller = new EmailController(
@@ -131,7 +131,7 @@ final class EmailControllerTest extends TestCase
             $this->createStub(LeadRepository::class)
         );
 
-        $this->sessionMock->method('getFlashBag')->willReturn($this->createStub(FlashBagInterface::class));
+        $this->sessionMock->expects($this->once())->method('getFlashBag')->willReturn($this->createStub(FlashBagInterface::class));
     }
 
     public function testSendActionWhenNoEntityFound(): void
@@ -146,7 +146,7 @@ final class EmailControllerTest extends TestCase
             ->with(5)
             ->willReturn(null);
 
-        $this->routerMock
+        $this->routerMock->expects($this->once())
             ->method('generate')
             ->willReturn('https://some.url');
 
@@ -174,7 +174,7 @@ final class EmailControllerTest extends TestCase
             ->with(5)
             ->willReturn($this->emailMock);
 
-        $this->routerMock
+        $this->routerMock->expects($this->once())
             ->method('generate')
             ->willReturn('https://some.url');
 
@@ -208,8 +208,8 @@ final class EmailControllerTest extends TestCase
 
         $serviceExists = fn ($key): bool => count(array_filter($services, fn (array $service): bool => $service[0] === $key)) > 0;
 
-        $this->containerMock->method('has')->willReturnCallback($serviceExists);
-        $this->containerMock->method('get')->willReturnMap($services);
+        $this->containerMock->expects($this->once())->method('has')->willReturnCallback($serviceExists);
+        $this->containerMock->expects($this->once())->method('get')->willReturnMap($services);
 
         $this->modelMock->expects($this->once())
             ->method('getEntity')

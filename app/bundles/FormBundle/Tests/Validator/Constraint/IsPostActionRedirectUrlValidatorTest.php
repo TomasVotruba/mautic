@@ -191,8 +191,8 @@ final class IsPostActionRedirectUrlValidatorTest extends ConstraintValidatorTest
         ];
 
         $violation = $this->createMock(ConstraintViolationInterface::class);
-        $violation->method('getMessage')->willReturn('Incorrect URL message');
-        $violation->method('getParameters')->willReturn($violationParameters);
+        $violation->expects($this->once())->method('getMessage')->willReturn('Incorrect URL message');
+        $violation->expects($this->once())->method('getParameters')->willReturn($violationParameters);
 
         $violationList = new ConstraintViolationList([$violation]);
         $urlConstraint = new Url(message: 'mautic.form.form.postactionproperty_redirect.url');

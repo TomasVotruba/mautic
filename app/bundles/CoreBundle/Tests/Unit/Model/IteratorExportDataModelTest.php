@@ -36,7 +36,7 @@ final class IteratorExportDataModelTest extends \PHPUnit\Framework\TestCase
             ->with(['limit' => 1000, 'start' => 0, 'skipOrdering' => false])
             ->willReturn(['results' => [['a'], ['b']]]);
 
-        $this->commonModel->method('getRepository')->willReturn($this->createStub(CommonRepository::class));
+        $this->commonModel->expects($this->once())->method('getRepository')->willReturn($this->createStub(CommonRepository::class));
 
         $this->assertSame(0, $this->iteratorExportDataModel->key());
         $this->iteratorExportDataModel->rewind();
@@ -51,7 +51,7 @@ final class IteratorExportDataModelTest extends \PHPUnit\Framework\TestCase
             ->with(['limit' => 1000, 'start' => 0, 'skipOrdering' => false])
             ->willReturn(['results' => []]);
 
-        $this->commonModel->method('getRepository')->willReturn($this->createStub(CommonRepository::class));
+        $this->commonModel->expects($this->once())->method('getRepository')->willReturn($this->createStub(CommonRepository::class));
 
         $this->assertSame(0, $this->iteratorExportDataModel->key());
         $this->iteratorExportDataModel->rewind();

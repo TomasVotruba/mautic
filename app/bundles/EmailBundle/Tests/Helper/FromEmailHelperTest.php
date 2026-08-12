@@ -771,7 +771,7 @@ final class FromEmailHelperTest extends TestCase
         $params = [
             ['mailer_is_owner', null, true],
         ];
-        $this->coreParametersHelper->method('get')->willReturnMap($params);
+        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnMap($params);
 
         $user = [
             'id'         => 1,

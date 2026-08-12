@@ -40,7 +40,7 @@ final class ContactScheduledExportCommandTest extends TestCase
         $processSignalService        = $this->createStub(ProcessSignalService::class);
 
         $contactExportSchedulerRepository = $this->createMock(ContactExportSchedulerRepository::class);
-        $contactExportSchedulerRepository->method('findBy')
+        $contactExportSchedulerRepository->expects($this->once())->method('findBy')
             ->willReturn([new ContactExportScheduler()]);
 
         $eventDispatcher->expects($this->once())
@@ -57,7 +57,7 @@ final class ContactScheduledExportCommandTest extends TestCase
         $inputInterfaceMock  = $this->createMock(InputInterface::class);
         $outputInterfaceMock = $this->createStub(OutputInterface::class);
 
-        $inputInterfaceMock->method('getOption')
+        $inputInterfaceMock->expects($this->once())->method('getOption')
             ->with('ids')
             ->willReturn(1);
 

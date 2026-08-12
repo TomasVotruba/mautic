@@ -219,8 +219,8 @@ final class EmailDefaultsHelperTest extends TestCase
     private function createPreferenceCenterPageMock(bool $published, bool $isPreferenceCenter = true): Page&MockObject
     {
         $page = $this->createMock(Page::class);
-        $page->method('getIsPreferenceCenter')->willReturn($isPreferenceCenter);
-        $page->method('isPublished')->willReturn($published);
+        $page->expects($this->once())->method('getIsPreferenceCenter')->willReturn($isPreferenceCenter);
+        $page->expects($this->once())->method('isPublished')->willReturn($published);
 
         return $page;
     }

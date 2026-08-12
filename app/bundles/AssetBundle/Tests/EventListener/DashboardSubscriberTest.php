@@ -52,7 +52,7 @@ final class DashboardSubscriberTest extends \PHPUnit\Framework\TestCase
         $cacheKeyProperty->setValue($cacheItem, 'asset-dashboard-test');
         $taggableProperty = new \ReflectionProperty(CacheItem::class, 'isTaggable');
         $taggableProperty->setValue($cacheItem, true);
-        $this->cacheProvider->method('getItem')->willReturn($cacheItem);
+        $this->cacheProvider->expects($this->once())->method('getItem')->willReturn($cacheItem);
     }
 
     public function testDownloadsInTimePassesFilterArrayAndPermissionFlagToAssetModel(): void
@@ -74,7 +74,7 @@ final class DashboardSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $event = new WidgetDetailEvent($this->translator, $this->permissions, $widget, $this->cacheProvider);
 
-        $this->permissions->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
+        $this->permissions->expects($this->once())->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
             if (is_array($permission)) {
                 return [true];
             }
@@ -113,7 +113,7 @@ final class DashboardSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $event = new WidgetDetailEvent($this->translator, $this->permissions, $widget, $this->cacheProvider);
 
-        $this->permissions->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
+        $this->permissions->expects($this->once())->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
             if (is_array($permission)) {
                 return [true];
             }
@@ -153,7 +153,7 @@ final class DashboardSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $event = new WidgetDetailEvent($this->translator, $this->permissions, $widget, $this->cacheProvider);
 
-        $this->permissions->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
+        $this->permissions->expects($this->once())->method('isGranted')->willReturnCallback(static function (mixed $permission, mixed $mode = null): mixed {
             if (is_array($permission)) {
                 return [true];
             }
@@ -172,7 +172,7 @@ final class DashboardSubscriberTest extends \PHPUnit\Framework\TestCase
                 ],
             ]);
 
-        $this->router->method('generate')->willReturn('/s/assets/view/1');
+        $this->router->expects($this->once())->method('generate')->willReturn('/s/assets/view/1');
 
         $subscriber = new DashboardSubscriber($this->assetModel, $this->router);
         $subscriber->onWidgetDetailGenerate($event);

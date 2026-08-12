@@ -251,7 +251,7 @@ final class DBALMocker
             ])
             ->getMock();
 
-        $mock->method('columnCount')
+        $mock->expects($this->once())->method('columnCount')
             ->willReturnCallback(function (): int {
                 if (isset($this->queryResponse[0]) && is_array($this->queryResponse[0])) {
                     return count($this->queryResponse[0]);

@@ -44,7 +44,7 @@ final class SentHelperTest extends TestCase
         $this->result                   = $this->createMock(Result::class);
         $this->dateTimeHelper           = new DateTimeHelper();
 
-        $connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
 
         $generatedColumn        = new GeneratedColumn('email_stats', 'generated_sent_date', 'DATE', 'CONCAT(YEAR(date_sent), "-", LPAD(MONTH(date_sent), 2, "0"), "-", LPAD(DAY(date_sent), 2, "0"))');
         $this->generatedColumns = new GeneratedColumns();
@@ -62,7 +62,7 @@ final class SentHelperTest extends TestCase
 
     public function testGenerateStatsDaily(): void
     {
-        $this->generatedColumnsProvider
+        $this->generatedColumnsProvider->expects($this->once())
             ->method('generatedColumnsAreSupported')
             ->willReturn(true);
 
@@ -79,7 +79,7 @@ final class SentHelperTest extends TestCase
             ->with("DATE_FORMAT(CONVERT_TZ(t.generated_sent_date, '+00:00', '".$this->dateTimeHelper->getLocalTimezoneOffset()."'), '%Y-%m-%d') AS date, COUNT(*) AS count")
             ->willReturnSelf();
 
-        $this->result->method('fetchAllAssociative')->willReturn([
+        $this->result->expects($this->once())->method('fetchAllAssociative')->willReturn([
             [
                 'date'  => '2022-12-12',
                 'count' => '60',
@@ -108,7 +108,7 @@ final class SentHelperTest extends TestCase
 
     public function testGenerateStatsHourly(): void
     {
-        $this->generatedColumnsProvider
+        $this->generatedColumnsProvider->expects($this->once())
             ->method('generatedColumnsAreSupported')
             ->willReturn(true);
 

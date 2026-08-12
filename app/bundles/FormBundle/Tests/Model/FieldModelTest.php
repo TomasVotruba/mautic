@@ -42,7 +42,7 @@ final class FieldModelTest extends TestCase
             }
         };
 
-        $connection->method('getDatabasePlatform')
+        $connection->expects($this->once())->method('getDatabasePlatform')
             ->willReturn($platform);
 
         $leadFieldModel = $this->createStub(\Mautic\LeadBundle\Model\FieldModel::class);
@@ -65,7 +65,7 @@ final class FieldModelTest extends TestCase
             $this->createStub(FieldRepository::class)
         );
 
-        $entityManager
+        $entityManager->expects($this->once())
             ->method('getConnection')
             ->willReturn($connection);
 

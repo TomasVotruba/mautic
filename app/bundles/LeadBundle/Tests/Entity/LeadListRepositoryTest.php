@@ -333,7 +333,7 @@ SQL;
      */
     private function mockGetLeadCount(array $queryResult, bool $addParam = true): void
     {
-        $this->connection->method('createQueryBuilder')
+        $this->connection->expects($this->once())->method('createQueryBuilder')
             ->willReturn($this->queryBuilderMock);
 
         $this->queryBuilderMock->expects($this->once())

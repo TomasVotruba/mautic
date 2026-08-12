@@ -30,11 +30,11 @@ final class BotRatioHelperTest extends TestCase
         bool $isBot,
     ): void {
         $deviceDetectorMock = $this->createMock(DeviceDetector::class);
-        $deviceDetectorMock->method('parse');
-        $deviceDetectorMock->method('isBot')->willReturn(false);
+        $deviceDetectorMock->expects($this->once())->method('parse');
+        $deviceDetectorMock->expects($this->once())->method('isBot')->willReturn(false);
 
         $deviceDetectorFactoryMock = $this->createMock(DeviceDetectorFactoryInterface::class);
-        $deviceDetectorFactoryMock->method('create')->willReturn($deviceDetectorMock);
+        $deviceDetectorFactoryMock->expects($this->once())->method('create')->willReturn($deviceDetectorMock);
 
         // Time
         $emailHitDateTime = new \DateTime();

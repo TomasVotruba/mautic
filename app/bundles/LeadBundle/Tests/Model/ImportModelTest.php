@@ -167,7 +167,7 @@ final class ImportModelTest extends StandardImportTestHelper
 
         $model->setTranslator($this->getTranslatorMock());
 
-        $model->method('checkParallelImportLimit')
+        $model->expects($this->once())->method('checkParallelImportLimit')
             ->willReturn(false);
 
         $model->expects($this->once())
@@ -176,7 +176,7 @@ final class ImportModelTest extends StandardImportTestHelper
 
         $entity = $this->initImportEntity(['canProceed']);
 
-        $entity->method('canProceed')
+        $entity->expects($this->once())->method('canProceed')
             ->willReturn(true);
 
         try {
@@ -213,7 +213,7 @@ final class ImportModelTest extends StandardImportTestHelper
 
         $entity = $this->initImportEntity(['canProceed']);
 
-        $entity->method('canProceed')
+        $entity->expects($this->once())->method('canProceed')
             ->willReturn(true);
 
         try {
@@ -428,7 +428,7 @@ final class ImportModelTest extends StandardImportTestHelper
         $importRepository->expects($this->exactly(3))->method('getValue')
             ->willReturnOnConsecutiveCalls(true, false, false);
 
-        $this->entityManager
+        $this->entityManager->expects($this->once())
             ->method('isOpen')
             ->willReturn(true);
 
@@ -438,7 +438,7 @@ final class ImportModelTest extends StandardImportTestHelper
             ->setConstructorArgs([16 => $this->entityManager])
             ->getMock();
 
-        $leadModel
+        $leadModel->expects($this->once())
             ->method('getEventLogRepository')
             ->willReturn($logRepository);
 

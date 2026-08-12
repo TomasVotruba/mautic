@@ -178,28 +178,28 @@ final class DashboardSubscriberTest extends TestCase
             ->willReturn($this->createStub(FormEntity::class));
         $notLead       = $this->createMock(FormModel::class);
         $anonymousUser = $this->createMock(User::class);
-        $anonymousUser->method('getName')->willReturn('mautic.lead.lead.anonymous');
+        $anonymousUser->expects($this->once())->method('getName')->willReturn('mautic.lead.lead.anonymous');
         $notLead->expects($this->once())
             ->method('getEntity')
             ->with(456)
             ->willReturn($anonymousUser);
-        $notLead->method('getNameGetter')
+        $notLead->expects($this->once())->method('getNameGetter')
             ->willReturn('getName');
         $notAnonymous = $this->createMock(FormModel::class);
         $adminUser    = $this->createMock(User::class);
-        $adminUser->method('getName')->willReturn('admin');
+        $adminUser->expects($this->once())->method('getName')->willReturn('admin');
         $notAnonymous->expects($this->once())
             ->method('getEntity')
             ->with(567)
             ->willReturn($adminUser);
-        $notAnonymous->method('getNameGetter')
+        $notAnonymous->expects($this->once())->method('getNameGetter')
             ->willReturn('getName');
         $isAnonymous = $this->createMock(FormModel::class);
         $isAnonymous->expects($this->once())
             ->method('getEntity')
             ->with(678)
             ->willReturn($anonymousUser);
-        $isAnonymous->method('getNameGetter')
+        $isAnonymous->expects($this->once())->method('getNameGetter')
             ->willReturn('getName');
         $exception = $this->createMock(FormModel::class);
         $exception->expects($this->once())

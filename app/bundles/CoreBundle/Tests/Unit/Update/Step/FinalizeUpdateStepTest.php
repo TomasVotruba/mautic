@@ -50,8 +50,8 @@ final class FinalizeUpdateStepTest extends AbstractStepTestCase
         $request            = $this->createMock(Request::class);
 
         $request->expects($this->once())->method('hasSession')->willReturn(true);
-        $request->method('getSession')->willReturn($this->session);
-        $requestStack->method('getSession')->willReturn($this->session);
+        $request->expects($this->once())->method('getSession')->willReturn($this->session);
+        $requestStack->expects($this->once())->method('getSession')->willReturn($this->session);
         $requestStack->expects($this->once())->method('getCurrentRequest')->willReturn($request);
 
         $this->step = new FinalizeUpdateStep($this->translator, $this->pathsHelper, $requestStack, $this->appVersion);
@@ -128,7 +128,7 @@ final class FinalizeUpdateStepTest extends AbstractStepTestCase
             ->method('writeln')
             ->with("\n\n<info>This is an example message</info>");
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturn('');
 

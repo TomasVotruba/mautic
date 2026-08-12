@@ -64,7 +64,7 @@ final class FieldApiControllerTest extends TestCase
     protected function getResultFromProtectedMethod(string $method, array $args, Request $request): mixed
     {
         $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getCurrentRequest')
+        $requestStack->expects($this->once())->method('getCurrentRequest')
             ->willReturn($request);
 
         $controller = new FieldApiController(

@@ -42,7 +42,7 @@ final class ReplyHelperTest extends \PHPUnit\Framework\TestCase
             ->method('getContacts')
             ->willReturn(new ArrayCollection([new Lead()]));
 
-        $handler->method('getMessage')->willReturn('some message');
+        $handler->expects($this->once())->method('getMessage')->willReturn('some message');
 
         $this->contactTracker->expects($this->once())
             ->method('setSystemContact');

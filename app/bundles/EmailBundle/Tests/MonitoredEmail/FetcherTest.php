@@ -59,13 +59,13 @@ final class FetcherTest extends \PHPUnit\Framework\TestCase
     public function testMessagesAreFetchedAndEventDispatched(): void
     {
         $mailbox = $this->createMock(Mailbox::class);
-        $mailbox->method('getMailboxSettings')
+        $mailbox->expects($this->once())->method('getMailboxSettings')
             ->willReturnCallback(
                 fn ($mailbox): array => $this->mailboxes[$mailbox]
             );
-        $mailbox->method('searchMailBox')
+        $mailbox->expects($this->once())->method('searchMailBox')
             ->willReturn([1]);
-        $mailbox->method('getMail')
+        $mailbox->expects($this->once())->method('getMail')
             ->willReturn(new Message());
 
         $event      = new ParseEmailEvent();

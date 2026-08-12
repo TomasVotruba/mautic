@@ -101,7 +101,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
             ->willReturn(false);
 
         $this->translatorMock->expects($this->once())
@@ -118,8 +118,8 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->method('isXmlHttpRequest')->willReturn(true);
-        $this->requestMock->method('get')->willReturn('mockName');
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')->willReturn(true);
+        $this->requestMock->expects($this->once())->method('get')->willReturn('mockName');
 
         $this->containerMock->expects($this->exactly(2))
             ->method('get')->willReturnCallback(function (...$parameters): MockObject {
@@ -128,7 +128,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
                 return $this->routerMock;
             });
 
-        $this->routerMock
+        $this->routerMock->expects($this->once())
             ->method('generate')
             ->willReturn('https://some.url');
 
@@ -149,14 +149,14 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
             ->willReturn(true);
 
-        $this->routerMock
+        $this->routerMock->expects($this->once())
             ->method('generate')
             ->willReturn('https://some.url');
 
-        $this->requestMock->method('get')->willReturn('mockName');
+        $this->requestMock->expects($this->once())->method('get')->willReturn('mockName');
 
         $this->containerMock->expects($this->once())
             ->method('get')
@@ -176,7 +176,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
 
     public function testWidgetDirectRequest(): void
     {
-        $this->requestMock->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
             ->willReturn(false);
 
         $this->expectException(NotFoundHttpException::class);
@@ -188,7 +188,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $widgetId = '1';
         $twig     = $this->createStub(Environment::class);
 
-        $this->requestMock->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
             ->willReturn(true);
 
         $widgetService = $this->createMock(Widget::class);
@@ -218,7 +218,7 @@ final class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('render')
             ->willReturn($renderedContent);
 
-        $this->requestMock->method('isXmlHttpRequest')
+        $this->requestMock->expects($this->once())->method('isXmlHttpRequest')
             ->willReturn(true);
 
         $widgetService = $this->createMock(Widget::class);

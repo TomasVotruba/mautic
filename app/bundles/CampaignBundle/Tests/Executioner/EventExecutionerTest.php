@@ -67,7 +67,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
     {
         $this->eventCollector        = $this->createMock(EventCollector::class);
         $this->eventLogger           = $this->createMock(EventLogger::class);
-        $this->eventLogger->method('persistCollection')
+        $this->eventLogger->expects($this->once())->method('persistCollection')
             ->willReturn($this->eventLogger);
         $this->actionExecutioner     = $this->createMock(ActionExecutioner::class);
         $this->eventScheduler        = $this->createMock(EventScheduler::class);
@@ -120,7 +120,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $events   = new ArrayCollection([$otherEvent, $jumpEvent]);
         $contacts = new ArrayCollection([new Lead()]);
 
-        $this->eventCollector->method('getEventConfig')
+        $this->eventCollector->expects($this->once())->method('getEventConfig')
             ->willReturnCallback(
                 function (Event $event) use ($jumpConfig, $otherConfig): ActionAccessor {
                     if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType()) {
@@ -198,17 +198,17 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
             ->setProperties(['jumpToEvent' => 999]);
 
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $log = $this->createMock(LeadEventLog::class);
-        $log->method('getLead')
+        $log->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log->method('setIsScheduled')
+        $log->expects($this->once())->method('setIsScheduled')
             ->willReturn($log);
-        $log->method('getEvent')
+        $log->expects($this->once())->method('getEvent')
             ->willReturn($event);
-        $log->method('getId')
+        $log->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $logs = new ArrayCollection(
@@ -236,7 +236,7 @@ final class EventExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $pendingEvent = new PendingEvent($config, $event, $logs);
 
-        $this->eventRepository->method('getEntities')
+        $this->eventRepository->expects($this->once())->method('getEntities')
             ->willReturn([]);
 
         $eventScheduler = $this->createStub(EventScheduler::class);

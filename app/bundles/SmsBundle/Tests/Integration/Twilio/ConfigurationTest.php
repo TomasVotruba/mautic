@@ -27,17 +27,17 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $integrationSettings->setFeatureSettings(['messaging_service_sid' => '123']);
         /** @phpstan-ignore classConstant.deprecatedClass */
         $this->integrationObject = $this->createMock(AbstractIntegration::class);
-        $this->integrationObject->method('getIntegrationSettings')
+        $this->integrationObject->expects($this->once())->method('getIntegrationSettings')
             ->willReturn($integrationSettings);
 
-        $this->integrationHelper->method('getIntegrationObject')
+        $this->integrationHelper->expects($this->once())->method('getIntegrationObject')
             ->with('Twilio')
             ->willReturn($this->integrationObject);
     }
 
     public function testGetMessagingServiceSid(): void
     {
-        $this->integrationObject->method('getDecryptedApiKeys')
+        $this->integrationObject->expects($this->once())->method('getDecryptedApiKeys')
             ->willReturn(
                 [
                     'username' => 'username',
@@ -49,7 +49,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
 
     public function testGetAccountSid(): void
     {
-        $this->integrationObject->method('getDecryptedApiKeys')
+        $this->integrationObject->expects($this->once())->method('getDecryptedApiKeys')
             ->willReturn(
                 [
                     'username' => 'username',
@@ -61,7 +61,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
 
     public function testGetAuthToken(): void
     {
-        $this->integrationObject->method('getDecryptedApiKeys')
+        $this->integrationObject->expects($this->once())->method('getDecryptedApiKeys')
             ->willReturn(
                 [
                     'username' => 'username',
@@ -79,7 +79,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $integrationSettings->setIsPublished(false);
         $integrationSettings->setFeatureSettings(['messaging_service_sid' => '123']);
 
-        $this->integrationObject->method('getIntegrationSettings')
+        $this->integrationObject->expects($this->once())->method('getIntegrationSettings')
             ->willReturn($integrationSettings);
 
         $this->getConfiguration()->getMessagingServiceSid();
@@ -97,7 +97,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
     public function testConfigurationExceptionThrownWithoutUsername(): void
     {
         $this->expectException(ConfigurationException::class);
-        $this->integrationObject->method('getDecryptedApiKeys')
+        $this->integrationObject->expects($this->once())->method('getDecryptedApiKeys')
             ->willReturn(
                 [
                     'username' => '',
@@ -110,7 +110,7 @@ final class ConfigurationTest extends \PHPUnit\Framework\TestCase
     public function testConfigurationExceptionThrownWithoutPassword(): void
     {
         $this->expectException(ConfigurationException::class);
-        $this->integrationObject->method('getDecryptedApiKeys')
+        $this->integrationObject->expects($this->once())->method('getDecryptedApiKeys')
             ->willReturn(
                 [
                     'username' => 'username',

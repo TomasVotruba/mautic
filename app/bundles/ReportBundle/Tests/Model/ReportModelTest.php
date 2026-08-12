@@ -32,10 +32,10 @@ final class ReportModelTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $fieldModelMock = $this->createMock(FieldModel::class);
-        $fieldModelMock->method('getPublishedFieldArrays')->willReturn([]);
+        $fieldModelMock->expects($this->once())->method('getPublishedFieldArrays')->willReturn([]);
 
         $mockDispatcher = $this->createMock(EventDispatcher::class);
-        $mockDispatcher->method('dispatch')
+        $mockDispatcher->expects($this->once())->method('dispatch')
             ->willReturnCallback(
                 function (ReportBuilderEvent $event): ReportBuilderEvent {
                     $reportBuilderData = Fixtures::getReportBuilderEventData();
@@ -47,7 +47,7 @@ final class ReportModelTest extends \PHPUnit\Framework\TestCase
 
         $translatorMock = $this->createMock(Translator::class);
         // Make the translator return whatever string is passed to it instead of null
-        $translatorMock->method('trans')->withAnyParameters()->willReturnArgument(0);
+        $translatorMock->expects($this->once())->method('trans')->withAnyParameters()->willReturnArgument(0);
 
         $this->reportModel = new ReportModel(
             $this->createStub(CoreParametersHelper::class),

@@ -80,7 +80,7 @@ final class PeakInteractionTimerTest extends TestCase
         $this->submissionRepositoryMock = $this->createMock(SubmissionRepository::class);
         $this->cacheProviderMock        = $this->createMock(CacheProviderInterface::class);
 
-        $this->coreParametersHelperMock->method('get')
+        $this->coreParametersHelperMock->expects($this->once())->method('get')
             ->willReturnMap([
                 ['peak_interaction_timer_cache_timeout', null, $this->peakInteractionTimerCacheTimeout],
                 ['peak_interaction_timer_best_default_hour_start', null, $this->peakInteractionTimerBestDefaultHourStart],
@@ -117,12 +117,12 @@ final class PeakInteractionTimerTest extends TestCase
         $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
         $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
-            $contactMock->method('getTimezone')->willReturn($contactTimezone);
+            $contactMock->expects($this->once())->method('getTimezone')->willReturn($contactTimezone);
         }
 
-        $this->statRepositoryMock->method('getLeadStats')->willReturn([]);
-        $this->hitRepositoryMock->method('getLeadHits')->willReturn([]);
-        $this->submissionRepositoryMock->method('getSubmissions')->willReturn([]);
+        $this->statRepositoryMock->expects($this->once())->method('getLeadStats')->willReturn([]);
+        $this->hitRepositoryMock->expects($this->once())->method('getLeadHits')->willReturn([]);
+        $this->submissionRepositoryMock->expects($this->once())->method('getSubmissions')->willReturn([]);
 
         // Create an instance of the testable PeakInteractionTimer
         $testableTimer = new TestablePeakInteractionTimer($this->coreParametersHelperMock, $this->statRepositoryMock, $this->hitRepositoryMock, $this->submissionRepositoryMock, $this->cacheProviderMock);
@@ -163,12 +163,12 @@ final class PeakInteractionTimerTest extends TestCase
         $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
         $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
-            $contactMock->method('getTimezone')->willReturn($contactTimezone);
+            $contactMock->expects($this->once())->method('getTimezone')->willReturn($contactTimezone);
         }
 
-        $this->statRepositoryMock->method('getLeadStats')->willReturn([]);
-        $this->hitRepositoryMock->method('getLeadHits')->willReturn([]);
-        $this->submissionRepositoryMock->method('getSubmissions')->willReturn([]);
+        $this->statRepositoryMock->expects($this->once())->method('getLeadStats')->willReturn([]);
+        $this->hitRepositoryMock->expects($this->once())->method('getLeadHits')->willReturn([]);
+        $this->submissionRepositoryMock->expects($this->once())->method('getSubmissions')->willReturn([]);
 
         // Create an instance of the testable PeakInteractionTimer
         $testableTimer = new TestablePeakInteractionTimer($this->coreParametersHelperMock, $this->statRepositoryMock, $this->hitRepositoryMock, $this->submissionRepositoryMock, $this->cacheProviderMock);
@@ -221,13 +221,13 @@ final class PeakInteractionTimerTest extends TestCase
     {
         $contactMock = $this->createStub(Lead::class);
 
-        $this->statRepositoryMock
+        $this->statRepositoryMock->expects($this->once())
             ->method('getLeadStats')
             ->willReturn($emailReads);
-        $this->hitRepositoryMock
+        $this->hitRepositoryMock->expects($this->once())
             ->method('getLeadHits')
             ->willReturn($pageHits);
-        $this->submissionRepositoryMock
+        $this->submissionRepositoryMock->expects($this->once())
             ->method('getSubmissions')
             ->willReturn($formSubmissions);
 
@@ -317,13 +317,13 @@ final class PeakInteractionTimerTest extends TestCase
     {
         $contactMock = $this->createStub(Lead::class);
 
-        $this->statRepositoryMock
+        $this->statRepositoryMock->expects($this->once())
             ->method('getLeadStats')
             ->willReturn($emailReads);
-        $this->hitRepositoryMock
+        $this->hitRepositoryMock->expects($this->once())
             ->method('getLeadHits')
             ->willReturn($pageHits);
-        $this->submissionRepositoryMock
+        $this->submissionRepositoryMock->expects($this->once())
             ->method('getSubmissions')
             ->willReturn($formSubmissions);
 

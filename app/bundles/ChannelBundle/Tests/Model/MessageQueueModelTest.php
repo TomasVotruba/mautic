@@ -125,12 +125,12 @@ final class MessageQueueModelTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        $this->leadRepository->method('getContacts')->willReturn($contactData);
+        $this->leadRepository->expects($this->once())->method('getContacts')->willReturn($contactData);
 
         $this->entityManager->expects($this->exactly(1))
             ->method('detach');
 
-        $this->messageQueueRepository->method('getQueuedMessages')
+        $this->messageQueueRepository->expects($this->once())->method('getQueuedMessages')
             ->willReturn([$this->message]);
 
         $this->messageQueue->sendMessages('email', 1);
@@ -149,7 +149,7 @@ final class MessageQueueModelTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        $this->leadRepository->method('getContacts')->willReturn($contactData);
+        $this->leadRepository->expects($this->once())->method('getContacts')->willReturn($contactData);
 
         $this->messageQueue->processMessageQueue($this->message);
         $this->assertArrayNotHasKey('companies', $this->message->getLead()->getFields());

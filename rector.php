@@ -48,7 +48,7 @@ return RectorConfig::configure()
         Rector\PHPUnit\PHPUnit120\Rector\Class_\AllowMockObjectsWithoutExpectationsAttributeRector::class,
 
         // applied in a follow-up pull request
-        Utils\Rector\AddExpectsOnceToMockMethodCallRector::class,
+        // Utils\Rector\AddExpectsOnceToMockMethodCallRector::class,
 
         Rector\Symfony\CodeQuality\Rector\Class_\LoadValidatorMetadataToAttributeRector::class,
         Utils\Rector\ModelGetRepositoryToRepositoryServiceRector::class => [

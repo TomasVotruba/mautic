@@ -53,7 +53,7 @@ final class TransportChainTest extends MauticMysqlTestCase
 
         $this->twilioTransport = $this->createMock(TwilioTransport::class);
 
-        $this->twilioTransport
+        $this->twilioTransport->expects($this->once())
             ->method('sendSMS')
             ->willReturn('lol');
     }

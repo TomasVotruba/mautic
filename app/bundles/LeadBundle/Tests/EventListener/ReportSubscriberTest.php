@@ -151,15 +151,15 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             $this->createStub(CampaignRepository::class)
         );
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
                 ->method('expr')
                 ->willReturn($this->createStub(ExpressionBuilder::class));
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('resetQueryParts')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('getQueryPart')
             ->willReturnCallback(function ($input): array|string {
                 if ('join' === $input) {
@@ -186,46 +186,46 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                 return [['alias' => 'lp']];
             });
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('from')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('leftJoin')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('join')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('select')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('setParameters')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('getParameters')
             ->willReturn([]);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('setMaxResults')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock->method('andWhere')
+        $this->queryBuilderMock->expects($this->once())->method('andWhere')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('groupBy')
             ->willReturn($this->queryBuilderMock);
 
-        $this->queryBuilderMock
+        $this->queryBuilderMock->expects($this->once())
             ->method('orderBy')
             ->willReturn($this->queryBuilderMock);
 
-        $eventCollectorMock
+        $eventCollectorMock->expects($this->once())
             ->method('getEventsArray')
             ->willReturn(
                 [
@@ -261,11 +261,11 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]);
 
-        $this->translatorMock
+        $this->translatorMock->expects($this->once())
             ->method('hasId')
             ->willReturn(false);
 
-        $stageModelMock
+        $stageModelMock->expects($this->once())
             ->method('getUserStages')
             ->willReturn([
                 'stage' => [
@@ -898,15 +898,15 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ])
             ->getMock();
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('loadAndBuildTimeData')
             ->willReturn(['a', 'b', 'c']);
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('fetchCount')
             ->willReturn(2);
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('fetchCountDateDiff')
             ->willReturn(2);
 
@@ -917,11 +917,11 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             'dateTo'     => new \DateTime(),
         ];
 
-        $this->reportGraphEventMock
+        $this->reportGraphEventMock->expects($this->once())
             ->method('getOptions')
             ->willReturn($graphOptions);
 
-        $this->reportGraphEventMock
+        $this->reportGraphEventMock->expects($this->once())
             ->method('getOptions')
             ->willReturn($graphOptions);
 
@@ -931,25 +931,25 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     #[DataProvider('ReportGraphEventDataProvider')]
     public function testOnReportDisplay(string $event): void
     {
-        $this->reportBuilderEventMock
+        $this->reportBuilderEventMock->expects($this->once())
         ->method('checkContext')
         ->willReturn($event);
 
-        $this->fieldsBuilderMock
+        $this->fieldsBuilderMock->expects($this->once())
     ->method('getLeadFieldsColumns')
     ->with('l.')
     ->willReturn($this->leadColumns);
 
-        $this->fieldsBuilderMock
+        $this->fieldsBuilderMock->expects($this->once())
         ->method('getLeadFilter')
         ->with('l.', 's.')
         ->willReturn($this->leadFilters);
 
-        $this->companyReportDataMock
+        $this->companyReportDataMock->expects($this->once())
     ->method('getCompanyData')
     ->willReturn($this->companyColumns);
 
-        $this->reportBuilderEventMock
+        $this->reportBuilderEventMock->expects($this->once())
         ->method('getCategoryColumns')
         ->willReturn([
             'c.id' => [
@@ -963,7 +963,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                 'alias' => 'category_title',
             ],
         ]);
-        $this->reportBuilderEventMock
+        $this->reportBuilderEventMock->expects($this->once())
         ->method('getIpColumn')
         ->willReturn(
             [
@@ -973,7 +973,7 @@ final class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                 ],
             ]
         );
-        $this->reportBuilderEventMock
+        $this->reportBuilderEventMock->expects($this->once())
         ->method('addGraph')
         ->willReturn($this->reportBuilderEventMock);
 

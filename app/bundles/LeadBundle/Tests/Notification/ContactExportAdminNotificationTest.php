@@ -47,7 +47,7 @@ final class ContactExportAdminNotificationTest extends TestCase
         };
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')
+        $translator->expects($this->once())->method('trans')
             ->willReturnCallback(
                 static fn (string $key, array $parameters = []): string => match ($key) {
                     'mautic.lead.export.admin.notification' => sprintf(
@@ -71,7 +71,7 @@ final class ContactExportAdminNotificationTest extends TestCase
             ->method('getMailer');
 
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->once())->method('get')
             ->with('contact_export_notify_admins')
             ->willReturn(true);
 
@@ -110,7 +110,7 @@ final class ContactExportAdminNotificationTest extends TestCase
         $notificationModel = $this->createStub(NotificationModel::class);
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')
+        $translator->expects($this->once())->method('trans')
             ->willReturnCallback(
                 static fn (string $key, array $parameters = []): string => match ($key) {
                     'mautic.lead.export.admin.email_subject' => 'Contact export completed',
@@ -173,7 +173,7 @@ final class ContactExportAdminNotificationTest extends TestCase
             ->with(true);
 
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->once())->method('get')
             ->with('contact_export_notify_admins')
             ->willReturn(true);
 
@@ -205,7 +205,7 @@ final class ContactExportAdminNotificationTest extends TestCase
             ->method('getMailer');
 
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->once())->method('get')
             ->with('contact_export_notify_admins')
             ->willReturn(false);
 

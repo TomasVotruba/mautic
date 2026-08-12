@@ -149,7 +149,7 @@ final class ApiUserSubscriberTest extends TestCase
 
         $accessToken      = $this->createStub(AccessToken::class);
         $accessTokenBadge = $this->createMock(AccessTokenBadge::class);
-        $accessTokenBadge->method('getAccessToken')->willReturn($accessToken);
+        $accessTokenBadge->expects($this->once())->method('getAccessToken')->willReturn($accessToken);
 
         $passport = $this->createMock(Passport::class);
         $passport->expects($this->exactly(2))
@@ -221,7 +221,7 @@ final class ApiUserSubscriberTest extends TestCase
 
         $accessToken      = $this->createStub(AccessToken::class);
         $accessTokenBadge = $this->createMock(AccessTokenBadge::class);
-        $accessTokenBadge->method('getAccessToken')->willReturn($accessToken);
+        $accessTokenBadge->expects($this->once())->method('getAccessToken')->willReturn($accessToken);
 
         $passport = $this->createMock(Passport::class);
         $passport->expects($this->exactly(2))
@@ -260,7 +260,7 @@ final class ApiUserSubscriberTest extends TestCase
             ->willReturn($passport);
 
         $user = $this->createMock(User::class);
-        $user->method('getRoles')->willReturn($userRoles);
+        $user->expects($this->once())->method('getRoles')->willReturn($userRoles);
 
         $userProvider = $this->createMock(UserProvider::class);
         $userProvider->expects($this->once())
@@ -293,7 +293,7 @@ final class ApiUserSubscriberTest extends TestCase
 
         $accessToken      = $this->createStub(AccessToken::class);
         $accessTokenBadge = $this->createMock(AccessTokenBadge::class);
-        $accessTokenBadge->method('getAccessToken')->willReturn($accessToken);
+        $accessTokenBadge->expects($this->once())->method('getAccessToken')->willReturn($accessToken);
 
         $passport = $this->createMock(Passport::class);
         $passport->expects($this->exactly(2))
@@ -332,7 +332,7 @@ final class ApiUserSubscriberTest extends TestCase
             ->willReturn($passport);
 
         $user = $this->createMock(User::class);
-        $user->method('getRoles')->willReturn($userRoles);
+        $user->expects($this->once())->method('getRoles')->willReturn($userRoles);
 
         $userProvider = $this->createMock(UserProvider::class);
         $userProvider->expects($this->once())
@@ -396,7 +396,7 @@ final class ApiUserSubscriberTest extends TestCase
         $accessTokenBadge = $this->createStub(AccessTokenBadge::class);
 
         $authenticatedToken = $this->createMock(OAuthToken::class);
-        $authenticatedToken->method('getUser')->willReturn($this->createStub(UserInterface::class));
+        $authenticatedToken->expects($this->once())->method('getUser')->willReturn($this->createStub(UserInterface::class));
         // No user was replaced.
         $authenticatedToken->expects($this->never())
             ->method('setUser');
@@ -406,7 +406,7 @@ final class ApiUserSubscriberTest extends TestCase
             ->method('hasBadge')
             ->with(AccessTokenBadge::class)
             ->willReturn(true);
-        $passport->method('getBadge')->with(AccessTokenBadge::class)->willReturn($accessTokenBadge);
+        $passport->expects($this->once())->method('getBadge')->with(AccessTokenBadge::class)->willReturn($accessTokenBadge);
 
         $event = $this->createMock(AuthenticationTokenCreatedEvent::class);
         $event->expects($this->once())
@@ -433,13 +433,13 @@ final class ApiUserSubscriberTest extends TestCase
         $user = $this->createStub(UserInterface::class);
 
         $accessToken = $this->createMock(AccessToken::class);
-        $accessToken->method('getUser')->willReturn($user);
+        $accessToken->expects($this->once())->method('getUser')->willReturn($user);
 
         $accessTokenBadge = $this->createMock(AccessTokenBadge::class);
-        $accessTokenBadge->method('getAccessToken')->willReturn($accessToken);
+        $accessTokenBadge->expects($this->once())->method('getAccessToken')->willReturn($accessToken);
 
         $authenticatedToken = $this->createMock(OAuthToken::class);
-        $authenticatedToken->method('getUser')->willReturn(null);
+        $authenticatedToken->expects($this->once())->method('getUser')->willReturn(null);
         // Replace the user from oAuth token.
         $authenticatedToken->expects($this->once())
             ->method('setUser')
@@ -450,7 +450,7 @@ final class ApiUserSubscriberTest extends TestCase
             ->method('hasBadge')
             ->with(AccessTokenBadge::class)
             ->willReturn(true);
-        $passport->method('getBadge')->with(AccessTokenBadge::class)->willReturn($accessTokenBadge);
+        $passport->expects($this->once())->method('getBadge')->with(AccessTokenBadge::class)->willReturn($accessTokenBadge);
 
         $event = $this->createMock(AuthenticationTokenCreatedEvent::class);
         $event->expects($this->once())

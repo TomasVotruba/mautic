@@ -304,7 +304,7 @@ final class CommonApiControllerTest extends CampaignTestAbstract
         $users = [];
         foreach ([3, 5, 4] as $userId) {
             $user = $this->createMock(User::class);
-            $user
+            $user->expects($this->once())
                 ->method('getId')
                 ->willReturn($userId);
             $users[] = $user;

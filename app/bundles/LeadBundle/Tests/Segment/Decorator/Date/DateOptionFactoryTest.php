@@ -240,7 +240,7 @@ final class DateOptionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $relativeDate     = $this->createMock(RelativeDate::class);
 
-        $relativeDate->method('getRelativeDateStrings')
+        $relativeDate->expects($this->once())->method('getRelativeDateStrings')
             ->willReturn(
                 [
                     'mautic.lead.list.month_last'  => 'last month',

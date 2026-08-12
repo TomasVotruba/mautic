@@ -208,8 +208,8 @@ final class PreviewFunctionalTest extends MauticMysqlTestCase
         // Check public preview access without permissions
         $this->loginUser($user);
         $security = $this->createMock(CorePermissions::class);
-        $security->method('isAnonymous')->willReturn(false);
-        $security->method('hasEntityAccess')->with(
+        $security->expects($this->once())->method('isAnonymous')->willReturn(false);
+        $security->expects($this->once())->method('hasEntityAccess')->with(
             'page:pages:viewown',
             'page:pages:viewother',
             $page->getCreatedBy()

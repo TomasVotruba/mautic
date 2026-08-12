@@ -19,10 +19,10 @@ final class PageRepositoryTest extends TestCase
     private function getRepository(): PageRepository
     {
         $repository = $this->configureRepository(Page::class);
-        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
+        $translator->expects($this->once())->method('trans')->willReturnCallback(fn (string $id): string => match ($id) {
             'mautic.page.searchcommand.isexpired' => 'is:expired',
             'mautic.page.searchcommand.ispending' => 'is:pending',
             default                               => $id,

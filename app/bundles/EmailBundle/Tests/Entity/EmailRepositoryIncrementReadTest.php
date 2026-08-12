@@ -27,7 +27,7 @@ final class EmailRepositoryIncrementReadTest extends \PHPUnit\Framework\TestCase
         $this->repo             = $this->configureRepository(Email::class);
         $this->queryBuilder     = new QueryBuilder($this->connection);
         $subQueryBuilder        = new QueryBuilder($this->connection);
-        $this->connection->method('createQueryBuilder')->willReturnOnConsecutiveCalls(
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnOnConsecutiveCalls(
             $this->queryBuilder,
             $subQueryBuilder
         );

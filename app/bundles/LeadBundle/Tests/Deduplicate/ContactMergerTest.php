@@ -50,7 +50,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $this->logger          = $this->createMock(Logger::class);
         $this->companyLeadRepo = $this->createMock(CompanyLeadRepository::class);
 
-        $this->leadRepository->method('getFieldValues')->willReturn([]);
+        $this->leadRepository->expects($this->once())->method('getFieldValues')->willReturn([]);
     }
 
     public function testMergeTimestamps(): void
@@ -443,12 +443,12 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 'boolean' => 0,
             ]);
 
-        $winner->method('getDateModified')->willReturn($winnerDateModified);
-        $winner->method('getId')->willReturn(1);
+        $winner->expects($this->once())->method('getDateModified')->willReturn($winnerDateModified);
+        $winner->expects($this->once())->method('getId')->willReturn(1);
 
-        $loser->method('getDateModified')->willReturn($loserDateModified);
-        $loser->method('getId')->willReturn(2);
-        $loser->method('isAnonymous')->willReturn(true);
+        $loser->expects($this->once())->method('getDateModified')->willReturn($loserDateModified);
+        $loser->expects($this->once())->method('getId')->willReturn(2);
+        $loser->expects($this->once())->method('isAnonymous')->willReturn(true);
 
         $matcher = $this->exactly(3);
         $winner->expects($matcher)
@@ -610,7 +610,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
     public function testFullMerge(): void
     {
         $winner = $this->createMock(Lead::class);
-        $winner
+        $winner->expects($this->once())
             ->method('getId')
             ->willReturn(1);
         $winner->expects($this->once())
@@ -627,7 +627,7 @@ final class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->willReturn(new \DateTime('-30 minutes'));
 
         $loser = $this->createMock(Lead::class);
-        $loser
+        $loser->expects($this->once())
             ->method('getId')
             ->willReturn(2);
         $loser->expects($this->once())

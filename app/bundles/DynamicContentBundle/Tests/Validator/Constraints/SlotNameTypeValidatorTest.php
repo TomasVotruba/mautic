@@ -37,7 +37,7 @@ final class SlotNameTypeValidatorTest extends ConstraintValidatorTestCase
         $existingContent->setType('html');
         $dynamicContent->setIsCampaignBased(false);
 
-        $this->dynamicContentModel->method('checkEntityBySlotName')->willReturn(false);
+        $this->dynamicContentModel->expects($this->once())->method('checkEntityBySlotName')->willReturn(false);
 
         $this->validator->validate($dynamicContent, new SlotNameType());
 
@@ -56,7 +56,7 @@ final class SlotNameTypeValidatorTest extends ConstraintValidatorTestCase
         $existingContent->setType('html');
         $dynamicContent->setIsCampaignBased(false);
 
-        $this->dynamicContentModel->method('checkEntityBySlotName')->willReturn(true);
+        $this->dynamicContentModel->expects($this->once())->method('checkEntityBySlotName')->willReturn(true);
 
         $constraint = new SlotNameType();
         $this->validator->validate($dynamicContent, $constraint);

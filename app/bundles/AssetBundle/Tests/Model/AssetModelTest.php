@@ -81,7 +81,7 @@ final class AssetModelTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParametersHelper->method('get')
+        $this->coreParametersHelper->expects($this->once())->method('get')
             ->with('max_size')
             ->willReturn('2MB');
         $cacheProvider               = new CacheProvider($this->coreParametersHelper, $this->createStub(ContainerInterface::class));
@@ -165,7 +165,7 @@ final class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->method('isAnonymous')
             ->willReturn(true);
 
-        $this->ipLookupHelper->method('isRequestTrackable')->willReturn(true);
+        $this->ipLookupHelper->expects($this->once())->method('isRequestTrackable')->willReturn(true);
 
         $request = $this->createMock(Request::class);
 

@@ -38,7 +38,7 @@ final class ConnectwiseIntegrationTest extends AbstractIntegrationTestCase
             ->method('isAuthorized')
             ->willReturn(true);
 
-        $integration
+        $integration->expects($this->once())
             ->method('getApiHelper')
             ->willReturn($apiHelper);
 
@@ -86,7 +86,7 @@ final class ConnectwiseIntegrationTest extends AbstractIntegrationTestCase
             ->method('isAuthorized')
             ->willReturn(true);
 
-        $integration
+        $integration->expects($this->once())
             ->method('getApiHelper')
             ->willReturn($apiHelper);
 

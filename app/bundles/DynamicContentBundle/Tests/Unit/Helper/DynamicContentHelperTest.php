@@ -168,10 +168,10 @@ final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockModel->expects($this->once())->method('getEntities')
             ->willReturn([$slot]);
 
-        $this->mockModel->method('getTranslatedEntity')
+        $this->mockModel->expects($this->once())->method('getTranslatedEntity')
             ->willReturn([$slot, $slot]);
 
-        $this->leadModel->method('getEntity')
+        $this->leadModel->expects($this->once())->method('getEntity')
             ->with(123)
             ->willReturn($contact);
 
@@ -221,11 +221,11 @@ final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockModel->expects($this->once())->method('getTranslatedEntity')
             ->willReturn([$slot, $slot]);
 
-        $this->leadModel->method('getEntity')
+        $this->leadModel->expects($this->once())->method('getEntity')
             ->with(123)
             ->willReturn($contact);
 
-        $this->mockDispatcher->method('hasListeners')->willReturn(false);
+        $this->mockDispatcher->expects($this->once())->method('hasListeners')->willReturn(false);
         $matcher = $this->once();
         $this->mockDispatcher->expects($matcher)
             ->method('dispatch')
@@ -262,14 +262,14 @@ final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockModel->expects($this->once())->method('getEntities')
             ->willReturn([$slot]);
 
-        $this->mockModel->method('getTranslatedEntity')
+        $this->mockModel->expects($this->once())->method('getTranslatedEntity')
             ->willReturn([$slot, $slot]);
 
-        $this->leadModel->method('getEntity')
+        $this->leadModel->expects($this->once())->method('getEntity')
             ->with(123)
             ->willReturn($contact);
 
-        $this->mockDispatcher->method('hasListeners')->willReturn(false);
+        $this->mockDispatcher->expects($this->once())->method('hasListeners')->willReturn(false);
         $this->mockDispatcher->expects($this->never())->method('dispatch');
 
         $this->assertSame('', $this->helper->getDynamicContentSlotForLead($slotName, $contact));

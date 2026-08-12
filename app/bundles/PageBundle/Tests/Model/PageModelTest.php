@@ -178,14 +178,14 @@ final class PageModelTest extends PageTestAbstract
         $pageModel   = $this->getPageModel();
 
         $ipAddress = $this->createMock(IpAddress::class);
-        $ipAddress->method('isTrackable')->willReturn(true);
+        $ipAddress->expects($this->once())->method('isTrackable')->willReturn(true);
 
-        $this->security->method('isAnonymous')->willReturn(true);
-        $this->ipLookupHelper->method('getIpAddress')->willReturn($ipAddress);
-        $this->companyModel->method('fetchCompanyFields')->willReturn([]);
+        $this->security->expects($this->once())->method('isAnonymous')->willReturn(true);
+        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')->willReturn($ipAddress);
+        $this->companyModel->expects($this->once())->method('fetchCompanyFields')->willReturn([]);
 
         $redirect = $this->createMock(Redirect::class);
-        $redirect->method('getUrl')->willReturn($redirectUrl);
+        $redirect->expects($this->once())->method('getUrl')->willReturn($redirectUrl);
 
         $this->contactRequestHelper->expects($this->once())
             ->method('getContactFromQuery')

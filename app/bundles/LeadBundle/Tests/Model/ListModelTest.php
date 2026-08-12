@@ -52,11 +52,11 @@ final class ListModelTest extends TestCase
     protected function setUp(): void
     {
         $eventDispatcherInterfaceMock = $this->createMock(EventDispatcherInterface::class);
-        $eventDispatcherInterfaceMock->method('dispatch');
+        $eventDispatcherInterfaceMock->expects($this->once())->method('dispatch');
         $this->leadListRepositoryMock = $this->createMock(LeadListRepository::class);
 
         $entityManagerMock = $this->createMock(EntityManager::class);
-        $entityManagerMock->method('getRepository')
+        $entityManagerMock->expects($this->once())->method('getRepository')
             ->willReturn($this->leadListRepositoryMock);
         $this->contactSegmentServiceMock       = $this->createMock(ContactSegmentService::class);
         $this->segmentCountCacheHelper         = $this->createMock(SegmentCountCacheHelper::class);

@@ -34,11 +34,11 @@ final class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
         ];
 
         $sms = $this->createMock(Sms::class);
-        $sms->method('getId')
+        $sms->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(2);
 
         $stat = new Stat();
@@ -85,11 +85,11 @@ final class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
         ];
 
         $sms = $this->createMock(Sms::class);
-        $sms->method('getId')
+        $sms->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(2);
 
         $stat = new Stat();
@@ -119,7 +119,7 @@ final class TrackingSubscriberTest extends \PHPUnit\Framework\TestCase
         ];
 
         $sms = $this->createMock(Sms::class);
-        $sms->method('getId')
+        $sms->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $stat = new Stat();

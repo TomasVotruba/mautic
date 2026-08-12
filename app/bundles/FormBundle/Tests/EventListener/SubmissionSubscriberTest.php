@@ -45,7 +45,7 @@ final class SubmissionSubscriberTest extends TestCase
     public function testIgnoresSubmissionWithoutForm(): void
     {
         $submission = $this->createMock(Submission::class);
-        $submission->method('getForm')->willReturn(null);
+        $submission->expects($this->once())->method('getForm')->willReturn(null);
 
         $repository = $this->createMock(FormRepository::class);
         $repository->expects($this->never())->method('incrementSubmissionCount');
@@ -59,10 +59,10 @@ final class SubmissionSubscriberTest extends TestCase
     private function submissionForForm(int $formId): Submission
     {
         $form = $this->createMock(Form::class);
-        $form->method('getId')->willReturn($formId);
+        $form->expects($this->once())->method('getId')->willReturn($formId);
 
         $submission = $this->createMock(Submission::class);
-        $submission->method('getForm')->willReturn($form);
+        $submission->expects($this->once())->method('getForm')->willReturn($form);
 
         return $submission;
     }
@@ -70,7 +70,7 @@ final class SubmissionSubscriberTest extends TestCase
     private function args(object $entity): LifecycleEventArgs
     {
         $args = $this->createMock(LifecycleEventArgs::class);
-        $args->method('getObject')->willReturn($entity);
+        $args->expects($this->once())->method('getObject')->willReturn($entity);
 
         return $args;
     }

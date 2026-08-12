@@ -66,7 +66,7 @@ final class UpdateHelperTest extends TestCase
     protected function setUp(): void
     {
         $pathsHelper = $this->createMock(PathsHelper::class);
-        $pathsHelper->method('getSystemPath')
+        $pathsHelper->expects($this->once())->method('getSystemPath')
             ->with('cache')
             ->willReturn(__DIR__.'/resource/update/tmp');
 
@@ -77,7 +77,7 @@ final class UpdateHelperTest extends TestCase
 
         $this->response   = $this->createMock(ResponseInterface::class);
         $this->streamBody = $this->createMock(StreamInterface::class);
-        $this->response
+        $this->response->expects($this->once())
             ->method('getBody')
             ->willReturn($this->streamBody);
         $this->client = $this->createMock(Client::class);
@@ -920,7 +920,7 @@ final class UpdateHelperTest extends TestCase
 
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
-        $this->coreParametersHelper
+        $this->coreParametersHelper->expects($this->once())
             ->method('get')
             ->with('update_stability')
             ->willReturn('stable');

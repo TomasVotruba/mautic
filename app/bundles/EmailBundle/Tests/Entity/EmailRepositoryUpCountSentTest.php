@@ -35,7 +35,7 @@ final class EmailRepositoryUpCountSentTest extends \PHPUnit\Framework\TestCase
 
     public function testUpCountSentWithNoIncrease(): void
     {
-        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
         $this->queryBuilderMock->expects($this->never())
             ->method('update');
 
@@ -44,7 +44,7 @@ final class EmailRepositoryUpCountSentTest extends \PHPUnit\Framework\TestCase
 
     public function testUpCountSentWithId(): void
     {
-        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
 
         $this->connection
             ->expects($this->exactly(1))
@@ -65,7 +65,7 @@ final class EmailRepositoryUpCountSentTest extends \PHPUnit\Framework\TestCase
 
     public function testUpCountWithVariant(): void
     {
-        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
 
         $this->connection
             ->expects($this->exactly(1))
@@ -82,7 +82,7 @@ final class EmailRepositoryUpCountSentTest extends \PHPUnit\Framework\TestCase
 
     public function testUpCountWithTwoErrors(): void
     {
-        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
 
         $this->connection
             ->expects($this->exactly(3))
@@ -98,7 +98,7 @@ final class EmailRepositoryUpCountSentTest extends \PHPUnit\Framework\TestCase
 
     public function testUpCountWithFourErrors(): void
     {
-        $this->connection->method('createQueryBuilder')->willReturn($this->queryBuilder);
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilder);
         $this->connection
             ->expects($this->exactly(3))
             ->method('executeStatement')

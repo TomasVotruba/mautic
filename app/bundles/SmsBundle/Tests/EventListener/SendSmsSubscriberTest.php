@@ -33,7 +33,7 @@ final class SendSmsSubscriberTest extends TestCase
 
     public function testDncFilterNoEntriesDoesNotRemoveContacts(): void
     {
-        $this->dncRepoMock->method('getChannelList')
+        $this->dncRepoMock->expects($this->once())->method('getChannelList')
             ->willReturn([]);
 
         $event = new DncEvent($contacts = [
@@ -48,7 +48,7 @@ final class SendSmsSubscriberTest extends TestCase
 
     public function testDncFilterContactWithDncIsRemoved(): void
     {
-        $this->dncRepoMock->method('getChannelList')
+        $this->dncRepoMock->expects($this->once())->method('getChannelList')
             ->willReturn($contactToRemove = [
                 1 => new Lead(),
             ]);
@@ -65,7 +65,7 @@ final class SendSmsSubscriberTest extends TestCase
 
     public function testQueueFilterNoEntriesDoesNotRemoveContacts(): void
     {
-        $this->mqmMock->method('processFrequencyRules')
+        $this->mqmMock->expects($this->once())->method('processFrequencyRules')
             ->willReturn([]);
 
         $event = new QueueEvent($contacts = [
@@ -83,7 +83,7 @@ final class SendSmsSubscriberTest extends TestCase
         $lead1 = new Lead()->setId(1);
         $lead2 = new Lead()->setId(2);
 
-        $this->mqmMock->method('processFrequencyRules')
+        $this->mqmMock->expects($this->once())->method('processFrequencyRules')
             ->willReturn([$lead1->getId()]);
 
         $event = new QueueEvent([2 => $lead2, 1 => $lead1], []);

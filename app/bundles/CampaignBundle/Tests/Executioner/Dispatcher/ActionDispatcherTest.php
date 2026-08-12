@@ -57,18 +57,18 @@ final class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
         $log1->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn($lead1);
-        $log1->method('setIsScheduled')
+        $log1->expects($this->once())->method('setIsScheduled')
             ->willReturn($log1);
-        $log1->method('getEvent')
+        $log1->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $log2 = $this->createMock(LeadEventLog::class);
         $log2->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn($lead2);
-        $log2->method('getMetadata')
+        $log2->expects($this->once())->method('getMetadata')
             ->willReturn([]);
-        $log2->method('getEvent')
+        $log2->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $logs = new ArrayCollection(
@@ -159,18 +159,18 @@ final class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
         $log1->expects($this->once())
             ->method('getLead')
             ->willReturn($lead1);
-        $log1->method('setIsScheduled')
+        $log1->expects($this->once())->method('setIsScheduled')
             ->willReturn($log1);
-        $log1->method('getEvent')
+        $log1->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $log2 = $this->createMock(LeadEventLog::class);
         $log2->expects($this->once())
             ->method('getLead')
             ->willReturn($lead2);
-        $log2->method('getMetadata')
+        $log2->expects($this->once())->method('getMetadata')
             ->willReturn([]);
-        $log2->method('getEvent')
+        $log2->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $logs = new ArrayCollection(
@@ -220,18 +220,18 @@ final class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
         $log1->expects($this->once())
             ->method('getLead')
             ->willReturn($lead1);
-        $log1->method('setIsScheduled')
+        $log1->expects($this->once())->method('setIsScheduled')
             ->willReturn($log1);
-        $log1->method('getEvent')
+        $log1->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $log2 = $this->createMock(LeadEventLog::class);
         $log2->expects($this->once())
             ->method('getLead')
             ->willReturn($lead2);
-        $log2->method('getMetadata')
+        $log2->expects($this->once())->method('getMetadata')
             ->willReturn([]);
-        $log2->method('getEvent')
+        $log2->expects($this->once())->method('getEvent')
             ->willReturn($event);
 
         $logs = new ArrayCollection(

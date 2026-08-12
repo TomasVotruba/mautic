@@ -46,9 +46,9 @@ final class AjaxControllerTest extends AbstractMauticTestCase
         $request    = new Request([], [], [], [], [], [], '{"vendor":"mautic","package":"test-plugin-bundle"}');
         $controller = $this->generateController(false);
 
-        $this->marketplaceConfig->method('marketplaceIsEnabled')->willReturn(true);
-        $this->marketplaceConfig->method('isComposerEnabled')->willReturn(true);
-        $this->security
+        $this->marketplaceConfig->expects($this->once())->method('marketplaceIsEnabled')->willReturn(true);
+        $this->marketplaceConfig->expects($this->once())->method('isComposerEnabled')->willReturn(true);
+        $this->security->expects($this->once())
             ->method('isGranted')
             ->with(MarketplacePermissions::CAN_INSTALL_PACKAGES)
             ->willReturn(true);
@@ -64,9 +64,9 @@ final class AjaxControllerTest extends AbstractMauticTestCase
         $request    = new Request([], [], [], [], [], [], '{"vendor":"mautic","package":"test-plugin-bundle"}');
         $controller = $this->generateController(true);
 
-        $this->marketplaceConfig->method('marketplaceIsEnabled')->willReturn(true);
-        $this->marketplaceConfig->method('isComposerEnabled')->willReturn(true);
-        $this->security
+        $this->marketplaceConfig->expects($this->once())->method('marketplaceIsEnabled')->willReturn(true);
+        $this->marketplaceConfig->expects($this->once())->method('isComposerEnabled')->willReturn(true);
+        $this->security->expects($this->once())
             ->method('isGranted')
             ->with(MarketplacePermissions::CAN_REMOVE_PACKAGES)
             ->willReturn(true);
@@ -80,12 +80,12 @@ final class AjaxControllerTest extends AbstractMauticTestCase
     private function generateController(bool $isPackageInstalled): AjaxController
     {
         $composer = $this->createMock(ComposerHelper::class);
-        $composer->method('install')->willReturn(new ConsoleOutput(0, 'OK'));
-        $composer->method('remove')->willReturn(new ConsoleOutput(0, 'OK'));
-        $composer->method('isInstalled')->willReturn($isPackageInstalled);
+        $composer->expects($this->once())->method('install')->willReturn(new ConsoleOutput(0, 'OK'));
+        $composer->expects($this->once())->method('remove')->willReturn(new ConsoleOutput(0, 'OK'));
+        $composer->expects($this->once())->method('isInstalled')->willReturn($isPackageInstalled);
 
         $cacheHelper = $this->createMock(CacheHelper::class);
-        $cacheHelper->method('clearSymfonyCache')->willReturn(0);
+        $cacheHelper->expects($this->once())->method('clearSymfonyCache')->willReturn(0);
         $this->requestStack      = $this->createMock(RequestStack::class);
         $this->security          = $this->createMock(CorePermissions::class);
         $this->marketplaceConfig = $this->createMock(Config::class);

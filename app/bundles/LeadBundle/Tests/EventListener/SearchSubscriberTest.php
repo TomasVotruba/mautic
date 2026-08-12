@@ -44,7 +44,7 @@ final class SearchSubscriberTest extends TestCase
         $twig              = $this->createStub(Environment::class);
         $globalSearch      = $this->createStub(GlobalSearch::class);
 
-        $contactRepository->method('applySearchQueryRelationship')
+        $contactRepository->expects($this->once())->method('applySearchQueryRelationship')
             ->willReturnCallback(
                 function (QueryBuilder $q, array $tables, $innerJoinTables, $whereExpression = null, $having = null): void {
                     // the following code is taken from LeadRepository class
@@ -76,16 +76,16 @@ final class SearchSubscriberTest extends TestCase
         $connection->method('getExpressionBuilder')
             ->willReturn(new ExpressionBuilder($connection));
 
-        $mockPlatform->method('getName')
+        $mockPlatform->expects($this->once())->method('getName')
             ->willReturn('mysql');
 
-        $contactRepository->method('getEntity')
+        $contactRepository->expects($this->once())->method('getEntity')
             ->willReturn(null);
 
-        $contactRepository->method('createQueryBuilder')
+        $contactRepository->expects($this->once())->method('createQueryBuilder')
             ->willReturn(new QueryBuilder($connection));
 
-        $translator
+        $translator->expects($this->once())
             ->method('trans')
             ->willReturnCallback(function (string $key): ?string {
                 return preg_replace('/^.*\.([^\.]*)$/', '\1', $key); // return command name

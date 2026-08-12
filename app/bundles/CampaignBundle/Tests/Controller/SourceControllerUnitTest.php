@@ -174,13 +174,13 @@ final class SourceControllerUnitTest extends TestCase
 
         $controller->autowireSourceController($campaignModel);
 
-        $controller->method('isFormCancelled')
+        $controller->expects($this->once())->method('isFormCancelled')
             ->willReturn(false);
-        $controller->method('isFormValid')
+        $controller->expects($this->once())->method('isFormValid')
             ->willReturn(true);
-        $controller->method('renderView')
+        $controller->expects($this->once())->method('renderView')
             ->willReturn('<div>rendered</div>');
-        $controller->method('generateUrl')
+        $controller->expects($this->once())->method('generateUrl')
             ->willReturnCallback(static function (string $route, array $parameters = []): string {
                 if ('new' === ($parameters['objectAction'] ?? null)) {
                     return '/campaign/source/new';
@@ -194,7 +194,7 @@ final class SourceControllerUnitTest extends TestCase
             });
 
         $security = $this->createMock(CorePermissions::class);
-        $security->method('isGranted')
+        $security->expects($this->once())->method('isGranted')
             ->willReturn(true);
 
         ReflectionHelper::setValue($controller, 'formFactory', $formFactory);

@@ -171,7 +171,7 @@ final class MailboxTest extends \PHPUnit\Framework\TestCase
     public function testIsConnectedReturnsFalseOnValueError(): void
     {
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
-        $parametersHelper->method('get')->willReturn(
+        $parametersHelper->expects($this->once())->method('get')->willReturn(
             [
                 'general' => [
                     'host'     => 'localhost',

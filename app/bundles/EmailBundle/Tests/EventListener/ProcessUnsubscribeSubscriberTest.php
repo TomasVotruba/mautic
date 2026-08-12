@@ -24,8 +24,8 @@ final class ProcessUnsubscribeSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnEmailSend(): void
     {
         $helper = $this->createMock(MailHelper::class);
-        $helper->method('generateUnsubscribeEmail')->willReturn('unsubscribe@example.com');
-        $helper->method('getCustomHeaders')->willReturn([
+        $helper->expects($this->once())->method('generateUnsubscribeEmail')->willReturn('unsubscribe@example.com');
+        $helper->expects($this->once())->method('getCustomHeaders')->willReturn([
             'List-Unsubscribe-Post' => 'List-Unsubscribe=One-Click',
             'List-Unsubscribe'      => '<https://example.com/email/unsubscribe/65cf64d8cb367903848157>',
         ]);

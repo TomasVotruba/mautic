@@ -87,16 +87,16 @@ final class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
             ->enableOriginalClone()
             ->onlyMethods(['getCustomFieldList', 'getBaseColumns', 'getClassName', 'getFieldGroups'])
             ->getMock();
-        $mockWithTrait->method('getCustomFieldList')
+        $mockWithTrait->expects($this->once())->method('getCustomFieldList')
             ->willReturn([$this->fields, $this->fixedFields]);
 
-        $mockWithTrait->method('getBaseColumns')
+        $mockWithTrait->expects($this->once())->method('getBaseColumns')
             ->willReturn($this->baseColumns);
 
-        $mockWithTrait->method('getClassName')
+        $mockWithTrait->expects($this->once())->method('getClassName')
             ->willReturn(Lead::class);
 
-        $mockWithTrait->method('getFieldGroups')
+        $mockWithTrait->expects($this->once())->method('getFieldGroups')
             ->willReturn($this->fieldGroups);
 
         $reflectedMockTrait = new \ReflectionObject($mockWithTrait);
@@ -153,16 +153,16 @@ final class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
             ->onlyMethods(['getCustomFieldList', 'getBaseColumns', 'getClassName', 'getFieldGroups'])
             ->getMock();
 
-        $mockWithTrait->method('getCustomFieldList')
+        $mockWithTrait->expects($this->once())->method('getCustomFieldList')
             ->willReturn([$this->fields, $this->fixedFields]);
 
-        $mockWithTrait->method('getBaseColumns')
+        $mockWithTrait->expects($this->once())->method('getBaseColumns')
             ->willReturn($this->baseColumns);
 
-        $mockWithTrait->method('getClassName')
+        $mockWithTrait->expects($this->once())->method('getClassName')
             ->willReturn(Lead::class);
 
-        $mockWithTrait->method('getFieldGroups')
+        $mockWithTrait->expects($this->once())->method('getFieldGroups')
             ->willReturn($this->fieldGroups);
 
         $reflectedMockTrait = new \ReflectionObject($mockWithTrait);

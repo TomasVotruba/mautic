@@ -64,7 +64,7 @@ final class PluginAuthenticatorTest extends TestCase
         // If there will be an issue with this, then please replace with proper class name.
         // I'm not 100% sure the SSO will return a User instance.
         $authenticatedUser = $this->createMock(User::class);
-        $authenticatedUser->method('getUserIdentifier')->willReturn($userIdentifier);
+        $authenticatedUser->expects($this->once())->method('getUserIdentifier')->willReturn($userIdentifier);
         $returnedPluginToken = new PluginToken($firewallName, $authenticatedIntegration);
         $returnedPluginToken->setUser($authenticatedUser);
         $returnedAuthEvent = clone $authEvent;
@@ -138,7 +138,7 @@ final class PluginAuthenticatorTest extends TestCase
         // If there will be an issue with this, then please replace with proper class name.
         // I'm not 100% sure the SSO will return a User instance.
         $authenticatedUser = $this->createMock(User::class);
-        $authenticatedUser->method('getUserIdentifier')->willReturn($userIdentifier);
+        $authenticatedUser->expects($this->once())->method('getUserIdentifier')->willReturn($userIdentifier);
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($this->once())
@@ -198,8 +198,8 @@ final class PluginAuthenticatorTest extends TestCase
         $userProvider = $this->createStub(UserProviderInterface::class);
 
         $passportUser = $this->createMock(User::class);
-        $passportUser->method('getPassword')->willReturn($encodedPassword);
-        $passportUser->method('getRoles')->willReturn($roles);
+        $passportUser->expects($this->once())->method('getPassword')->willReturn($encodedPassword);
+        $passportUser->expects($this->once())->method('getRoles')->willReturn($roles);
 
         $userBadge = new UserBadge('', fn (): UserInterface => $passportUser);
 

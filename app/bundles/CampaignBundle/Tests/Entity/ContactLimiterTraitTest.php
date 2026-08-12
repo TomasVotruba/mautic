@@ -34,11 +34,11 @@ final class ContactLimiterTraitTest extends \PHPUnit\Framework\TestCase
         $this->connection = $this->getMockedConnection();
 
         $expr = new ExpressionBuilder($this->connection);
-        $this->connection->method('getExpressionBuilder')
+        $this->connection->expects($this->once())->method('getExpressionBuilder')
           ->willReturn($expr);
 
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->entityManager->method('getExpressionBuilder')
+        $this->entityManager->expects($this->once())->method('getExpressionBuilder')
             ->willReturn(new Expr());
     }
 

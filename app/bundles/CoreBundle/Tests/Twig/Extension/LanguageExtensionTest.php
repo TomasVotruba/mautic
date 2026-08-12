@@ -14,7 +14,7 @@ final class LanguageExtensionTest extends TestCase
     public function testGetLanguageNameReturnsEnglishForEn(): void
     {
         $security = $this->createMock(Security::class);
-        $security->method('getUser')->willReturn(null);
+        $security->expects($this->once())->method('getUser')->willReturn(null);
         $extension = new LanguageExtension($security);
         $this->assertSame('English', $extension->getLanguageName('en'));
     }
@@ -22,7 +22,7 @@ final class LanguageExtensionTest extends TestCase
     public function testGetLanguageNameReturnsCodeOnException(): void
     {
         $security = $this->createMock(Security::class);
-        $security->method('getUser')->willReturn(null);
+        $security->expects($this->once())->method('getUser')->willReturn(null);
         $extension = new LanguageExtension($security);
         $this->assertSame('xx', $extension->getLanguageName('xx'));
     }
@@ -30,9 +30,9 @@ final class LanguageExtensionTest extends TestCase
     public function testGetLanguageNameUsesUserLocale(): void
     {
         $user = $this->createMock(User::class);
-        $user->method('getLocale')->willReturn('fr');
+        $user->expects($this->once())->method('getLocale')->willReturn('fr');
         $security = $this->createMock(Security::class);
-        $security->method('getUser')->willReturn($user);
+        $security->expects($this->once())->method('getUser')->willReturn($user);
         $extension = new LanguageExtension($security);
         $this->assertSame('anglais', $extension->getLanguageName('en'));
     }

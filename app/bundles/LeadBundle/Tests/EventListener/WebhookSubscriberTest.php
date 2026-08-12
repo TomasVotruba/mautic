@@ -204,9 +204,9 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $contactEntity = new Lead();
         $contactEntity->setId($contact['id']);
 
-        $changeEvent->method('getLeads')->willReturn([$contact]);
-        $changeEvent->method('getLead')->willReturn(null);
-        $changeEvent->method('wasAdded')->willReturn(true);
+        $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contact]);
+        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadRepository = $this->createMock(LeadRepository::class);
         $leadRepository->expects($this->once())
@@ -243,9 +243,9 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $contactEntity = new Lead();
 
-        $changeEvent->method('getLeads')->willReturn([$contactEntity]);
-        $changeEvent->method('getLead')->willReturn(null);
-        $changeEvent->method('wasAdded')->willReturn(true);
+        $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contactEntity]);
+        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadModel      = $this->createMock(LeadModel::class);
         $webhookModel   = $this->createMock(WebhookModel::class);
@@ -281,9 +281,9 @@ final class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
         $contactEntity = new Lead();
         $contactEntity->setId($contact['id']);
 
-        $changeEvent->method('getLeads')->willReturn([$contact]);
-        $changeEvent->method('getLead')->willReturn(null);
-        $changeEvent->method('wasAdded')->willReturn(true);
+        $changeEvent->expects($this->once())->method('getLeads')->willReturn([$contact]);
+        $changeEvent->expects($this->once())->method('getLead')->willReturn(null);
+        $changeEvent->expects($this->once())->method('wasAdded')->willReturn(true);
 
         $leadModel      = $this->createMock(LeadModel::class);
         $webhookModel   = $this->createMock(WebhookModel::class);

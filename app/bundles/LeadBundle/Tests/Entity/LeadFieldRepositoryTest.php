@@ -49,9 +49,9 @@ final class LeadFieldRepositoryTest extends TestCase
         $statementCompareResult = $this->createMock(Result::class);
         $exprCompare            = $this->createMock(ExpressionBuilder::class);
 
-        $this->entityManager->method('getConnection')->willReturn($this->connection);
-        $builderAlias->method('expr')->willReturn(new ExpressionBuilder($this->connection));
-        $builderCompare->method('expr')->willReturn($exprCompare);
+        $this->entityManager->expects($this->once())->method('getConnection')->willReturn($this->connection);
+        $builderAlias->expects($this->once())->method('expr')->willReturn(new ExpressionBuilder($this->connection));
+        $builderCompare->expects($this->once())->method('expr')->willReturn($exprCompare);
 
         $this->connection->expects($this->exactly(2))
             ->method('createQueryBuilder')
@@ -299,7 +299,7 @@ final class LeadFieldRepositoryTest extends TestCase
             ->with('SELECT f FROM  f INDEX BY f.id WHERE f.isListable = 1 AND f.isPublished = 1 ORDER BY f.object ASC')
             ->willReturn($query);
 
-        $query->method('execute')->willReturn([]);
+        $query->expects($this->once())->method('execute')->willReturn([]);
 
         $this->repository->getListablePublishedFields();
     }
@@ -313,7 +313,7 @@ final class LeadFieldRepositoryTest extends TestCase
             ->willReturn($query);
 
         $result = [];
-        $query->method('execute')->willReturn($result);
+        $query->expects($this->once())->method('execute')->willReturn($result);
 
         $this->assertSame($result, $this->repository->getFieldSchemaData('lead'));
     }
@@ -322,7 +322,7 @@ final class LeadFieldRepositoryTest extends TestCase
     {
         $queryBuilder = $this->createMock(OrmQueryBuilder::class);
 
-        $this->entityManager->method('createQueryBuilder')
+        $this->entityManager->expects($this->once())->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
         $queryBuilder->expects($this->once())
@@ -387,11 +387,11 @@ final class LeadFieldRepositoryTest extends TestCase
             ->getMock();
 
         $ormBuilder = new OrmQueryBuilder($this->entityManager);
-        $this->entityManager->method('createQueryBuilder')->willReturn($ormBuilder);
-        $this->entityManager->method('createQuery')->willReturn($query);
-        $query->method('setParameters')->willReturnSelf();
-        $query->method('setFirstResult')->willReturnSelf();
-        $query->method('setMaxResults')->willReturnSelf();
+        $this->entityManager->expects($this->once())->method('createQueryBuilder')->willReturn($ormBuilder);
+        $this->entityManager->expects($this->once())->method('createQuery')->willReturn($query);
+        $query->expects($this->once())->method('setParameters')->willReturnSelf();
+        $query->expects($this->once())->method('setFirstResult')->willReturnSelf();
+        $query->expects($this->once())->method('setMaxResults')->willReturnSelf();
 
         return $query;
     }

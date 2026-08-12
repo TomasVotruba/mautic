@@ -39,7 +39,7 @@ final class InstallNewFilesStepTest extends AbstractStepTestCase
         $this->updateHelper = $this->createMock(UpdateHelper::class);
         $this->pathsHelper  = $this->createMock(PathsHelper::class);
 
-        $this->translator->method('trans')->willReturn('some translation');
+        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
 
         $this->step = new InstallNewFilesStep($this->translator, $this->updateHelper, $this->pathsHelper);
     }

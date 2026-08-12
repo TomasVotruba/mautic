@@ -211,7 +211,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->setSecurity($this->leadModel);
 
-        $this->companyModelMock->method('getCompanyLeadRepository')->willReturn($this->companyLeadRepositoryMock);
+        $this->companyModelMock->expects($this->once())->method('getCompanyLeadRepository')->willReturn($this->companyLeadRepositoryMock);
     }
 
     public function testIpLookupDoesNotAddCompanyIfConfiguredSo(): void
@@ -260,8 +260,8 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->setupFieldModelForIpLookupTest();
-        $this->companyLeadRepositoryMock->method('getEntitiesByLead')->willReturn([]);
-        $this->companyModelMock
+        $this->companyLeadRepositoryMock->expects($this->once())->method('getEntitiesByLead')->willReturn([]);
+        $this->companyModelMock->expects($this->once())
             ->method('fetchCompanyFields')
             ->willReturn([]);
 
@@ -287,7 +287,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->coreParametersHelperMock->expects($this->once())->method('get')->with('anonymize_ip', false)->willReturn(false);
         $this->setupFieldModelForIpLookupTest();
-        $this->companyLeadRepositoryMock->method('getEntitiesByLead')->willReturn([]);
+        $this->companyLeadRepositoryMock->expects($this->once())->method('getEntitiesByLead')->willReturn([]);
 
         $this->leadModel->saveEntity($entity);
 
@@ -440,7 +440,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
         $lead->setId(1);
         $lead->setFields(['all' => 'sth']);
         $stageMock = $this->createMock(Stage::class);
-        $stageMock
+        $stageMock->expects($this->once())
             ->method('getId')
             ->willReturn(1);
         $data = ['stage' => $stageMock];
@@ -549,10 +549,10 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
         $fields = ['custom_html_field' => 'custom_html_field'];
         $data   = ['custom_html_field' => '<html><head></head><body>Test</body></html>'];
 
-        $this->userHelperMock->method('getUser')
+        $this->userHelperMock->expects($this->once())->method('getUser')
             ->willReturn(new User());
 
-        $this->fieldListMock->method('getFieldList')
+        $this->fieldListMock->expects($this->once())->method('getFieldList')
             ->willReturn([$fields]);
 
         $this->fieldModelMock->expects($this->atLeastOnce())
@@ -573,7 +573,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
 
     private function mockGetLeadRepository(): void
     {
-        $this->entityManagerMock
+        $this->entityManagerMock->expects($this->once())
             ->method('getRepository')
             ->willReturnMap(
                 [
@@ -700,9 +700,9 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
     private function setSecurity(LeadModel $companyModel): void
     {
         $security = $this->createMock(CorePermissions::class);
-        $security->method('hasEntityAccess')
+        $security->expects($this->once())->method('hasEntityAccess')
             ->willReturn(true);
-        $security->method('isGranted')
+        $security->expects($this->once())->method('isGranted')
             ->willReturn(true);
 
         $reflection = new \ReflectionClass($companyModel);
@@ -717,7 +717,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         /** @var UserHelper&MockObject $mockUserModel */
         $mockUserModel = $this->createMock(UserHelper::class);
-        $mockUserModel->method('getUser')->willReturn(new User());
+        $mockUserModel->expects($this->once())->method('getUser')->willReturn(new User());
 
         return $mockUserModel;
     }
@@ -812,22 +812,22 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
         $fields = ['email' => 'email'];
         $data   = ['email' => $emailValue];
 
-        $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
+        $this->fieldsWithUniqueIdentifier->expects($this->once())->method('getFieldsWithUniqueIdentifier')
             ->willReturn(['email' => 'Email']);
-        $this->fieldModelMock->method('getFieldListWithProperties')
+        $this->fieldModelMock->expects($this->once())->method('getFieldListWithProperties')
             ->willReturn([]);
 
-        $this->userHelperMock->method('getUser')
+        $this->userHelperMock->expects($this->once())->method('getUser')
             ->willReturn(new User());
 
-        $this->fieldListMock->method('getFieldList')
+        $this->fieldListMock->expects($this->once())->method('getFieldList')
             ->willReturn([]);
 
         $this->fieldModelMock->expects($this->atLeastOnce())
             ->method('getEntities')
             ->willReturn($this->getFieldPaginatorFake());
 
-        $this->companyModelMock->method('extractCompanyDataFromImport')
+        $this->companyModelMock->expects($this->once())->method('extractCompanyDataFromImport')
             ->willReturn([[], []]);
 
         if ($shouldValidate) {
@@ -889,7 +889,7 @@ final class LeadModelTest extends \PHPUnit\Framework\TestCase
      */
     private function setupFieldModelForIpLookupTest(): void
     {
-        $this->fieldModelMock->method('getFieldListWithProperties')->willReturn([]);
-        $this->fieldListMock->method('getFieldList')->willReturn([]);
+        $this->fieldModelMock->expects($this->once())->method('getFieldListWithProperties')->willReturn([]);
+        $this->fieldListMock->expects($this->once())->method('getFieldList')->willReturn([]);
     }
 }

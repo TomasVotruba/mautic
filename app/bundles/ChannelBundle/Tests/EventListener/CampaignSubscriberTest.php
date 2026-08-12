@@ -43,7 +43,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $messageModel = $this->createMock(MessageModel::class);
 
-        $messageModel->method('getChannels')
+        $messageModel->expects($this->once())->method('getChannels')
             ->willReturn(
                 [
                     'email' => [
@@ -69,7 +69,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $messageModel->method('getMessageChannels')
+        $messageModel->expects($this->once())->method('getMessageChannels')
             ->willReturn(
                 [
                     'email' => [
@@ -105,7 +105,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $eventCollector = $this->createMock(EventCollector::class);
 
-        $eventCollector->method('getEventConfig')
+        $eventCollector->expects($this->once())->method('getEventConfig')
             ->willReturnCallback(
                 function (Event $event) {
                     switch ($event->getType()) {
@@ -245,7 +245,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $event = $this->getMockBuilder(Event::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $event->method('getId')
+        $event->expects($this->once())->method('getId')
             ->willReturn(1);
         $event->setEventType(Event::TYPE_ACTION);
         $event->setType('message.send');
@@ -278,7 +278,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             ]
         );
         $campaign = $this->createMock(Campaign::class);
-        $campaign->method('getId')
+        $campaign->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $event->setCampaign($campaign);
@@ -289,7 +289,7 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     private function getLogs(): ArrayCollection
     {
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(1);
         $lead->expects($this->once())
             ->method('getChannelRules')
@@ -307,13 +307,13 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $log = $this->getMockBuilder(LeadEventLog::class)
             ->onlyMethods(['getLead', 'getId'])
             ->getMock();
-        $log->method('getLead')
+        $log->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log->method('getId')
+        $log->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $lead2 = $this->createMock(Lead::class);
-        $lead2->method('getId')
+        $lead2->expects($this->once())->method('getId')
             ->willReturn(2);
         $lead2->expects($this->once())
             ->method('getChannelRules')
@@ -331,9 +331,9 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $log2 = $this->getMockBuilder(LeadEventLog::class)
             ->onlyMethods(['getLead', 'getId'])
             ->getMock();
-        $log2->method('getLead')
+        $log2->expects($this->once())->method('getLead')
             ->willReturn($lead2);
-        $log2->method('getId')
+        $log2->expects($this->once())->method('getId')
             ->willReturn(2);
 
         return new ArrayCollection([1 => $log, 2 => $log2]);

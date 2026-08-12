@@ -24,7 +24,7 @@ final class CoreParametersHelperTest extends TestCase
 
     public function testAllReturnsResolvedParameters(): void
     {
-        $this->container->method('hasParameter')
+        $this->container->expects($this->once())->method('hasParameter')
             ->willReturnCallback(
                 fn (string $key): bool => 'mautic.cache_path' === $key
             );

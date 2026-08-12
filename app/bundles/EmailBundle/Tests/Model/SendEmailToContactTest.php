@@ -132,17 +132,17 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->trackableModel       = $this->createStub(TrackableModel::class);
         $this->redirectModel        = $this->createStub(RedirectModel::class);
 
-        $this->sMimeHelper->method('signContent')
+        $this->sMimeHelper->expects($this->once())->method('signContent')
             ->willReturnCallback(fn (MauticMessage $message): MauticMessage => $message);
 
-        $this->fromEmaiHelper->method('getFrom')
+        $this->fromEmaiHelper->expects($this->once())->method('getFrom')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
     }
 
     #[TestDox('Tests that all contacts are temporarily failed if an Email entity happens to be incorrectly configured')]
     public function testContactsAreFailedIfSettingEmailEntityFails(): void
     {
-        $this->mailHelper->method('setEmail')
+        $this->mailHelper->expects($this->once())->method('setEmail')
             ->willReturn(false);
 
         // This should not be called because contact emails are just fine; the problem is with the email entity
@@ -173,22 +173,22 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
     public function testExceptionIsThrownIfEmailIsSentToBadContact(): void
     {
         $emailMock = $this->createMock(Email::class);
-        $emailMock
+        $emailMock->expects($this->once())
             ->method('getId')
             ->willReturn(1);
 
-        $this->mailHelper->method('setEmail')
+        $this->mailHelper->expects($this->once())->method('setEmail')
             ->willReturn(true);
-        $this->mailHelper->method('addTo')
+        $this->mailHelper->expects($this->once())->method('addTo')
             ->willReturnCallback(
                 fn ($email): bool => '@bad.com' !== $email
             );
-        $this->mailHelper->method('queue')
+        $this->mailHelper->expects($this->once())->method('queue')
             ->willReturn([true, []]);
 
         $stat = new Stat();
         $stat->setEmail($emailMock);
-        $this->mailHelper->method('createEmailStat')
+        $this->mailHelper->expects($this->once())->method('createEmailStat')
             ->willReturn($stat);
 
         $this->dncModel->expects($this->once())
@@ -226,10 +226,10 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
     {
         /** @var Email&MockObject $emailMock */
         $emailMock = $this->createMock(Email::class);
-        $emailMock->method('getId')->willReturn(1);
-        $emailMock->method('getFromAddress')->willReturn('test@mautic.com');
-        $emailMock->method('getSubject')->willReturn('Subject');
-        $emailMock->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
+        $emailMock->expects($this->once())->method('getId')->willReturn(1);
+        $emailMock->expects($this->once())->method('getFromAddress')->willReturn('test@mautic.com');
+        $emailMock->expects($this->once())->method('getSubject')->willReturn('Subject');
+        $emailMock->expects($this->once())->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
 
         // Use our test token transport limiting to 1 recipient per queue
         $transport = new BatchTransport(false, 1);
@@ -239,10 +239,10 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
         $requestStack = new RequestStack();
 
-        $this->fromEmaiHelper->method('getFromAddressConsideringOwner')
+        $this->fromEmaiHelper->expects($this->once())->method('getFromAddressConsideringOwner')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
 
-        $this->coreParametersHelper->method('get')->willReturnCallback(
+        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnCallback(
             fn ($param): string => match ($param) {
                 'mailer_from_email' => 'nobody@nowhere.com',
                 'secret_key'        => 'secret',
@@ -284,7 +284,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
-        $mailHelper->method('createEmailStat')
+        $mailHelper->expects($this->once())->method('createEmailStat')
             ->willReturnCallback(
                 function () use ($emailMock): Stat {
                     $stat = new Stat();
@@ -292,7 +292,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
                     /** @var Lead&MockObject $leadMock */
                     $leadMock = $this->createMock(Lead::class);
-                    $leadMock->method('getId')
+                    $leadMock->expects($this->once())->method('getId')
                         ->willReturn(1);
 
                     $stat->setLead($leadMock);
@@ -342,17 +342,17 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->willReturnMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]);
 
         $emailMock = $this->createMock(Email::class);
-        $emailMock->method('getId')->willReturn(1);
-        $emailMock->method('getFromAddress')->willReturn('test@mautic.com');
-        $emailMock->method('getSubject')->willReturn('Subject');
-        $emailMock->method('getCustomHtml')->willReturn('Hi {contactfield=firstname}');
+        $emailMock->expects($this->once())->method('getId')->willReturn(1);
+        $emailMock->expects($this->once())->method('getFromAddress')->willReturn('test@mautic.com');
+        $emailMock->expects($this->once())->method('getSubject')->willReturn('Subject');
+        $emailMock->expects($this->once())->method('getCustomHtml')->willReturn('Hi {contactfield=firstname}');
 
         // Use our test token transport limiting to 1 recipient per queue
         $transport = new BatchTransport(false, 1);
         $mailer    = new Mailer($transport);
 
         // Mock factory to remove when factory is completely gone.
-        $this->coreParametersHelper->method('get')
+        $this->coreParametersHelper->expects($this->once())->method('get')
             ->willReturnCallback(
                 fn ($param): string => match ($param) {
                     default => '',
@@ -360,7 +360,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             );
 
         $mockDispatcher = $this->createMock(EventDispatcher::class);
-        $mockDispatcher->method('dispatch')
+        $mockDispatcher->expects($this->once())->method('dispatch')
             ->willReturnCallback(
                 function (EmailSendEvent $event, ?string $eventName): EmailSendEvent {
                     $lead = $event->getLead();
@@ -379,9 +379,9 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
         $copyRepoMock  = $this->createStub(CopyRepository::class);
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->method('getRepository')->willReturn($copyRepoMock);
+        $entityManager->expects($this->once())->method('getRepository')->willReturn($copyRepoMock);
 
-        $this->fromEmaiHelper->method('getFromAddressConsideringOwner')
+        $this->fromEmaiHelper->expects($this->once())->method('getFromAddressConsideringOwner')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
 
         $themeHelper = $this->createMock(ThemeHelper::class);
@@ -416,7 +416,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         // Enable queueing
         $mailHelper->enableQueue();
 
-        $this->emailStatModel->method('saveEntity')
+        $this->emailStatModel->expects($this->once())->method('saveEntity')
             ->willReturnCallback(
                 function (Stat $stat): void {
                     $tokens = $stat->getTokens();
@@ -448,16 +448,16 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->coreParametersHelper->expects($this->atLeast(2))->method('get')->willReturnMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]);
 
         $emailMock = $this->createMock(Email::class);
-        $emailMock->method('getId')->willReturn(1);
-        $emailMock->method('getFromAddress')->willReturn('test@mautic.com');
-        $emailMock->method('getSubject')->willReturn('Subject');
-        $emailMock->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
+        $emailMock->expects($this->once())->method('getId')->willReturn(1);
+        $emailMock->expects($this->once())->method('getFromAddress')->willReturn('test@mautic.com');
+        $emailMock->expects($this->once())->method('getSubject')->willReturn('Subject');
+        $emailMock->expects($this->once())->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
 
         // Use our test token transport limiting to 1 recipient per queue
         $transport = new BatchTransport(false, 1);
         $mailer    = new Mailer($transport);
 
-        $this->coreParametersHelper->method('get')
+        $this->coreParametersHelper->expects($this->once())->method('get')
             ->willReturnCallback(
                 fn ($param): string => match ($param) {
                     default => '',
@@ -465,7 +465,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             );
         $routerMock = $this->createStub(Router::class);
 
-        $this->fromEmaiHelper->method('getFromAddressConsideringOwner')
+        $this->fromEmaiHelper->expects($this->once())->method('getFromAddressConsideringOwner')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
 
         $themeHelper = $this->createMock(ThemeHelper::class);
@@ -511,7 +511,7 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                     $stat->setEmail($emailMock);
 
                     $leadMock = $this->createMock(Lead::class);
-                    $leadMock->method('getId')->willReturn(1);
+                    $leadMock->expects($this->once())->method('getId')->willReturn(1);
 
                     $stat->setLead($leadMock);
 
@@ -568,23 +568,23 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->coreParametersHelper->expects($this->atLeast(2))->method('get')->willReturnMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]);
 
         $emailMock = $this->createMock(Email::class);
-        $emailMock->method('getId')->willReturn(1);
-        $emailMock->method('getFromAddress')->willReturn('test@mautic.com');
-        $emailMock->method('getSubject')->willReturn(''); // The subject must be empty for the email to fail.
-        $emailMock->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
+        $emailMock->expects($this->once())->method('getId')->willReturn(1);
+        $emailMock->expects($this->once())->method('getFromAddress')->willReturn('test@mautic.com');
+        $emailMock->expects($this->once())->method('getSubject')->willReturn(''); // The subject must be empty for the email to fail.
+        $emailMock->expects($this->once())->method('getCustomHtml')->willReturn('<html>{unsubscribe_url}</html>');
 
         // Use our test token transport limiting to 1 recipient per queue
         $transport = new BatchTransport(true, 1);
         $mailer    = new Mailer($transport);
 
-        $this->coreParametersHelper->method('get')
+        $this->coreParametersHelper->expects($this->once())->method('get')
             ->willReturnCallback(
                 fn ($param): string => match ($param) {
                     default => '',
                 }
             );
 
-        $this->fromEmaiHelper->method('getFromAddressConsideringOwner')->willReturn(new AddressDTO('someone@somewhere.com'));
+        $this->fromEmaiHelper->expects($this->once())->method('getFromAddressConsideringOwner')->willReturn(new AddressDTO('someone@somewhere.com'));
         $routerMock = $this->createStub(Router::class);
 
         $themeHelper = $this->createMock(ThemeHelper::class);
@@ -623,14 +623,14 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
-        $mailHelper->method('createEmailStat')
+        $mailHelper->expects($this->once())->method('createEmailStat')
             ->willReturnCallback(
                 function () use ($emailMock): Stat {
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
                     $leadMock = $this->createMock(Lead::class);
-                    $leadMock->method('getId')->willReturn(1);
+                    $leadMock->expects($this->once())->method('getId')->willReturn(1);
 
                     $stat->setLead($leadMock);
 
@@ -738,12 +738,12 @@ final class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $translator     = $this->createStub(TranslatorInterface::class);
         $model          = new SendEmailToContact($mailHelper, $this->statHelper, $dncModel, $translator);
         $emailMock      = $this->createMock(Email::class);
-        $emailMock->method('getId')->willReturn(1);
-        $emailMock->method('getSubject')->willReturn('subject');
-        $emailMock->method('getCustomHtml')->willReturn('content');
+        $emailMock->expects($this->once())->method('getId')->willReturn(1);
+        $emailMock->expects($this->once())->method('getSubject')->willReturn('subject');
+        $emailMock->expects($this->once())->method('getCustomHtml')->willReturn('content');
 
         // Set invalid BCC (should use comma as separator)
-        $emailMock
+        $emailMock->expects($this->once())
             ->method('getBccAddress')
             ->willReturn('test@mautic.com; test@mautic.com');
 

@@ -124,7 +124,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnEmailResendWhenShouldTryAgain(): void
     {
-        $this->mockMessage->method('getLeadIdHash')
+        $this->mockMessage->expects($this->once())->method('getLeadIdHash')
             ->willReturn('idhash');
 
         $queueEmailEvent = new QueueEmailEvent($this->mockMessage);
@@ -142,7 +142,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnEmailResendWhenShouldNotTryAgain(): void
     {
-        $this->mockMessage
+        $this->mockMessage->expects($this->once())
             ->method('getLeadIdHash')
             ->willReturn('idhash');
 
@@ -274,7 +274,7 @@ CONTENT,
         $themeHelper->expects($this->never())
             ->method('checkForTwigTemplate');
 
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->once())->method('get')
             ->willReturnMap(
                 [
                     ['mailer_from_email', null, 'nobody@nowhere.com'],

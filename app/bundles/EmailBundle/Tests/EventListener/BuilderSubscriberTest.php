@@ -98,9 +98,9 @@ final class BuilderSubscriberTest extends TestCase
     #[DataProvider('fixEmailAccessibilityContent')]
     public function testFixEmailAccessibility(string $content, string $expectedContent, ?string $emailLocale): void
     {
-        $this->emailModel->method('buildUrl')->willReturn('https://some.url');
-        $this->translator->method('trans')->willReturn('some translation');
-        $this->coreParametersHelper->method('get')->willReturnCallback(function ($key): string|false {
+        $this->emailModel->expects($this->once())->method('buildUrl')->willReturn('https://some.url');
+        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
+        $this->coreParametersHelper->expects($this->once())->method('get')->willReturnCallback(function ($key): string|false {
             if ('locale' === $key) {
                 return 'default_locale';
             }
@@ -226,8 +226,8 @@ final class BuilderSubscriberTest extends TestCase
                     return 'ACME';
                 }
             });
-        $this->emailModel->method('buildUrl')->willReturn('https://some.url');
-        $this->translator->method('trans')->willReturn('some translation');
+        $this->emailModel->expects($this->once())->method('buildUrl')->willReturn('https://some.url');
+        $this->translator->expects($this->once())->method('trans')->willReturn('some translation');
 
         $this->builderSubscriber->onEmailGenerate($event);
         $this->assertEquals(
@@ -272,7 +272,7 @@ final class BuilderSubscriberTest extends TestCase
             'jan.kozak@acquia.com',
             'ACME',
         ];
-        $this->coreParametersHelper->method('get')
+        $this->coreParametersHelper->expects($this->once())->method('get')
             ->willReturnCallback(function ($key) use (&$callCount, $expectedKeys, $expectedResponses): ?string {
                 if ($callCount < count($expectedKeys)) {
                     $this->assertSame($expectedKeys[$callCount], $key);
@@ -282,7 +282,7 @@ final class BuilderSubscriberTest extends TestCase
             });
 
         $emailHash = hash_hmac('sha256', 'lukas.sykora@acquia.com', 'secret');
-        $this->emailModel->method('buildUrl')
+        $this->emailModel->expects($this->once())->method('buildUrl')
             ->willReturnCallback(fn (string $route): string => match ($route) {
                 'mautic_email_unsubscribe' => '/email/unsubscribe/hash/lukas.sykora@acquia.com/'.$emailHash,
                 'mautic_email_webview'     => '/email/webview/'.$emailHash,
@@ -290,7 +290,7 @@ final class BuilderSubscriberTest extends TestCase
                 default                    => '',
             });
 
-        $this->translator->method('trans')
+        $this->translator->expects($this->once())->method('trans')
             ->willReturn($unsubscribeTokenizedText);
 
         $this->builderSubscriber->onEmailGenerate($event);

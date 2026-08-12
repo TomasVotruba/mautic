@@ -26,7 +26,7 @@ final class CompanyDeduperTest extends \PHPUnit\Framework\TestCase
     public function testUniqueFieldNotFoundException(): void
     {
         $this->expectException(UniqueFieldNotFoundException::class);
-        $this->fieldList->method('getFieldList')->willReturn([]);
+        $this->fieldList->expects($this->once())->method('getFieldList')->willReturn([]);
         $this->getDeduper()->checkForDuplicateCompanies([]);
     }
 

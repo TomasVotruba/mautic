@@ -23,13 +23,13 @@ final class FieldAliasHelperTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $fieldRepository->method('getAliases')->willReturn([
+        $fieldRepository->expects($this->once())->method('getAliases')->willReturn([
             'title',
             'firstname',
             'lastname',
         ]);
 
-        $fieldModel->method('cleanAlias')->willReturnCallback(fn (): mixed => func_get_args()[0]);
+        $fieldModel->expects($this->once())->method('cleanAlias')->willReturnCallback(fn (): mixed => func_get_args()[0]);
 
         $this->helper = new FieldAliasHelper($fieldModel, $fieldRepository);
     }

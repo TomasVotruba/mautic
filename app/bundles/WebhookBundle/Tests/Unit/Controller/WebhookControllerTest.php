@@ -170,7 +170,7 @@ final class WebhookControllerTest extends TestCase
             });
 
         $webhook = $this->createMock(Webhook::class);
-        $webhook->method('getId')
+        $webhook->expects($this->once())->method('getId')
             ->willReturn($webhookId);
         $webhook->expects($this->once())->method('getMarkedUnhealthyAt')
             ->willReturn(null);

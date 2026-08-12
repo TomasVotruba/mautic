@@ -107,7 +107,7 @@ final class EmailActionModelTest extends TestCase
 
     private function configurePermissionToAllowEdition(bool $allow): void
     {
-        $this->corePermissionsMock
+        $this->corePermissionsMock->expects($this->once())
             ->method('hasEntityAccess')
             ->willReturn($allow);
     }
@@ -117,7 +117,7 @@ final class EmailActionModelTest extends TestCase
      */
     protected function configureRepositoryToReturn(array $emails): void
     {
-        $this->emailRepositoryMock
+        $this->emailRepositoryMock->expects($this->once())
             ->method('findBy')
             ->with(
                 ['id' => array_map(fn (Email $email) => $email->getId(), $emails)]

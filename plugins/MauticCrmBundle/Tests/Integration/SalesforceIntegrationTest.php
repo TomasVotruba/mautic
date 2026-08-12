@@ -149,7 +149,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
     public function testThatMultipleSfLeadsReturnedAreUpdatedButOnlyOneIntegrationRecordIsCreated(): void
     {
-        $this->companyModel
+        $this->companyModel->expects($this->once())
             ->method('fetchCompanyFields')
             ->willReturn([]);
         $this->specialSfCase = self::SC_MULTIPLE_SF_LEADS;
@@ -167,7 +167,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
     public function testThatMultipleSfContactsReturnedAreUpdatedButOnlyOneIntegrationRecordIsCreated(): void
     {
-        $this->companyModel
+        $this->companyModel->expects($this->once())
             ->method('fetchCompanyFields')
             ->willReturn([]);
         $this->specialSfCase = self::SC_MULTIPLE_SF_CONTACTS;
@@ -212,7 +212,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 }
             );
 
-        $sf->method('getSalesforceSyncLimit')
+        $sf->expects($this->once())->method('getSalesforceSyncLimit')
             ->willReturn(50);
 
         $sf->expects($this->once())
@@ -238,7 +238,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             );
 
         $counter = 0;
-        $sf->method('getSalesforceSyncLimit')
+        $sf->expects($this->once())->method('getSalesforceSyncLimit')
             ->willReturnCallback(
                 function () use (&$counter): int {
                     ++$counter;
@@ -309,7 +309,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
          * This forces the integration to think the contact exists in SF,
          * and removes those emails from the array for creation.
          */
-        $sf->method('getSalesforceObjectsByEmails')
+        $sf->expects($this->once())->method('getSalesforceObjectsByEmails')
             ->willReturnCallback(
                 function (): array {
                     $args   = func_get_args();
@@ -335,7 +335,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
          * This forces the integration to think the contact exists in SF,
          * and removes those emails from the array for creation.
          */
-        $sf->method('getSalesforceObjectsByEmails')
+        $sf->expects($this->once())->method('getSalesforceObjectsByEmails')
             ->willReturnCallback(
                 function (): array {
                     $args   = func_get_args();
@@ -357,7 +357,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
         $this->sfMockMethods = ['makeRequest', 'getSalesforceObjectsByEmails'];
         $sf                  = $this->getSalesforceIntegration();
 
-        $sf->method('getSalesforceObjectsByEmails')
+        $sf->expects($this->once())->method('getSalesforceObjectsByEmails')
             ->willReturn('Some Error');
 
         $this->expectException(ApiErrorException::class);
@@ -431,7 +431,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
         $lead->setEmail('Lead1@sftest.com');
         $lead->setId(1);
 
-        $sf
+        $sf->expects($this->once())
             ->method('makeRequest')
             ->willReturnCallback(
                 function () {
@@ -467,7 +467,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
         $company->setName('MyCompanyName');
 
-        $sf
+        $sf->expects($this->once())
             ->method('makeRequest')
             ->willReturnCallback(
                 function () {
@@ -567,7 +567,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
          * has been populated at this point. If populated here, the test passes.
          * We return the salesforce objects so as not to throw an error.
          */
-        $sf->method('getSalesforceObjectsByEmails')
+        $sf->expects($this->once())->method('getSalesforceObjectsByEmails')
             ->willReturnCallback(
                 function (): array {
                     $args   = func_get_args();
@@ -654,8 +654,8 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             ];
 
             $sf = $this->getSalesforceIntegration(2, 2);
-            $sf->method('updateDncByDate')->willReturn(true);
-            $sf
+            $sf->expects($this->once())->method('updateDncByDate')->willReturn(true);
+            $sf->expects($this->once())
                 ->method('getDncHistory')
                 ->willReturn(
                     $this->getSalesforceDNCHistory($object, 'SF')
@@ -690,8 +690,8 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             ];
 
             $sf = $this->getSalesforceIntegration(2, 2);
-            $sf->method('updateDncByDate')->willReturn(true);
-            $sf->method('getDoNotContactHistory')->willReturn($this->getSalesforceDNCHistory($object, 'Mautic'));
+            $sf->expects($this->once())->method('updateDncByDate')->willReturn(true);
+            $sf->expects($this->once())->method('getDoNotContactHistory')->willReturn($this->getSalesforceDNCHistory($object, 'Mautic'));
 
             $sf->pushLeadDoNotContactByDate('email', $mappedData, $object, ['start' => '2017-10-15T10:00:00.000000']);
             foreach ($mappedData as $assertion) {
@@ -733,7 +733,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
         $this->auditLogRepository = $this->createMock(AuditLogRepository::class);
 
         // we need insight into the entities persisted
-        $this->integrationEntityRepository->method('saveEntities')
+        $this->integrationEntityRepository->expects($this->once())->method('saveEntities')
             ->willReturnCallback(
                 function (): void {
                     $this->persistedIntegrationEntities = array_merge($this->persistedIntegrationEntities, func_get_arg(0));
@@ -760,7 +760,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                     return $this->getLeadsToUpdate('Lead', 2, 2, 'Lead')['Lead'];
                 }
             );
-        $this->auditLogRepository
+        $this->auditLogRepository->expects($this->once())
             ->method('getAuditLogsForLeads')
             ->willReturn(
                 [
@@ -789,7 +789,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 ]
             );
 
-        $this->em->method('getReference')
+        $this->em->expects($this->once())->method('getReference')
             ->willReturnCallback(
                 function () {
                     if (IntegrationEntity::class === func_get_arg(0)) {
@@ -798,15 +798,15 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 }
             );
 
-        $this->router->method('generate')
+        $this->router->expects($this->once())->method('generate')
             ->willReturnArgument(0);
 
-        $this->leadModel->method('getEntity')
+        $this->leadModel->expects($this->once())->method('getEntity')
             ->willReturn(new Lead());
 
-        $this->companyModel->method('getEntity')
+        $this->companyModel->expects($this->once())->method('getEntity')
             ->willReturn(new Company());
-        $this->companyModel->method('getEntities')
+        $this->companyModel->expects($this->once())->method('getEntities')
             ->willReturn([]);
 
         $leadFields = [
@@ -944,7 +944,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
         $integrationEntityModelMock = $this->createMock(IntegrationEntityModel::class);
 
-        $integrationEntityModelMock->method('getEntityByIdAndSetSyncDate')
+        $integrationEntityModelMock->expects($this->once())->method('getEntityByIdAndSetSyncDate')
             ->willReturn(new IntegrationEntity());
 
         $sf = $this->getMockBuilder(SalesforceIntegration::class)
@@ -981,7 +981,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
             $this->createMock(NotificationRepository::class)
         );
 
-        $sf->method('makeRequest')
+        $sf->expects($this->once())->method('makeRequest')
             ->willReturnCallback(
                 function () use ($maxSfContacts, $maxSfLeads, $updateObject) {
                     $args = func_get_args();
@@ -1029,7 +1029,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
                 }
             );
 
-        $this->dispatcher->method('dispatch')
+        $this->dispatcher->expects($this->once())->method('dispatch')
             ->willReturnCallback(
                 function () use ($sf, $integration): PluginIntegrationKeyEvent {
                     $args = func_get_args();
@@ -1052,7 +1052,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
     protected function setLeadsToUpdate(MockObject $mockRepository, int $max, int $maxSfContacts, int $maxSfLeads, ?string $specificObject): void
     {
-        $mockRepository->method('findLeadsToUpdate')
+        $mockRepository->expects($this->once())->method('findLeadsToUpdate')
             ->willReturnCallback(
                 function () use ($max, $specificObject): array {
                     $args   = func_get_args();
@@ -1080,7 +1080,7 @@ final class SalesforceIntegrationTest extends AbstractIntegrationTestCase
 
     protected function setLeadsToCreate(MockObject $mockRepository, int $max = 200): void
     {
-        $mockRepository->method('findLeadsToCreate')
+        $mockRepository->expects($this->once())->method('findLeadsToCreate')
             ->willReturnCallback(
                 function () use ($max): int|array {
                     $args = func_get_args();

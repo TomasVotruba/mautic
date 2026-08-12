@@ -82,7 +82,7 @@ final class ReportUtmTagSubscriberTest extends \PHPUnit\Framework\TestCase
             ->with('l.')
             ->willReturn($leadColumns);
 
-        $fieldsBuilderMock
+        $fieldsBuilderMock->expects($this->once())
             ->method('getLeadFilter')
             ->willReturn([
                 'tag' => [

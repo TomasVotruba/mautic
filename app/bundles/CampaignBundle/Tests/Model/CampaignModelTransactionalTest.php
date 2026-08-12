@@ -39,11 +39,11 @@ final class CampaignModelTransactionalTest extends TestCase
     protected function setUp(): void
     {
         $this->campaignRepositoryMock = $this->createMock(CampaignRepository::class);
-        $this->campaignRepositoryMock->method('setCurrentUser')
+        $this->campaignRepositoryMock->expects($this->once())->method('setCurrentUser')
             ->willReturnSelf();
 
         $entityManagerMock = $this->createMock(EntityManager::class);
-        $entityManagerMock->method('getConnection')
+        $entityManagerMock->expects($this->once())->method('getConnection')
             ->willReturn($this->createStub(Connection::class));
 
         $userHelperMock = $this->createMock(UserHelper::class);

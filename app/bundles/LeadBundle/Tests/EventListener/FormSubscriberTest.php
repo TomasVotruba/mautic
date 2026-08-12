@@ -65,9 +65,9 @@ final class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnFormSubmitActionChangePoints(): void
     {
-        $this->contactTracker->method('getContact')->willReturn(new Lead());
+        $this->contactTracker->expects($this->once())->method('getContact')->willReturn(new Lead());
 
-        $this->ipLookupHelper->method('getIpAddress')->willReturn(new IpAddress());
+        $this->ipLookupHelper->expects($this->once())->method('getIpAddress')->willReturn(new IpAddress());
 
         $submission = new Submission();
         $submission->setForm(new Form());
@@ -87,7 +87,7 @@ final class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testThatTheLeadIsAddedToTheSegmentOnLeadOnSegmentsChangeEvent(): void
     {
-        $this->submissionEvent
+        $this->submissionEvent->expects($this->once())
             ->method('getActionConfig')
             ->willReturn([
                 'addToLists'      => 1,
@@ -100,7 +100,7 @@ final class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testThatTheLeadIsRemovedFromTheSegmentOnLeadOnSegmentsChangeEvent(): void
     {
-        $this->submissionEvent
+        $this->submissionEvent->expects($this->once())
             ->method('getActionConfig')
             ->willReturn([
                 'removeFromLists' => 1,

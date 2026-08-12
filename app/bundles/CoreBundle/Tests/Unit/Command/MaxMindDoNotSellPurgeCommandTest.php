@@ -39,7 +39,7 @@ final class MaxMindDoNotSellPurgeCommandTest extends TestCase
         $lead->setZipcode('02113');
 
         $this->mockLeadRepository = $this->createMock(LeadRepository::class);
-        $this->mockLeadRepository->method('findOneBy')->with(['id' => 1])->willReturn($lead);
+        $this->mockLeadRepository->expects($this->once())->method('findOneBy')->with(['id' => 1])->willReturn($lead);
     }
 
     public function testCommandDryRun(): void

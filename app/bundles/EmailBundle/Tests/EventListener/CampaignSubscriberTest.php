@@ -52,10 +52,10 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $event->setType(Event::TYPE_ACTION);
 
         $leadEventLog = $this->createMock(LeadEventLog::class);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getLead')
             ->willReturn($lead);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getId')
             ->willReturn(6);
 
@@ -75,13 +75,13 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $lead          = new Lead()->setEmail('tester@mautic.org');
 
         $leadEventLog = $this->createMock(LeadEventLog::class);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getLead')
             ->willReturn($lead);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getId')
             ->willReturn(0);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('setIsScheduled')
             ->with(false)
             ->willReturn($leadEventLog);
@@ -102,17 +102,17 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $lead          = new Lead()->setEmail('tester@mautic.org');
 
         $leadEventLog = $this->createMock(LeadEventLog::class);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getLead')
             ->willReturn($lead);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getId')
             ->willReturn(0);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('setIsScheduled')
             ->with(false)
             ->willReturn($leadEventLog);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getMetadata')
             ->willReturn([]);
 
@@ -149,10 +149,10 @@ final class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $lead          = new Lead()->setEmail('tester@mautic.org');
 
         $leadEventLog = $this->createMock(LeadEventLog::class);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getLead')
             ->willReturn($lead);
-        $leadEventLog
+        $leadEventLog->expects($this->once())
             ->method('getId')
             ->willReturn(6);
 

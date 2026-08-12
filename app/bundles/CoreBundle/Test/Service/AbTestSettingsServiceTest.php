@@ -30,7 +30,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $parent = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $parent->method('getId')
+        $parent->expects($this->once())->method('getId')
             ->willReturn($idParent);
         $parent->setVariantSettings([
             'totalWeight'     => $totalWeight,
@@ -41,7 +41,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $variantA = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantA->method('getId')
+        $variantA->expects($this->once())->method('getId')
             ->willReturn($idA);
         $parent->addVariantChild($variantA);
         $variantA->setVariantParent($parent);
@@ -51,7 +51,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $variantB = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantB->method('getId')
+        $variantB->expects($this->once())->method('getId')
             ->willReturn($idB);
         $parent->addVariantChild($variantB);
         $variantB->setVariantParent($parent);
@@ -95,7 +95,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $parent = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $parent->method('getId')
+        $parent->expects($this->once())->method('getId')
             ->willReturn($idParent);
         $parent->setVariantSettings([
             'totalWeight'     => $totalWeight,
@@ -106,7 +106,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $variantA = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantA->method('getId')
+        $variantA->expects($this->once())->method('getId')
             ->willReturn($idA);
         $parent->addVariantChild($variantA);
         $variantA->setVariantParent($parent);
@@ -116,7 +116,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $variantB = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantB->method('getId')
+        $variantB->expects($this->once())->method('getId')
             ->willReturn($idB);
         $parent->addVariantChild($variantB);
         $variantB->setVariantParent($parent);
@@ -147,14 +147,14 @@ final class AbTestSettingsServiceTest extends TestCase
         $parent = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $parent->method('getId')
+        $parent->expects($this->once())->method('getId')
             ->willReturn($idParent);
         $parent->setIsPublished(true);
 
         $variantA = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantA->method('getId')
+        $variantA->expects($this->once())->method('getId')
             ->willReturn($idA);
         $parent->addVariantChild($variantA);
         $variantA->setVariantParent($parent);
@@ -164,7 +164,7 @@ final class AbTestSettingsServiceTest extends TestCase
         $variantB = $this->getMockBuilder(Email::class)
             ->onlyMethods(['getId'])
             ->getMock();
-        $variantB->method('getId')
+        $variantB->expects($this->once())->method('getId')
             ->willReturn($idB);
         $parent->addVariantChild($variantB);
         $variantB->setVariantParent($parent);

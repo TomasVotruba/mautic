@@ -23,7 +23,7 @@ final class TimelineTraitTest extends TestCase
             ->onlyMethods(['getTableAlias'])
             ->getMock();
 
-        $this->repository->method('getTableAlias')->willReturn('ut');
+        $this->repository->expects($this->once())->method('getTableAlias')->willReturn('ut');
 
         $this->getTimelineResults = new \ReflectionMethod($this->repository, 'getTimelineResults');
     }
@@ -41,12 +41,12 @@ final class TimelineTraitTest extends TestCase
         $orderByParts = new \ArrayObject();
 
         $qb = $this->createMock(QueryBuilder::class);
-        $qb->method('andWhere')->willReturnSelf();
-        $qb->method('setParameter')->willReturnSelf();
-        $qb->method('setMaxResults')->willReturnSelf();
-        $qb->method('setFirstResult')->willReturnSelf();
+        $qb->expects($this->once())->method('andWhere')->willReturnSelf();
+        $qb->expects($this->once())->method('setParameter')->willReturnSelf();
+        $qb->expects($this->once())->method('setMaxResults')->willReturnSelf();
+        $qb->expects($this->once())->method('setFirstResult')->willReturnSelf();
 
-        $qb->method('orderBy')->willReturnCallback(
+        $qb->expects($this->once())->method('orderBy')->willReturnCallback(
             static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
                 $orderByParts->append($sort.' '.$dir);
 
@@ -54,7 +54,7 @@ final class TimelineTraitTest extends TestCase
             }
         );
 
-        $qb->method('addOrderBy')->willReturnCallback(
+        $qb->expects($this->once())->method('addOrderBy')->willReturnCallback(
             static function (string $sort, string $dir) use ($qb, $orderByParts): QueryBuilder {
                 $orderByParts->append($sort.' '.$dir);
 
@@ -63,8 +63,8 @@ final class TimelineTraitTest extends TestCase
         );
 
         $result = $this->createMock(Result::class);
-        $result->method('fetchAllAssociative')->willReturn([]);
-        $qb->method('executeQuery')->willReturn($result);
+        $result->expects($this->once())->method('fetchAllAssociative')->willReturn([]);
+        $qb->expects($this->once())->method('executeQuery')->willReturn($result);
 
         return [$qb, $orderByParts];
     }

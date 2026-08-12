@@ -181,7 +181,7 @@ final class ConfigMapperTest extends \PHPUnit\Framework\TestCase
     {
         $parameterHelper = $this->createMock(CoreParametersHelper::class);
 
-        $parameterHelper->method('get')
+        $parameterHelper->expects($this->once())->method('get')
             ->willReturnCallback(
                 fn ($param, $defaultValue) => array_key_exists($param, $this->config) ? $this->config[$param] : $defaultValue
             );
@@ -241,7 +241,7 @@ final class ConfigMapperTest extends \PHPUnit\Framework\TestCase
     {
         $parameterHelper = $this->createMock(CoreParametersHelper::class);
 
-        $parameterHelper->method('get')
+        $parameterHelper->expects($this->once())->method('get')
             ->willReturnCallback(
                 fn ($param, $defaultValue) => array_key_exists($param, $this->config) ? $this->config[$param] : $defaultValue
             );

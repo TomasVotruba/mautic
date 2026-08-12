@@ -36,11 +36,11 @@ final class MobileNotificationDetailsTypeTest extends TypeTestCase
 
         // @phpstan-ignore-next-line
         $integration = $this->createMock(AbstractIntegration::class);
-        $integration->method('getIntegrationSettings')
+        $integration->expects($this->once())->method('getIntegrationSettings')
             ->willReturn($this->integrationSettings);
 
         $integrationHelper = $this->createMock(IntegrationHelper::class);
-        $integrationHelper->method('getIntegrationObject')
+        $integrationHelper->expects($this->once())->method('getIntegrationObject')
             ->with('OneSignal')
             ->willReturn($integration);
 
@@ -54,7 +54,7 @@ final class MobileNotificationDetailsTypeTest extends TypeTestCase
 
     public function testNoPlatformsSelected(): void
     {
-        $this->integrationSettings->method('getFeatureSettings')
+        $this->integrationSettings->expects($this->once())->method('getFeatureSettings')
             ->willReturn([]);
 
         $form = $this->factory->create(MobileNotificationDetailsType::class);
@@ -72,7 +72,7 @@ final class MobileNotificationDetailsTypeTest extends TypeTestCase
     #[DataProvider('platformProvider')]
     public function testPlatformSelected(array $platforms, array $settings): void
     {
-        $this->integrationSettings->method('getFeatureSettings')
+        $this->integrationSettings->expects($this->once())->method('getFeatureSettings')
             ->willReturn(['platforms' => $platforms]);
 
         $form = $this->factory->create(MobileNotificationDetailsType::class);

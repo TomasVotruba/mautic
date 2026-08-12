@@ -134,11 +134,11 @@ final class ConfigFormTest extends KernelTestCase
 
         $registeredPluginBundles = self::getContainer()->getParameter('mautic.plugin.bundles');
         $mauticPlugins           = self::getContainer()->getParameter('mautic.bundles');
-        $bundleHelper->method('getPluginBundles')->willReturn($registeredPluginBundles);
+        $bundleHelper->expects($this->once())->method('getPluginBundles')->willReturn($registeredPluginBundles);
 
-        $bundleHelper->method('getMauticBundles')->willReturn(array_merge($mauticPlugins, $registeredPluginBundles));
+        $bundleHelper->expects($this->once())->method('getMauticBundles')->willReturn(array_merge($mauticPlugins, $registeredPluginBundles));
 
-        $pluginModel->method('getEntities')
+        $pluginModel->expects($this->once())->method('getEntities')
             ->with(
                 [
                     'hydration_mode' => 'hydrate_array',

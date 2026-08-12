@@ -59,7 +59,7 @@ final class ScheduledExecutionerTest extends TestCase
         $this->leadRepository       = $this->createStub(LeadRepository::class);
 
         // Configure the redirection helper mock to return the event it receives
-        $this->redirectionHelper->method('handleEventRedirection')
+        $this->redirectionHelper->expects($this->once())->method('handleEventRedirection')
             ->willReturnCallback(fn (Event $event): Event => $event);
     }
 
@@ -85,45 +85,45 @@ final class ScheduledExecutionerTest extends TestCase
     public function testSpecificEventsAreExecuted(): void
     {
         $campaign = $this->createMock(Campaign::class);
-        $campaign->method('isPublished')
+        $campaign->expects($this->once())->method('isPublished')
             ->willReturn(true);
 
         $event = $this->createMock(Event::class);
-        $event->method('getId')
+        $event->expects($this->once())->method('getId')
             ->willReturn(1);
-        $event->method('getCampaign')
+        $event->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
 
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(1);
 
         $log1 = $this->createMock(LeadEventLog::class);
-        $log1->method('getId')
+        $log1->expects($this->once())->method('getId')
             ->willReturn(1);
-        $log1->method('getEvent')
+        $log1->expects($this->once())->method('getEvent')
             ->willReturn($event);
-        $log1->method('getCampaign')
+        $log1->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
-        $log1->method('getLead')
+        $log1->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log1->method('getDateTriggered')
+        $log1->expects($this->once())->method('getDateTriggered')
             ->willReturn(new \DateTime());
-        $log1->method('getRotation')
+        $log1->expects($this->once())->method('getRotation')
             ->willReturn(9);
 
         $log2 = $this->createMock(LeadEventLog::class);
-        $log2->method('getId')
+        $log2->expects($this->once())->method('getId')
             ->willReturn(2);
-        $log2->method('getEvent')
+        $log2->expects($this->once())->method('getEvent')
             ->willReturn($event);
-        $log2->method('getCampaign')
+        $log2->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
-        $log2->method('getLead')
+        $log2->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log2->method('getDateTriggered')
+        $log2->expects($this->once())->method('getDateTriggered')
             ->willReturn(new \DateTime());
-        $log2->method('getRotation')
+        $log2->expects($this->once())->method('getRotation')
             ->willReturn(10);
 
         $logs = new ArrayCollection([1 => $log1, 2 => $log2]);
@@ -133,14 +133,14 @@ final class ScheduledExecutionerTest extends TestCase
             ->with([1, 2])
             ->willReturn($logs);
 
-        $this->redirectionHelper
+        $this->redirectionHelper->expects($this->once())
             ->method('handleEventRedirection')
             ->willReturn($event);
 
-        $this->scheduler->method('validateExecutionDateTime')
+        $this->scheduler->expects($this->once())->method('validateExecutionDateTime')
             ->willReturn(new \DateTime());
 
-        $this->scheduler->method('shouldSchedule')
+        $this->scheduler->expects($this->once())->method('shouldSchedule')
             ->willReturn(false);
 
         // Should only be executed once because the two logs were grouped by event ID
@@ -165,41 +165,41 @@ final class ScheduledExecutionerTest extends TestCase
             ->willReturn(false);
 
         $event = $this->createMock(Event::class);
-        $event->method('getId')
+        $event->expects($this->once())->method('getId')
             ->willReturn(1);
-        $event->method('getCampaign')
+        $event->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
 
         $lead = $this->createMock(Lead::class);
-        $lead->method('getId')
+        $lead->expects($this->once())->method('getId')
             ->willReturn(3);
 
         $log1 = $this->createMock(LeadEventLog::class);
-        $log1->method('getId')
+        $log1->expects($this->once())->method('getId')
             ->willReturn(1);
-        $log1->method('getEvent')
+        $log1->expects($this->once())->method('getEvent')
             ->willReturn($event);
-        $log1->method('getCampaign')
+        $log1->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
-        $log1->method('getLead')
+        $log1->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log1->method('getDateTriggered')
+        $log1->expects($this->once())->method('getDateTriggered')
             ->willReturn(new \DateTime());
-        $log1->method('getRotation')
+        $log1->expects($this->once())->method('getRotation')
             ->willReturn(15);
 
         $log2 = $this->createMock(LeadEventLog::class);
-        $log2->method('getId')
+        $log2->expects($this->once())->method('getId')
             ->willReturn(2);
-        $log2->method('getEvent')
+        $log2->expects($this->once())->method('getEvent')
             ->willReturn($event);
-        $log2->method('getCampaign')
+        $log2->expects($this->once())->method('getCampaign')
             ->willReturn($campaign);
-        $log2->method('getLead')
+        $log2->expects($this->once())->method('getLead')
             ->willReturn($lead);
-        $log2->method('getDateTriggered')
+        $log2->expects($this->once())->method('getDateTriggered')
             ->willReturn(new \DateTime());
-        $log2->method('getRotation')
+        $log2->expects($this->once())->method('getRotation')
             ->willReturn(16);
 
         $logs = new ArrayCollection([1 => $log1, 2 => $log2]);
@@ -209,14 +209,14 @@ final class ScheduledExecutionerTest extends TestCase
             ->with([1, 2])
             ->willReturn($logs);
 
-        $this->redirectionHelper
+        $this->redirectionHelper->expects($this->once())
             ->method('handleEventRedirection')
             ->willReturn($event);
 
-        $this->scheduler->method('validateExecutionDateTime')
+        $this->scheduler->expects($this->once())->method('validateExecutionDateTime')
             ->willReturn(new \DateTime());
 
-        $this->scheduler->method('shouldSchedule')
+        $this->scheduler->expects($this->once())->method('shouldSchedule')
             ->willReturn(false);
 
         $this->executioner->expects($this->never())

@@ -47,7 +47,7 @@ final class ImportHelperTest extends TestCase
         $filesystem->mkdir($testTempDir);
 
         $mediaDir = $systemTempDirBase.'/media';
-        $pathsHelper->method('getMediaPath')->willReturn($mediaDir);
+        $pathsHelper->expects($this->once())->method('getMediaPath')->willReturn($mediaDir);
         $filesystem->mkdir($mediaDir);
 
         $this->importHelper = new ImportHelper($pathsHelper);

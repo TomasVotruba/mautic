@@ -232,7 +232,7 @@ final class ReportSubscriberTest extends TestCase
             ])
             ->getMock();
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturnArgument(0);
 
@@ -265,11 +265,11 @@ final class ReportSubscriberTest extends TestCase
                 ]
             );
 
-        $mockQueryBuilder
+        $mockQueryBuilder->expects($this->once())
             ->method('expr')
             ->willReturn($mockExprBuilder);
 
-        $mockQueryBuilder
+        $mockQueryBuilder->expects($this->once())
             ->method('executeQuery')
             ->willReturn($mockStmt);
 
@@ -288,15 +288,15 @@ final class ReportSubscriberTest extends TestCase
             ])
             ->getMock();
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('loadAndBuildTimeData')
             ->willReturn(['a', 'b', 'c']);
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('fetchCount')
             ->willReturn(2);
 
-        $mockChartQuery
+        $mockChartQuery->expects($this->once())
             ->method('fetchCountDateDiff')
             ->willReturn(2);
 
@@ -311,7 +311,7 @@ final class ReportSubscriberTest extends TestCase
             ->method('checkContext')
             ->willReturn(true);
 
-        $mockEvent
+        $mockEvent->expects($this->once())
             ->method('getOptions')
             ->willReturn($graphOptions);
 

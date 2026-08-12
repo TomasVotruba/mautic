@@ -73,7 +73,7 @@ final class EventRedirectionHelperTest extends TestCase
 
         $deletedEvent     = $this->createEventWithId(1);
         $nonExistentEvent = $this->createMock(Event::class);
-        $nonExistentEvent->method('getId')->willReturn(null);
+        $nonExistentEvent->expects($this->once())->method('getId')->willReturn(null);
         $deletedEvent->setRedirectEvent($nonExistentEvent);
         $deletedEvent->setCampaign($campaign);
         $deletedEvent->setDeleted(new \DateTime());
@@ -82,9 +82,9 @@ final class EventRedirectionHelperTest extends TestCase
             ->onlyMethods(['shouldBeRedirected', 'getId', 'getRedirectEvent'])
             ->disableOriginalConstructor()
             ->getMock();
-        $deletedEvent->method('shouldBeRedirected')->willReturn(false);
-        $deletedEvent->method('getId')->willReturn(1);
-        $deletedEvent->method('getRedirectEvent')->willReturn(null);
+        $deletedEvent->expects($this->once())->method('shouldBeRedirected')->willReturn(false);
+        $deletedEvent->expects($this->once())->method('getId')->willReturn(1);
+        $deletedEvent->expects($this->once())->method('getRedirectEvent')->willReturn(null);
 
         $events = new ArrayCollection([$deletedEvent]);
         ReflectionHelper::setValue($campaign, 'events', $events);

@@ -29,7 +29,7 @@ final class CookieHelperTest extends TestCase
     protected function setUp(): void
     {
         $this->requestStackMock = $this->createMock(RequestStack::class);
-        $this->requestStackMock->method('getMainRequest')
+        $this->requestStackMock->expects($this->once())->method('getMainRequest')
             ->willReturn($this->createStub(Request::class));
     }
 

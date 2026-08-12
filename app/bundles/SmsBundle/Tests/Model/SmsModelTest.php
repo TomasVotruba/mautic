@@ -70,7 +70,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->logger               = $this->createStub(LoggerInterface::class);
         $this->coreParametersHelper = $this->createStub(CoreParametersHelper::class);
         $this->smsRepository        = $this->createMock(SmsRepository::class);
-        $this->dispatcher->method('dispatch')
+        $this->dispatcher->expects($this->once())->method('dispatch')
             ->willReturnArgument(0);
         $this->smsModel             = new SmsModel(
             $this->pageTrackableModel,
@@ -98,15 +98,15 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
     {
         $entities = [['name' => 'Mautic', 'id' => 1, 'language' => 'cs'], ['name' => 'Mautic MMS', 'id' => 2, 'media' => ['test.jpg'], 'language' => 'cs']];
 
-        $this->smsRepository->method('getSmsList')
+        $this->smsRepository->expects($this->once())->method('getSmsList')
             ->with('', 10, 0, true, null)
             ->willReturn($entities);
 
-        $this->security->method('isGranted')
+        $this->security->expects($this->once())->method('isGranted')
             ->with('sms:smses:viewother')
             ->willReturn(true);
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->with('mautic.sms.form.mms')
             ->willReturn('MMS');
@@ -178,17 +178,17 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getRepository', 'getStatRepository'])
             ->getMock();
 
-        $smsModel->method('getStatRepository')
+        $smsModel->expects($this->once())->method('getStatRepository')
             ->willReturn($this->createStub(StatRepository::class));
 
         $smsRepo->expects($this->once())
             ->method('upCount')
             ->with($sms->getId(), 'sent', 2);
 
-        $smsModel->method('getRepository')
+        $smsModel->expects($this->once())->method('getRepository')
             ->willReturn($this->createStub(SmsRepository::class));
 
-        $smsModel->method('getStatRepository')
+        $smsModel->expects($this->once())->method('getStatRepository')
             ->willReturn($this->createStub(StatRepository::class));
 
         if ($isMMS) {

@@ -162,7 +162,7 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testHasColumnWithPrefix(): void
     {
-        $this->report->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
         $this->assertTrue($this->reportGeneratorEvent->hasColumnWithPrefix('e'));
@@ -175,13 +175,13 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testUsesColumnWithPrefix(): void
     {
-        $this->report->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->method('getFilters')
+        $this->report->expects($this->once())->method('getFilters')
             ->willReturn(
                 [
                     [
@@ -205,13 +205,13 @@ final class ReportGeneratorEventTest extends TestCase
 
     public function testUsesColumn(): void
     {
-        $this->report->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
+        $this->report->expects($this->once())->method('getSelectAndAggregatorAndOrderAndGroupByColumns')
             ->willReturn(['e.id', 'c.first_name', 'comp.name']);
 
-        $this->report->method('getFilters')
+        $this->report->expects($this->once())->method('getFilters')
             ->willReturn(
                 [
                     [

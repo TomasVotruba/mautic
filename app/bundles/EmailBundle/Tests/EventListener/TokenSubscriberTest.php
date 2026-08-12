@@ -157,7 +157,7 @@ CONTENT
 
         $dispatcher           = new EventDispatcher();
         $primaryCompanyHelper = $this->createMock(PrimaryCompanyHelper::class);
-        $primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
+        $primaryCompanyHelper->expects($this->once())->method('getProfileFieldsWithPrimaryCompany')
             ->willReturn(['email' => 'hello@someone.com']);
         $segmentRepository    = $this->createStub(LeadListRepository::class);
 

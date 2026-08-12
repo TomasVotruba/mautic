@@ -38,7 +38,7 @@ final class DashboardModelTest extends TestCase
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->session              = $this->createMock(Session::class);
         $requestStack               = $this->createMock(RequestStack::class);
-        $requestStack->method('getSession')
+        $requestStack->expects($this->once())->method('getSession')
             ->willReturn($this->session);
 
         $this->model = new DashboardModel(
@@ -91,7 +91,7 @@ final class DashboardModelTest extends TestCase
         $event     = $this->createStub(WidgetDetailEvent::class);
 
         $widgetEventFactory = $this->createMock(WidgetDetailEventFactory::class);
-        $widgetEventFactory->method('create')->willReturn($event);
+        $widgetEventFactory->expects($this->once())->method('create')->willReturn($event);
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $dispatcher->expects($this->once())
@@ -106,10 +106,10 @@ final class DashboardModelTest extends TestCase
                 self::callback(fn (array $ctx): bool => $exception === $ctx['exception'])
             );
 
-        $this->coreParametersHelper->method('get')->willReturn(null);
+        $this->coreParametersHelper->expects($this->once())->method('get')->willReturn(null);
 
         $requestStack = $this->createMock(RequestStack::class);
-        $requestStack->method('getSession')->willReturn($this->session);
+        $requestStack->expects($this->once())->method('getSession')->willReturn($this->session);
 
         $model = new DashboardModel(
             $this->coreParametersHelper,

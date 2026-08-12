@@ -39,7 +39,7 @@ final class PointSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->triggerExecutedEvent = $this->createMock(TriggerExecutedEvent::class);
         $this->triggerEventEntity   = $this->createMock(TriggerEventEntity::class);
 
-        $this->triggerExecutedEvent
+        $this->triggerExecutedEvent->expects($this->once())
             ->method('getTriggerEvent')
             ->willReturn($this->triggerEventEntity);
     }
@@ -75,7 +75,7 @@ final class PointSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testThatTheLeadIsAddedToTheSegmentOnTriggerOnLeadSegmentsChangeEvent(): void
     {
-        $this->triggerEventEntity
+        $this->triggerEventEntity->expects($this->once())
             ->method('getProperties')
             ->willReturn([
                 'addToLists'      => 1,
@@ -88,7 +88,7 @@ final class PointSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testThatTheLeadIsRemovedFromTheSegmentOnTriggerOnLeadSegmentsChangeEvent(): void
     {
-        $this->triggerEventEntity
+        $this->triggerEventEntity->expects($this->once())
             ->method('getProperties')
             ->willReturn([
                 'removeFromLists' => 1,

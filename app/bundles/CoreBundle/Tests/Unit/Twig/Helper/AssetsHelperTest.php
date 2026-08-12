@@ -61,7 +61,7 @@ final class AssetsHelperTest extends TestCase
 
     public function testGetUrlWithRelativePath(): void
     {
-        $this->pathsHelper->method('getSystemPath')
+        $this->pathsHelper->expects($this->once())->method('getSystemPath')
             ->willReturn('http://some.mautic');
 
         $this->assetHelper->setPathsHelper($this->pathsHelper);
@@ -75,7 +75,7 @@ final class AssetsHelperTest extends TestCase
 
     public function testGetUrlWithRelativePathWhenMauticInSubFolder(): void
     {
-        $this->pathsHelper->method('getSystemPath')
+        $this->pathsHelper->expects($this->once())->method('getSystemPath')
             ->willReturn('http://some.mautic/m');
 
         $this->assetHelper->setPathsHelper($this->pathsHelper);
@@ -89,7 +89,7 @@ final class AssetsHelperTest extends TestCase
 
     public function testGetUrlWithRelativePathWithDevIndex(): void
     {
-        $this->pathsHelper->method('getSystemPath')
+        $this->pathsHelper->expects($this->once())->method('getSystemPath')
             ->willReturn('http://some.mautic/');
 
         $this->assetHelper->setPathsHelper($this->pathsHelper);
@@ -103,7 +103,7 @@ final class AssetsHelperTest extends TestCase
 
     public function testGetUrlWithVersionAndExistingQueryPart(): void
     {
-        $this->pathsHelper->method('getSystemPath')
+        $this->pathsHelper->expects($this->once())->method('getSystemPath')
             ->willReturn('/');
 
         $this->assetHelper->setPathsHelper($this->pathsHelper);
@@ -138,7 +138,7 @@ final class AssetsHelperTest extends TestCase
         /** @var MockObject&Packages $packagesMock */
         $packagesMock = $this->createMock(Packages::class);
 
-        $packagesMock->method('getUrl')
+        $packagesMock->expects($this->once())->method('getUrl')
             ->willReturnCallback(fn (string $path): string => $path);
 
         return $packagesMock;

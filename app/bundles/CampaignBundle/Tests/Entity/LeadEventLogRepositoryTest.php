@@ -23,19 +23,19 @@ final class LeadEventLogRepositoryTest extends TestCase
     {
         $emMock                 = $this->createMock(EntityManager::class);
         $unitOfWorkMock         = $this->createMock(UnitOfWork::class);
-        $emMock->method('getUnitOfWork')
+        $emMock->expects($this->once())->method('getUnitOfWork')
             ->willReturn($unitOfWorkMock);
 
         $entityPersisterMock = $this->createMock(EntityPersister::class);
-        $unitOfWorkMock->method('getEntityPersister')
+        $unitOfWorkMock->expects($this->once())->method('getEntityPersister')
             ->willReturn($entityPersisterMock);
 
-        $entityPersisterMock->method('load')
+        $entityPersisterMock->expects($this->once())->method('load')
             ->with(['lead' => 42, 'event' => 4242], null, null, [], null, 1, ['dateTriggered' => 'DESC'])
             ->willReturn($leadEventLog);
 
         $leadEventLogRepository = $this->configureRepository(LeadEventLog::class, $emMock);
-        $this->connection->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
+        $this->connection->expects($this->once())->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($this->connection));
 
         $isLastFailed = $leadEventLogRepository->isLastFailed(42, 4242);
         $this->assertSame($expectedResult, $isLastFailed);

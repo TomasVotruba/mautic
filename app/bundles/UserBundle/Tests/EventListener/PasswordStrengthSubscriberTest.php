@@ -16,14 +16,14 @@ final class PasswordStrengthSubscriberTest extends TestCase
     public function testNoCheckPassportEvent(): void
     {
         $passport = $this->createMock(Passport::class);
-        $passport->method('hasBadge')
+        $passport->expects($this->once())->method('hasBadge')
             ->with(PasswordCredentials::class)
             ->willReturn(false);
         $passport->expects($this->never())
             ->method('getBadge');
 
         $event = $this->createMock(CheckPassportEvent::class);
-        $event->method('getPassport')
+        $event->expects($this->once())->method('getPassport')
             ->willReturn($passport);
 
         $subscriber = new PasswordStrengthSubscriber();
@@ -34,11 +34,11 @@ final class PasswordStrengthSubscriberTest extends TestCase
     {
         $password                 = 'Keilschrift';
         $passwordCredentialsBadge = $this->createMock(PasswordCredentials::class);
-        $passwordCredentialsBadge->method('getPassword')
+        $passwordCredentialsBadge->expects($this->once())->method('getPassword')
             ->willReturn($password);
 
         $passport = $this->createMock(Passport::class);
-        $passport->method('hasBadge')
+        $passport->expects($this->once())->method('hasBadge')
             ->with(PasswordCredentials::class)
             ->willReturn(true);
         $passport->expects($this->once())
@@ -54,7 +54,7 @@ final class PasswordStrengthSubscriberTest extends TestCase
             });
 
         $event = $this->createMock(CheckPassportEvent::class);
-        $event->method('getPassport')
+        $event->expects($this->once())->method('getPassport')
             ->willReturn($passport);
 
         $subscriber = new PasswordStrengthSubscriber();

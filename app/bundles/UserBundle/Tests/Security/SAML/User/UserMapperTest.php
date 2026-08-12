@@ -34,23 +34,23 @@ final class UserMapperTest extends TestCase
         );
 
         $emailAttribute = $this->createMock(Attribute::class);
-        $emailAttribute->method('getFirstAttributeValue')
+        $emailAttribute->expects($this->once())->method('getFirstAttributeValue')
             ->willReturn('hello@there.com');
 
         $firstnameAttribute = $this->createMock(Attribute::class);
-        $firstnameAttribute->method('getFirstAttributeValue')
+        $firstnameAttribute->expects($this->once())->method('getFirstAttributeValue')
             ->willReturn('Joe');
 
         $lastnameAttribute = $this->createMock(Attribute::class);
-        $lastnameAttribute->method('getFirstAttributeValue')
+        $lastnameAttribute->expects($this->once())->method('getFirstAttributeValue')
             ->willReturn('Smith');
 
         $defaultAttribute = $this->createMock(Attribute::class);
-        $defaultAttribute->method('getFirstAttributeValue')
+        $defaultAttribute->expects($this->once())->method('getFirstAttributeValue')
             ->willReturn('default');
 
         $statement = $this->createMock(AttributeStatement::class);
-        $statement->method('getFirstAttributeByName')
+        $statement->expects($this->once())->method('getFirstAttributeByName')
             ->willReturnCallback(
                 fn ($attributeName): MockObject => match ($attributeName) {
                     'EmailAddress' => $emailAttribute,
@@ -61,11 +61,11 @@ final class UserMapperTest extends TestCase
             );
 
         $assertion = $this->createMock(Assertion::class);
-        $assertion->method('getAllAttributeStatements')
+        $assertion->expects($this->once())->method('getAllAttributeStatements')
             ->willReturn([$statement]);
 
         $this->response = $this->createMock(Response::class);
-        $this->response->method('getAllAssertions')
+        $this->response->expects($this->once())->method('getAllAssertions')
             ->willReturn([$assertion]);
     }
 

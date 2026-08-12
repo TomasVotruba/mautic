@@ -24,7 +24,7 @@ final class EmailStatModelTest extends TestCase
         /** @var MockObject&StatRepository $statRepository */
         $statRepository = $this->createMock(StatRepository::class);
 
-        $entityManager->method('getRepository')->willReturn($statRepository);
+        $entityManager->expects($this->once())->method('getRepository')->willReturn($statRepository);
 
         $statRepository->expects($this->once())
             ->method('saveEntities')

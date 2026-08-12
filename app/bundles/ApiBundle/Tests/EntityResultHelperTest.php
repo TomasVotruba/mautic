@@ -57,7 +57,7 @@ final class EntityResultHelperTest extends TestCase
             ->onlyMethods(['getIterator'])
             ->getMock();
 
-        $paginator
+        $paginator->expects($this->once())
             ->method('getIterator')
             ->willReturn($iterator);
 

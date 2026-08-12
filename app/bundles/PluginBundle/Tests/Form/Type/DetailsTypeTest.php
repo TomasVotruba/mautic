@@ -41,7 +41,7 @@ final class DetailsTypeTest extends TestCase
             ->willReturn([]);
 
         $integration = $this->createMock(Integration::class);
-        $integration->method('getApiKeys')
+        $integration->expects($this->once())->method('getApiKeys')
             ->willReturn([]);
         $integration->expects($this->never())
             ->method('getId');
@@ -111,7 +111,7 @@ final class DetailsTypeTest extends TestCase
             ->willReturn([]);
 
         $integration = $this->createMock(Integration::class);
-        $integration->method('getApiKeys')
+        $integration->expects($this->once())->method('getApiKeys')
             ->willReturn([]);
         $integration->expects($this->never())
             ->method('getId');
@@ -192,7 +192,7 @@ final class DetailsTypeTest extends TestCase
             ->willReturn(['non-configured']);
 
         $integration = $this->createMock(Integration::class);
-        $integration->method('getApiKeys')
+        $integration->expects($this->once())->method('getApiKeys')
             ->willReturn([]);
         $integration->expects($this->once())
             ->method('getId')
@@ -274,7 +274,7 @@ final class DetailsTypeTest extends TestCase
             ->method('getSupportedFeatures');
 
         $integration = $this->createMock(Integration::class);
-        $integration->method('getApiKeys')
+        $integration->expects($this->once())->method('getApiKeys')
             ->willReturn([]);
         $integration->expects($this->never())
             ->method('getId');

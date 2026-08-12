@@ -99,7 +99,7 @@ final class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
     {
         $request                  = new Request([], [], [], [], [], ['REMOTE_ADDR' => '192.168.0.1']);
         $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $mockCoreParametersHelper
+        $mockCoreParametersHelper->expects($this->once())
             ->method('get')
             ->willReturnCallback(
                 fn ($param, $defaultValue) => 'track_private_ip_ranges' === $param ? true : $defaultValue
@@ -183,7 +183,7 @@ final class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
     }
 
-    private function getIpHelper(?Request $request = null, ?CoreParametersHelper $mockCoreParametersHelper = null): IpLookupHelper
+    private function getIpHelper(?Request $request = null, ?\PHPUnit\Framework\MockObject\MockObject $mockCoreParametersHelper = null): IpLookupHelper
     {
         $requestStack = new RequestStack();
 
@@ -192,19 +192,19 @@ final class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
         }
 
         $mockRepository = $this->createMock(IpAddressRepository::class);
-        $mockRepository
+        $mockRepository->expects($this->once())
             ->method('__call')
             ->with('findOneByIpAddress')
             ->willReturn(null);
 
         if (null === $mockCoreParametersHelper) {
             $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);
-            $mockCoreParametersHelper
+            $mockCoreParametersHelper->expects($this->once())
                 ->method('get')
                 ->willReturn(null);
         }
 
-        $this->deviceDetectorFactory
+        $this->deviceDetectorFactory->expects($this->once())
             ->method('create')
             ->willReturnCallback(
                 fn (): \PHPUnit\Framework\MockObject\MockObject => $this->deviceDetector

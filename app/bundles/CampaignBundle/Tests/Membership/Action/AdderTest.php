@@ -33,16 +33,16 @@ final class AdderTest extends \PHPUnit\Framework\TestCase
     public function testNewMemberAdded(): void
     {
         $campaign = $this->createMock(Campaign::class);
-        $campaign->method('getId')
+        $campaign->expects($this->once())->method('getId')
             ->willReturn(1);
-        $campaign->method('allowRestart')
+        $campaign->expects($this->once())->method('allowRestart')
             ->willReturn(true);
 
         $contact = $this->createMock(Lead::class);
-        $contact->method('getId')
+        $contact->expects($this->once())->method('getId')
             ->WillReturn(2);
 
-        $this->leadEventLogRepository->method('hasBeenInCampaignRotation')
+        $this->leadEventLogRepository->expects($this->once())->method('hasBeenInCampaignRotation')
             ->with(2, 1, 1)
             ->willReturn(true);
 

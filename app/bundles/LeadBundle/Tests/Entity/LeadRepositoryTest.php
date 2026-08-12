@@ -58,7 +58,7 @@ final class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getEntityManager'])
             ->getMock();
 
-        $mock->method('getEntityManager')
+        $mock->expects($this->once())->method('getEntityManager')
             ->willReturn($dbalMock->getMockEm());
 
         $reflection = new \ReflectionClass(LeadRepository::class);
@@ -90,8 +90,8 @@ final class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $entities = [$contact, $contact2];
 
-        $repository->method('getEntities')->willReturn($entities);
-        $repository->method('buildQueryForGetLeadsByFieldValue')->willReturn(null);
+        $repository->expects($this->once())->method('getEntities')->willReturn($entities);
+        $repository->expects($this->once())->method('buildQueryForGetLeadsByFieldValue')->willReturn(null);
 
         $contacts = $repository->getLeadsByFieldValue('email', ['test@example.com', 'test2@example.com']);
 

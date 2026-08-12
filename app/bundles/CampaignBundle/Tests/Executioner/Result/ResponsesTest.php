@@ -14,48 +14,48 @@ final class ResponsesTest extends \PHPUnit\Framework\TestCase
     public function testExtractingResponsesFromLog(): void
     {
         $actionEvent = $this->createMock(Event::class);
-        $actionEvent->method('getEventType')
+        $actionEvent->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_ACTION);
-        $actionEvent->method('getType')
+        $actionEvent->expects($this->once())->method('getType')
             ->willReturn('actionEvent');
-        $actionEvent->method('getId')
+        $actionEvent->expects($this->once())->method('getId')
             ->willReturn(1);
 
         // BC should set response as just test
         $actionLog = $this->createMock(LeadEventLog::class);
-        $actionLog->method('getEvent')
+        $actionLog->expects($this->once())->method('getEvent')
             ->willReturn($actionEvent);
-        $actionLog->method('getMetadata')
+        $actionLog->expects($this->once())->method('getMetadata')
             ->willReturn(['timeline' => 'test']);
 
         $action2Event = $this->createMock(Event::class);
-        $action2Event->method('getEventType')
+        $action2Event->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_ACTION);
-        $action2Event->method('getType')
+        $action2Event->expects($this->once())->method('getType')
             ->willReturn('action2Event');
-        $action2Event->method('getId')
+        $action2Event->expects($this->once())->method('getId')
             ->willReturn(2);
 
         // Response should be full array
         $action2Log = $this->createMock(LeadEventLog::class);
-        $action2Log->method('getEvent')
+        $action2Log->expects($this->once())->method('getEvent')
             ->willReturn($action2Event);
-        $action2Log->method('getMetadata')
+        $action2Log->expects($this->once())->method('getMetadata')
             ->willReturn(['timeline' => 'test', 'something' => 'else']);
 
         // Response should be full array
         $conditionEvent = $this->createMock(Event::class);
-        $conditionEvent->method('getEventType')
+        $conditionEvent->expects($this->once())->method('getEventType')
             ->willReturn(Event::TYPE_CONDITION);
-        $conditionEvent->method('getType')
+        $conditionEvent->expects($this->once())->method('getType')
             ->willReturn('conditionEvent');
-        $conditionEvent->method('getId')
+        $conditionEvent->expects($this->once())->method('getId')
             ->willReturn(3);
 
         $conditionLog = $this->createMock(LeadEventLog::class);
-        $conditionLog->method('getEvent')
+        $conditionLog->expects($this->once())->method('getEvent')
             ->willReturn($conditionEvent);
-        $conditionLog->method('getMetadata')
+        $conditionLog->expects($this->once())->method('getMetadata')
             ->willReturn(['something' => 'else']);
 
         $logs = new ArrayCollection([$actionLog, $action2Log, $conditionLog]);

@@ -92,7 +92,7 @@ final class AssertCustomMjmlTest extends MauticMysqlTestCase
     private function getTranslatorMock(): Translator
     {
         $translator = $this->createMock(Translator::class);
-        $translator->method('hasId')
+        $translator->expects($this->once())->method('hasId')
           ->willReturn(false);
 
         return $translator;

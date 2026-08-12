@@ -236,16 +236,16 @@ final class RestrictionHelperTest extends TypeTestCase
     protected function getExtensions(): array
     {
         $translator = $this->createMock(Translator::class);
-        $translator->method('trans')
+        $translator->expects($this->once())->method('trans')
             ->willReturnCallback(
                 fn (string $key): string => $key
             );
 
         $validator = $this->createMock(ValidatorInterface::class);
-        $validator
+        $validator->expects($this->once())
             ->method('validate')
             ->willReturn(new ConstraintViolationList());
-        $validator
+        $validator->expects($this->once())
             ->method('getMetadataFor')
             ->willReturn(new ClassMetadata(Form::class));
 
@@ -260,14 +260,14 @@ final class RestrictionHelperTest extends TypeTestCase
 
         $coreParametersHelper  = $this->createStub(CoreParametersHelper::class);
         $dsnTransformerFactory = $this->createMock(DsnTransformerFactory::class);
-        $dsnTransformerFactory->method('create')->willReturnCallback(
+        $dsnTransformerFactory->expects($this->once())->method('create')->willReturnCallback(
             fn (string $configKey, bool $allowEmpty): DsnTransformer => new DsnTransformer($coreParametersHelper, $escapeTransformer, $configKey, $allowEmpty)
         );
 
         $pageRepoMock = $this->createMock(PageRepository::class);
-        $pageRepoMock->method('getPageList')->willReturn([]);
+        $pageRepoMock->expects($this->once())->method('getPageList')->willReturn([]);
         $pageModelMock = $this->createMock(PageModel::class);
-        $pageModelMock->method('getRepository')->willReturn($pageRepoMock);
+        $pageModelMock->expects($this->once())->method('getRepository')->willReturn($pageRepoMock);
 
         return [
             // register the type instances with the PreloadedExtension

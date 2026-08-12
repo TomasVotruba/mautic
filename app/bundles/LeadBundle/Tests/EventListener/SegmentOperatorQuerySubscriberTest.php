@@ -45,8 +45,8 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $this->contactSegmentFilter = $this->createMock(ContactSegmentFilter::class);
         $this->subscriber           = new SegmentOperatorQuerySubscriber();
 
-        $this->queryBuilder->method('expr')->willReturn($this->expressionBuilder);
-        $this->queryBuilder->method('getTableAlias')->willReturn('l');
+        $this->queryBuilder->expects($this->once())->method('expr')->willReturn($this->expressionBuilder);
+        $this->queryBuilder->expects($this->once())->method('getTableAlias')->willReturn('l');
     }
 
     public function testOnEmptyOperatorIfNotEmpty(): void
@@ -57,7 +57,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->queryBuilder->expects($this->never())
@@ -77,16 +77,16 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('empty');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
-        $this->contactSegmentFilter->method('doesColumnSupportEmptyValue')
+        $this->contactSegmentFilter->expects($this->once())->method('doesColumnSupportEmptyValue')
             ->willReturn($doesColumnSupportEmptyValue);
 
         $this->queryBuilder->expects($this->once())
@@ -133,7 +133,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->queryBuilder->expects($this->never())
@@ -153,16 +153,16 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('notEmpty');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
-        $this->contactSegmentFilter->method('doesColumnSupportEmptyValue')
+        $this->contactSegmentFilter->expects($this->once())->method('doesColumnSupportEmptyValue')
             ->willReturn($doesColumnSupportEmptyValue);
 
         $this->queryBuilder->expects($this->once())
@@ -209,10 +209,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a', 'value_b']
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn(OperatorOptions::EXCLUDING_ALL);
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -235,13 +235,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('country');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn(OperatorOptions::EXCLUDING_ALL);
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -272,7 +272,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->expressionBuilder->expects($this->never())
@@ -291,13 +291,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('notBetween');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -332,7 +332,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->subscriber->onMultiselectOperators($event);
@@ -351,13 +351,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('multiselect');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -378,7 +378,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ->willReturn($regexpQuery);
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
-        $contactSegmentFilterCrate->method('getArray')
+        $contactSegmentFilterCrate->expects($this->once())->method('getArray')
             ->willReturn(['operator' => OperatorOptions::INCLUDING_ALL]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
@@ -398,7 +398,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $combinedQuery       = $this->createStub(CompositeExpression::class);
         $eventQuery          = $this->createStub(CompositeExpression::class);
 
-        $regexpQueries->method('__toString')
+        $regexpQueries->expects($this->once())->method('__toString')
             ->willReturn($regexpQueriesString);
 
         $event = new SegmentOperatorQueryBuilderEvent(
@@ -407,13 +407,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('multiselect');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -446,7 +446,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ->willReturn($regexpQuery);
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
-        $contactSegmentFilterCrate->method('getArray')
+        $contactSegmentFilterCrate->expects($this->once())->method('getArray')
             ->willReturn(['operator' => OperatorOptions::EXCLUDING_ALL]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
@@ -467,13 +467,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('multiselect');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -494,7 +494,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ->willReturn($regexpQuery);
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
-        $contactSegmentFilterCrate->method('getArray')
+        $contactSegmentFilterCrate->expects($this->once())->method('getArray')
             ->willReturn(['operator' => OperatorOptions::INCLUDING_ANY]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
@@ -514,7 +514,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
         $combinedQuery       = $this->createStub(CompositeExpression::class);
         $eventQuery          = $this->createStub(CompositeExpression::class);
 
-        $regexpQueries->method('__toString')
+        $regexpQueries->expects($this->once())->method('__toString')
             ->willReturn($regexpQueriesString);
 
         $event = new SegmentOperatorQueryBuilderEvent(
@@ -523,13 +523,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['paramenter_holder_1']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('multiselect');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -562,7 +562,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ->willReturn($regexpQuery);
 
         $contactSegmentFilterCrate = $this->createMock(ContactSegmentFilterCrate::class);
-        $contactSegmentFilterCrate->method('getArray')
+        $contactSegmentFilterCrate->expects($this->once())->method('getArray')
             ->willReturn(['operator' => OperatorOptions::EXCLUDING_ANY]);
 
         $this->contactSegmentFilter->contactSegmentFilterCrate = $contactSegmentFilterCrate;
@@ -580,10 +580,10 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a', 'value_b']
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn(OperatorOptions::INCLUDING_ALL);
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -606,13 +606,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             ['value_a']
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('country');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn(OperatorOptions::INCLUDING_ALL);
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())
@@ -636,7 +636,7 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('unicorn');
 
         $this->subscriber->onDefaultOperators($event);
@@ -652,13 +652,13 @@ final class SegmentOperatorQuerySubscriberTest extends TestCase
             'paramenter_holder_1'
         );
 
-        $this->contactSegmentFilter->method('getField')
+        $this->contactSegmentFilter->expects($this->once())->method('getField')
             ->willReturn('email');
 
-        $this->contactSegmentFilter->method('getOperator')
+        $this->contactSegmentFilter->expects($this->once())->method('getOperator')
             ->willReturn('gt');
 
-        $this->contactSegmentFilter->method('getGlue')
+        $this->contactSegmentFilter->expects($this->once())->method('getGlue')
             ->willReturn(CompositeExpression::TYPE_AND);
 
         $this->queryBuilder->expects($this->once())

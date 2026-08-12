@@ -76,7 +76,7 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $this->leadFieldModel        = $this->createMock(LeadFieldModel::class);
         $this->formRepository        = $this->createMock(FormRepository::class);
         $coreParametersHelper  = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->once())->method('get')
             ->willReturnMap([
                 ['form_field_autofill', false, true],
             ]);
@@ -624,7 +624,7 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $emailField->setIsAutoFill(true);
         $form->addField(123, $emailField);
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
         $this->fieldHelper->expects($this->never())
@@ -649,10 +649,10 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
             'email' => 'john@doe.email',
         ];
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
-        $this->primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
+        $this->primaryCompanyHelper->expects($this->once())->method('getProfileFieldsWithPrimaryCompany')
             ->willReturn($contactCompanyData);
 
         $this->fieldHelper->expects($this->once())
@@ -678,10 +678,10 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
             'email' => 'john+test@doe.email',
         ];
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
-        $this->primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
+        $this->primaryCompanyHelper->expects($this->once())->method('getProfileFieldsWithPrimaryCompany')
             ->willReturn($contactCompanyData);
 
         $this->fieldHelper->expects($this->once())
@@ -707,10 +707,10 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
             'companyname' => 'Mautic',
         ];
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
-        $this->primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
+        $this->primaryCompanyHelper->expects($this->once())->method('getProfileFieldsWithPrimaryCompany')
             ->willReturn($contactCompanyData);
 
         $this->fieldHelper->expects($this->once())
@@ -740,10 +740,10 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
         $leadField->setType('boolean');
         $leadField->setProperties(['yes' => 'Yes', 'no' => 'No']);
 
-        $this->contactTracker->method('getContact')
+        $this->contactTracker->expects($this->once())->method('getContact')
             ->willReturn($contact);
 
-        $this->primaryCompanyHelper->method('getProfileFieldsWithPrimaryCompany')
+        $this->primaryCompanyHelper->expects($this->once())->method('getProfileFieldsWithPrimaryCompany')
             ->willReturn($contactCompanyData);
 
         $this->leadFieldModel->expects($this->once())

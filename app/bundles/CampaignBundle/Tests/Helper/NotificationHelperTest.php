@@ -55,7 +55,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $event->setCampaign($campaign);
 
         $user = $this->createMock(User::class);
-        $user->method('getId')
+        $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
         $lead->expects($this->once())
@@ -91,7 +91,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $campaign->setCreatedBy(1);
 
         $user = $this->createMock(User::class);
-        $user->method('getId')
+        $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
         $lead->expects($this->once())
@@ -128,7 +128,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $campaign->setCreatedBy(2);
 
         $user = $this->createMock(User::class);
-        $user->method('getId')
+        $user->expects($this->once())->method('getId')
             ->willReturn('1');
         $lead = $this->createMock(Lead::class);
         $lead->expects($this->once())
@@ -190,7 +190,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $user     = $this->createMock(User::class);
         $this->prepareCommonMocks($event, $user);
 
-        $this->coreParametersHelper
+        $this->coreParametersHelper->expects($this->once())
             ->method('get')
             ->with('campaign_send_notification_to_author')
             ->willReturn(1);
@@ -238,7 +238,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $campaign->setCreatedBy(2);
 
         $lead = $this->createMock(Lead::class);
-        $lead
+        $lead->expects($this->once())
             ->method('getOwner')
             ->willReturn(null);
 
@@ -250,7 +250,7 @@ final class NotificationHelperTest extends \PHPUnit\Framework\TestCase
             ->method('getEntity')
             ->willReturn($user);
 
-        $this->translator
+        $this->translator->expects($this->once())
             ->method('trans')
             ->willReturn('test');
     }

@@ -58,7 +58,7 @@ final class ContactObjectHelperTest extends TestCase
         $this->fieldList                  = $this->createMock(FieldList::class);
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
 
-        $this->fieldList->method('getFieldList')
+        $this->fieldList->expects($this->once())->method('getFieldList')
             ->willReturn(
                 [
                     'email'   => [],
@@ -66,7 +66,7 @@ final class ContactObjectHelperTest extends TestCase
                 ]
             );
 
-        $this->fieldsWithUniqueIdentifier->method('getFieldsWithUniqueIdentifier')
+        $this->fieldsWithUniqueIdentifier->expects($this->once())->method('getFieldsWithUniqueIdentifier')
             ->with(['object' => Contact::NAME])
             ->willReturn(
                 [
@@ -93,7 +93,7 @@ final class ContactObjectHelperTest extends TestCase
                 $property->setValue($lead, $idMap[$lead->getEmail()]);
             });
 
-        $this->repository
+        $this->repository->expects($this->once())
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one
@@ -143,7 +143,7 @@ final class ContactObjectHelperTest extends TestCase
                 $property->setValue($lead, $idMap[$lead->getEmail() ?? '']);
             });
 
-        $this->repository
+        $this->repository->expects($this->once())
             ->method('detachEntity');
 
         // Test that two objects with the same unique identifier are merged into one

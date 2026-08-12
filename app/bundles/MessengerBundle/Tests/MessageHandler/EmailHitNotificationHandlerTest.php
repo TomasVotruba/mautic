@@ -31,7 +31,7 @@ final class EmailHitNotificationHandlerTest extends TestCase
 
         /** @var MockObject&CoreParametersHelper $parametersHelper */
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
-        $parametersHelper->method('get')
+        $parametersHelper->expects($this->once())->method('get')
             ->willReturn('sync://');
 
         $message = new EmailHitNotification($hitId, $request);
@@ -55,7 +55,7 @@ final class EmailHitNotificationHandlerTest extends TestCase
 
         /** @var MockObject&CoreParametersHelper $parametersHelper */
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
-        $parametersHelper->method('get')
+        $parametersHelper->expects($this->once())->method('get')
             ->willReturn('sync://');
 
         $message = new EmailHitNotification($hitId, $request);
@@ -80,7 +80,7 @@ final class EmailHitNotificationHandlerTest extends TestCase
 
         /** @var MockObject&CoreParametersHelper $parametersHelper */
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
-        $parametersHelper->method('get')
+        $parametersHelper->expects($this->once())->method('get')
             ->willReturn('sync://');
 
         $message  = new EmailHitNotification($hitId, $request);

@@ -17,11 +17,11 @@ final class ListCommandTest extends AbstractMauticTestCase
     public function testCommand(): void
     {
         $connection = $this->createMock(Connection::class);
-        $connection->method('getPlugins')
+        $connection->expects($this->once())->method('getPlugins')
             ->willReturn(json_decode(file_get_contents(__DIR__.'/../../ApiResponse/list.json'), true));
 
         $allowlist = $this->createMock(Allowlist::class);
-        $allowlist->method('getAllowlist')->willReturn(null);
+        $allowlist->expects($this->once())->method('getAllowlist')->willReturn(null);
 
         $pluginCollector = new PluginCollector($connection, $allowlist);
         $command         = new ListCommand($pluginCollector);
@@ -122,7 +122,7 @@ final class ListCommandTest extends AbstractMauticTestCase
 
         $allowlistPayload = DTOAllowlist::fromArray(json_decode(file_get_contents(__DIR__.'/../../ApiResponse/allowlist.json'), true));
         $allowlist        = $this->createMock(Allowlist::class);
-        $allowlist->method('getAllowList')->willReturn($allowlistPayload);
+        $allowlist->expects($this->once())->method('getAllowList')->willReturn($allowlistPayload);
 
         $pluginCollector = new PluginCollector($connection, $allowlist);
         $command         = new ListCommand($pluginCollector);

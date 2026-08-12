@@ -28,15 +28,15 @@ final class SegmentOperatorQueryBuilderEventTest extends \PHPUnit\Framework\Test
         $this->queryBuilder = $this->createMock(QueryBuilder::class);
         $this->filter       = $this->createMock(ContactSegmentFilter::class);
 
-        $this->queryBuilder->method('getTableAlias')
+        $this->queryBuilder->expects($this->once())->method('getTableAlias')
             ->with(MAUTIC_TABLE_PREFIX.'leads')
             ->willReturn('leads');
     }
 
     public function testConstructGettersSetters(): void
     {
-        $this->filter->method('getOperator')->willReturn('=');
-        $this->filter->method('getGlue')->willReturn('and');
+        $this->filter->expects($this->once())->method('getOperator')->willReturn('=');
+        $this->filter->expects($this->once())->method('getGlue')->willReturn('and');
 
         $event = new SegmentOperatorQueryBuilderEvent($this->queryBuilder, $this->filter, 'parameterHolder1');
 

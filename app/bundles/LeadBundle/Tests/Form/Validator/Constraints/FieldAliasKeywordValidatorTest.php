@@ -39,11 +39,11 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
         $translatorMock                       = $this->createMock(TranslatorInterface::class);
         $contactSegmentFilterDictionary       = $this->createMock(ContactSegmentFilterDictionary::class);
 
-        $entityManagerMock
+        $entityManagerMock->expects($this->once())
             ->method('getUnitOfWork')
             ->willReturn($this->unitOfWorkMock);
 
-        $listModelMock->method('getChoiceFields')
+        $listModelMock->expects($this->once())->method('getChoiceFields')
             ->willReturn(
                 [
                     'lead' => [
@@ -63,11 +63,11 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $contactSegmentFilterDictionary->method('getFilters')->willReturn(
+        $contactSegmentFilterDictionary->expects($this->once())->method('getFilters')->willReturn(
             []
         );
 
-        $translatorMock->method('trans')->willReturn('');
+        $translatorMock->expects($this->once())->method('trans')->willReturn('');
 
         $this->validator = new FieldAliasKeywordValidator(
             $listModelMock,
@@ -83,7 +83,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $originalField = [];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalField);
 
@@ -100,7 +100,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $originalField = [];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalField);
 
@@ -119,7 +119,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
             'alias' => 'old_alias',
         ];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalField);
 
@@ -138,7 +138,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
             'alias' => 'old_alias',
         ];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalField);
 
@@ -157,7 +157,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
             'alias' => 'date_added',
         ];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalField);
 
@@ -176,7 +176,7 @@ final class FieldAliasKeywordValidatorTest extends \PHPUnit\Framework\TestCase
             'alias' => 'old_alias',
         ];
 
-        $this->unitOfWorkMock
+        $this->unitOfWorkMock->expects($this->once())
             ->method('getOriginalEntityData')
             ->willReturn($originalFields);
 

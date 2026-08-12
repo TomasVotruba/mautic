@@ -30,7 +30,7 @@ final class PageListTypeTest extends TestCase
     {
         $resolver = new OptionsResolver();
 
-        $this->pageRepositoryMock->method('getPageList')
+        $this->pageRepositoryMock->expects($this->once())->method('getPageList')
             ->willReturn([]);
 
         $this->page->configureOptions($resolver);

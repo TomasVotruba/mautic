@@ -39,7 +39,7 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testSendDeletedSms(): void
     {
         $this->smsModel->expects($this->once())->method('getEntity')->willReturn(null);
-        $this->translator->method('trans')->willReturn('mautic.sms.campaign.failed.missing_entity');
+        $this->translator->expects($this->once())->method('trans')->willReturn('mautic.sms.campaign.failed.missing_entity');
 
         $event    = new Event();
         $campaign = new class() extends Campaign {
@@ -97,7 +97,7 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $event->setType('sms.send_text_sms');
 
         $this->smsModel->expects($this->once())->method('getEntity')->willReturn($sms);
-        $this->translator->method('trans')->willReturn('mautic.sms.campaign.failed.unpublished');
+        $this->translator->expects($this->once())->method('trans')->willReturn('mautic.sms.campaign.failed.unpublished');
 
         $pendingEvent = new PendingEvent(new ActionAccessor([]), $event, new ArrayCollection([$leadLog->getId() => $leadLog]));
 
@@ -112,10 +112,10 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testOnCampaignTriggerBatchAction(): void
     {
         $sms = $this->createMock(Sms::class);
-        $sms
+        $sms->expects($this->once())
             ->method('getId')
             ->willReturn(1);
-        $sms
+        $sms->expects($this->once())
             ->method('isPublished')
             ->willReturn(true);
 
@@ -125,8 +125,8 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['sendSms', 'getEntity'])
             ->getMock();
 
-        $smsModel->method('sendSms')->willReturn([456 => ['status' => true]]);
-        $smsModel->method('getEntity')->willReturn($sms);
+        $smsModel->expects($this->once())->method('sendSms')->willReturn([456 => ['status' => true]]);
+        $smsModel->expects($this->once())->method('getEntity')->willReturn($sms);
 
         $event     = new Event();
         $campaign  = new class() extends Campaign {
@@ -146,7 +146,7 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $leadLog->setLead($contact);
         $contact->setId(789);
 
-        $this->translator->method('trans')
+        $this->translator->expects($this->once())->method('trans')
             ->willReturn('random string');
 
         $subscriber = new CampaignSendSubscriber(
