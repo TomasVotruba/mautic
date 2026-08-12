@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\Rule\AnyInvokedCount;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
 
 final class DBALMocker
@@ -251,7 +252,7 @@ final class DBALMocker
             ])
             ->getMock();
 
-        $mock->expects($this->once())->method('columnCount')
+        $mock->expects(new InvokedCount(1))->method('columnCount')
             ->willReturnCallback(function (): int {
                 if (isset($this->queryResponse[0]) && is_array($this->queryResponse[0])) {
                     return count($this->queryResponse[0]);
