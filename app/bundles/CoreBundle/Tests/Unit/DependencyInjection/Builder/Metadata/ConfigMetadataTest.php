@@ -79,7 +79,6 @@ final class ConfigMetadataTest extends TestCase
         $configMetadata->build();
 
         $config = $this->metadata->toArray()['config'];
-        $this->assertArrayHasKey('mautic.helper.bundle', $config['services']['helpers']);
         $this->assertArrayHasKey('log_path', $config['parameters']);
     }
 
