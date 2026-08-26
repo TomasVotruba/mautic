@@ -349,7 +349,7 @@ final class PublicController extends AbstractFormController
 
         if ($this->dispatcher->hasListeners(PageEvents::PAGE_ON_DISPLAY)) {
             $event = new PageDisplayEvent($content, $page, $this->getPreferenceCenterConfig());
-            if (isset($contact) && $contact instanceof Lead) {
+            if ($contact instanceof Lead) {
                 $event->setLead($contact);
             }
             $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);

@@ -5,7 +5,7 @@ parameters:
     tmpDir: ./var/phpstan-cache
     level: 6
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     treatPhpDocTypesAsCertain: false
     parallel:
@@ -53,7 +53,6 @@ parameters:
                 - app/bundles/CoreBundle/Tests/Functional/DependencyInjection/AbstractContainerSmokeTestCase.php
                 - app/bundles/CoreBundle/Tests/Functional/Doctrine/Paginator/SimplePaginatorTest.php
                 - app/bundles/CoreBundle/Tests/Functional/Service/LocalFileAdapterServiceTest.php
-                - app/bundles/CoreBundle/Tests/Traits/LoggerTrait.php
                 - app/bundles/PageBundle/Tests/EventListener/PreferencePageTest.php
                 - app/bundles/UserBundle/Tests/Controller/LoginUserWithSamlTrait.php
         - identifier: missingType.generics
@@ -61,9 +60,10 @@ parameters:
         -
             identifier: missingType.parameter
             path: *Controller.php
+
         # not all IDEs are as smart as PHPSTAN and need the type hint
         - identifier: function.alreadyNarrowedType
-        - identifier: instanceof.alwaysTrue
+
         # Symfony 7.4 deprecation - Request->get() to be fixed before Symfony 8.0
         - '#Call to deprecated method get\(\) of class Symfony\\Component\\HttpFoundation\\Request#'
         - '/Variable \$\w+ might not be defined\./'
@@ -114,9 +114,6 @@ parameters:
         -
             identifier: return.deprecatedClass
             path: app/bundles/IntegrationsBundle/Tests/Unit/AbstractIntegrationTest.php
-        -
-            identifier: argument.type
-            path: app/bundles/CacheBundle/Tests/EventListener/CacheClearSubscriberTest.php
 
         -
             identifier: class.extendsDeprecatedClass
@@ -148,9 +145,6 @@ parameters:
 
         # mautic deprecations
         -
-            identifier: staticMethod.deprecated
-            message: '#class\s+Mautic#'
-        -
             identifier: parameter.deprecatedClass
             message: '#class\s+Mautic#'
         -
@@ -173,9 +167,6 @@ parameters:
             message: '#class\s+Mautic#'
         -
             identifier: new.deprecatedClass
-            message: '#class\s+Mautic#'
-        -
-            identifier: classConstant.deprecated
             message: '#class\s+Mautic#'
 
         # handle later
@@ -205,9 +196,7 @@ parameters:
             paths:
                 - app/bundles/CoreBundle/EventListener/CommonStatsSubscriber.php
                 - app/bundles/LeadBundle/Form/DataTransformer/TagEntityModelTransformer.php
-        -
-            message: '#Method PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker::willReturnOnConsecutiveCalls\(\) invoked with unpacked array with possibly string key#'
-            path: app/bundles/IntegrationsBundle/Tests/Unit/Sync/SyncDataExchange/Internal/Executioner/ReferenceResolverTest.php
+
         -
             message: '#Method MauticPlugin\\GrapesJsBuilderBundle\\Entity\\GrapesJsBuilderRepository@anonymous/plugins/GrapesJsBuilderBundle/Tests/Unit/Model/GrapesJsBuilderModelTest.php:\d+::findOneBy\(\) is marked as impure but does not have any side effects#'
             path: plugins/GrapesJsBuilderBundle/Tests/Unit/Model/GrapesJsBuilderModelTest.php
