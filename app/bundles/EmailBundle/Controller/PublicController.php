@@ -38,7 +38,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Service\Attribute\Required;
-use Symfony\Contracts\Translation\LocaleAwareInterface;
 
 final class PublicController extends CommonFormController
 {
@@ -354,10 +353,6 @@ final class PublicController extends CommonFormController
             if ($lead) {
                 // Set the lead as current lead
                 $contactTracker->setTrackedContact($lead);
-
-                if (!$this->translator instanceof LocaleAwareInterface) {
-                    throw new \LogicException(sprintf('$this->translator must be an instance of "%s"', LocaleAwareInterface::class));
-                }
 
                 // Set lead lang
                 if ($lead->getPreferredLocale()) {

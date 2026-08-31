@@ -88,7 +88,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
      */
     private function generateTokensFromContent(EmailSendEvent|PageDisplayEvent $event, ?int $leadId, $source = [], $emailId = null): array
     {
-        if ($event instanceof PageDisplayEvent || ($event instanceof EmailSendEvent && $event->shouldAppendClickthrough())) {
+        if ($event instanceof PageDisplayEvent || $event->shouldAppendClickthrough()) {
             $clickthrough = [
                 'source' => $source,
                 'lead'   => $leadId ?? false,
