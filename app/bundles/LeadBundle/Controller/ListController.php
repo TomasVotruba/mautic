@@ -22,6 +22,7 @@ use Mautic\LeadBundle\Segment\Stat\SegmentCampaignShare;
 use Mautic\LeadBundle\Segment\Stat\SegmentDependencies;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -53,6 +54,17 @@ final class ListController extends FormController
 
     private array $listFilters = [];
 
+    #[Route(
+        '/s/segments/{objectAction}/{objectId}',
+        name: 'mautic_segment_action',
+        requirements: ['objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['objectId' => 0],
+    )]
+    public function executeAction(Request $request, $objectAction, $objectId = 0, $objectSubId = 0, $objectModel = ''): Response
+    {
+        return parent::executeAction($request, $objectAction, $objectId, $objectSubId, $objectModel);
+    }
+
     /**
      * Generate's default list view.
      *
@@ -60,6 +72,12 @@ final class ListController extends FormController
      *
      * @throws \Exception
      */
+    #[Route(
+        '/s/segments/{page}',
+        name: 'mautic_segment_index',
+        requirements: ['page' => '\d+'],
+        defaults: ['page' => 0],
+    )]
     public function indexAction(Request $request, $page = 1): Response
     {
         $session = $request->getSession();
@@ -248,10 +266,9 @@ final class ListController extends FormController
     /**
      * Generate's edit form and processes post data.
      *
-     * @param int  $objectId
-     * @param bool $ignorePost
+     * @param int $objectId
      */
-    public function editAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, AuditLogModel $auditLogModel, $objectId, $ignorePost = false, bool $isNew = false): Response
+    public function editAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, AuditLogModel $auditLogModel, $objectId, bool $ignorePost = false, bool $isNew = false): Response
     {
         $postActionVars = $this->getPostActionVars($request, $objectId);
 
@@ -378,11 +395,9 @@ final class ListController extends FormController
     /**
      * Create modifying response for segments - edit.
      *
-     * @param bool $ignorePost
-     *
      * @return Response
      */
-    private function createSegmentModifyResponse(Request $request, LeadList $segment, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $segmentModel, AuditLogModel $auditLogModel, array $postActionVars, string $action, $ignorePost)
+    private function createSegmentModifyResponse(Request $request, LeadList $segment, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $segmentModel, AuditLogModel $auditLogModel, array $postActionVars, string $action, bool $ignorePost)
     {
         if ($segmentModel->isLocked($segment)) {
             return $this->isLocked($postActionVars, $segment, 'lead.list');
@@ -929,6 +944,12 @@ final class ListController extends FormController
      * @param int $objectId
      * @param int $page
      */
+    #[Route(
+        '/s/segment/view/{objectId}/contact/{page}',
+        name: 'mautic_segment_contacts',
+        requirements: ['page' => '\d+', 'objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['page' => 0, 'objectId' => 0],
+    )]
     public function contactsAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $objectId, $page = 1): Response
     {
         $session = $request->getSession();

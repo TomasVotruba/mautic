@@ -6,6 +6,8 @@
 
 ## Removed code
 
+- Deprecated entity `Mautic\CoreBundle\Entity\Cache` removed with no replacement. It mapped the `cache_items` table but was never read or written anywhere in the codebase.
+- Deprecated methods `getResult()` and `setResult()` removed from `Mautic\CampaignBundle\Event\ConditionEvent` and `Mautic\CampaignBundle\Event\DecisionEvent`. Campaign condition/decision listeners must type their event argument as `ConditionEvent` / `DecisionEvent` (not the deprecated parent `CampaignExecutionEvent`) and use the real API: conditions call `pass()` / `fail()` (read back with `wasConditionSatisfied()`), decisions call `setAsApplicable()` (read back with `wasDecisionApplicable()`). The broken `setChannel()` overrides on both events were also removed; they now inherit the working `CampaignExecutionEvent::setChannel()`. The executioners already read the applicability via `wasConditionSatisfied()` / `wasDecisionApplicable()`, so behaviour is unchanged.
 - Deprecated class `Mautic\CampaignBundle\Executioner\Dispatcher\LegacyEventDispatcher` removed. It dispatched the per-contact, deprecated `CampaignExecutionEvent` for campaign actions registered with the legacy `'eventName'`/`'callback'` config keys. `Mautic\CampaignBundle\Executioner\Dispatcher\ActionDispatcher` no longer takes it as a constructor argument and only dispatches the batch `Mautic\CampaignBundle\Event\PendingEvent` for actions declaring `'batchEventName'`. Campaign actions must register `'batchEventName'` and listen on a `PendingEvent` — the `'eventName'`/`'callback'` action path no longer runs.
 - Deprecated trait `Mautic\CampaignBundle\Event\EventArrayTrait` removed. Its `getEventArray()` logic is now a private method inside `Mautic\CampaignBundle\Event\CampaignExecutionEvent`, the only remaining consumer.
 - Deprecated constant `Mautic\DynamicContentBundle\DynamicContentEvents::ON_CAMPAIGN_TRIGGER_ACTION` (`mautic.dwc.on_campaign_trigger_action`) removed, replaced by `ON_CAMPAIGN_BATCH_ACTION` (`mautic.dwc.on_campaign_batch_action`). The `dwc.push_content` action now runs on `Mautic\CampaignBundle\Event\PendingEvent`. Switch any registration or listener to `'batchEventName' => DynamicContentEvents::ON_CAMPAIGN_BATCH_ACTION` and iterate `getPending()`, calling `pass()`/`fail()` per log.
@@ -172,6 +174,188 @@
   Non-model services that happen to live under the same `mautic.<bundle>.model.*` namespace (e.g. `mautic.lead.model.dnc` was a model but `mautic.report.model.report_exporter` is a helper) are unaffected — only aliases pointing at `MauticModelInterface` models were removed.
 
 ## Changed code
+
+- CampaignBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\CampaignBundle\CampaignEvents` string constants. Update any subscriber or listener that keys on one of the converted `CampaignEvents::*` constants (or the raw string name such as `mautic.campaign_on_build`) to key on the event class instead:
+- IntegrationsBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\IntegrationsBundle\IntegrationEvents` string constants. Update any subscriber or listener that keys on one of the converted `IntegrationEvents::*` constants to key on the event class instead:
+- CoreBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\CoreBundle\CoreEvents` string constants. Update any subscriber or listener that keys on a `CoreEvents::*` constant (or the raw string name such as `mautic.build_menu`) to key on the event class instead:
+
+    ```diff
+     public static function getSubscribedEvents(): array
+     {
+         return [
+    -        CampaignEvents::CAMPAIGN_ON_BUILD => ['onCampaignBuild', 0],
+    +        CampaignBuilderEvent::class      => ['onCampaignBuild', 0],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, CampaignEvents::CAMPAIGN_ON_BUILD)` becomes `$dispatcher->dispatch($event)`. The `Mautic\CampaignBundle\CampaignEvents` constants are kept for backwards compatibility but are no longer used internally for these events.
+
+    Full mapping of old event name to new event class (all in the `Mautic\CampaignBundle\Event` namespace):
+
+    | Old event name | `CampaignEvents` constant | New event class |
+    | --- | --- | --- |
+    | `mautic.on_campaign_delete` | `CampaignEvents::ON_CAMPAIGN_DELETE` | `DeleteCampaign` |
+    | `mautic.campaign_on_build` | `CampaignEvents::CAMPAIGN_ON_BUILD` | `CampaignBuilderEvent` |
+    | `mautic.campaign_on_trigger` | `CampaignEvents::CAMPAIGN_ON_TRIGGER` | `CampaignTriggerEvent` |
+    | `mautic.campaign_on_event_executed` | `CampaignEvents::ON_EVENT_EXECUTED` | `ExecutedEvent` |
+    | `mautic.campaign_on_event_executed_batch` | `CampaignEvents::ON_EVENT_EXECUTED_BATCH` | `ExecutedBatchEvent` |
+    | `mautic.campaign_on_event_failed` | `CampaignEvents::ON_EVENT_FAILED` | `FailedEvent` |
+    | `mautic.campaign_on_event_scheduled` | `CampaignEvents::ON_EVENT_SCHEDULED` | `ScheduledEvent` |
+    | `mautic.campaign_on_event_scheduled_batch` | `CampaignEvents::ON_EVENT_SCHEDULED_BATCH` | `ScheduledBatchEvent` |
+    | `mautic.campaign_on_event_decision_evaluation_results` | `CampaignEvents::ON_EVENT_DECISION_EVALUATION_RESULTS` | `DecisionResultsEvent` |
+    | `mautic.campaign_failure_notify` | `CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY` | `NotifyOfFailureEvent` |
+    | `mautic.campaign_unpublish_notify` | `CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY` | `NotifyOfUnpublishEvent` |
+    -        IntegrationEvents::INTEGRATION_COLLECT_INTERNAL_OBJECTS => ['collectInternalObjects', 0],
+    +        InternalObjectEvent::class => ['collectInternalObjects', 0],
+    -        CoreEvents::BUILD_MENU => ['onBuildMenu', 9999],
+    +        MenuEvent::class => ['onBuildMenu', 9999],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, IntegrationEvents::INTEGRATION_COLLECT_INTERNAL_OBJECTS)` becomes `$dispatcher->dispatch($event)`. The `Mautic\IntegrationsBundle\IntegrationEvents` constants are kept for backwards compatibility but are no longer used internally for the events below.
+
+    Full mapping of the converted constants to their event class (all in the `Mautic\IntegrationsBundle\Event` namespace):
+
+    | `IntegrationEvents` constant | New event class |
+    | --- | --- |
+    | `IntegrationEvents::INTEGRATION_POST_EXECUTE` | `SyncEvent` |
+    | `IntegrationEvents::INTEGRATION_CONFIG_FORM_LOAD` | `FormLoadEvent` |
+    | `IntegrationEvents::INTEGRATION_CONFIG_ON_GENERATE_AUTH_URL` | `ConfigAuthUrlEvent` |
+    | `IntegrationEvents::INTEGRATION_API_KEYS_BEFORE_SAVE` | `KeysSaveEvent` |
+    | `IntegrationEvents::INTEGRATION_KEYS_BEFORE_ENCRYPTION` | `KeysEncryptionEvent` |
+    | `IntegrationEvents::INTEGRATION_KEYS_AFTER_DECRYPTION` | `KeysDecryptionEvent` |
+    | `IntegrationEvents::INTEGRATION_MAUTIC_SYNC_FIELDS_LOAD` | `MauticSyncFieldsLoadEvent` |
+    | `IntegrationEvents::INTEGRATION_COLLECT_INTERNAL_OBJECTS` | `InternalObjectEvent` |
+    | `IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS` | `InternalObjectCreateEvent` |
+    | `IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS` | `InternalObjectUpdateEvent` |
+    | `IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD` | `InternalObjectFindByIdEvent` |
+    | `IntegrationEvents::INTEGRATION_BUILD_INTERNAL_OBJECT_ROUTE` | `InternalObjectRouteEvent` |
+    | `IntegrationEvents::INTEGRATION_OBJECT_TOKEN_EVENT` | `MappedIntegrationObjectTokenEvent` |
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, CoreEvents::BUILD_MENU)` becomes `$dispatcher->dispatch($event)`. The `Mautic\CoreBundle\CoreEvents` constants are kept for backwards compatibility but are no longer used internally. Note that listeners for the icon event (`Mautic\CoreBundle\Event\IconEvent`) must now be keyed on `IconEvent::class`, as that event was already dispatched by object.
+
+    Full mapping of old event name to new event class (all in the `Mautic\CoreBundle\Event` namespace):
+
+    | Old event name | `CoreEvents` constant | New event class |
+    | --- | --- | --- |
+    | `mautic.build_menu` | `CoreEvents::BUILD_MENU` | `MenuEvent` |
+    | `mautic.build_route` | `CoreEvents::BUILD_ROUTE` | `RouteEvent` |
+    | `mautic.global_search` | `CoreEvents::GLOBAL_SEARCH` | `GlobalSearchEvent` |
+    | `mautic.list_stats` | `CoreEvents::LIST_STATS` | `StatsEvent` |
+    | `mautic.build_command_list` | `CoreEvents::BUILD_COMMAND_LIST` | `CommandListEvent` |
+    | `mautic.on_fetch_icons` | `CoreEvents::FETCH_ICONS` | `IconEvent` |
+    | `mautic.build_embeddable_js` | `CoreEvents::BUILD_MAUTIC_JS` | `BuildJsEvent` |
+    | `mautic.maintenance_cleanup_data` | `CoreEvents::MAINTENANCE_CLEANUP_DATA` | `MaintenanceEvent` |
+    | `mautic.view_inject_custom_buttons` | `CoreEvents::VIEW_INJECT_CUSTOM_BUTTONS` | `CustomButtonEvent` |
+    | `mautic.view_inject_custom_content` | `CoreEvents::VIEW_INJECT_CUSTOM_CONTENT` | `CustomContentEvent` |
+    | `mautic.view_inject_custom_template` | `CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE` | `CustomTemplateEvent` |
+    | `mautic.view_inject_custom_assets` | `CoreEvents::VIEW_INJECT_CUSTOM_ASSETS` | `CustomAssetsEvent` |
+    | `mautic.on_generated_columns_build` | `CoreEvents::ON_GENERATED_COLUMNS_BUILD` | `GeneratedColumnsEvent` |
+
+- PluginBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\PluginBundle\PluginEvents` string constants. Update any subscriber or listener that keys on one of the converted `PluginEvents::*` constants to key on the event class instead:
+
+    ```diff
+     public static function getSubscribedEvents(): array
+     {
+         return [
+    -        PluginEvents::ON_PLUGIN_INSTALL => ['onInstall', 0],
+    +        PluginInstallEvent::class => ['onInstall', 0],
+         ];
+     }
+    ```
+
+- AssetBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\AssetBundle\AssetEvents` string constants. This covers `ASSET_ON_LOAD` (`AssetLoadEvent`), `ASSET_ON_REMOTE_BROWSE` (`RemoteAssetBrowseEvent`) and the CRUD group `ASSET_PRE_SAVE` (`AssetPreSaveEvent`), `ASSET_POST_SAVE` (`AssetPostSaveEvent`), `ASSET_PRE_DELETE` (`AssetPreDeleteEvent`), `ASSET_POST_DELETE` (`AssetPostDeleteEvent`). The CRUD group previously reused one `AssetEvent` object under four names; each action now dispatches its own `AssetEvent` subclass, so `AssetEvent` is no longer `final`. The dead `ASSET_ON_UPLOAD` constant (never dispatched or listened to) has been removed. Update any subscriber or listener that keys on a converted constant to key on the event class instead:
+
+    ```diff
+     public static function getSubscribedEvents(): array
+     {
+         return [
+    -        AssetEvents::ASSET_ON_LOAD => ['onAssetDownload', 0],
+    +        AssetLoadEvent::class => ['onAssetDownload', 0],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, PluginEvents::ON_PLUGIN_INSTALL)` becomes `$dispatcher->dispatch($event)`. The `Mautic\PluginBundle\PluginEvents` constants are kept for backwards compatibility but are no longer used internally for the events below. Constants that share an event class (e.g. the `PLUGIN_ON_INTEGRATION_KEYS_ENCRYPT` / `_KEYS_DECRYPT` / `_KEYS_MERGE` group and the `PLUGIN_ON_INTEGRATION_REQUEST` / `_RESPONSE` pair) are unchanged.
+
+    Full mapping of the converted constants to their event class (all in the `Mautic\PluginBundle\Event` namespace):
+
+    | `PluginEvents` constant | New event class |
+    | --- | --- |
+    | `PluginEvents::PLUGIN_ON_INTEGRATION_CONFIG_SAVE` | `PluginIntegrationEvent` |
+    | `PluginEvents::PLUGIN_ON_INTEGRATION_AUTH_REDIRECT` | `PluginIntegrationAuthRedirectEvent` |
+    | `PluginEvents::PLUGIN_ON_INTEGRATION_GET_AUTH_CALLBACK_URL` | `PluginIntegrationAuthCallbackUrlEvent` |
+    | `PluginEvents::PLUGIN_ON_INTEGRATION_FORM_DISPLAY` | `PluginIntegrationFormDisplayEvent` |
+    | `PluginEvents::PLUGIN_ON_INTEGRATION_FORM_BUILD` | `PluginIntegrationFormBuildEvent` |
+    | `PluginEvents::ON_PLUGIN_UPDATE` | `PluginUpdateEvent` |
+    | `PluginEvents::ON_PLUGIN_INSTALL` | `PluginInstallEvent` |
+    | `PluginEvents::PLUGIN_IS_PUBLISHED_STATE_CHANGING` | `PluginIsPublishedEvent` |
+
+- ChannelBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\ChannelBundle\ChannelEvents` string constants. Update any subscriber or listener that keys on one of the converted `ChannelEvents::*` constants to key on the event class instead:
+
+    ```diff
+     public static function getSubscribedEvents(): array
+     {
+         return [
+    -        ChannelEvents::ADD_CHANNEL => ['onAddChannel', 0],
+    +        ChannelEvent::class => ['onAddChannel', 0],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, ChannelEvents::CHANNEL_BROADCAST)` becomes `$dispatcher->dispatch($event)`. The `Mautic\ChannelBundle\ChannelEvents` constants are kept for backwards compatibility but are no longer used internally for the events below. Constants that share an event class are unchanged: the `MESSAGE_PRE_SAVE` / `MESSAGE_POST_SAVE` / `MESSAGE_PRE_DELETE` / `MESSAGE_POST_DELETE` group on `MessageEvent`, and `ON_CAMPAIGN_BATCH_ACTION` on the shared `Mautic\CampaignBundle\Event\PendingEvent`.
+
+    Full mapping of the converted constants to their event class (all in the `Mautic\ChannelBundle\Event` namespace):
+
+    | `ChannelEvents` constant | New event class |
+    | --- | --- |
+    | `ChannelEvents::ADD_CHANNEL` | `ChannelEvent` |
+    | `ChannelEvents::CHANNEL_BROADCAST` | `ChannelBroadcastEvent` |
+    | `ChannelEvents::MESSAGE_QUEUED` | `MessageQueueEvent` |
+    | `ChannelEvents::PROCESS_MESSAGE_QUEUE` | `MessageQueueProcessEvent` |
+    | `ChannelEvents::PROCESS_MESSAGE_QUEUE_BATCH` | `MessageQueueBatchProcessEvent` |
+- DynamicContentBundle's `ON_CONTACTS_FILTER_EVALUATE` event is now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\DynamicContentBundle\DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE` string constant. Update any subscriber or listener that keys on that constant to key on `Mautic\DynamicContentBundle\Event\ContactFiltersEvaluateEvent::class` instead, e.g. `$dispatcher->dispatch($event, DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE)` becomes `$dispatcher->dispatch($event)`. The constant is kept for backwards compatibility but is no longer used internally. The `DynamicContentEvent` CRUD group (`PRE_SAVE` / `POST_SAVE` / `PRE_DELETE` / `POST_DELETE`) shares one event class under four names and is unchanged, as are the cross-bundle `CategoryEvent`, `TokenReplacementEvent` and campaign event constants.
+- WebhookBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\WebhookBundle\WebhookEvents` string constants. Update any subscriber or listener that keys on one of the converted `WebhookEvents::*` constants to key on the event class instead:
+- PageBundle events are now dispatched by the event object alone, so the event name is the event class (Symfony 4.3+) instead of the `Mautic\PageBundle\PageEvents` string constants. Update any subscriber or listener that keys on one of the converted `PageEvents::*` constants (or the raw string name such as `mautic.page_on_hit`) to key on the event class instead:
+
+    ```diff
+     public static function getSubscribedEvents(): array
+     {
+         return [
+    -        WebhookEvents::WEBHOOK_ON_BUILD => ['onWebhookBuild', 0],
+    +        WebhookBuilderEvent::class => ['onWebhookBuild', 0],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, WebhookEvents::WEBHOOK_ON_BUILD)` becomes `$dispatcher->dispatch($event)`. The `Mautic\WebhookBundle\WebhookEvents` constants are kept for backwards compatibility but are no longer used internally for the events below.
+
+    | `WebhookEvents` constant | New event class (in `Mautic\WebhookBundle\Event`) |
+    | --- | --- |
+    | `WebhookEvents::WEBHOOK_ON_BUILD` | `WebhookBuilderEvent` |
+    | `WebhookEvents::WEBHOOK_QUEUE_ON_ADD` | `WebhookQueueEvent` |
+    | `WebhookEvents::WEBHOOK_ON_REQUEST` | `WebhookRequestEvent` |
+
+    The CRUD constants (`WEBHOOK_PRE_SAVE` / `WEBHOOK_POST_SAVE` / `WEBHOOK_PRE_DELETE` / `WEBHOOK_POST_DELETE`) and `WEBHOOK_KILL` all share the `WebhookEvent` class, so they keep their string names and are unchanged.
+    -        PageEvents::PAGE_ON_DISPLAY => ['onPageDisplay', 0],
+    +        PageDisplayEvent::class => ['onPageDisplay', 0],
+         ];
+     }
+    ```
+
+    Dispatching drops the redundant second argument, e.g. `$dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY)` becomes `$dispatcher->dispatch($event)`. The `Mautic\PageBundle\PageEvents` constants are kept for backwards compatibility but are no longer used internally for the events below. Constants that share an event class stay as string constants: the `PageEvent` group (`PAGE_ON_BUILD`, `PAGE_PRE_SAVE`, `PAGE_POST_SAVE`, `PAGE_PRE_DELETE`, `PAGE_POST_DELETE`, `PAGE_ON_TOGGLE_PUBLISH`) and the `DetermineWinnerEvent` pair (`ON_DETERMINE_BOUNCE_RATE_WINNER`, `ON_DETERMINE_DWELL_TIME_WINNER`) are unchanged, as are the campaign constants (`ON_CAMPAIGN_TRIGGER_DECISION`, `ON_CAMPAIGN_BATCH_ACTION`) whose events are shared across bundles.
+
+    Full mapping of the converted constants to their event class (all in the `Mautic\PageBundle\Event` namespace):
+
+    | `PageEvents` constant | New event class |
+    | --- | --- |
+    | `PageEvents::VIDEO_ON_HIT` | `VideoHitEvent` |
+    | `PageEvents::PAGE_ON_HIT` | `PageHitEvent` |
+    | `PageEvents::PAGE_ON_DISPLAY` | `PageDisplayEvent` |
+    | `PageEvents::REDIRECT_DO_NOT_TRACK` | `UntrackableUrlsEvent` |
+    | `PageEvents::ON_REDIRECT_GENERATE` | `RedirectGenerationEvent` |
+    | `PageEvents::ON_CONTACT_TRACKED` | `TrackingEvent` |
 
 - `Mautic\CoreBundle\Factory\ModelFactory` now builds its service locator from a `defaultIndexMethod` on the `mautic.model` tag, replacing the removed `Mautic\CoreBundle\DependencyInjection\Compiler\ModelPass`. Every model (a service implementing `Mautic\CoreBundle\Model\MauticModelInterface`) declares its `ModelFactory::getModel()` lookup key via a static `getName()` method:
 

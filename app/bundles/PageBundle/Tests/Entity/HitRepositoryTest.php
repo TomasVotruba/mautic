@@ -137,10 +137,7 @@ final class HitRepositoryTest extends MauticMysqlTestCase
         $this->assertSame($expectedHitDate->getTimestamp(), $hitDate->getTimestamp());
     }
 
-    /**
-     * @param Email|Page|null $entity
-     */
-    private function createHit(Lead $lead, \DateTime $dateHit, string $trackingId, $entity = null): Hit
+    private function createHit(Lead $lead, \DateTime $dateHit, string $trackingId, Email|Page|null $entity = null): Hit
     {
         $hit = new Hit();
         $hit->setLead($lead);
@@ -186,9 +183,7 @@ final class HitRepositoryTest extends MauticMysqlTestCase
 
     private function getIpAddress(): IpAddress
     {
-        if (!isset($this->ipAddress)) {
-            $this->ipAddress = new IpAddress('127.0.0.1');
-        }
+        $this->ipAddress ??= new IpAddress('127.0.0.1');
 
         return $this->ipAddress;
     }

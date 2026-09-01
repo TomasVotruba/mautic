@@ -36,6 +36,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class FormModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -67,9 +68,7 @@ final class FormModelTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        if (!isset($_ENV['MAUTIC_UPLOAD_DIR'])) {
-            $_ENV['MAUTIC_UPLOAD_DIR'] = sys_get_temp_dir();
-        }
+        $_ENV['MAUTIC_UPLOAD_DIR'] ??= sys_get_temp_dir();
         $this->contactTracker        = $this->createMock(ContactTracker::class);
         $this->fieldHelper           = $this->createMock(FormFieldHelper::class);
         $this->primaryCompanyHelper  = $this->createMock(PrimaryCompanyHelper::class);

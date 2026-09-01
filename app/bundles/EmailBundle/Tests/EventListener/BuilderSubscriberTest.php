@@ -23,6 +23,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class BuilderSubscriberTest extends TestCase
 {
     private MockObject&CoreParametersHelper $coreParametersHelper;
@@ -59,6 +60,8 @@ final class BuilderSubscriberTest extends TestCase
 
     public function testOwnerSignatureIsUsedOnEmailGenerate(): void
     {
+        $this->emailModel->method('buildUrl')->willReturn('https://some.url');
+
         $email = new Email();
         $email->setUseOwnerAsMailer(true);
 

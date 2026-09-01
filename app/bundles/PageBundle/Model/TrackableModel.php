@@ -11,7 +11,6 @@ use Mautic\PageBundle\Entity\Redirect;
 use Mautic\PageBundle\Entity\Trackable;
 use Mautic\PageBundle\Entity\TrackableRepository;
 use Mautic\PageBundle\Event\UntrackableUrlsEvent;
-use Mautic\PageBundle\PageEvents;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -98,9 +97,7 @@ class TrackableModel extends AbstractCommonModel
         $shortenUrl = false,
         $utmTags = [],
     ) {
-        if (!isset($clickthrough['channel'])) {
-            $clickthrough['channel'] = [$trackable->getChannel() => $trackable->getChannelId()];
-        }
+        $clickthrough['channel'] ??= [$trackable->getChannel() => $trackable->getChannelId()];
 
         $redirect = $trackable->getRedirect();
 
@@ -219,12 +216,11 @@ class TrackableModel extends AbstractCommonModel
      *
      * @param string|string[]|null $content
      */
-    public function getDoNotTrackList($content): array
+    public function getDoNotTrackList(string|array|null $content): array
     {
         /** @var UntrackableUrlsEvent $event */
         $event = $this->dispatcher->dispatch(
-            new UntrackableUrlsEvent($content),
-            PageEvents::REDIRECT_DO_NOT_TRACK
+            new UntrackableUrlsEvent($content)
         );
 
         return $event->getDoNotTrackList();
@@ -570,7 +566,7 @@ class TrackableModel extends AbstractCommonModel
         // Check for tokens in the query
         if (!empty($urlParts['query'])) {
             [$tokenizedParams, $untokenizedParams] = $this->parseTokenizedQuery($urlParts['query']);
-            if ($tokenizedParams) {
+            if ([] !== $tokenizedParams) {
                 // Rebuild the query without the tokenized query params for now
                 $urlParts['query'] = $this->httpBuildQuery($untokenizedParams);
             }

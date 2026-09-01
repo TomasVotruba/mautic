@@ -3,7 +3,6 @@
 namespace Mautic\CampaignBundle\Executioner\Scheduler;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\Enum\RepublishBehavior;
@@ -50,10 +49,7 @@ class EventScheduler
         $this->schedule($event, $executionDate, $contacts);
     }
 
-    /**
-     * @param bool $isInactiveEvent
-     */
-    public function schedule(Event $event, \DateTimeInterface $executionDate, ArrayCollection $contacts, $isInactiveEvent = false): void
+    public function schedule(Event $event, \DateTimeInterface $executionDate, ArrayCollection $contacts, bool $isInactiveEvent = false): void
     {
         $config = $this->collector->getEventConfig($event);
 
@@ -333,8 +329,7 @@ class EventScheduler
     private function dispatchScheduledEvent(AbstractEventAccessor $config, LeadEventLog $log, bool $isReschedule = false): void
     {
         $this->dispatcher->dispatch(
-            new ScheduledEvent($config, $log, $isReschedule),
-            CampaignEvents::ON_EVENT_SCHEDULED
+            new ScheduledEvent($config, $log, $isReschedule)
         );
     }
 
@@ -345,15 +340,11 @@ class EventScheduler
         }
 
         $this->dispatcher->dispatch(
-            new ScheduledBatchEvent($config, $event, $logs, $isReschedule),
-            CampaignEvents::ON_EVENT_SCHEDULED_BATCH
+            new ScheduledBatchEvent($config, $event, $logs, $isReschedule)
         );
     }
 
-    /**
-     * @param bool $isInactiveEvent
-     */
-    private function scheduleEventForContacts(Event $event, AbstractEventAccessor $config, \DateTimeInterface $executionDate, ArrayCollection $contacts, $isInactiveEvent = false): void
+    private function scheduleEventForContacts(Event $event, AbstractEventAccessor $config, \DateTimeInterface $executionDate, ArrayCollection $contacts, bool $isInactiveEvent = false): void
     {
         foreach ($contacts as $contact) {
             // Create the entry

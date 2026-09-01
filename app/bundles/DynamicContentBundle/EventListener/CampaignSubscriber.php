@@ -3,9 +3,8 @@
 namespace Mautic\DynamicContentBundle\EventListener;
 
 use Mautic\CacheBundle\Cache\CacheProvider;
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Event\CampaignBuilderEvent;
-use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
+use Mautic\CampaignBundle\Event\DecisionEvent;
 use Mautic\CampaignBundle\Event\PendingEvent;
 use Mautic\CoreBundle\Event\TokenReplacementEvent;
 use Mautic\DynamicContentBundle\DynamicContentEvents;
@@ -31,7 +30,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CampaignEvents::CAMPAIGN_ON_BUILD                  => ['onCampaignBuild', 0],
+            CampaignBuilderEvent::class => ['onCampaignBuild', 0],
             DynamicContentEvents::ON_CAMPAIGN_TRIGGER_DECISION => ['onCampaignTriggerDecision', 0],
             DynamicContentEvents::ON_CAMPAIGN_BATCH_ACTION     => ['onCampaignTriggerAction', 0],
         ];
@@ -83,7 +82,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function onCampaignTriggerDecision(CampaignExecutionEvent $event): false|CampaignExecutionEvent
+    public function onCampaignTriggerDecision(DecisionEvent $event): void
     {
         $eventConfig  = $event->getConfig();
         $eventDetails = $event->getEventDetails();
@@ -91,9 +90,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
 
         // stop
         if ($eventConfig['dwc_slot_name'] !== $eventDetails) {
-            $event->setResult(false);
-
-            return false;
+            return;
         }
 
         $defaultDwc = $this->dynamicContentRepository->getEntity($eventConfig['dynamicContent']);
@@ -109,8 +106,7 @@ final readonly class CampaignSubscriber implements EventSubscriberInterface
         $this->cache->save($item);
 
         $event->stopPropagation();
-
-        return $event->setResult(true);
+        $event->setAsApplicable();
     }
 
     public function onCampaignTriggerAction(PendingEvent $event): void

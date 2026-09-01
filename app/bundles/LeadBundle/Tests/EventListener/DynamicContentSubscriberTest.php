@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\EventListener;
 
-use Mautic\DynamicContentBundle\DynamicContentEvents;
 use Mautic\DynamicContentBundle\Event\ContactFiltersEvaluateEvent;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadListRepository;
@@ -13,6 +12,7 @@ use Mautic\LeadBundle\Segment\OperatorOptions;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class DynamicContentSubscriberTest extends TestCase
 {
     /**
@@ -33,7 +33,7 @@ final class DynamicContentSubscriberTest extends TestCase
     public function testGetSubscribedEvents(): void
     {
         $this->assertSame([
-            DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE => ['onContactFilterEvaluate', 0],
+            ContactFiltersEvaluateEvent::class => ['onContactFilterEvaluate', 0],
         ], DynamicContentSubscriber::getSubscribedEvents());
     }
 

@@ -25,6 +25,7 @@ use Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Integration\Integration
 use Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Integration\ObjectChangeGenerator;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class IntegrationSyncProcessTest extends TestCase
 {
     private const string INTEGRATION_NAME = 'Test';
@@ -119,7 +120,7 @@ final class IntegrationSyncProcessTest extends TestCase
 
         $report = $this->getSyncProcess($mappingManual)->getSyncReport(1);
 
-        $this->assertEquals(self::INTEGRATION_NAME, $report->getIntegration());
+        $this->assertSame(self::INTEGRATION_NAME, $report->getIntegration());
     }
 
     public function testOrderIsBuiltBasedOnMapping(): void
@@ -230,6 +231,6 @@ final class IntegrationSyncProcessTest extends TestCase
             );
 
         $syncReport = $this->getSyncProcess($mappingManual)->getSyncReport(1);
-        $this->assertEquals(self::INTEGRATION_NAME, $syncReport->getIntegration());
+        $this->assertSame(self::INTEGRATION_NAME, $syncReport->getIntegration());
     }
 }

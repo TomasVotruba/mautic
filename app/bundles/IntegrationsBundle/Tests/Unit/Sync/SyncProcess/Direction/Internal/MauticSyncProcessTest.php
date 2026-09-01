@@ -27,6 +27,7 @@ use Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGe
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class MauticSyncProcessTest extends TestCase
 {
     private const string INTEGRATION_NAME = 'Test';
@@ -112,7 +113,7 @@ final class MauticSyncProcessTest extends TestCase
 
         $report = $this->createMauticSyncProcess($mappingManual)->getSyncReport(1);
 
-        $this->assertEquals(MauticSyncDataExchange::NAME, $report->getIntegration());
+        $this->assertSame(MauticSyncDataExchange::NAME, $report->getIntegration());
     }
 
     public function testGetSyncOrder(): void
@@ -274,7 +275,7 @@ final class MauticSyncProcessTest extends TestCase
             );
 
         $syncReport = $this->createMauticSyncProcess($mappingManual)->getSyncReport(1);
-        $this->assertEquals(self::INTEGRATION_NAME, $syncReport->getIntegration());
+        $this->assertSame(self::INTEGRATION_NAME, $syncReport->getIntegration());
     }
 
     private function createMauticSyncProcess(MappingManualDAO $mappingManualDAO): MauticSyncProcess

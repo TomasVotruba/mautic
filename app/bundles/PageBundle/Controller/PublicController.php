@@ -29,13 +29,13 @@ use Mautic\PageBundle\Model\PageModel;
 use Mautic\PageBundle\Model\RedirectModel;
 use Mautic\PageBundle\Model\Tracking404Model;
 use Mautic\PageBundle\Model\VideoModel;
-use Mautic\PageBundle\PageEvents;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -259,7 +259,7 @@ final class PublicController extends AbstractFormController
             );
 
             $event = new PageDisplayEvent((string) $content, $entity);
-            $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);
+            $this->dispatcher->dispatch($event);
             $content = $event->getContent();
 
             $isHitTrackable = $model->hitPage($entity, $request, Response::HTTP_OK, $lead, $query);
@@ -282,6 +282,11 @@ final class PublicController extends AbstractFormController
     /**
      * @throws FileNotFoundException
      */
+    #[Route(
+        '/page/preview/{id}/{objectType}',
+        name: 'mautic_page_preview',
+        defaults: ['objectType' => null],
+    )]
     public function previewAction(Request $request, PageConfig $pageConfig, CorePermissions $security, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, PageModel $model, LeadModel $leadModel, int $id, ?string $objectType = null): Response
     {
         $page = $model->getEntity($id);
@@ -347,18 +352,22 @@ final class PublicController extends AbstractFormController
             $content = str_replace('</head>', $analytics."\n</head>", $content);
         }
 
-        if ($this->dispatcher->hasListeners(PageEvents::PAGE_ON_DISPLAY)) {
+        if ($this->dispatcher->hasListeners(PageDisplayEvent::class)) {
             $event = new PageDisplayEvent($content, $page, $this->getPreferenceCenterConfig());
             if (isset($contact) && $contact instanceof Lead) {
                 $event->setLead($contact);
             }
-            $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);
+            $this->dispatcher->dispatch($event);
             $content = $event->getContent();
         }
 
         return new Response($content);
     }
 
+    #[Route(
+        '/mtracking.gif',
+        name: 'mautic_page_tracker',
+    )]
     public function trackingImageAction(Request $request, PageModel $model): Response
     {
         $model->hitPage(null, $request);
@@ -366,6 +375,10 @@ final class PublicController extends AbstractFormController
         return TrackingPixelHelper::getResponse($request);
     }
 
+    #[Route(
+        '/mtc/event',
+        name: 'mautic_page_tracker_cors',
+    )]
     public function trackingAction(
         Request $request,
         DeviceTrackingServiceInterface $deviceTrackingService,
@@ -396,7 +409,7 @@ final class PublicController extends AbstractFormController
         $sessionValue   = $trackingHelper->getCacheItem(true);
 
         $event = new TrackingEvent($lead, $request, $sessionValue);
-        $this->dispatcher->dispatch($event, PageEvents::ON_CONTACT_TRACKED);
+        $this->dispatcher->dispatch($event);
 
         return new JsonResponse(
             [
@@ -412,6 +425,14 @@ final class PublicController extends AbstractFormController
     /**
      * @throws \Exception
      */
+    #[Route(
+        '/r/{redirectId}',
+        name: 'mautic_url_redirect',
+    )]
+    #[Route(
+        '/redirect/{redirectId}',
+        name: 'mautic_page_redirect',
+    )]
     public function redirectAction(
         Request $request,
         ContactRequestHelper $contactRequestHelper,
@@ -532,6 +553,10 @@ final class PublicController extends AbstractFormController
     /**
      * Get the ID of the currently tracked Contact.
      */
+    #[Route(
+        '/mtc',
+        name: 'mautic_page_tracker_getcontact',
+    )]
     public function getContactIdAction(DeviceTrackingServiceInterface $trackedDeviceService, ContactTracker $contactTracker): JsonResponse
     {
         $data = [];

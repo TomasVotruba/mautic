@@ -16,6 +16,7 @@ use Mautic\LeadBundle\Model\LeadModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -135,7 +136,6 @@ final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
                         $event->setIsMatched(true); // Match found in a subscriber.
                     };
                     $callback($parameters[0]);
-                    $this->assertSame(DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE, $parameters[1]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $callback = function (TokenReplacementEvent $event) use ($contact, $slot): void {
@@ -189,7 +189,6 @@ final class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
                             // Match not found in any subscriber.
                         };
                         $callback($parameters[0]);
-                        $this->assertSame(DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE, $parameters[1]);
                     }
 
                     return $parameters[0];

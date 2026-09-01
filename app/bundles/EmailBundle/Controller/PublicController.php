@@ -30,13 +30,13 @@ use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageDisplayEvent;
 use Mautic\PageBundle\EventListener\BuilderSubscriber;
 use Mautic\PageBundle\Model\PageModel;
-use Mautic\PageBundle\PageEvents;
 use Mautic\PluginBundle\Helper\IntegrationHelper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
 
@@ -65,6 +65,10 @@ final class PublicController extends CommonFormController
         $this->mauticLogger = $mauticLogger;
     }
 
+    #[Route(
+        '/email/view/{idHash}',
+        name: 'mautic_email_webview',
+    )]
     public function indexAction(Request $request, AnalyticsHelper $analyticsHelper, $idHash): Response
     {
         $stat  = $this->emailModel->getEmailStatus($idHash);
@@ -111,6 +115,10 @@ final class PublicController extends CommonFormController
         return $this->notFound();
     }
 
+    #[Route(
+        '/email/{idHash}.gif',
+        name: 'mautic_email_tracker',
+    )]
     public function trackingImageAction(
         Request $request,
         MessageBusInterface $messageBus,
@@ -132,6 +140,11 @@ final class PublicController extends CommonFormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
+    #[Route(
+        '/email/unsubscribe/{idHash}/{urlEmail}/{secretHash}',
+        name: 'mautic_email_unsubscribe',
+        defaults: ['urlEmail' => null, 'secretHash' => null],
+    )]
     public function unsubscribeAction(Request $request, ContactTracker $contactTracker, EmailModel $model, LeadModel $leadModel, FormModel $formModel, PageModel $pageModel, MailHashHelper $mailHash, ThemeHelper $themeHelper, EmailDefaultsHelper $emailDefaultsHelper, $idHash, ?string $urlEmail = null, ?string $secretHash = null): Response
     {
         $stat                   = $model->getEmailStatus($idHash);
@@ -315,7 +328,7 @@ final class PublicController extends CommonFormController
         );
 
         $event = new PageDisplayEvent($html, $prefCenter, $eventParameters);
-        $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);
+        $this->dispatcher->dispatch($event);
 
         $request->getSession()->remove($successSessionName);
         $pageModel->hitPage($prefCenter, $request, 200, $lead);
@@ -327,6 +340,11 @@ final class PublicController extends CommonFormController
         );
     }
 
+    #[Route(
+        '/email/dnc/{idHash}/{urlEmail}/{secretHash}',
+        name: 'mautic_email_unsubscribe_all',
+        defaults: ['urlEmail' => null, 'secretHash' => null],
+    )]
     public function unsubscribeAllAction(Request $request, string $idHash, ?string $urlEmail = null, ?string $secretHash = null): Response
     {
         $request->attributes->set('unsubscribe_all', 1);
@@ -343,6 +361,10 @@ final class PublicController extends CommonFormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
+    #[Route(
+        '/email/resubscribe/{idHash}',
+        name: 'mautic_email_resubscribe',
+    )]
     public function resubscribeAction(ContactTracker $contactTracker, EmailModel $model, MailHashHelper $mailHash, ThemeHelper $themeHelper, AssetsHelper $assetsHelper, AnalyticsHelper $analyticsHelper, $idHash): Response
     {
         $stat = $model->getEmailStatus($idHash);
@@ -433,6 +455,10 @@ final class PublicController extends CommonFormController
     /**
      * Handles mailer transport webhook post.
      */
+    #[Route(
+        '/mailer/callback',
+        name: 'mautic_mailer_transport_callback',
+    )]
     public function mailerCallbackAction(Request $request): Response
     {
         $event = new TransportWebhookEvent($request);
@@ -444,6 +470,12 @@ final class PublicController extends CommonFormController
     /**
      * Preview email.
      */
+    #[Route(
+        '/email/preview/{objectId}/{objectType}',
+        name: 'mautic_email_preview',
+        requirements: ['objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['objectType' => null, 'objectId' => 0],
+    )]
     public function previewAction(
         AnalyticsHelper $analyticsHelper,
         ThemeHelper $themeHelper,
@@ -559,7 +591,7 @@ final class PublicController extends CommonFormController
     /**
      * @throws \Exception
      */
-    private function doTracking(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, $integration): void
+    private function doTracking(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, string $integration): void
     {
         // if additional data were sent with the tracking pixel
         $query_string = $request->server->get('QUERY_STRING');
@@ -654,7 +686,12 @@ final class PublicController extends CommonFormController
         }
     }
 
-    public function pluginTrackingGifAction(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, $integration): Response
+    #[Route(
+        '/plugin/{integration}/tracking.gif',
+        name: 'mautic_plugin_tracker',
+        requirements: ['integration' => \Symfony\Component\Routing\Requirement\Requirement::CATCH_ALL],
+    )]
+    public function pluginTrackingGifAction(Request $request, IntegrationHelper $integrationHelper, MailHelper $mailer, string $integration): Response
     {
         $this->doTracking($request, $integrationHelper, $mailer, $integration);
 
@@ -664,7 +701,7 @@ final class PublicController extends CommonFormController
     /**
      * @param array<string, mixed> $query
      */
-    private function addStat(MailHelper $mailer, $lead, string $email, array $query, string $idHash): ?Stat
+    private function addStat(MailHelper $mailer, ?array $lead, string $email, array $query, string $idHash): ?Stat
     {
         if (null !== $lead) {
             // To lead

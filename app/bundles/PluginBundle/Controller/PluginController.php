@@ -13,12 +13,12 @@ use Mautic\PluginBundle\Form\Type\DetailsType;
 use Mautic\PluginBundle\Helper\IntegrationHelper;
 use Mautic\PluginBundle\Integration\AbstractIntegration;
 use Mautic\PluginBundle\Model\PluginModel;
-use Mautic\PluginBundle\PluginEvents;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Service\Attribute\Required;
 
 final class PluginController extends FormController
@@ -36,6 +36,10 @@ final class PluginController extends FormController
         $this->pluginRepository = $pluginRepository;
     }
 
+    #[Route(
+        '/s/plugins',
+        name: 'mautic_plugin_index',
+    )]
     public function indexAction(Request $request, IntegrationHelper $integrationHelper): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
@@ -136,6 +140,12 @@ final class PluginController extends FormController
     /**
      * @param string $name
      */
+    #[Route(
+        '/s/plugins/config/{name}/{page}',
+        name: 'mautic_plugin_config',
+        requirements: ['page' => '\d+'],
+        defaults: ['page' => 0],
+    )]
     public function configAction(Request $request, EntityManagerInterface $em, IntegrationHelper $integrationHelper, LoggerInterface $mauticLogger, $name, $activeTab = 'details-container', $page = 1): JsonResponse|Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
@@ -254,14 +264,14 @@ final class PluginController extends FormController
 
                     if ($valid || $authorize) {
                         $mauticLogger->info('Dispatching integration config save event.');
-                        if ($this->dispatcher->hasListeners(PluginEvents::PLUGIN_ON_INTEGRATION_CONFIG_SAVE)) {
+                        if ($this->dispatcher->hasListeners(PluginIntegrationEvent::class)) {
                             $mauticLogger->info('Event dispatcher has integration config save listeners.');
                             if (!$valid && !$existingPublishedState) {
                                 $integrationObject->getIntegrationSettings()->setIsPublished(false);
                             }
                             $event = new PluginIntegrationEvent($integrationObject);
 
-                            $this->dispatcher->dispatch($event, PluginEvents::PLUGIN_ON_INTEGRATION_CONFIG_SAVE);
+                            $this->dispatcher->dispatch($event);
 
                             $entity = $event->getEntity();
                         }
@@ -277,8 +287,7 @@ final class PluginController extends FormController
                             new PluginIntegrationAuthRedirectEvent(
                                 $integrationObject,
                                 $integrationObject->getAuthLoginUrl()
-                            ),
-                            PluginEvents::PLUGIN_ON_INTEGRATION_AUTH_REDIRECT
+                            )
                         );
                         $oauthUrl = $event->getAuthUrl();
 
@@ -366,6 +375,10 @@ final class PluginController extends FormController
         );
     }
 
+    #[Route(
+        '/s/plugins/info/{name}',
+        name: 'mautic_plugin_info',
+    )]
     public function infoAction(IntegrationHelper $integrationHelper, $name): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
@@ -404,6 +417,10 @@ final class PluginController extends FormController
     /**
      * Scans the addon bundles directly and loads bundles which are not registered to the database.
      */
+    #[Route(
+        '/s/plugins/reload',
+        name: 'mautic_plugin_reload',
+    )]
     public function reloadAction(Request $request, ReloadFacade $reloadFacade): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {

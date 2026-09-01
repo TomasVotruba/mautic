@@ -635,9 +635,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
     public function prepareFieldsForSync($fields, $keys, $object = null)
     {
         $leadFields = [];
-        if (null === $object) {
-            $object = 'Lead';
-        }
+        $object ??= 'Lead';
 
         $objects = (!is_array($object)) ? [$object] : $object;
         if (is_string($object) && 'Account' === $object) {
@@ -650,9 +648,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
         }
 
         foreach ($objects as $obj) {
-            if (!isset($leadFields[$obj])) {
-                $leadFields[$obj] = [];
-            }
+            $leadFields[$obj] ??= [];
 
             foreach ($keys as $key) {
                 if (strpos($key, '__'.$obj)) {
@@ -1226,7 +1222,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
                 } catch (ApiErrorException $exception) {
                     $this->cleanupFromSync($leadsToSync, $exception);
                 }
-            } elseif ($checkEmailsInSF) {
+            } elseif ([] !== $checkEmailsInSF) {
                 $sfEntityRecords = $this->getSalesforceObjectsByEmails($sfObject, $checkEmailsInSF, implode(',', array_keys($fieldMapping[$sfObject]['create'])));
 
                 if (!isset($sfEntityRecords['records'])) {
@@ -1302,7 +1298,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
             if (in_array('Contact', $config['objects'])) {
                 $resultContact = $this->integrationEntityRepository->getIntegrationsEntityId('Salesforce', 'Contact', 'lead', $lead->getId());
 
-                if ($resultContact) {
+                if ([] !== $resultContact) {
                     return $resultContact;
                 }
             }
@@ -2338,9 +2334,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
      */
     protected function cleanPriorityFields(array $fieldsToUpdate, $objects = null)
     {
-        if (null === $objects) {
-            $objects = ['Lead', 'Contact'];
-        }
+        $objects ??= ['Lead', 'Contact'];
 
         if (isset($fieldsToUpdate['leadFields'])) {
             // Pass in the whole config

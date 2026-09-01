@@ -2,12 +2,12 @@
 
 namespace Mautic\CoreBundle\Controller;
 
-use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\PageBundle\Model\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -28,6 +28,10 @@ final class DefaultController extends CommonController
         $this->pageModel = $pageModel;
     }
 
+    #[Route(
+        '/',
+        name: 'mautic_base_index',
+    )]
     public function indexAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $root = $this->coreParametersHelper->get('webroot');
@@ -55,7 +59,7 @@ final class DefaultController extends CommonController
 
         if (!empty($searchStr)) {
             $event = new GlobalSearchEvent($searchStr, $this->translator);
-            $this->dispatcher->dispatch($event, CoreEvents::GLOBAL_SEARCH);
+            $this->dispatcher->dispatch($event);
             $results = $event->getResults();
         } else {
             $results = [];

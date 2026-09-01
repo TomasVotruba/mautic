@@ -33,7 +33,7 @@ final class BuilderSubscriber implements EventSubscriberInterface
             EmailEvents::EMAIL_ON_SEND    => ['onEmailGenerate', 0],
             EmailEvents::EMAIL_ON_DISPLAY => ['onEmailGenerate', 0],
             PageEvents::PAGE_ON_BUILD     => ['onBuilderBuild', 0],
-            PageEvents::PAGE_ON_DISPLAY   => ['onPageDisplay', 0],
+            PageDisplayEvent::class   => ['onPageDisplay', 0],
         ];
     }
 
@@ -81,12 +81,9 @@ final class BuilderSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param array    $source
-     * @param int|null $emailId
-     *
      * @return mixed[]
      */
-    private function generateTokensFromContent(EmailSendEvent|PageDisplayEvent $event, ?int $leadId, $source = [], $emailId = null): array
+    private function generateTokensFromContent(EmailSendEvent|PageDisplayEvent $event, ?int $leadId, array $source = [], ?int $emailId = null): array
     {
         if ($event instanceof PageDisplayEvent || ($event instanceof EmailSendEvent && $event->shouldAppendClickthrough())) {
             $clickthrough = [

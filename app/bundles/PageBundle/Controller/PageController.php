@@ -20,6 +20,7 @@ use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Model\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -36,6 +37,23 @@ final class PageController extends FormController
         $this->pageModel = $pageModel;
     }
 
+    #[Route(
+        '/s/pages/{objectAction}/{objectId}',
+        name: 'mautic_page_action',
+        requirements: ['objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['objectId' => 0],
+    )]
+    public function executeAction(Request $request, $objectAction, $objectId = 0, $objectSubId = 0, $objectModel = ''): Response
+    {
+        return parent::executeAction($request, $objectAction, $objectId, $objectSubId, $objectModel);
+    }
+
+    #[Route(
+        '/s/pages/{page}',
+        name: 'mautic_page_index',
+        requirements: ['page' => '\d+'],
+        defaults: ['page' => 0],
+    )]
     public function indexAction(Request $request, PageConfig $pageConfig, PageHelperFactoryInterface $pageHelperFactory, PageModel $model, int $page = 1): Response
     {
         // set some permissions
@@ -218,9 +236,7 @@ final class PageController extends FormController
 
                 if (is_array($variantSettings) && isset($variantSettings['winnerCriteria'])) {
                     if ($c->isPublished()) {
-                        if (!isset($lastCriteria)) {
-                            $lastCriteria = $variantSettings['winnerCriteria'];
-                        }
+                        $lastCriteria ??= $variantSettings['winnerCriteria'];
 
                         // make sure all the variants are configured with the same criteria
                         if ($lastCriteria != $variantSettings['winnerCriteria']) {
@@ -979,6 +995,12 @@ final class PageController extends FormController
      * @param int $objectId
      * @param int $page
      */
+    #[Route(
+        '/s/pages/results/{objectId}/{page}',
+        name: 'mautic_page_results',
+        requirements: ['page' => '\d+', 'objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['page' => 0, 'objectId' => 0],
+    )]
     public function resultsAction(Request $request, PageModel $pageModel, SubmissionModel $submissionModel, $objectId, $page = 1): Response
     {
         $activePage   = $pageModel->getEntity($objectId);
@@ -1117,6 +1139,12 @@ final class PageController extends FormController
      *
      * @throws \Exception
      */
+    #[Route(
+        '/s/pages/results/{objectId}/export/{format}',
+        name: 'mautic_page_export',
+        requirements: ['objectId' => '[a-zA-Z0-9_-]+'],
+        defaults: ['format' => 'csv', 'objectId' => 0],
+    )]
     public function exportAction(Request $request, PageModel $pageModel, SubmissionModel $submissionModel, $objectId, $format = 'csv'): Response
     {
         $activePage   = $pageModel->getEntity($objectId);

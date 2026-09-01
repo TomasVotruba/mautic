@@ -2,7 +2,6 @@
 
 namespace Mautic\CoreBundle\EventListener;
 
-use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event\IconEvent;
 use Mautic\CoreBundle\Event\MenuEvent;
 use Mautic\CoreBundle\Event\RouteEvent;
@@ -40,9 +39,9 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CoreEvents::BUILD_MENU            => ['onBuildMenu', 9999],
-            CoreEvents::BUILD_ROUTE           => ['onBuildRoute', 0],
-            CoreEvents::FETCH_ICONS           => ['onFetchIcons', 9999],
+            MenuEvent::class                  => ['onBuildMenu', 9999],
+            RouteEvent::class                 => ['onBuildRoute', 0],
+            IconEvent::class                  => ['onFetchIcons', 9999],
             SecurityEvents::INTERACTIVE_LOGIN => ['onSecurityInteractiveLogin', 0],
         ];
     }
@@ -120,7 +119,7 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
         foreach ($bundles as $bundle) {
             if (!empty($bundle['config']['routes'][$type])) {
                 foreach ($bundle['config']['routes'][$type] as $name => $details) {
-                    if ('api' == $type && !empty($details['standard_entity'])) {
+                    if ('api' === $type && !empty($details['standard_entity'])) {
                         $standards = [
                             'getall' => [
                                 'action' => 'getEntities',
@@ -268,22 +267,12 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
 
         // Set some very commonly used defaults and requirements
         if (str_contains($details['path'], '{page}')) {
-            if (!isset($defaults['page'])) {
-                $defaults['page'] = 0;
-            }
-            if (!isset($requirements['page'])) {
-                $requirements['page'] = '\d+';
-            }
+            $defaults['page'] ??= 0;
+            $requirements['page'] ??= '\d+';
         }
         if (str_contains($details['path'], '{objectId}')) {
-            if (!isset($defaults['objectId'])) {
-                // Set default to 0 for the "new" actions
-                $defaults['objectId'] = 0;
-            }
-            if (!isset($requirements['objectId'])) {
-                // Only allow alphanumeric and _- for objectId
-                $requirements['objectId'] = '[a-zA-Z0-9_-]+';
-            }
+            $defaults['objectId'] ??= 0;
+            $requirements['objectId'] ??= '[a-zA-Z0-9_-]+';
         }
         if ('api' === $type) {
             if (str_contains($details['path'], '{id}')) {
@@ -295,9 +284,7 @@ final readonly class CoreSubscriber implements EventSubscriberInterface
             if (preg_match_all('/\{(.*?Id)\}/', $details['path'], $matches)) {
                 // Force digits for IDs
                 foreach ($matches[1] as $match) {
-                    if (!isset($requirements[$match])) {
-                        $requirements[$match] = '\d+';
-                    }
+                    $requirements[$match] ??= '\d+';
                 }
             }
         }

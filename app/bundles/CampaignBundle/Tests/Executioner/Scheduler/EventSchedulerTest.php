@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Tests\Executioner\Scheduler;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
@@ -26,6 +25,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
 {
     private NullLogger $logger;
@@ -341,7 +341,6 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                         $this->assertLessThan($now->modify('+11 minutes'), $event->getScheduled()->first()->getTriggerDate());
                     };
                     $callback($parameters[0]);
-                    $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
                     $callback = function (ScheduledBatchEvent $event) use ($now): void {
@@ -351,14 +350,12 @@ final class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                         $this->assertLessThan($now->modify('+61 minutes'), $event->getScheduled()->first()->getTriggerDate());
                     };
                     $callback($parameters[0]);
-                    $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
                 }
                 if (3 === $matcher->numberOfInvocations()) {
                     $callback = function (ScheduledBatchEvent $event): void {
                         $this->assertCount(2, $event->getScheduled());
                     };
                     $callback($parameters[0]);
-                    $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
                 }
 
                 return $parameters[0];

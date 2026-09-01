@@ -2,7 +2,6 @@
 
 namespace Mautic\ChannelBundle\Model;
 
-use Mautic\ChannelBundle\ChannelEvents;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\ChannelBundle\Entity\MessageQueueRepository;
 use Mautic\ChannelBundle\Event\MessageQueueBatchProcessEvent;
@@ -238,12 +237,8 @@ class MessageQueueModel extends FormModel
                 $messageChannelId = 0;
             }
 
-            if (!isset($byChannel[$messageChannel])) {
-                $byChannel[$messageChannel] = [];
-            }
-            if (!isset($byChannel[$messageChannel][$messageChannelId])) {
-                $byChannel[$messageChannel][$messageChannelId] = [];
-            }
+            $byChannel[$messageChannel] ??= [];
+            $byChannel[$messageChannel][$messageChannelId] ??= [];
 
             $byChannel[$messageChannel][$messageChannelId][] = $message;
         }
@@ -328,13 +323,13 @@ class MessageQueueModel extends FormModel
     {
         switch ($action) {
             case 'process_message_queue':
-                $name = ChannelEvents::PROCESS_MESSAGE_QUEUE;
+                $name = MessageQueueProcessEvent::class;
                 break;
             case 'process_batch_message_queue':
-                $name = ChannelEvents::PROCESS_MESSAGE_QUEUE_BATCH;
+                $name = MessageQueueBatchProcessEvent::class;
                 break;
             case 'post_save':
-                $name = ChannelEvents::MESSAGE_QUEUED;
+                $name = MessageQueueEvent::class;
                 break;
             default:
                 return null;
@@ -345,7 +340,7 @@ class MessageQueueModel extends FormModel
                 $event = new MessageQueueEvent($entity, $isNew);
                 $event->setEntityManager($this->em);
             }
-            $this->dispatcher->dispatch($event, $name);
+            $this->dispatcher->dispatch($event);
 
             return $event;
         }

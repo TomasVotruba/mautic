@@ -187,7 +187,9 @@ final readonly class CampaignImportExportSubscriber implements EventSubscriberIn
             $isNew  = !$object;
 
             $object ??= new Campaign();
-            $isNew && $object->setDateAdded(new \DateTime());
+            if ($isNew) {
+                $object->setDateAdded(new \DateTime());
+            }
             $object->setUuid($campaignData['uuid']);
             $object->setDateModified(new \DateTime());
 
@@ -307,13 +309,11 @@ final readonly class CampaignImportExportSubscriber implements EventSubscriberIn
             $mainStatus = $mainEvent->getStatus();
 
             foreach ($subStatus[$type] as $entityName => $statusData) {
-                if (!isset($mainStatus[$type][$entityName])) {
-                    $mainStatus[$type][$entityName] = [
-                        'names' => [],
-                        'ids'   => [],
-                        'count' => 0,
-                    ];
-                }
+                $mainStatus[$type][$entityName] ??= [
+                    'names' => [],
+                    'ids'   => [],
+                    'count' => 0,
+                ];
 
                 $mainStatus[$type][$entityName]['names'] = array_merge(
                     $mainStatus[$type][$entityName]['names'],

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Tests\EventListener;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\EventRepository;
@@ -27,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class CampaignEventSubscriberTest extends TestCase
 {
     private CampaignEventSubscriber $fixture;
@@ -170,7 +170,7 @@ final class CampaignEventSubscriberTest extends TestCase
 
         $this->eventDispatcherMock->expects($this->once())
             ->method('hasListeners')
-            ->with(CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY)
+            ->with(NotifyOfFailureEvent::class)
             ->willReturn(true);
 
         $this->eventDispatcherMock->expects($this->once())
@@ -233,8 +233,8 @@ final class CampaignEventSubscriberTest extends TestCase
         $this->eventDispatcherMock->expects($this->exactly(2))
             ->method('hasListeners')
             ->willReturnMap([
-                [CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY, true],
-                [CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY, true],
+                [NotifyOfFailureEvent::class, true],
+                [NotifyOfUnpublishEvent::class, true],
             ]);
 
         $this->eventDispatcherMock->expects($this->exactly(2))
@@ -362,7 +362,7 @@ final class CampaignEventSubscriberTest extends TestCase
         // Expect failure notification to be dispatched
         $this->eventDispatcherMock->expects($this->once())
             ->method('hasListeners')
-            ->with(CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY)
+            ->with(NotifyOfFailureEvent::class)
             ->willReturn(true);
 
         $this->eventDispatcherMock->expects($this->once())

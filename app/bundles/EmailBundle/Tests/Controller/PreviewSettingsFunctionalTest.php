@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Symfony\Component\HttpFoundation\Request;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class PreviewSettingsFunctionalTest extends MauticMysqlTestCase
 {
     public function testPreviewSettingsAllEnabled(): void
@@ -63,6 +64,7 @@ final class PreviewSettingsFunctionalTest extends MauticMysqlTestCase
         $emailVariant->setLanguage('en');
 
         // Add variant relationship to main page
+        $emailMain->setVariantSettings(['winnerCriteria' => 'email.openrate']);
         $emailMain->addVariantChild($emailVariant);
 
         $this->em->persist($emailMain);

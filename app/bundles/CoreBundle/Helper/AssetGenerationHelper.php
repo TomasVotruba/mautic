@@ -149,9 +149,7 @@ final readonly class AssetGenerationHelper
                 $fileTypes = ['css', 'js'];
                 foreach ($bundles as $bundle) {
                     foreach ($fileTypes as $ft) {
-                        if (!isset($modifiedLast[$ft])) {
-                            $modifiedLast[$ft] = [];
-                        }
+                        $modifiedLast[$ft] ??= [];
                         $dir = "{$bundle['directory']}/Assets/{$ft}";
                         if (file_exists($dir)) {
                             $modifiedLast[$ft] = array_merge($modifiedLast[$ft], $this->findAssets($dir, $ft, $env, $assets));
@@ -327,7 +325,7 @@ final readonly class AssetGenerationHelper
     /**
      * Find asset overrides in the template.
      */
-    private function findOverrides($env, array &$assets): array
+    private function findOverrides(string $env, array &$assets): array
     {
         $rootPath      = $this->pathsHelper->getSystemPath('assets_root');
         $currentTheme  = $this->pathsHelper->getSystemPath('current_theme');
@@ -349,7 +347,7 @@ final readonly class AssetGenerationHelper
                         'relPath'  => $relPath,
                     ];
 
-                    if ('prod' == $env) {
+                    if ('prod' === $env) {
                         $lastModified = filemtime($fullPath);
                         if (!isset($modifiedLast[$ext][$group]) || $lastModified > $modifiedLast[$ext][$group]) {
                             $modifiedLast[$ext][$group] = $lastModified;

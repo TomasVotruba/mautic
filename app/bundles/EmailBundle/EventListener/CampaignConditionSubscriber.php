@@ -2,9 +2,8 @@
 
 namespace Mautic\EmailBundle\EventListener;
 
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Event\CampaignBuilderEvent;
-use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
+use Mautic\CampaignBundle\Event\ConditionEvent;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Exception\InvalidEmailException;
 use Mautic\EmailBundle\Helper\EmailValidator;
@@ -21,7 +20,7 @@ final readonly class CampaignConditionSubscriber implements EventSubscriberInter
     public static function getSubscribedEvents(): array
     {
         return [
-            CampaignEvents::CAMPAIGN_ON_BUILD          => ['onCampaignBuild', 0],
+            CampaignBuilderEvent::class => ['onCampaignBuild', 0],
             EmailEvents::ON_CAMPAIGN_TRIGGER_CONDITION => ['onCampaignTriggerCondition', 0],
         ];
     }
@@ -38,16 +37,16 @@ final readonly class CampaignConditionSubscriber implements EventSubscriberInter
         );
     }
 
-    public function onCampaignTriggerCondition(CampaignExecutionEvent $event): void
+    public function onCampaignTriggerCondition(ConditionEvent $event): void
     {
         try {
             $this->validator->validate($event->getLead()->getEmail(), true);
         } catch (UnexpectedValueException|InvalidEmailException) {
-            $event->setResult(false);
+            $event->fail();
 
             return;
         }
 
-        $event->setResult(true);
+        $event->pass();
     }
 }

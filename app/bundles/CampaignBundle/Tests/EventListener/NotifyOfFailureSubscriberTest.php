@@ -12,6 +12,7 @@ use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class NotifyOfFailureSubscriberTest extends TestCase
 {
     private MockObject&NotificationHelper $notificationHelper;
@@ -45,7 +46,7 @@ final class NotifyOfFailureSubscriberTest extends TestCase
     public function testGetSubscribedEvents(): void
     {
         $events = NotifyOfFailureSubscriber::getSubscribedEvents();
-        $this->assertArrayHasKey('mautic.campaign_failure_notify', $events);
-        $this->assertEquals('notifyOfFailure', $events['mautic.campaign_failure_notify']);
+        $this->assertArrayHasKey(NotifyOfFailureEvent::class, $events);
+        $this->assertEquals('notifyOfFailure', $events[NotifyOfFailureEvent::class]);
     }
 }

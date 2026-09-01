@@ -16,6 +16,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class DecisionDispatcherTest extends TestCase
 {
     private MockObject&EventDispatcherInterface $dispatcher;
@@ -60,7 +61,7 @@ final class DecisionDispatcherTest extends TestCase
     {
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
-            ->with($this->isInstanceOf(DecisionResultsEvent::class), CampaignEvents::ON_EVENT_DECISION_EVALUATION_RESULTS);
+            ->with($this->isInstanceOf(DecisionResultsEvent::class));
 
         $this->decisionDispatcher->dispatchDecisionResultsEvent($this->config, new ArrayCollection([new LeadEventLog()]), new EvaluatedContacts());
     }

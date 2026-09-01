@@ -7,12 +7,9 @@ namespace Mautic\AssetBundle\Event;
 use Mautic\AssetBundle\Entity\Asset;
 use Mautic\CoreBundle\Event\CommonEvent;
 
-final class AssetEvent extends CommonEvent
+class AssetEvent extends CommonEvent
 {
-    /**
-     * @param bool $isNew
-     */
-    public function __construct(Asset $asset, $isNew = false)
+    public function __construct(Asset $asset, bool $isNew = false)
     {
         $this->entity = $asset;
         $this->isNew  = $isNew;
