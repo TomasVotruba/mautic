@@ -1,20 +1,33 @@
 includes:
     - phpstan-baseline.neon
-    - phpstan-model-param-type-ignore.neon
+    #- phpstan-model-param-type-ignore.neon
+    # symplify/phpstan-rules sets
+    #- vendor/symplify/phpstan-rules/config/phpstan-extensions.neon
+    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+    - vendor/symplify/phpstan-rules/config/symfony-rules.neon
+    - vendor/symplify/phpstan-rules/config/symfony-config-rules.neon
+    - vendor/symplify/phpstan-rules/config/doctrine-rules.neon
+    - vendor/symplify/phpstan-rules/config/phpunit-rules.neon
+    # mock-rules and ctor-rules auto-loaded via phpstan/extension-installer
 
 parameters:
     tmpDir: ./var/phpstan-cache
     level: 6
+
+    symplify:
+        mocks: false
+        ctor: false
 
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
 
     # see https://github.com/tomasVotruba/type-coverage
     type_coverage:
-        return: 88.9
-        param: 76.5
-        property: 72.6
+        return: 90.4
+        param: 81.5
+        property: 73.6
         # wait for PHP 8.3 before changing
+<<<<<<< HEAD
         constant: 70.7
         declare: 74.0
 
@@ -23,6 +36,10 @@ parameters:
         no_param_type_removal: true
         no_isset_on_object: true
         no_empty_on_object: true
+=======
+        constant: 80.6
+        declare: 75.1
+>>>>>>> a5160b0977 (add sets from symplify)
     paths:
         - app/bundles
         - app/config
@@ -46,6 +63,13 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     ignoreErrors:
+        - identifier: symplify.forbiddenNode
+        - identifier: symplify.noReference
+
+        # CompanyLeadRepository is only needed by the static IdentifyCompanyHelper, exposed via getter to avoid threading it through 9 call sites
+        -
+            identifier: mautic.noServiceGetter
+            path: app/bundles/LeadBundle/Model/CompanyModel.php
         # ReportGenerator keeps a nullable form factory for its lazy build flow
         -
             identifier: symplify.noNullableServiceInConstructor
