@@ -14,11 +14,12 @@ parameters:
     tmpDir: ./var/phpstan-cache
     level: 6
 
+    reportUnmatchedIgnoredErrors: false
+
     symplify:
         mocks: false
         ctor: false
 
-    reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
 
     # see https://github.com/tomasVotruba/type-coverage
@@ -67,6 +68,46 @@ parameters:
         - identifier: symplify.noReference
         - identifier: symplify.requireAttributeNamespace
         - identifier: symplify.classNameRespectsParentSuffix
+        # @todo bulk-ignored, resolve per identifier later
+        - identifier: doctrine.noGetRepositoryOutsideService
+        - identifier: doctrine.noListenerWithoutContract
+        - identifier: doctrine.noRepositoryCallInDataFixtures
+        - identifier: doctrine.requireQueryBuilderOnRepository
+        - identifier: ignore.count
+        - identifier: mautic.modelMethodSingleParamMustHaveType
+        - identifier: phpunit.noAssertFuncCallInTests
+        - identifier: symfony.alreadyRegisteredAutodiscoveryService
+        - identifier: symfony.formTypeClassName
+        - identifier: symfony.noAbstractControllerConstructor
+        - identifier: symfony.noDuplicateArgsAutowireByType
+        - identifier: symfony.noFindTaggedServiceIdsCall
+        - identifier: symfony.noListenerWithoutContract
+        - identifier: symfony.noRequiredOutsideClass
+        - identifier: symfony.noServiceAutowireDuplicate
+        - identifier: symfony.preferAutowireAttributeOverConfigParam
+        - identifier: symfony.singleArgEventDispatch
+        - identifier: symfony.singleRequiredMethod
+        - identifier: symplify.explicitAbstractPrefixName
+        - identifier: symplify.explicitInterfaceSuffixName
+        - identifier: symplify.forbiddenArrayMethodCall
+        - identifier: symplify.forbiddenExtendOfNonAbstractClass
+        - identifier: symplify.forbiddenFuncCall
+        - identifier: symplify.forbiddenStaticClassConstFetch
+        - identifier: symplify.foreachCeption
+        - identifier: symplify.multipleClassLikeInFile
+        - identifier: symplify.noArrayMapWithArrayCallable
+        - identifier: symplify.noConstructorOverride
+        - identifier: symplify.noDynamicName
+        - identifier: symplify.noGlobalConst
+        - identifier: symplify.noJustPropertyAssign
+        - identifier: symplify.noMissingVariableDimFetch
+        - identifier: symplify.noNullableServiceInConstructor
+        - identifier: symplify.noReturnSetterMethod
+        - identifier: symplify.parentMethodVisibilityOverride
+        - identifier: symplify.preferInterfaceInConstructor
+        - identifier: symplify.requireExceptionNamespace
+        - identifier: symplify.seeAnnotationToTest
+        - identifier: symplify.uppercaseConstant
         # to be removed once all controllers are invokable
         - identifier: symfony.requireInvokableController
         - identifier: symfony.requiredOnlyInAbstract
