@@ -60,6 +60,7 @@
     "symplify/easy-coding-standard": "^13.3.0",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symplify/phpstan-rules": "^14.15",
     "tomasvotruba/class-leak": "^2.2.3",
 <<<<<<< HEAD
@@ -71,6 +72,9 @@
 =======
     "symplify/phpstan-rules": "^14.15.1",
 >>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
+=======
+    "symplify/phpstan-rules": "^14.15.3",
+>>>>>>> f88bc7423c (fetch EmailRepository directly)
     "tomasvotruba/class-leak": "^2.2.4",
     "tomasvotruba/type-coverage": "^2.3.6"
 >>>>>>> d18fb6114a (add sets from symplify)
