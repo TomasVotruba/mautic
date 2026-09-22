@@ -5,18 +5,32 @@
         "This file is @generated automatically"
     ],
 <<<<<<< HEAD
+<<<<<<< HEAD
     "content-hash": "465c47e77d061eb8e0e4a0ddc4efe3ee",
 =======
+=======
+>>>>>>> d6a185bb38 (Add explicit named arguments to attributes)
 <<<<<<< HEAD
     "content-hash": "07f4ed01b3572639d90796ea6c0dc73a",
 =======
+=======
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
 <<<<<<< HEAD
     "content-hash": "b244e9390f9351c66c6f2c8b719875f6",
 =======
     "content-hash": "19353b6e87b54591724792adae933d7f",
 >>>>>>> 2945aff300 (add sets from symplify)
+<<<<<<< HEAD
 >>>>>>> d18fb6114a (add sets from symplify)
+<<<<<<< HEAD
 >>>>>>> a5160b0977 (add sets from symplify)
+=======
+=======
+=======
+    "content-hash": "a4fd026ef80c82efbe99b0d816c3fc62",
+>>>>>>> aea122de5a (Add explicit named arguments to attributes)
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
+>>>>>>> d6a185bb38 (Add explicit named arguments to attributes)
     "packages": [
         {
             "name": "api-platform/core",
@@ -18186,6 +18200,7 @@
         {
             "name": "symplify/phpstan-rules",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "14.15.0",
             "source": {
                 "type": "git",
@@ -18198,16 +18213,24 @@
                 "reference": "010d2ba98638618d985644c57a590814f5b18d1e",
 =======
             "version": "dev-main",
+=======
+            "version": "14.15.2",
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/phpstan-rules.git",
-                "reference": "41013e4c72296a7ee49c054fc9d30f12f55d3380"
+                "reference": "e6356435dc0eba4172e11db779cd8dcf6d942382"
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
                 "url": "https://api.github.com/repos/symplify/phpstan-rules/zipball/41013e4c72296a7ee49c054fc9d30f12f55d3380",
                 "reference": "41013e4c72296a7ee49c054fc9d30f12f55d3380",
 >>>>>>> d18fb6114a (add sets from symplify)
+=======
+                "url": "https://api.github.com/repos/symplify/phpstan-rules/zipball/e6356435dc0eba4172e11db779cd8dcf6d942382",
+                "reference": "e6356435dc0eba4172e11db779cd8dcf6d942382",
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
                 "shasum": ""
             },
             "require": {
@@ -18250,7 +18273,6 @@
                 "tomasvotruba/type-coverage": "^2.3",
                 "tomasvotruba/unused-public": "^2.2"
             },
-            "default-branch": true,
             "type": "phpstan-extension",
             "extra": {
                 "phpstan": {
@@ -18278,10 +18300,14 @@
             "support": {
                 "issues": "https://github.com/symplify/phpstan-rules/issues",
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symplify/phpstan-rules/tree/14.15.0"
 =======
                 "source": "https://github.com/symplify/phpstan-rules/tree/main"
 >>>>>>> d18fb6114a (add sets from symplify)
+=======
+                "source": "https://github.com/symplify/phpstan-rules/tree/14.15.2"
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
             },
             "funding": [
                 {
@@ -18294,10 +18320,14 @@
                 }
             ],
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2026-09-21T11:23:08+00:00"
 =======
             "time": "2026-09-22T06:09:44+00:00"
 >>>>>>> d18fb6114a (add sets from symplify)
+=======
+            "time": "2026-09-22T08:16:06+00:00"
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
         },
         {
             "name": "theseer/tokenizer",
@@ -18423,9 +18453,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "symplify/phpstan-rules": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {},

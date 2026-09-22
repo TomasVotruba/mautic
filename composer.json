@@ -59,6 +59,7 @@
     "symfony/web-profiler-bundle": "~8.1.0",
     "symplify/easy-coding-standard": "^13.3.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symplify/phpstan-rules": "^14.15",
     "tomasvotruba/class-leak": "^2.2.3",
 <<<<<<< HEAD
@@ -67,6 +68,9 @@
     "tomasvotruba/type-coverage": "^2.2.1"
 =======
     "symplify/phpstan-rules": "dev-main",
+=======
+    "symplify/phpstan-rules": "^14.15.1",
+>>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
     "tomasvotruba/class-leak": "^2.2.4",
     "tomasvotruba/type-coverage": "^2.3.6"
 >>>>>>> d18fb6114a (add sets from symplify)

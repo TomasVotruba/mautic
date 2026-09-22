@@ -65,6 +65,10 @@ parameters:
     ignoreErrors:
         - identifier: symplify.forbiddenNode
         - identifier: symplify.noReference
+        - identifier: symplify.requireAttributeNamespace
+        - identifier: symplify.classNameRespectsParentSuffix
+        # to be removed once all controllers are invokable
+        - identifier: symfony.requireInvokableController
 
         # CompanyLeadRepository is only needed by the static IdentifyCompanyHelper, exposed via getter to avoid threading it through 9 call sites
         -
