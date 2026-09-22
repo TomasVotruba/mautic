@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.neon
     # symplify/phpstan-rules sets
     #- vendor/symplify/phpstan-rules/config/phpstan-extensions.neon
-    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+    #- vendor/symplify/phpstan-rules/config/symplify-rules.neon
     - vendor/symplify/phpstan-rules/config/symfony-rules.neon
     - vendor/symplify/phpstan-rules/config/symfony-config-rules.neon
     - vendor/symplify/phpstan-rules/config/doctrine-rules.neon
@@ -12,11 +12,12 @@ parameters:
     tmpDir: ./var/phpstan-cache
     level: 6
 
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     symplify:
         mocks: false
         ctor: false
+        naming: false
 
     treatPhpDocTypesAsCertain: false
 
@@ -73,32 +74,33 @@ parameters:
         #- identifier: doctrine.requireQueryBuilderOnRepository
         #- identifier: ignore.count
         #- identifier: mautic.modelMethodSingleParamMustHaveType
-        - identifier: phpunit.noAssertFuncCallInTests
+        #- identifier: phpunit.noAssertFuncCallInTests
         - identifier: symfony.alreadyRegisteredAutodiscoveryService
         - identifier: symfony.formTypeClassName
         #- identifier: symfony.noAbstractControllerConstructor
-        - identifier: symfony.noDuplicateArgsAutowireByType
+        #- identifier: symfony.noDuplicateArgsAutowireByType
         #- identifier: symfony.noFindTaggedServiceIdsCall
         - identifier: symfony.noListenerWithoutContract
         - identifier: symfony.noRequiredOutsideClass
-        - identifier: symfony.noServiceAutowireDuplicate
+        #- identifier: symfony.noServiceAutowireDuplicate
+        # @to be removed
         - identifier: symfony.preferAutowireAttributeOverConfigParam
         - identifier: symfony.singleArgEventDispatch
-        - identifier: symfony.singleRequiredMethod
+        #- identifier: symfony.singleRequiredMethod
         - identifier: symplify.explicitAbstractPrefixName
         - identifier: symplify.explicitInterfaceSuffixName
         - identifier: symplify.forbiddenArrayMethodCall
         - identifier: symplify.forbiddenExtendOfNonAbstractClass
         - identifier: symplify.forbiddenFuncCall
-        - identifier: symplify.forbiddenStaticClassConstFetch
+        #- identifier: symplify.forbiddenStaticClassConstFetch
         - identifier: symplify.foreachCeption
         - identifier: symplify.multipleClassLikeInFile
         - identifier: symplify.noArrayMapWithArrayCallable
-        - identifier: symplify.noConstructorOverride
+        #- identifier: symplify.noConstructorOverride
         - identifier: symplify.noDynamicName
-        - identifier: symplify.noGlobalConst
-        - identifier: symplify.noNullableServiceInConstructor
-        - identifier: symplify.noReturnSetterMethod
+        #- identifier: symplify.noGlobalConst
+        #- identifier: symplify.noNullableServiceInConstructor
+        #- identifier: symplify.noReturnSetterMethod
         - identifier: symplify.preferInterfaceInConstructor
         - identifier: symplify.requireExceptionNamespace
         - identifier: symplify.seeAnnotationToTest

@@ -259,9 +259,9 @@ class LeadModel extends FormModel
     /**
      * @param array<mixed> $args
      *
-     * @return array|Paginator|mixed
+     * @return array<Lead>
      */
-    public function getEntities(array $args = [])
+    public function getEntities(array $args = []): iterable
     {
         $entities   = parent::getEntities($args);
         $contactIds = $this->getContactIdsFromArgs($args);
