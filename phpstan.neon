@@ -99,17 +99,12 @@ parameters:
         - identifier: symplify.noConstructorOverride
         - identifier: symplify.noDynamicName
         - identifier: symplify.noGlobalConst
-        - identifier: symplify.noJustPropertyAssign
-        - identifier: symplify.noMissingVariableDimFetch
         - identifier: symplify.noNullableServiceInConstructor
         - identifier: symplify.noReturnSetterMethod
-        - identifier: symplify.parentMethodVisibilityOverride
         - identifier: symplify.preferInterfaceInConstructor
         - identifier: symplify.requireExceptionNamespace
         - identifier: symplify.seeAnnotationToTest
-        - identifier: symplify.uppercaseConstant
         # to be removed once all controllers are invokable
-        - identifier: symfony.requireInvokableController
         - identifier: symfony.requiredOnlyInAbstract
         - identifier: symplify.requiredInterfaceContractNamespace
 
