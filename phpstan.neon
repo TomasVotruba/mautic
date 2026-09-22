@@ -1,6 +1,5 @@
 includes:
     - phpstan-baseline.neon
-    #- phpstan-model-param-type-ignore.neon
     # symplify/phpstan-rules sets
     #- vendor/symplify/phpstan-rules/config/phpstan-extensions.neon
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
@@ -8,7 +7,6 @@ includes:
     - vendor/symplify/phpstan-rules/config/symfony-config-rules.neon
     - vendor/symplify/phpstan-rules/config/doctrine-rules.neon
     - vendor/symplify/phpstan-rules/config/phpunit-rules.neon
-    # mock-rules and ctor-rules auto-loaded via phpstan/extension-installer
 
 parameters:
     tmpDir: ./var/phpstan-cache
@@ -69,18 +67,18 @@ parameters:
         - identifier: symplify.requireAttributeNamespace
         - identifier: symplify.classNameRespectsParentSuffix
         # @todo bulk-ignored, resolve per identifier later
-        - identifier: doctrine.noGetRepositoryOutsideService
+        #- identifier: doctrine.noGetRepositoryOutsideService
         - identifier: doctrine.noListenerWithoutContract
-        - identifier: doctrine.noRepositoryCallInDataFixtures
-        - identifier: doctrine.requireQueryBuilderOnRepository
-        - identifier: ignore.count
-        - identifier: mautic.modelMethodSingleParamMustHaveType
+        #- identifier: doctrine.noRepositoryCallInDataFixtures
+        #- identifier: doctrine.requireQueryBuilderOnRepository
+        #- identifier: ignore.count
+        #- identifier: mautic.modelMethodSingleParamMustHaveType
         - identifier: phpunit.noAssertFuncCallInTests
         - identifier: symfony.alreadyRegisteredAutodiscoveryService
         - identifier: symfony.formTypeClassName
-        - identifier: symfony.noAbstractControllerConstructor
+        #- identifier: symfony.noAbstractControllerConstructor
         - identifier: symfony.noDuplicateArgsAutowireByType
-        - identifier: symfony.noFindTaggedServiceIdsCall
+        #- identifier: symfony.noFindTaggedServiceIdsCall
         - identifier: symfony.noListenerWithoutContract
         - identifier: symfony.noRequiredOutsideClass
         - identifier: symfony.noServiceAutowireDuplicate

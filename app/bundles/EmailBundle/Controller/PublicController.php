@@ -312,7 +312,7 @@ final class PublicController extends CommonFormController
         }
 
         $html = $prefCenter->getCustomHtml();
-        if (!str_contains($html, BuilderSubscriber::saveprefsRegex)) {
+        if (!str_contains($html, BuilderSubscriber::SAVEPREFS_REGEX)) {
             return null;
         }
 
@@ -334,7 +334,7 @@ final class PublicController extends CommonFormController
         $pageModel->hitPage($prefCenter, $request, 200, $lead);
 
         return preg_replace(
-            '/'.BuilderSubscriber::identifierToken.'/',
+            '/'.BuilderSubscriber::IDENTIFIER_TOKEN.'/',
             $lead->getPrimaryIdentifier(),
             $event->getContent()
         );
@@ -809,10 +809,10 @@ final class PublicController extends CommonFormController
          * render that field just because a token for it exists will result in an error.
          */
         $showParamsBasedOnContent = array_filter([
-            'showContactFrequency'         => str_contains($content, BuilderSubscriber::channelfrequency),
-            'showContactSegments'          => str_contains($content, BuilderSubscriber::segmentListRegex),
-            'showContactCategories'        => str_contains($content, BuilderSubscriber::categoryListRegex),
-            'showContactPreferredChannels' => str_contains($content, BuilderSubscriber::preferredchannel),
+            'showContactFrequency'         => str_contains($content, BuilderSubscriber::CHANNELFREQUENCY),
+            'showContactSegments'          => str_contains($content, BuilderSubscriber::SEGMENT_LIST_REGEX),
+            'showContactCategories'        => str_contains($content, BuilderSubscriber::CATEGORY_LIST_REGEX),
+            'showContactPreferredChannels' => str_contains($content, BuilderSubscriber::PREFERREDCHANNEL),
         ], fn (bool $value): bool =>!$value);
 
         $showParamsBasedOnConfiguration = array_filter($viewParameters, fn ($key): bool => str_starts_with($key, 'show'), ARRAY_FILTER_USE_KEY);
