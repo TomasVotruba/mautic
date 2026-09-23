@@ -42,17 +42,6 @@
     "phpstan/phpstan-symfony": "^2.0.20",
     "phpunit/phpunit": "^13.0",
     "rector/rector": "^2.6.5",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 347ee8b396 (Uppercase class constant names)
-    "rector/type-perfect": "^2.1.4",
->>>>>>> a5160b0977 (add sets from symplify)
-=======
->>>>>>> e9bcf54fe8 (rebuild lock)
     "symfony/browser-kit": "~8.1.0",
     "symfony/dom-crawler": "~8.1.0",
     "symfony/maker-bundle": "^1.64",
@@ -60,36 +49,9 @@
     "symfony/var-dumper": "~8.1.0",
     "symfony/web-profiler-bundle": "~8.1.0",
     "symplify/easy-coding-standard": "^13.3.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "symplify/phpstan-rules": "^14.15",
-    "tomasvotruba/class-leak": "^2.2.3",
-<<<<<<< HEAD
-    "tomasvotruba/type-coverage": "^2.3"
-=======
-    "tomasvotruba/type-coverage": "^2.2.1"
-=======
     "symplify/phpstan-rules": "dev-main",
-=======
-    "symplify/phpstan-rules": "^14.15.1",
->>>>>>> df9f8c98ba (Add explicit named arguments to attributes)
-=======
-=======
->>>>>>> f463a83402 (add known iterable Lead types)
-    "symplify/phpstan-rules": "^14.15.3",
-=======
-    "symplify/phpstan-rules": "dev-main",
->>>>>>> efdc76be58 (bupdate)
     "tomasvotruba/class-leak": "^2.2.4",
     "tomasvotruba/type-coverage": "^2.3.6"
-<<<<<<< HEAD
->>>>>>> d18fb6114a (add sets from symplify)
->>>>>>> a5160b0977 (add sets from symplify)
-=======
->>>>>>> f463a83402 (add known iterable Lead types)
   },
   "replace": {
     "mautic/grapes-js-builder-bundle": "self.version",

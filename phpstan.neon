@@ -27,7 +27,6 @@ parameters:
         param: 81.5
         property: 73.6
         # wait for PHP 8.3 before changing
-<<<<<<< HEAD
         constant: 70.7
         declare: 74.0
 
@@ -36,10 +35,6 @@ parameters:
         no_param_type_removal: true
         no_isset_on_object: true
         no_empty_on_object: true
-=======
-        constant: 80.6
-        declare: 75.1
->>>>>>> a5160b0977 (add sets from symplify)
     paths:
         - app/bundles
         - app/config
@@ -242,10 +237,6 @@ parameters:
         -
             identifier: symplify.noJustPropertyAssign
             path: app/bundles/ApiBundle/Serializer/Driver/ApiMetadataDriver.php
-<<<<<<< HEAD
-
-=======
->>>>>>> a74dd17e1d (remove unmatched ignore patterns from phpstan.neon)
         # mixed return
         -
             identifier: return.unusedType
