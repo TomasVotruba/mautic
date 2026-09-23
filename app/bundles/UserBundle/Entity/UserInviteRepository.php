@@ -22,7 +22,7 @@ class UserInviteRepository extends CommonRepository implements UserInviteReposit
 
     public function revokeOutstandingInvites(string $email): int
     {
-        return (int) $this->getEntityManager()->createQueryBuilder()
+        return (int) $this->getEntityManager()->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             ->update(UserInvite::class, 'invite')
             ->set('invite.used', ':used')
             ->where('invite.email = :email')

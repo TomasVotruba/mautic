@@ -21,7 +21,7 @@ class FormRepository extends CommonRepository
         $q->select('f');
 
         // use a subquery to get a count of submissions otherwise doctrine will not pull all of the results
-        $sq = $this->getEntityManager()->createQueryBuilder()
+        $sq = $this->getEntityManager()->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             ->select('count(fs.id)')
             ->from(Submission::class, 'fs')
             ->where('fs.form = f');
@@ -121,7 +121,7 @@ class FormRepository extends CommonRepository
                 break;
             case $this->translator->trans('mautic.form.form.searchcommand.hasresults'):
             case $this->translator->trans('mautic.form.form.searchcommand.hasresults', [], null, 'en_US'):
-                $sq       = $this->getEntityManager()->createQueryBuilder();
+                $sq       = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
                 $subquery = $sq->select('count(s.id)')
                     ->from(Submission::class, 's')
                     ->leftJoin(Form::class, 'f2',

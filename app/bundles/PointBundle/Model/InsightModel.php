@@ -108,7 +108,7 @@ final class InsightModel extends CommonFormModel
             return false;
         }
 
-        $qb      = $this->em->createQueryBuilder();
+        $qb      = $this->em->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
         $results = $qb
             ->select('g.id', 'g.name', 'COALESCE(s.score, 0) as score')
             ->from(Group::class, 'g')

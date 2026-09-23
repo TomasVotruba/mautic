@@ -17,7 +17,7 @@ class RoleRepository extends CommonRepository
         $q = $this->createQueryBuilder('r');
         $q->select('r');
 
-        $sq = $this->getEntityManager()->createQueryBuilder()
+        $sq = $this->getEntityManager()->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             ->select('count(u.id)')
             ->from(User::class, 'u')
             ->where('u.role = r');
@@ -53,10 +53,9 @@ class RoleRepository extends CommonRepository
      */
     public function getRoleList(?string $search = '', int $limit = 10, int $start = 0): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder();
+        $q = $this->createQueryBuilder('r');
 
-        $q->select('partial r.{id, name}')
-            ->from(Role::class, 'r');
+        $q->select('partial r.{id, name}');
 
         if (!empty($search)) {
             $q->where('r.name LIKE :search')

@@ -20,7 +20,7 @@ class PageRepository extends CommonRepository
 
         if (!empty($args['submissionCount'])) {
             // use a subquery to get a count of submissions otherwise doctrine will not pull all of the results
-            $sq = $this->getEntityManager()->createQueryBuilder()
+            $sq = $this->getEntityManager()->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
                 ->select('count(fs.id)')
                 ->from(Submission::class, 'fs')
                 ->where('fs.page = p');

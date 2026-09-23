@@ -118,7 +118,7 @@ trait CustomFieldRepositoryTrait
             if (count($ids)) {
                 if ($skipOrdering) {
                     $alias = $this->getTableAlias();
-                    $q     = $this->getEntityManager()->createQueryBuilder();
+                    $q     = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
                     $q->select($alias)
                         ->from(Lead::class, $alias, $alias.'.id')
                         ->indexBy($alias, $alias.'.id');

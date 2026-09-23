@@ -122,7 +122,7 @@ final class ReportApiControllerTest extends MauticMysqlTestCase
     {
         $role = $user->getRole();
         // Delete previous permissions
-        $this->em->createQueryBuilder()
+        $this->em->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             ->delete(Permission::class, 'p')
             ->where('p.bundle = :bundle')
             ->andWhere('p.role = :role_id')

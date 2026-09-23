@@ -157,7 +157,7 @@ class ObjectMappingRepository extends CommonRepository
 
     public function deleteEntitiesForObject(int $internalObjectId, string $internalObject): void
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
         $qb->delete(ObjectMapping::class, 'm');
         $qb->where('m.internalObjectName = :internalObject');
         $qb->andWhere('m.internalObjectId = :internalObjectId');

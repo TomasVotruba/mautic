@@ -23,9 +23,7 @@ class LeadRepository extends CommonRepository
      */
     public function getLeadDetails($campaignId, $leads = null): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder()
-            ->from(Lead::class, 'lc')
-            ->select('lc')
+        $q = $this->createQueryBuilder('lc')
             ->leftJoin('lc.campaign', 'c')
             ->leftJoin('lc.lead', 'l');
         $q->where(
@@ -53,8 +51,7 @@ class LeadRepository extends CommonRepository
      */
     public function getLeads($campaignId, $eventId = null): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder()
-            ->from(Lead::class, 'lc')
+        $q = $this->createQueryBuilder('lc')
             ->select('lc, l')
             ->leftJoin('lc.campaign', 'c')
             ->leftJoin('lc.lead', 'l');
@@ -68,7 +65,7 @@ class LeadRepository extends CommonRepository
             ->setParameter('campaign', $campaignId);
 
         if (null != $eventId) {
-            $dq = $this->getEntityManager()->createQueryBuilder();
+            $dq = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             $dq->select('el.id')
                 ->from(LeadEventLog::class, 'ell')
                 ->leftJoin('ell.lead', 'el')

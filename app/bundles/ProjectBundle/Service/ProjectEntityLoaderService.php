@@ -120,7 +120,7 @@ final class ProjectEntityLoaderService
         if ($projectId) {
             // Use subQuery to handle many to many join scenario to find entities that are NOT in the specific project
             $qb->andWhere($qb->expr()->notIn('e.id',
-                $this->em->createQueryBuilder()
+                $this->em->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
                     ->select('e2.id')
                     ->from($entityConfig->entityClass, 'e2')
                     ->join('e2.projects', 'p2')

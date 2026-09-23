@@ -50,7 +50,7 @@ class EventRepository extends CommonRepository
     public function getContactPendingEvents(int $contactId, string $type): array
     {
         // Limit to events that hasn't been executed or scheduled yet
-        $eventQb = $this->getEntityManager()->createQueryBuilder();
+        $eventQb = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
         $eventQb->select('IDENTITY(log_event.event)')
             ->from(LeadEventLog::class, 'log_event')
             ->where(
@@ -62,7 +62,7 @@ class EventRepository extends CommonRepository
             );
 
         // Limit to events that has no parent or whose parent has already been executed
-        $parentQb = $this->getEntityManager()->createQueryBuilder();
+        $parentQb = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
         $parentQb->select('parent_log_event.id')
             ->from(LeadEventLog::class, 'parent_log_event')
             ->where(
@@ -109,13 +109,11 @@ class EventRepository extends CommonRepository
      */
     public function getEventsByParent(int $parentId, ?string $decisionPath = null, ?string $eventType = null): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder();
+        $q = $this->createQueryBuilder('e', 'e.id');
 
-        $q->select('e')
-            ->from(Event::class, 'e', 'e.id')
-            ->where(
-                $q->expr()->eq('IDENTITY(e.parent)', $parentId)
-            );
+        $q->where(
+            $q->expr()->eq('IDENTITY(e.parent)', $parentId)
+        );
 
         if (null !== $decisionPath) {
             $q->andWhere(
@@ -141,11 +139,10 @@ class EventRepository extends CommonRepository
      */
     public function getCampaignEmailEvents(int $campaignId): array
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->createQueryBuilder('e');
 
         return $qb
             ->select('DISTINCT em')
-            ->from(Event::class, 'e')
             ->innerJoin(
                 Email::class,
                 'em',
@@ -172,9 +169,8 @@ class EventRepository extends CommonRepository
      */
     public function getCampaignEvents($campaignId, bool $ignoreDeleted = true): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder();
+        $q = $this->createQueryBuilder('e', 'e.id');
         $q->select('e, IDENTITY(e.parent)')
-            ->from(Event::class, 'e', 'e.id')
             ->where(
                 $q->expr()->eq('IDENTITY(e.campaign)', (int) $campaignId)
             )
@@ -281,7 +277,7 @@ class EventRepository extends CommonRepository
      */
     public function deleteEvents(array $eventIds): void
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->getEntityManager()->createQueryBuilder(); // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
         $qb->delete(Event::class, 'e')
             ->where($qb->expr()->in('e.id', ':event_ids'))
             ->setParameter('event_ids', $eventIds, ArrayParameterType::INTEGER)
@@ -390,9 +386,8 @@ class EventRepository extends CommonRepository
      */
     public function getLeadTriggeredEvents($leadId): array
     {
-        $q = $this->getEntityManager()->createQueryBuilder()
+        $q = $this->createQueryBuilder('e')
             ->select('e, c, l')
-            ->from(Event::class, 'e')
             ->join('e.campaign', 'c')
             ->join('e.log', 'l');
 

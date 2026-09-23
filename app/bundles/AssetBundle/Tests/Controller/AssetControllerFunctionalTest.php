@@ -405,7 +405,7 @@ final class AssetControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertInstanceOf(Role::class, $role);
 
         // Delete previous permissions
-        $this->em->createQueryBuilder()
+        $this->em->createQueryBuilder() // @phpstan-ignore doctrine.requireQueryBuilderOnRepository
             ->delete(Permission::class, 'p')
             ->where('p.bundle = :bundle')
             ->andWhere('p.role = :role_id')
