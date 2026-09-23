@@ -63,10 +63,6 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     ignoreErrors:
-        - identifier: symplify.forbiddenNode
-        - identifier: symplify.noReference
-        - identifier: symplify.requireAttributeNamespace
-        - identifier: symplify.classNameRespectsParentSuffix
         # @todo bulk-ignored, resolve per identifier later
         #- identifier: doctrine.noGetRepositoryOutsideService
         - identifier: doctrine.noListenerWithoutContract
@@ -75,7 +71,6 @@ parameters:
         #- identifier: ignore.count
         #- identifier: mautic.modelMethodSingleParamMustHaveType
         #- identifier: phpunit.noAssertFuncCallInTests
-        - identifier: symfony.alreadyRegisteredAutodiscoveryService
         - identifier: symfony.formTypeClassName
         #- identifier: symfony.noAbstractControllerConstructor
         #- identifier: symfony.noDuplicateArgsAutowireByType
@@ -87,26 +82,14 @@ parameters:
         - identifier: symfony.preferAutowireAttributeOverConfigParam
         - identifier: symfony.singleArgEventDispatch
         #- identifier: symfony.singleRequiredMethod
-        - identifier: symplify.explicitAbstractPrefixName
-        - identifier: symplify.explicitInterfaceSuffixName
-        - identifier: symplify.forbiddenArrayMethodCall
-        - identifier: symplify.forbiddenExtendOfNonAbstractClass
-        - identifier: symplify.forbiddenFuncCall
         #- identifier: symplify.forbiddenStaticClassConstFetch
-        - identifier: symplify.foreachCeption
-        - identifier: symplify.multipleClassLikeInFile
-        - identifier: symplify.noArrayMapWithArrayCallable
         #- identifier: symplify.noConstructorOverride
-        - identifier: symplify.noDynamicName
         #- identifier: symplify.noGlobalConst
         #- identifier: symplify.noNullableServiceInConstructor
         #- identifier: symplify.noReturnSetterMethod
         - identifier: symplify.preferInterfaceInConstructor
-        - identifier: symplify.requireExceptionNamespace
-        - identifier: symplify.seeAnnotationToTest
         # to be removed once all controllers are invokable
         - identifier: symfony.requiredOnlyInAbstract
-        - identifier: symplify.requiredInterfaceContractNamespace
 
         # CompanyLeadRepository is only needed by the static IdentifyCompanyHelper, exposed via getter to avoid threading it through 9 call sites
         -
@@ -116,12 +99,6 @@ parameters:
         -
             identifier: symplify.noNullableServiceInConstructor
             path: app/bundles/ReportBundle/Generator/ReportGenerator.php
-        # the concrete Config Loader and Messenger TransportFactory are the ones wired as services, no interface alias exists
-        -
-            identifier: symplify.preferInterfaceInConstructor
-            paths:
-                - app/bundles/CoreBundle/Event/RouteEvent.php
-                - app/bundles/MessengerBundle/Validator/DsnValidator.php
         # these services have no class name alias in the container, so only the string name can fetch them
         -
             identifier: mautic.noContainerGet
@@ -176,8 +153,6 @@ parameters:
         # on purposelater
         #- '#Call to method PHPUnit\\Framework\\Assert::assertInstanceOf\(\) with (.*?) and (.*?) will always evaluate to#'
 
-        # can't figure out what the right type should be for FormBuilderInterface
-        - '#buildForm\(\) expects Symfony\\Component\\Form\\FormBuilderInterface<array<mixed>\|null>, Symfony\\Component\\Form\\FormBuilderInterface<array<mixed>\|null> given#'
         # on purpose type check
         -
             message: '#Parameter \#1 \$credentials of method Mautic\\IntegrationsBundle\\Auth\\Provider\\(.*?)::getClient\(\) expect#'
@@ -267,7 +242,10 @@ parameters:
         -
             identifier: symplify.noJustPropertyAssign
             path: app/bundles/ApiBundle/Serializer/Driver/ApiMetadataDriver.php
+<<<<<<< HEAD
 
+=======
+>>>>>>> a74dd17e1d (remove unmatched ignore patterns from phpstan.neon)
         # mixed return
         -
             identifier: return.unusedType
