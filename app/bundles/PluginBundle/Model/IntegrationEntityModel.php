@@ -5,6 +5,7 @@ namespace Mautic\PluginBundle\Model;
 use Mautic\CoreBundle\Model\FormModel;
 use Mautic\PluginBundle\Entity\IntegrationEntity;
 use Mautic\PluginBundle\Entity\IntegrationEntityRepository;
+use Mautic\PluginBundle\Integration\IntegrationObject;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -26,7 +27,7 @@ final class IntegrationEntityModel extends FormModel
         $this->integrationEntityRepository = $integrationEntityRepository;
     }
 
-    public function getSyncedRecords($integrationObject, $integrationName, $recordList, $internalEntityId = null): array
+    public function getSyncedRecords(IntegrationObject $integrationObject, $integrationName, $recordList, $internalEntityId = null): array
     {
         if (!$formattedRecords = $this->formatListOfContacts($recordList)) {
             return [];
@@ -44,22 +45,6 @@ final class IntegrationEntityModel extends FormModel
             0,
             $formattedRecords
         );
-    }
-
-    /**
-     * @return array<mixed, array<'id', mixed>>
-     */
-    public function getRecordList($integrationObject): array
-    {
-        $recordList = [];
-
-        foreach ($integrationObject->getRecords() as $record) {
-            $recordList[$record['Id']] = [
-                'id' => $record['Id'],
-            ];
-        }
-
-        return $recordList;
     }
 
     public function formatListOfContacts(array|string $recordList): ?string

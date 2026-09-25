@@ -26,7 +26,7 @@ final class TestablePeakInteractionTimer extends PeakInteractionTimer
         $this->testTime = $dateTime;
     }
 
-    protected function getCurrentDateTime(\DateTimeZone $timezone): ?\DateTime
+    protected function getCurrentDateTime(\DateTimeZone $timezone): \DateTime
     {
         return clone $this->testTime;
     }
