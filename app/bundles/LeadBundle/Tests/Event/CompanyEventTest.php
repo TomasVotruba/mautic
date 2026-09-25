@@ -24,7 +24,8 @@ final class CompanyEventTest extends \PHPUnit\Framework\TestCase
 
         $company2 = new Company();
         $company2->setName('otherCompany');
-        $event = new CompanyEvent($company, $isNew, $score);
+        $event = new CompanyEvent($company2, $isNew, $score);
+        $this->assertEquals($isNew, $event->isNew());
 
         $this->assertEquals($company2, $event->getCompany());
 
