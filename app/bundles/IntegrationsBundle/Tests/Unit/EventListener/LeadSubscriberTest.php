@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\IntegrationsBundle\Tests\Unit\EventListener;
 
+use Mautic\CoreBundle\Event\EntityPostDelete;
+use Mautic\CoreBundle\Event\EntityPostSave;
 use Mautic\IntegrationsBundle\Entity\FieldChangeRepository;
 use Mautic\IntegrationsBundle\Entity\ObjectMappingRepository;
 use Mautic\IntegrationsBundle\Event\InternalCompanyFieldChangesEvent;
@@ -18,7 +20,6 @@ use Mautic\IntegrationsBundle\Sync\SyncDataExchange\MauticSyncDataExchange;
 use Mautic\IntegrationsBundle\Sync\VariableExpresser\VariableExpresserHelperInterface;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Event\CompanyEvent;
 use Mautic\LeadBundle\Event\LeadEvent;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -49,7 +50,7 @@ final class LeadSubscriberTest extends TestCase
     private MockObject $syncIntegrationsHelper;
 
     /**
-     * @var MockObject&CompanyEvent
+     * @var MockObject&EntityPostSave
      */
     private MockObject $companyEvent;
 
@@ -68,7 +69,7 @@ final class LeadSubscriberTest extends TestCase
         $this->objectMappingRepository      = $this->createMock(ObjectMappingRepository::class);
         $this->variableExpresserHelper      = $this->createMock(VariableExpresserHelperInterface::class);
         $this->syncIntegrationsHelper       = $this->createMock(SyncIntegrationsHelper::class);
-        $this->companyEvent                 = $this->createMock(CompanyEvent::class);
+        $this->companyEvent                 = $this->createMock(EntityPostSave::class);
         $this->eventDispatcherInterfaceMock = $this->createMock(EventDispatcherInterface::class);
         $this->subscriber                   = new LeadSubscriber(
             $this->fieldChangeRepository,
@@ -261,8 +262,9 @@ final class LeadSubscriberTest extends TestCase
             ->with(MauticSyncDataExchange::OBJECT_COMPANY)
             ->willReturn(false);
 
-        $this->companyEvent->expects($this->never())
-            ->method('getCompany');
+        $this->companyEvent->expects($this->once())
+            ->method('getEntity')
+            ->willReturn(new Company());
 
         $this->subscriber->onCompanyPostSave($this->companyEvent);
     }
@@ -274,7 +276,7 @@ final class LeadSubscriberTest extends TestCase
         $company = $this->createCompanyMock($fieldChanges, 1);
 
         $this->companyEvent->expects($this->once())
-            ->method('getCompany')
+            ->method('getEntity')
             ->willReturn($company);
 
         $this->syncIntegrationsHelper->expects($this->once())
@@ -307,7 +309,7 @@ final class LeadSubscriberTest extends TestCase
         $company = $this->createCompanyMock($fieldChanges, $objectId);
 
         $this->companyEvent->expects($this->once())
-            ->method('getCompany')
+            ->method('getEntity')
             ->willReturn($company);
 
         $this->syncIntegrationsHelper->expects($this->once())
@@ -343,7 +345,7 @@ final class LeadSubscriberTest extends TestCase
         $company = $this->createCompanyMock($fieldChanges, $objectId);
 
         $this->companyEvent->expects($this->once())
-            ->method('getCompany')
+            ->method('getEntity')
             ->willReturn($company);
 
         $this->syncIntegrationsHelper->expects($this->once())
@@ -369,8 +371,9 @@ final class LeadSubscriberTest extends TestCase
         $lead            = new Company();
         $lead->deletedId = $deletedId;
 
-        $this->companyEvent->expects($this->exactly(2))
-            ->method('getCompany')
+        $event = $this->createMock(EntityPostDelete::class);
+        $event->expects($this->once())
+            ->method('getEntity')
             ->willReturn($lead);
 
         $this->fieldChangeRepository->expects($this->once())
@@ -381,7 +384,7 @@ final class LeadSubscriberTest extends TestCase
             ->method('deleteEntitiesForObject')
             ->with($deletedId, MauticSyncDataExchange::OBJECT_COMPANY);
 
-        $this->subscriber->onCompanyPostDelete($this->companyEvent);
+        $this->subscriber->onCompanyPostDelete($event);
     }
 
     /**
