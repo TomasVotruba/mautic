@@ -2,11 +2,11 @@
 
 namespace Mautic\LeadBundle\EventListener;
 
+use Mautic\CoreBundle\Event\EntityPostDelete;
+use Mautic\CoreBundle\Event\EntityPostSave;
+use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Event\ChannelSubscriptionChange;
-use Mautic\LeadBundle\Event\CompanyEvent;
-use Mautic\LeadBundle\Event\CompanyPostDeleteEvent;
-use Mautic\LeadBundle\Event\CompanyPostSaveEvent;
 use Mautic\LeadBundle\Event\LeadChangeCompanyEvent;
 use Mautic\LeadBundle\Event\LeadEvent;
 use Mautic\LeadBundle\Event\LeadPostDeleteEvent;
@@ -247,30 +247,35 @@ final readonly class WebhookSubscriber
         }
     }
 
-    #[AsEventListener(
-        event: CompanyPostSaveEvent::class,
-    )]
-    public function onCompanySave(CompanyEvent $event): void
+    #[AsEventListener]
+    public function onCompanySave(EntityPostSave $event): void
     {
+        $company = $event->getEntity();
+        if (!$company instanceof Company) {
+            return;
+        }
+
         $this->webhookModel->queueWebhooksByType(
             LeadEvents::COMPANY_POST_SAVE,
             [
-                'company'    => $event->getCompany(),
+                'company'    => $company,
             ]
         );
     }
 
-    #[AsEventListener(
-        event: CompanyPostDeleteEvent::class,
-    )]
-    public function onCompanyDelete(CompanyEvent $event): void
+    #[AsEventListener]
+    public function onCompanyDelete(EntityPostDelete $event): void
     {
-        $company = $event->getCompany();
+        $company = $event->getEntity();
+        if (!$company instanceof Company) {
+            return;
+        }
+
         $this->webhookModel->queueWebhooksByType(
             LeadEvents::COMPANY_POST_DELETE,
             [
                 'id'      => $company->deletedId,
-                'company' => $event->getCompany(),
+                'company' => $company,
             ]
         );
     }
