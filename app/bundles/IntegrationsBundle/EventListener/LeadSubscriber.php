@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Mautic\IntegrationsBundle\EventListener;
 
 use DateTime;
+use Mautic\CoreBundle\Event\EntityPostDelete;
+use Mautic\CoreBundle\Event\EntityPostSave;
 use Mautic\IntegrationsBundle\Entity\FieldChange;
 use Mautic\IntegrationsBundle\Entity\FieldChangeRepository;
 use Mautic\IntegrationsBundle\Entity\ObjectMappingRepository;
@@ -20,8 +22,6 @@ use Mautic\IntegrationsBundle\Sync\VariableExpresser\VariableExpresserHelperInte
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Event as Events;
-use Mautic\LeadBundle\Event\CompanyPostDeleteEvent;
-use Mautic\LeadBundle\Event\CompanyPostSaveEvent;
 use Mautic\LeadBundle\Event\LeadChangeCompanyEvent;
 use Mautic\LeadBundle\Event\LeadPostDeleteEvent;
 use Mautic\LeadBundle\Event\LeadPostSaveEvent;
@@ -111,11 +111,14 @@ final readonly class LeadSubscriber
      * @throws IntegrationNotFoundException
      * @throws ObjectNotFoundException
      */
-    #[AsEventListener(
-        event: CompanyPostSaveEvent::class,
-    )]
-    public function onCompanyPostSave(Events\CompanyEvent $event): void
+    #[AsEventListener]
+    public function onCompanyPostSave(EntityPostSave $event): void
     {
+        $company = $event->getEntity();
+        if (!$company instanceof Company) {
+            return;
+        }
+
         if (defined('MAUTIC_INTEGRATION_SYNC_IN_PROGRESS')) {
             // Don't track changes just made by an active sync
             return;
@@ -126,7 +129,6 @@ final readonly class LeadSubscriber
             return;
         }
 
-        $company = $event->getCompany();
         $changes = $company->getChanges(true);
 
         if (!empty($changes['owner'])) {
@@ -142,13 +144,17 @@ final readonly class LeadSubscriber
     }
 
     #[AsEventListener(
-        event: CompanyPostDeleteEvent::class,
         priority: 255
     )]
-    public function onCompanyPostDelete(Events\CompanyEvent $event): void
+    public function onCompanyPostDelete(EntityPostDelete $event): void
     {
-        $this->fieldChangeRepo->deleteEntitiesForObject((int) $event->getCompany()->deletedId, Company::class);
-        $this->objectMappingRepository->deleteEntitiesForObject((int) $event->getCompany()->deletedId, MauticSyncDataExchange::OBJECT_COMPANY);
+        $company = $event->getEntity();
+        if (!$company instanceof Company) {
+            return;
+        }
+
+        $this->fieldChangeRepo->deleteEntitiesForObject((int) $company->deletedId, Company::class);
+        $this->objectMappingRepository->deleteEntitiesForObject((int) $company->deletedId, MauticSyncDataExchange::OBJECT_COMPANY);
     }
 
     #[AsEventListener(
