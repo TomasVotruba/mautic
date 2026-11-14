@@ -108,11 +108,10 @@ final class InputHelper
      * function to be used for the specific field.
      *
      * @param mixed $value
-     * @param mixed $mask
      *
      * @return mixed
      */
-    public static function _($value, $mask = 'clean', bool $urldecode = false)
+    public static function _($value, array|string $mask = 'clean', bool $urldecode = false)
     {
         if (is_array($value)) {
             foreach ($value as $k => &$v) {
@@ -249,10 +248,9 @@ final class InputHelper
      * Removes all characters except those allowed in URLs.
      *
      * @param array<string>|null $allowedProtocols
-     * @param mixed              $defaultProtocol
      * @param array<string>      $removeQuery
      */
-    public static function url(?string $value, ?bool $urldecode = false, ?array $allowedProtocols = null, $defaultProtocol = null, array $removeQuery = [], bool $ignoreFragment = false): string|false
+    public static function url(?string $value, ?bool $urldecode = false, ?array $allowedProtocols = null, ?string $defaultProtocol = null, array $removeQuery = [], bool $ignoreFragment = false): string|false
     {
         if ($urldecode) {
             $value = urldecode($value);

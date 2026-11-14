@@ -172,12 +172,12 @@ final class PointModel extends CommonFormModel implements GlobalSearchInterface,
     /**
      * Triggers a specific point change.
      *
-     * @param mixed $eventDetails passthrough from function triggering action to the callback function
+     * @param ?object $eventDetails passthrough from function triggering action to the callback function
      * @param mixed $typeId       Something unique to the triggering event to prevent  unnecessary duplicate calls
      *
      * @throws \ReflectionException
      */
-    public function triggerAction($type, $eventDetails = null, $typeId = null, ?Lead $lead = null, bool $allowUserRequest = false): void
+    public function triggerAction($type, ?object $eventDetails = null, $typeId = null, ?Lead $lead = null, bool $allowUserRequest = false): void
     {
         // only trigger actions for not logged Mautic users
         if (!$this->security->isAnonymous() && !$allowUserRequest) {
