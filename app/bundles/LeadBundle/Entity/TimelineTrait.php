@@ -16,7 +16,7 @@ trait TimelineTrait
      * @param string       $timestampColumn       Name of column to sort timestamp by
      * @param array<mixed> $serializedColumns     Array of columns to unserialize
      * @param array<mixed> $dateTimeColumns       Array of columns to be converted to \DateTime
-     * @param mixed|null   $resultsParserCallback Callback to custom parse results
+     * @param ?callable   $resultsParserCallback Callback to custom parse results
      * @param string|null  $secondaryOrdering     Name of column for secondary sort
      *
      * @return array{total: mixed, results: list<array<string, mixed>>}|array<mixed>
@@ -28,7 +28,7 @@ trait TimelineTrait
         string $timestampColumn,
         array $serializedColumns = [],
         array $dateTimeColumns = [],
-        $resultsParserCallback = null,
+        ?callable $resultsParserCallback = null,
         ?string $secondaryOrdering = null,
     ): array {
         if (!empty($options['unitCounts'])) {
