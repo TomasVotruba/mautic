@@ -7,10 +7,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
+use Mautic\CoreBundle\Event\EntityPostDelete;
+use Mautic\CoreBundle\Event\EntityPostSave;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Event as Events;
 use Mautic\FormBundle\Exception\ValidationException;
 use Mautic\FormBundle\Form\Type\SubmitActionEmailType;
@@ -43,11 +46,14 @@ final readonly class FormSubscriber
      * Add an entry to the audit log.
      */
     #[AsEventListener(
-        event: FormEvents::FORM_POST_SAVE,
+        event: EntityPostSave::class,
     )]
-    public function onFormPostSave(Events\FormEvent $event): void
+    public function onFormPostSave(EntityPostSave $event): void
     {
-        $form = $event->getForm();
+        $form = $event->getEntity();
+        if (!$form instanceof Form) {
+            return;
+        }
         if ($details = $event->getChanges()) {
             $log = [
                 'bundle'    => 'form',
@@ -68,11 +74,14 @@ final readonly class FormSubscriber
      * Add a delete entry to the audit log.
      */
     #[AsEventListener(
-        event: FormEvents::FORM_POST_DELETE,
+        event: EntityPostDelete::class,
     )]
-    public function onFormDelete(Events\FormEvent $event): void
+    public function onFormDelete(EntityPostDelete $event): void
     {
-        $form = $event->getForm();
+        $form = $event->getEntity();
+        if (!$form instanceof Form) {
+            return;
+        }
         $log  = [
             'bundle'    => 'form',
             'object'    => 'form',

@@ -518,6 +518,25 @@ After upgrading, clear the application cache and run `bin/console mautic:plugins
 
     Constants `NOTIFICATION_PRE_SAVE`, `NOTIFICATION_POST_SAVE`, `NOTIFICATION_PRE_DELETE` and `NOTIFICATION_POST_DELETE` were removed from `Mautic\NotificationBundle\NotificationEvents`; subscribe to the generic event classes instead.
 
+- More bundles moved to the generic entity lifecycle events. Their models no longer override `dispatchEvent()` and the following `pre_save` / `post_save` / `pre_delete` / `post_delete` constants were removed. Subscribe to `EntityPreSave` / `EntityPostSave` / `EntityPreDelete` / `EntityPostDelete` (`Mautic\CoreBundle\Event`) and guard on the entity instance (e.g. `if (!$event->getEntity() instanceof Category) { return; }`):
+
+    | Removed constants | Entity to check |
+    |---|---|
+    | `Mautic\CategoryBundle\CategoryEvents::CATEGORY_PRE_SAVE` / `CATEGORY_POST_SAVE` / `CATEGORY_PRE_DELETE` / `CATEGORY_POST_DELETE` | `Mautic\CategoryBundle\Entity\Category` |
+    | `Mautic\ChannelBundle\ChannelEvents::MESSAGE_PRE_SAVE` / `MESSAGE_POST_SAVE` / `MESSAGE_PRE_DELETE` / `MESSAGE_POST_DELETE` | `Mautic\ChannelBundle\Entity\Message` |
+    | `Mautic\DynamicContentBundle\DynamicContentEvents::PRE_SAVE` / `POST_SAVE` / `PRE_DELETE` / `POST_DELETE` | `Mautic\DynamicContentBundle\Entity\DynamicContent` |
+    | `Mautic\FormBundle\FormEvents::FORM_PRE_SAVE` / `FORM_POST_SAVE` / `FORM_PRE_DELETE` / `FORM_POST_DELETE` | `Mautic\FormBundle\Entity\Form` |
+    | `Mautic\FormBundle\FormEvents::FIELD_PRE_SAVE` / `FIELD_POST_SAVE` / `FIELD_PRE_DELETE` / `FIELD_POST_DELETE` | `Mautic\FormBundle\Entity\Field` |
+    | `Mautic\PageBundle\PageEvents::PAGE_PRE_SAVE` / `PAGE_POST_SAVE` / `PAGE_PRE_DELETE` / `PAGE_POST_DELETE` | `Mautic\PageBundle\Entity\Page` |
+    | `Mautic\PointBundle\PointEvents::POINT_PRE_SAVE` / `POINT_POST_SAVE` / `POINT_PRE_DELETE` / `POINT_POST_DELETE` | `Mautic\PointBundle\Entity\Point` |
+    | `Mautic\PointBundle\PointEvents::TRIGGER_PRE_SAVE` / `TRIGGER_POST_SAVE` / `TRIGGER_PRE_DELETE` / `TRIGGER_POST_DELETE` | `Mautic\PointBundle\Entity\Trigger` |
+    | `Mautic\PointBundle\PointGroupEvents::GROUP_PRE_SAVE` / `GROUP_POST_SAVE` / `GROUP_PRE_DELETE` / `GROUP_POST_DELETE` | `Mautic\PointBundle\Entity\Group` |
+    | `Mautic\ReportBundle\ReportEvents::REPORT_PRE_SAVE` / `REPORT_POST_SAVE` / `REPORT_PRE_DELETE` / `REPORT_POST_DELETE` | `Mautic\ReportBundle\Entity\Report` |
+    | `Mautic\StageBundle\StageEvents::STAGE_PRE_SAVE` / `STAGE_POST_SAVE` / `STAGE_PRE_DELETE` / `STAGE_POST_DELETE` | `Mautic\StageBundle\Entity\Stage` |
+    | `MauticPlugin\MauticFocusBundle\FocusEvents::PRE_SAVE` / `POST_SAVE` / `PRE_DELETE` / `POST_DELETE` | `MauticPlugin\MauticFocusBundle\Entity\Focus` |
+
+    The matching per-entity event classes (`CategoryEvent`, `MessageEvent`, `StageEvent`, etc.) are no longer dispatched for these actions but remain in place; only the constants above were removed.
+
 ## Changed code
 
 - `Mautic\NotificationBundle\Integration\OneSignalIntegration` now extends `Mautic\IntegrationsBundle\Integration\BasicIntegration` instead of the deprecated `Mautic\PluginBundle\Integration\AbstractIntegration`, so it is no longer an `AbstractIntegration`. Methods that only `AbstractIntegration` provides no longer exist on it, for example `getKeys()`, `getDecryptedApiKeys()`, `getFormSettings()` and `isCoreIntegration()`; it still has `getName()`, `getDisplayName()`, `getIcon()`, `getIntegrationSettings()` and `getSupportedFeatures()`. Load the integration with its API keys decrypted through the new `Mautic\NotificationBundle\Helper\OneSignalIntegrationHelper` (`getIntegration()` / `getPublishedIntegration()`) instead of `Mautic\PluginBundle\Helper\IntegrationHelper::getIntegrationObject('OneSignal')` and `getKeys()` / `getDecryptedApiKeys()`.
