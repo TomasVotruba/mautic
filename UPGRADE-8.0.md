@@ -28,41 +28,24 @@ After upgrading, clear the application cache and run `bin/console mautic:plugins
 - Unused service aliases `mautic.integration.gmail.config` and `mautic.integration.tagmanager.config` were removed. Inject the corresponding bundle’s `Integration\Support\ConfigSupport` class instead; the services and integrations remain available.
 - The ClearbitBundle was removed as the service was sunset.
 - The unused contact companies modal was removed: `Mautic\LeadBundle\Controller\LeadController::companyAction()` (`/s/contacts/company/{objectId}`), the `@MauticLead/Lead/company.html.twig` template, the `Mautic.toggleCompanyLead` JS function and the `lead:toggleCompanyLead` AJAX action (`Mautic\LeadBundle\Controller\AjaxController::toggleCompanyLeadAction()`). Nothing linked to the modal since the contact page button was removed, and the action failed with a 500 error. Add or remove a contact's companies through the contact edit form or the API (`/api/companies/{companyId}/contact/{contactId}/add` and `/remove`) instead.
-- Deprecated class `Mautic\CampaignBundle\Event\CampaignExecutionEvent` removed. It was deprecated since 2.13.0 and only served as the backward-compatible parent of `Mautic\CampaignBundle\Event\DecisionEvent` and `Mautic\CampaignBundle\Event\ConditionEvent`. Campaign decision/condition listeners must type their event argument as `DecisionEvent` / `ConditionEvent` and use the typed API. `getEvent()` now returns the `Mautic\CampaignBundle\Entity\Event` entity instead of an array:
+- Deprecated class `Mautic\CampaignBundle\Event\CampaignExecutionEvent` removed. It was deprecated since 2.13.0 and only served as the backward-compatible parent of `Mautic\CampaignBundle\Event\DecisionEvent` and `Mautic\CampaignBundle\Event\ConditionEvent`. Campaign decision/condition listeners must type their event argument as `DecisionEvent` / `ConditionEvent` and use the typed API. `getEvent()` now returns the `Mautic\CampaignBundle\Entity\Event` entity instead of an array. Old → new methods:
 
-    ```diff
-    -public function onCampaignTriggerCondition(CampaignExecutionEvent $event): void
-    +public function onCampaignTriggerCondition(ConditionEvent $event): void
-     {
-    -    $config     = $event->getConfig();
-    +    $config     = $event->getEvent()->getProperties();
-    -    $eventArray = $event->getEvent();
-    +    $campaignId = $event->getEvent()->getCampaign()->getId();
-    -    $settings   = $event->getEventSettings();
-    +    $accessor   = $event->getEventConfig();
-    -    $fields     = $event->getLeadFields();
-    +    $lead       = $event->getLead();
-    +    $fields     = $lead?->getProfileFields() ?? [];
-    +    $fields['owner_id'] = $lead?->getOwner()?->getId() ?? 0;
-    -    $system     = $event->getSystemTriggered();
-    +    $system     = $event->getLog()->getSystemTriggered();
-    -    $log        = $event->getLogEntry();
-    +    $log        = $event->getLog();
-    -    $details    = $event->getEventDetails();
-    +    $details    = $event->getPassthrough(); // DecisionEvent only
-
-    -    $event->setChannel('email', $emailId);
-    +    $event->getLog()->setChannel('email');
-    +    $event->getLog()->setChannelId($emailId);
-
-    -    $event->setResult(true);
-    +    $event->pass(); // ConditionEvent; DecisionEvent uses setAsApplicable()
-    -    $event->setFailed('reason');
-    +    $event->fail();
-     }
-    ```
-
-  `getChannel()` / `getChannelId()` map to `getLog()->getChannel()` / `getLog()->getChannelId()`. `setLogEntry()` and `wasLogUpdatedByListener()` were removed with no replacement; modify the log returned by `getLog()` directly.
+    | Removed method | Replacement on `ConditionEvent` / `DecisionEvent` |
+    |---|---|
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getConfig()` | `getEvent()->getProperties()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getEvent()` (array) | `getEvent()` (`Event` entity), e.g. `getEvent()->getCampaign()->getId()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getEventSettings()` | `getEventConfig()` (returns `AbstractEventAccessor`, not an array) |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getLeadFields()` | `getLead()?->getProfileFields() ?? []`; `owner_id` is no longer added, read it with `getLead()?->getOwner()?->getId() ?? 0` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getSystemTriggered()` | `getLog()->getSystemTriggered()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getLogEntry()` | `getLog()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getEventDetails()` | `getPassthrough()` (`DecisionEvent` only) |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::setChannel($channel, $channelId)` | `getLog()->setChannel($channel)` and `getLog()->setChannelId($channelId)` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getChannel()` | `getLog()->getChannel()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::getChannelId()` | `getLog()->getChannelId()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::setResult(true)` | `ConditionEvent::pass()` / `DecisionEvent::setAsApplicable()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::setFailed($reason)` | `ConditionEvent::fail()` |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::setLogEntry()` | removed, modify the log returned by `getLog()` directly |
+    | `Mautic\CampaignBundle\Event\CampaignExecutionEvent::wasLogUpdatedByListener()` | removed, modify the log returned by `getLog()` directly |
 - Deprecated method `Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor::getConfig()` removed. It was deprecated since 2.13.0. Use the typed getters on the accessor instead, and `getExtraProperties()` for custom config keys:
 
     ```diff
