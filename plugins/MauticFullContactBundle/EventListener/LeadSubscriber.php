@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MauticPlugin\MauticFullContactBundle\EventListener;
 
-use Mautic\LeadBundle\Event\CompanyEvent;
-use Mautic\LeadBundle\Event\CompanyPostSaveEvent;
+use Mautic\CoreBundle\Event\EntityPostSave;
+use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Event\LeadEvent;
 use Mautic\LeadBundle\Event\LeadPostSaveEvent;
 use MauticPlugin\MauticFullContactBundle\Helper\LookupHelper;
@@ -24,11 +26,14 @@ final readonly class LeadSubscriber
         $this->lookupHelper->lookupContact($event->getLead(), true, true);
     }
 
-    #[AsEventListener(
-        event: CompanyPostSaveEvent::class,
-    )]
-    public function companyPostSave(CompanyEvent $event): void
+    #[AsEventListener]
+    public function companyPostSave(EntityPostSave $event): void
     {
-        $this->lookupHelper->lookupCompany($event->getCompany(), true, true);
+        $company = $event->getEntity();
+        if (!$company instanceof Company) {
+            return;
+        }
+
+        $this->lookupHelper->lookupCompany($company, true, true);
     }
 }
